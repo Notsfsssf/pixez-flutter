@@ -1,0 +1,20 @@
+name: benchmark
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_http: ^2.0.1
+  dio: ^5.6.0
+  http: ^1.2.2
+  rhttp:
+    path:
+      ../../rhttp
+
+flutter:
+  uses-material-design: true

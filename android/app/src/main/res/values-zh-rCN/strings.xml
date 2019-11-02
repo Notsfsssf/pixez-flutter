@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2020. by perol_notsf, All rights reserved
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under
+  ~ the terms of the GNU General Public License as published by the Free Software
+  ~ Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY
+  ~ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~ FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along with
+  ~ this program. If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+    <string name="title_save_path">save path</string>
+    <string name="choose_a_suitable_image_storage_directory">选择合适的图片保存目录授权</string>
+    <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正确取得授权，可能会导致部分功能失效或闪退</string>
+    <string name="encode_success">合成成功</string>
+    <string name="do_not_choice_download_folder_message">授权目录包含download(下载)目录，可能会导致保存出错，请重新选择保存目录授权</string>
+    <string name="appwidget_card_desc">充满内容的插画widget</string>
+    <string name="appwidget_illust_desc">带标题的插画widget</string>
+</resources>

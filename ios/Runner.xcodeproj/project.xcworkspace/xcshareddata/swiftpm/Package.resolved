@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "fmdb",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ccgus/fmdb",
+      "state" : {
+        "revision" : "1227a3fa2b9916bfd75fe380eb45cd210e69e251",
+        "version" : "2.7.12"
+      }
+    }
+  ],
+  "version" : 2
+}

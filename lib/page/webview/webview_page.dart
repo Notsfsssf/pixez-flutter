@@ -1,0 +1,114 @@
+import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pixez/custom_tab_plugin.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/weiss_plugin.dart';
+
+class WebViewPage extends StatefulWidget {
+  final String url;
+
+  const WebViewPage({Key? key, required this.url}) : super(key: key);
+
+  @override
+  _WebViewPageState createState() => _WebViewPageState();
+}
+
+class _WebViewPageState extends State<WebViewPage> {
+  late final WebViewController _webViewController;
+  double progressValue = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            setState(() {
+              progressValue = progress / 100;
+            });
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) async {
+            final uri = Uri.parse(url);
+            if (userSetting.oauthNetworkMode.usesCompatibleConnection &&
+                uri.host == "accounts.pixiv.net") {
+              _webViewController.runJavaScript("""
+javascript:(function() {
+ let forms = document.getElementsByTagName('form'); 
+ for (let name of forms) {
+    if (name['method'] === 'post' || name['method'] === 'POST') {
+        name.style.display = 'none';
+    }
+  
+}
+ let list = document.getElementsByClassName("sns-button-list");
+ for (let name of list) {
+        name.style.display = 'none';
+} 
+  })()
+""");
+            }
+          },
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            var uri = Uri.parse(request.url);
+            if (uri.scheme == "pixiv") {
+              Leader.pushWithUri(context, uri);
+              Navigator.of(context).pop("OK");
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WeissPlugin.stop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(""),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.open_in_browser),
+            onPressed: () {
+              try {
+                CustomTabPlugin.launch(widget.url);
+              } catch (e) {
+                BotToast.showText(text: e.toString());
+              }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => _webViewController.reload(),
+          ),
+        ],
+      ),
+      body: Builder(
+        builder: (BuildContext context) {
+          return Column(
+            children: [
+              Visibility(
+                visible: progressValue < 1.0,
+                child: LinearProgressIndicator(value: progressValue),
+              ),
+              Expanded(child: WebViewWidget(controller: _webViewController)),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

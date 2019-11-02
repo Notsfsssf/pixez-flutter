@@ -1,0 +1,159 @@
+name: pixez
+description: A new Flutter project.
+
+publish_to: none
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.9.84+508
+
+environment:
+  sdk: ">=3.11.5"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  dio: ^5.10.0
+  crypto: ^3.0.7
+  path_provider: ^2.1.6
+  shared_preferences: ^2.5.5
+  share_plus: ^13.2.0
+  permission_handler: ^12.0.3
+  archive: ^4.0.9
+  url_launcher: ^6.3.2
+  bot_toast: ^4.1.3
+  package_info_plus: ^10.2.0
+  mobx: ^2.3.3+2
+  flutter_mobx: ^2.2.1+1
+  in_app_purchase: ^3.3.0
+  flutter_widget_from_html: ^0.17.2
+  device_info_plus: ^13.2.0
+  flutter_displaymode: ^0.7.0
+  receive_sharing_intent: ^1.9.0 
+  cached_network_image: ^3.4.1
+  flutter_cache_manager: ^3.4.1
+  waterfall_flow: ^3.1.1
+  animations: ^2.1.0
+  font_awesome_flutter: ^11.0.0
+  json_annotation: ^4.9.0
+  badges: ^3.1.2
+  image_picker: ^1.2.2
+  intl: any
+  quiver: ^3.2.2
+  dio_cache_interceptor: ^4.0.6
+  photo_view: ^0.15.0
+  image: ^4.7.2
+  easy_refresh: ^3.5.1
+  sqflite: ^2.4.3
+  dynamic_color: ^1.8.1
+  # Design Style
+  fluent_ui: ^4.15.1
+  # Desktop Support
+  flutter_acrylic: ^1.1.4
+  window_manager: ^0.5.1
+  rhttp:
+    path: ./plugins/rhttp/rhttp
+  dio_compatibility_layer: ^0.1.1
+  flutter_cache_manager_dio: ^4.0.0
+  file_picker: ^12.0.0-beta.7
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^4.0.0
+  freezed_annotation: ^3.1.0
+  hooks_riverpod: ^3.0.3
+  flutter_hooks: ^0.21.3+1
+  webview_flutter: ^4.14.1
+  # sqlite3: 3.1.6
+  sqflite_common_ffi: ^2.4.2
+
+dependency_overrides:
+  # Local override of permission_handler_apple with location code removed
+  # to avoid App Store rejection ITMS-90683
+  # See https://github.com/Baseflow/flutter-permission-handler/issues/1543
+  permission_handler_apple:
+    path: ios/permission_handler_apple_override
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mobx_codegen: ^2.6.1
+  json_serializable: ^6.8.0
+  msix: ^3.16.9
+  analyzer: ^8.4.0
+  build_runner: ^2.12.0
+  riverpod_generator: ^4.0.0+1
+  custom_lint: ^0.8.1
+  riverpod_lint: ^3.1.0
+  freezed: 3.2.3
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  config:
+    enable-lldb-debugging: false
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/json/host.json
+    - assets/emojis/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: iconfont
+      fonts:
+        - asset: assets/fonts/iconfont.ttf
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
+  generate: true
+
+msix_config:
+  display_name: Pixez
+  publisher_display_name: Perol_Notsfsssf
+  identity_name: com.perol.pixez
+  logo_path: .\windows\runner\resources\ic_launcher-msstore.png
+  trim_logo: false
+  capabilities: internetClient, picturesLibrary
+  languages: en-us, es-es, ja-jp, ko-kr, ru-ru, tr-tr, zh-cn, zh-tw
+  protocol_activation: pixiv, pixez
+  app_uri_handler_hosts: i.pximg.net, pixiv.me, pixivision.net
+  execution_alias: pixez
+  install_certificate: false
+  store: false
+  publisher: CN=Notsfsssf, C=CN
+
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlite3

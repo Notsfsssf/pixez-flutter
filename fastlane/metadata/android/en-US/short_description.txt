@@ -1,0 +1,1 @@
+A third-party Pixiv flutter client that supports viewing ugoira

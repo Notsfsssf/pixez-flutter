@@ -1,0 +1,152 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+import java.util.Base64
+import java.util.Properties
+
+plugins {
+    id("com.android.application")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+}
+
+var dartEnvironmentVariables = mutableMapOf(
+    "IS_GOOGLEPLAY" to false
+)
+
+if (project.hasProperty("dart-defines")) {
+    dartEnvironmentVariables.putAll(
+        (project.property("dart-defines") as String)
+            .split(',')
+            .associate { entry ->
+                val pair = String(Base64.getDecoder().decode(entry)).split('=')
+                pair.first() to (pair.last() == "true")
+            }
+    )
+}
+
+//println("\n" +
+//        "______ _______   __ _____ ______\n" +
+//        "| ___ \\_   _\\ \\ / /|  ___|___  /\n" +
+//        "| |_/ / | |  \\ V / | |__    / / \n" +
+//        "|  __/  | |  /   \\ |  __|  / /  \n" +
+//        "| |    _| |_/ /^\\ \\| |___./ /___\n" +
+//        "\\_|    \\\___/\\/   \\\_/\\____/\\_____/\n" +
+//        "                                \n" +
+//        "                                \n")
+println("hey, IS_GOOGLEPLAY=${dartEnvironmentVariables["IS_GOOGLEPLAY"]}")
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+
+val isGooglePlay = dartEnvironmentVariables["IS_GOOGLEPLAY"] as Boolean
+
+val packageName = if (isGooglePlay) {
+    "com.perol.play.pixez"
+} else {
+    "com.perol.pixez"
+}
+
+android {
+    namespace = "com.perol.pixez"
+    compileSdk = 37
+    ndkVersion = "28.2.13676358"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        applicationId = packageName
+        minSdk = flutter.minSdkVersion
+        targetSdk = 37
+        versionCode = 10010051
+        versionName = "0.9.106 X"
+        buildConfigField("boolean", "IS_GOOGLEPLAY", isGooglePlay.toString())
+        ndk {
+            abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
+        }
+    }
+    splits {
+        abi {
+            val isBuildingBundle = gradle.startParameter.taskNames.any { it.lowercase().contains("bundle") }
+            isEnable = !isBuildingBundle
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            isUniversalApk = true
+        }
+    }
+
+    if (keystorePropertiesFile.exists()) {
+        signingConfigs {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
+
+    buildTypes {
+        if (keystorePropertiesFile.exists()) {
+            getByName("release") {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
+    }
+
+    if (isGooglePlay) {
+        sourceSets {
+            getByName("release") {
+                manifest.srcFile("src/googlePlayRelease/AndroidManifest.xml")
+            }
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation(project(":androidndkgif"))
+    implementation("androidx.core:core-remoteviews:1.1.0")
+    implementation("androidx.annotation:annotation:1.9.1")
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+//    implementation project(":weiss")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
+    implementation("com.google.android.material:material:1.13.0")
+    implementation("io.coil-kt.coil3:coil:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+//    implementation("androidx.webkit:webkit:1.4.0")
+    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("androidx.documentfile:documentfile:1.1.0")
+}

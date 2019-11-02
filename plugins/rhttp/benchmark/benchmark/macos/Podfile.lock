@@ -1,0 +1,35 @@
+PODS:
+  - cupertino_http (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+  - objective_c (0.0.1):
+    - FlutterMacOS
+  - rhttp (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - cupertino_http (from `Flutter/ephemeral/.symlinks/plugins/cupertino_http/darwin`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - objective_c (from `Flutter/ephemeral/.symlinks/plugins/objective_c/macos`)
+  - rhttp (from `Flutter/ephemeral/.symlinks/plugins/rhttp/macos`)
+
+EXTERNAL SOURCES:
+  cupertino_http:
+    :path: Flutter/ephemeral/.symlinks/plugins/cupertino_http/darwin
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  objective_c:
+    :path: Flutter/ephemeral/.symlinks/plugins/objective_c/macos
+  rhttp:
+    :path: Flutter/ephemeral/.symlinks/plugins/rhttp/macos
+
+SPEC CHECKSUMS:
+  cupertino_http: 947a233f40cfea55167a49f2facc18434ea117ba
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  objective_c: e5f8194456e8fc943e034d1af00510a1bc29c067
+  rhttp: 337afda4c3e4df31087160719ffca6452c225cc2
+
+PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3
+
+COCOAPODS: 1.16.2

@@ -1,0 +1,38 @@
+<resources>
+    <color name="colorPrimary">@color/m3_sys_color_dynamic_dark_primary</color>
+    <color name="colorOnPrimary">@color/m3_sys_color_dynamic_dark_on_primary</color>
+    <color name="colorPrimaryInverse">@color/m3_sys_color_dynamic_dark_inverse_primary</color>
+    <color name="colorPrimaryContainer">@color/m3_sys_color_dynamic_dark_primary_container</color>
+    <color name="colorOnPrimaryContainer">@color/m3_sys_color_dynamic_dark_on_primary_container
+    </color>
+    <color name="colorSecondary">@color/m3_sys_color_dynamic_dark_secondary</color>
+    <color name="colorOnSecondary">@color/m3_sys_color_dynamic_dark_on_secondary</color>
+    <color name="colorSecondaryContainer">@color/m3_sys_color_dynamic_dark_secondary_container
+    </color>
+    <color name="colorOnSecondaryContainer">
+        @color/m3_sys_color_dynamic_dark_on_secondary_container
+    </color>
+    <color name="colorTertiary">@color/m3_sys_color_dynamic_dark_tertiary</color>
+    <color name="colorOnTertiary">@color/m3_sys_color_dynamic_dark_on_tertiary</color>
+    <color name="colorTertiaryContainer">@color/m3_sys_color_dynamic_dark_tertiary_container</color>
+    <color name="colorOnTertiaryContainer">@color/m3_sys_color_dynamic_dark_on_tertiary_container
+    </color>
+    <color name="colorBackground">@color/m3_sys_color_dynamic_dark_background</color>
+    <color name="colorOnBackground">@color/m3_sys_color_dynamic_dark_on_background</color>
+    <color name="colorSurface">@color/m3_sys_color_dynamic_dark_surface</color>
+    <color name="colorOnSurface">@color/m3_sys_color_dynamic_dark_on_surface</color>
+    <color name="colorSurfaceVariant">@color/m3_sys_color_dynamic_dark_surface_variant</color>
+    <color name="colorOnSurfaceVariant">@color/m3_sys_color_dynamic_dark_on_surface_variant</color>
+    <color name="colorSurfaceInverse">@color/m3_sys_color_dynamic_dark_inverse_surface</color>
+    <color name="colorOnSurfaceInverse">@color/m3_sys_color_dynamic_dark_inverse_on_surface</color>
+    <color name="colorOutline">@color/m3_sys_color_dynamic_dark_outline</color>
+    <color name="colorError">@color/m3_sys_color_dark_error</color>
+    <color name="colorOnError">@color/m3_sys_color_dark_on_error</color>
+    <color name="colorErrorContainer">@color/m3_sys_color_dark_error_container</color>
+    <color name="colorOnErrorContainer">@color/m3_sys_color_dark_on_error_container</color>
+
+    <color name="textColorPrimary">@color/m3_dynamic_dark_default_color_primary_text</color>
+    <color name="textColorPrimaryInverse">@color/m3_dynamic_default_color_primary_text</color>
+    <color name="textColorSecondary">@color/m3_dynamic_dark_default_color_secondary_text</color>
+    <color name="textColorSecondaryInverse">@color/m3_dynamic_default_color_secondary_text</color>
+</resources>
