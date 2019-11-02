@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 class Account {
   AccountResponse response;
@@ -23,31 +24,30 @@ class Account {
 final String tableAccount = 'account';
 final String columnId = '_id';
 final String columnAccessToken = 'accessToken';
-final String columnExpiresIn = 'expiresIn';
-final String columnTokenType = 'expirestokenType';
-final String columnDeviceToken = 'deviceToken';
+final String columnDeviceToken = 'device_Token';
+final String columnRefreshToken = 'refresh_token';
 
 class AccountProvider {
   Database db;
 
   Future open() async {
-    String path = await getDatabasesPath();
+    String databasesPath = await getDatabasesPath();
+    String path = join(databasesPath, 'demo.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''
 create table $tableAccount ( 
   $columnId integer primary key autoincrement, 
   $columnAccessToken text not null,
-  $columnTokenType text not null,
-  $columnExpiresIn integer not null,
-  $columnDeviceToken text not null,
-  )
+  $columnRefreshToken text not null,
+  $columnDeviceToken text not null)
 ''');
     });
   }
 
   Future<AccountPersist> insert(AccountPersist todo) async {
-    todo.id = await db.insert(tableAccount, todo.toJson());
+    todo.id = await db.insert(tableAccount, todo.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return todo;
   }
 
@@ -56,8 +56,7 @@ create table $tableAccount (
         columns: [
           columnId,
           columnAccessToken,
-          columnExpiresIn,
-          columnTokenType,
+          columnRefreshToken,
           columnDeviceToken
         ],
         where: '$columnId = ?',
@@ -69,12 +68,11 @@ create table $tableAccount (
   }
 
   Future<List<AccountPersist>> getAllAccount() async {
-    List result = new List();
+    List result = new List<AccountPersist>();
     List<Map> maps = await db.query(tableAccount, columns: [
       columnId,
       columnAccessToken,
-      columnExpiresIn,
-      columnTokenType,
+      columnRefreshToken,
       columnDeviceToken
     ]);
 
@@ -119,9 +117,6 @@ class AccountPersist {
   AccountPersist.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     accessToken = json['access_token'];
-    expiresIn = json['expires_in'];
-    tokenType = json['token_type'];
-    scope = json['scope'];
     refreshToken = json['refresh_token'];
     deviceToken = json['device_token'];
   }
@@ -129,12 +124,9 @@ class AccountPersist {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['access_token'] = this.accessToken;
-    data['expires_in'] = this.expiresIn;
-    data['token_type'] = this.tokenType;
-    data['scope'] = this.scope;
-    data['refresh_token'] = this.refreshToken;
-    data['device_token'] = this.deviceToken;
+    data[columnAccessToken] = this.accessToken;
+    data[columnRefreshToken] = this.refreshToken;
+    data[columnDeviceToken] = this.deviceToken;
     return data;
   }
 }

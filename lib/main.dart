@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         '/login': (context) => LoginPage(),
-        '/hello': (context) => HelloPage()
+        '/': (context) => HelloPage()
       },
-      initialRoute: '/hello',
+      initialRoute: '/',
       title: 'Flutter Demo',
       localeResolutionCallback:
           i18n.resolution(fallback: new Locale("en", "US")),

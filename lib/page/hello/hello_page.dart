@@ -9,20 +9,25 @@ class HelloPage extends StatefulWidget {
 
 class _HelloPageState extends State<HelloPage> {
   @override
-  Future initState() async {
+   initState() {
     // TODO: implement initState
     super.initState();
+findUser();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("w"),),
+    );
+  }
+
+  Future findUser() async {
     AccountProvider accountProvider = new AccountProvider();
     await accountProvider.open();
     List list = await accountProvider.getAllAccount();
     if(list.length<=0){
       Navigator.of(context).pushNamed('/login');
     }
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("w"),),
-    );
   }
 }
