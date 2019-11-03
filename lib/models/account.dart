@@ -22,10 +22,18 @@ class Account {
 }
 
 final String tableAccount = 'account';
-final String columnId = '_id';
+final String columnId = 'id';
+final String columnUserId = 'user_id';
+final String columnUserImage = 'user_image';
 final String columnAccessToken = 'accessToken';
 final String columnDeviceToken = 'device_Token';
 final String columnRefreshToken = 'refresh_token';
+final String columnName = 'name';
+final String columnAccount = 'account';
+final String columnMailAddress = 'mail_address';
+final String columnIsPremium = 'is_premium';
+final String columnXRestrict = 'x_restrict';
+final String columnIsMailAuthorized = 'is_mail_authorized';
 
 class AccountProvider {
   Database db;
@@ -40,7 +48,16 @@ create table $tableAccount (
   $columnId integer primary key autoincrement, 
   $columnAccessToken text not null,
   $columnRefreshToken text not null,
-  $columnDeviceToken text not null)
+  $columnDeviceToken text not null,
+  $columnUserId text not null,
+  $columnUserImage text not null,
+  $columnName text not null,
+  $columnAccount text not null,
+  $columnMailAddress text not null,
+  $columnIsPremium text not null,
+  $columnXRestrict text not null,
+  $columnIsMailAuthorized text not null
+  )
 ''');
     });
   }
@@ -55,9 +72,18 @@ create table $tableAccount (
     List<Map> maps = await db.query(tableAccount,
         columns: [
           columnId,
+          columnUserImage,
           columnAccessToken,
           columnRefreshToken,
-          columnDeviceToken
+          columnDeviceToken,
+          columnUserId,
+          columnName,
+          columnAccount,
+          columnMailAddress,
+          columnMailAddress,
+          columnIsPremium,
+          columnXRestrict,
+          columnIsMailAuthorized
         ],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -71,9 +97,18 @@ create table $tableAccount (
     List result = new List<AccountPersist>();
     List<Map> maps = await db.query(tableAccount, columns: [
       columnId,
+      columnUserImage,
       columnAccessToken,
       columnRefreshToken,
-      columnDeviceToken
+      columnDeviceToken,
+      columnUserId,
+      columnName,
+      columnAccount,
+      columnMailAddress,
+      columnMailAddress,
+      columnIsPremium,
+      columnXRestrict,
+      columnIsMailAuthorized
     ]);
 
     if (maps.length > 0) {
@@ -99,34 +134,49 @@ create table $tableAccount (
 
 class AccountPersist {
   int id;
+  int userId;
+  String userImage;
   String accessToken;
-  int expiresIn;
-  String tokenType;
-  String scope;
   String refreshToken;
   String deviceToken;
+  String name;
+  String account;
+  String mailAddress;
+  bool isPremium;
+  int xRestrict;
+  bool isMailAuthorized;
 
-  AccountPersist(
-      {this.accessToken,
-      this.expiresIn,
-      this.tokenType,
-      this.scope,
-      this.refreshToken,
-      this.deviceToken});
+  AccountPersist({this.accessToken, this.refreshToken, this.deviceToken});
 
   AccountPersist.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    userId = json['user_id'];
     accessToken = json['access_token'];
     refreshToken = json['refresh_token'];
     deviceToken = json['device_token'];
+    userImage = json[columnUserImage];
+    name = json['name'];
+    account = json['account'];
+    mailAddress = json['mail_address'];
+    isPremium = json['is_premium'];
+    xRestrict = json['x_restrict'];
+    isMailAuthorized = json['is_mail_authorized'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['user_id'] = this.userId;
     data[columnAccessToken] = this.accessToken;
     data[columnRefreshToken] = this.refreshToken;
     data[columnDeviceToken] = this.deviceToken;
+    data['name'] = this.name;
+    data['account'] = this.account;
+    data['mail_address'] = this.mailAddress;
+    data['is_premium'] = this.isPremium;
+    data['x_restrict'] = this.xRestrict;
+    data['is_mail_authorized'] = this.isMailAuthorized;
+    data[columnUserImage] = this.userImage;
     return data;
   }
 }

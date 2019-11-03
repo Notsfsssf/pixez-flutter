@@ -27,9 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         accountProvider.insert(AccountPersist()
           ..accessToken = accountResponse.accessToken
           ..deviceToken = accountResponse.deviceToken
-          ..refreshToken = accountResponse.refreshToken
-          ..expiresIn = accountResponse.expiresIn
-          ..scope = accountResponse.scope);
+          ..refreshToken = accountResponse.refreshToken);
         yield SuccessState();
       } on DioError catch (e) {
         // The request was made and the server responded with a status code
