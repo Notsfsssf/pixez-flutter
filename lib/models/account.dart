@@ -54,9 +54,9 @@ create table $tableAccount (
   $columnName text not null,
   $columnAccount text not null,
   $columnMailAddress text not null,
-  $columnIsPremium text not null,
-  $columnXRestrict text not null,
-  $columnIsMailAuthorized text not null
+  $columnIsPremium integer not null,
+  $columnXRestrict integer not null,
+  $columnIsMailAuthorized integer not null
   )
 ''');
     });
@@ -134,7 +134,7 @@ create table $tableAccount (
 
 class AccountPersist {
   int id;
-  int userId;
+  String userId;
   String userImage;
   String accessToken;
   String refreshToken;
@@ -142,11 +142,11 @@ class AccountPersist {
   String name;
   String account;
   String mailAddress;
-  bool isPremium;
+  int isPremium;
   int xRestrict;
-  bool isMailAuthorized;
+  int isMailAuthorized;
 
-  AccountPersist({this.accessToken, this.refreshToken, this.deviceToken});
+  AccountPersist({this.userId,this.userImage,this.accessToken, this.refreshToken, this.deviceToken,this.name,this.account,this.mailAddress,this.isPremium,this.xRestrict,this.isMailAuthorized});
 
   AccountPersist.fromJson(Map<String, dynamic> json) {
     id = json['id'];

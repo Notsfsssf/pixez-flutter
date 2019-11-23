@@ -6,7 +6,7 @@ import 'package:pixez/page/login/login_page.dart';
 import 'generated/i18n.dart';
 import 'models/account.dart';
 
-Future main() async {
+ main(){
 
   runApp(MyApp());
 }

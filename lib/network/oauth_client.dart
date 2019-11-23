@@ -6,21 +6,25 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 
 import 'package:intl/intl.dart';
+import 'package:pixez/models/account.dart';
+
+
+
 class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   Dio httpClient;
 
   String getIsoDate() {
-    DateTime dateTime =new DateTime.now();
- DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
- 
-    return   dateFormat.format(dateTime);
+    DateTime dateTime = new DateTime.now();
+    DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
+
+    return dateFormat.format(dateTime);
   }
 
-  OAuthClient({
-    Dio httpClient,
-  }) {
+  static final String AUTHORIZATION = "Authorization";
+
+  OAuthClient() {
     String time = getIsoDate();
     this.httpClient = httpClient ?? Dio()
       ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
@@ -53,11 +57,14 @@ class OAuthClient {
     return digest.toString();
   }
 
+  final String CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
+  final String CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj";
+
   Future<Response> postAuthToken(String userName, String passWord,
       {String deviceToken = "pixiv"}) {
     return httpClient.post("/auth/token", data: {
-      "client_id": "MOBrBDS8blbauoSck0ZfDbtuzpyT",
-      "client_secret": "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj",
+      "client_id": CLIENT_ID,
+      "client_secret": CLIENT_SECRET,
       "grant_type": "password",
       "username": userName,
       "password": passWord,
@@ -70,11 +77,12 @@ class OAuthClient {
   Future<Response> postRefreshAuthToken(
       {refreshToken: String, deviceToken: String}) {
     return httpClient.post("", queryParameters: {
-      "client_id": "",
-      "client_secret": "",
-      "grant_type": "",
+      "client_id": CLIENT_ID,
+      "client_secret": CLIENT_SECRET,
+      "grant_type": "refresh_token",
       "refresh_token": refreshToken,
       "device_token": deviceToken,
+      "get_secure_url": true
     });
   }
 }

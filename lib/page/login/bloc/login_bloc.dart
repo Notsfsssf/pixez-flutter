@@ -5,11 +5,14 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:dio/dio.dart';
 import './bloc.dart';
 import 'package:bloc/bloc.dart';
-
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   LoginState get initialState => InitialLoginState();
-
+int bti(bool bool){
+  if(bool){
+    return 1;
+  }else return 0;
+}
   @override
   Stream<LoginState> mapEventToState(
     LoginEvent event,
@@ -22,12 +25,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await client.postAuthToken(event.username, event.password);
         AccountResponse accountResponse =
             Account.fromJson(response.data).response;
+        User user = accountResponse.user;
         AccountProvider accountProvider = new AccountProvider();
         await accountProvider.open();
         accountProvider.insert(AccountPersist()
           ..accessToken = accountResponse.accessToken
           ..deviceToken = accountResponse.deviceToken
-          ..refreshToken = accountResponse.refreshToken);
+          ..refreshToken = accountResponse.refreshToken
+          ..userImage = user.profileImageUrls.px170x170
+          ..userId = user.id
+          ..name = user.name
+          ..isMailAuthorized = bti(user.isMailAuthorized)
+          ..isPremium = bti(user.isPremium)
+          ..mailAddress=user.mailAddress
+          ..account = user.account
+          ..xRestrict = user.xRestrict
+      );
         yield SuccessState();
       } on DioError catch (e) {
         // The request was made and the server responded with a status code
@@ -36,7 +49,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           return;
         }
         if (e.response != null) {
-
           print(e.response.data);
           print(e.response.headers);
           print(e.response.request);

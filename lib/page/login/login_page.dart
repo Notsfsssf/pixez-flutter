@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     builder: (context)=>LoginBloc(),
     child: Builder(builder:(context){
       return  BlocListener<LoginBloc,LoginState>(
-          listener: (context, state) {
+          listener: (context1, state) {
             if (state is SuccessState) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                   content: Text(I18n.of(context).Login),
                 ),
               );
-              Navigator.of(context).pushNamed('/hello');
+              Navigator.of(context).pushNamed('/');
             } else if(state is FailState){
               Scaffold.of(context).showSnackBar(
                 SnackBar(

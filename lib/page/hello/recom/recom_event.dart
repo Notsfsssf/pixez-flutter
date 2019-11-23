@@ -1,10 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-abstract class HelloEvent extends Equatable {
-  const HelloEvent();
+abstract class RecomEvent extends Equatable {
+  const RecomEvent();
 }
-class FetchDataBaseEvent extends HelloEvent{
-
+class FetchEvent extends RecomEvent{
   @override
   // TODO: implement props
   List<Object> get props => null;
