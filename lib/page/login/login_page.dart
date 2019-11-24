@@ -22,30 +22,30 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context1) {
   return  BlocProvider(
     builder: (context)=>LoginBloc(),
-    child: Builder(builder:(context){
-      return  BlocListener<LoginBloc,LoginState>(
-          listener: (context1, state) {
-            if (state is SuccessState) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.yellow,
-                  content: Text(I18n.of(context).Login),
-                ),
-              );
-              Navigator.of(context).pushNamed('/');
-            } else if(state is FailState){
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.red,
-                  content: Text(state.failMessage),
-                ),
-              );
-            }
-          },
-          child:  Scaffold(
+    child: BlocListener<LoginBloc,LoginState>(
+        listener: (context, state) {
+          if (state is SuccessState) {
+/*            Scaffold.of(context1).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.yellow,
+                content: Text(I18n.of(context1).Login),
+              ),
+            );*/
+            Navigator.of(context1).pushNamed('/');
+          } else if(state is FailState){
+            Scaffold.of(context1).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(state.failMessage),
+              ),
+            );
+          }
+        },
+        child:  Builder(builder: (context){
+         return Scaffold(
             floatingActionButton: FloatingActionButton(
               onPressed: () async {},
               child: Icon(Icons.arrow_forward),
@@ -99,10 +99,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 )),
-          )
-      );
-
-    }),
+          );
+        })
+    ),
   );
   }
 }

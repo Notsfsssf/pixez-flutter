@@ -1,7 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
-
+import 'dart:convert';
+import 'dart:core';
+import 'dart:io';
+import 'package:intl/intl.dart';
+import 'package:crypto/crypto.dart';
+import 'package:dio/adapter.dart';
 class RefreshTokenInterceptor extends Interceptor {
   @override
   onError(DioError err) async {
@@ -44,10 +49,33 @@ class RefreshTokenInterceptor extends Interceptor {
 
 class ApiClient {
   Dio httpClient;
+  final String hashSalt =
+      "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
+  String getIsoDate() {
+    DateTime dateTime = new DateTime.now();
+    DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
 
+    return dateFormat.format(dateTime);
+  }
+  static String getHash(String string) {
+    var content = new Utf8Encoder().convert(string);
+    var digest = md5.convert(content);
+    return digest.toString();
+  }
   ApiClient() {
+    String time = getIsoDate();
     this.httpClient = Dio()
-      ..options.baseUrl = "https://app-api.pixiv.net"
+      ..options.baseUrl = "https://210.140.131.219"
+      ..options.headers = {
+        "X-Client-Time": time,
+        "X-Client-Hash": getHash(time + hashSalt),
+        "User-Agent": "PixivAndroidApp/5.0.155 (Android 6.0; Pixel C)",
+        "Accept-Language": "zh-CN",
+        "App-OS": "Android",
+        "App-OS-Version": "Android 6.0",
+        "App-Version": "5.0.166",
+        "Host": "app-api.pixiv.net"
+      }
       ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..interceptors.add(RefreshTokenInterceptor())
       ..interceptors
@@ -59,6 +87,15 @@ class ApiClient {
         options.headers[OAuthClient.AUTHORIZATION] = "Bearer " + accountPersist.accessToken;
         return options; //continue
       }));
+    (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (client) {
+      HttpClient httpClient = new HttpClient();
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return true;
+      };
+      return httpClient;
+    };
 
   }
   Future<Response> getRecommend() async {

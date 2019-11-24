@@ -28,6 +28,7 @@ int bti(bool bool){
         User user = accountResponse.user;
         AccountProvider accountProvider = new AccountProvider();
         await accountProvider.open();
+        print(accountResponse.accessToken);
         accountProvider.insert(AccountPersist()
           ..accessToken = accountResponse.accessToken
           ..deviceToken = accountResponse.deviceToken

@@ -8,8 +8,6 @@ import 'package:dio/adapter.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/models/account.dart';
 
-
-
 class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
@@ -18,7 +16,6 @@ class OAuthClient {
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
-
     return dateFormat.format(dateTime);
   }
 
