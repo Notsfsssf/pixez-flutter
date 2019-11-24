@@ -15,9 +15,15 @@ class InitialRecomState extends RecomState {
 }
 class DataRecomState extends RecomState{
   final List<Illusts >illusts;
-  DataRecomState(this.illusts);
+  final String nextUrl;
+  DataRecomState(this.illusts,this.nextUrl);
   @override
   // TODO: implement props
-  List<Object> get props => [illusts];
+  List<Object> get props => [illusts,nextUrl];
 
+}
+class LoadMoreSuccessState extends RecomState{
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }

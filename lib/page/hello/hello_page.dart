@@ -44,7 +44,6 @@ class _HelloPageState extends State<HelloPage> {
               return Scaffold(
                 appBar: AppBar(
                   leading: Icon(Icons.menu),
-                  centerTitle: true,
                   title: Text("data"),
                   actions: <Widget>[
                     IconButton(
