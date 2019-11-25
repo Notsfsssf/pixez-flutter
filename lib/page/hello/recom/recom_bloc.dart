@@ -46,7 +46,9 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataRecomState(ill, recommend.nextUrl);
-        } catch (e) {}
+        } catch (e) {
+          
+        }
       } else {}
     }
   }
