@@ -28,7 +28,7 @@ class RefreshTokenInterceptor extends Interceptor {
     if (err.response != null && err.response.statusCode == 400) {
       try {
         final errorMessage = ErrorMessage.fromJson(err.response.data);
-        if (errorMessage.error.message.contains("oauth")) {
+        if (errorMessage.error.message.contains("OAuth")) {
           final client = OAuthClient();
           AccountProvider accountProvider = new AccountProvider();
           await accountProvider.open();

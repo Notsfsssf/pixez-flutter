@@ -18,17 +18,6 @@ class ApiClient {
   Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
-  static final modeList = [
-    "day",
-    "day_male",
-    "day_female",
-    "week_original",
-    "week_rookie",
-    "week",
-    "month",
-    "day_r18",
-    "week_r18"
-  ];
 
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/bloc/bloc.dart';
+import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -20,9 +21,7 @@ class _HelloPageState extends State<HelloPage> {
 
   List<Widget> _widgetOptions = <Widget>[
     ReComPage(),
-    Text(
-      'Index 1: Business',
-    ),
+    RankingPage(),
     Text(
       'Index 2: School',
     ),
@@ -43,14 +42,8 @@ class _HelloPageState extends State<HelloPage> {
             if (state is HasUserState)
               return Scaffold(
                 appBar: AppBar(
-                  leading: Icon(Icons.menu),
+                  elevation: 0.0,
                   title: Text("data"),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () => {},
-                    )
-                  ],
                 ),
                 body: Center(
                   child: _widgetOptions.elementAt(_selectedIndex),
