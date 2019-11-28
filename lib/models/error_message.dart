@@ -1,60 +1,60 @@
+import 'dart:convert' show json;
 
 class ErrorMessage {
-  bool hasError;
-  Errors errors;
+  Error error;
 
-  ErrorMessage({this.hasError, this.errors});
+  ErrorMessage({
+    this.error,
+  });
 
-  ErrorMessage.fromJson(Map<String, dynamic> json) {
-    hasError = json['has_error'];
-    errors =
-    json['errors'] != null ? new Errors.fromJson(json['errors']) : null;
-  }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['has_error'] = this.hasError;
-    if (this.errors != null) {
-      data['errors'] = this.errors.toJson();
-    }
-    return data;
-  }
-}
+  factory ErrorMessage.fromJson(jsonRes)=>
+      jsonRes == null ? null : ErrorMessage(
+        error: Error.fromJson(jsonRes['error']),
+      );
 
-class Errors {
-  System system;
+  Map<String, dynamic> toJson() =>
+      {
+        'error': error,
+      };
 
-  Errors({this.system});
-
-  Errors.fromJson(Map<String, dynamic> json) {
-    system =
-    json['system'] != null ? new System.fromJson(json['system']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.system != null) {
-      data['system'] = this.system.toJson();
-    }
-    return data;
+  @override
+  String toString() {
+    return json.encode(this);
   }
 }
 
-class System {
+class Error {
+  String user_message;
   String message;
-  int code;
+  String reason;
+  Object user_message_details;
 
-  System({this.message, this.code});
+  Error({
+    this.user_message,
+    this.message,
+    this.reason,
+    this.user_message_details,
+  });
 
-  System.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    code = json['code'];
-  }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    data['code'] = this.code;
-    return data;
+  factory Error.fromJson(jsonRes)=>
+      jsonRes == null ? null : Error(user_message: jsonRes['user_message'],
+        message: jsonRes['message'],
+        reason: jsonRes['reason'],
+        user_message_details: jsonRes['user_message_details'],
+      );
+
+  Map<String, dynamic> toJson() =>
+      {
+        'user_message': user_message,
+        'message': message,
+        'reason': reason,
+        'user_message_details': user_message_details,
+      };
+
+  @override
+  String toString() {
+    return json.encode(this);
   }
 }

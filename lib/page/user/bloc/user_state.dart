@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:pixez/models/user_detail.dart';
 
 abstract class UserState extends Equatable {
   const UserState();
@@ -9,8 +10,12 @@ class InitialUserState extends UserState {
   List<Object> get props => [];
 }
 class UserDataState extends UserState{
+  final UserDetail userDetail;
+
+  UserDataState(this.userDetail);
+
   @override
   // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [userDetail];
 
 }

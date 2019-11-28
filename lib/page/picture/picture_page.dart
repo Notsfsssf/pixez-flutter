@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pixez/component/PainterAvatar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 
 class AppBarColumn extends StatelessWidget {
@@ -50,7 +51,7 @@ class _PicturePageState extends State<PicturePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        builder: (context) => PictureBloc(),
+        builder: (context) => PictureBloc(ApiClient()),
         child: BlocBuilder<PictureBloc, PictureState>(
           builder: (context, state) {
             return Scaffold(
@@ -156,7 +157,7 @@ Widget _buildBody(Illusts illust, BuildContext context) {
             runSpacing: 0, // gap between lines
             children: illust.tags
                 .map((f) => ActionChip(
-                      label: Text(f.translatedName ?? ""),
+              label: Text(f.name),
                       onPressed: () {},
                     ))
                 .toList(),

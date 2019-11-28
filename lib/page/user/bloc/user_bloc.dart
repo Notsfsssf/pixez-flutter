@@ -1,8 +1,11 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:pixez/network/api_client.dart';
-import './bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:pixez/models/user_detail.dart';
+import 'package:pixez/network/api_client.dart';
+
+import './bloc.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   @override
@@ -16,7 +19,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         final client = ApiClient();
         Response response = await client.getUser(event.id);
-        print(response.data);
+        // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+        // String prettyprint = encoder.convert(response.data);
+        // debugPrint(prettyprint);
+        UserDetail userDetail = UserDetail.fromJson(response.data);
+        yield UserDataState(userDetail);
       } on DioError catch (e) {
 
       }

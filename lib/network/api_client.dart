@@ -1,78 +1,34 @@
-import 'package:dio/dio.dart';
-import 'package:pixez/models/account.dart';
-import 'package:pixez/network/oauth_client.dart';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-import 'package:intl/intl.dart';
+
 import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+import 'package:pixez/network/refresh_token_interceptor.dart';
 
-class RefreshTokenInterceptor extends Interceptor {
-  @override
-  Future onRequest(RequestOptions options) async {
-    AccountProvider accountProvider = new AccountProvider();
-    await accountProvider.open();
-    final allAccount = await accountProvider.getAllAccount();
-    AccountPersist accountPersist = allAccount[0];
-    options.headers[OAuthClient.AUTHORIZATION] =
-        "Bearer " + accountPersist.accessToken;
-    return options; //continue
-  }
-
-  @override
-  onError(DioError err) async {
-    if (err.response != null && err.response.statusCode == 400) {
-      final client = OAuthClient();
-      final dio = client.httpClient;
-      try {
-        dio.lock();
-        AccountProvider accountProvider = new AccountProvider();
-        await accountProvider.open();
-        final allAccount = await accountProvider.getAllAccount();
-        AccountPersist accountPersist = allAccount[0];
-        print("eeeeeeeeeeeeeeeeeeeeeeee");
-        final response1 = await client.postRefreshAuthToken(
-            refreshToken: accountPersist.refreshToken,
-            deviceToken: accountPersist.deviceToken);
-        AccountResponse accountResponse =
-            AccountResponse.fromJson(response1.data);
-        print("eeeeeeeeeeeeeeeeeeeeeeee11");
-        dio.unlock();
-        var request = err.response.request; //千万不要调用 err.request
-        request.headers[OAuthClient.AUTHORIZATION] =
-            "Bearer " + accountResponse.accessToken;
-        var response = await dio.request(
-          request.path,
-          data: request.data,
-          queryParameters: request.queryParameters,
-          cancelToken: request.cancelToken,
-          options: request,
-        );
-        return response;
-      } catch (e) {
-        print(e);
-        if (e.response != null) {
-          print(e.response.data);
-          print(e.response.headers);
-          print(e.response.request);
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.request);
-          print(e.message);
-        }
-        return e;
-      }
-    }
-
-    super.onError(err);
-  }
+class Restrict {
+  static String PUBLIC = "public",
+      PRIVATE = "private",
+      ALL = "all";
 }
 
 class ApiClient {
   Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
+  static final modeList = [
+    "day",
+    "day_male",
+    "day_female",
+    "week_original",
+    "week_rookie",
+    "week",
+    "month",
+    "day_r18",
+    "week_r18"
+  ];
 
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
@@ -124,14 +80,29 @@ class ApiClient {
         queryParameters: {"user_id": id});
   }
 
-  //getLikeIllust(@Header("Authorization") String paramString1, @Query("user_id") long paramLong, @Query("restrict") String paramString2, @Query("tag") String paramString3);
-  Future<Response> getLikeIllust() async {
-    return httpClient.get("/v1/user/bookmarks/illust");
+//  @FormUrlEncoded
+//  @POST("/v1/illust/bookmark/delete")
+//  fun postUnlikeIllust(@Header("Authorization") paramString: String, @Field("illust_id") paramLong: Long): Observable<ResponseBody>
+//
+//  @FormUrlEncoded
+//  @POST("/v2/illust/bookmark/add")
+//  fun postLikeIllust(@Header("Authorization") paramString1: String, @Field("illust_id") paramLong: Long, @Field("restrict") paramString2: String, @Field("tags[]") paramList: List<String>?): Observable<ResponseBody>
+  Future<Response> postLikeIllust(int illust_id, String restrict,
+      List<String> tags) async {
+    return httpClient.post("/v2/illust/bookmark/add",
+        data: {"illust_id": illust_id, "restrict": restrict, "tags[]": tags},
+        options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
   //postUnlikeIllust(@Header("Authorization") String paramString, @Field("illust_id") long paramLong);
-  Future<Response> getUnlikeIllust() async {
-    return httpClient.get("/v1/illust/bookmark/delete");
+  Future<Response> postUnLikeIllust(int illust_id) async {
+    return httpClient.post("/v1/illust/bookmark/delete",
+        data: {"illust_id": illust_id},
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<Response> getUnlikeIllust(int illust_id) async {
+    return httpClient.get("/v1/illust/bookmark/delete?illust_id=$illust_id");
   }
 
   Future<Response> getNext(String url) async {
@@ -139,15 +110,49 @@ class ApiClient {
     return httpClient.get(finalUrl);
   }
 
-  Future<Response> getIllustRanking({mode: String, data: String}) async {
-    return httpClient.get("/v1/illust/ranking?filter=for_ios",
-        queryParameters: data != null
-            ? {
-                "mode": mode,
-                'date': data,
-              }
-            : {
-                "mode": mode,
-              });
+/*  @GET("/v1/illust/ranking?filter=for_android")
+  fun getIllustRanking(@Header("Authorization") paramString1: String, @Query("mode") paramString2: String, @Query("date") paramString3: String?): Observable<IllustNext>*/
+  Future<Response> getIllustRanking({mode: String, date: String}) async {
+    return httpClient
+        .get("/v1/illust/ranking?filter=for_android", queryParameters: {
+      "mode": mode,
+      'date': date,
+    });
+  }
+
+//  @GET("/v1/user/illusts?filter=for_android")
+//  fun getUserIllusts(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("type") paramString2: String): Observable<IllustNext>
+  Future<Response> getUserIllusts(int user_id, String type) async {
+    return httpClient.get("/v1/user/illusts?filter=for_android",
+        queryParameters: {"user_id": user_id, "type": type});
+  }
+
+//  @GET("/v1/user/bookmarks/illust")
+//  fun getLikeIllust(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String, @Query("tag") paramString3: String?): Observable<IllustNext>
+
+  Future<Response> getBookmarksIllust(int user_id, String restrict, tag) async {
+    return httpClient.get("/v1/user/bookmarks/illust", queryParameters: {
+      "user_id": user_id,
+      "restrict": restrict,
+      "tag": tag
+    });
+  }
+
+/*  @FormUrlEncoded
+  @POST("/v1/user/follow/delete")
+  fun postUnfollowUser(@Header("Authorization") paramString: String, @Field("user_id") paramLong: Long): Observable<ResponseBody>*/
+  Future<Response> postUnFollowUser(int user_id) {
+    return httpClient.post("/v1/user/follow/delete",
+        data: {"user_id": user_id},
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+/*  @FormUrlEncoded
+  @POST("/v1/user/follow/add")
+  fun postFollowUser(@Header("Authorization") paramString1: String, @Field("user_id") paramLong: Long, @Field("restrict") paramString2: String): Observable<ResponseBody>*/
+  Future<Response> postFollowUser(int user_id, String restrict) {
+    return httpClient.post("/v1/user/follow/delete",
+        data: {"user_id": user_id, "restrict": restrict},
+        options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 }

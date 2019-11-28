@@ -1,29 +1,26 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 
 import './bloc.dart';
 
-class RecomBloc extends Bloc<RecomEvent, RecomState> {
+class WorksBloc extends Bloc<WorksEvent, WorksState> {
   @override
-  RecomState get initialState => InitialRecomState();
+  WorksState get initialState => InitialWorksState();
 
   @override
-  Stream<RecomState> mapEventToState(
-    RecomEvent event,
+  Stream<WorksState> mapEventToState(
+    WorksEvent event,
   ) async* {
-    if (event is FetchEvent) {
+    if (event is FetchWorksEvent) {
       final client = new ApiClient();
       try {
-        final response = await client.getRecommend();
+        final response = await client.getUserIllusts(event.user_id, event.type);
         Recommend recommend = Recommend.fromJson(response.data);
-        yield DataRecomState(recommend.illusts, recommend.nextUrl);
-      } on DioError catch (e) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
+        yield DataWorksState(recommend.illusts, recommend.nextUrl);
+      } catch (e) {
         if (e == null) {
           return;
         }
@@ -38,10 +35,8 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
           Recommend recommend = Recommend.fromJson(response.data);
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
-          yield DataRecomState(ill, recommend.nextUrl);
-        } catch (e) {
-          
-        }
+          yield DataWorksState(ill, recommend.nextUrl);
+        } catch (e) {}
       } else {}
     }
   }
