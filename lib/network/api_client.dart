@@ -69,6 +69,15 @@ class ApiClient {
         queryParameters: {"user_id": id});
   }
 
+  Future<Response> postUser(int a, String b) async {
+    return httpClient.post(
+        "/v1/user", data: {"a": a, "b": b}..removeWhere((k, v) => v == null));
+  }
+
+  Map<String, dynamic> notNullMap(Map<String, dynamic> map) {
+    return map..removeWhere((k, v) => v == null);
+  }
+
 //  @FormUrlEncoded
 //  @POST("/v1/illust/bookmark/delete")
 //  fun postUnlikeIllust(@Header("Authorization") paramString: String, @Field("illust_id") paramLong: Long): Observable<ResponseBody>
@@ -101,12 +110,13 @@ class ApiClient {
 
 /*  @GET("/v1/illust/ranking?filter=for_android")
   fun getIllustRanking(@Header("Authorization") paramString1: String, @Query("mode") paramString2: String, @Query("date") paramString3: String?): Observable<IllustNext>*/
-  Future<Response> getIllustRanking({mode: String, date: String}) async {
+  Future<Response> getIllustRanking(String mode, date) async {
     return httpClient
-        .get("/v1/illust/ranking?filter=for_android", queryParameters: {
+        .get(
+        "/v1/illust/ranking?filter=for_android", queryParameters: notNullMap({
       "mode": mode,
-      'date': date,
-    });
+      "date": date,
+    }));
   }
 
 //  @GET("/v1/user/illusts?filter=for_android")
@@ -120,11 +130,12 @@ class ApiClient {
 //  fun getLikeIllust(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String, @Query("tag") paramString3: String?): Observable<IllustNext>
 
   Future<Response> getBookmarksIllust(int user_id, String restrict, tag) async {
-    return httpClient.get("/v1/user/bookmarks/illust", queryParameters: {
+    return httpClient.get(
+        "/v1/user/bookmarks/illust", queryParameters: notNullMap({
       "user_id": user_id,
       "restrict": restrict,
       "tag": tag
-    });
+    }));
   }
 
 /*  @FormUrlEncoded

@@ -19,9 +19,8 @@ class RankingModeBloc extends Bloc<RankingModeEvent, RankingModeState> {
     RankingModeEvent event,
   ) async* {
     if (event is FetchEvent) {
-      final client = new ApiClient();
       try {
-        final response = await client.getIllustRanking(mode: event.mode);
+        final response = await client.getIllustRanking(event.mode, null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRankingModeState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
@@ -34,7 +33,6 @@ class RankingModeBloc extends Bloc<RankingModeEvent, RankingModeState> {
       }
     }
     if (event is LoadMoreEvent) {
-      final client = new ApiClient();
       if (event.nextUrl != null) {
         try {
           final response = await client.getNext(event.nextUrl);

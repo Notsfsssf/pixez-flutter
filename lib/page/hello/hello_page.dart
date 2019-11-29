@@ -43,7 +43,7 @@ class _HelloPageState extends State<HelloPage> {
               return Scaffold(
                 appBar: AppBar(
                   elevation: 0.0,
-                  title: Text("data"),
+                  title: Text("Recommend"),
                 ),
                 body: Center(
                   child: _widgetOptions.elementAt(_selectedIndex),
@@ -55,12 +55,12 @@ class _HelloPageState extends State<HelloPage> {
                       title: Text('Home'),
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.business),
-                      title: Text('Business'),
+                      icon: Icon(Icons.assessment),
+                      title: Text('Ranking'),
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.school),
-                      title: Text('School'),
+                      icon: Icon(Icons.calendar_view_day),
+                      title: Text('New'),
                     ),
                   ],
                   currentIndex: _selectedIndex,
