@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/models/tags.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 class Restrict {
@@ -153,8 +154,27 @@ class ApiClient {
   //   @GET("/v2/illust/follow")
   // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
   Future<Response> getFollowUser(String restrict) {
-    return httpClient.get("/v2/illust/follow",
-        queryParameters: {"restrict": restrict},
-       );
+    return httpClient.get(
+      "/v2/illust/follow",
+      queryParameters: {"restrict": restrict},
+    );
+  }
+
+  //   @GET("/v2/search/autocomplete?merge_plain_keyword_results=true")
+  // fun getSearchAutoCompleteKeywords(@Header("Authorization") paramString1: String, @Query("word") paramString2: String?): Observable<PixivResponse>
+  Future<AutoWords> getSearchAutoCompleteKeywords(String word) async {
+    final response = await httpClient.get(
+      "/v2/search/autocomplete?merge_plain_keyword_results=true",
+      queryParameters: {"word": word},
+    );
+    return AutoWords.fromJson(response.data);
+  }
+
+  //   @GET("/v1/trending-tags/illust?filter=for_android")
+  // fun getIllustTrendTags(@Header("Authorization") paramString: String): Observable<TrendingtagResponse>
+  Future<Response> getIllustTrendTags(String word) async {
+    return httpClient.get(
+      "/v1/trending-tags/illust?filter=for_android",
+    );
   }
 }

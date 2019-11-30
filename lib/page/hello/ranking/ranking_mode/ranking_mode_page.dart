@@ -29,7 +29,7 @@ class _RankingModePageState extends State<RankingModePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => RankingModeBloc(ApiClient())..add(FetchEvent()),
+      builder: (context) => RankingModeBloc(ApiClient())..add(FetchEvent(widget.mode)),
       child: BlocListener<RankingModeBloc, RankingModeState>(listener: (context, state) {
         if (state is DataRankingModeState) {
           _loadCompleter?.complete();
@@ -50,7 +50,7 @@ class _RankingModePageState extends State<RankingModePage> {
                 staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
               ),
               onRefresh: () async {
-                BlocProvider.of<RankingModeBloc>(context).add(FetchEvent());
+                BlocProvider.of<RankingModeBloc>(context).add(FetchEvent(widget.mode));
                 return _refreshCompleter.future;
               },
               onLoad: () async {

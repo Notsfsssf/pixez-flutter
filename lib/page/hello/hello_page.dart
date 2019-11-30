@@ -33,7 +33,7 @@ class _HelloPageState extends State<HelloPage> {
       child: BlocListener<HelloBloc, HelloState>(
         listener: (_, state) {
           if (state is NoneUserState) {
-            Navigator.pushNamed(context, '/login');
+            Navigator.pushReplacementNamed(context, '/login');
           }
         },
         child: BlocBuilder<HelloBloc, HelloState>(
@@ -43,6 +43,14 @@ class _HelloPageState extends State<HelloPage> {
                 appBar: AppBar(
                   elevation: 0.0,
                   title: Text("Main"),
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/search');
+                      },
+                    )
+                  ],
                 ),
                 body: Center(
                   child: _widgetOptions.elementAt(_selectedIndex),
