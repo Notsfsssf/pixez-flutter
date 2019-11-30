@@ -16,10 +16,14 @@ class TrendTagsBloc extends Bloc<TrendTagsEvent, TrendTagsState> {
   Stream<TrendTagsState> mapEventToState(
     TrendTagsEvent event,
   ) async* {
-    if (state is FetchEvent) {
-      Response response = await client.getIllustTrendTags();
-      TrendingTag trendingTag = TrendingTag.fromJson(response.data);
-      yield TrendTagDataState(trendingTag);
+    if (event is FetchEvent) {
+      try {
+        Response response = await client.getIllustTrendTags();
+        TrendingTag trendingTag = TrendingTag.fromJson(response.data);
+        yield TrendTagDataState(trendingTag);
+      } catch (e) {
+        print(e);
+      }
     }
   }
 }
