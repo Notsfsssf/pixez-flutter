@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pixez/component/pixiv_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/search/bloc/bloc.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -25,17 +27,27 @@ class _SearchPageState extends State<SearchPage> {
           )
         ],
       ),
-      body: Container(
-        child: ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            return CachedNetworkImage(
-              imageUrl: url,
-              httpHeaders: {
-                "referer": "https://app-api.pixiv.net/",
-                "User-Agent": "PixivIOSApp/5.8.0"
-              },
-              fit: BoxFit.fitWidth,
-            );
+      body: BlocProvider(
+        builder: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
+        child: BlocBuilder<TrendTagsBloc, TrendTagsState>(
+          builder: (context, state) {
+            if (state is TrendTagDataState) {
+              final tags = state.trendingTag.trend_tags;
+              return GridView.count(
+                crossAxisCount: 3,
+                children: List.generate(tags.length, (index) {
+                  return CachedNetworkImage(
+                    imageUrl: tags[index].illust.imageUrls.squareMedium,
+                    httpHeaders: {
+                      "referer": "https://app-api.pixiv.net/",
+                      "User-Agent": "PixivIOSApp/5.8.0"
+                    },
+                    fit: BoxFit.fitWidth,
+                  );
+                }),
+              );
+            }
+            return Container();
           },
         ),
       ),

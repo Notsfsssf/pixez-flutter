@@ -172,7 +172,7 @@ class ApiClient {
 
   //   @GET("/v1/trending-tags/illust?filter=for_android")
   // fun getIllustTrendTags(@Header("Authorization") paramString: String): Observable<TrendingtagResponse>
-  Future<Response> getIllustTrendTags(String word) async {
+  Future<Response> getIllustTrendTags() async {
     return httpClient.get(
       "/v1/trending-tags/illust?filter=for_android",
     );
