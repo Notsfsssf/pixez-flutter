@@ -20,8 +20,10 @@ class _IllustCardState extends State<IllustCard> {
           return PicturePage(widget._illusts);
         }))
       },
-      child: Card(
-        child: PixivImage(widget._illusts.imageUrls.medium),
+      child: Hero(
+        child: Card(
+          child: PixivImage(widget._illusts.imageUrls.medium),
+        ), tag: widget._illusts.imageUrls.medium,
       ),
     );
   }

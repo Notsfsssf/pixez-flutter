@@ -9,9 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 class Restrict {
-  static String PUBLIC = "public",
-      PRIVATE = "private",
-      ALL = "all";
+  static String PUBLIC = "public", PRIVATE = "private", ALL = "all";
 }
 
 class ApiClient {
@@ -70,8 +68,8 @@ class ApiClient {
   }
 
   Future<Response> postUser(int a, String b) async {
-    return httpClient.post(
-        "/v1/user", data: {"a": a, "b": b}..removeWhere((k, v) => v == null));
+    return httpClient.post("/v1/user",
+        data: {"a": a, "b": b}..removeWhere((k, v) => v == null));
   }
 
   Map<String, dynamic> notNullMap(Map<String, dynamic> map) {
@@ -85,8 +83,8 @@ class ApiClient {
 //  @FormUrlEncoded
 //  @POST("/v2/illust/bookmark/add")
 //  fun postLikeIllust(@Header("Authorization") paramString1: String, @Field("illust_id") paramLong: Long, @Field("restrict") paramString2: String, @Field("tags[]") paramList: List<String>?): Observable<ResponseBody>
-  Future<Response> postLikeIllust(int illust_id, String restrict,
-      List<String> tags) async {
+  Future<Response> postLikeIllust(
+      int illust_id, String restrict, List<String> tags) async {
     return httpClient.post("/v2/illust/bookmark/add",
         data: {"illust_id": illust_id, "restrict": restrict, "tags[]": tags},
         options: Options(contentType: Headers.formUrlEncodedContentType));
@@ -111,12 +109,11 @@ class ApiClient {
 /*  @GET("/v1/illust/ranking?filter=for_android")
   fun getIllustRanking(@Header("Authorization") paramString1: String, @Query("mode") paramString2: String, @Query("date") paramString3: String?): Observable<IllustNext>*/
   Future<Response> getIllustRanking(String mode, date) async {
-    return httpClient
-        .get(
-        "/v1/illust/ranking?filter=for_android", queryParameters: notNullMap({
-      "mode": mode,
-      "date": date,
-    }));
+    return httpClient.get("/v1/illust/ranking?filter=for_android",
+        queryParameters: notNullMap({
+          "mode": mode,
+          "date": date,
+        }));
   }
 
 //  @GET("/v1/user/illusts?filter=for_android")
@@ -130,12 +127,9 @@ class ApiClient {
 //  fun getLikeIllust(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String, @Query("tag") paramString3: String?): Observable<IllustNext>
 
   Future<Response> getBookmarksIllust(int user_id, String restrict, tag) async {
-    return httpClient.get(
-        "/v1/user/bookmarks/illust", queryParameters: notNullMap({
-      "user_id": user_id,
-      "restrict": restrict,
-      "tag": tag
-    }));
+    return httpClient.get("/v1/user/bookmarks/illust",
+        queryParameters:
+            notNullMap({"user_id": user_id, "restrict": restrict, "tag": tag}));
   }
 
 /*  @FormUrlEncoded
@@ -154,5 +148,13 @@ class ApiClient {
     return httpClient.post("/v1/user/follow/delete",
         data: {"user_id": user_id, "restrict": restrict},
         options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  //   @GET("/v2/illust/follow")
+  // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
+  Future<Response> getFollowUser(String restrict) {
+    return httpClient.get("/v2/illust/follow",
+        queryParameters: {"restrict": restrict},
+       );
   }
 }

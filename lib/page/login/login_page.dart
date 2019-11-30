@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
                 content: Text(I18n.of(context1).Login),
               ),
             );*/
-            Navigator.of(context1).pushNamed('/');
+            Navigator.of(context1).pushReplacementNamed('/');
           } else if(state is FailState){
             Scaffold.of(context1).showSnackBar(
               SnackBar(
@@ -87,7 +87,6 @@ class _LoginPageState extends State<LoginPage> {
                             RaisedButton(
                               child: Text(
                                 'Login',
-                                style: TextStyle(color: Colors.white),
                               ),
                               onPressed: () => BlocProvider.of<LoginBloc>(context).add(ClickToAuth(username: userNameController.value.text,password: passWordController.value.text)),
                             )

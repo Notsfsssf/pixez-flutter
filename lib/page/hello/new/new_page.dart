@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/page/hello/new/new_illust/new_illust_page.dart';
 
 class NewPage extends StatefulWidget {
   @override
@@ -26,7 +27,9 @@ class _NewPageState extends State<NewPage> {
             ),
             Expanded(
                 child: TabBarView(
-              children: [],
+              children: [
+                NewIllustPage()
+              ],
             ))
           ],
         ));

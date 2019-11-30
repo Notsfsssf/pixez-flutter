@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/bloc/bloc.dart';
+import 'package:pixez/page/hello/new/new_illust/new_illust_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 
@@ -22,9 +23,7 @@ class _HelloPageState extends State<HelloPage> {
   List<Widget> _widgetOptions = <Widget>[
     ReComPage(),
     RankingPage(),
-    Text(
-      'Index 2: School',
-    ),
+    NewIllustPage(),
   ];
 
   @override
@@ -43,7 +42,7 @@ class _HelloPageState extends State<HelloPage> {
               return Scaffold(
                 appBar: AppBar(
                   elevation: 0.0,
-                  title: Text("Recommend"),
+                  title: Text("Main"),
                 ),
                 body: Center(
                   child: _widgetOptions.elementAt(_selectedIndex),

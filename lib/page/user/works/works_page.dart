@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
@@ -15,12 +17,26 @@ class WorksPage extends StatefulWidget {
 }
 
 class _WorksPageState extends State<WorksPage> {
+    Completer<void> _refreshCompleter, _loadCompleter;
+  @override
+  void initState() {
+    super.initState();
+    _refreshCompleter = Completer<void>();
+    _loadCompleter = Completer<void>();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) =>
-          WorksBloc()..add(FetchWorksEvent(widget.id, "illust")),
-      child: BlocBuilder<WorksBloc, WorksState>(
+      builder: (context) => WorksBloc()..add(FetchWorksEvent(widget.id,"illust")),
+      child: BlocListener<WorksBloc, WorksState>(listener: (context, state) {
+        if (state is DataWorksState) {
+          _loadCompleter?.complete();
+          _loadCompleter = Completer();
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+        }
+      }, child: BlocBuilder<WorksBloc, WorksState>(
         builder: (context, state) {
           if (state is DataWorksState)
             return EasyRefresh(
@@ -32,14 +48,19 @@ class _WorksPageState extends State<WorksPage> {
                 },
                 staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
               ),
+              onRefresh: () async {
+                BlocProvider.of<WorksBloc>(context).add(FetchWorksEvent(widget.id,"illust"));
+                return _refreshCompleter.future;
+              },
               onLoad: () async {
                 BlocProvider.of<WorksBloc>(context)
                     .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                return _loadCompleter.future;
               },
             );
           return Container();
         },
-      ),
+      )),
     );
   }
 }

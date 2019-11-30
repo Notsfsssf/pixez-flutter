@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
@@ -16,12 +18,26 @@ class RankingModePage extends StatefulWidget {
 }
 
 class _RankingModePageState extends State<RankingModePage> {
+  Completer<void> _refreshCompleter, _loadCompleter;
+  @override
+  void initState() {
+    super.initState();
+    _refreshCompleter = Completer<void>();
+    _loadCompleter = Completer<void>();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) =>
-          RankingModeBloc(ApiClient())..add(FetchEvent(widget.mode)),
-      child: BlocBuilder<RankingModeBloc, RankingModeState>(
+      builder: (context) => RankingModeBloc(ApiClient())..add(FetchEvent()),
+      child: BlocListener<RankingModeBloc, RankingModeState>(listener: (context, state) {
+        if (state is DataRankingModeState) {
+          _loadCompleter?.complete();
+          _loadCompleter = Completer();
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+        }
+      }, child: BlocBuilder<RankingModeBloc, RankingModeState>(
         builder: (context, state) {
           if (state is DataRankingModeState)
             return EasyRefresh(
@@ -33,14 +49,19 @@ class _RankingModePageState extends State<RankingModePage> {
                 },
                 staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
               ),
+              onRefresh: () async {
+                BlocProvider.of<RankingModeBloc>(context).add(FetchEvent());
+                return _refreshCompleter.future;
+              },
               onLoad: () async {
                 BlocProvider.of<RankingModeBloc>(context)
                     .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                return _loadCompleter.future;
               },
             );
           return Container();
         },
-      ),
+      )),
     );
   }
 }
