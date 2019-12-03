@@ -7,31 +7,31 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 
-class _NewPageState extends State<NewPage> {
+class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
+  TabController _controller;
+  @override
+  void initState() {
+    _controller = TabController(vsync: this, length: 1);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 2,
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: Theme.of(context).primaryColor,
-              child: TabBar(isScrollable: true, tabs: [
-                Tab(
-                  text: "Illust",
-                ),
-                Tab(
-                  text: "Painter",
-                ),
-              ]),
-            ),
-            Expanded(
-                child: TabBarView(
-              children: [
-                NewIllustPage()
-              ],
-            ))
-          ],
-        ));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("My"),
+        bottom: TabBar(controller: _controller, tabs: [
+          Tab(
+            text: "Illust",
+          ),
+        ]),
+      ),
+      body: TabBarView(
+        controller: _controller,
+        children: [
+          NewIllustPage(),
+        ],
+      ),
+    );
   }
 }

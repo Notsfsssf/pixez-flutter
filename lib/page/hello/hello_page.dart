@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/bloc/bloc.dart';
 import 'package:pixez/page/hello/new/new_illust/new_illust_page.dart';
+import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
+import 'package:pixez/page/search/search_page.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -15,15 +17,11 @@ class HelloPage extends StatefulWidget {
 class _HelloPageState extends State<HelloPage> {
   int _selectedIndex = 0;
 
-  @override
-  initState() {
-    super.initState();
-  }
-
   List<Widget> _widgetOptions = <Widget>[
     ReComPage(),
     RankingPage(),
-    NewIllustPage(),
+    NewPage(),
+    SearchPage()
   ];
 
   @override
@@ -40,21 +38,7 @@ class _HelloPageState extends State<HelloPage> {
           builder: (BuildContext context1, state) {
             if (state is HasUserState)
               return Scaffold(
-                appBar: AppBar(
-                  elevation: 0.0,
-                  title: Text("Main"),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/search');
-                      },
-                    )
-                  ],
-                ),
-                body: Center(
-                  child: _widgetOptions.elementAt(_selectedIndex),
-                ),
+                body: _widgetOptions.elementAt(_selectedIndex),
                 bottomNavigationBar: BottomNavigationBar(
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
@@ -69,9 +53,14 @@ class _HelloPageState extends State<HelloPage> {
                       icon: Icon(Icons.calendar_view_day),
                       title: Text('New'),
                     ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.search),
+                      title: Text('Search'),
+                    ),
                   ],
                   currentIndex: _selectedIndex,
-                  selectedItemColor: Colors.amber[800],
+                  unselectedItemColor: Colors.grey,
+                  selectedItemColor: Theme.of(context).primaryColor,
                   onTap: _onItemTapped,
                 ),
               );

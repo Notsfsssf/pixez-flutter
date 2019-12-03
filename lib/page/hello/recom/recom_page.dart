@@ -21,7 +21,6 @@ class _ReComPageState extends State<ReComPage> {
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
   }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -36,24 +35,27 @@ class _ReComPageState extends State<ReComPage> {
       }, child: BlocBuilder<RecomBloc, RecomState>(
         builder: (context, state) {
           if (state is DataRecomState)
-            return EasyRefresh(
-              child: StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: state.illusts.length,
-                itemBuilder: (context, index) {
-                  return IllustCard(state.illusts[index]);
+            return Scaffold(
+              appBar: AppBar(title: Text("Recommend"),),
+              body: EasyRefresh(
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  itemCount: state.illusts.length,
+                  itemBuilder: (context, index) {
+                    return IllustCard(state.illusts[index]);
+                  },
+                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                ),
+                onRefresh: () async {
+                  BlocProvider.of<RecomBloc>(context).add(FetchEvent());
+                  return _refreshCompleter.future;
                 },
-                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                onLoad: () async {
+                  BlocProvider.of<RecomBloc>(context)
+                      .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                  return _loadCompleter.future;
+                },
               ),
-              onRefresh: () async {
-                BlocProvider.of<RecomBloc>(context).add(FetchEvent());
-                return _refreshCompleter.future;
-              },
-              onLoad: () async {
-                BlocProvider.of<RecomBloc>(context)
-                    .add(LoadMoreEvent(state.nextUrl, state.illusts));
-                return _loadCompleter.future;
-              },
             );
           return Container();
         },

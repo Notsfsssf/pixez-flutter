@@ -12,6 +12,7 @@ class IllustCard extends StatefulWidget {
 }
 
 class _IllustCardState extends State<IllustCard> {
+  
   @override
   Widget build(BuildContext context) {
     return InkWell(

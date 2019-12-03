@@ -22,6 +22,7 @@ class _SearchPageState extends State<SearchPage> {
             final tags = state.trendingTag.trend_tags;
             return Scaffold(
               appBar: AppBar(
+                title: Text("Search"),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.search),
@@ -40,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
                   if (index == 0) {
                     return Container();
                   }
-                  if (index == 1) {
+                  else {
                     return _buildGrid(context, tags);
                   }
                 },

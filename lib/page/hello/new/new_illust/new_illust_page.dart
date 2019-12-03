@@ -1,11 +1,38 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/page/hello/new/new_illust/bloc/bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+class DrawTriangle extends CustomPainter {
+
+  Paint _paint;
+final Color color;
+  DrawTriangle(this.color) {
+    _paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+  }
+  
+  @override
+  void paint(Canvas canvas, Size size) {
+    var path = Path();
+    path.moveTo(size.width, 0);
+    path.lineTo(0, 0);
+    path.lineTo(size.height, size.width);
+    path.close();
+    canvas.drawPath(path, _paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
 
 class NewIllustPage extends StatefulWidget {
   @override
@@ -19,13 +46,15 @@ class _NewIllustPageState extends State<NewIllustPage> {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
+
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       builder: (context) => NewIllustBloc()..add(FetchEvent()),
-      child: BlocListener<NewIllustBloc, NewIllustState>(listener: (context, state) {
+      child: BlocListener<NewIllustBloc, NewIllustState>(
+          listener: (context, state) {
         if (state is DataNewIllustState) {
           _loadCompleter?.complete();
           _loadCompleter = Completer();
@@ -35,24 +64,37 @@ class _NewIllustPageState extends State<NewIllustPage> {
       }, child: BlocBuilder<NewIllustBloc, NewIllustState>(
         builder: (context, state) {
           if (state is DataNewIllustState)
-            return EasyRefresh(
-              child: StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: state.illusts.length,
-                itemBuilder: (context, index) {
-                  return IllustCard(state.illusts[index]);
+            return Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                EasyRefresh(
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  itemCount: state.illusts.length,
+                  itemBuilder: (context, index) {
+                    return IllustCard(state.illusts[index]);
+                  },
+                  staggeredTileBuilder: (int index) =>
+                      StaggeredTile.fit(1),
+                ),
+                onRefresh: () async {
+                  BlocProvider.of<NewIllustBloc>(context).add(FetchEvent());
+                  return _refreshCompleter.future;
                 },
-                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                onLoad: () async {
+                  BlocProvider.of<NewIllustBloc>(context)
+                      .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                  return _loadCompleter.future;
+                },
               ),
-              onRefresh: () async {
-                BlocProvider.of<NewIllustBloc>(context).add(FetchEvent());
-                return _refreshCompleter.future;
-              },
-              onLoad: () async {
-                BlocProvider.of<NewIllustBloc>(context)
-                    .add(LoadMoreEvent(state.nextUrl, state.illusts));
-                return _loadCompleter.future;
-              },
+              Align(child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: CustomPaint(
+                  size: Size(20, 20),
+                  painter: DrawTriangle(Colors.white),
+                ),
+              ),alignment: Alignment.topRight,)
+              ],
             );
           return Container();
         },
