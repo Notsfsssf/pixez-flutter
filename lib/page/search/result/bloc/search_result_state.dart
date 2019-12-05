@@ -19,3 +19,9 @@ class DataState extends SearchResultState {
   // TODO: implement props
   List<Object> get props => [illusts, nextUrl];
 }
+
+class ShowBottomSheetState extends SearchResultState {
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}

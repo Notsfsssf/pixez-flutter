@@ -181,17 +181,20 @@ class ApiClient {
   //  @GET("/v1/search/illust?filter=for_android&merge_plain_keyword_results=true")
   // fun getSearchIllust(@Query("word") paramString1: String, @Query("sort") paramString2: String, @Query("search_target") paramString3: String?, @Query("bookmark_num") paramInteger: Int?, @Query("duration") paramString4: String?, @Header("Authorization") paramString5: String): Observable<SearchIllustResponse>
   Future<Response> getSearchIllust(String word,
-      {sort, search_target, duration: String, bookmark_num: int}) async {
-    return httpClient.get(
-        "/v1/search/illust?filter=for_android&merge_plain_keyword_results=true",
-        queryParameters: notNullMap({
-          "sort": sort,
-          "search_target": search_target,
-          "duration": duration,
-          "bookmark_num": bookmark_num
-        }));
-  }
-    //   @GET("/v1/search/user?filter=for_android")
+          {String sort = null,
+          String search_target = null,
+          String duration = null,
+          int bookmark_num = null}) async =>
+      httpClient.get(
+          "/v1/search/illust?filter=for_android&merge_plain_keyword_results=true",
+          queryParameters: notNullMap({
+            "sort": sort,
+            "search_target": search_target,
+            "duration": duration,
+            "bookmark_num": bookmark_num,
+            "word": word
+          }));
+  //   @GET("/v1/search/user?filter=for_android")
     // fun getSearchUser(@Header("Authorization") paramString1: String, @Query("word") paramString2: String): Observable<SearchUserResponse>
       Future<Response>  getSearchUser(String word) async {
     return httpClient.get(

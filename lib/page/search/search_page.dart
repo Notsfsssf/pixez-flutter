@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
+import 'package:pixez/page/search/result/search_result_page.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -40,8 +41,7 @@ class _SearchPageState extends State<SearchPage> {
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
                     return Container();
-                  }
-                  else {
+                  } else {
                     return _buildGrid(context, tags);
                   }
                 },
@@ -62,23 +62,32 @@ class _SearchPageState extends State<SearchPage> {
         children: List.generate(tags.length, (index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(3.0),
-              child: Stack(
-                children: <Widget>[
-                  CachedNetworkImage(
-                    imageUrl: tags[index].illust.imageUrls.squareMedium,
-                    httpHeaders: {
-                      "referer": "https://app-api.pixiv.net/",
-                      "User-Agent": "PixivIOSApp/5.8.0"
-                    },
-                    fit: BoxFit.fitWidth,
-                  ),
-                  Align(
-                    child: Text(tags[index].tag),
-                    alignment: Alignment.bottomCenter,
-                  ),
-                ],
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return SearchResultPage(
+                    word: tags[index].tag,
+                  );
+                }));
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(3.0),
+                child: Stack(
+                  children: <Widget>[
+                    CachedNetworkImage(
+                      imageUrl: tags[index].illust.imageUrls.squareMedium,
+                      httpHeaders: {
+                        "referer": "https://app-api.pixiv.net/",
+                        "User-Agent": "PixivIOSApp/5.8.0"
+                      },
+                      fit: BoxFit.fitWidth,
+                    ),
+                    Align(
+                      child: Text(tags[index].tag),
+                      alignment: Alignment.bottomCenter,
+                    ),
+                  ],
+                ),
               ),
             ),
           );

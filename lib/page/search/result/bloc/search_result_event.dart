@@ -23,3 +23,9 @@ class LoadMoreEvent extends SearchResultEvent {
   @override
   List<Object> get props => [illusts, nextUrl];
 }
+
+class ShowBottomSheetEvent extends SearchResultEvent {
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}
