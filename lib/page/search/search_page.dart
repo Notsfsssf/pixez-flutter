@@ -17,40 +17,44 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       builder: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
-      child: BlocBuilder<TrendTagsBloc, TrendTagsState>(
-        builder: (context, state) {
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Search"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate(),
+                );
+              },
+            )
+          ],
+        ),
+        body: BlocBuilder<TrendTagsBloc, TrendTagsState>(
+            builder: (context, state) {
           if (state is TrendTagDataState) {
-            final tags = state.trendingTag.trend_tags;
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Search"),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      showSearch(
-                        context: context,
-                        delegate: CustomSearchDelegate(),
-                      );
-                    },
-                  )
-                ],
-              ),
-              body: ListView.builder(
-                itemCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return Container();
-                  } else {
-                    return _buildGrid(context, tags);
-                  }
-                },
-              ),
+            return _buildListView(state.trendingTag.trend_tags);
+          } else
+            return Center(
+              child: CircularProgressIndicator(),
             );
-          }
-          return Scaffold();
-        },
+        }),
       ),
+    );
+  }
+
+  ListView _buildListView(List<Trend_tags> tags) {
+    return ListView.builder(
+      itemCount: 2,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          return Container();
+        } else {
+          return _buildGrid(context, tags);
+        }
+      },
     );
   }
 
@@ -120,15 +124,61 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Column(
-      children: <Widget>[Text("xxx")],
-    );
+    return SearchResultPage(word: query,);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Column(
-      children: <Widget>[Text("d")],
+    if (query.isEmpty)
+      return Column(
+        children: <Widget>[Text("d")],
+      );
+    else
+      return Suggestions(
+        query: query,
+      );
+  }
+}
+
+class Suggestions extends StatefulWidget {
+  final String query;
+
+  const Suggestions({Key key, this.query}) : super(key: key);
+
+  @override
+  _SuggestionsState createState() => _SuggestionsState();
+}
+
+class _SuggestionsState extends State<Suggestions> {
+  final SuggestionBloc _bloc = SuggestionBloc(ApiClient());
+
+  @override
+  Widget build(BuildContext context) {
+    _bloc.add(FetchSuggestionsEvent(widget.query));
+    return BlocBuilder(
+      bloc: _bloc,
+      builder: (context, state) {
+        if (state is DataState) {
+          final tags = state.autoWords.tags;
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return Container(
+                child: ListTile(
+                  title: Text(tags[index].name),
+                  subtitle: Text(tags[index].translated_name ?? ""),
+                ),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))
+                ),
+              );
+            },
+            itemCount: tags.length,
+
+          );
+        }
+        return Container();
+      },
     );
   }
 }

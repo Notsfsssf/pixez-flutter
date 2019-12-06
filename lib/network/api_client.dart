@@ -194,11 +194,17 @@ class ApiClient {
             "bookmark_num": bookmark_num,
             "word": word
           }));
+
   //   @GET("/v1/search/user?filter=for_android")
-    // fun getSearchUser(@Header("Authorization") paramString1: String, @Query("word") paramString2: String): Observable<SearchUserResponse>
-      Future<Response>  getSearchUser(String word) async {
-    return httpClient.get(
-        "/v1/search/user?filter=for_android",
-        queryParameters: {"word":word});
+  // fun getSearchUser(@Header("Authorization") paramString1: String, @Query("word") paramString2: String): Observable<SearchUserResponse>
+  Future<Response> getSearchUser(String word) async {
+    return httpClient.get("/v1/search/user?filter=for_android",
+        queryParameters: {"word": word});
   }
+
+//  @GET("/v2/search/autocomplete?merge_plain_keyword_results=true")
+//  fun getSearchAutoCompleteKeywords(@Header("Authorization") paramString1: String, @Query("word") paramString2: String?): Observable<PixivResponse>
+  Future<Response> getSearchAutocomplete(String word) async =>
+      httpClient.get("/v2/search/autocomplete?merge_plain_keyword_results=true",
+          queryParameters: notNullMap({"word": word}));
 }
