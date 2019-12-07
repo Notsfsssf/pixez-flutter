@@ -7,6 +7,7 @@ import 'package:pixez/page/user/bloc/user_bloc.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/works/works_page.dart';
+import 'package:share/share.dart';
 
 class UserPage extends StatefulWidget {
   final int id;
@@ -52,7 +53,14 @@ class _UserPageState extends State<UserPage>
             final user = state.userDetail.user;
             return Scaffold(
               appBar: AppBar(
-                actions: <Widget>[],
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () {
+                        Share.share(
+                            'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+                      })
+                ],
                 title: Text(user.name),
               ),
               body: _buildTabBarView(),
@@ -75,6 +83,7 @@ class _UserPageState extends State<UserPage>
                   id: user.id,
                   onTap: () {},
                 ),
+                shape: const CircleBorder(),
               ),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerDocked,

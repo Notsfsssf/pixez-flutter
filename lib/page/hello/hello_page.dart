@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/bloc/bloc.dart';
-import 'package:pixez/page/hello/new/new_illust/new_illust_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
@@ -79,6 +79,10 @@ class _HelloPageState extends State<HelloPage> {
   }
 
   Future findUser() async {
+    PermissionStatus permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.storage);
+    bool isShown = await PermissionHandler()
+        .shouldShowRequestPermissionRationale(PermissionGroup.storage);
     AccountProvider accountProvider = new AccountProvider();
     await accountProvider.open();
     List list = await accountProvider.getAllAccount();

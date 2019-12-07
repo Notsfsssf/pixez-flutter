@@ -41,5 +41,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+    <string>请允许APP保存图片到相册</string>
 </dict>
 </plist>
