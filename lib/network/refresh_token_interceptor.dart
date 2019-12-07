@@ -55,16 +55,16 @@ class RefreshTokenInterceptor extends Interceptor {
             ..mailAddress = user.mailAddress
             ..account = user.account
             ..xRestrict = user.xRestrict);
-          var request = err.response.request; //千万不要调用 err.request
+          var request = err.response.request;
           request.headers[OAuthClient.AUTHORIZATION] =
               "Bearer " + accountResponse.accessToken;
           var response = await ApiClient().httpClient.request(
-                request.path,
-                data: request.data,
-                queryParameters: request.queryParameters,
-                cancelToken: request.cancelToken,
-                options: request,
-              );
+            request.path,
+            data: request.data,
+            queryParameters: request.queryParameters,
+            cancelToken: request.cancelToken,
+            options: request,
+          );
           return response;
         }
       } catch (e) {

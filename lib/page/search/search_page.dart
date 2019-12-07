@@ -13,35 +13,84 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  String editString = "";
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       builder: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Search"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(
-                  context: context,
-                  delegate: CustomSearchDelegate(),
-                );
-              },
+        appBar: _buildAppBar(),
+        body: Stack(
+          children: <Widget>[
+            _buildBlocBuilder(),
+            Visibility(
+              visible: this._searchIcon.icon != Icons.search,
+              child: editString.isNotEmpty
+                  ? Container(
+                      decoration: BoxDecoration(color: Colors.white),
+                      child: Suggestions(
+                        query: editString,
+                      ))
+                  : Container(),
             )
           ],
         ),
-        body: BlocBuilder<TrendTagsBloc, TrendTagsState>(
-            builder: (context, state) {
-          if (state is TrendTagDataState) {
-            return _buildListView(state.trendingTag.trend_tags);
-          } else
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-        }),
       ),
+    );
+  }
+
+  BlocBuilder<TrendTagsBloc, TrendTagsState> _buildBlocBuilder() {
+    return BlocBuilder<TrendTagsBloc, TrendTagsState>(
+        builder: (context, state) {
+      if (state is TrendTagDataState) {
+        return _buildListView(state.trendingTag.trend_tags);
+      } else
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+    });
+  }
+
+  Icon _searchIcon = Icon(Icons.search);
+  final TextEditingController _filter = TextEditingController();
+  Widget _appBarTitle = Text('Search');
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: _appBarTitle,
+      actions: <Widget>[
+        IconButton(
+          icon: _searchIcon,
+          onPressed: () {
+            setState(() {
+              if (this._searchIcon.icon == Icons.search) {
+                this._searchIcon = Icon(Icons.close);
+                this._appBarTitle = TextField(
+                  controller: _filter,
+                  onChanged: (query) {
+                    setState(() {
+                      editString = query;
+                    });
+                  },
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search, color: Colors.white),
+                      hintText: "Search...",
+                      hintStyle: TextStyle(color: Colors.white)),
+                );
+              } else {
+                this._searchIcon = Icon(Icons.search);
+                this._appBarTitle = Text('Search');
+                _filter.clear();
+                editString = '';
+              }
+            });
+          },
+        )
+      ],
     );
   }
 
@@ -109,6 +158,16 @@ class CustomSearchDelegate extends SearchDelegate {
           query = '';
         },
       ),
+      IconButton(
+        icon: Icon(Icons.calendar_view_day),
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Container();
+              });
+        },
+      ),
     ];
   }
 
@@ -124,7 +183,9 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return SearchResultPage(word: query,);
+    return SearchResultPage(
+      word: query,
+    );
   }
 
   @override
@@ -162,19 +223,20 @@ class _SuggestionsState extends State<Suggestions> {
           final tags = state.autoWords.tags;
           return ListView.builder(
             itemBuilder: (context, index) {
-              return Container(
-                child: ListTile(
-                  title: Text(tags[index].name),
-                  subtitle: Text(tags[index].translated_name ?? ""),
-                ),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))
-                ),
+              return ListTile(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return SearchResultPage(
+                      word: tags[index].name,
+                    );
+                  }));
+                },
+                title: Text(tags[index].name),
+                subtitle: Text(tags[index].translated_name ?? ""),
               );
             },
             itemCount: tags.length,
-
           );
         }
         return Container();

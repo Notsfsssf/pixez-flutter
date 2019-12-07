@@ -6,21 +6,30 @@ import 'package:pixez/page/user/user_page.dart';
 class PainterAvatar extends StatefulWidget {
   final String url;
   final int id;
-  const PainterAvatar({Key key, this.url, this.id}) : super(key: key);
+  final GestureTapCallback onTap;
+
+  const PainterAvatar({Key key, this.url, this.id, this.onTap})
+      : super(key: key);
+
   @override
   _PainterAvatarState createState() => _PainterAvatarState();
 }
 
 class _PainterAvatarState extends State<PainterAvatar> {
+  void pushToUserPage() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return UserPage(id: widget.id);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) {
-          return UserPage(
-            id: widget.id
-          );
-        }));
+        if (widget.onTap == null) {
+          pushToUserPage();
+        } else
+          widget.onTap();
       },
       child: SizedBox(
         height: 60,

@@ -5,6 +5,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:pixez/page/user/bloc/user_bloc.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
+import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 
 class UserPage extends StatefulWidget {
@@ -23,13 +24,22 @@ class _UserPageState extends State<UserPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _tabController.index = index;
+    });
   }
 
   @override
@@ -42,33 +52,48 @@ class _UserPageState extends State<UserPage>
             final user = state.userDetail.user;
             return Scaffold(
               appBar: AppBar(
-                actions: <Widget>[
-                  PainterAvatar(
-                    url: user.profile_image_urls.medium,
-                    id: user.id,
-                  )
-                ],
+                actions: <Widget>[],
                 title: Text(user.name),
-                bottom: TabBar(
-                  controller: _tabController,
-                  tabs: <Widget>[
-                    Tab(text: 'LEFT'),
-                    Tab(text: 'RIGHT'),
-                  ],
+              ),
+              body: _buildTabBarView(),
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: _selectedIndex,
+                onTap: _onItemTapped,
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.work), title: Text("Work")),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.bookmark), title: Text("Detail")),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.bookmark), title: Text("Book")),
+                ],
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {},
+                child: PainterAvatar(
+                  url: user.profile_image_urls.medium,
+                  id: user.id,
+                  onTap: () {},
                 ),
               ),
-              body: TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  WorksPage(id: widget.id),
-                  BookmarkPage(id: widget.id),
-                ],
-              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
             );
           }
           return Container();
         },
       ),
+    );
+  }
+
+  TabBarView _buildTabBarView() {
+    return TabBarView(
+      controller: _tabController,
+      children: <Widget>[
+        WorksPage(id: widget.id),
+        UserDetailPage(),
+        BookmarkPage(id: widget.id),
+      ],
     );
   }
 }
