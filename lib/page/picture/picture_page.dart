@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -8,6 +11,7 @@ import 'package:pixez/component/transport_appbar.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
+import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:share/share.dart';
 
 abstract class ListItem {}
@@ -26,12 +30,21 @@ class PicturePage extends StatefulWidget {
 }
 
 class _PicturePageState extends State<PicturePage> {
-  Widget _buildBottomSheet(Illusts illust) => Container(
+  Widget _buildBottomSheet(Illusts illust, int index) => Container(
         child: Column(
           children: <Widget>[
             ListTile(
               leading: Icon(Icons.save_alt),
-              onTap: () {},
+              onTap: () async {
+                var file = await DefaultCacheManager().getFileFromCache(
+                    illust.metaPages.isNotEmpty
+                        ? illust.metaPages[index].imageUrls.large
+                        : illust.imageUrls.large);
+                final data = await file.file.readAsBytes();
+                final _imageSaver = ImageSaver();
+                List<Uint8List> bytesList = [data];
+                final res = await _imageSaver.saveImages(imageBytes: bytesList);
+              },
               title: Text("Save"),
             )
           ],
@@ -141,14 +154,14 @@ class _PicturePageState extends State<PicturePage> {
       index == 0
           ? Hero(
         child: PixivImage(
-          illust.metaPages[index].imageUrls.medium,
-          placeHolder: illust.metaPages[index].imageUrls.large,
+          illust.metaPages[index].imageUrls.large,
+          placeHolder: illust.metaPages[index].imageUrls.medium,
         ),
         tag: illust.imageUrls.medium,
       )
           : PixivImage(
-        illust.metaPages[index].imageUrls.medium,
-        placeHolder: illust.metaPages[index].imageUrls.large,
+        illust.metaPages[index].imageUrls.large,
+        placeHolder: illust.metaPages[index].imageUrls.medium,
       );
 
   Widget _buildList(Illusts illust) {
@@ -164,14 +177,14 @@ class _PicturePageState extends State<PicturePage> {
                 showModalBottomSheet(
                     context: context,
                     builder: (context) {
-                      return _buildBottomSheet(illust);
+                      return _buildBottomSheet(illust, index);
                     });
               },
               onTap: () {},
               child: illust.metaPages.isEmpty
                   ? Hero(
                 child: PixivImage(
-                  illust.imageUrls.medium,
+                  illust.imageUrls.large,
                   placeHolder: illust.imageUrls.medium,
                 ),
                 tag: illust.imageUrls.medium,
