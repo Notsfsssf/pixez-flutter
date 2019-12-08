@@ -18,3 +18,14 @@ class UnStarEvent extends PictureEvent{
   List<Object> get props => null;
   
 }
+class SaveImageEvent extends PictureEvent{
+  final Illusts illusts;
+  final int index;
+
+  SaveImageEvent(this.illusts, this.index);
+  
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}

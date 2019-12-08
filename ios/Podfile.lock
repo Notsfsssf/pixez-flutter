@@ -1,0 +1,61 @@
+PODS:
+  - Flutter (1.0.0)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - path_provider (0.0.1):
+    - Flutter
+  - permission_handler (4.0.0):
+    - Flutter
+  - save_in_gallery (0.0.1):
+    - Flutter
+  - share (0.5.2):
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB (~> 2.7.2)
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios-release`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - save_in_gallery (from `.symlinks/plugins/save_in_gallery/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+
+SPEC REPOS:
+  trunk:
+    - FMDB
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios-release"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  save_in_gallery:
+    :path: ".symlinks/plugins/save_in_gallery/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  permission_handler: 0fb88b8a3c23e31e5de45b8f1bb8b7de28cf8941
+  save_in_gallery: 75c1d76566ed1af3a266f25b38c6c19a1d019a66
+  share: bae0a282aab4483288913fc4dc0b935d4b491f2e
+  shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
+  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+
+PODFILE CHECKSUM: b6a0a141693093b304368d08511b46cf3d1d0ac5
+
+COCOAPODS: 1.8.4
