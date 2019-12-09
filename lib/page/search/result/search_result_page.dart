@@ -66,6 +66,15 @@ class _SearchResultPageState extends State<SearchResultPage>
     );
   }
 
+  final starnum = [50000, 30000, 20000, 10000, 5000, 1000, 500, 250, 100, 0];
+  final sort = ["date_desc", "date_asc", "popular_desc"];
+  var search_target = [
+    "partial_match_for_tags",
+    "exact_match_for_tags",
+    "title_and_caption"
+  ];
+  String _sortValue = "date_desc";
+  String _searchTargetValue = "partial_match_for_tags";
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(widget.word),
@@ -73,24 +82,70 @@ class _SearchResultPageState extends State<SearchResultPage>
         IconButton(
           icon: Icon(Icons.more_vert),
           onPressed: () {
-            showModalBottomSheet(
+            showModalBottomSheet<void>(
                 context: context,
                 builder: (context) {
-                  return Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          child: Text("1"),
-                          padding: EdgeInsets.all(8.0),
-                        ),
-                        Padding(
-                          child: DropDownList(),
-                          padding: EdgeInsets.all(8.0),
-                        ),
-                      ],
-                    ),
-                  );
+                  return StatefulBuilder(
+                      builder: (context, setBottomSheetState) {
+                    return Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              ...sort
+                                  .map((f) => Flexible(
+                                        child: RadioListTile<String>(
+                                          value: f,
+                                          title: Text(f),
+                                          groupValue: _sortValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _sortValue = value;
+                                            });
+                                            setState(() {
+                                              _sortValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ))
+                                  .toList(),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              ...search_target
+                                  .map((f) => Flexible(
+                                        child: RadioListTile<String>(
+                                          value: f,
+                                          title: Text(f),
+                                          groupValue: _searchTargetValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _searchTargetValue = value;
+                                            });
+                                            setState(() {
+                                              _searchTargetValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ))
+                                  .toList(),
+                            ],
+                          ),
+                       Padding(
+                         padding: const EdgeInsets.all(8.0),
+                         child: RaisedButton(
+                              onPressed: () {}, child: Text("Apply"),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                            ),
+                       )
+                        ],
+                      ),
+                    );
+                  });
                 });
           },
         )

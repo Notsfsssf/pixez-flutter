@@ -1,3 +1,7 @@
 {
-    "Login":"Login"
+    "Login": "Login",
+    "Save": "Save",
+    "Saved": "Saved",
+    "Already_Saved": "Already Saved",
+    "Recommend": "Recommend"
 }

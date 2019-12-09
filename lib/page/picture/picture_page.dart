@@ -8,6 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/transport_appbar.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
@@ -30,130 +31,107 @@ class PicturePage extends StatefulWidget {
 }
 
 class _PicturePageState extends State<PicturePage> {
-  Widget _buildBottomSheet(context, Illusts illust, int index) => Container(
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.save_alt),
-              onTap: () async {
-                // BlocProvider.of<PictureBloc>(context).add(SaveImageEvent(illust,index));
-                var file = await DefaultCacheManager().getFileFromCache(
-                    illust.metaPages.isNotEmpty
-                        ? illust.metaPages[index].imageUrls.medium
-                        : illust.imageUrls.medium);
-                final data = await file.file.readAsBytes();
-                final _imageSaver = ImageSaver();
-                List<Uint8List> bytesList = [data];
-                final res = await _imageSaver.saveImages(
-                    imageBytes: bytesList, directoryName: 'pxez');
-                Navigator.of(context).pop();
-              },
-              title: Text("Save"),
-            )
-          ],
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        builder: (context) => PictureBloc(ApiClient()),
-        child: BlocBuilder<PictureBloc, PictureState>(
-          builder: (context, state) {
-            return Scaffold(
-              body: BlocListener(
-                listener: (context, state) {
-                  if (state is SaveImageEvent) {}
-                },
-                child: Stack(
-                  fit: StackFit.expand,
+    return BlocProvider<PictureBloc>(
+        create: (context) => PictureBloc(ApiClient()),
+        child:
+            BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
+          return Scaffold(
+            body: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                _buildList(widget._illusts),
+                TransportAppBar(
+                  actions: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () {
+                          buildShowModalBottomSheet(context);
+                        })
+                  ],
+                )
+              ],
+            ),
+            floatingActionButton: (state is DataState)
+                ? FloatingActionButton(
+                    onPressed: () {
+                      BlocProvider.of<PictureBloc>(context)
+                          .add(StarEvent(state.illusts));
+                    },
+                    child: Icon(Icons.star),
+                    foregroundColor:
+                        state.illusts.isBookmarked ? Colors.red : Colors.white)
+                : FloatingActionButton(
+                    onPressed: () {
+                      BlocProvider.of<PictureBloc>(context)
+                          .add(StarEvent(widget._illusts));
+                    },
+                    child: Icon(Icons.star),
+                    foregroundColor: widget._illusts.isBookmarked
+                        ? Colors.red
+                        : Colors.white),
+          );
+        }));
+  }
+
+  Future buildShowModalBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    _buildBody(widget._illusts, context),
-                    TransportAppBar(
-                      actions: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.more_vert),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
-                                      color: Colors.white,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              ListTile(
-                                                title: Text("多选保存"),
-                                                leading: Icon(
-                                                  Icons.save,
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                ),
-                                                onTap: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                              ListTile(
-                                                title: Text("分享"),
-                                                leading: Icon(Icons.share,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                                onTap: () {
-                                                  Share.share(
-                                                      "https://www.pixiv.net/artworks/${widget._illusts.id}");
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 2.0,
-                                                color: Colors.grey,
-                                              ),
-                                              ListTile(
-                                                leading: Icon(Icons.cancel,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                                title: Text("取消"),
-                                                onTap: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  });
-                            })
-                      ],
-                    )
+                    ListTile(
+                      title: Text("多选保存"),
+                      leading: Icon(
+                        Icons.save,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ListTile(
+                      title: Text("分享"),
+                      leading: Icon(Icons.share,
+                          color: Theme.of(context).primaryColor),
+                      onTap: () {
+                        Share.share(
+                            "https://www.pixiv.net/artworks/${widget._illusts.id}");
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ],
                 ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  BlocProvider.of<PictureBloc>(context)
-                      .add(StarEvent(widget._illusts));
-                },
-                child: Icon(Icons.star),
-                foregroundColor:
-                    widget._illusts.isBookmarked ? Colors.red : Colors.white,
-              ),
-            );
-          },
-        ));
+                Column(
+                  children: <Widget>[
+                    Container(
+                      height: 2.0,
+                      color: Colors.grey,
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.cancel,
+                          color: Theme.of(context).primaryColor),
+                      title: Text("取消"),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                )
+              ],
+            ),
+          );
+        });
   }
 
   Widget _buildIllustsItem(int index, Illusts illust) => index == 0
@@ -177,32 +155,50 @@ class _PicturePageState extends State<PicturePage> {
           if (index == count) {
             return _buildDetail(context, illust);
           } else
-            return GestureDetector(
-              onLongPress: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return _buildBottomSheet(context, illust, index);
-                    });
+            return BlocListener<PictureBloc, PictureState>(
+              listener: (context, state) {
+                if (state is SaveSuccesState) {
+                   Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(I18n.of(context).Saved),
+                  ));
+                }
               },
-              onTap: () {},
-              child: illust.metaPages.isEmpty
-                  ? Hero(
-                      child: PixivImage(
-                        illust.imageUrls.large,
-                        placeHolder: illust.imageUrls.medium,
-                      ),
-                      tag: illust.imageUrls.medium,
-                    )
-                  : _buildIllustsItem(index, illust),
+              child: GestureDetector(
+                onLongPress: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (_) {
+                        return Container(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                leading: Icon(Icons.save_alt),
+                                onTap: () async {
+                                  Navigator.of(context).pop();
+                                  BlocProvider.of<PictureBloc>(context)
+                                      .add(SaveImageEvent(illust, index));
+                                },
+                                title: Text(I18n.of(context).Save),
+                              )
+                            ],
+                          ),
+                        );
+                      });
+                },
+                onTap: () {},
+                child: illust.metaPages.isEmpty
+                    ? Hero(
+                        child: PixivImage(
+                          illust.imageUrls.large,
+                          placeHolder: illust.imageUrls.medium,
+                        ),
+                        tag: illust.imageUrls.medium,
+                      )
+                    : _buildIllustsItem(index, illust),
+              ),
             );
         });
-  }
-
-  Widget _buildBody(Illusts illust, BuildContext context) {
-    return Container(
-      child: _buildList(illust),
-    );
   }
 
   Widget _buildDetail(BuildContext context, Illusts illust) => Center(

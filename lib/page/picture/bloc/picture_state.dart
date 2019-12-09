@@ -17,3 +17,12 @@ class DataState extends PictureState{
   List<Object> get props =>[illusts];
 
 }
+class SaveSuccesState extends PictureState {
+  final bool isNotSave;
+
+  SaveSuccesState(this.isNotSave);
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+  
+}

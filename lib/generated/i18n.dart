@@ -16,9 +16,9 @@ class I18n implements WidgetsLocalizations {
   static Locale _locale;
   static bool _shouldReload = false;
 
-  static set locale(Locale _newLocale) {
+  static set locale(Locale newLocale) {
     _shouldReload = true;
-    I18n._locale = _newLocale;
+    I18n._locale = newLocale;
   }
 
   static const GeneratedLocalizationsDelegate delegate = GeneratedLocalizationsDelegate();
@@ -34,6 +34,14 @@ class I18n implements WidgetsLocalizations {
 
   /// "登录"
   String get Login => "登录";
+  /// "保存"
+  String get Save => "保存";
+  /// "已保存"
+  String get Saved => "已保存";
+  /// "已存在"
+  String get Already_Saved => "已存在";
+  /// "推荐"
+  String get Recommend => "推荐";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -49,6 +57,18 @@ class _I18n_en_US extends I18n {
   /// "Login"
   @override
   String get Login => "Login";
+  /// "Save"
+  @override
+  String get Save => "Save";
+  /// "Saved"
+  @override
+  String get Saved => "Saved";
+  /// "Already Saved"
+  @override
+  String get Already_Saved => "Already Saved";
+  /// "Recommend"
+  @override
+  String get Recommend => "Recommend";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;
@@ -77,8 +97,8 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
   Future<WidgetsLocalizations> load(Locale locale) {
     I18n._locale ??= locale;
     I18n._shouldReload = false;
-    final String lang = I18n._locale != null ? locale.toString() : "";
-    final String languageCode = I18n._locale != null ? locale.languageCode : "";
+    final String lang = I18n._locale != null ? I18n._locale.toString() : "";
+    final String languageCode = I18n._locale != null ? I18n._locale.languageCode : "";
     if ("zh_CN" == lang) {
       return SynchronousFuture<WidgetsLocalizations>(const _I18n_zh_CN());
     }

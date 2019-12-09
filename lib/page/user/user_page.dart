@@ -89,7 +89,7 @@ class _UserPageState extends State<UserPage>
                   FloatingActionButtonLocation.centerDocked,
             );
           }
-          return Container();
+          return Scaffold();
         },
       ),
     );
