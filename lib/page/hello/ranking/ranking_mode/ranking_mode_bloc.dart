@@ -20,7 +20,7 @@ class RankingModeBloc extends Bloc<RankingModeEvent, RankingModeState> {
   ) async* {
     if (event is FetchEvent) {
       try {
-        final response = await client.getIllustRanking(event.mode, null);
+        final response = await client.getIllustRanking(event.mode, event.date);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRankingModeState(recommend.illusts, recommend.nextUrl);
       } catch (e) {

@@ -7,12 +7,14 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/hello/ranking/ranking_bloc.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
+import 'package:pixez/page/hello/ranking/ranking_state.dart';
 
 class RankingModePage extends StatefulWidget {
-  final String mode;
+  final String mode, date;
 
-  const RankingModePage({Key key, this.mode}) : super(key: key);
+  const RankingModePage({Key key, this.mode, this.date}) : super(key: key);
 
   @override
   _RankingModePageState createState() => _RankingModePageState();
@@ -20,18 +22,22 @@ class RankingModePage extends StatefulWidget {
 
 class _RankingModePageState extends State<RankingModePage> {
   Completer<void> _refreshCompleter, _loadCompleter;
+  EasyRefreshController _refreshController;
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
+    _refreshController=EasyRefreshController();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => RankingModeBloc(ApiClient())..add(FetchEvent(widget.mode)),
-      child: BlocListener<RankingModeBloc, RankingModeState>(listener: (context, state) {
+      create: (context) => RankingModeBloc(ApiClient())
+        ..add(FetchEvent(widget.mode, widget.date)),
+      child: BlocListener<RankingModeBloc, RankingModeState>(
+          listener: (context, state) {
         if (state is DataRankingModeState) {
           _loadCompleter?.complete();
           _loadCompleter = Completer();
@@ -41,24 +47,35 @@ class _RankingModePageState extends State<RankingModePage> {
       }, child: BlocBuilder<RankingModeBloc, RankingModeState>(
         builder: (context, state) {
           if (state is DataRankingModeState)
-            return EasyRefresh(
-              child: StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: state.illusts.length,
-                itemBuilder: (context, index) {
-                  return IllustCard(state.illusts[index]);
+            return BlocListener<RankingBloc, RankingState>(
+              listener: (context, state) {
+                if (state is DateState) {
+                  
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.dateTime.toString()),));
+                  _refreshController.callRefresh();
+                }
+              },
+              child: EasyRefresh(
+                controller: _refreshController,
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  itemCount: state.illusts.length,
+                  itemBuilder: (context, index) {
+                    return IllustCard(state.illusts[index]);
+                  },
+                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                ),
+                onRefresh: () async {
+                  BlocProvider.of<RankingModeBloc>(context)
+                      .add(FetchEvent(widget.mode, widget.date));
+                  return _refreshCompleter.future;
                 },
-                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                onLoad: () async {
+                  BlocProvider.of<RankingModeBloc>(context)
+                      .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                  return _loadCompleter.future;
+                },
               ),
-              onRefresh: () async {
-                BlocProvider.of<RankingModeBloc>(context).add(FetchEvent(widget.mode));
-                return _refreshCompleter.future;
-              },
-              onLoad: () async {
-                BlocProvider.of<RankingModeBloc>(context)
-                    .add(LoadMoreEvent(state.nextUrl, state.illusts));
-                return _loadCompleter.future;
-              },
             );
           return Center(
             child: CircularProgressIndicator(),

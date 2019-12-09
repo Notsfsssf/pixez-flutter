@@ -8,14 +8,14 @@ class StarEvent extends PictureEvent{
   final Illusts illusts;
   StarEvent(this.illusts);
   @override
-  // TODO: implement props
   List<Object> get props => [illusts];
 
 }
 class UnStarEvent extends PictureEvent{
+    final Illusts illusts;
+  UnStarEvent(this.illusts);
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props =>[illusts];
   
 }
 class SaveImageEvent extends PictureEvent{
@@ -26,6 +26,5 @@ class SaveImageEvent extends PictureEvent{
   
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props =>[illusts,index];
 }

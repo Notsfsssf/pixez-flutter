@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 
 import './bloc.dart';
 
@@ -12,6 +13,9 @@ class RankingBloc extends Bloc<RankingEvent, RankingState> {
   Stream<RankingState> mapEventToState(
     RankingEvent event,
   ) async* {
-    // TODO: Add Logic
+    if (event is DateChangeEvent) {
+      debugPrint("bloccccccccccccccccccccccc");
+      yield DateState(event.dateTime);
+    }
   }
 }

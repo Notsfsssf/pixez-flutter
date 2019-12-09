@@ -5,6 +5,17 @@ abstract class RankingState extends Equatable {
 }
 
 class InitialRankingState extends RankingState {
+
   @override
   List<Object> get props => [];
+}
+class  DateState extends RankingState {
+
+ final DateTime dateTime;
+
+  DateState(this.dateTime);
+  @override
+  // TODO: implement props
+  List<Object> get props => [dateTime];
+  
 }

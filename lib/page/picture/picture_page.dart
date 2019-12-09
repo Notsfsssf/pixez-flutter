@@ -36,7 +36,8 @@ class _PicturePageState extends State<PicturePage> {
     return BlocProvider<PictureBloc>(
         create: (context) => PictureBloc(ApiClient()),
         child:
-            BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
+            BlocBuilder<PictureBloc, PictureState>(
+              builder: (context, state) {
           return Scaffold(
             body: Stack(
               fit: StackFit.expand,

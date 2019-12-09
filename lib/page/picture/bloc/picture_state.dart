@@ -9,20 +9,25 @@ class InitialPictureState extends PictureState {
   @override
   List<Object> get props => [];
 }
-class DataState extends PictureState{
+
+class DataState extends PictureState {
   final Illusts illusts;
   const DataState(this.illusts);
   @override
-  // TODO: implement props
-  List<Object> get props =>[illusts];
-
+  List<Object> get props => [illusts];
 }
+
 class SaveSuccesState extends PictureState {
   final bool isNotSave;
-
   SaveSuccesState(this.isNotSave);
   @override
-  // TODO: implement props
-  List<Object> get props => null;
-  
+  List<Object> get props => [isNotSave];
+}
+
+class BookMarkState extends PictureState {
+  final bool isBookMark;
+
+  BookMarkState(this.isBookMark);
+  @override
+  List<Object> get props => [isBookMark];
 }

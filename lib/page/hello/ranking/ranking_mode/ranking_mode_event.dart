@@ -7,12 +7,12 @@ abstract class RankingModeEvent extends Equatable {
 
 class FetchEvent extends RankingModeEvent {
   final String mode;
-
-  FetchEvent(this.mode);
+  final String date;
+  FetchEvent(this.mode, this.date);
 
   @override
   // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [mode, date];
 }
 
 class LoadMoreEvent extends RankingModeEvent {

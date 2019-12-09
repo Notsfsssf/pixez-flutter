@@ -90,7 +90,6 @@ class Illusts {
         this.isBookmarked,
         this.visible,
         this.isMuted});
-
   Illusts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];

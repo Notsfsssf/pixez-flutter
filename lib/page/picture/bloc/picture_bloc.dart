@@ -27,12 +27,16 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
         try {
           Response response =
               await client.postLikeIllust(event.illusts.id, "public", null);
-          yield DataState(event.illusts..isBookmarked = true);
+          Illusts illusts = Illusts.fromJson(event.illusts.toJson());
+          illusts.isBookmarked = true; //降智时间
+          yield DataState(illusts);
         } catch (e) {}
       } else {
         try {
           Response response = await client.postUnLikeIllust(event.illusts.id);
-          yield DataState(event.illusts..isBookmarked = false);
+          Illusts illusts = Illusts.fromJson(event.illusts.toJson());
+          illusts.isBookmarked = false; //降智时间
+          yield DataState(illusts);
         } catch (e) {}
       }
     }
