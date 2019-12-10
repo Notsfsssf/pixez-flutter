@@ -18,9 +18,23 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
   Stream<SearchResultState> mapEventToState(
     SearchResultEvent event,
   ) async* {
+    if (event is ApplyEvent) {
+      try {
+        final response = await client.getSearchIllust(event.word,
+            search_target: event.searchTarget, sort: event.sort);
+        Recommend recommend = Recommend.fromJson(response.data);
+        yield DataState(recommend.illusts, recommend.nextUrl);
+      } catch (e) {
+        if (e == null) {
+          return;
+        }
+        print(e);
+      }
+    }
     if (event is FetchEvent) {
       try {
-        final response = await client.getSearchIllust(event.word);
+        final response = await client.getSearchIllust(event.word,
+            search_target: event.searchTarget, sort: event.sort);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
