@@ -9,7 +9,7 @@ class InitialUserState extends UserState {
   @override
   List<Object> get props => [];
 }
-class UserDataState extends UserState{
+class UserDataState extends UserState {
   final UserDetail userDetail;
 
   UserDataState(this.userDetail);
@@ -17,5 +17,14 @@ class UserDataState extends UserState{
   @override
   // TODO: implement props
   List<Object> get props => [userDetail];
+}
 
+class ShowSheetState extends UserState {
+  final DateTime dataTime;
+
+  ShowSheetState(this.dataTime);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [dataTime];
 }

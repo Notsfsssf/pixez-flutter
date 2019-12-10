@@ -3,12 +3,18 @@ import 'package:equatable/equatable.dart';
 abstract class UserEvent extends Equatable {
   const UserEvent();
 }
-class FetchEvent extends UserEvent{
+class FetchEvent extends UserEvent {
   final int id;
 
   FetchEvent(this.id);
+
   @override
   // TODO: implement props
   List<Object> get props => [id];
+}
 
+class ShowSheetEvent extends UserEvent {
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }

@@ -1,7 +1,11 @@
 {
-    "Login":"登录",
-    "Save":"保存",
-    "Saved":"已保存",
-    "Already_Saved": "已存在",
-    "Recommend": "推荐"
+  "Login": "登录",
+  "Save": "保存",
+  "Saved": "已保存",
+  "Already_Saved": "已存在",
+  "Recommend": "推荐",
+  "BookMark": "收藏",
+  "Works": "作品",
+  "Rank": "排行",
+  "Search": "搜索"
 }

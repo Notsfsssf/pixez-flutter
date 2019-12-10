@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+
 import 'generated/i18n.dart';
-import 'models/account.dart';
 
  main(){
 

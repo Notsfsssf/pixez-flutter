@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
+
 import './bloc.dart';
 
 class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
@@ -15,7 +17,7 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
       if (event is FetchEvent) {
       final client = new ApiClient();
       try {
-        final response = await client.getFollowUser(Restrict.PUBLIC);
+        final response = await client.getFollowIllusts(Restrict.PUBLIC);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataNewIllustState(recommend.illusts, recommend.nextUrl);
       }  catch (e) {

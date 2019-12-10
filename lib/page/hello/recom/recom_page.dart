@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
 
 class ReComPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ReComPageState extends State<ReComPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        builder: (context) => RecomBloc()..add(FetchEvent()),
+        create: (context) => RecomBloc()..add(FetchEvent()),
         child: BlocListener<RecomBloc, RecomState>(
             listener: (context, state) {
               if (state is DataRecomState) {
@@ -38,7 +39,9 @@ class _ReComPageState extends State<ReComPage> {
             },
             child: Scaffold(
                 appBar: AppBar(
-                  title: Text("Recommend"),
+                  title: Text(I18n
+                      .of(context)
+                      .Recommend),
                 ),
                 body: BlocBuilder<RecomBloc, RecomState>(
                     builder: (context, state) {

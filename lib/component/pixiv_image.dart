@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/widgets.dart';
 
 class PixivImage extends StatelessWidget {
   final String url;
@@ -9,7 +9,6 @@ class PixivImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return CachedNetworkImage(
       placeholder: placeHolder != null
           ? (BuildContext context, String url) {

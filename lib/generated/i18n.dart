@@ -34,14 +34,30 @@ class I18n implements WidgetsLocalizations {
 
   /// "登录"
   String get Login => "登录";
+
   /// "保存"
   String get Save => "保存";
+
   /// "已保存"
   String get Saved => "已保存";
+
   /// "已存在"
   String get Already_Saved => "已存在";
+
   /// "推荐"
   String get Recommend => "推荐";
+
+  /// "收藏"
+  String get BookMark => "收藏";
+
+  /// "作品"
+  String get Works => "作品";
+
+  /// "排行"
+  String get Rank => "排行";
+
+  /// "搜索"
+  String get Search => "搜索";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -60,15 +76,34 @@ class _I18n_en_US extends I18n {
   /// "Save"
   @override
   String get Save => "Save";
+
   /// "Saved"
   @override
   String get Saved => "Saved";
+
   /// "Already Saved"
   @override
   String get Already_Saved => "Already Saved";
+
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
+
+  /// "BookMark"
+  @override
+  String get BookMark => "BookMark";
+
+  /// "Works"
+  @override
+  String get Works => "Works";
+
+  /// "Rank"
+  @override
+  String get Rank => "Rank";
+
+  /// "search for"
+  @override
+  String get Search => "search for";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

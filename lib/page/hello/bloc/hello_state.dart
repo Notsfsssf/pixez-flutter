@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:pixez/models/account.dart';
 
 abstract class HelloState extends Equatable {
   const HelloState();
@@ -9,12 +10,14 @@ class InitialHelloState extends HelloState {
   List<Object> get props => [];
 }
 class HasUserState extends HelloState{
+  final AccountPersist list;
+
+  HasUserState(this.list);
+
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [list];
 }
 class NoneUserState extends HelloState{
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }

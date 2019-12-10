@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:pixez/page/user/bloc/user_bloc.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
@@ -43,53 +44,77 @@ class _UserPageState extends State<UserPage>
     });
   }
 
+  PersistentBottomSheetController controller;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => UserBloc()..add(FetchEvent(widget.id)),
+      create: (context) => UserBloc()..add(FetchEvent(widget.id)),
       child: BlocBuilder<UserBloc, UserState>(
+        condition: (pre, now) {
+          return now is! ShowSheetState;
+        },
         builder: (context, state) {
-          if (state is UserDataState) {
-            final user = state.userDetail.user;
-            return Scaffold(
-              appBar: AppBar(
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () {
+          return Scaffold(
+            appBar: AppBar(
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.share),
+                    onPressed: () {
+                      if (state is UserDataState)
                         Share.share(
                             'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
-                      })
-                ],
-                title: Text(user.name),
-              ),
-              body: _buildTabBarView(),
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: _selectedIndex,
-                onTap: _onItemTapped,
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.work), title: Text("Work")),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.bookmark), title: Text("Detail")),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.bookmark), title: Text("Book")),
-                ],
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {},
-                child: PainterAvatar(
-                  url: user.profile_image_urls.medium,
-                  id: user.id,
-                  onTap: () {},
-                ),
-                shape: const CircleBorder(),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-            );
-          }
-          return Scaffold();
+                    })
+              ],
+              title: Text(state is UserDataState
+                  ? state.userDetail.user.name
+                  : widget.id.toString()),
+            ),
+            body: BlocListener<UserBloc, UserState>(
+                condition: (pre, now) {
+                  return now is ShowSheetState;
+                },
+                listener: (context, state) async {
+                  if (state is ShowSheetState) {
+                    controller = showBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container();
+                      },
+                    );
+                  }
+                },
+                child: _buildTabBarView()),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.work),
+                    title: Text(I18n.of(context).Works)),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.bookmark), title: Text("Detail")),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.bookmark),
+                    title: Text(I18n.of(context).BookMark)),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {},
+              child: state is UserDataState
+                  ? PainterAvatar(
+                      url: state.userDetail.user.profile_image_urls.medium,
+                      id: state.userDetail.user.id,
+                      onTap: () async {
+                        BlocProvider.of<UserBloc>(context)
+                            .add(ShowSheetEvent());
+                      },
+                    )
+                  : Icon(Icons.data_usage),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+          );
         },
       ),
     );

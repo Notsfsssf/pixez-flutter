@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
@@ -83,7 +84,7 @@ class _SearchPageState extends State<SearchPage> {
                 );
               } else {
                 this._searchIcon = Icon(Icons.search);
-                this._appBarTitle = Text('Search');
+                this._appBarTitle = Text(I18n.of(context).Search);
                 _filter.clear();
                 editString = '';
               }

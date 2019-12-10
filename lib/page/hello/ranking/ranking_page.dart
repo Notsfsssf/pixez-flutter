@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/ranking/bloc.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/ranking_mode_page.dart';
 
@@ -46,7 +47,7 @@ class _RankingPageState extends State<RankingPage>
         builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text("Rank"),
+            title: Text(I18n.of(context).Rank),
             bottom: TabBar(
                 isScrollable: true,
                 controller: _tabController,

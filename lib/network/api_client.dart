@@ -151,12 +151,30 @@ class ApiClient {
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
+  // @GET("/v1/user/follower?filter=for_android")
+  //   fun getUserFollower(@Header("Authorization") paramString: String, @Query("user_id") paramLong: Long): Observable<SearchUserResponse>
+  Future<Response> getFollowUser(String restrict) {
+    return httpClient.get(
+      "/v1/user/follower?filter=for_android",
+      queryParameters: {"restrict": restrict},
+    );
+  }
+
   //   @GET("/v2/illust/follow")
   // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
-  Future<Response> getFollowUser(String restrict) {
+  Future<Response> getFollowIllusts(String restrict) {
     return httpClient.get(
       "/v2/illust/follow",
       queryParameters: {"restrict": restrict},
+    );
+  }
+
+  // @GET("/v1/user/following?filter=for_android")
+  // fun getUserFollowing(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String): Observable<SearchUserResponse>
+  Future<Response> getUserFollowing(int user_id, String restrict) {
+    return httpClient.get(
+      "/v1/user/following?filter=for_android",
+      queryParameters: {"restrict": restrict, "user_id": user_id},
     );
   }
 

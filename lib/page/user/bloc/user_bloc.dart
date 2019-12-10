@@ -24,9 +24,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         // debugPrint(prettyprint);
         UserDetail userDetail = UserDetail.fromJson(response.data);
         yield UserDataState(userDetail);
-      } on DioError catch (e) {
-
-      }
+      } on DioError catch (e) {}
+    }
+    if (event is ShowSheetEvent) {
+      yield ShowSheetState(DateTime.now()); //??
     }
   }
 }

@@ -7,6 +7,7 @@ import 'package:pixez/page/hello/bloc/bloc.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
+import 'package:pixez/page/my/my_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 
 class HelloPage extends StatefulWidget {
@@ -21,13 +22,16 @@ class _HelloPageState extends State<HelloPage> {
     ReComPage(),
     RankingPage(),
     NewPage(),
-    SearchPage()
+    SearchPage(),
+    MyPage()
   ];
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => HelloBloc()..add(FetchDataBaseEvent()),
+      create: (context) =>
+      HelloBloc()
+        ..add(FetchDataBaseEvent()),
       child: BlocListener<HelloBloc, HelloState>(
         listener: (_, state) {
           if (state is NoneUserState) {
@@ -56,6 +60,10 @@ class _HelloPageState extends State<HelloPage> {
                     BottomNavigationBarItem(
                       icon: Icon(Icons.search),
                       title: Text('Search'),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.account_circle),
+                      title: Text('My'),
                     ),
                   ],
                   currentIndex: _selectedIndex,

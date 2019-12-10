@@ -1,7 +1,11 @@
 {
-    "Login": "Login",
-    "Save": "Save",
-    "Saved": "Saved",
-    "Already_Saved": "Already Saved",
-    "Recommend": "Recommend"
+  "Login": "Login",
+  "Save": "Save",
+  "Saved": "Saved",
+  "Already_Saved": "Already Saved",
+  "Recommend": "Recommend",
+  "BookMark": "BookMark",
+  "Works": "Works",
+  "Rank": "Rank",
+  "Search": "Search"
 }

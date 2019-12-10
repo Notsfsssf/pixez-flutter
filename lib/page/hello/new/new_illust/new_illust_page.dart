@@ -52,8 +52,8 @@ class _NewIllustPageState extends State<NewIllustPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => NewIllustBloc()..add(FetchEvent()),
-      child: BlocListener<NewIllustBloc, NewIllustState>(
+        create: (context) => NewIllustBloc()..add(FetchEvent()),
+        child: BlocListener<NewIllustBloc, NewIllustState>(
           listener: (context, state) {
             if (state is DataNewIllustState) {
               _loadCompleter?.complete();
@@ -62,31 +62,16 @@ class _NewIllustPageState extends State<NewIllustPage> {
               _refreshCompleter = Completer();
             }
           },
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              BlocBuilder<NewIllustBloc, NewIllustState>(
-                  builder: (context, state) {
-                if (state is DataNewIllustState)
-                  return _buildEasyRefresh(state, context);
-                else
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-              }),
-              Align(
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: CustomPaint(
-                    size: Size(20, 20),
-                    painter: DrawTriangle(Colors.white),
-                  ),
-                ),
-                alignment: Alignment.topRight,
-              )
-            ],
-          )),
-    );
+          child: BlocBuilder<NewIllustBloc, NewIllustState>(
+              builder: (context, state) {
+            if (state is DataNewIllustState)
+              return _buildEasyRefresh(state, context);
+            else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          }),
+        ));
   }
 
   EasyRefresh _buildEasyRefresh(
