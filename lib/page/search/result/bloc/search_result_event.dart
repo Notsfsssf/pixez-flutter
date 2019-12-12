@@ -4,10 +4,14 @@ import 'package:pixez/models/illust.dart';
 abstract class SearchResultEvent extends Equatable {
   const SearchResultEvent();
 }
+
 class FetchEvent extends SearchResultEvent {
   final String word, sort, searchTarget;
+  final DateTime startDate, endDate;
+  final bool enableDuration;
 
-  FetchEvent(this.word, this.sort, this.searchTarget);
+  FetchEvent(this.word, this.sort, this.searchTarget, this.startDate,
+      this.endDate, this.enableDuration);
 
   @override
   // TODO: implement props
@@ -32,8 +36,11 @@ class ShowBottomSheetEvent extends SearchResultEvent {
 
 class ApplyEvent extends SearchResultEvent {
   final String word, sort, searchTarget;
+  final DateTime startDate, endDate;
+  final bool enableDuration;
 
-  ApplyEvent(this.word, this.sort, this.searchTarget);
+  ApplyEvent(this.word, this.sort, this.searchTarget, this.startDate,
+      this.endDate, this.enableDuration);
 
   @override
   List<Object> get props => [word, sort, searchTarget];

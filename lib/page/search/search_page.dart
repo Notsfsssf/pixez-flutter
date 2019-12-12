@@ -19,7 +19,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
+      create: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
       child: Scaffold(
         appBar: _buildAppBar(),
         body: Stack(

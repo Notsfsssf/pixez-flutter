@@ -21,7 +21,10 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
     if (event is ApplyEvent) {
       try {
         final response = await client.getSearchIllust(event.word,
-            search_target: event.searchTarget, sort: event.sort);
+            search_target: event.searchTarget,
+            sort: event.sort,
+            start_date: event.enableDuration ? event.startDate : null,
+            end_date: event.enableDuration ? event.endDate : null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
@@ -34,7 +37,10 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
     if (event is FetchEvent) {
       try {
         final response = await client.getSearchIllust(event.word,
-            search_target: event.searchTarget, sort: event.sort);
+            search_target: event.searchTarget,
+            sort: event.sort,
+            start_date: event.enableDuration ? event.startDate : null,
+            end_date: event.enableDuration ? event.endDate : null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataState(recommend.illusts, recommend.nextUrl);
       } catch (e) {

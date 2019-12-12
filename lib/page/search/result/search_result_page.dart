@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
@@ -16,6 +17,27 @@ class SearchResultPage extends StatefulWidget {
 
   @override
   _SearchResultPageState createState() => _SearchResultPageState();
+}
+
+class MaterialHeader extends Header {
+  @override
+  Widget contentBuilder(
+      BuildContext context,
+      RefreshMode refreshState,
+      double pulledExtent,
+      double refreshTriggerPullDistance,
+      double refreshIndicatorExtent,
+      AxisDirection axisDirection,
+      bool float,
+      Duration completeDuration,
+      bool enableInfiniteRefresh,
+      bool success,
+      bool noMore) {
+    // TODO: implement contentBuilder
+    return Container(
+      child: Text("Pick"),
+    );
+  }
 }
 
 class _SearchResultPageState extends State<SearchResultPage>
@@ -37,6 +59,9 @@ class _SearchResultPageState extends State<SearchResultPage>
 
   String _sortValue = "date_desc";
   String _searchTargetValue = "partial_match_for_tags";
+  bool enableDuration = false;
+  DateTime startDate = DateTime.now(),
+      endDate = DateTime.now();
 
   EasyRefresh _buildEasyRefresh(DataState state, BuildContext context) {
     return EasyRefresh(
@@ -50,8 +75,13 @@ class _SearchResultPageState extends State<SearchResultPage>
         staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
       ),
       onRefresh: () async {
-        BlocProvider.of<SearchResultBloc>(context)
-            .add(FetchEvent(widget.word, _sortValue, _searchTargetValue));
+        BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(
+            widget.word,
+            _sortValue,
+            _searchTargetValue,
+            startDate,
+            endDate,
+            enableDuration));
         return _refreshCompleter.future;
       },
       onLoad: () async {
@@ -65,8 +95,10 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SearchResultBloc(ApiClient())
-        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue)),
+      create: (context) =>
+      SearchResultBloc(ApiClient())
+        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
+            endDate, enableDuration)),
       child: BlocBuilder<SearchResultBloc, SearchResultState>(
         builder: (context, state) {
           if (state is DataState)
@@ -118,6 +150,10 @@ class _SearchResultPageState extends State<SearchResultPage>
                 context: context,
                 builder: (_) {
                   return StatefulBuilder(builder: (_, setBottomSheetState) {
+                    if (startDate.isAfter(endDate)) {
+                      startDate = DateTime.now();
+                      endDate = DateTime.now();
+                    }
                     return Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -161,26 +197,74 @@ class _SearchResultPageState extends State<SearchResultPage>
                                   .toList(),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: OutlineButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                BlocProvider.of<SearchResultBloc>(context).add(
-                                    ApplyEvent(widget.word, _sortValue,
-                                        _searchTargetValue));
-                              },
-                              child: Text("Select Date"),
+                          SwitchListTile(
+                              title: Text("Duration"),
+                              value: enableDuration,
+                              onChanged: (v) {
+                                setBottomSheetState(() {
+                                  enableDuration = v;
+                                });
+                              }),
+                          Visibility(
+                            child: Row(
+                              children: <Widget>[
+                                OutlineButton(
+                                  onPressed: () {
+                                    DatePicker.showDatePicker(context,
+                                        maxDateTime: endDate,
+                                        initialDateTime: startDate, onConfirm:
+                                            (DateTime dateTime,
+                                            List<int> list) {
+                                          setBottomSheetState(() {
+                                            startDate = dateTime;
+                                          });
+                                          setState(() {
+                                            startDate = dateTime;
+                                          });
+                                        });
+                                  },
+                                  child: Text(startDate
+                                      .toIso8601String()
+                                      .split("T")[0]), //AXAXAX
+                                ),
+                                Text("~"),
+                                OutlineButton(
+                                  onPressed: () {
+                                    DatePicker.showDatePicker(context,
+                                        maxDateTime: DateTime.now(),
+                                        initialDateTime: endDate, onConfirm:
+                                            (DateTime dateTime,
+                                            List<int> list) {
+                                          setBottomSheetState(() {
+                                            endDate = dateTime;
+                                          });
+                                          setState(() {
+                                            endDate = dateTime;
+                                          });
+                                        });
+                                  },
+                                  child: Text(
+                                      endDate.toIso8601String().split("T")[0]),
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                             ),
+                            visible: enableDuration,
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding:
+                            const EdgeInsets.only(left: 8.0, right: 8.0),
                             child: RaisedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 BlocProvider.of<SearchResultBloc>(context).add(
-                                    ApplyEvent(widget.word, _sortValue,
-                                        _searchTargetValue));
+                                    ApplyEvent(
+                                        widget.word,
+                                        _sortValue,
+                                        _searchTargetValue,
+                                        startDate,
+                                        endDate,
+                                        enableDuration));
                               },
                               child: Text("Apply"),
                               color: Theme

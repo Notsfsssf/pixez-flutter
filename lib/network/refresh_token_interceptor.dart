@@ -59,14 +59,15 @@ class RefreshTokenInterceptor extends Interceptor {
           request.headers[OAuthClient.AUTHORIZATION] =
               "Bearer " + accountResponse.accessToken;
           var response = await ApiClient().httpClient.request(
-            request.path,
-            data: request.data,
-            queryParameters: request.queryParameters,
-            cancelToken: request.cancelToken,
-            options: request,
-          );
+                request.path,
+                data: request.data,
+                queryParameters: request.queryParameters,
+                cancelToken: request.cancelToken,
+                options: request,
+              );
           return response;
         }
+        if (errorMessage.error.message.contains("Limit")) {}
       } catch (e) {
         print(e);
         return e;

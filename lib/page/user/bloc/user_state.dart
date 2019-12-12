@@ -1,7 +1,6 @@
-import 'package:equatable/equatable.dart';
 import 'package:pixez/models/user_detail.dart';
 
-abstract class UserState extends Equatable {
+abstract class UserState {
   const UserState();
 }
 
@@ -9,22 +8,27 @@ class InitialUserState extends UserState {
   @override
   List<Object> get props => [];
 }
+
 class UserDataState extends UserState {
   final UserDetail userDetail;
+  final String choiceRestrict;
 
-  UserDataState(this.userDetail);
+  const UserDataState(this.userDetail, this.choiceRestrict);
 
   @override
-  // TODO: implement props
-  List<Object> get props => [userDetail];
+  List<Object> get props => [userDetail, choiceRestrict];
 }
 
 class ShowSheetState extends UserState {
-  final DateTime dataTime;
+  @override
+  List<Object> get props => [];
+}
 
-  ShowSheetState(this.dataTime);
+class ChoiceRestrictState extends UserState {
+  final String choiceRestrict;
+
+  ChoiceRestrictState(this.choiceRestrict);
 
   @override
-  // TODO: implement props
-  List<Object> get props => [dataTime];
+  List<Object> get props => [choiceRestrict];
 }

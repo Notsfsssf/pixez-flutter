@@ -1,7 +1,6 @@
-import 'package:equatable/equatable.dart';
 import 'package:pixez/models/illust.dart';
 
-abstract class PictureState extends Equatable {
+abstract class PictureState {
   const PictureState();
 }
 

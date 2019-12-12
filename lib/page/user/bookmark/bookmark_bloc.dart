@@ -18,7 +18,7 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
       final client = new ApiClient();
       try {
         final response =
-            await client.getBookmarksIllust(event.user_id, "public", null);
+            await client.getBookmarksIllust(event.user_id, event.type, null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataBookmarkState(recommend.illusts, recommend.nextUrl);
       } catch (e) {

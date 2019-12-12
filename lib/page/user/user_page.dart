@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:pixez/page/user/bloc/user_bloc.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
@@ -27,6 +29,11 @@ class _UserPageState extends State<UserPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _selectedIndex = this._tabController.index;
+      });
+    });
   }
 
   @override
@@ -51,82 +58,123 @@ class _UserPageState extends State<UserPage>
     return BlocProvider(
       create: (context) => UserBloc()..add(FetchEvent(widget.id)),
       child: BlocBuilder<UserBloc, UserState>(
-        condition: (pre, now) {
-          return now is! ShowSheetState;
-        },
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.share),
-                    onPressed: () {
-                      if (state is UserDataState)
-                        Share.share(
-                            'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
-                    })
-              ],
-              title: Text(state is UserDataState
-                  ? state.userDetail.user.name
-                  : widget.id.toString()),
-            ),
-            body: BlocListener<UserBloc, UserState>(
-                condition: (pre, now) {
-                  return now is ShowSheetState;
-                },
-                listener: (context, state) async {
-                  if (state is ShowSheetState) {
-                    controller = showBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container();
-                      },
-                    );
-                  }
-                },
-                child: _buildTabBarView()),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _selectedIndex,
-              onTap: _onItemTapped,
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.work),
-                    title: Text(I18n.of(context).Works)),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.bookmark), title: Text("Detail")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.bookmark),
-                    title: Text(I18n.of(context).BookMark)),
-              ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {},
-              child: state is UserDataState
-                  ? PainterAvatar(
-                      url: state.userDetail.user.profile_image_urls.medium,
-                      id: state.userDetail.user.id,
-                      onTap: () async {
-                        BlocProvider.of<UserBloc>(context)
-                            .add(ShowSheetEvent());
-                      },
-                    )
-                  : Icon(Icons.data_usage),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-          );
+          if (state is UserDataState)
+            return BlocBuilder<RouteBloc, RouteState>(
+                builder: (context, snapshot) {
+              return Scaffold(
+                appBar: AppBar(
+                  actions: _buildActions(context, state, snapshot),
+                  title: Text(state.userDetail.user.name),
+                ),
+                body: _buildTabBarView(context, state),
+                bottomNavigationBar: BottomNavigationBar(
+                  currentIndex: _selectedIndex,
+                  onTap: _onItemTapped,
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.work),
+                        title: Text(I18n.of(context).Works)),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.bookmark), title: Text("Detail")),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.bookmark),
+                        title: Text(I18n.of(context).BookMark)),
+                  ],
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {},
+                  child: PainterAvatar(
+                    url: state.userDetail.user.profile_image_urls.medium,
+                    id: state.userDetail.user.id,
+                    onTap: () async {},
+                  ),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+              );
+            });
+          else
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
         },
       ),
     );
   }
 
-  TabBarView _buildTabBarView() {
+  List<Widget> _buildActions(
+      BuildContext context, UserDataState state, RouteState snapshot) {
+    if (snapshot is HasUserState) {
+      if (int.parse(snapshot.list.userId) != widget.id) {
+        return <Widget>[
+          IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () {
+                if (state is UserDataState)
+                  Share.share(
+                      'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+              })
+        ];
+      }
+    }
+
+    if (_selectedIndex != 2)
+      return <Widget>[
+        IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {
+              if (state is UserDataState)
+                Share.share(
+                    'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+            })
+      ];
+    else
+      return <Widget>[
+        IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {
+              if (state is UserDataState)
+                Share.share(
+                    'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+            }),
+        PopupMenuButton<WhyFarther>(
+          initialValue: WhyFarther.public,
+          onSelected: (WhyFarther result) {
+            if (WhyFarther.public == result) {
+              BlocProvider.of<UserBloc>(context)
+                  .add(ChoiceRestrictEvent("public", state.userDetail));
+            } else if (WhyFarther.private == result) {
+              BlocProvider.of<UserBloc>(context)
+                  .add(ChoiceRestrictEvent("private", state.userDetail));
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
+            const PopupMenuItem<WhyFarther>(
+              value: WhyFarther.public,
+              child: Text('Working a lot harder'),
+            ),
+            const PopupMenuItem<WhyFarther>(
+              value: WhyFarther.private,
+              child: Text('Being a lot smarter'),
+            ),
+          ],
+        )
+      ];
+  }
+
+  TabBarView _buildTabBarView(BuildContext context, UserDataState state) {
     return TabBarView(
       controller: _tabController,
       children: <Widget>[
         WorksPage(id: widget.id),
         UserDetailPage(),
-        BookmarkPage(id: widget.id),
+        BookmarkPage(
+          id: widget.id,
+          restrict: state.choiceRestrict,
+        )
       ],
     );
   }

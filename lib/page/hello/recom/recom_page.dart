@@ -5,9 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
+import 'package:pixez/page/user/user_page.dart';
 
 class ReComPage extends StatefulWidget {
   @override
@@ -39,9 +41,26 @@ class _ReComPageState extends State<ReComPage> {
             },
             child: Scaffold(
                 appBar: AppBar(
-                  title: Text(I18n
-                      .of(context)
-                      .Recommend),
+                  title: Text(I18n.of(context).Recommend),
+                  actions: <Widget>[
+                    BlocBuilder<RouteBloc, RouteState>(
+                      builder: (context, state) {
+                        if (state is HasUserState) {
+                          return IconButton(
+                              icon: Icon(Icons.account_circle),
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return UserPage(
+                                    id: int.parse(state.list.userId),
+                                  );
+                                }));
+                              });
+                        } else
+                          return Icon(Icons.account_circle);
+                      },
+                    ),
+                  ],
                 ),
                 body: BlocBuilder<RecomBloc, RecomState>(
                     builder: (context, state) {
