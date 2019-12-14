@@ -22,6 +22,10 @@ class DataState extends SearchResultState {
 
 class ShowBottomSheetState extends SearchResultState {
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
+}
+class  ShowStarNumState extends  SearchResultState{
+  @override
+  List<Object> get props => [];
+  
 }

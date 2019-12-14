@@ -39,6 +39,9 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
           print(e);
         }
       }
+      else{
+        yield LoadEndState();
+      }
     }
   }
 }

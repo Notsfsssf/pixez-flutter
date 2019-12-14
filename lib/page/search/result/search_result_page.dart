@@ -21,33 +21,12 @@ class SearchResultPage extends StatefulWidget {
   _SearchResultPageState createState() => _SearchResultPageState();
 }
 
-class MaterialHeader extends Header {
-  @override
-  Widget contentBuilder(
-      BuildContext context,
-      RefreshMode refreshState,
-      double pulledExtent,
-      double refreshTriggerPullDistance,
-      double refreshIndicatorExtent,
-      AxisDirection axisDirection,
-      bool float,
-      Duration completeDuration,
-      bool enableInfiniteRefresh,
-      bool success,
-      bool noMore) {
-    // TODO: implement contentBuilder
-    return Container(
-      child: Text("Pick"),
-    );
-  }
-}
-
 class _SearchResultPageState extends State<SearchResultPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
   EasyRefreshController _refreshController;
   Completer<void> _refreshCompleter, _loadCompleter;
-
+  int _selectindex = 0;
   @override
   void initState() {
     super.initState();
@@ -55,6 +34,27 @@ class _SearchResultPageState extends State<SearchResultPage>
     _loadCompleter = Completer<void>();
     _tabController = TabController(vsync: this, length: 2);
     _refreshController = EasyRefreshController();
+    _tabController.addListener(() {
+      setState(() {
+        _selectindex = this._tabController.index;
+      });
+    });
+  }
+
+  List<int> starNum = [
+    50000,
+    30000,
+    20000,
+    10000,
+    5000,
+    1000,
+    500,
+    250,
+    100,
+    0
+  ];
+  String toUserBookString(int num) {
+    return "${num} users入り";
   }
 
   String _sortValue = "date_desc";
@@ -74,63 +74,78 @@ class _SearchResultPageState extends State<SearchResultPage>
         staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
       ),
       onRefresh: () async {
-        BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(
-            widget.word,
-            _sortValue,
-            _searchTargetValue,
-            startDate,
-            endDate,
-            enableDuration));
+        _bloc.add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
+            startDate, endDate, enableDuration));
         return _refreshCompleter.future;
       },
       onLoad: () async {
-        BlocProvider.of<SearchResultBloc>(context)
-            .add(LoadMoreEvent(state.nextUrl, state.illusts));
+        _bloc.add(LoadMoreEvent(state.nextUrl, state.illusts));
         return _loadCompleter.future;
       },
     );
   }
-Widget  _buildFirst(state)=>BlocListener<SearchResultBloc, SearchResultState>(
-                  listener: (context, state) {
-                    if (state is DataState) {
-                      _loadCompleter?.complete();
-                      _loadCompleter = Completer();
-                      _refreshCompleter?.complete();
-                      _refreshCompleter = Completer();
-                    }
-                  },
-                  child: _buildEasyRefresh(state, context));
+
+  SearchResultBloc _bloc;
+  Widget _buildFirst(state) =>
+      BlocListener<SearchResultBloc, SearchResultState>(
+          bloc: _bloc,
+          listener: (context, state) {
+            if (state is DataState) {
+              _loadCompleter?.complete();
+              _loadCompleter = Completer();
+              _refreshCompleter?.complete();
+              _refreshCompleter = Completer();
+            }
+          },
+          child: _buildEasyRefresh(state, context));
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SearchResultBloc(ApiClient())
-        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
-            endDate, enableDuration)),
-      child: BlocBuilder<SearchResultBloc, SearchResultState>(
-        builder: (context, state) {
-          if (state is DataState)
-            return Scaffold(
-              appBar: _buildAppBar(context),
-              body: PageView(
+    _bloc = SearchResultBloc(ApiClient())
+      ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
+          endDate, enableDuration));
+    return BlocBuilder<SearchResultBloc, SearchResultState>(
+      bloc: _bloc,
+      condition: (pre, now) {
+        return now is DataState;
+      },
+      builder: (context, state) {
+        if (state is DataState)
+          return Scaffold(
+            appBar: _buildAppBar(context),
+            body: BlocListener<SearchResultBloc, SearchResultState>(
+              child: TabBarView(
+                controller: _tabController,
                 children: <Widget>[
                   _buildFirst(state),
-                  SearchResultPainerPage(word: widget.word,)
+                  SearchResultPainerPage(
+                    word: widget.word,
+                  )
                 ],
               ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {},
-                child: Icon(Icons.sort),
-              ),
-            );
-          else
-            return Scaffold(
-              appBar: AppBar(),
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-        },
-      ),
+              listener: (BuildContext context, SearchResultState state) {
+                if (state is ShowStarNumState) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text("data"),
+                  ));
+                }
+              },
+              bloc: _bloc,
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _bloc.add(ShowStarNumEvent());
+              },
+              child: Icon(Icons.sort),
+            ),
+          );
+        else
+          return Scaffold(
+            appBar: _buildAppBar(context),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+      },
     );
   }
 
@@ -258,14 +273,13 @@ Widget  _buildFirst(state)=>BlocListener<SearchResultBloc, SearchResultState>(
                             child: RaisedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                BlocProvider.of<SearchResultBloc>(context).add(
-                                    ApplyEvent(
-                                        widget.word,
-                                        _sortValue,
-                                        _searchTargetValue,
-                                        startDate,
-                                        endDate,
-                                        enableDuration));
+                                _bloc.add(ApplyEvent(
+                                    widget.word,
+                                    _sortValue,
+                                    _searchTargetValue,
+                                    startDate,
+                                    endDate,
+                                    enableDuration));
                               },
                               child: Text("Apply"),
                               color: Theme.of(context).primaryColor,

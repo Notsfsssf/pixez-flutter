@@ -14,8 +14,7 @@ class FetchEvent extends SearchResultEvent {
       this.endDate, this.enableDuration);
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
 
 class LoadMoreEvent extends SearchResultEvent {
@@ -30,10 +29,13 @@ class LoadMoreEvent extends SearchResultEvent {
 
 class ShowBottomSheetEvent extends SearchResultEvent {
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
-
+class ShowStarNumEvent extends SearchResultEvent{
+  @override
+  List<Object> get props => [];
+  
+}
 class ApplyEvent extends SearchResultEvent {
   final String word, sort, searchTarget;
   final DateTime startDate, endDate;
