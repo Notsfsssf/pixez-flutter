@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:dio/dio.dart';

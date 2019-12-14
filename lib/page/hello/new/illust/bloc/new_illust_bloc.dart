@@ -15,9 +15,9 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
     NewIllustEvent event,
   ) async* {
       if (event is FetchEvent) {
-      final client = new ApiClient();
+      final client =ApiClient();
       try {
-        final response = await client.getFollowIllusts(Restrict.PUBLIC);
+        final response = await client.getFollowIllusts(event.restrict);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataNewIllustState(recommend.illusts, recommend.nextUrl);
       }  catch (e) {

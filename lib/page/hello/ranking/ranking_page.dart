@@ -30,7 +30,11 @@ class _RankingPageState extends State<RankingPage>
     _tabController = TabController(vsync: this, length: modeList.length);
     super.initState();
   }
-
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
   String toRequestDate(DateTime dateTime) {
     if (dateTime == null) {
       return null;
@@ -51,7 +55,7 @@ class _RankingPageState extends State<RankingPage>
             bottom: TabBar(
                 isScrollable: true,
                 controller: _tabController,
-                tabs: modeList.map((f) {
+                tabs: I18n.of(context).Mode_List.map((f) {
                   return Tab(
                     text: f,
                   );

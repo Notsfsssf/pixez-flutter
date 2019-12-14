@@ -28,3 +28,13 @@ class SaveImageEvent extends PictureEvent{
   @override
   List<Object> get props =>[illusts,index];
 }
+class SaveChoiceImageEvent extends PictureEvent{
+  final Illusts illusts;
+  final List<int> indexs;
+
+  SaveChoiceImageEvent(this.illusts, this.indexs);
+  
+
+  @override
+  List<Object> get props =>[illusts,indexs];
+}

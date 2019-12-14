@@ -152,13 +152,13 @@ class _UserPageState extends State<UserPage>
             }
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
-            const PopupMenuItem<WhyFarther>(
+           PopupMenuItem<WhyFarther>(
               value: WhyFarther.public,
-              child: Text('Working a lot harder'),
+              child: Text(I18n.of(context).Public),
             ),
-            const PopupMenuItem<WhyFarther>(
+        PopupMenuItem<WhyFarther>(
               value: WhyFarther.private,
-              child: Text('Being a lot smarter'),
+              child: Text(I18n.of(context).Private),
             ),
           ],
         )

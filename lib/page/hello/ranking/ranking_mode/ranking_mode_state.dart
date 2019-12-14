@@ -17,12 +17,10 @@ class DataRankingModeState extends RankingModeState {
   DataRankingModeState(this.illusts, this.nextUrl);
 
   @override
-  // TODO: implement props
   List<Object> get props => [illusts, nextUrl];
 }
 
 class LoadMoreSuccessState extends RankingModeState {
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }

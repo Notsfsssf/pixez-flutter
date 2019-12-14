@@ -16,12 +16,10 @@ class DataBookmarkState extends BookmarkState {
   DataBookmarkState(this.illusts, this.nextUrl);
 
   @override
-  // TODO: implement props
   List<Object> get props => [illusts, nextUrl];
 }
 
 class LoadMoreSuccessState extends BookmarkState {
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }

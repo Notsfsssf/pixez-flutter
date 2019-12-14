@@ -5,9 +5,12 @@ abstract class NewIllustEvent extends Equatable {
   const NewIllustEvent();
 }
 class FetchEvent extends NewIllustEvent{
+  final String restrict;
+
+  FetchEvent(this.restrict);
+
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [restrict];
 
 }
 class LoadMoreEvent extends NewIllustEvent{

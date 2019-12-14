@@ -28,7 +28,7 @@ class _WorksPageState extends State<WorksPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (context) => WorksBloc()..add(FetchWorksEvent(widget.id,"illust")),
+      create: (context) => WorksBloc()..add(FetchWorksEvent(widget.id,"illust")),
       child: BlocListener<WorksBloc, WorksState>(listener: (context, state) {
         if (state is DataWorksState) {
           _loadCompleter?.complete();

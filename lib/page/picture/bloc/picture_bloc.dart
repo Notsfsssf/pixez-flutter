@@ -40,6 +40,9 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
         } catch (e) {}
       }
     }
+    if(event is SaveChoiceImageEvent){
+      
+    }
     if (event is SaveImageEvent) {
       try {
         final illust = event.illusts;

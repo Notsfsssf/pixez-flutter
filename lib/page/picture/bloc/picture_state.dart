@@ -22,7 +22,12 @@ class SaveSuccesState extends PictureState {
   @override
   List<Object> get props => [isNotSave];
 }
-
+class SaveChoiceSuccesState extends PictureState {
+  final bool isNotSave;
+  SaveChoiceSuccesState(this.isNotSave);
+  @override
+  List<Object> get props => [isNotSave];
+}
 class BookMarkState extends PictureState {
   final bool isBookMark;
 

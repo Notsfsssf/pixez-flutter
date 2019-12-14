@@ -11,7 +11,6 @@ class FetchEvent extends RankingModeEvent {
   FetchEvent(this.mode, this.date);
 
   @override
-  // TODO: implement props
   List<Object> get props => [mode, date];
 }
 

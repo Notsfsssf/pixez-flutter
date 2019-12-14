@@ -6,8 +6,7 @@ abstract class RecomEvent extends Equatable {
 }
 class FetchEvent extends RecomEvent{
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 
 }
 class LoadMoreEvent extends RecomEvent{

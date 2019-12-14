@@ -12,7 +12,6 @@ class FetchWorksEvent extends WorksEvent {
   FetchWorksEvent(this.user_id, this.type);
 
   @override
-  // TODO: implement props
   List<Object> get props => [user_id, type];
 }
 

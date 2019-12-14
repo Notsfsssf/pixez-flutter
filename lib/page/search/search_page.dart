@@ -15,6 +15,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   String editString = "";
+  Widget _appBarTitle = Text("Search");
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +60,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Icon _searchIcon = Icon(Icons.search);
   final TextEditingController _filter = TextEditingController();
-  Widget _appBarTitle = Text('Search');
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -136,6 +140,7 @@ class _SearchPageState extends State<SearchPage> {
                       },
                       fit: BoxFit.fitWidth,
                     ),
+  
                     Align(
                       child: Text(tags[index].tag),
                       alignment: Alignment.bottomCenter,

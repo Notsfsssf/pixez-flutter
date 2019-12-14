@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/bloc/bloc.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/bloc/bloc.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
@@ -56,6 +57,7 @@ class _HelloPageState extends State<HelloPage> {
               return Scaffold(
                 body: SizedBox.expand(
                   child: PageView(
+                    
                     controller: _pageController,
                     onPageChanged: (index) {
                       setState(() => _selectedIndex = index);
@@ -88,24 +90,24 @@ class _HelloPageState extends State<HelloPage> {
         items: [
           BottomNavyBarItem(
             icon: Icon(Icons.home),
-            title: Text('Home'),
+            title: Text(I18n.of(context).Recommend),
             activeColor: Colors.red,
           ),
           BottomNavyBarItem(
               icon: Icon(Icons.assessment),
-              title: Text('Ranking'),
+              title: Text(I18n.of(context).Rank),
               activeColor: Colors.purpleAccent),
           BottomNavyBarItem(
               icon: Icon(Icons.calendar_view_day),
-              title: Text('New'),
+              title: Text(I18n.of(context).New),
               activeColor: Colors.pink),
           BottomNavyBarItem(
               icon: Icon(Icons.search),
-              title: Text('Search'),
+              title: Text(I18n.of(context).Search),
               activeColor: Colors.blue),
           BottomNavyBarItem(
               icon: Icon(Icons.settings),
-              title: Text('Settings'),
+              title: Text(I18n.of(context).Setting),
               activeColor: Colors.amber),
         ],
       );

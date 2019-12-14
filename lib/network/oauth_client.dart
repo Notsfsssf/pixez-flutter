@@ -6,7 +6,6 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 
 import 'package:intl/intl.dart';
-import 'package:pixez/models/account.dart';
 
 class OAuthClient {
   final String hashSalt =

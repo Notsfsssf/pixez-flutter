@@ -12,6 +12,7 @@ import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
+import 'package:pixez/page/search/result/search_result_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:share/share.dart';
 
@@ -36,8 +37,7 @@ class _PicturePageState extends State<PicturePage> {
     return BlocProvider<PictureBloc>(
         create: (context) => PictureBloc(ApiClient()),
         child:
-            BlocBuilder<PictureBloc, PictureState>(
-              builder: (context, state) {
+            BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
           return Scaffold(
             body: Stack(
               fit: StackFit.expand,
@@ -48,7 +48,8 @@ class _PicturePageState extends State<PicturePage> {
                     IconButton(
                         icon: Icon(Icons.more_vert),
                         onPressed: () {
-                          buildShowModalBottomSheet(context);
+                          if (state is DataState)
+                            buildShowModalBottomSheet(context, state.illusts);
                         })
                   ],
                 )
@@ -76,7 +77,7 @@ class _PicturePageState extends State<PicturePage> {
         }));
   }
 
-  Future buildShowModalBottomSheet(BuildContext context) {
+  Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -92,23 +93,26 @@ class _PicturePageState extends State<PicturePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     ListTile(
-                      title: Text("多选保存"),
+                      title: Text(I18n.of(context).Muti_Choice_save),
                       leading: Icon(
                         Icons.save,
                         color: Theme.of(context).primaryColor,
                       ),
                       onTap: () {
                         Navigator.of(context).pop();
+                        List<int> indexs = [];
+                        BlocProvider.of<PictureBloc>(context)
+                            .add(SaveChoiceImageEvent(illusts, indexs));
                       },
                     ),
                     ListTile(
-                      title: Text("分享"),
+                      title: Text(I18n.of(context).Share),
                       leading: Icon(Icons.share,
                           color: Theme.of(context).primaryColor),
                       onTap: () {
+                        Navigator.of(context).pop();
                         Share.share(
                             "https://www.pixiv.net/artworks/${widget._illusts.id}");
-                        Navigator.of(context).pop();
                       },
                     ),
                   ],
@@ -122,7 +126,7 @@ class _PicturePageState extends State<PicturePage> {
                     ListTile(
                       leading: Icon(Icons.cancel,
                           color: Theme.of(context).primaryColor),
-                      title: Text("取消"),
+                      title: Text(I18n.of(context).Cancel),
                       onTap: () {
                         Navigator.of(context).pop();
                       },
@@ -148,18 +152,41 @@ class _PicturePageState extends State<PicturePage> {
           placeHolder: illust.metaPages[index].imageUrls.medium,
         );
 
+  Widget _buildGridView() => GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3, //
+      ),
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          color: Colors.amber,
+        );
+      });
+
   Widget _buildList(Illusts illust) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
     return ListView.builder(
-        itemCount: count + 1,
+        itemCount: count + 2,
         itemBuilder: (BuildContext context, int index) {
+          if (index == count + 1) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(I18n.of(context).About_Picture),
+                ),
+              ],
+            );
+          }
           if (index == count) {
             return _buildDetail(context, illust);
           } else
             return BlocListener<PictureBloc, PictureState>(
               listener: (context, state) {
                 if (state is SaveSuccesState) {
-                   Scaffold.of(context).showSnackBar(SnackBar(
+                  Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text(I18n.of(context).Saved),
                   ));
                 }
@@ -202,9 +229,15 @@ class _PicturePageState extends State<PicturePage> {
         });
   }
 
+  Widget colorText(String text) => Text(
+        text,
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      );
+
   Widget _buildDetail(BuildContext context, Illusts illust) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -236,6 +269,88 @@ class _PicturePageState extends State<PicturePage> {
                 ),
               ],
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(I18n.of(context).Illust_id),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText(illust.id.toString()),
+                      Container(
+                        width: 20.0,
+                      ),
+                      Text(I18n.of(context).Pixel),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText("${illust.width}x${illust.height}")
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(I18n.of(context).Total_view),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText(illust.totalView.toString()),
+                      Container(
+                        width: 20.0,
+                      ),
+                      Text(I18n.of(context).Total_bookmark),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText("${illust.totalBookmarks}")
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Wrap(
+                spacing: 2, // gap between adjacent chips
+                runSpacing: 0, // gap between lines
+                children: illust.tags
+                    .map((f) => Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return SearchResultPage(
+                                      word: f.name,
+                                    );
+                                  }));
+                                },
+                                child: Text(
+                                  "#${f.name}",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                              ),
+                              Container(
+                                width: 10.0,
+                              ),
+                              Flexible(
+                                  child: Text(
+                                f.translatedName ?? "~",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                softWrap: true,
+                              ))
+                            ]))
+                    .toList(),
+              ),
+            ),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -244,15 +359,12 @@ class _PicturePageState extends State<PicturePage> {
                 ),
               ),
             ),
-            Wrap(
-              spacing: 2, // gap between adjacent chips
-              runSpacing: 0, // gap between lines
-              children: illust.tags
-                  .map((f) => ActionChip(
-                        label: Text(f.name),
-                        onPressed: () {},
-                      ))
-                  .toList(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                I18n.of(context).View_Comment,
+                textAlign: TextAlign.center,
+              ),
             )
           ],
         ),

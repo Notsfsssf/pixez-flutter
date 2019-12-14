@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/page/hello/new/new_illust/bloc/bloc.dart';
+import 'package:pixez/page/hello/new/illust/bloc/bloc.dart';
 
 class DrawTriangle extends CustomPainter {
   Paint _paint;
@@ -35,35 +35,46 @@ class DrawTriangle extends CustomPainter {
 }
 
 class NewIllustPage extends StatefulWidget {
+  final String restrict;
+
+  const NewIllustPage({Key key, this.restrict}) : super(key: key);
   @override
   _NewIllustPageState createState() => _NewIllustPageState();
 }
 
 class _NewIllustPageState extends State<NewIllustPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
-
+  NewIllustBloc _bloc;
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
+  
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bloc.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => NewIllustBloc()..add(FetchEvent()),
-        child: BlocListener<NewIllustBloc, NewIllustState>(
-          listener: (context, state) {
-            if (state is DataNewIllustState) {
-              _loadCompleter?.complete();
-              _loadCompleter = Completer();
-              _refreshCompleter?.complete();
-              _refreshCompleter = Completer();
-            }
-          },
-          child: BlocBuilder<NewIllustBloc, NewIllustState>(
-              builder: (context, state) {
+      _bloc = NewIllustBloc()..add(FetchEvent(widget.restrict));
+    return BlocListener<NewIllustBloc, NewIllustState>(
+      bloc: _bloc,
+      listener: (context, state) {
+        if (state is DataNewIllustState) {
+          _loadCompleter?.complete();
+          _loadCompleter = Completer();
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+        }
+      },
+      child: BlocBuilder<NewIllustBloc, NewIllustState>(
+          bloc: _bloc,
+          builder: (context, state) {
             if (state is DataNewIllustState)
               return _buildEasyRefresh(state, context);
             else
@@ -71,7 +82,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                 child: CircularProgressIndicator(),
               );
           }),
-        ));
+    );
   }
 
   EasyRefresh _buildEasyRefresh(
@@ -86,12 +97,11 @@ class _NewIllustPageState extends State<NewIllustPage> {
         staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
       ),
       onRefresh: () async {
-        BlocProvider.of<NewIllustBloc>(context).add(FetchEvent());
+        _bloc.add(FetchEvent(widget.restrict));
         return _refreshCompleter.future;
       },
       onLoad: () async {
-        BlocProvider.of<NewIllustBloc>(context)
-            .add(LoadMoreEvent(state.nextUrl, state.illusts));
+        _bloc.add(LoadMoreEvent(state.nextUrl, state.illusts));
         return _loadCompleter.future;
       },
     );

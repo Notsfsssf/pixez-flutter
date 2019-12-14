@@ -15,7 +15,6 @@ class  DateState extends RankingState {
 
   DateState(this.dateTime);
   @override
-  // TODO: implement props
   List<Object> get props => [dateTime];
   
 }

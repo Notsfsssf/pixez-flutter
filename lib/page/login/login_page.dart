@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'bloc/login_event.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context1) {
   return  BlocProvider(
-    builder: (context)=>LoginBloc(),
+    create: (context)=>LoginBloc(),
     child: BlocListener<LoginBloc,LoginState>(
         listener: (context, state) {
           if (state is SuccessState) {

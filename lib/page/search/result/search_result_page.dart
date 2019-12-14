@@ -7,8 +7,10 @@ import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result/bloc/bloc.dart';
+import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
 
 class SearchResultPage extends StatefulWidget {
   final String word;
@@ -45,12 +47,10 @@ class _SearchResultPageState extends State<SearchResultPage>
   TabController _tabController;
   EasyRefreshController _refreshController;
   Completer<void> _refreshCompleter, _loadCompleter;
-  GlobalKey<ScaffoldState> _scaffoldStateKey;
 
   @override
   void initState() {
     super.initState();
-    _scaffoldStateKey = GlobalKey<ScaffoldState>();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _tabController = TabController(vsync: this, length: 2);
@@ -60,8 +60,7 @@ class _SearchResultPageState extends State<SearchResultPage>
   String _sortValue = "date_desc";
   String _searchTargetValue = "partial_match_for_tags";
   bool enableDuration = false;
-  DateTime startDate = DateTime.now(),
-      endDate = DateTime.now();
+  DateTime startDate = DateTime.now(), endDate = DateTime.now();
 
   EasyRefresh _buildEasyRefresh(DataState state, BuildContext context) {
     return EasyRefresh(
@@ -91,20 +90,7 @@ class _SearchResultPageState extends State<SearchResultPage>
       },
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-      SearchResultBloc(ApiClient())
-        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
-            endDate, enableDuration)),
-      child: BlocBuilder<SearchResultBloc, SearchResultState>(
-        builder: (context, state) {
-          if (state is DataState)
-            return Scaffold(
-              appBar: _buildAppBar(context),
-              body: BlocListener<SearchResultBloc, SearchResultState>(
+Widget  _buildFirst(state)=>BlocListener<SearchResultBloc, SearchResultState>(
                   listener: (context, state) {
                     if (state is DataState) {
                       _loadCompleter?.complete();
@@ -113,7 +99,24 @@ class _SearchResultPageState extends State<SearchResultPage>
                       _refreshCompleter = Completer();
                     }
                   },
-                  child: _buildEasyRefresh(state, context)),
+                  child: _buildEasyRefresh(state, context));
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SearchResultBloc(ApiClient())
+        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
+            endDate, enableDuration)),
+      child: BlocBuilder<SearchResultBloc, SearchResultState>(
+        builder: (context, state) {
+          if (state is DataState)
+            return Scaffold(
+              appBar: _buildAppBar(context),
+              body: PageView(
+                children: <Widget>[
+                  _buildFirst(state),
+                  SearchResultPainerPage(word: widget.word,)
+                ],
+              ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {},
                 child: Icon(Icons.sort),
@@ -162,38 +165,36 @@ class _SearchResultPageState extends State<SearchResultPage>
                           Row(
                             children: <Widget>[
                               ...sort
-                                  .map((f) =>
-                                  Flexible(
-                                    child: RadioListTile<String>(
-                                      value: f,
-                                      title: Text(f),
-                                      groupValue: _sortValue,
-                                      onChanged: (value) {
-                                        setBottomSheetState(() {
-                                          _sortValue = value;
-                                        });
-                                      },
-                                    ),
-                                  ))
+                                  .map((f) => Flexible(
+                                        child: RadioListTile<String>(
+                                          value: f,
+                                          title: Text(f),
+                                          groupValue: _sortValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _sortValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ))
                                   .toList(),
                             ],
                           ),
                           Row(
                             children: <Widget>[
                               ...search_target
-                                  .map((f) =>
-                                  Flexible(
-                                    child: RadioListTile<String>(
-                                      value: f,
-                                      title: Text(f),
-                                      groupValue: _searchTargetValue,
-                                      onChanged: (value) {
-                                        setBottomSheetState(() {
-                                          _searchTargetValue = value;
-                                        });
-                                      },
-                                    ),
-                                  ))
+                                  .map((f) => Flexible(
+                                        child: RadioListTile<String>(
+                                          value: f,
+                                          title: Text(f),
+                                          groupValue: _searchTargetValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _searchTargetValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ))
                                   .toList(),
                             ],
                           ),
@@ -214,14 +215,14 @@ class _SearchResultPageState extends State<SearchResultPage>
                                         maxDateTime: endDate,
                                         initialDateTime: startDate, onConfirm:
                                             (DateTime dateTime,
-                                            List<int> list) {
-                                          setBottomSheetState(() {
-                                            startDate = dateTime;
-                                          });
-                                          setState(() {
-                                            startDate = dateTime;
-                                          });
-                                        });
+                                                List<int> list) {
+                                      setBottomSheetState(() {
+                                        startDate = dateTime;
+                                      });
+                                      setState(() {
+                                        startDate = dateTime;
+                                      });
+                                    });
                                   },
                                   child: Text(startDate
                                       .toIso8601String()
@@ -234,14 +235,14 @@ class _SearchResultPageState extends State<SearchResultPage>
                                         maxDateTime: DateTime.now(),
                                         initialDateTime: endDate, onConfirm:
                                             (DateTime dateTime,
-                                            List<int> list) {
-                                          setBottomSheetState(() {
-                                            endDate = dateTime;
-                                          });
-                                          setState(() {
-                                            endDate = dateTime;
-                                          });
-                                        });
+                                                List<int> list) {
+                                      setBottomSheetState(() {
+                                        endDate = dateTime;
+                                      });
+                                      setState(() {
+                                        endDate = dateTime;
+                                      });
+                                    });
                                   },
                                   child: Text(
                                       endDate.toIso8601String().split("T")[0]),
@@ -253,7 +254,7 @@ class _SearchResultPageState extends State<SearchResultPage>
                           ),
                           Padding(
                             padding:
-                            const EdgeInsets.only(left: 8.0, right: 8.0),
+                                const EdgeInsets.only(left: 8.0, right: 8.0),
                             child: RaisedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -267,9 +268,7 @@ class _SearchResultPageState extends State<SearchResultPage>
                                         enableDuration));
                               },
                               child: Text("Apply"),
-                              color: Theme
-                                  .of(context)
-                                  .primaryColor,
+                              color: Theme.of(context).primaryColor,
                               textColor: Colors.white,
                             ),
                           )
@@ -285,10 +284,10 @@ class _SearchResultPageState extends State<SearchResultPage>
         controller: _tabController,
         tabs: <Widget>[
           Tab(
-            child: Text("Illust"),
+            child: Text(I18n.of(context).Illust),
           ),
           Tab(
-            child: Text("Illust"),
+            child: Text(I18n.of(context).Painter),
           ),
         ],
       ),

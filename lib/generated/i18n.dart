@@ -34,30 +34,66 @@ class I18n implements WidgetsLocalizations {
 
   /// "登录"
   String get Login => "登录";
-
   /// "保存"
   String get Save => "保存";
-
   /// "已保存"
   String get Saved => "已保存";
-
   /// "已存在"
   String get Already_Saved => "已存在";
-
   /// "推荐"
   String get Recommend => "推荐";
-
   /// "收藏"
   String get BookMark => "收藏";
-
   /// "作品"
   String get Works => "作品";
-
   /// "排行"
   String get Rank => "排行";
-
   /// "搜索"
   String get Search => "搜索";
+  /// ["每日", "男性", "女性", "原创", "新人", "每周", "每月", "XVIII", "XVIII_Week"]
+  List<String> get Mode_List => ["每日", "男性", "女性", "原创", "新人", "每周", "每月", "XVIII", "XVIII_Week"];
+  /// "插画id"
+  String get Illust_id => "插画id";
+  /// "插画"
+  String get Illust => "插画";
+  /// "分辨率"
+  String get Pixel => "分辨率";
+  /// "总查看"
+  String get Total_view => "总查看";
+  /// "总收藏"
+  String get Total_bookmark => "总收藏";
+  /// "查看评论"
+  String get View_Comment => "查看评论";
+  /// "相关图片"
+  String get About_Picture => "相关图片";
+  /// "公开"
+  String get Public => "公开";
+  /// "非公开"
+  String get Private => "非公开";
+  /// "设置"
+  String get Setting => "设置";
+  /// "全部"
+  String get All => "全部";
+  /// "速览"
+  String get Quick_View => "速览";
+  /// "动态"
+  String get New => "动态";
+  /// "画师"
+  String get Painter => "画师";
+  /// "多选保存"
+  String get Muti_Choice_save => "多选保存";
+  /// "分享"
+  String get Share => "分享";
+  /// "取消"
+  String get Cancel => "取消";
+  /// "确认"
+  String get OK => "确认";
+  /// "主题"
+  String get Theme => "主题";
+  /// "路径"
+  String get Path => "路径";
+  /// "格式"
+  String get Format => "格式";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -76,34 +112,90 @@ class _I18n_en_US extends I18n {
   /// "Save"
   @override
   String get Save => "Save";
-
   /// "Saved"
   @override
   String get Saved => "Saved";
-
   /// "Already Saved"
   @override
   String get Already_Saved => "Already Saved";
-
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
-
   /// "BookMark"
   @override
   String get BookMark => "BookMark";
-
   /// "Works"
   @override
   String get Works => "Works";
-
   /// "Rank"
   @override
   String get Rank => "Rank";
-
-  /// "search for"
+  /// "Search"
   @override
-  String get Search => "search for";
+  String get Search => "Search";
+  /// "Illustration id"
+  @override
+  String get Illust_id => "Illustration id";
+  /// "illustration"
+  @override
+  String get Illust => "illustration";
+  /// "Resolution"
+  @override
+  String get Pixel => "Resolution";
+  /// "Total view"
+  @override
+  String get Total_view => "Total view";
+  /// "Total collection"
+  @override
+  String get Total_bookmark => "Total collection";
+  /// "View comments"
+  @override
+  String get View_Comment => "View comments";
+  /// "related pictures"
+  @override
+  String get About_Picture => "related pictures";
+  /// "public"
+  @override
+  String get Public => "public";
+  /// "Non-publicise"
+  @override
+  String get Private => "Non-publicise";
+  /// "Set up"
+  @override
+  String get Setting => "Set up";
+  /// "All"
+  @override
+  String get All => "All";
+  /// "Quick tour"
+  @override
+  String get Quick_View => "Quick tour";
+  /// "dynamic"
+  @override
+  String get New => "dynamic";
+  /// "Artist"
+  @override
+  String get Painter => "Artist";
+  /// "Multiple selection save"
+  @override
+  String get Muti_Choice_save => "Multiple selection save";
+  /// "share it"
+  @override
+  String get Share => "share it";
+  /// "cancel"
+  @override
+  String get Cancel => "cancel";
+  /// "confirm"
+  @override
+  String get OK => "confirm";
+  /// "theme"
+  @override
+  String get Theme => "theme";
+  /// "path"
+  @override
+  String get Path => "path";
+  /// "format"
+  @override
+  String get Format => "format";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

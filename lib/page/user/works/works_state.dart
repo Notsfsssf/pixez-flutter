@@ -17,12 +17,10 @@ class DataWorksState extends WorksState {
   DataWorksState(this.illusts, this.nextUrl);
 
   @override
-  // TODO: implement props
   List<Object> get props => [illusts, nextUrl];
 }
 
 class LoadMoreSuccessState extends WorksState {
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
