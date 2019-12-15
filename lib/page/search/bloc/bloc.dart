@@ -4,3 +4,6 @@ export 'suggestion_state.dart';
 export 'trend_tags_bloc.dart';
 export 'trend_tags_event.dart';
 export 'trend_tags_state.dart';
+export 'tag_history_bloc.dart';
+export 'tag_history_event.dart';
+export 'tag_history_state.dart';

@@ -138,7 +138,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
   }
 
   int _selectIndex = 0;
-
+  NewDataRestrictState _preNewDataRestrictState;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -187,16 +187,36 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
                         BlocListener<NewBloc, NewState>(
                           listener: (context, state) {
                             if (state is NewDataRestrictState) {
-                              BlocProvider.of<NewIllustBloc>(context)
-                                  .add(FetchIllustEvent(state.painterRestrict));
-                              BlocProvider.of<BookmarkBloc>(context).add(
-                                  FetchBookmarkEvent(
-                                      int.parse(state1.list.userId),
-                                      state.bookRestrict));
-                              BlocProvider.of<NewPainterBloc>(context).add(
-                                  FetchPainterEvent(
-                                      int.parse(state1.list.userId),
-                                      state.painterRestrict));
+                              if (_preNewDataRestrictState != null) {
+                                if (_preNewDataRestrictState.bookRestrict !=
+                                    state.bookRestrict)
+                                  BlocProvider.of<BookmarkBloc>(context).add(
+                                      FetchBookmarkEvent(
+                                          int.parse(state1.list.userId),
+                                          state.bookRestrict));
+                                if (_preNewDataRestrictState.newRestrict !=
+                                    state.newRestrict)
+                                  BlocProvider.of<NewIllustBloc>(context)
+                                      .add(FetchIllustEvent(state.newRestrict));
+                                if (_preNewDataRestrictState.painterRestrict !=
+                                    state.painterRestrict)
+                                  BlocProvider.of<NewPainterBloc>(context).add(
+                                      FetchPainterEvent(
+                                          int.parse(state1.list.userId),
+                                          state.painterRestrict));
+                              } else {
+                                BlocProvider.of<BookmarkBloc>(context).add(
+                                    FetchBookmarkEvent(
+                                        int.parse(state1.list.userId),
+                                        state.bookRestrict));
+                                BlocProvider.of<NewIllustBloc>(context)
+                                    .add(FetchIllustEvent(state.newRestrict));
+                                BlocProvider.of<NewPainterBloc>(context).add(
+                                    FetchPainterEvent(
+                                        int.parse(state1.list.userId),
+                                        state.painterRestrict));
+                              }
+                              _preNewDataRestrictState = state;//迷惑行为
                             }
                           },
                         )
