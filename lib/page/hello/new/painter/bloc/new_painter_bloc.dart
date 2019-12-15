@@ -6,10 +6,8 @@ import './bloc.dart';
 
 class NewPainterBloc extends Bloc<NewPainterEvent, NewPainterState> {
   final ApiClient client;
-  final int id;
-  final String restrict;
 
-  NewPainterBloc(this.client, this.id, this.restrict);
+  NewPainterBloc(this.client);
 
   @override
   NewPainterState get initialState => InitialNewPainterState();
@@ -18,7 +16,7 @@ class NewPainterBloc extends Bloc<NewPainterEvent, NewPainterState> {
   Stream<NewPainterState> mapEventToState(
     NewPainterEvent event,
   ) async* {
-    if (event is FetchEvent) {
+    if (event is FetchPainterEvent) {
       try {
         final response = await client.getUserFollowing(event.id, event.retrict);
         UserPreviewsResponse userPreviews =

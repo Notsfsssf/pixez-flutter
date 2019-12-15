@@ -32,6 +32,8 @@ class _NewPainterPageState extends State<NewPainterPage> {
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _refreshController = EasyRefreshController();
+    BlocProvider.of<NewPainterBloc>(context)
+        .add(FetchPainterEvent(widget.id, widget.restrict));
   }
 
   @override
@@ -42,10 +44,7 @@ class _NewPainterPageState extends State<NewPainterPage> {
 
   @override
   Widget build(BuildContext context) {
-    _bloc = NewPainterBloc(ApiClient(), widget.id, widget.restrict)
-      ..add(FetchEvent(widget.id, widget.restrict));
     return BlocListener<NewPainterBloc, NewPainterState>(
-      bloc: _bloc,
       listener: (context, state) {
         if (state is DataState) {
           _loadCompleter?.complete();
@@ -62,7 +61,6 @@ class _NewPainterPageState extends State<NewPainterPage> {
         }
       },
       child: BlocBuilder<NewPainterBloc, NewPainterState>(
-        bloc: _bloc,
         condition: (pre, now) {
           return now is DataState;
         },
@@ -71,7 +69,7 @@ class _NewPainterPageState extends State<NewPainterPage> {
             return EasyRefresh(
               controller: _refreshController,
               onRefresh: () {
-                _bloc.add(FetchEvent(widget.id, widget.restrict));
+                _bloc.add(FetchPainterEvent(widget.id, widget.restrict));
                 return _refreshCompleter.future;
               },
               onLoad: () {
@@ -82,7 +80,9 @@ class _NewPainterPageState extends State<NewPainterPage> {
                 itemCount: state.users.length,
                 itemBuilder: (BuildContext context, int index) {
                   UserPreviews user = state.users[index];
-                  return PainterCard(user: user,);
+                  return PainterCard(
+                    user: user,
+                  );
                 },
               ),
             );

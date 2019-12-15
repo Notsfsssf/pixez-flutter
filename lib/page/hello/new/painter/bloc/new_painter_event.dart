@@ -5,11 +5,11 @@ abstract class NewPainterEvent extends Equatable {
   const NewPainterEvent();
 }
 
-class  FetchEvent extends NewPainterEvent {
+class  FetchPainterEvent extends NewPainterEvent {
   final int id;
 
  final String retrict;
-  FetchEvent(this.id, this.retrict);
+  FetchPainterEvent(this.id, this.retrict);
 
   @override
   List<Object> get props => [id,retrict];

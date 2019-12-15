@@ -14,7 +14,7 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
   Stream<NewIllustState> mapEventToState(
     NewIllustEvent event,
   ) async* {
-      if (event is FetchEvent) {
+      if (event is FetchIllustEvent) {
       final client =ApiClient();
       try {
         final response = await client.getFollowIllusts(event.restrict);

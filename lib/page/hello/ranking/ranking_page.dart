@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/bloc.dart';
+import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/ranking_mode_page.dart';
 
 class RankingPage extends StatefulWidget {
@@ -12,7 +14,7 @@ class RankingPage extends StatefulWidget {
 }
 
 class _RankingPageState extends State<RankingPage>
-    with SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   final modeList = [
     "day",
     "day_male",
@@ -30,11 +32,13 @@ class _RankingPageState extends State<RankingPage>
     _tabController = TabController(vsync: this, length: modeList.length);
     super.initState();
   }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
+
   String toRequestDate(DateTime dateTime) {
     if (dateTime == null) {
       return null;
@@ -45,10 +49,13 @@ class _RankingPageState extends State<RankingPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<RankingBloc>(
-      create: (context) => RankingBloc(),
-      child: BlocBuilder<RankingBloc, RankingState>(
-        builder: (context, state) {
+    return MultiBlocProvider(
+      providers: <BlocProvider>[
+        BlocProvider<RankingBloc>(
+          create: (context) => RankingBloc(),
+        ),
+      ],
+      child: BlocBuilder<RankingBloc, RankingState>(builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: Text(I18n.of(context).Rank),
@@ -78,15 +85,28 @@ class _RankingPageState extends State<RankingPage>
           body: TabBarView(
               controller: _tabController,
               children: modeList.map((f) {
-                return RankingModePage(
-                  mode: f,
-                  date: (state is DateState)
-                      ? toRequestDate(state.dateTime)
-                      : null,
+                return BlocProvider<RankingModeBloc>(
+                  create: (BuildContext context) =>
+                      RankingModeBloc(ApiClient())..add(FetchEvent(f, null)),
+                  child: BlocListener<RankingBloc, RankingState>(
+                    child: RankingModePage(
+                      mode: f,
+                      date: null,
+                    ),
+                    listener: (BuildContext context, state) {
+                      if (state is DateState) {
+                        BlocProvider.of<RankingModeBloc>(context)
+                            .add(FetchEvent(f, toRequestDate(state.dateTime)));
+                      }
+                    },
+                  ),
                 );
               }).toList()),
         );
       }),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

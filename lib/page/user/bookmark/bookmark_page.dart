@@ -28,14 +28,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _refreshController = EasyRefreshController();
+    BlocProvider.of<BookmarkBloc>(context)
+        .add(FetchBookmarkEvent(widget.id, widget.restrict));
   }
 
   @override
   Widget build(BuildContext context) {
-    final _bloc = BookmarkBloc()
-      ..add(FetchBookmarkEvent(widget.id, widget.restrict));
-    return BlocListener(
-      bloc: _bloc,
+    return BlocListener<BookmarkBloc, BookmarkState>(
       listener: (context, state) {
         if (state is DataBookmarkState) {
           _loadCompleter?.complete();
@@ -45,7 +44,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
         }
       },
       child: BlocBuilder<BookmarkBloc, BookmarkState>(
-        bloc: _bloc,
         builder: (context, state) {
           if (state is DataBookmarkState)
             return EasyRefresh(
@@ -59,11 +57,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
               ),
               onRefresh: () {
-                _bloc.add(FetchBookmarkEvent(widget.id, widget.restrict));
+                BlocProvider.of<BookmarkBloc>(context)
+                    .add(FetchBookmarkEvent(widget.id, widget.restrict));
                 return _refreshCompleter.future;
               },
               onLoad: () {
-                _bloc.add(LoadMoreEvent(state.nextUrl, state.illusts));
+                BlocProvider.of<BookmarkBloc>(context)
+                    .add(LoadMoreEvent(state.nextUrl, state.illusts));
                 return _loadCompleter.future;
               },
             );

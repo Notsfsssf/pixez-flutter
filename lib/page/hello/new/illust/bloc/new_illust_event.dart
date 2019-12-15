@@ -4,10 +4,10 @@ import 'package:pixez/models/illust.dart';
 abstract class NewIllustEvent extends Equatable {
   const NewIllustEvent();
 }
-class FetchEvent extends NewIllustEvent{
+class FetchIllustEvent extends NewIllustEvent{
   final String restrict;
 
-  FetchEvent(this.restrict);
+  FetchIllustEvent(this.restrict);
 
   @override
   List<Object> get props => [restrict];

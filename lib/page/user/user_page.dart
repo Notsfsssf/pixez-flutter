@@ -7,6 +7,7 @@ import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:pixez/page/user/bloc/user_bloc.dart';
+import 'package:pixez/page/user/bookmark/bloc.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/works/works_page.dart';
@@ -55,8 +56,15 @@ class _UserPageState extends State<UserPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserBloc()..add(FetchEvent(widget.id)),
+    return MultiBlocProvider(
+      providers: <BlocProvider>[
+        BlocProvider<UserBloc>(
+          create: (context) => UserBloc()..add(FetchEvent(widget.id)),
+        ),
+        BlocProvider<BookmarkBloc>(
+          create: (context) => BookmarkBloc(),
+        )
+      ],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
           if (state is UserDataState)
@@ -152,11 +160,11 @@ class _UserPageState extends State<UserPage>
             }
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
-           PopupMenuItem<WhyFarther>(
+            PopupMenuItem<WhyFarther>(
               value: WhyFarther.public,
               child: Text(I18n.of(context).Public),
             ),
-        PopupMenuItem<WhyFarther>(
+            PopupMenuItem<WhyFarther>(
               value: WhyFarther.private,
               child: Text(I18n.of(context).Private),
             ),
@@ -171,10 +179,17 @@ class _UserPageState extends State<UserPage>
       children: <Widget>[
         WorksPage(id: widget.id),
         UserDetailPage(),
-        BookmarkPage(
-          id: widget.id,
-          restrict: state.choiceRestrict,
-        )
+        BlocListener<UserBloc, UserState>(
+            listener: (context, state) {
+              if (state is UserDataState) {
+                BlocProvider.of<BookmarkBloc>(context)
+                    .add(FetchBookmarkEvent(widget.id, state.choiceRestrict));
+              }
+            },
+            child: BookmarkPage(
+              id: widget.id,
+              restrict: state.choiceRestrict,
+            ))
       ],
     );
   }
