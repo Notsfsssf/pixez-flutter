@@ -1,21 +1,29 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/models/tags.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/search/result/bloc/bloc.dart';
+import 'package:pixez/page/search/bloc/tag_history_bloc.dart';
+import 'package:pixez/page/search/bloc/tag_history_event.dart';
+import 'package:pixez/page/search/result/bloc/search_result_bloc.dart';
+import 'package:pixez/page/search/result/bloc/search_result_state.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
+import 'bloc/search_result_event.dart';
+
+
 
 class SearchResultPage extends StatefulWidget {
   final String word;
+  final String translatedName;
 
-  const SearchResultPage({Key key, this.word}) : super(key: key);
+  const SearchResultPage({Key key, this.word, this.translatedName = ""})
+      : super(key: key);
 
   @override
   _SearchResultPageState createState() => _SearchResultPageState();
@@ -27,6 +35,7 @@ class _SearchResultPageState extends State<SearchResultPage>
   EasyRefreshController _refreshController;
   Completer<void> _refreshCompleter, _loadCompleter;
   int _selectindex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +48,10 @@ class _SearchResultPageState extends State<SearchResultPage>
         _selectindex = this._tabController.index;
       });
     });
+    BlocProvider.of<TagHistoryBloc>(context)
+        .add(InsertTagHistoryEvent(TagsPersist()
+          ..name = widget.word
+          ..translatedName = widget.translatedName));
   }
 
   List<int> starNum = [
@@ -53,6 +66,7 @@ class _SearchResultPageState extends State<SearchResultPage>
     100,
     0
   ];
+
   String toUserBookString(int num) {
     return "${num} users入り";
   }
@@ -86,6 +100,7 @@ class _SearchResultPageState extends State<SearchResultPage>
   }
 
   SearchResultBloc _bloc;
+
   Widget _buildFirst(state) =>
       BlocListener<SearchResultBloc, SearchResultState>(
           bloc: _bloc,
@@ -98,6 +113,7 @@ class _SearchResultPageState extends State<SearchResultPage>
             }
           },
           child: _buildEasyRefresh(state, context));
+
   @override
   Widget build(BuildContext context) {
     _bloc = SearchResultBloc(ApiClient())

@@ -4,11 +4,31 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/search_page.dart';
-
+import 'package:bloc/bloc.dart';
 import 'generated/i18n.dart';
+class SimpleBlocDelegate extends BlocDelegate {
+  @override
+  void onEvent(Bloc bloc, Object event) {
+    super.onEvent(bloc, event);
+    print(event);
+  }
 
- main(){
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    print(transition);
+  }
+
+  @override
+  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
+    super.onError(bloc, error, stacktrace);
+    print(error);
+  }
+}
+main() {
+  BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(MyApp());
 }
 
@@ -17,8 +37,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i18n = I18n.delegate;
-    return BlocProvider(
-      create: (context) => RouteBloc()..add(FetchDataBaseEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RouteBloc>(
+          create: (context) => RouteBloc()..add(FetchDataBaseEvent()),
+        ),
+        BlocProvider<TagHistoryBloc>(
+          create: (BuildContext context) => TagHistoryBloc(),
+        )
+      ],
       child: MaterialApp(
         routes: {
           '/login': (context) => LoginPage(),

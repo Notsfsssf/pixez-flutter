@@ -24,6 +24,7 @@ class AutoWords {
       tags: tags,
     );
   }
+
   Map<String, dynamic> toJson() => {
         'tags': tags,
       };
@@ -49,6 +50,7 @@ class Tags {
           name: jsonRes['name'],
           translated_name: jsonRes['translated_name'],
         );
+
   Map<String, dynamic> toJson() => {
         'name': name,
         'translated_name': translated_name,
@@ -64,6 +66,9 @@ class TagsPersist {
   int id;
   String name;
   String translatedName;
+TagsPersist(){
+
+}
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       columnId: id,
@@ -93,7 +98,7 @@ class TagsPersistProvider {
 
   Future open() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'demo.db');
+    String path = join(databasesPath, '${tableTag}.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''
@@ -128,7 +133,7 @@ create table $tableTag (
 
     if (maps.length > 0) {
       maps.forEach((f) {
-        result.add(TagsPersist.fromMap(maps.first));
+        result.add(TagsPersist.fromMap(f));
       });
     }
     return result;
@@ -137,9 +142,11 @@ create table $tableTag (
   Future<int> delete(int id) async {
     return await db.delete(tableTag, where: '$columnId = ?', whereArgs: [id]);
   }
+
   Future<int> deleteAll() async {
     return await db.delete(tableTag);
   }
+
   Future<int> update(TagsPersist todo) async {
     return await db.update(tableTag, todo.toMap(),
         where: '$columnId = ?', whereArgs: [todo.id]);

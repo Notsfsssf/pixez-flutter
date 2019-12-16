@@ -113,7 +113,7 @@ create table $tableAccount (
 
     if (maps.length > 0) {
       maps.forEach((f) {
-        result.add(AccountPersist.fromJson(maps.first));
+        result.add(AccountPersist.fromJson(f));
       });
     }
     return result;

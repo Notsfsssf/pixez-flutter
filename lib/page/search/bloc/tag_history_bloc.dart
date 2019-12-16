@@ -23,5 +23,12 @@ class TagHistoryBloc extends Bloc<TagHistoryEvent, TagHistoryState> {
       final result = await tagsPersistProvider.deleteAll();
       yield TagHistoryDataState([]);
     }
+    if(event is InsertTagHistoryEvent){
+      TagsPersistProvider tagsPersistProvider = TagsPersistProvider();
+      await tagsPersistProvider.open();
+   final result= await  tagsPersistProvider.insert(event.tagsPersist);
+      final results = await tagsPersistProvider.getAllAccount();
+      yield TagHistoryDataState(results);
+    }
   }
 }

@@ -43,38 +43,35 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HelloBloc(),
-      child: BlocListener<HelloBloc, HelloState>(
-        listener: (_, state) {
-          if (state is NoneUserState) {
-            Navigator.pushReplacementNamed(context, '/login');
-          }
-        },
-        child: BlocBuilder<RouteBloc, RouteState>(
-          builder: (BuildContext context1, state) {
-            if (state is HasUserState)
-              return Scaffold(
-                body: SizedBox.expand(
-                  child: PageView(
-                    
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      setState(() => _selectedIndex = index);
-                    },
-                    children: _widgetOptions,
-                  ),
-                ),
-                bottomNavigationBar: _buildBottomNavy(),
-              );
-            else if (state is NoneUserState) {}
+    return BlocListener<RouteBloc, RouteState>(
+      listener: (_, state) {
+        if (state is NoneUserState) {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+      },
+      child: BlocBuilder<RouteBloc, RouteState>(
+        builder: (BuildContext context1, state) {
+          if (state is HasUserState)
             return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
+              body: SizedBox.expand(
+                child: PageView(
+
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() => _selectedIndex = index);
+                  },
+                  children: _widgetOptions,
+                ),
               ),
+              bottomNavigationBar: _buildBottomNavy(),
             );
-          },
-        ),
+          else if (state is NoneUserState) {}
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
       ),
     );
   }

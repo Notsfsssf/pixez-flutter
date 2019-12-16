@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
@@ -16,15 +17,21 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   String editString = "";
   Widget _appBarTitle = Text("Search");
+
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TrendTagsBloc>(
+          create: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
+        )
+      ],
       child: Scaffold(
         appBar: _buildAppBar(),
         body: Stack(
@@ -46,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  BlocBuilder<TrendTagsBloc, TrendTagsState> _buildBlocBuilder() {
+  Widget _buildBlocBuilder() {
     return BlocBuilder<TrendTagsBloc, TrendTagsState>(
         builder: (context, state) {
       if (state is TrendTagDataState) {
@@ -101,11 +108,31 @@ class _SearchPageState extends State<SearchPage> {
 
   ListView _buildListView(List<Trend_tags> tags) {
     return ListView.builder(
-      itemCount: 2,
+      itemCount: 3,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
-          return Container();
-        } else {
+         return Padding(
+           padding: const EdgeInsets.all(8.0),
+           child: Text("History"),
+         );
+        } if(index==1){
+          return BlocBuilder<TagHistoryBloc, TagHistoryState>(
+            builder: (BuildContext context, TagHistoryState state) {
+              if(state is TagHistoryDataState&&state.tagsPersistList.isNotEmpty){
+                return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Wrap(children: state.tagsPersistList.map((f)=>ActionChip(label: Text(f.name), onPressed: () {},)).toList()..add(ActionChip(label: Text("Delete All"), onPressed: (){
+                    BlocProvider.of<TagHistoryBloc>(context)
+                        .add(DeleteAllTagHistoryEvent());
+                  })),runSpacing: 0.0,
+                  spacing: 3.0,),
+                );
+              }
+              return Container();
+            },
+          );
+        }
+        else {
           return _buildGrid(context, tags);
         }
       },
@@ -140,7 +167,6 @@ class _SearchPageState extends State<SearchPage> {
                       },
                       fit: BoxFit.fitWidth,
                     ),
-  
                     Align(
                       child: Text(tags[index].tag),
                       alignment: Alignment.bottomCenter,
@@ -154,58 +180,6 @@ class _SearchPageState extends State<SearchPage> {
       );
 }
 
-class CustomSearchDelegate extends SearchDelegate {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-      IconButton(
-        icon: Icon(Icons.calendar_view_day),
-        onPressed: () {
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Container();
-              });
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return SearchResultPage(
-      word: query,
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    if (query.isEmpty)
-      return Column(
-        children: <Widget>[Text("d")],
-      );
-    else
-      return Suggestions(
-        query: query,
-      );
-  }
-}
 
 class Suggestions extends StatefulWidget {
   final String query;
@@ -227,7 +201,7 @@ class _SuggestionsState extends State<Suggestions> {
       builder: (context, state) {
         if (state is DataState) {
           final tags = state.autoWords.tags;
-          return ListView.builder(
+          return ListView.separated(
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
@@ -242,7 +216,7 @@ class _SuggestionsState extends State<Suggestions> {
                 subtitle: Text(tags[index].translated_name ?? ""),
               );
             },
-            itemCount: tags.length,
+            itemCount: tags.length, separatorBuilder: (BuildContext context, int index) {return Divider();},
           );
         }
         return Container();

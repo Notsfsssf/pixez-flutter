@@ -45,13 +45,14 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
     });
   }
 
-  List<Widget> _buildActions(BuildContext context) {
+  List<Widget> _buildActions(BuildContext context, NewDataRestrictState snapshot) {
     switch (_selectIndex) {
       case 1:
         {
           return <Widget>[
             PopupMenuButton<WhyFarther>(
-              initialValue: WhyFarther.public,
+              initialValue: snapshot.bookRestrict=="public"?
+              WhyFarther.public:WhyFarther.private,
               onSelected: (WhyFarther result) {
                 if (result == WhyFarther.public) {
                   BlocProvider.of<NewBloc>(context).add(RestrictEvent(
@@ -80,7 +81,8 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
         {
           return <Widget>[
             PopupMenuButton<WhyFarther>(
-              initialValue: WhyFarther.public,
+              initialValue: snapshot.painterRestrict=="public"?
+              WhyFarther.public:WhyFarther.private,
               onSelected: (WhyFarther result) {
                 if (result == WhyFarther.public) {
                   BlocProvider.of<NewBloc>(context).add(RestrictEvent(
@@ -109,7 +111,8 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
         {
           return <Widget>[
             PopupMenuButton<WhyFarther>(
-              initialValue: WhyFarther.public,
+              initialValue: snapshot.newRestrict=="public"?
+              WhyFarther.public:WhyFarther.private,
               onSelected: (WhyFarther result) {
                 if (result == WhyFarther.public) {
                   BlocProvider.of<NewBloc>(context).add(RestrictEvent(
@@ -177,7 +180,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
                     ),
                   ],
                 ),
-                actions: _buildActions(context),
+                actions: _buildActions(context,snapshot),
               ),
               body: BlocBuilder<RouteBloc, RouteState>(
                   builder: (context, state1) {
