@@ -3,8 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/bloc/save_bloc.dart';
+import 'package:pixez/bloc/save_event.dart';
+import 'package:pixez/bloc/save_state.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/transport_appbar.dart';
@@ -153,7 +155,7 @@ class _PicturePageState extends State<PicturePage> {
                                 case "OK":
                                   {
                                     print(indexs);
-                                    BlocProvider.of<PictureBloc>(context).add(
+                                    BlocProvider.of<SaveBloc>(context).add(
                                         SaveChoiceImageEvent(illusts, indexs));
                                   }
                               }
@@ -253,7 +255,7 @@ class _PicturePageState extends State<PicturePage> {
           if (index == count) {
             return _buildDetail(context, illust);
           } else
-            return BlocListener<PictureBloc, PictureState>(
+            return BlocListener<SaveBloc, SaveState>(
               listener: (context, state) {
                 if (state is SaveSuccesState) {
                   Scaffold.of(context).showSnackBar(SnackBar(
@@ -274,7 +276,7 @@ class _PicturePageState extends State<PicturePage> {
                                 leading: Icon(Icons.save_alt),
                                 onTap: () async {
                                   Navigator.of(context).pop();
-                                  BlocProvider.of<PictureBloc>(context)
+                                  BlocProvider.of<SaveBloc>(context)
                                       .add(SaveImageEvent(illust, index));
                                 },
                                 title: Text(I18n.of(context).Save),

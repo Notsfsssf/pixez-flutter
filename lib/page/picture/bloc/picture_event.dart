@@ -18,23 +18,5 @@ class UnStarEvent extends PictureEvent{
   List<Object> get props =>[illusts];
   
 }
-class SaveImageEvent extends PictureEvent{
-  final Illusts illusts;
-  final int index;
 
-  SaveImageEvent(this.illusts, this.index);
-  
 
-  @override
-  List<Object> get props =>[illusts,index];
-}
-class SaveChoiceImageEvent extends PictureEvent{
-  final Illusts illusts;
-  final List<bool> indexs;
-
-  SaveChoiceImageEvent(this.illusts, this.indexs);
-  
-
-  @override
-  List<Object> get props =>[illusts,indexs];
-}

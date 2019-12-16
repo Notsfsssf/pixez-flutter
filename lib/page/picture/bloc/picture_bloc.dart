@@ -13,6 +13,7 @@ import './bloc.dart';
 
 class PictureBloc extends Bloc<PictureEvent, PictureState> {
   final ApiClient client;
+
   PictureBloc(this.client);
 
   @override
@@ -38,28 +39,6 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
           illusts.isBookmarked = false;
           yield DataState(illusts);
         } catch (e) {}
-      }
-    }
-
-    if(event is SaveChoiceImageEvent){
-      
-    }
-    if (event is SaveImageEvent) {
-      try {
-        final illust = event.illusts;
-        final index = event.index;
-        var file = await DefaultCacheManager().getFileFromCache(
-            illust.metaPages.isNotEmpty
-                ? illust.metaPages[index].imageUrls.medium
-                : illust.imageUrls.medium);
-        final data = await file.file.readAsBytes();
-        final _imageSaver = ImageSaver();
-        List<Uint8List> bytesList = [data];
-        final res = await _imageSaver.saveImages(
-            imageBytes: bytesList, directoryName: 'pxez');
-        yield SaveSuccesState(res);
-      } catch (e) {
-        debugPrint(e);
       }
     }
   }

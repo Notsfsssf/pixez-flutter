@@ -44,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<TagHistoryBloc>(
           create: (BuildContext context) => TagHistoryBloc(),
+        ),
+        BlocProvider<SaveBloc>(
+          create: (context)=>SaveBloc(),
         )
       ],
       child: MaterialApp(
