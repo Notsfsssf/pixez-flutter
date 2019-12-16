@@ -40,6 +40,7 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
         } catch (e) {}
       }
     }
+
     if(event is SaveChoiceImageEvent){
       
     }

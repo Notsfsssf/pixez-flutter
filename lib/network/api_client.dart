@@ -235,4 +235,11 @@ class ApiClient {
   Future<Response> getSearchAutocomplete(String word) async =>
       httpClient.get("/v2/search/autocomplete?merge_plain_keyword_results=true",
           queryParameters: notNullMap({"word": word}));
+/*
+  @GET("/v2/illust/related?filter=for_android")
+  fun getIllustRecommended(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<RecommendResponse>
+*/
+  Future<Response> getIllustRelated(int illust_id) async =>
+      httpClient.get("/v2/illust/related?filter=for_android",
+          queryParameters: notNullMap({"illust_id": illust_id}));
 }

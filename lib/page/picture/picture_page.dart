@@ -48,8 +48,7 @@ class _PicturePageState extends State<PicturePage> {
                     IconButton(
                         icon: Icon(Icons.more_vert),
                         onPressed: () {
-                          if (state is DataState)
-                            buildShowModalBottomSheet(context, state.illusts);
+                          buildShowModalBottomSheet(context, widget._illusts);
                         })
                   ],
                 )
@@ -80,7 +79,7 @@ class _PicturePageState extends State<PicturePage> {
   Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
     return showModalBottomSheet(
         context: context,
-        builder: (context) {
+        builder: (_) {
           return Container(
             color: Colors.white,
             child: Column(
@@ -92,19 +91,75 @@ class _PicturePageState extends State<PicturePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    ListTile(
-                      title: Text(I18n.of(context).Muti_Choice_save),
-                      leading: Icon(
-                        Icons.save,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        List<int> indexs = [];
-                        BlocProvider.of<PictureBloc>(context)
-                            .add(SaveChoiceImageEvent(illusts, indexs));
-                      },
-                    ),
+                    illusts.metaPages.isNotEmpty
+                        ? ListTile(
+                            title: Text(I18n.of(context).Muti_Choice_save),
+                            leading: Icon(
+                              Icons.save,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                              List<bool> indexs =
+                                  List(illusts.metaPages.length);
+                              for (int i = 0;
+                                  i < illusts.metaPages.length;
+                                  i++) {
+                                indexs[i] = false;
+                              }
+                              final result = await showDialog(
+                                context: context,
+                                child: StatefulBuilder(
+                                    builder: (context, setDialogState) {
+                                  return AlertDialog(
+                                    title: Text("Select"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, "OK");
+                                        },
+                                        child: Text(I18n.of(context).OK),
+                                      ),
+                                      FlatButton(
+                                        child: Text(I18n.of(context).Cancel),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                    content: Container(
+                                      width: double.maxFinite,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            title: Text(index.toString()),
+                                            trailing: Checkbox(
+                                                value: indexs[index],
+                                                onChanged: (ischeck) {
+                                                  setDialogState(() {
+                                                    indexs[index] = ischeck;
+                                                  });
+                                                }),
+                                          );
+                                        },
+                                        itemCount: illusts.metaPages.length,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              );
+                              switch (result) {
+                                case "OK":
+                                  {
+                                    print(indexs);
+                                    BlocProvider.of<PictureBloc>(context).add(
+                                        SaveChoiceImageEvent(illusts, indexs));
+                                  }
+                              }
+                            },
+                          )
+                        : null,
                     ListTile(
                       title: Text(I18n.of(context).Share),
                       leading: Icon(Icons.share,
@@ -152,22 +207,34 @@ class _PicturePageState extends State<PicturePage> {
           placeHolder: illust.metaPages[index].imageUrls.medium,
         );
 
-  Widget _buildGridView() => GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, //
-      ),
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return Container(
-          color: Colors.amber,
-        );
-      });
+  Widget _buildGridView() => BlocProvider<IllustRelatedBloc>(
+        child: BlocBuilder<IllustRelatedBloc, IllustRelatedState>(
+            builder: (context, snapshot) {
+          if (snapshot is DataIllustRelatedState)
+            return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, //
+                ),
+                shrinkWrap: true,
+                itemCount: snapshot.recommend.illusts.length,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return PixivImage(
+                      snapshot.recommend.illusts[index].imageUrls.squareMedium);
+                });
+          else
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+        }),
+        create: (BuildContext context) => IllustRelatedBloc(ApiClient())
+          ..add(FetchRelatedEvent(widget._illusts)),
+      );
 
   Widget _buildList(Illusts illust) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
     return ListView.builder(
-        itemCount: count + 2,
+        itemCount: count + 3,
         itemBuilder: (BuildContext context, int index) {
           if (index == count + 1) {
             return Column(
@@ -179,6 +246,9 @@ class _PicturePageState extends State<PicturePage> {
                 ),
               ],
             );
+          }
+          if (index == count + 2) {
+            return _buildGridView();
           }
           if (index == count) {
             return _buildDetail(context, illust);

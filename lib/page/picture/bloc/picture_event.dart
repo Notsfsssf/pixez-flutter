@@ -30,7 +30,7 @@ class SaveImageEvent extends PictureEvent{
 }
 class SaveChoiceImageEvent extends PictureEvent{
   final Illusts illusts;
-  final List<int> indexs;
+  final List<bool> indexs;
 
   SaveChoiceImageEvent(this.illusts, this.indexs);
   
