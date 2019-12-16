@@ -68,7 +68,7 @@ class _UserPageState extends State<UserPage>
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
           if (state is UserDataState)
-            return BlocBuilder<RouteBloc, RouteState>(
+            return BlocBuilder<AccountBloc, AccountState>(
                 builder: (context, snapshot) {
               return Scaffold(
                 appBar: AppBar(
@@ -76,19 +76,35 @@ class _UserPageState extends State<UserPage>
                   title: Text(state.userDetail.user.name),
                 ),
                 body: _buildTabBarView(context, state),
-                bottomNavigationBar: BottomNavigationBar(
-                  currentIndex: _selectedIndex,
-                  onTap: _onItemTapped,
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.work),
-                        title: Text(I18n.of(context).Works)),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.bookmark), title: Text("Detail")),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.bookmark),
-                        title: Text(I18n.of(context).BookMark)),
-                  ],
+                bottomNavigationBar: BottomAppBar(
+                  shape: CircularNotchedRectangle(),
+                  color: Theme.of(context).primaryColor,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.list),
+                        color: Colors.white,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.star_border),
+                            color: Colors.white,
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.more_vert),
+                            color: Colors.white,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {},
@@ -113,8 +129,8 @@ class _UserPageState extends State<UserPage>
     );
   }
 
-  List<Widget> _buildActions(
-      BuildContext context, UserDataState state, RouteState snapshot) {
+  List<Widget> _buildActions(BuildContext context, UserDataState state,
+      AccountState snapshot) {
     if (snapshot is HasUserState) {
       if (int.parse(snapshot.list.userId) != widget.id) {
         return <Widget>[
@@ -123,7 +139,8 @@ class _UserPageState extends State<UserPage>
               onPressed: () {
                 if (state is UserDataState)
                   Share.share(
-                      'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+                      'https://www.pixiv.net/member.php?id=${state.userDetail
+                          .user.id}');
               })
         ];
       }

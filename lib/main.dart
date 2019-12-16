@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,7 +7,7 @@ import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:bloc/bloc.dart';
+
 import 'generated/i18n.dart';
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -40,16 +41,22 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RouteBloc>(
-          create: (context) => RouteBloc()..add(FetchDataBaseEvent()),
+          create: (context) => RouteBloc(),
+        ),
+        BlocProvider<AccountBloc>(
+          create: (context) => AccountBloc()..add(FetchDataBaseEvent()),
         ),
         BlocProvider<TagHistoryBloc>(
           create: (BuildContext context) => TagHistoryBloc(),
         ),
         BlocProvider<SaveBloc>(
-          create: (context)=>SaveBloc(),
+          create: (context) => SaveBloc(),
         )
       ],
       child: MaterialApp(
+        darkTheme: ThemeData(
+            primaryColor: Colors.white
+        ),
         routes: {
           '/login': (context) => LoginPage(),
           '/': (context) => HelloPage(),
@@ -57,8 +64,9 @@ class MyApp extends StatelessWidget {
         },
         initialRoute: '/',
         title: 'Flutter Demo',
+
         localeResolutionCallback:
-            i18n.resolution(fallback: new Locale("en", "US")),
+        i18n.resolution(fallback: new Locale("en", "US")),
         localizationsDelegates: [
           i18n,
           GlobalMaterialLocalizations.delegate,

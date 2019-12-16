@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +13,6 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
-import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:share/share.dart';
 
 abstract class ListItem {}
@@ -41,20 +38,30 @@ class _PicturePageState extends State<PicturePage> {
         child:
             BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
           return Scaffold(
-            body: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                _buildList(widget._illusts),
-                TransportAppBar(
-                  actions: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () {
-                          buildShowModalBottomSheet(context, widget._illusts);
-                        })
-                  ],
-                )
-              ],
+            body: BlocListener<SaveBloc, SaveState>(
+              child: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  _buildList(widget._illusts),
+                  TransportAppBar(
+                    actions: <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.more_vert),
+                          onPressed: () {
+                            buildShowModalBottomSheet(context, widget._illusts);
+                          })
+                    ],
+                  )
+                ],
+              ),
+              listener: (BuildContext context, SaveState state) {
+                if (state is SaveSuccesState) {
+                  if (state.isNotSave)
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(I18n.of(context).Saved),
+                    ));
+                }
+              },
             ),
             floatingActionButton: (state is DataState)
                 ? FloatingActionButton(
@@ -154,7 +161,6 @@ class _PicturePageState extends State<PicturePage> {
                               switch (result) {
                                 case "OK":
                                   {
-                                    print(indexs);
                                     BlocProvider.of<SaveBloc>(context).add(
                                         SaveChoiceImageEvent(illusts, indexs));
                                   }
@@ -255,48 +261,41 @@ class _PicturePageState extends State<PicturePage> {
           if (index == count) {
             return _buildDetail(context, illust);
           } else
-            return BlocListener<SaveBloc, SaveState>(
-              listener: (context, state) {
-                if (state is SaveSuccesState) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(I18n.of(context).Saved),
-                  ));
-                }
-              },
-              child: GestureDetector(
-                onLongPress: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return Container(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                leading: Icon(Icons.save_alt),
-                                onTap: () async {
-                                  Navigator.of(context).pop();
-                                  BlocProvider.of<SaveBloc>(context)
-                                      .add(SaveImageEvent(illust, index));
-                                },
-                                title: Text(I18n.of(context).Save),
-                              )
-                            ],
-                          ),
-                        );
-                      });
-                },
-                onTap: () {},
-                child: illust.metaPages.isEmpty
-                    ? Hero(
-                        child: PixivImage(
-                          illust.imageUrls.large,
-                          placeHolder: illust.imageUrls.medium,
+            return GestureDetector(
+              onLongPress: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              leading: Icon(Icons.save_alt),
+                              onTap: () async {
+                                Navigator.of(context).pop();
+                                BlocProvider.of<SaveBloc>(context)
+                                    .add(SaveImageEvent(illust, index));
+                              },
+                              title: Text(I18n
+                                  .of(context)
+                                  .Save),
+                            )
+                          ],
                         ),
-                        tag: illust.imageUrls.medium,
-                      )
-                    : _buildIllustsItem(index, illust),
-              ),
+                      );
+                    });
+              },
+              onTap: () {},
+              child: illust.metaPages.isEmpty
+                  ? Hero(
+                child: PixivImage(
+                  illust.imageUrls.large,
+                  placeHolder: illust.imageUrls.medium,
+                ),
+                tag: illust.imageUrls.medium,
+              )
+                  : _buildIllustsItem(index, illust),
             );
         });
   }

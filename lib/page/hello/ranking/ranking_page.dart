@@ -58,8 +58,7 @@ class _RankingPageState extends State<RankingPage>
       child: BlocBuilder<RankingBloc, RankingState>(builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(I18n.of(context).Rank),
-            bottom: TabBar(
+            title: TabBar(
                 isScrollable: true,
                 controller: _tabController,
                 tabs: I18n.of(context).Mode_List.map((f) {

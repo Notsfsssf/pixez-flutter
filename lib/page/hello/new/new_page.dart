@@ -12,6 +12,7 @@ import 'package:pixez/page/hello/new/painter/bloc/bloc.dart';
 import 'package:pixez/page/hello/new/painter/new_painter_page.dart';
 import 'package:pixez/page/user/bookmark/bloc.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
+import 'package:pixez/page/user/user_page.dart';
 
 class NewPage extends StatefulWidget {
   final String newRestrict, bookRestrict, painterRestrict;
@@ -45,14 +46,16 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
     });
   }
 
-  List<Widget> _buildActions(BuildContext context, NewDataRestrictState snapshot) {
+  List<Widget> _buildActions(
+      BuildContext context, NewDataRestrictState snapshot) {
     switch (_selectIndex) {
       case 1:
         {
           return <Widget>[
             PopupMenuButton<WhyFarther>(
-              initialValue: snapshot.bookRestrict=="public"?
-              WhyFarther.public:WhyFarther.private,
+              initialValue: snapshot.bookRestrict == "public"
+                  ? WhyFarther.public
+                  : WhyFarther.private,
               onSelected: (WhyFarther result) {
                 if (result == WhyFarther.public) {
                   BlocProvider.of<NewBloc>(context).add(RestrictEvent(
@@ -81,8 +84,9 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
         {
           return <Widget>[
             PopupMenuButton<WhyFarther>(
-              initialValue: snapshot.painterRestrict=="public"?
-              WhyFarther.public:WhyFarther.private,
+              initialValue: snapshot.painterRestrict == "public"
+                  ? WhyFarther.public
+                  : WhyFarther.private,
               onSelected: (WhyFarther result) {
                 if (result == WhyFarther.public) {
                   BlocProvider.of<NewBloc>(context).add(RestrictEvent(
@@ -111,8 +115,9 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
         {
           return <Widget>[
             PopupMenuButton<WhyFarther>(
-              initialValue: snapshot.newRestrict=="public"?
-              WhyFarther.public:WhyFarther.private,
+              initialValue: snapshot.newRestrict == "public"
+                  ? WhyFarther.public
+                  : WhyFarther.private,
               onSelected: (WhyFarther result) {
                 if (result == WhyFarther.public) {
                   BlocProvider.of<NewBloc>(context).add(RestrictEvent(
@@ -142,6 +147,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
 
   int _selectIndex = 0;
   NewDataRestrictState _preNewDataRestrictState;
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -165,34 +171,57 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
           if (snapshot is NewDataRestrictState) {
             return Scaffold(
               appBar: AppBar(
-                title: Text(I18n.of(context).Quick_View),
-                bottom: TabBar(
+                title: TabBar(
+                  isScrollable: true,
                   controller: _controller,
                   tabs: [
                     Tab(
-                      text: I18n.of(context).New,
+                      text: I18n
+                          .of(context)
+                          .New,
                     ),
                     Tab(
-                      text: I18n.of(context).BookMark,
+                      text: I18n
+                          .of(context)
+                          .BookMark,
                     ),
                     Tab(
-                      text: I18n.of(context).Painter,
+                      text: I18n
+                          .of(context)
+                          .Painter,
                     ),
                   ],
                 ),
-                actions: _buildActions(context,snapshot),
+                actions: [
+                  IconButton(
+                      icon: Icon(Icons.account_circle),
+                      onPressed: () {
+                        AccountState route =
+                            BlocProvider
+                                .of<AccountBloc>(context)
+                                .state;
+                        if (route is HasUserState)
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (_) {
+                            return UserPage(
+                              id: int.parse(route.list.userId),
+                            );
+                          }));
+                      }),
+                  ..._buildActions(context, snapshot)
+                ],
               ),
-              body: BlocBuilder<RouteBloc, RouteState>(
+              body: BlocBuilder<AccountBloc, AccountState>(
                   builder: (context, state1) {
-                if (state1 is HasUserState)
-                  return MultiBlocListener(
-                      listeners: [
-                        BlocListener<NewBloc, NewState>(
-                          listener: (context, state) {
-                            if (state is NewDataRestrictState) {
-                              if (_preNewDataRestrictState != null) {
-                                if (_preNewDataRestrictState.bookRestrict !=
-                                    state.bookRestrict)
+                    if (state1 is HasUserState)
+                      return MultiBlocListener(
+                          listeners: [
+                            BlocListener<NewBloc, NewState>(
+                              listener: (context, state) {
+                                if (state is NewDataRestrictState) {
+                                  if (_preNewDataRestrictState != null) {
+                                    if (_preNewDataRestrictState.bookRestrict !=
+                                        state.bookRestrict)
                                   BlocProvider.of<BookmarkBloc>(context).add(
                                       FetchBookmarkEvent(
                                           int.parse(state1.list.userId),
@@ -218,9 +247,9 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
                                     FetchPainterEvent(
                                         int.parse(state1.list.userId),
                                         state.painterRestrict));
-                              }
-                              _preNewDataRestrictState = state;//迷惑行为
-                            }
+                                  }
+                                  _preNewDataRestrictState = state; //迷惑行为
+                                }
                           },
                         )
                       ],

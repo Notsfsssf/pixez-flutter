@@ -6,11 +6,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/account.dart';
-import 'package:pixez/page/hello/bloc/bloc.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
-import 'package:pixez/page/my/my_page.dart';
+import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 
 class HelloPage extends StatefulWidget {
@@ -26,7 +25,7 @@ class _HelloPageState extends State<HelloPage> {
     RankingPage(),
     NewPage(),
     SearchPage(),
-    MyPage()
+    SettingPage()
   ];
 
   @override
@@ -96,7 +95,7 @@ class _HelloPageState extends State<HelloPage> {
               activeColor: Colors.purpleAccent),
           BottomNavyBarItem(
               icon: Icon(Icons.calendar_view_day),
-              title: Text(I18n.of(context).New),
+              title: Text(I18n.of(context).Quick_View),
               activeColor: Colors.pink),
           BottomNavyBarItem(
               icon: Icon(Icons.search),
