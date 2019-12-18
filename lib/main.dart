@@ -7,6 +7,7 @@ import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/splash/splash_page.dart';
 
 import 'generated/i18n.dart';
 class SimpleBlocDelegate extends BlocDelegate {
@@ -59,8 +60,9 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           '/login': (context) => LoginPage(),
-          '/': (context) => HelloPage(),
+          '/hello': (context) => HelloPage(),
           '/search': (context) => SearchPage(),
+          '/': (context) => SplashPage(),
         },
         initialRoute: '/',
         title: 'Flutter Demo',

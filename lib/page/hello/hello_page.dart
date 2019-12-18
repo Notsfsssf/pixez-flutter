@@ -1,9 +1,7 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
@@ -42,36 +40,17 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RouteBloc, RouteState>(
-      listener: (_, state) {
-        if (state is NoneUserState) {
-          Navigator.pushReplacementNamed(context, '/login');
-        }
-      },
-      child: BlocBuilder<RouteBloc, RouteState>(
-        builder: (BuildContext context1, state) {
-          if (state is HasUserState)
-            return Scaffold(
-              body: SizedBox.expand(
-                child: PageView(
-
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    setState(() => _selectedIndex = index);
-                  },
-                  children: _widgetOptions,
-                ),
-              ),
-              bottomNavigationBar: _buildBottomNavy(),
-            );
-          else if (state is NoneUserState) {}
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        },
+    return Scaffold(
+      body: SizedBox.expand(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _selectedIndex = index);
+          },
+          children: _widgetOptions,
+        ),
       ),
+      bottomNavigationBar: _buildBottomNavy(),
     );
   }
 

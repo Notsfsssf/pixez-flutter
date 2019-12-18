@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
+import 'package:pixez/component/fab_bottom_appbar.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
@@ -29,7 +30,7 @@ class _UserPageState extends State<UserPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _selectedIndex = this._tabController.index;
@@ -67,70 +68,61 @@ class _UserPageState extends State<UserPage>
       ],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
-          if (state is UserDataState)
-            return BlocBuilder<AccountBloc, AccountState>(
-                builder: (context, snapshot) {
-              return Scaffold(
-                appBar: AppBar(
-                  actions: _buildActions(context, state, snapshot),
-                  title: Text(state.userDetail.user.name),
-                ),
-                body: _buildTabBarView(context, state),
-                bottomNavigationBar: BottomAppBar(
-                  shape: CircularNotchedRectangle(),
-                  color: Theme.of(context).primaryColor,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.list),
-                        color: Colors.white,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.star_border),
-                            color: Colors.white,
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.more_vert),
-                            color: Colors.white,
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {},
-                  child: PainterAvatar(
-                    url: state.userDetail.user.profile_image_urls.medium,
-                    id: state.userDetail.user.id,
-                    onTap: () async {},
-                  ),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerDocked,
-              );
-            });
-          else
+          return BlocBuilder<AccountBloc, AccountState>(
+              builder: (context, snapshot) {
             return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
+              extendBody: true,
+              appBar: state is UserDataState
+                  ? AppBar(
+                      actions: _buildActions(context, state, snapshot),
+                      title: Text(state.userDetail.user.name),
+                    )
+                  : AppBar(),
+              body: state is UserDataState
+                  ? _buildTabBarView(context, state)
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
+              bottomNavigationBar: FABBottomAppBar(
+                onTabSelected: (index) {
+                  _tabController.index = index;
+                },
+                color: Colors.grey,
+                selectedColor: Theme.of(context).primaryColor,
+                centerItemText: "A",
+                notchedShape: CircularNotchedRectangle(),
+                items: [
+                  FABBottomAppBarItem(
+                      iconData: Icons.menu, text: I18n.of(context).Works),
+                  FABBottomAppBarItem(
+                      iconData: Icons.bookmark,
+                      text: I18n.of(context).BookMark),
+                  FABBottomAppBarItem(
+                      iconData: Icons.dashboard, text: 'Bottom'),
+                  FABBottomAppBarItem(iconData: Icons.info, text: 'Bar'),
+                ],
               ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {},
+                child: state is UserDataState
+                    ? PainterAvatar(
+                        url: state.userDetail.user.profile_image_urls.medium,
+                        id: state.userDetail.user.id,
+                        onTap: () async {},
+                      )
+                    : Icon(Icons.refresh),
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
             );
+          });
         },
       ),
     );
   }
 
-  List<Widget> _buildActions(BuildContext context, UserDataState state,
-      AccountState snapshot) {
+  List<Widget> _buildActions(
+      BuildContext context, UserDataState state, AccountState snapshot) {
     if (snapshot is HasUserState) {
       if (int.parse(snapshot.list.userId) != widget.id) {
         return <Widget>[
@@ -139,21 +131,21 @@ class _UserPageState extends State<UserPage>
               onPressed: () {
                 if (state is UserDataState)
                   Share.share(
-                      'https://www.pixiv.net/member.php?id=${state.userDetail
-                          .user.id}');
+                      'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
               })
         ];
       }
     }
 
-    if (_selectedIndex != 2)
+    if (_selectedIndex != 1)
       return <Widget>[
         IconButton(
             icon: Icon(Icons.share),
             onPressed: () {
               if (state is UserDataState)
                 Share.share(
-                    'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+                    'https://www.pixiv.net/member.php?id=${state.userDetail.user
+                        .id}');
             })
       ];
     else
@@ -195,7 +187,6 @@ class _UserPageState extends State<UserPage>
       controller: _tabController,
       children: <Widget>[
         WorksPage(id: widget.id),
-        UserDetailPage(),
         BlocListener<UserBloc, UserState>(
             listener: (context, state) {
               if (state is UserDataState) {
@@ -206,7 +197,9 @@ class _UserPageState extends State<UserPage>
             child: BookmarkPage(
               id: widget.id,
               restrict: state.choiceRestrict,
-            ))
+            )),
+        Container(),
+        UserDetailPage(),
       ],
     );
   }

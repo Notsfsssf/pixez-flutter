@@ -21,7 +21,10 @@ class PixivImage extends StatelessWidget {
                 fit: BoxFit.fitWidth,
               );
             }
-          : null,
+          : (context, url) => Container(
+                height: 100.0,
+                color: Colors.white,
+              ),
       imageUrl: url,
       httpHeaders: {
         "referer": "https://app-api.pixiv.net/",
