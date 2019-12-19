@@ -32,58 +32,81 @@ class PicturePage extends StatefulWidget {
 }
 
 class _PicturePageState extends State<PicturePage> {
-  Widget _buildTagSelectItem(DataBookmarkDetailState state, int index) => Row(
-        children: <Widget>[
-          Text(state.bookMarkDetailResponse.bookmarkDetail.tags[index].name),
-          Checkbox(
-            onChanged: (bool value) {},
-            value: state
-                .bookMarkDetailResponse.bookmarkDetail.tags[index].isRegistered,
-          )
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      );
   _showBookMarkDetailDialog(BuildContext context, BookmarkDetailState state) {
     showDialog(
         context: context,
         child: StatefulBuilder(
           builder: (BuildContext context, setBookState) {
             if (state is DataBookmarkDetailState) {
-                        final tags =
-                          state.bookMarkDetailResponse.bookmarkDetail.tags;
-                      final detail =
-                          state.bookMarkDetailResponse.bookmarkDetail;
-              var restrict = detail.restrict;
+              final tags = state.bookMarkDetailResponse.bookmarkDetail.tags;
+              final detail = state.bookMarkDetailResponse.bookmarkDetail;
               return AlertDialog(
-                title: Text("Hello"),
+                contentPadding: EdgeInsets.all(2.0),
                 content: Container(
                   width: double.maxFinite,
-                  child: ListView.builder(
-                    itemCount: state
-                            .bookMarkDetailResponse.bookmarkDetail.tags.length +
-                        2,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return Text("1");
-                      }
-                      if (index == tags.length) {
-                        return Switch(
-                          onChanged: (bool value) {
-                              setBookState((){
-                                restrict=value?"public":"private";
-                              });
-                          },
-                          value: restrict=="public",
-                        );
-                      } else
-                        return _buildTagSelectItem(state, index - 2);
-                    },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text("1"),
+                      ListView.builder(
+                        itemCount: tags.length,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Flex(
+                            direction: Axis.horizontal,
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  state.bookMarkDetailResponse.bookmarkDetail
+                                      .tags[index].name,
+                                  softWrap: true,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.left,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Checkbox(
+                                onChanged: (bool value) {
+                                  setBookState(() {
+                                    state
+                                        .bookMarkDetailResponse
+                                        .bookmarkDetail
+                                        .tags[index]
+                                        .isRegistered = value;
+                                  });
+                                },
+                                value: state.bookMarkDetailResponse
+                                    .bookmarkDetail.tags[index].isRegistered,
+                              )
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                          );
+                        },
+                      ),
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                       children: <Widget>[
+                         Text((detail.restrict == "public"?I18n.of(context).Public:I18n.of(context).Private)+I18n.of(context).BookMark),
+                        Switch(
+                        onChanged: (bool value) {
+                          setBookState(() {
+                            detail.restrict = value ? "public" : "private";
+                          });
+                        },
+                        value: detail.restrict == "public",
+                      )
+                     ],)
+                    ],
                   ),
                 ),
                 actions: <Widget>[
                   FlatButton(
                     child: Text("Ok"),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      
+                    },
                   )
                 ],
               );
