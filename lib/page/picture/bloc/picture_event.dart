@@ -19,4 +19,3 @@ class UnStarEvent extends PictureEvent{
   
 }
 
-

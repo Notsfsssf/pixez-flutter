@@ -13,6 +13,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
+import 'package:pixez/page/user/bookmark/bloc.dart';
 import 'package:share/share.dart';
 
 abstract class ListItem {}
@@ -31,14 +32,100 @@ class PicturePage extends StatefulWidget {
 }
 
 class _PicturePageState extends State<PicturePage> {
+  Widget _buildTagSelectItem(DataBookmarkDetailState state, int index) => Row(
+        children: <Widget>[
+          Text(state.bookMarkDetailResponse.bookmarkDetail.tags[index].name),
+          Checkbox(
+            onChanged: (bool value) {},
+            value: state
+                .bookMarkDetailResponse.bookmarkDetail.tags[index].isRegistered,
+          )
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      );
+  _showBookMarkDetailDialog(BuildContext context, BookmarkDetailState state) {
+    showDialog(
+        context: context,
+        child: StatefulBuilder(
+          builder: (BuildContext context, setBookState) {
+            if (state is DataBookmarkDetailState) {
+                        final tags =
+                          state.bookMarkDetailResponse.bookmarkDetail.tags;
+                      final detail =
+                          state.bookMarkDetailResponse.bookmarkDetail;
+              var restrict = detail.restrict;
+              return AlertDialog(
+                title: Text("Hello"),
+                content: Container(
+                  width: double.maxFinite,
+                  child: ListView.builder(
+                    itemCount: state
+                            .bookMarkDetailResponse.bookmarkDetail.tags.length +
+                        2,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0) {
+                        return Text("1");
+                      }
+                      if (index == tags.length) {
+                        return Switch(
+                          onChanged: (bool value) {
+                              setBookState((){
+                                restrict=value?"public":"private";
+                              });
+                          },
+                          value: restrict=="public",
+                        );
+                      } else
+                        return _buildTagSelectItem(state, index - 2);
+                    },
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Ok"),
+                    onPressed: () {},
+                  )
+                ],
+              );
+            } else
+              return Container();
+          },
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PictureBloc>(
-        create: (context) => PictureBloc(ApiClient()),
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<PictureBloc>(
+            create: (context) => PictureBloc(ApiClient()),
+          ),
+          BlocProvider<BookmarkDetailBloc>(
+            create: (BuildContext context) => BookmarkDetailBloc(ApiClient()),
+          )
+        ],
         child:
             BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
           return Scaffold(
-            body: BlocListener<SaveBloc, SaveState>(
+            body: MultiBlocListener(
+              listeners: [
+                BlocListener<SaveBloc, SaveState>(
+                  listener: (BuildContext context, SaveState state) {
+                    if (state is SaveSuccesState) {
+                      if (state.isNotSave)
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(I18n.of(context).Saved),
+                        ));
+                    }
+                  },
+                ),
+                BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
+                  listener: (BuildContext context, BookmarkDetailState state) {
+                    if (state is DataBookmarkDetailState)
+                      _showBookMarkDetailDialog(context, state);
+                  },
+                )
+              ],
               child: Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
@@ -54,33 +141,34 @@ class _PicturePageState extends State<PicturePage> {
                   )
                 ],
               ),
-              listener: (BuildContext context, SaveState state) {
-                if (state is SaveSuccesState) {
-                  if (state.isNotSave)
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(I18n.of(context).Saved),
-                    ));
-                }
-              },
             ),
-            floatingActionButton: (state is DataState)
-                ? FloatingActionButton(
-                    onPressed: () {
-                      BlocProvider.of<PictureBloc>(context)
-                          .add(StarEvent(state.illusts));
-                    },
-                    child: Icon(Icons.star),
-                    foregroundColor:
-                        state.illusts.isBookmarked ? Colors.red : Colors.white)
-                : FloatingActionButton(
-                    onPressed: () {
-                      BlocProvider.of<PictureBloc>(context)
-                          .add(StarEvent(widget._illusts));
-                    },
-                    child: Icon(Icons.star),
-                    foregroundColor: widget._illusts.isBookmarked
-                        ? Colors.red
-                        : Colors.white),
+            floatingActionButton: InkWell(
+              splashColor: Colors.blue,
+              onLongPress: () {
+                BlocProvider.of<BookmarkDetailBloc>(context)
+                    .add(FetchBookmarkDetailEvent(widget._illusts.id));
+              },
+              onTap: () {
+                (state is DataState)
+                    ? BlocProvider.of<PictureBloc>(context)
+                        .add(StarEvent(state.illusts))
+                    : BlocProvider.of<PictureBloc>(context)
+                        .add(StarEvent(widget._illusts));
+              },
+              child: (state is DataState)
+                  ? FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.star),
+                      foregroundColor: state.illusts.isBookmarked
+                          ? Colors.red
+                          : Colors.white)
+                  : FloatingActionButton(
+                      onPressed: () {},
+                      child: Icon(Icons.star),
+                      foregroundColor: widget._illusts.isBookmarked
+                          ? Colors.red
+                          : Colors.white),
+            ),
           );
         }));
   }
@@ -277,9 +365,7 @@ class _PicturePageState extends State<PicturePage> {
                                 BlocProvider.of<SaveBloc>(context)
                                     .add(SaveImageEvent(illust, index));
                               },
-                              title: Text(I18n
-                                  .of(context)
-                                  .Save),
+                              title: Text(I18n.of(context).Save),
                             )
                           ],
                         ),
@@ -289,12 +375,12 @@ class _PicturePageState extends State<PicturePage> {
               onTap: () {},
               child: illust.metaPages.isEmpty
                   ? Hero(
-                child: PixivImage(
-                  illust.imageUrls.large,
-                  placeHolder: illust.imageUrls.medium,
-                ),
-                tag: illust.imageUrls.medium,
-              )
+                      child: PixivImage(
+                        illust.imageUrls.large,
+                        placeHolder: illust.imageUrls.medium,
+                      ),
+                      tag: illust.imageUrls.medium,
+                    )
                   : _buildIllustsItem(index, illust),
             );
         });

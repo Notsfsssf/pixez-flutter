@@ -57,30 +57,7 @@ class _RankingPageState extends State<RankingPage>
       ],
       child: BlocBuilder<RankingBloc, RankingState>(builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: TabBar(
-                isScrollable: true,
-                controller: _tabController,
-                tabs: I18n.of(context).Mode_List.map((f) {
-                  return Tab(
-                    text: f,
-                  );
-                }).toList()),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.date_range),
-                onPressed: () {
-                  DatePicker.showDatePicker(context,
-                      maxDateTime: DateTime.now(),
-                      initialDateTime: DateTime.now(),
-                      onConfirm: (DateTime dateTime, List<int> list) {
-                    BlocProvider.of<RankingBloc>(context)
-                        .add(DateChangeEvent(dateTime));
-                  });
-                },
-              )
-            ],
-          ),
+          appBar: buildAppBar(context),
           body: TabBarView(
               controller: _tabController,
               children: modeList.map((f) {
@@ -104,6 +81,33 @@ class _RankingPageState extends State<RankingPage>
         );
       }),
     );
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+          title: TabBar(
+              isScrollable: true,
+              controller: _tabController,
+              tabs: I18n.of(context).Mode_List.map((f) {
+                return Tab(
+                  text: f,
+                );
+              }).toList()),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.date_range),
+              onPressed: () {
+                DatePicker.showDatePicker(context,
+                    maxDateTime: DateTime.now(),
+                    initialDateTime: DateTime.now(),
+                    onConfirm: (DateTime dateTime, List<int> list) {
+                  BlocProvider.of<RankingBloc>(context)
+                      .add(DateChangeEvent(dateTime));
+                });
+              },
+            )
+          ],
+        );
   }
 
   @override

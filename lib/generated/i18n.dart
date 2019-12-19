@@ -94,6 +94,16 @@ class I18n implements WidgetsLocalizations {
   String get Path => "路径";
   /// "格式"
   String get Format => "格式";
+  /// "详情"
+  String get Detail => "详情";
+  /// "关注"
+  String get Follow => "关注";
+  /// "未关注"
+  String get Un_Follow => "未关注";
+  /// "历史"
+  String get History => "历史";
+  /// "清空"
+  String get Clear => "清空";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -196,6 +206,21 @@ class _I18n_en_US extends I18n {
   /// "format"
   @override
   String get Format => "format";
+  /// "Details"
+  @override
+  String get Detail => "Details";
+  /// "attention"
+  @override
+  String get Follow => "attention";
+  /// "Not following"
+  @override
+  String get Un_Follow => "Not following";
+  /// "history"
+  @override
+  String get History => "history";
+  /// "Clear"
+  @override
+  String get Clear => "Clear";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

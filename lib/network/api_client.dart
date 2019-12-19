@@ -242,4 +242,9 @@ class ApiClient {
   Future<Response> getIllustRelated(int illust_id) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
           queryParameters: notNullMap({"illust_id": illust_id}));
+    //          @GET("/v2/illust/bookmark/detail")
+    // fun getLikeIllustDetail(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<BookMarkDetailResponse>
+  Future<Response> getIllustBookmarkDetail(int illust_id) async =>
+      httpClient.get("/v2/illust/bookmark/detail",
+          queryParameters: notNullMap({"illust_id": illust_id}));
 }

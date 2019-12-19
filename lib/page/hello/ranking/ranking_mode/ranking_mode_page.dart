@@ -14,14 +14,13 @@ class RankingModePage extends StatelessWidget {
 
   const RankingModePage({Key key, this.mode, this.date}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-   var _refreshCompleter = Completer<void>();
-   var _loadCompleter = Completer<void>();
-   final _refreshController=EasyRefreshController();
+    var _refreshCompleter = Completer<void>();
+    var _loadCompleter = Completer<void>();
+    final _refreshController = EasyRefreshController();
 
-   final _bloc=BlocProvider.of<RankingModeBloc>(context);
+    final _bloc = BlocProvider.of<RankingModeBloc>(context);
     return BlocListener<RankingModeBloc, RankingModeState>(
         bloc: _bloc,
         listener: (context, state) {
@@ -31,37 +30,36 @@ class RankingModePage extends StatelessWidget {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }
-        }, child: BlocBuilder<RankingModeBloc, RankingModeState>(
-      bloc: _bloc,
-      builder: (context, state) {
-        if (state is DataRankingModeState)
-          return EasyRefresh(
-            controller: _refreshController,
-            child: StaggeredGridView.countBuilder(
-              crossAxisCount: 2,
-              itemCount: state.illusts.length,
-              itemBuilder: (context, index) {
-                return IllustCard(state.illusts[index]);
-              },
-              staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-            ),
-            onRefresh: () async {
-              BlocProvider.of<RankingModeBloc>(context)
-                  .add(FetchEvent(mode,date));
-              return _refreshCompleter.future;
-            },
-            onLoad: () async {
-              BlocProvider.of<RankingModeBloc>(context)
-                  .add(LoadMoreEvent(state.nextUrl, state.illusts));
-              return _loadCompleter.future;
-            },
-          );
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    ));
+        },
+        child: BlocBuilder<RankingModeBloc, RankingModeState>(
+          bloc: _bloc,
+          builder: (context, state) {
+            if (state is DataRankingModeState)
+              return EasyRefresh(
+                controller: _refreshController,
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  itemCount: state.illusts.length,
+                  itemBuilder: (context, index) {
+                    return IllustCard(state.illusts[index]);
+                  },
+                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                ),
+                onRefresh: () async {
+                  BlocProvider.of<RankingModeBloc>(context)
+                      .add(FetchEvent(mode, date));
+                  return _refreshCompleter.future;
+                },
+                onLoad: () async {
+                  BlocProvider.of<RankingModeBloc>(context)
+                      .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                  return _loadCompleter.future;
+                },
+              );
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ));
   }
 }
-
-

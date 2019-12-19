@@ -113,7 +113,7 @@ class _SearchPageState extends State<SearchPage> {
         if (index == 0) {
          return Padding(
            padding: const EdgeInsets.all(8.0),
-           child: Text("History"),
+           child: Text(I18n.of(context).History),
          );
         } if(index==1){
           return BlocBuilder<TagHistoryBloc, TagHistoryState>(
@@ -121,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
               if(state is TagHistoryDataState&&state.tagsPersistList.isNotEmpty){
                 return Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Wrap(children: state.tagsPersistList.map((f)=>ActionChip(label: Text(f.name), onPressed: () {},)).toList()..add(ActionChip(label: Text("Delete All"), onPressed: (){
+                  child: Wrap(children: state.tagsPersistList.map((f)=>ActionChip(label: Text(f.name), onPressed: () {},)).toList()..add(ActionChip(label: Text(I18n.of(context).Clear), onPressed: (){
                     BlocProvider.of<TagHistoryBloc>(context)
                         .add(DeleteAllTagHistoryEvent());
                   })),runSpacing: 0.0,

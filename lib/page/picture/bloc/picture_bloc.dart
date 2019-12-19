@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
@@ -41,5 +42,6 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
         } catch (e) {}
       }
     }
+
   }
 }

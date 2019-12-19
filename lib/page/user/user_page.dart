@@ -98,8 +98,8 @@ class _UserPageState extends State<UserPage>
                       iconData: Icons.bookmark,
                       text: I18n.of(context).BookMark),
                   FABBottomAppBarItem(
-                      iconData: Icons.dashboard, text: 'Bottom'),
-                  FABBottomAppBarItem(iconData: Icons.info, text: 'Bar'),
+                      iconData: Icons.star, text:I18n.of(context).Follow),
+                  FABBottomAppBarItem(iconData: Icons.info, text: I18n.of(context).Detail),
                 ],
               ),
               floatingActionButton: FloatingActionButton(

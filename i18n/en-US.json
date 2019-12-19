@@ -44,5 +44,10 @@
     "Theme": "theme",
     "Path": "path",
     "Format": "format",
-    "Illust": "illustration"
+    "Illust": "illustration",
+    "Detail": "Details",
+    "Follow": "attention",
+    "Un_Follow": "Not following",
+    "History": "history",
+    "Clear": "Clear"
 }
