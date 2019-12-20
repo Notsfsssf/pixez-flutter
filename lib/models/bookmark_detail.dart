@@ -1,7 +1,7 @@
 import 'dart:convert' show json;
 
 class BookMarkDetailResponse {
-  Bookmark_detail bookmarkDetail;
+  BookmarkDetail bookmarkDetail;
 
   BookMarkDetailResponse({
     this.bookmarkDetail,
@@ -10,7 +10,7 @@ class BookMarkDetailResponse {
   factory BookMarkDetailResponse.fromJson(jsonRes) => jsonRes == null
       ? null
       : BookMarkDetailResponse(
-          bookmarkDetail: Bookmark_detail.fromJson(jsonRes['bookmark_detail']),
+          bookmarkDetail: BookmarkDetail.fromJson(jsonRes['bookmark_detail']),
         );
   Map<String, dynamic> toJson() => {
         'bookmark_detail': bookmarkDetail,
@@ -22,29 +22,29 @@ class BookMarkDetailResponse {
   }
 }
 
-class Bookmark_detail {
+class BookmarkDetail {
   bool isBookmarked;
-  List<Tags> tags;
+  List<TagsR> tags;
   String restrict;
 
-  Bookmark_detail({
+  BookmarkDetail({
     this.isBookmarked,
     this.tags,
     this.restrict,
   });
 
-  factory Bookmark_detail.fromJson(jsonRes) {
+  factory BookmarkDetail.fromJson(jsonRes) {
     if (jsonRes == null) return null;
-    List<Tags> tags = jsonRes['tags'] is List ? [] : null;
+    List<TagsR> tags = jsonRes['tags'] is List ? [] : null;
     if (tags != null) {
       for (var item in jsonRes['tags']) {
         if (item != null) {
-          tags.add(Tags.fromJson(item));
+          tags.add(TagsR.fromJson(item));
         }
       }
     }
 
-    return Bookmark_detail(
+    return BookmarkDetail(
       isBookmarked: jsonRes['is_bookmarked'],
       tags: tags,
       restrict: jsonRes['restrict'],
@@ -62,18 +62,18 @@ class Bookmark_detail {
   }
 }
 
-class Tags {
+class TagsR {
   String name;
   bool isRegistered;
 
-  Tags({
+  TagsR({
     this.name,
     this.isRegistered,
   });
 
-  factory Tags.fromJson(jsonRes) => jsonRes == null
+  factory TagsR.fromJson(jsonRes) => jsonRes == null
       ? null
-      : Tags(
+      : TagsR(
           name: jsonRes['name'],
           isRegistered: jsonRes['is_registered'],
         );

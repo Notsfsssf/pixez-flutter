@@ -9,11 +9,11 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/transport_appbar.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
-import 'package:pixez/page/user/bookmark/bloc.dart';
 import 'package:share/share.dart';
 
 abstract class ListItem {}
@@ -37,8 +37,11 @@ class _PicturePageState extends State<PicturePage> {
         context: context,
         child: StatefulBuilder(
           builder: (BuildContext context, setBookState) {
+            final TextEditingController textEditingController =
+                TextEditingController();
             if (state is DataBookmarkDetailState) {
-              final tags = state.bookMarkDetailResponse.bookmarkDetail.tags;
+              final List<TagsR> tags =
+                  state.bookMarkDetailResponse.bookmarkDetail.tags;
               final detail = state.bookMarkDetailResponse.bookmarkDetail;
               return AlertDialog(
                 contentPadding: EdgeInsets.all(2.0),
@@ -47,7 +50,26 @@ class _PicturePageState extends State<PicturePage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text("1"),
+                      TextField(
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                            suffixIcon: RaisedButton(
+                          child: Icon(Icons.add),
+                          onPressed: () {
+                            final value =
+                                textEditingController.value.text.trim();
+                            if (value.isNotEmpty)
+                           setBookState((){
+                                tags.insert(
+                                  0,
+                                  TagsR()
+                                    ..name = value
+                                    ..isRegistered = true);
+                                    textEditingController.clear();
+                           });
+                          },
+                        )),
+                      ),
                       ListView.builder(
                         itemCount: tags.length,
                         shrinkWrap: true,
@@ -68,11 +90,8 @@ class _PicturePageState extends State<PicturePage> {
                               Checkbox(
                                 onChanged: (bool value) {
                                   setBookState(() {
-                                    state
-                                        .bookMarkDetailResponse
-                                        .bookmarkDetail
-                                        .tags[index]
-                                        .isRegistered = value;
+                                    state.bookMarkDetailResponse.bookmarkDetail
+                                        .tags[index].isRegistered = value;
                                   });
                                 },
                                 value: state.bookMarkDetailResponse
@@ -84,19 +103,23 @@ class _PicturePageState extends State<PicturePage> {
                           );
                         },
                       ),
-                     Row(
-                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                       children: <Widget>[
-                         Text((detail.restrict == "public"?I18n.of(context).Public:I18n.of(context).Private)+I18n.of(context).BookMark),
-                        Switch(
-                        onChanged: (bool value) {
-                          setBookState(() {
-                            detail.restrict = value ? "public" : "private";
-                          });
-                        },
-                        value: detail.restrict == "public",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text((detail.restrict == "public"
+                                  ? I18n.of(context).Public
+                                  : I18n.of(context).Private) +
+                              I18n.of(context).BookMark),
+                          Switch(
+                            onChanged: (bool value) {
+                              setBookState(() {
+                                detail.restrict = value ? "public" : "private";
+                              });
+                            },
+                            value: detail.restrict == "public",
+                          )
+                        ],
                       )
-                     ],)
                     ],
                   ),
                 ),
@@ -105,7 +128,6 @@ class _PicturePageState extends State<PicturePage> {
                     child: Text("Ok"),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      
                     },
                   )
                 ],
