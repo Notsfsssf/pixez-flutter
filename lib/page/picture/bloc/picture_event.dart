@@ -6,7 +6,9 @@ abstract class PictureEvent extends Equatable {
 }
 class StarEvent extends PictureEvent{
   final Illusts illusts;
-  StarEvent(this.illusts);
+  final String restrict;
+  final List<String> tags;
+  StarEvent(this.illusts, this.restrict, this.tags);
   @override
   List<Object> get props => [illusts];
 

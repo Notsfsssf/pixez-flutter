@@ -10,7 +10,6 @@ class FetchEvent extends UserEvent {
   FetchEvent(this.id);
 
   @override
-  // TODO: implement props
   List<Object> get props => [id];
 }
 
@@ -27,6 +26,13 @@ class ChoiceRestrictEvent extends UserEvent {
   ChoiceRestrictEvent(this.restrict, this.userDetail);
 
   @override
-  // TODO: implement props
   List<Object> get props => [restrict, userDetail];
+}
+class FollowUserEvent extends UserEvent{
+  final UserDetail userDetail;
+  final String restrict,followRestrict;
+  FollowUserEvent(this.userDetail, this.restrict,this.followRestrict);
+  @override
+  List<Object> get props => [userDetail,restrict,followRestrict];
+
 }

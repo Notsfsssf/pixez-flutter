@@ -87,7 +87,8 @@ class ApiClient {
   Future<Response> postLikeIllust(
       int illust_id, String restrict, List<String> tags) async {
     return httpClient.post("/v2/illust/bookmark/add",
-        data: {"illust_id": illust_id, "restrict": restrict, "tags[]": tags},
+        data: notNullMap(
+            {"illust_id": illust_id, "restrict": restrict, "tags[]": tags}),
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
@@ -142,14 +143,7 @@ class ApiClient {
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
-/*  @FormUrlEncoded
-  @POST("/v1/user/follow/add")
-  fun postFollowUser(@Header("Authorization") paramString1: String, @Field("user_id") paramLong: Long, @Field("restrict") paramString2: String): Observable<ResponseBody>*/
-  Future<Response> postFollowUser(int user_id, String restrict) {
-    return httpClient.post("/v1/user/follow/delete",
-        data: {"user_id": user_id, "restrict": restrict},
-        options: Options(contentType: Headers.formUrlEncodedContentType));
-  }
+
 
   // @GET("/v1/user/follower?filter=for_android")
   //   fun getUserFollower(@Header("Authorization") paramString: String, @Query("user_id") paramLong: Long): Observable<SearchUserResponse>
@@ -207,10 +201,10 @@ class ApiClient {
   // fun getSearchIllust(@Query("word") paramString1: String, @Query("sort") paramString2: String, @Query("search_target") paramString3: String?, @Query("bookmark_num") paramInteger: Int?, @Query("duration") paramString4: String?, @Header("Authorization") paramString5: String): Observable<SearchIllustResponse>
   Future<Response> getSearchIllust(String word,
       {String sort = null,
-        String search_target = null,
-        DateTime start_date = null,
-        DateTime end_date = null,
-        int bookmark_num = null}) async {
+      String search_target = null,
+      DateTime start_date = null,
+      DateTime end_date = null,
+      int bookmark_num = null}) async {
     return httpClient.get(
         "/v1/search/illust?filter=for_android&merge_plain_keyword_results=true",
         queryParameters: notNullMap({
@@ -242,9 +236,25 @@ class ApiClient {
   Future<Response> getIllustRelated(int illust_id) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
           queryParameters: notNullMap({"illust_id": illust_id}));
-    //          @GET("/v2/illust/bookmark/detail")
-    // fun getLikeIllustDetail(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<BookMarkDetailResponse>
+  //          @GET("/v2/illust/bookmark/detail")
+  // fun getLikeIllustDetail(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<BookMarkDetailResponse>
   Future<Response> getIllustBookmarkDetail(int illust_id) async =>
       httpClient.get("/v2/illust/bookmark/detail",
           queryParameters: notNullMap({"illust_id": illust_id}));
+
+  //          @FormUrlEncoded
+  // @POST("/v1/user/follow/delete")
+  // fun postUnfollowUser(@Header("Authorization") paramString: String, @Field("user_id") paramLong: Long): Observable<ResponseBody>
+  Future<Response> postUnfollowUser(int user_id) async =>
+      httpClient.post("/v1/user/follow/delete",
+          data: notNullMap({"user_id": user_id}),
+          options: Options(contentType: Headers.formUrlEncodedContentType));
+/*  @FormUrlEncoded
+  @POST("/v1/user/follow/add")
+  fun postFollowUser(@Header("Authorization") paramString1: String, @Field("user_id") paramLong: Long, @Field("restrict") paramString2: String): Observable<ResponseBody>*/
+  Future<Response> postFollowUser(int user_id, String restrict) {
+    return httpClient.post("/v1/user/follow/add",
+        data: {"user_id": user_id, "restrict": restrict},
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
 }

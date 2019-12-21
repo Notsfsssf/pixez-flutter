@@ -5,6 +5,8 @@ import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/fab_bottom_appbar.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/models/user_detail.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:pixez/page/user/bloc/user_bloc.dart';
@@ -45,14 +47,6 @@ class _UserPageState extends State<UserPage>
   }
 
   int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      _tabController.index = index;
-    });
-  }
-
   PersistentBottomSheetController controller;
 
   @override
@@ -60,7 +54,8 @@ class _UserPageState extends State<UserPage>
     return MultiBlocProvider(
       providers: <BlocProvider>[
         BlocProvider<UserBloc>(
-          create: (context) => UserBloc()..add(FetchEvent(widget.id)),
+          create: (context) =>
+              UserBloc(ApiClient())..add(FetchEvent(widget.id)),
         ),
         BlocProvider<BookmarkBloc>(
           create: (context) => BookmarkBloc(),
@@ -98,9 +93,16 @@ class _UserPageState extends State<UserPage>
                       iconData: Icons.bookmark,
                       text: I18n.of(context).BookMark),
                   FABBottomAppBarItem(
-                      iconData: Icons.star, text:I18n.of(context).Follow),
-                  FABBottomAppBarItem(iconData: Icons.info, text: I18n.of(context).Detail),
+                      iconData: Icons.star, text: I18n.of(context).Follow),
+                  FABBottomAppBarItem(
+                      iconData: Icons.info, text: I18n.of(context).Detail),
                 ],
+                followWidget: state is UserDataState
+                    ? _buildFollowButton(
+                        context, state.userDetail, state.choiceRestrict)
+                    : Container(
+                        height: 60.0,
+                      ),
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {},
@@ -118,6 +120,71 @@ class _UserPageState extends State<UserPage>
           });
         },
       ),
+    );
+  }
+
+  Widget _buildFollowButton(context, UserDetail userDetail, String restrict) {
+    return BlocBuilder<AccountBloc, AccountState>(
+      builder: (context, state) {
+        if (state is HasUserState) {
+          if (userDetail.user.id == int.parse(state.list.userId))
+            return Expanded(
+              child: SizedBox(
+                height: 60.0,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.donut_large,
+                          color: Colors.grey,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          else {
+            return Expanded(
+              child: SizedBox(
+                height: 60.0,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      BlocProvider.of<UserBloc>(context)
+                          .add(FollowUserEvent(userDetail, restrict, "public"));
+                    },
+                    onLongPress: () {
+                      BlocProvider.of<UserBloc>(context).add(
+                          FollowUserEvent(userDetail, restrict, "private"));
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          userDetail.user.is_followed
+                              ? Icons.star
+                              : Icons.star_border,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        } else
+          return Container(
+            height: 60,
+          );
+      },
     );
   }
 
@@ -144,8 +211,7 @@ class _UserPageState extends State<UserPage>
             onPressed: () {
               if (state is UserDataState)
                 Share.share(
-                    'https://www.pixiv.net/member.php?id=${state.userDetail.user
-                        .id}');
+                    'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
             })
       ];
     else

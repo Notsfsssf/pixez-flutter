@@ -9,6 +9,7 @@ class FABBottomAppBarItem {
 }
 
 class FABBottomAppBar extends StatefulWidget {
+
   FABBottomAppBar({
     this.items,
     this.centerItemText,
@@ -18,11 +19,11 @@ class FABBottomAppBar extends StatefulWidget {
     this.color,
     this.selectedColor,
     this.notchedShape,
-    this.onTabSelected,
+    this.onTabSelected, this.followWidget,
   }) {
     assert(this.items.length == 2 || this.items.length == 4);
   }
-
+final Widget followWidget;
   final List<FABBottomAppBarItem> items;
   final String centerItemText;
   final double height;
@@ -50,11 +51,14 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
   @override
   Widget build(BuildContext context) {
     List<Widget> items = List.generate(widget.items.length, (int index) {
+      if(index!=2)
       return _buildTabItem(
         item: widget.items[index],
         index: index,
         onPressed: _updateIndex,
       );
+      else
+      return widget.followWidget;
     });
     items.insert(items.length >> 1, _buildMiddleTabItem());
 

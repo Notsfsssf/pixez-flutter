@@ -8,6 +8,9 @@ import 'package:pixez/network/api_client.dart';
 import './bloc.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
+  final ApiClient client;
+
+  UserBloc(this.client);
   @override
   UserState get initialState => InitialUserState();
 
@@ -17,7 +20,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async* {
     if (event is FetchEvent) {
       try {
-        final client = ApiClient();
         Response response = await client.getUser(event.id);
         UserDetail userDetail = UserDetail.fromJson(response.data);
         yield UserDataState(userDetail, "public");
@@ -28,6 +30,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
     if (event is ChoiceRestrictEvent) {
       yield UserDataState(event.userDetail, "${event.restrict}");
+    }
+    if (event is FollowUserEvent) {
+      if (event.userDetail.user.is_followed) {
+        try {
+          Response response =
+              await client.postUnFollowUser(event.userDetail.user.id);
+          yield UserDataState(
+              event.userDetail..user.is_followed = false, "${event.restrict}");
+        } catch (e) {}
+      } else {
+        try {
+          Response response = await client.postFollowUser(
+              event.userDetail.user.id,event.followRestrict);
+          yield UserDataState(
+              event.userDetail..user.is_followed = true, "${event.restrict}");
+        } catch (e) {}
+      }
     }
   }
 }

@@ -32,11 +32,12 @@ class PicturePage extends StatefulWidget {
 }
 
 class _PicturePageState extends State<PicturePage> {
-  _showBookMarkDetailDialog(BuildContext context, BookmarkDetailState state) {
+  _showBookMarkDetailDialog(
+      BuildContext context, BookmarkDetailState state, PictureState snapshot) {
     showDialog(
         context: context,
         child: StatefulBuilder(
-          builder: (BuildContext context, setBookState) {
+          builder: (_, setBookState) {
             final TextEditingController textEditingController =
                 TextEditingController();
             if (state is DataBookmarkDetailState) {
@@ -53,20 +54,20 @@ class _PicturePageState extends State<PicturePage> {
                       TextField(
                         controller: textEditingController,
                         decoration: InputDecoration(
-                            suffixIcon: RaisedButton(
-                          child: Icon(Icons.add),
+                            suffixIcon: IconButton(
+                          icon: Icon(Icons.add),
                           onPressed: () {
                             final value =
                                 textEditingController.value.text.trim();
                             if (value.isNotEmpty)
-                           setBookState((){
+                              setBookState(() {
                                 tags.insert(
-                                  0,
-                                  TagsR()
-                                    ..name = value
-                                    ..isRegistered = true);
-                                    textEditingController.clear();
-                           });
+                                    0,
+                                    TagsR()
+                                      ..name = value
+                                      ..isRegistered = true);
+                                textEditingController.clear();
+                              });
                           },
                         )),
                       ),
@@ -128,6 +129,26 @@ class _PicturePageState extends State<PicturePage> {
                     child: Text("Ok"),
                     onPressed: () {
                       Navigator.of(context).pop();
+                      final tags =
+                          state.bookMarkDetailResponse.bookmarkDetail.tags;
+                      List<String> tempTags = [];
+                      for (int i = 0; i < tags.length; i++) {
+                        if (tags[i].isRegistered) {
+                          tempTags.add(tags[i].name);
+                        }
+                      }
+                      if (tempTags.length == 0) tempTags = null;
+                      (snapshot is DataState)
+                          ? BlocProvider.of<PictureBloc>(context).add(StarEvent(
+                              snapshot.illusts,
+                              state.bookMarkDetailResponse.bookmarkDetail
+                                  .restrict,
+                              tempTags))
+                          : BlocProvider.of<PictureBloc>(context).add(StarEvent(
+                              widget._illusts,
+                              state.bookMarkDetailResponse.bookmarkDetail
+                                  .restrict,
+                              tempTags));
                     },
                   )
                 ],
@@ -149,8 +170,8 @@ class _PicturePageState extends State<PicturePage> {
             create: (BuildContext context) => BookmarkDetailBloc(ApiClient()),
           )
         ],
-        child:
-            BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
+        child: BlocBuilder<PictureBloc, PictureState>(
+            builder: (context, snapshot) {
           return Scaffold(
             body: MultiBlocListener(
               listeners: [
@@ -167,7 +188,7 @@ class _PicturePageState extends State<PicturePage> {
                 BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
                   listener: (BuildContext context, BookmarkDetailState state) {
                     if (state is DataBookmarkDetailState)
-                      _showBookMarkDetailDialog(context, state);
+                      _showBookMarkDetailDialog(context, state, snapshot);
                   },
                 )
               ],
@@ -194,17 +215,17 @@ class _PicturePageState extends State<PicturePage> {
                     .add(FetchBookmarkDetailEvent(widget._illusts.id));
               },
               onTap: () {
-                (state is DataState)
+                (snapshot is DataState)
                     ? BlocProvider.of<PictureBloc>(context)
-                        .add(StarEvent(state.illusts))
+                        .add(StarEvent(snapshot.illusts, "public", null))
                     : BlocProvider.of<PictureBloc>(context)
-                        .add(StarEvent(widget._illusts));
+                        .add(StarEvent(widget._illusts, "public", null));
               },
-              child: (state is DataState)
+              child: (snapshot is DataState)
                   ? FloatingActionButton(
                       onPressed: () {},
                       child: Icon(Icons.star),
-                      foregroundColor: state.illusts.isBookmarked
+                      foregroundColor: snapshot.illusts.isBookmarked
                           ? Colors.red
                           : Colors.white)
                   : FloatingActionButton(
@@ -360,8 +381,16 @@ class _PicturePageState extends State<PicturePage> {
                 itemCount: snapshot.recommend.illusts.length,
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return PixivImage(
-                      snapshot.recommend.illusts[index].imageUrls.squareMedium);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return PicturePage(snapshot.recommend.illusts[index]);
+                      }));
+                    },
+                    child: PixivImage(snapshot
+                        .recommend.illusts[index].imageUrls.squareMedium),
+                  );
                 });
           else
             return Center(
