@@ -27,7 +27,7 @@ class _IllustCardState extends State<IllustCard> {
     return InkWell(
       onTap: () => {
         Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          return PicturePage(widget._illusts);
+          return PicturePage(widget._illusts,widget._illusts.id);
         }))
       },
       child: Hero(

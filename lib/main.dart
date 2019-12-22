@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<SaveBloc>(
           create: (context) => SaveBloc(),
+        ),
+        BlocProvider(
+          create: (context) => HistoryPersistBloc(),
         )
       ],
       child: MaterialApp(
@@ -63,6 +67,7 @@ class MyApp extends StatelessWidget {
           '/hello': (context) => HelloPage(),
           '/search': (context) => SearchPage(),
           '/': (context) => SplashPage(),
+          '/history':(context)=>HistoryPage(),
         },
         initialRoute: '/',
         title: 'Flutter Demo',

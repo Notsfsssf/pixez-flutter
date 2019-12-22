@@ -38,18 +38,30 @@ class _ReComPageState extends State<ReComPage> {
               }
             },
             child: Scaffold(
-                appBar: AppBar(
-                  title: Text(I18n.of(context).Recommend),
-                  actions: <Widget>[],
-                ),
-                body: BlocBuilder<RecomBloc, RecomState>(
-                    builder: (context, state) {
-                  if (state is DataRecomState)
-                    return _buildDateBody(state, context);
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }))));
+                body: NestedScrollView(
+              body: _buildBlocBuilder(),
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: true,
+                    expandedHeight: 150.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: false,
+                    ),
+                  )
+                ];
+              },
+            ))));
+  }
+
+  BlocBuilder<RecomBloc, RecomState> _buildBlocBuilder() {
+    return BlocBuilder<RecomBloc, RecomState>(builder: (context, state) {
+      if (state is DataRecomState) return _buildDateBody(state, context);
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    });
   }
 
   Widget _buildDateBody(DataRecomState state, BuildContext context) {

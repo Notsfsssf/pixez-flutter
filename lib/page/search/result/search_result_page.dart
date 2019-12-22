@@ -16,8 +16,6 @@ import 'package:pixez/page/search/result/bloc/search_result_state.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
 import 'bloc/search_result_event.dart';
 
-
-
 class SearchResultPage extends StatefulWidget {
   final String word;
   final String translatedName;
@@ -127,25 +125,197 @@ class _SearchResultPageState extends State<SearchResultPage>
       builder: (context, state) {
         if (state is DataState)
           return Scaffold(
-            appBar: _buildAppBar(context),
-            body: BlocListener<SearchResultBloc, SearchResultState>(
-              child: TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  _buildFirst(state),
-                  SearchResultPainerPage(
-                    word: widget.word,
-                  )
-                ],
+            body: NestedScrollView(
+              body: BlocListener<SearchResultBloc, SearchResultState>(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    _buildFirst(state),
+                    SearchResultPainerPage(
+                      word: widget.word,
+                    )
+                  ],
+                ),
+                listener: (BuildContext context, SearchResultState state) {
+                  if (state is ShowStarNumState) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text("data"),
+                    ));
+                  }
+                },
+                bloc: _bloc,
               ),
-              listener: (BuildContext context, SearchResultState state) {
-                if (state is ShowStarNumState) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text("data"),
-                  ));
-                }
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: true,
+                    title: Text(widget.word),
+                    actions: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                              context: context,
+                              builder: (_) {
+                                return StatefulBuilder(
+                                    builder: (_, setBottomSheetState) {
+                                  if (startDate.isAfter(endDate)) {
+                                    startDate = DateTime.now();
+                                    endDate = DateTime.now();
+                                  }
+                                  return Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            ...sort
+                                                .map((f) => Flexible(
+                                                      child:
+                                                          RadioListTile<String>(
+                                                        value: f,
+                                                        title: Text(f),
+                                                        groupValue: _sortValue,
+                                                        onChanged: (value) {
+                                                          setBottomSheetState(
+                                                              () {
+                                                            _sortValue = value;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ))
+                                                .toList(),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            ...search_target
+                                                .map((f) => Flexible(
+                                                      child:
+                                                          RadioListTile<String>(
+                                                        value: f,
+                                                        title: Text(f),
+                                                        groupValue:
+                                                            _searchTargetValue,
+                                                        onChanged: (value) {
+                                                          setBottomSheetState(
+                                                              () {
+                                                            _searchTargetValue =
+                                                                value;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ))
+                                                .toList(),
+                                          ],
+                                        ),
+                                        SwitchListTile(
+                                            title: Text("Duration"),
+                                            value: enableDuration,
+                                            onChanged: (v) {
+                                              setBottomSheetState(() {
+                                                enableDuration = v;
+                                              });
+                                            }),
+                                        Visibility(
+                                          child: Row(
+                                            children: <Widget>[
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  DatePicker.showDatePicker(
+                                                      context,
+                                                      maxDateTime: endDate,
+                                                      initialDateTime:
+                                                          startDate,
+                                                      onConfirm:
+                                                          (DateTime dateTime,
+                                                              List<int> list) {
+                                                    setBottomSheetState(() {
+                                                      startDate = dateTime;
+                                                    });
+                                                    setState(() {
+                                                      startDate = dateTime;
+                                                    });
+                                                  });
+                                                },
+                                                child: Text(startDate
+                                                    .toIso8601String()
+                                                    .split("T")[0]), //AXAXAX
+                                              ),
+                                              Text("~"),
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  DatePicker.showDatePicker(
+                                                      context,
+                                                      maxDateTime:
+                                                          DateTime.now(),
+                                                      initialDateTime: endDate,
+                                                      onConfirm:
+                                                          (DateTime dateTime,
+                                                              List<int> list) {
+                                                    setBottomSheetState(() {
+                                                      endDate = dateTime;
+                                                    });
+                                                    setState(() {
+                                                      endDate = dateTime;
+                                                    });
+                                                  });
+                                                },
+                                                child: Text(endDate
+                                                    .toIso8601String()
+                                                    .split("T")[0]),
+                                              ),
+                                            ],
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                          ),
+                                          visible: enableDuration,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0, right: 8.0),
+                                          child: RaisedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              _bloc.add(ApplyEvent(
+                                                  widget.word,
+                                                  _sortValue,
+                                                  _searchTargetValue,
+                                                  startDate,
+                                                  endDate,
+                                                  enableDuration));
+                                            },
+                                            child: Text("Apply"),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            textColor: Colors.white,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                });
+                              });
+                        },
+                      )
+                    ],
+                    bottom: TabBar(
+                      controller: _tabController,
+                      tabs: <Widget>[
+                        Tab(
+                          child: Text(I18n.of(context).Illust),
+                        ),
+                        Tab(
+                          child: Text(I18n.of(context).Painter),
+                        ),
+                      ],
+                    ),
+                  )
+                ];
               },
-              bloc: _bloc,
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {

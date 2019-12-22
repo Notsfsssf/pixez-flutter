@@ -7,3 +7,6 @@ export 'route_state.dart';
 export 'save_bloc.dart';
 export 'save_event.dart';
 export 'save_state.dart';
+export 'history_persist_bloc.dart';
+export 'history_persist_event.dart';
+export 'history_persist_state.dart';

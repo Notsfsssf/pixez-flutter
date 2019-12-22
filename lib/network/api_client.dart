@@ -86,10 +86,21 @@ class ApiClient {
 //  fun postLikeIllust(@Header("Authorization") paramString1: String, @Field("illust_id") paramLong: Long, @Field("restrict") paramString2: String, @Field("tags[]") paramList: List<String>?): Observable<ResponseBody>
   Future<Response> postLikeIllust(
       int illust_id, String restrict, List<String> tags) async {
-    return httpClient.post("/v2/illust/bookmark/add",
-        data: notNullMap(
-            {"illust_id": illust_id, "restrict": restrict, "tags[]": tags}),
-        options: Options(contentType: Headers.formUrlEncodedContentType));
+    if (tags != null && tags.isNotEmpty)
+      return httpClient.post("/v2/illust/bookmark/add",
+          data: notNullMap({
+            "illust_id": illust_id,
+            "restrict": restrict,
+            "tags[]": tags.toString()//null toString =="null"
+          }),
+          options: Options(contentType: Headers.formUrlEncodedContentType));
+    else
+      return httpClient.post("/v2/illust/bookmark/add",
+          data: notNullMap({
+            "illust_id": illust_id,
+            "restrict": restrict,
+          }),
+          options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
   //postUnlikeIllust(@Header("Authorization") String paramString, @Field("illust_id") long paramLong);
@@ -142,8 +153,6 @@ class ApiClient {
         data: {"user_id": user_id},
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
-
-
 
   // @GET("/v1/user/follower?filter=for_android")
   //   fun getUserFollower(@Header("Authorization") paramString: String, @Query("user_id") paramLong: Long): Observable<SearchUserResponse>
@@ -256,5 +265,12 @@ class ApiClient {
     return httpClient.post("/v1/user/follow/add",
         data: {"user_id": user_id, "restrict": restrict},
         options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+/*
+  @GET("/v1/illust/detail?filter=for_android")
+  fun getIllust(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<IllustDetailResponse>
+*/
+  Future<Response> getIllustDetail(int illust_id) {
+    return httpClient.get("/v1/illust/detail?filter=for_android",queryParameters: {"illust_id":illust_id});
   }
 }

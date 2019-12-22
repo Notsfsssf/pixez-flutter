@@ -24,16 +24,17 @@ class DetailItem implements ListItem {}
 
 class PicturePage extends StatefulWidget {
   final Illusts _illusts;
+  final int id;
 
-  PicturePage(this._illusts);
+  PicturePage(this._illusts, this.id);
 
   @override
   _PicturePageState createState() => _PicturePageState();
 }
 
 class _PicturePageState extends State<PicturePage> {
-  _showBookMarkDetailDialog(
-      BuildContext context, BookmarkDetailState state, PictureState snapshot) {
+  _showBookMarkDetailDialog(BuildContext context, BookmarkDetailState state,
+      PictureState snapshot, IllustState illustState) {
     showDialog(
         context: context,
         child: StatefulBuilder(
@@ -138,17 +139,21 @@ class _PicturePageState extends State<PicturePage> {
                         }
                       }
                       if (tempTags.length == 0) tempTags = null;
-                      (snapshot is DataState)
-                          ? BlocProvider.of<PictureBloc>(context).add(StarEvent(
-                              snapshot.illusts,
-                              state.bookMarkDetailResponse.bookmarkDetail
-                                  .restrict,
-                              tempTags))
-                          : BlocProvider.of<PictureBloc>(context).add(StarEvent(
-                              widget._illusts,
+
+                      if (snapshot is DataState) {
+                        BlocProvider.of<PictureBloc>(context).add(StarEvent(
+                            snapshot.illusts,
+                            state
+                                .bookMarkDetailResponse.bookmarkDetail.restrict,
+                            tempTags));
+                      } else {
+                        if (illustState is DataIllustState)
+                          BlocProvider.of<PictureBloc>(context).add(StarEvent(
+                              illustState.illusts,
                               state.bookMarkDetailResponse.bookmarkDetail
                                   .restrict,
                               tempTags));
+                      }
                     },
                   )
                 ],
@@ -168,73 +173,94 @@ class _PicturePageState extends State<PicturePage> {
           ),
           BlocProvider<BookmarkDetailBloc>(
             create: (BuildContext context) => BookmarkDetailBloc(ApiClient()),
+          ),
+          BlocProvider<IllustBloc>(
+            create: (BuildContext context) =>
+                IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
+                  ..add(FetchIllustDetailEvent()),
           )
         ],
         child: BlocBuilder<PictureBloc, PictureState>(
             builder: (context, snapshot) {
           return Scaffold(
-            body: MultiBlocListener(
-              listeners: [
-                BlocListener<SaveBloc, SaveState>(
-                  listener: (BuildContext context, SaveState state) {
-                    if (state is SaveSuccesState) {
-                      if (state.isNotSave)
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(I18n.of(context).Saved),
-                        ));
-                    }
-                  },
-                ),
-                BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
-                  listener: (BuildContext context, BookmarkDetailState state) {
-                    if (state is DataBookmarkDetailState)
-                      _showBookMarkDetailDialog(context, state, snapshot);
-                  },
-                )
-              ],
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  _buildList(widget._illusts),
-                  TransportAppBar(
-                    actions: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.more_vert),
-                          onPressed: () {
-                            buildShowModalBottomSheet(context, widget._illusts);
-                          })
+            body: BlocBuilder<IllustBloc, IllustState>(
+                builder: (context, illustState) {
+              if (illustState is DataIllustState)
+                return MultiBlocListener(
+                  listeners: [
+                    BlocListener<SaveBloc, SaveState>(
+                      listener: (BuildContext context, SaveState state) {
+                        if (state is SaveSuccesState) {
+                          if (state.isNotSave)
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text(I18n.of(context).Saved),
+                            ));
+                        }
+                      },
+                    ),
+                    BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
+                      listener:
+                          (BuildContext context, BookmarkDetailState state) {
+                        if (state is DataBookmarkDetailState)
+                          _showBookMarkDetailDialog(
+                              context, state, snapshot, illustState);
+                      },
+                    )
+                  ],
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      _buildList(illustState.illusts,illustState),
+                      TransportAppBar(
+                        actions: <Widget>[
+                          IconButton(
+                              icon: Icon(Icons.more_vert),
+                              onPressed: () {
+                                buildShowModalBottomSheet(
+                                    context, illustState.illusts);
+                              })
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
-            ),
-            floatingActionButton: InkWell(
-              splashColor: Colors.blue,
-              onLongPress: () {
-                BlocProvider.of<BookmarkDetailBloc>(context)
-                    .add(FetchBookmarkDetailEvent(widget._illusts.id));
-              },
-              onTap: () {
-                (snapshot is DataState)
-                    ? BlocProvider.of<PictureBloc>(context)
-                        .add(StarEvent(snapshot.illusts, "public", null))
-                    : BlocProvider.of<PictureBloc>(context)
-                        .add(StarEvent(widget._illusts, "public", null));
-              },
-              child: (snapshot is DataState)
-                  ? FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.star),
-                      foregroundColor: snapshot.illusts.isBookmarked
-                          ? Colors.red
-                          : Colors.white)
-                  : FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.star),
-                      foregroundColor: widget._illusts.isBookmarked
-                          ? Colors.red
-                          : Colors.white),
-            ),
+                  ),
+                );
+              else
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+            }),
+            floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
+                builder: (context, illustState) {
+              if (illustState is DataIllustState)
+                return InkWell(
+                  splashColor: Colors.blue,
+                  onLongPress: () {
+                    BlocProvider.of<BookmarkDetailBloc>(context)
+                        .add(FetchBookmarkDetailEvent(illustState.illusts.id));
+                  },
+                  onTap: () {},
+                  child: (snapshot is DataState)
+                      ? FloatingActionButton(
+                          onPressed: () {
+                            BlocProvider.of<PictureBloc>(context).add(
+                                StarEvent(snapshot.illusts, "public", null));
+                          },
+                          child: Icon(Icons.star),
+                          foregroundColor: snapshot.illusts.isBookmarked
+                              ? Colors.red
+                              : Colors.white)
+                      : FloatingActionButton(
+                          onPressed: () {
+                            BlocProvider.of<PictureBloc>(context).add(
+                                StarEvent(illustState.illusts, "public", null));
+                          },
+                          child: Icon(Icons.star),
+                          foregroundColor: illustState.illusts.isBookmarked
+                              ? Colors.red
+                              : Colors.white),
+                );
+              return null;
+            }),
           );
         }));
   }
@@ -328,8 +354,9 @@ class _PicturePageState extends State<PicturePage> {
                           color: Theme.of(context).primaryColor),
                       onTap: () {
                         Navigator.of(context).pop();
+
                         Share.share(
-                            "https://www.pixiv.net/artworks/${widget._illusts.id}");
+                            "https://www.pixiv.net/artworks/${widget.id}");
                       },
                     ),
                   ],
@@ -369,7 +396,7 @@ class _PicturePageState extends State<PicturePage> {
           placeHolder: illust.metaPages[index].imageUrls.medium,
         );
 
-  Widget _buildGridView() => BlocProvider<IllustRelatedBloc>(
+  Widget _buildGridView(DataIllustState illustState) => BlocProvider<IllustRelatedBloc>(
         child: BlocBuilder<IllustRelatedBloc, IllustRelatedState>(
             builder: (context, snapshot) {
           if (snapshot is DataIllustRelatedState)
@@ -385,7 +412,8 @@ class _PicturePageState extends State<PicturePage> {
                     onTap: () {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return PicturePage(snapshot.recommend.illusts[index]);
+                        return PicturePage(snapshot.recommend.illusts[index],
+                            snapshot.recommend.illusts[index].id);
                       }));
                     },
                     child: PixivImage(snapshot
@@ -398,10 +426,10 @@ class _PicturePageState extends State<PicturePage> {
             );
         }),
         create: (BuildContext context) => IllustRelatedBloc(ApiClient())
-          ..add(FetchRelatedEvent(widget._illusts)),
+          ..add(FetchRelatedEvent(illustState.illusts)),
       );
 
-  Widget _buildList(Illusts illust) {
+  Widget _buildList(Illusts illust,DataIllustState illustState) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
     return ListView.builder(
         itemCount: count + 3,
@@ -418,7 +446,7 @@ class _PicturePageState extends State<PicturePage> {
             );
           }
           if (index == count + 2) {
-            return _buildGridView();
+            return _buildGridView(illustState);
           }
           if (index == count) {
             return _buildDetail(context, illust);
