@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
 
 class ReComPage extends StatefulWidget {
@@ -45,9 +44,13 @@ class _ReComPageState extends State<ReComPage> {
                 return [
                   SliverAppBar(
                     pinned: true,
-                    expandedHeight: 150.0,
+                    expandedHeight: 150,
+                    shape: ContinuousRectangleBorder(
+                        borderRadius:
+                            BorderRadius.only(bottomLeft: Radius.circular(50))),
                     flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: false,
+                      title: Text("Recom"),
+                      centerTitle: true,
                     ),
                   )
                 ];
