@@ -11,6 +11,7 @@ import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 
 import 'generated/i18n.dart';
+
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -30,6 +31,7 @@ class SimpleBlocDelegate extends BlocDelegate {
     print(error);
   }
 }
+
 main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(MyApp());
@@ -45,6 +47,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<RouteBloc>(
           create: (context) => RouteBloc(),
         ),
+        BlocProvider<IllustPersistBloc>(
+          create: (context) => IllustPersistBloc(),
+        ),
         BlocProvider<AccountBloc>(
           create: (context) => AccountBloc()..add(FetchDataBaseEvent()),
         ),
@@ -54,26 +59,21 @@ class MyApp extends StatelessWidget {
         BlocProvider<SaveBloc>(
           create: (context) => SaveBloc(),
         ),
-        BlocProvider(
-          create: (context) => HistoryPersistBloc(),
-        )
+
       ],
       child: MaterialApp(
-        darkTheme: ThemeData(
-            primaryColor: Colors.white
-        ),
+        darkTheme: ThemeData(primaryColor: Colors.white),
         routes: {
           '/login': (context) => LoginPage(),
           '/hello': (context) => HelloPage(),
           '/search': (context) => SearchPage(),
           '/': (context) => SplashPage(),
-          '/history':(context)=>HistoryPage(),
+          '/history': (context) => HistoryPage(),
         },
         initialRoute: '/',
         title: 'Flutter Demo',
-
         localeResolutionCallback:
-        i18n.resolution(fallback: new Locale("en", "US")),
+            i18n.resolution(fallback: new Locale("en", "US")),
         localizationsDelegates: [
           i18n,
           GlobalMaterialLocalizations.delegate,

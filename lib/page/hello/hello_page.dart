@@ -8,6 +8,7 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
+import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 
 class HelloPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _HelloPageState extends State<HelloPage> {
     RankingPage(),
     NewPage(),
     SearchPage(),
-    SettingPage()
+    HistoryPage()
   ];
 
   @override

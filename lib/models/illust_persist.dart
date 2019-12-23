@@ -32,7 +32,7 @@ class IllustPersist {
 final String tableIllustPersist = 'illustpersist';
 final String cid = "id";
 final String cillust_id = "illust_id";
-final String cuser_id = "illust_id";
+final String cuser_id = "user_id";
 final String cpicture_url = "picture_url";
 final String ctime = "time";
 
@@ -46,9 +46,9 @@ class IllustPersistProvider {
         onCreate: (Database db, int version) async {
       await db.execute('''
 create table $tableIllustPersist ( 
-  id integer primary key autoincrement, 
-  illust_id integer not null,
-  user_id integer not null,
+  $cid integer primary key autoincrement, 
+  $cillust_id integer not null,
+  $cuser_id integer not null,
   $cpicture_url text not null,
     $ctime integer not null
   )
@@ -57,16 +57,21 @@ create table $tableIllustPersist (
   }
 
   Future<IllustPersist> insert(IllustPersist todo) async {
-    todo.id = await db.insert('illustpersist', todo.toJson(),
+    print(todo.toJson());
+    final result = await getAccount(todo.illustId);
+    if (result != null) {
+      todo.id = result.id;
+    }
+    todo.id = await db.insert(tableIllustPersist, todo.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return todo;
   }
 
-  Future<IllustPersist> getAccount(int id) async {
+  Future<IllustPersist> getAccount(int illust_id) async {
     List<Map> maps = await db.query(tableIllustPersist,
         columns: [cid, cillust_id, cuser_id, cpicture_url, ctime],
-        where: '$cid = ?',
-        whereArgs: [id]);
+        where: '$cillust_id = ?',
+        whereArgs: [illust_id]);
     if (maps.length > 0) {
       return IllustPersist.fromJson(maps.first);
     }
@@ -88,7 +93,7 @@ create table $tableIllustPersist (
 
   Future<int> delete(int id) async {
     return await db
-        .delete(tableIllustPersist, where: '$cid = ?', whereArgs: [id]);
+        .delete(tableIllustPersist, where: '$cillust_id = ?', whereArgs: [id]);
   }
 
   Future<int> update(IllustPersist todo) async {
@@ -99,7 +104,6 @@ create table $tableIllustPersist (
   Future close() async => db.close();
 
   Future deleteAll() async {
-    return await db
-        .delete(tableIllustPersist);
+    return await db.delete(tableIllustPersist);
   }
 }

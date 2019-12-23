@@ -24,7 +24,7 @@ class IllustBloc extends Bloc<IllustEvent, IllustState> {
     if (event is FetchIllustDetailEvent) {
       if (illust == null) {
         Response response = await client.getIllustDetail(id);
-        yield DataIllustState(Illusts.fromJson(response.data));
+        yield DataIllustState(Illusts.fromJson(response.data['illust']));
       } else
         yield DataIllustState(illust);
     }

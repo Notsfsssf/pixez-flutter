@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/bloc/save_bloc.dart';
 import 'package:pixez/bloc/save_event.dart';
 import 'package:pixez/bloc/save_state.dart';
@@ -165,6 +166,11 @@ class _PicturePageState extends State<PicturePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
@@ -185,7 +191,9 @@ class _PicturePageState extends State<PicturePage> {
           return Scaffold(
             body: BlocBuilder<IllustBloc, IllustState>(
                 builder: (context, illustState) {
-              if (illustState is DataIllustState)
+              if (illustState is DataIllustState) {
+                BlocProvider.of<IllustPersistBloc>(context)
+                    .add(InsertIllustPersistEvent(illustState.illusts));
                 return MultiBlocListener(
                   listeners: [
                     BlocListener<SaveBloc, SaveState>(
@@ -210,7 +218,7 @@ class _PicturePageState extends State<PicturePage> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
-                      _buildList(illustState.illusts,illustState),
+                      _buildList(illustState.illusts, illustState),
                       TransportAppBar(
                         actions: <Widget>[
                           IconButton(
@@ -224,7 +232,7 @@ class _PicturePageState extends State<PicturePage> {
                     ],
                   ),
                 );
-              else
+              } else
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -259,7 +267,7 @@ class _PicturePageState extends State<PicturePage> {
                               ? Colors.red
                               : Colors.white),
                 );
-              return null;
+              return FloatingActionButton(onPressed: () {},);
             }),
           );
         }));
@@ -396,7 +404,8 @@ class _PicturePageState extends State<PicturePage> {
           placeHolder: illust.metaPages[index].imageUrls.medium,
         );
 
-  Widget _buildGridView(DataIllustState illustState) => BlocProvider<IllustRelatedBloc>(
+  Widget _buildGridView(DataIllustState illustState) =>
+      BlocProvider<IllustRelatedBloc>(
         child: BlocBuilder<IllustRelatedBloc, IllustRelatedState>(
             builder: (context, snapshot) {
           if (snapshot is DataIllustRelatedState)
@@ -429,7 +438,7 @@ class _PicturePageState extends State<PicturePage> {
           ..add(FetchRelatedEvent(illustState.illusts)),
       );
 
-  Widget _buildList(Illusts illust,DataIllustState illustState) {
+  Widget _buildList(Illusts illust, DataIllustState illustState) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
     return ListView.builder(
         itemCount: count + 3,
