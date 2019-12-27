@@ -161,7 +161,8 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
             create: (context) => NewIllustBloc(),
           ),
           BlocProvider<NewPainterBloc>(
-            create: (context) => NewPainterBloc(ApiClient()),
+            create: (context) =>
+                NewPainterBloc(RepositoryProvider.of<ApiClient>(context)),
           ),
           BlocProvider<BookmarkBloc>(
             create: (context) => BookmarkBloc(),

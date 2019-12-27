@@ -14,6 +14,7 @@ import 'package:pixez/page/search/bloc/tag_history_event.dart';
 import 'package:pixez/page/search/result/bloc/search_result_bloc.dart';
 import 'package:pixez/page/search/result/bloc/search_result_state.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
+
 import 'bloc/search_result_event.dart';
 
 class SearchResultPage extends StatefulWidget {
@@ -114,9 +115,10 @@ class _SearchResultPageState extends State<SearchResultPage>
   Widget build(BuildContext context) {
 
     return BlocProvider(
-      create: (context) => SearchResultBloc(ApiClient())
-        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
-            endDate, enableDuration)),
+      create: (context) =>
+          SearchResultBloc(RepositoryProvider.of<ApiClient>(context))
+            ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
+                startDate, endDate, enableDuration)),
       child: BlocBuilder<SearchResultBloc, SearchResultState>(
         condition: (pre, now) {
           return now is DataState;

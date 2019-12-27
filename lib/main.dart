@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -59,29 +60,35 @@ class MyApp extends StatelessWidget {
         BlocProvider<SaveBloc>(
           create: (context) => SaveBloc(),
         ),
-
       ],
-      child: MaterialApp(
-        darkTheme: ThemeData(primaryColor: Colors.white),
-        routes: {
-          '/login': (context) => LoginPage(),
-          '/hello': (context) => HelloPage(),
-          '/search': (context) => SearchPage(),
-          '/': (context) => SplashPage(),
-          '/history': (context) => HistoryPage(),
-        },
-        initialRoute: '/',
-        title: 'Flutter Demo',
-        localeResolutionCallback:
-            i18n.resolution(fallback: new Locale("en", "US")),
-        localizationsDelegates: [
-          i18n,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate
+      child: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<ApiClient>(
+            create: (BuildContext context) => ApiClient(),
+          )
         ],
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+        child: MaterialApp(
+          darkTheme: ThemeData(primaryColor: Colors.white),
+          routes: {
+            '/login': (context) => LoginPage(),
+            '/hello': (context) => HelloPage(),
+            '/search': (context) => SearchPage(),
+            '/': (context) => SplashPage(),
+            '/history': (context) => HistoryPage(),
+          },
+          initialRoute: '/',
+          title: 'Flutter Demo',
+          localeResolutionCallback:
+              i18n.resolution(fallback: new Locale("en", "US")),
+          localizationsDelegates: [
+            i18n,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate
+          ],
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
         ),
       ),
     );

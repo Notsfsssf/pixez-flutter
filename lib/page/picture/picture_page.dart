@@ -175,10 +175,12 @@ class _PicturePageState extends State<PicturePage> {
     return MultiBlocProvider(
         providers: [
           BlocProvider<PictureBloc>(
-            create: (context) => PictureBloc(ApiClient()),
+            create: (context) =>
+                PictureBloc(RepositoryProvider.of<ApiClient>(context)),
           ),
           BlocProvider<BookmarkDetailBloc>(
-            create: (BuildContext context) => BookmarkDetailBloc(ApiClient()),
+            create: (BuildContext context) =>
+                BookmarkDetailBloc(RepositoryProvider.of<ApiClient>(context)),
           ),
           BlocProvider<IllustBloc>(
             create: (BuildContext context) =>
@@ -434,8 +436,9 @@ class _PicturePageState extends State<PicturePage> {
               child: CircularProgressIndicator(),
             );
         }),
-        create: (BuildContext context) => IllustRelatedBloc(ApiClient())
-          ..add(FetchRelatedEvent(illustState.illusts)),
+        create: (BuildContext context) =>
+            IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
+              ..add(FetchRelatedEvent(illustState.illusts)),
       );
 
   Widget _buildList(Illusts illust, DataIllustState illustState) {

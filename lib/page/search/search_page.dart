@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/generated/i18n.dart';
-import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
@@ -29,7 +28,9 @@ class _SearchPageState extends State<SearchPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<TrendTagsBloc>(
-          create: (context) => TrendTagsBloc(ApiClient())..add(FetchEvent()),
+          create: (context) =>
+              TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
+                ..add(FetchEvent()),
         )
       ],
       child: Scaffold(
@@ -191,10 +192,12 @@ class Suggestions extends StatefulWidget {
 }
 
 class _SuggestionsState extends State<Suggestions> {
-  final SuggestionBloc _bloc = SuggestionBloc(ApiClient());
+
 
   @override
   Widget build(BuildContext context) {
+    final SuggestionBloc _bloc = SuggestionBloc(
+        RepositoryProvider.of<ApiClient>(context));
     _bloc.add(FetchSuggestionsEvent(widget.query));
     return BlocBuilder(
       bloc: _bloc,

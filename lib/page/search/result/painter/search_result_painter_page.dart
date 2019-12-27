@@ -29,17 +29,20 @@ class _SearchResultPainerPageState extends State<SearchResultPainerPage> {
 
   @override
   Widget build(BuildContext context) {
-    _bloc = ResultPainterBloc(ApiClient())..add(FetchEvent(widget.word));
+    _bloc = ResultPainterBloc(RepositoryProvider.of<ApiClient>(context))
+      ..add(FetchEvent(widget.word));
     return BlocListener<ResultPainterBloc, ResultPainterState>(
       bloc: _bloc,
       listener: (BuildContext context, state) {
-           _loadCompleter.complete();
-          _refreshCompleter.complete();
-          _refreshCompleter = Completer<void>();
-          _loadCompleter = Completer<void>();
-          if(state is LoadEndState){
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("End"),));
-          }
+        _loadCompleter.complete();
+        _refreshCompleter.complete();
+        _refreshCompleter = Completer<void>();
+        _loadCompleter = Completer<void>();
+        if (state is LoadEndState) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text("End"),
+          ));
+        }
       },
       child: BlocBuilder<ResultPainterBloc, ResultPainterState>(
         bloc: _bloc,

@@ -8,6 +8,10 @@ import 'package:pixez/network/api_client.dart';
 import './bloc.dart';
 
 class RecomBloc extends Bloc<RecomEvent, RecomState> {
+  final ApiClient client;
+
+  RecomBloc(this.client);
+
   @override
   RecomState get initialState => InitialRecomState();
 
@@ -16,7 +20,6 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
     RecomEvent event,
   ) async* {
     if (event is FetchEvent) {
-      final client = new ApiClient();
       try {
         final response = await client.getRecommend();
         Recommend recommend = Recommend.fromJson(response.data);
@@ -31,7 +34,6 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
       }
     }
     if (event is LoadMoreEvent) {
-      final client = new ApiClient();
       if (event.nextUrl != null) {
         try {
           final response = await client.getNext(event.nextUrl);
@@ -40,7 +42,7 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
           print(ill.length);
           yield DataRecomState(ill, recommend.nextUrl);
         } catch (e) {
-          
+
         }
       } else {}
     }
