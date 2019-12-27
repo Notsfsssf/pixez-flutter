@@ -104,6 +104,8 @@ class I18n implements WidgetsLocalizations {
   String get History => "历史";
   /// "清空"
   String get Clear => "清空";
+  /// "删除"
+  String get Delete => "删除";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -221,6 +223,9 @@ class _I18n_en_US extends I18n {
   /// "Clear"
   @override
   String get Clear => "Clear";
+  /// "delete"
+  @override
+  String get Delete => "delete";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

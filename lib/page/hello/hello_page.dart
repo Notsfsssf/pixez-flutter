@@ -57,7 +57,8 @@ class _HelloPageState extends State<HelloPage> {
 
   Widget _buildBottomNavy() => BottomNavyBar(
         selectedIndex: _selectedIndex,
-        showElevation: true, // use this to remove appBar's elevation
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        showElevation: false, // use this to remove appBar's elevation
         onItemSelected: (index) => setState(() {
           _selectedIndex = index;
           _pageController.animateToPage(index,

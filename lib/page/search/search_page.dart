@@ -95,7 +95,7 @@ class _SearchPageState extends State<SearchPage> {
                 );
               } else {
                 this._searchIcon = Icon(Icons.search);
-                this._appBarTitle = Text(I18n.of(context).Search);
+                this._appBarTitle = Text(I18n.of(context).Search );
                 _filter.clear();
                 editString = '';
               }

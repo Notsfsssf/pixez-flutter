@@ -11,7 +11,7 @@ class IllustPersistBloc extends Bloc<IllustPersistEvent, IllustPersistState> {
   Stream<IllustPersistState> mapEventToState(
     IllustPersistEvent event,
   ) async* {
-       if (event is FetchIllustPersistEvent) {
+    if (event is FetchIllustPersistEvent) {
       IllustPersistProvider illustPersistProvider = IllustPersistProvider();
       await illustPersistProvider.open();
       final result = await illustPersistProvider.getAllAccount();
@@ -26,20 +26,21 @@ class IllustPersistBloc extends Bloc<IllustPersistEvent, IllustPersistState> {
         ..userId = illust.user.id
         ..pictureUrl = illust.imageUrls.squareMedium
         ..illustId = illust.id);
-      yield InsertSuccessState();
     }
     if (event is DeleteIllustPersistEvent) {
       final id = event.id;
       IllustPersistProvider illustPersistProvider = IllustPersistProvider();
       await illustPersistProvider.open();
       await illustPersistProvider.delete(id);
-      yield DeleteSuccessState();
+      final result = await illustPersistProvider.getAllAccount();
+      yield DataIllustPersistState(result);
     }
     if (event is DeleteAllIllustPersistEvent) {
       IllustPersistProvider illustPersistProvider = IllustPersistProvider();
       await illustPersistProvider.open();
-      illustPersistProvider.deleteAll();
-      yield DeleteSuccessState();
+      await illustPersistProvider.deleteAll();
+      final result = await illustPersistProvider.getAllAccount();
+      yield DataIllustPersistState(result);
     }
   }
 }

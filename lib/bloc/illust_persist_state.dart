@@ -10,7 +10,3 @@ class DataIllustPersistState extends IllustPersistState {
 
   DataIllustPersistState(this.illusts);
 }
-
-class InsertSuccessState extends IllustPersistState {}
-
-class DeleteSuccessState extends IllustPersistState {}

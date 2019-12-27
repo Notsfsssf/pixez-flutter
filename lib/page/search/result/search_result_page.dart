@@ -86,22 +86,20 @@ class _SearchResultPageState extends State<SearchResultPage>
         staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
       ),
       onRefresh: () async {
-        _bloc.add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
+       BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
             startDate, endDate, enableDuration));
         return _refreshCompleter.future;
       },
       onLoad: () async {
-        _bloc.add(LoadMoreEvent(state.nextUrl, state.illusts));
+      BlocProvider.of<SearchResultBloc>(context).add(LoadMoreEvent(state.nextUrl, state.illusts));
         return _loadCompleter.future;
       },
     );
   }
 
-  SearchResultBloc _bloc;
 
   Widget _buildFirst(state) =>
       BlocListener<SearchResultBloc, SearchResultState>(
-          bloc: _bloc,
           listener: (context, state) {
             if (state is DataState) {
               _loadCompleter?.complete();
@@ -114,224 +112,228 @@ class _SearchResultPageState extends State<SearchResultPage>
 
   @override
   Widget build(BuildContext context) {
-    _bloc = SearchResultBloc(ApiClient())
-      ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
-          endDate, enableDuration));
-    return BlocBuilder<SearchResultBloc, SearchResultState>(
-      bloc: _bloc,
-      condition: (pre, now) {
-        return now is DataState;
-      },
-      builder: (context, state) {
-        if (state is DataState)
-          return Scaffold(
-            body: NestedScrollView(
-              body: BlocListener<SearchResultBloc, SearchResultState>(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    _buildFirst(state),
-                    SearchResultPainerPage(
-                      word: widget.word,
-                    )
-                  ],
-                ),
-                listener: (BuildContext context, SearchResultState state) {
-                  if (state is ShowStarNumState) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("data"),
-                    ));
-                  }
-                },
-                bloc: _bloc,
-              ),
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    pinned: true,
-                    title: Text(widget.word),
-                    actions: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () {
-                          showModalBottomSheet<void>(
-                              context: context,
-                              builder: (_) {
-                                return StatefulBuilder(
-                                    builder: (_, setBottomSheetState) {
-                                  if (startDate.isAfter(endDate)) {
-                                    startDate = DateTime.now();
-                                    endDate = DateTime.now();
-                                  }
-                                  return Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            ...sort
-                                                .map((f) => Flexible(
-                                                      child:
-                                                          RadioListTile<String>(
-                                                        value: f,
-                                                        title: Text(f),
-                                                        groupValue: _sortValue,
-                                                        onChanged: (value) {
-                                                          setBottomSheetState(
-                                                              () {
-                                                            _sortValue = value;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ))
-                                                .toList(),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            ...search_target
-                                                .map((f) => Flexible(
-                                                      child:
-                                                          RadioListTile<String>(
-                                                        value: f,
-                                                        title: Text(f),
-                                                        groupValue:
-                                                            _searchTargetValue,
-                                                        onChanged: (value) {
-                                                          setBottomSheetState(
-                                                              () {
-                                                            _searchTargetValue =
-                                                                value;
-                                                          });
-                                                        },
-                                                      ),
-                                                    ))
-                                                .toList(),
-                                          ],
-                                        ),
-                                        SwitchListTile(
-                                            title: Text("Duration"),
-                                            value: enableDuration,
-                                            onChanged: (v) {
-                                              setBottomSheetState(() {
-                                                enableDuration = v;
-                                              });
-                                            }),
-                                        Visibility(
-                                          child: Row(
-                                            children: <Widget>[
-                                              OutlineButton(
-                                                onPressed: () {
-                                                  DatePicker.showDatePicker(
-                                                      context,
-                                                      maxDateTime: endDate,
-                                                      initialDateTime:
-                                                          startDate,
-                                                      onConfirm:
-                                                          (DateTime dateTime,
-                                                              List<int> list) {
-                                                    setBottomSheetState(() {
-                                                      startDate = dateTime;
-                                                    });
-                                                    setState(() {
-                                                      startDate = dateTime;
-                                                    });
-                                                  });
-                                                },
-                                                child: Text(startDate
-                                                    .toIso8601String()
-                                                    .split("T")[0]), //AXAXAX
-                                              ),
-                                              Text("~"),
-                                              OutlineButton(
-                                                onPressed: () {
-                                                  DatePicker.showDatePicker(
-                                                      context,
-                                                      maxDateTime:
-                                                          DateTime.now(),
-                                                      initialDateTime: endDate,
-                                                      onConfirm:
-                                                          (DateTime dateTime,
-                                                              List<int> list) {
-                                                    setBottomSheetState(() {
-                                                      endDate = dateTime;
-                                                    });
-                                                    setState(() {
-                                                      endDate = dateTime;
-                                                    });
-                                                  });
-                                                },
-                                                child: Text(endDate
-                                                    .toIso8601String()
-                                                    .split("T")[0]),
-                                              ),
-                                            ],
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                          ),
-                                          visible: enableDuration,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, right: 8.0),
-                                          child: RaisedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              _bloc.add(ApplyEvent(
-                                                  widget.word,
-                                                  _sortValue,
-                                                  _searchTargetValue,
-                                                  startDate,
-                                                  endDate,
-                                                  enableDuration));
-                                            },
-                                            child: Text("Apply"),
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            textColor: Colors.white,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                });
-                              });
-                        },
+
+    return BlocProvider(
+      create: (context) => SearchResultBloc(ApiClient())
+        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue, startDate,
+            endDate, enableDuration)),
+      child: BlocBuilder<SearchResultBloc, SearchResultState>(
+        condition: (pre, now) {
+          return now is DataState;
+        },
+        builder: (context, state) {
+          if (state is DataState)
+            return Scaffold(
+              body: NestedScrollView(
+                body: BlocListener<SearchResultBloc, SearchResultState>(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      _buildFirst(state),
+                      SearchResultPainerPage(
+                        word: widget.word,
                       )
                     ],
-                    bottom: TabBar(
-                      controller: _tabController,
-                      tabs: <Widget>[
-                        Tab(
-                          child: Text(I18n.of(context).Illust),
-                        ),
-                        Tab(
-                          child: Text(I18n.of(context).Painter),
-                        ),
+                  ),
+                  listener: (BuildContext context, SearchResultState state) {
+                    if (state is ShowStarNumState) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("data"),
+                      ));
+                    }
+                  },
+                ),
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      pinned: true,
+                      title: Text(widget.word),
+                      actions: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.more_vert),
+                          onPressed: () {
+                            showModalBottomSheet<void>(
+                                context: context,
+                                builder: (_) {
+                                  return StatefulBuilder(
+                                      builder: (_, setBottomSheetState) {
+                                    if (startDate.isAfter(endDate)) {
+                                      startDate = DateTime.now();
+                                      endDate = DateTime.now();
+                                    }
+                                    return Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              ...sort
+                                                  .map((f) => Flexible(
+                                                        child: RadioListTile<
+                                                            String>(
+                                                          value: f,
+                                                          title: Text(f),
+                                                          groupValue:
+                                                              _sortValue,
+                                                          onChanged: (value) {
+                                                            setBottomSheetState(
+                                                                () {
+                                                              _sortValue =
+                                                                  value;
+                                                            });
+                                                          },
+                                                        ),
+                                                      ))
+                                                  .toList(),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              ...search_target
+                                                  .map((f) => Flexible(
+                                                        child: RadioListTile<
+                                                            String>(
+                                                          value: f,
+                                                          title: Text(f),
+                                                          groupValue:
+                                                              _searchTargetValue,
+                                                          onChanged: (value) {
+                                                            setBottomSheetState(
+                                                                () {
+                                                              _searchTargetValue =
+                                                                  value;
+                                                            });
+                                                          },
+                                                        ),
+                                                      ))
+                                                  .toList(),
+                                            ],
+                                          ),
+                                          SwitchListTile(
+                                              title: Text("Duration"),
+                                              value: enableDuration,
+                                              onChanged: (v) {
+                                                setBottomSheetState(() {
+                                                  enableDuration = v;
+                                                });
+                                              }),
+                                          Visibility(
+                                            child: Row(
+                                              children: <Widget>[
+                                                OutlineButton(
+                                                  onPressed: () {
+                                                    DatePicker.showDatePicker(
+                                                        context,
+                                                        maxDateTime: endDate,
+                                                        initialDateTime:
+                                                            startDate,
+                                                        onConfirm: (DateTime
+                                                                dateTime,
+                                                            List<int> list) {
+                                                      setBottomSheetState(() {
+                                                        startDate = dateTime;
+                                                      });
+                                                      setState(() {
+                                                        startDate = dateTime;
+                                                      });
+                                                    });
+                                                  },
+                                                  child: Text(startDate
+                                                      .toIso8601String()
+                                                      .split("T")[0]), //AXAXAX
+                                                ),
+                                                Text("~"),
+                                                OutlineButton(
+                                                  onPressed: () {
+                                                    DatePicker.showDatePicker(
+                                                        context,
+                                                        maxDateTime:
+                                                            DateTime.now(),
+                                                        initialDateTime:
+                                                            endDate,
+                                                        onConfirm: (DateTime
+                                                                dateTime,
+                                                            List<int> list) {
+                                                      setBottomSheetState(() {
+                                                        endDate = dateTime;
+                                                      });
+                                                      setState(() {
+                                                        endDate = dateTime;
+                                                      });
+                                                    });
+                                                  },
+                                                  child: Text(endDate
+                                                      .toIso8601String()
+                                                      .split("T")[0]),
+                                                ),
+                                              ],
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                            ),
+                                            visible: enableDuration,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, right: 8.0),
+                                            child: RaisedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                 BlocProvider.of<SearchResultBloc>(context) .add(ApplyEvent(
+                                                    widget.word,
+                                                    _sortValue,
+                                                    _searchTargetValue,
+                                                    startDate,
+                                                    endDate,
+                                                    enableDuration));
+                                              },
+                                              child: Text("Apply"),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              textColor: Colors.white,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  });
+                                });
+                          },
+                        )
                       ],
-                    ),
-                  )
-                ];
-              },
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                _bloc.add(ShowStarNumEvent());
-              },
-              child: Icon(Icons.sort),
-            ),
-          );
-        else
-          return Scaffold(
-            appBar: _buildAppBar(context),
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-      },
+                      bottom: TabBar(
+                        controller: _tabController,
+                        tabs: <Widget>[
+                          Tab(
+                            child: Text(I18n.of(context).Illust),
+                          ),
+                          Tab(
+                            child: Text(I18n.of(context).Painter),
+                          ),
+                        ],
+                      ),
+                    )
+                  ];
+                },
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                    BlocProvider.of<SearchResultBloc>(context).add(ShowStarNumEvent());
+                },
+                child: Icon(Icons.sort),
+              ),
+            );
+          else
+            return Scaffold(
+              appBar: _buildAppBar(context),
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+        },
+      ),
     );
   }
 
@@ -459,7 +461,7 @@ class _SearchResultPageState extends State<SearchResultPage>
                             child: RaisedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                _bloc.add(ApplyEvent(
+                                BlocProvider.of<SearchResultBloc>(context).add(ApplyEvent(
                                     widget.word,
                                     _sortValue,
                                     _searchTargetValue,

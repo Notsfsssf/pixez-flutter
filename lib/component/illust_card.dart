@@ -30,26 +30,37 @@ class _IllustCardState extends State<IllustCard> {
           return PicturePage(widget._illusts,widget._illusts.id);
         }))
       },
-      child: Hero(
-        child: Card(
-          child: Stack(
-            children: <Widget>[
-              PixivImage(widget._illusts.imageUrls.medium),
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: Container(
-
-                    child: cardText(),
-                    color: Colors.black12,
-                  ),
-                ),
-              )
-            ],
-          ),
+      child: Card(
+        margin: EdgeInsets.all(8.0),
+             elevation: 8.0,  
+                     clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        child: Column(
+          children: <Widget>[
+            Hero(
+              child: Stack(
+                children: <Widget>[
+                  PixivImage(widget._illusts.imageUrls.medium),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Container(
+                        child: cardText(),
+                        color: Colors.black12,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              tag: widget._illusts.imageUrls.medium,
+            ),
+            ListTile(
+              title: Text(widget._illusts.title,maxLines: 2,overflow: TextOverflow.ellipsis,),
+              subtitle: Text(widget._illusts.user.name,maxLines: 2,overflow: TextOverflow.ellipsis,),
+            )
+          ],
         ),
-        tag: widget._illusts.imageUrls.medium,
       ),
     );
   }

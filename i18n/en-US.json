@@ -49,5 +49,6 @@
     "Follow": "attention",
     "Un_Follow": "Not following",
     "History": "history",
-    "Clear": "Clear"
+    "Clear": "Clear",
+    "Delete": "delete"
 }
