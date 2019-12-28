@@ -7,7 +7,7 @@ abstract class SpotlightState {}
 class InitialSpotlightState extends SpotlightState {}
 
 class DataSpotlight extends SpotlightState {
-  final SpotlightResponse spotlightResponse;
-
-  DataSpotlight(this.spotlightResponse);
+final List<SpotlightArticle> articles;
+final String nextUrl;
+  DataSpotlight( this.articles, this.nextUrl);
 }

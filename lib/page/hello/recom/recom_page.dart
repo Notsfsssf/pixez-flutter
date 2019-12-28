@@ -12,6 +12,7 @@ import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
+import 'package:pixez/page/spotlight/spotlight_page.dart';
 
 class ReComPage extends StatefulWidget {
   @override
@@ -69,14 +70,25 @@ class _ReComPageState extends State<ReComPage> {
         itemCount: state.illusts.length + 2,
         itemBuilder: (context, index) {
           if (index == 0) {
-            return Container(
-              child: Padding(
-                child: Text(
-                  "Spotlight",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
+            return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  child: Padding(
+                    child: Text(
+                      "Spotlight",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 30.0),
+                    ),
+                    padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
+                  ),
                 ),
-                padding: EdgeInsets.only(left: 20.0,bottom: 10.0),
-              ),
+                Padding(child:FlatButton(child:  Text("see all"), onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                    return SpotLightPage();
+                  }) );
+                },), padding: EdgeInsets.all(8.0),)
+              ],
             );
           }
           if (index == 1) {
@@ -97,11 +109,13 @@ class _ReComPageState extends State<ReComPage> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               final spotlight = state
-                                  .spotlightResponse.spotlightArticles[index];
-                              return SpotlightCard(spotlight: spotlight,);
+                                  .articles[index];
+                              return SpotlightCard(
+                                spotlight: spotlight,
+                              );
                             },
                             itemCount: state
-                                .spotlightResponse.spotlightArticles.length,
+                                .articles.length,
                             scrollDirection: Axis.horizontal,
                           ),
                         ),

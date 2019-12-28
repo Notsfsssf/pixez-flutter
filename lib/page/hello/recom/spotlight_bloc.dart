@@ -22,8 +22,19 @@ class SpotlightBloc extends Bloc<SpotlightEvent, SpotlightState> {
     if (event is FetchSpotlightEvent) {
       try {
         Response response = await client.getSpotlightArticles("all");
-        yield DataSpotlight(SpotlightResponse.fromJson(response.data));
+        final result =SpotlightResponse.fromJson(response.data);
+        yield DataSpotlight(result.spotlightArticles,result.nextUrl);
       } catch (e) {}
+    }
+    if (event is LoadMoreSpolightEvent) {
+      if (event.nextUrl != null && event.nextUrl.isNotEmpty) {
+        try {
+          Response response = await client.getNext(event.nextUrl);
+          final results = SpotlightResponse.fromJson(response.data);
+          yield DataSpotlight(results.spotlightArticles..addAll(event.articles),results.nextUrl);
+        } catch (e) {}
+      }
+      yield DataSpotlight(event.articles,event.nextUrl);
     }
   }
 }

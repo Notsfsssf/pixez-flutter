@@ -40,6 +40,7 @@ dependencies:
   flutter_cupertino_date_picker: ^1.0.12
   bottom_navy_bar: ^5.2.2
   google_fonts: ^0.2.0
+  webview_flutter: ^0.3.18+1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
