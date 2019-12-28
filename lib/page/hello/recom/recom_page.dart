@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
@@ -71,90 +72,33 @@ class _ReComPageState extends State<ReComPage> {
             return Container(
               child: Padding(
                 child: Text(
-                  "Hello",
+                  "Spotlight",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
                 ),
-                padding: EdgeInsets.only(left: 20.0),
+                padding: EdgeInsets.only(left: 20.0,bottom: 10.0),
               ),
             );
           }
           if (index == 1) {
             return BlocProvider<SpotlightBloc>(
               create: (BuildContext context) =>
-              SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
-                ..add(FetchSpotlightEvent()),
+                  SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
+                    ..add(FetchSpotlightEvent()),
               child: BlocBuilder<SpotlightBloc, SpotlightState>(
                 builder: (BuildContext context, SpotlightState state) {
                   if (state is DataSpotlight) {
                     return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Container(
-                          height: 200.0,
+                          height: 230.0,
                           child: ListView.builder(
                             controller: _scrollController,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              return Container(
-                                height: 200,
-                                child: Stack(
-                                  children: <Widget>[
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                          height: 100,
-                                          child: Column(
-                                            children: <Widget>[
-                                              Text("111"),
-                                              Text("11"),
-                                            ],
-                                            mainAxisSize: MainAxisSize.max,
-                                          )),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topCenter,
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(16.0))),
-                                        child: Container(
-                                          child: CachedNetworkImage(
-                                            imageUrl: state
-                                                .spotlightResponse
-                                                .spotlightArticles[index]
-                                                .thumbnail,
-                                            httpHeaders: {
-                                              "referer":
-                                              "https://app-api.pixiv.net/",
-                                              "User-Agent": "PixivIOSApp/5.8.0"
-                                            },
-                                            fit: BoxFit.fill,
-                                          ),
-                                          height: 150.0,
-                                          width: 150.0,
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-
-                              return Card(
-                                child: Container(
-                                  child: CachedNetworkImage(
-                                    imageUrl: state.spotlightResponse
-                                        .spotlightArticles[index].thumbnail,
-                                    httpHeaders: {
-                                      "referer": "https://app-api.pixiv.net/",
-                                      "User-Agent": "PixivIOSApp/5.8.0"
-                                    },
-                                    fit: BoxFit.fill,
-                                  ),
-                                  height: 80.0,
-                                  width: 80.0,
-                                ),
-                              );
+                              final spotlight = state
+                                  .spotlightResponse.spotlightArticles[index];
+                              return SpotlightCard(spotlight: spotlight,);
                             },
                             itemCount: state
                                 .spotlightResponse.spotlightArticles.length,
@@ -163,9 +107,7 @@ class _ReComPageState extends State<ReComPage> {
                         ),
                         Padding(
                           child: Text(
-                            I18n
-                                .of(context)
-                                .Recommend,
+                            I18n.of(context).Recommend,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 30.0),
                           ),

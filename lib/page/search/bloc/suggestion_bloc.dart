@@ -19,9 +19,11 @@ class SuggestionBloc extends Bloc<SuggestionEvent, SuggestionState> {
     SuggestionEvent event,
   ) async* {
     if (event is FetchSuggestionsEvent) {
-      AutoWords autoWords =
-          await client.getSearchAutoCompleteKeywords(event.query);
-      yield DataState(autoWords);
+      try {
+        AutoWords autoWords =
+            await client.getSearchAutoCompleteKeywords(event.query);
+        yield DataState(autoWords);
+      } catch (e) {}
     }
   }
 }
