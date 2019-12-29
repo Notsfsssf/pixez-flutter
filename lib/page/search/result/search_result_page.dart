@@ -73,7 +73,8 @@ class _SearchResultPageState extends State<SearchResultPage>
   String _sortValue = "date_desc";
   String _searchTargetValue = "partial_match_for_tags";
   bool enableDuration = false;
-  DateTime startDate = DateTime.now(), endDate = DateTime.now();
+  DateTime startDate = DateTime.now(),
+      endDate = DateTime.now();
 
   EasyRefresh _buildEasyRefresh(DataState state, BuildContext context) {
     return EasyRefresh(
@@ -87,12 +88,14 @@ class _SearchResultPageState extends State<SearchResultPage>
         staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
       ),
       onRefresh: () async {
-       BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
-            startDate, endDate, enableDuration));
+        BlocProvider.of<SearchResultBloc>(context).add(
+            FetchEvent(widget.word, _sortValue, _searchTargetValue,
+                startDate, endDate, enableDuration));
         return _refreshCompleter.future;
       },
       onLoad: () async {
-      BlocProvider.of<SearchResultBloc>(context).add(LoadMoreEvent(state.nextUrl, state.illusts));
+        BlocProvider.of<SearchResultBloc>(context).add(
+            LoadMoreEvent(state.nextUrl, state.illusts));
         return _loadCompleter.future;
       },
     );
@@ -113,12 +116,11 @@ class _SearchResultPageState extends State<SearchResultPage>
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider(
       create: (context) =>
-          SearchResultBloc(RepositoryProvider.of<ApiClient>(context))
-            ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
-                startDate, endDate, enableDuration)),
+      SearchResultBloc(RepositoryProvider.of<ApiClient>(context))
+        ..add(FetchEvent(widget.word, _sortValue, _searchTargetValue,
+            startDate, endDate, enableDuration)),
       child: BlocBuilder<SearchResultBloc, SearchResultState>(
         condition: (pre, now) {
           return now is DataState;
@@ -139,9 +141,15 @@ class _SearchResultPageState extends State<SearchResultPage>
                   ),
                   listener: (BuildContext context, SearchResultState state) {
                     if (state is ShowStarNumState) {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("data"),
-                      ));
+                      showDialog(context: context, builder: (context) {
+                        return AlertDialog(
+                          content: SingleChildScrollView(
+                            child: ListBody(children: starnum.map((f) =>
+                                ListTile(title: Text(f.toString()),))
+                                .toList(),),
+                          ),
+                        );
+                      });
                     }
                   },
                 ),
@@ -160,147 +168,161 @@ class _SearchResultPageState extends State<SearchResultPage>
                                 builder: (_) {
                                   return StatefulBuilder(
                                       builder: (_, setBottomSheetState) {
-                                    if (startDate.isAfter(endDate)) {
-                                      startDate = DateTime.now();
-                                      endDate = DateTime.now();
-                                    }
-                                    return Container(
-                                      child: Column(
-                                        crossAxisAlignment:
+                                        if (startDate.isAfter(endDate)) {
+                                          startDate = DateTime.now();
+                                          endDate = DateTime.now();
+                                        }
+                                        return Container(
+                                          child: Column(
+                                            crossAxisAlignment:
                                             CrossAxisAlignment.stretch,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              ...sort
-                                                  .map((f) => Flexible(
+                                              Row(
+                                                children: <Widget>[
+                                                  ...sort
+                                                      .map((f) =>
+                                                      Flexible(
                                                         child: RadioListTile<
                                                             String>(
                                                           value: f,
                                                           title: Text(f),
                                                           groupValue:
-                                                              _sortValue,
+                                                          _sortValue,
                                                           onChanged: (value) {
                                                             setBottomSheetState(
-                                                                () {
-                                                              _sortValue =
-                                                                  value;
-                                                            });
+                                                                    () {
+                                                                  _sortValue =
+                                                                      value;
+                                                                });
                                                           },
                                                         ),
                                                       ))
-                                                  .toList(),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              ...search_target
-                                                  .map((f) => Flexible(
+                                                      .toList(),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  ...search_target
+                                                      .map((f) =>
+                                                      Flexible(
                                                         child: RadioListTile<
                                                             String>(
                                                           value: f,
                                                           title: Text(f),
                                                           groupValue:
-                                                              _searchTargetValue,
+                                                          _searchTargetValue,
                                                           onChanged: (value) {
                                                             setBottomSheetState(
-                                                                () {
-                                                              _searchTargetValue =
-                                                                  value;
-                                                            });
+                                                                    () {
+                                                                  _searchTargetValue =
+                                                                      value;
+                                                                });
                                                           },
                                                         ),
                                                       ))
-                                                  .toList(),
-                                            ],
-                                          ),
-                                          SwitchListTile(
-                                              title: Text("Duration"),
-                                              value: enableDuration,
-                                              onChanged: (v) {
-                                                setBottomSheetState(() {
-                                                  enableDuration = v;
-                                                });
-                                              }),
-                                          Visibility(
-                                            child: Row(
-                                              children: <Widget>[
-                                                OutlineButton(
-                                                  onPressed: () {
-                                                    DatePicker.showDatePicker(
-                                                        context,
-                                                        maxDateTime: endDate,
-                                                        initialDateTime:
+                                                      .toList(),
+                                                ],
+                                              ),
+                                              SwitchListTile(
+                                                  title: Text("Duration"),
+                                                  value: enableDuration,
+                                                  onChanged: (v) {
+                                                    setBottomSheetState(() {
+                                                      enableDuration = v;
+                                                    });
+                                                  }),
+                                              Visibility(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    OutlineButton(
+                                                      onPressed: () {
+                                                        DatePicker
+                                                            .showDatePicker(
+                                                            context,
+                                                            maxDateTime: endDate,
+                                                            initialDateTime:
                                                             startDate,
-                                                        onConfirm: (DateTime
-                                                                dateTime,
-                                                            List<int> list) {
-                                                      setBottomSheetState(() {
-                                                        startDate = dateTime;
-                                                      });
-                                                      setState(() {
-                                                        startDate = dateTime;
-                                                      });
-                                                    });
-                                                  },
-                                                  child: Text(startDate
-                                                      .toIso8601String()
-                                                      .split("T")[0]), //AXAXAX
-                                                ),
-                                                Text("~"),
-                                                OutlineButton(
-                                                  onPressed: () {
-                                                    DatePicker.showDatePicker(
-                                                        context,
-                                                        maxDateTime:
+                                                            onConfirm: (DateTime
+                                                            dateTime,
+                                                                List<
+                                                                    int> list) {
+                                                              setBottomSheetState(() {
+                                                                startDate =
+                                                                    dateTime;
+                                                              });
+                                                              setState(() {
+                                                                startDate =
+                                                                    dateTime;
+                                                              });
+                                                            });
+                                                      },
+                                                      child: Text(startDate
+                                                          .toIso8601String()
+                                                          .split(
+                                                          "T")[0]), //AXAXAX
+                                                    ),
+                                                    Text("~"),
+                                                    OutlineButton(
+                                                      onPressed: () {
+                                                        DatePicker
+                                                            .showDatePicker(
+                                                            context,
+                                                            maxDateTime:
                                                             DateTime.now(),
-                                                        initialDateTime:
+                                                            initialDateTime:
                                                             endDate,
-                                                        onConfirm: (DateTime
-                                                                dateTime,
-                                                            List<int> list) {
-                                                      setBottomSheetState(() {
-                                                        endDate = dateTime;
-                                                      });
-                                                      setState(() {
-                                                        endDate = dateTime;
-                                                      });
-                                                    });
-                                                  },
-                                                  child: Text(endDate
-                                                      .toIso8601String()
-                                                      .split("T")[0]),
-                                                ),
-                                              ],
-                                              mainAxisAlignment:
+                                                            onConfirm: (DateTime
+                                                            dateTime,
+                                                                List<
+                                                                    int> list) {
+                                                              setBottomSheetState(() {
+                                                                endDate =
+                                                                    dateTime;
+                                                              });
+                                                              setState(() {
+                                                                endDate =
+                                                                    dateTime;
+                                                              });
+                                                            });
+                                                      },
+                                                      child: Text(endDate
+                                                          .toIso8601String()
+                                                          .split("T")[0]),
+                                                    ),
+                                                  ],
+                                                  mainAxisAlignment:
                                                   MainAxisAlignment.spaceAround,
-                                            ),
-                                            visible: enableDuration,
+                                                ),
+                                                visible: enableDuration,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0, right: 8.0),
+                                                child: RaisedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    BlocProvider.of<
+                                                        SearchResultBloc>(
+                                                        context).add(ApplyEvent(
+                                                        widget.word,
+                                                        _sortValue,
+                                                        _searchTargetValue,
+                                                        startDate,
+                                                        endDate,
+                                                        enableDuration));
+                                                  },
+                                                  child: Text("Apply"),
+                                                  color: Theme
+                                                      .of(context)
+                                                      .primaryColor,
+                                                  textColor: Colors.white,
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8.0),
-                                            child: RaisedButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                 BlocProvider.of<SearchResultBloc>(context) .add(ApplyEvent(
-                                                    widget.word,
-                                                    _sortValue,
-                                                    _searchTargetValue,
-                                                    startDate,
-                                                    endDate,
-                                                    enableDuration));
-                                              },
-                                              child: Text("Apply"),
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              textColor: Colors.white,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  });
+                                        );
+                                      });
                                 });
                           },
                         )
@@ -309,10 +331,14 @@ class _SearchResultPageState extends State<SearchResultPage>
                         controller: _tabController,
                         tabs: <Widget>[
                           Tab(
-                            child: Text(I18n.of(context).Illust),
+                            child: Text(I18n
+                                .of(context)
+                                .Illust),
                           ),
                           Tab(
-                            child: Text(I18n.of(context).Painter),
+                            child: Text(I18n
+                                .of(context)
+                                .Painter),
                           ),
                         ],
                       ),
@@ -322,7 +348,8 @@ class _SearchResultPageState extends State<SearchResultPage>
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                    BlocProvider.of<SearchResultBloc>(context).add(ShowStarNumEvent());
+                  BlocProvider.of<SearchResultBloc>(context).add(
+                      ShowStarNumEvent());
                 },
                 child: Icon(Icons.sort),
               ),
@@ -338,6 +365,7 @@ class _SearchResultPageState extends State<SearchResultPage>
       ),
     );
   }
+
 
   final starnum = [50000, 30000, 20000, 10000, 5000, 1000, 500, 250, 100, 0];
   final sort = ["date_desc", "date_asc", "popular_desc"];
@@ -370,36 +398,38 @@ class _SearchResultPageState extends State<SearchResultPage>
                           Row(
                             children: <Widget>[
                               ...sort
-                                  .map((f) => Flexible(
-                                        child: RadioListTile<String>(
-                                          value: f,
-                                          title: Text(f),
-                                          groupValue: _sortValue,
-                                          onChanged: (value) {
-                                            setBottomSheetState(() {
-                                              _sortValue = value;
-                                            });
-                                          },
-                                        ),
-                                      ))
+                                  .map((f) =>
+                                  Flexible(
+                                    child: RadioListTile<String>(
+                                      value: f,
+                                      title: Text(f),
+                                      groupValue: _sortValue,
+                                      onChanged: (value) {
+                                        setBottomSheetState(() {
+                                          _sortValue = value;
+                                        });
+                                      },
+                                    ),
+                                  ))
                                   .toList(),
                             ],
                           ),
                           Row(
                             children: <Widget>[
                               ...search_target
-                                  .map((f) => Flexible(
-                                        child: RadioListTile<String>(
-                                          value: f,
-                                          title: Text(f),
-                                          groupValue: _searchTargetValue,
-                                          onChanged: (value) {
-                                            setBottomSheetState(() {
-                                              _searchTargetValue = value;
-                                            });
-                                          },
-                                        ),
-                                      ))
+                                  .map((f) =>
+                                  Flexible(
+                                    child: RadioListTile<String>(
+                                      value: f,
+                                      title: Text(f),
+                                      groupValue: _searchTargetValue,
+                                      onChanged: (value) {
+                                        setBottomSheetState(() {
+                                          _searchTargetValue = value;
+                                        });
+                                      },
+                                    ),
+                                  ))
                                   .toList(),
                             ],
                           ),
@@ -420,14 +450,14 @@ class _SearchResultPageState extends State<SearchResultPage>
                                         maxDateTime: endDate,
                                         initialDateTime: startDate, onConfirm:
                                             (DateTime dateTime,
-                                                List<int> list) {
-                                      setBottomSheetState(() {
-                                        startDate = dateTime;
-                                      });
-                                      setState(() {
-                                        startDate = dateTime;
-                                      });
-                                    });
+                                            List<int> list) {
+                                          setBottomSheetState(() {
+                                            startDate = dateTime;
+                                          });
+                                          setState(() {
+                                            startDate = dateTime;
+                                          });
+                                        });
                                   },
                                   child: Text(startDate
                                       .toIso8601String()
@@ -440,14 +470,14 @@ class _SearchResultPageState extends State<SearchResultPage>
                                         maxDateTime: DateTime.now(),
                                         initialDateTime: endDate, onConfirm:
                                             (DateTime dateTime,
-                                                List<int> list) {
-                                      setBottomSheetState(() {
-                                        endDate = dateTime;
-                                      });
-                                      setState(() {
-                                        endDate = dateTime;
-                                      });
-                                    });
+                                            List<int> list) {
+                                          setBottomSheetState(() {
+                                            endDate = dateTime;
+                                          });
+                                          setState(() {
+                                            endDate = dateTime;
+                                          });
+                                        });
                                   },
                                   child: Text(
                                       endDate.toIso8601String().split("T")[0]),
@@ -459,20 +489,23 @@ class _SearchResultPageState extends State<SearchResultPage>
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.only(left: 8.0, right: 8.0),
+                            const EdgeInsets.only(left: 8.0, right: 8.0),
                             child: RaisedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                BlocProvider.of<SearchResultBloc>(context).add(ApplyEvent(
-                                    widget.word,
-                                    _sortValue,
-                                    _searchTargetValue,
-                                    startDate,
-                                    endDate,
-                                    enableDuration));
+                                BlocProvider.of<SearchResultBloc>(context).add(
+                                    ApplyEvent(
+                                        widget.word,
+                                        _sortValue,
+                                        _searchTargetValue,
+                                        startDate,
+                                        endDate,
+                                        enableDuration));
                               },
                               child: Text("Apply"),
-                              color: Theme.of(context).primaryColor,
+                              color: Theme
+                                  .of(context)
+                                  .primaryColor,
                               textColor: Colors.white,
                             ),
                           )
@@ -488,10 +521,14 @@ class _SearchResultPageState extends State<SearchResultPage>
         controller: _tabController,
         tabs: <Widget>[
           Tab(
-            child: Text(I18n.of(context).Illust),
+            child: Text(I18n
+                .of(context)
+                .Illust),
           ),
           Tab(
-            child: Text(I18n.of(context).Painter),
+            child: Text(I18n
+                .of(context)
+                .Painter),
           ),
         ],
       ),

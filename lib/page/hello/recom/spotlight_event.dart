@@ -9,5 +9,8 @@ class LoadMoreSpolightEvent extends SpotlightEvent{
   final List<SpotlightArticle> articles;
   final String nextUrl;
 
-  LoadMoreSpolightEvent(this.nextUrl, this.articles,);
+  LoadMoreSpolightEvent(
+    this.articles,
+    this.nextUrl,
+  );
 }
