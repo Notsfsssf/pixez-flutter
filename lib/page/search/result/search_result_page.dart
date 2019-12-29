@@ -66,15 +66,17 @@ class _SearchResultPageState extends State<SearchResultPage>
     0
   ];
 
-  String toUserBookString(int num) {
-    return "${num} users入り";
+  String toUserBookString(String keyWord, int num) {
+    if (num == 0)
+      return "${keyWord} users入り";
+    else
+      return "${keyWord} ${num.toString()}users入り";
   }
 
   String _sortValue = "date_desc";
   String _searchTargetValue = "partial_match_for_tags";
   bool enableDuration = false;
-  DateTime startDate = DateTime.now(),
-      endDate = DateTime.now();
+  DateTime startDate = DateTime.now(), endDate = DateTime.now();
 
   EasyRefresh _buildEasyRefresh(DataState state, BuildContext context) {
     return EasyRefresh(
@@ -88,19 +90,22 @@ class _SearchResultPageState extends State<SearchResultPage>
         staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
       ),
       onRefresh: () async {
-        BlocProvider.of<SearchResultBloc>(context).add(
-            FetchEvent(widget.word, _sortValue, _searchTargetValue,
-                startDate, endDate, enableDuration));
+        BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(
+            widget.word,
+            _sortValue,
+            _searchTargetValue,
+            startDate,
+            endDate,
+            enableDuration));
         return _refreshCompleter.future;
       },
       onLoad: () async {
-        BlocProvider.of<SearchResultBloc>(context).add(
-            LoadMoreEvent(state.nextUrl, state.illusts));
+        BlocProvider.of<SearchResultBloc>(context)
+            .add(LoadMoreEvent(state.nextUrl, state.illusts));
         return _loadCompleter.future;
       },
     );
   }
-
 
   Widget _buildFirst(state) =>
       BlocListener<SearchResultBloc, SearchResultState>(
@@ -141,15 +146,34 @@ class _SearchResultPageState extends State<SearchResultPage>
                   ),
                   listener: (BuildContext context, SearchResultState state) {
                     if (state is ShowStarNumState) {
-                      showDialog(context: context, builder: (context) {
-                        return AlertDialog(
-                          content: SingleChildScrollView(
-                            child: ListBody(children: starnum.map((f) =>
-                                ListTile(title: Text(f.toString()),))
-                                .toList(),),
-                          ),
-                        );
-                      });
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: starnum
+                                      .map((f) =>
+                                      ListTile(
+                                        title: Text(f.toString()),
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                          BlocProvider.of<SearchResultBloc>(
+                                              context).add(FetchEvent(
+                                              toUserBookString(widget.word, f),
+                                              _sortValue,
+                                              _searchTargetValue,
+                                              startDate,
+                                              endDate,
+                                              enableDuration
+                                          ));
+                                        },
+                                      ))
+                                      .toList(),
+                                ),
+                              ),
+                            );
+                          });
                     }
                   },
                 ),
@@ -304,7 +328,8 @@ class _SearchResultPageState extends State<SearchResultPage>
                                                     Navigator.of(context).pop();
                                                     BlocProvider.of<
                                                         SearchResultBloc>(
-                                                        context).add(ApplyEvent(
+                                                        context)
+                                                        .add(ApplyEvent(
                                                         widget.word,
                                                         _sortValue,
                                                         _searchTargetValue,
@@ -348,8 +373,8 @@ class _SearchResultPageState extends State<SearchResultPage>
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  BlocProvider.of<SearchResultBloc>(context).add(
-                      ShowStarNumEvent());
+                  BlocProvider.of<SearchResultBloc>(context)
+                      .add(ShowStarNumEvent());
                 },
                 child: Icon(Icons.sort),
               ),
@@ -365,7 +390,6 @@ class _SearchResultPageState extends State<SearchResultPage>
       ),
     );
   }
-
 
   final starnum = [50000, 30000, 20000, 10000, 5000, 1000, 500, 250, 100, 0];
   final sort = ["date_desc", "date_asc", "popular_desc"];

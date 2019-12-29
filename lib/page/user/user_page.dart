@@ -100,10 +100,10 @@ class _UserPageState extends State<UserPage>
                 ],
                 followWidget: state is UserDataState
                     ? _buildFollowButton(
-                        context, state.userDetail, state.choiceRestrict)
+                    context, state.userDetail, state.choiceRestrict)
                     : Container(
-                        height: 60.0,
-                      ),
+                  height: 60.0,
+                ),
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {},

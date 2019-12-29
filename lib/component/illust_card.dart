@@ -15,7 +15,9 @@ class IllustCard extends StatefulWidget {
 class _IllustCardState extends State<IllustCard> {
   Widget cardText() {
     if (widget._illusts.type != "illust") {
-      return Text(widget._illusts.type);
+      return Text(
+        widget._illusts.type,
+      );
     }
     if (widget._illusts.metaPages.isNotEmpty) {
       return Text(widget._illusts.metaPages.length.toString());
@@ -46,8 +48,15 @@ class _IllustCardState extends State<IllustCard> {
                     child: Padding(
                       padding: EdgeInsets.all(4.0),
                       child: Container(
-                        child: cardText(),
-                        color: Colors.black12,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0,
+                              horizontal: 2.0),
+                          child: cardText(),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black26,
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        ),
                       ),
                     ),
                   )

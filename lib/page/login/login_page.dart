@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixez/bloc/account_bloc.dart';
+import 'package:pixez/bloc/account_event.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
 
@@ -19,6 +21,7 @@ class LoginPage extends StatelessWidget {
         if (state is SuccessState) {
           Navigator.of(context1).pushReplacementNamed('/hello');
         } else if (state is FailState) {
+          BlocProvider.of<AccountBloc>(context).add(FetchDataBaseEvent());
           Scaffold.of(context1).showSnackBar(
             SnackBar(
               backgroundColor: Colors.red,

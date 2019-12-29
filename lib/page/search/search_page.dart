@@ -96,7 +96,7 @@ class _SearchPageState extends State<SearchPage> {
                 );
               } else {
                 this._searchIcon = Icon(Icons.search);
-                this._appBarTitle = Text(I18n.of(context).Search );
+                this._appBarTitle = Text(I18n.of(context).Search);
                 _filter.clear();
                 editString = '';
               }
@@ -112,28 +112,52 @@ class _SearchPageState extends State<SearchPage> {
       itemCount: 3,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
-         return Padding(
-           padding: const EdgeInsets.all(8.0),
-           child: Text(I18n.of(context).History),
-         );
-        } if(index==1){
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(I18n
+                .of(context)
+                .History),
+          );
+        }
+        if (index == 1) {
           return BlocBuilder<TagHistoryBloc, TagHistoryState>(
             builder: (BuildContext context, TagHistoryState state) {
-              if(state is TagHistoryDataState&&state.tagsPersistList.isNotEmpty){
+              if (state is TagHistoryDataState &&
+                  state.tagsPersistList.isNotEmpty) {
                 return Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Wrap(children: state.tagsPersistList.map((f)=>ActionChip(label: Text(f.name), onPressed: () {},)).toList()..add(ActionChip(label: Text(I18n.of(context).Clear), onPressed: (){
-                    BlocProvider.of<TagHistoryBloc>(context)
-                        .add(DeleteAllTagHistoryEvent());
-                  })),runSpacing: 0.0,
-                  spacing: 3.0,),
+                  child: Wrap(
+                    children: state.tagsPersistList
+                        .map((f) =>
+                        ActionChip(
+                          label: Text(f.name),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return SearchResultPage(
+                                word: f.name,
+                              );
+                            }));
+                          },
+                        ))
+                        .toList()
+                      ..add(ActionChip(
+                          label: Text(I18n
+                              .of(context)
+                              .Clear),
+                          onPressed: () {
+                            BlocProvider.of<TagHistoryBloc>(context)
+                                .add(DeleteAllTagHistoryEvent());
+                          })),
+                    runSpacing: 0.0,
+                    spacing: 3.0,
+                  ),
                 );
               }
               return Container();
             },
           );
-        }
-        else {
+        } else {
           return _buildGrid(context, tags);
         }
       },
@@ -181,7 +205,6 @@ class _SearchPageState extends State<SearchPage> {
       );
 }
 
-
 class Suggestions extends StatefulWidget {
   final String query;
 
@@ -192,12 +215,10 @@ class Suggestions extends StatefulWidget {
 }
 
 class _SuggestionsState extends State<Suggestions> {
-
-
   @override
   Widget build(BuildContext context) {
-    final SuggestionBloc _bloc = SuggestionBloc(
-        RepositoryProvider.of<ApiClient>(context));
+    final SuggestionBloc _bloc =
+    SuggestionBloc(RepositoryProvider.of<ApiClient>(context));
     _bloc.add(FetchSuggestionsEvent(widget.query));
     return BlocBuilder(
       bloc: _bloc,
@@ -219,7 +240,10 @@ class _SuggestionsState extends State<Suggestions> {
                 subtitle: Text(tags[index].translated_name ?? ""),
               );
             },
-            itemCount: tags.length, separatorBuilder: (BuildContext context, int index) {return Divider();},
+            itemCount: tags.length,
+            separatorBuilder: (BuildContext context, int index) {
+              return Divider();
+            },
           );
         }
         return Container();

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pixez/bloc/bloc.dart';
-
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/picture/picture_page.dart';
@@ -23,15 +21,15 @@ class HistoryPage extends StatelessWidget {
         if (state is DataIllustPersistState)
           return GridView.builder(
               itemCount: state.illusts.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
+              reverse: true,
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return PicturePage(
-                            null, state.illusts[index].illustId);
+                        return PicturePage(null, state.illusts[index].illustId);
                       }));
                     },
                     onLongPress: () async {

@@ -82,8 +82,8 @@ class _HelloPageState extends State<HelloPage> {
               title: Text(I18n.of(context).Search),
               activeColor: Colors.blue),
           BottomNavyBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(I18n.of(context).Setting),
+              icon: Icon(Icons.history),
+              title: Text(I18n.of(context).History),
               activeColor: Colors.amber),
         ],
       );
