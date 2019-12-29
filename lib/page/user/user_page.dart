@@ -161,6 +161,9 @@ class _UserPageState extends State<UserPage>
                           .add(FollowUserEvent(userDetail, restrict, "public"));
                     },
                     onLongPress: () {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("Private"),
+                      ));
                       BlocProvider.of<UserBloc>(context).add(
                           FollowUserEvent(userDetail, restrict, "private"));
                     },

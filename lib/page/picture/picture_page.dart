@@ -500,7 +500,7 @@ class _PicturePageState extends State<PicturePage> {
         });
   }
 
-  Widget colorText(String text) => Text(
+  Widget colorText(String text) => SelectableText(
         text,
         style: TextStyle(color: Theme.of(context).primaryColor),
       );

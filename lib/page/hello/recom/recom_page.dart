@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -33,23 +32,30 @@ class _ReComPageState extends State<ReComPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) =>
-            RecomBloc(RepositoryProvider.of<ApiClient>(context))
-              ..add(FetchEvent()),
-        child: BlocListener<RecomBloc, RecomState>(
-            listener: (context, state) {
-              if (state is DataRecomState) {
-                _loadCompleter?.complete();
-                _loadCompleter = Completer();
-                _refreshCompleter?.complete();
-                _refreshCompleter = Completer();
-              }
-            },
-            child: Scaffold(
-                body: SafeArea(
-              child: _buildBlocBuilder(),
-            ))));
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RecomBloc>(
+          create: (context) =>
+              RecomBloc(RepositoryProvider.of<ApiClient>(context))
+                ..add(FetchEvent()),
+        ),
+        BlocProvider<SpotlightBloc>(
+          create: (BuildContext context) =>
+              SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
+                ..add(FetchSpotlightEvent()),
+        )
+      ],
+      child: BlocListener<RecomBloc, RecomState>(
+          listener: (context, state) {
+            if (state is DataRecomState) {
+              _loadCompleter?.complete();
+              _loadCompleter = Completer();
+              _refreshCompleter?.complete();
+              _refreshCompleter = Completer();
+            }
+          },
+          child: Scaffold(body: SafeArea(child: _buildBlocBuilder()))),
+    );
   }
 
   BlocBuilder<RecomBloc, RecomState> _buildBlocBuilder() {
@@ -71,7 +77,7 @@ class _ReComPageState extends State<ReComPage> {
         itemBuilder: (context, index) {
           if (index == 0) {
             return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
                   child: Padding(
@@ -83,56 +89,58 @@ class _ReComPageState extends State<ReComPage> {
                     padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
                   ),
                 ),
-                Padding(child:FlatButton(child:  Text("see all"), onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                    return SpotLightPage();
-                  }) );
-                },), padding: EdgeInsets.all(8.0),)
+                Padding(
+                  child: FlatButton(
+                    child: Text("see all"),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                            return SpotLightPage();
+                          }));
+                    },
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                )
               ],
             );
           }
           if (index == 1) {
-            return BlocProvider<SpotlightBloc>(
-              create: (BuildContext context) =>
-                  SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
-                    ..add(FetchSpotlightEvent()),
-              child: BlocBuilder<SpotlightBloc, SpotlightState>(
-                builder: (BuildContext context, SpotlightState state) {
-                  if (state is DataSpotlight) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Container(
-                          height: 230.0,
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final spotlight = state
-                                  .articles[index];
-                              return SpotlightCard(
-                                spotlight: spotlight,
-                              );
-                            },
-                            itemCount: state
-                                .articles.length,
-                            scrollDirection: Axis.horizontal,
-                          ),
+            return BlocBuilder<SpotlightBloc, SpotlightState>(
+              builder: (BuildContext context, SpotlightState state) {
+                if (state is DataSpotlight) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        height: 230.0,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final spotlight = state.articles[index];
+                            return SpotlightCard(
+                              spotlight: spotlight,
+                            );
+                          },
+                          itemCount: state.articles.length,
+                          scrollDirection: Axis.horizontal,
                         ),
-                        Padding(
-                          child: Text(
-                            I18n.of(context).Recommend,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 30.0),
-                          ),
-                          padding: EdgeInsets.only(left: 20.0),
+                      ),
+                      Padding(
+                        child: Text(
+                          I18n
+                              .of(context)
+                              .Recommend,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 30.0),
                         ),
-                      ],
-                    );
-                  }
-                  return Container();
-                },
-              ),
+                        padding: EdgeInsets.only(left: 20.0),
+                      ),
+                    ],
+                  );
+                }
+                return Container();
+              },
             );
           }
           return IllustCard(state.illusts[index - 2]);

@@ -7,7 +7,6 @@ import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
-import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 

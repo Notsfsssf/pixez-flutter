@@ -11,6 +11,8 @@ import 'package:pixez/page/hello/recom/bloc.dart';
 class SpotLightPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var _easyController = EasyRefreshController();
+    var _controller = ScrollController();
     var _refreshCompleter = Completer<void>();
     var _loadCompleter = Completer<void>();
     return BlocProvider<SpotlightBloc>(
@@ -18,45 +20,53 @@ class SpotLightPage extends StatelessWidget {
         appBar: AppBar(
           title: Text("Spotlight"),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _controller.animateTo(0,
+                duration: Duration(seconds: 1), curve: Curves.ease);
+          },
+          child: Icon(Icons.vertical_align_top),
+        ),
         body: BlocListener<SpotlightBloc, SpotlightState>(
           child: BlocBuilder<SpotlightBloc, SpotlightState>(
               builder: (context, snapshot) {
             if (snapshot is DataSpotlight)
               return EasyRefresh(
+                  controller: _easyController,
                   onLoad: () {
+                    print("next:${snapshot.nextUrl}");
                     BlocProvider.of<SpotlightBloc>(context).add(
                         LoadMoreSpolightEvent(
-                            snapshot.nextUrl,
-                            snapshot.articles));
+                            snapshot.articles, snapshot.nextUrl));
                     return _loadCompleter.future;
                   },
                   child: StaggeredGridView.countBuilder(
                     crossAxisCount: 3,
+                    controller: _controller,
                     itemBuilder: (BuildContext context, int index) {
-                      return SpotlightCard(
-                          spotlight: snapshot
-                              .articles[index]);
+                      return SpotlightCard(spotlight: snapshot.articles[index]);
                     },
                     staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                    itemCount:
-                        snapshot.articles.length,
+                    itemCount: snapshot.articles.length,
                   ));
-            else
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-          }),
+                else
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+              }),
           listener: (BuildContext context, state) {
-            _loadCompleter?.complete();
-            _loadCompleter = Completer();
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
+            if (state is DataSpotlight) {
+              _loadCompleter?.complete();
+              _loadCompleter = Completer();
+              _refreshCompleter?.complete();
+              _refreshCompleter = Completer();
+            }
           },
         ),
       ),
       create: (BuildContext context) =>
-          SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
-            ..add(FetchSpotlightEvent()),
+      SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
+        ..add(FetchSpotlightEvent()),
     );
   }
 }
