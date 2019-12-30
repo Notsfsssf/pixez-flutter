@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -24,12 +23,7 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
         final response = await client.getRecommend();
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRecomState(recommend.illusts, recommend.nextUrl);
-      } on DioError catch (e) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e == null) {
-          return;
-        }
+      } catch (e) {
         print(e);
       }
     }
