@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 
 class IllustCard extends StatefulWidget {
@@ -93,11 +95,22 @@ class _IllustCardState extends State<IllustCard> {
               ),
               trailing: IconButton(
                   icon: StarIcon(widget._illusts.isBookmarked),
-                  onPressed: () {
-                    setState(() {
-                      widget._illusts.isBookmarked =
-                      !widget._illusts.isBookmarked;
-                    });
+                  onPressed: () async {
+                    final ApiClient client =
+                        RepositoryProvider.of<ApiClient>(context);
+                    try {
+                      if (widget._illusts.isBookmarked) {
+                        Response response =
+                            await client.postUnLikeIllust(widget._illusts.id);
+                      } else {
+                        Response response = await client.postLikeIllust(
+                            widget._illusts.id, "public", null);
+                      }
+                      setState(() {
+                        widget._illusts.isBookmarked =
+                            !widget._illusts.isBookmarked;
+                      });
+                    } catch (e) {} //懒得用bloc了
                   }),
             )
           ],

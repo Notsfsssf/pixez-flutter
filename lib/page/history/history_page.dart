@@ -55,7 +55,7 @@ class HistoryPage extends StatelessWidget {
                       }
                     },
                     child: Card(
-                      margin: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8),
                         child: PixivImage(state.illusts[index].pictureUrl)));
               });
         else
@@ -63,21 +63,41 @@ class HistoryPage extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
       });
+
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<IllustPersistBloc>(context).add(FetchIllustPersistEvent());
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            buildAppBarUI(context),
-            Expanded(child: buildBody()),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text("History"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.clear_all),
+            onPressed: () async {
+              final result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("${I18n.of(context).Delete} All?"),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop("OK");
+                          },
+                        )
+                      ],
+                    );
+                  });
+              if (result == "OK") {
+                BlocProvider.of<IllustPersistBloc>(context)
+                    .add(DeleteAllIllustPersistEvent());
+              }
+            },
+          )
+        ],
       ),
+      body: buildBody(),
     );
   }
 }
