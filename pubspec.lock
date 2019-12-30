@@ -28,7 +28,7 @@ packages:
       name: bloc
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "3.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -117,7 +117,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.1"
+    version: "3.0.0"
   flutter_cache_manager:
     dependency: "direct main"
     description:
@@ -224,6 +224,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.8"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.4"
   path:
     dependency: transitive
     description:
@@ -272,7 +279,7 @@ packages:
       name: provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.2.0"
+    version: "4.0.1"
   quiver:
     dependency: transitive
     description:
@@ -286,7 +293,7 @@ packages:
       name: rxdart
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.22.6"
+    version: "0.23.1"
   save_in_gallery:
     dependency: "direct main"
     description:
@@ -433,5 +440,5 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
-  dart: ">=2.5.0 <3.0.0"
+  dart: ">=2.6.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.4 <2.0.0"

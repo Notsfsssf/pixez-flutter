@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/spotlight_card.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
 
@@ -18,7 +19,7 @@ class SpotLightPage extends StatelessWidget {
     return BlocProvider<SpotlightBloc>(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Spotlight"),
+          title: Text(I18n.of(context).Spotlight),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

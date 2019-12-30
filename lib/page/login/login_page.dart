@@ -19,9 +19,9 @@ class LoginPage extends StatelessWidget {
       create: (context) => LoginBloc(),
       child: BlocListener<LoginBloc, LoginState>(listener: (context, state) {
         if (state is SuccessState) {
+          BlocProvider.of<AccountBloc>(context).add(FetchDataBaseEvent());
           Navigator.of(context1).pushReplacementNamed('/hello');
         } else if (state is FailState) {
-          BlocProvider.of<AccountBloc>(context).add(FetchDataBaseEvent());
           Scaffold.of(context1).showSnackBar(
             SnackBar(
               backgroundColor: Colors.red,
@@ -90,7 +90,4 @@ class LoginPage extends StatelessWidget {
       })),
     );
   }
-
 }
-
-

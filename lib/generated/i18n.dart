@@ -106,6 +106,14 @@ class I18n implements WidgetsLocalizations {
   String get Clear => "清空";
   /// "删除"
   String get Delete => "删除";
+  /// "首页"
+  String get Home => "首页";
+  /// "亮点"
+  String get Spotlight => "亮点";
+  /// "生日"
+  String get birthday => "生日";
+  /// "更多"
+  String get More => "更多";
 }
 
 class _I18n_zh_CN extends I18n {

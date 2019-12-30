@@ -20,7 +20,7 @@ class _WebViewPageState extends State<WebViewPage> {
         child: WebView(
           initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
           initialUrl: widget.url,
-          javascriptMode: JavascriptMode.unrestricted,
+          javascriptMode: JavascriptMode.disabled,
           navigationDelegate: (NavigationRequest request) {
             Uri uri = Uri.parse(request.url);
             final segment = uri.pathSegments;

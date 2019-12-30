@@ -18,9 +18,11 @@ class IllustRelatedBloc extends Bloc<IllustRelatedEvent, IllustRelatedState> {
     IllustRelatedEvent event,
   ) async* {
     if (event is FetchRelatedEvent) {
-      Response response = await client.getIllustRelated(event.illusts.id);
-      Recommend recommend = Recommend.fromJson(response.data);
-      yield DataIllustRelatedState(recommend);//??????
+      try {
+        Response response = await client.getIllustRelated(event.illusts.id);
+        Recommend recommend = Recommend.fromJson(response.data);
+        yield DataIllustRelatedState(recommend); //??????
+      } catch (e) {}
     }
   }
 }

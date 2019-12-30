@@ -12,6 +12,8 @@ class PainterCard extends StatelessWidget {
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           GridView.count(
             physics: NeverScrollableScrollPhysics(),

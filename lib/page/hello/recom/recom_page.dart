@@ -82,7 +82,7 @@ class _ReComPageState extends State<ReComPage> {
                 Container(
                   child: Padding(
                     child: Text(
-                      "Spotlight",
+                      I18n.of(context).Spotlight,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 30.0),
                     ),
@@ -91,7 +91,7 @@ class _ReComPageState extends State<ReComPage> {
                 ),
                 Padding(
                   child: FlatButton(
-                    child: Text("see all"),
+                    child: Text(I18n.of(context).More),
                     onPressed: () {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {

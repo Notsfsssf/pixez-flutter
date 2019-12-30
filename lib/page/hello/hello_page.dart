@@ -66,7 +66,7 @@ class _HelloPageState extends State<HelloPage> {
         items: [
           BottomNavyBarItem(
             icon: Icon(Icons.home),
-            title: Text(I18n.of(context).Recommend),
+            title: Text(I18n.of(context).Home),
             activeColor: Colors.red,
           ),
           BottomNavyBarItem(

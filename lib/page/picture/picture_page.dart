@@ -357,7 +357,7 @@ class _PicturePageState extends State<PicturePage> {
                               }
                             },
                           )
-                        : null,
+                        : Container(),
                     ListTile(
                       title: Text(I18n.of(context).Share),
                       leading: Icon(Icons.share,

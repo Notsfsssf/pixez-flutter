@@ -21,7 +21,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_bloc: ^2.1.1
+  flutter_bloc: ^3.0.0
   dio: 3.0.7
   timezone: ^0.5.5
   crypto: ^2.1.3
