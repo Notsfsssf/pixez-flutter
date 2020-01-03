@@ -19,18 +19,19 @@ class HistoryPage extends StatelessWidget {
   Widget buildBody() => BlocBuilder<IllustPersistBloc, IllustPersistState>(
           builder: (context, state) {
         if (state is DataIllustPersistState)
+        {
+          var reIllust = state.illusts.reversed.toList();
           return GridView.builder(
-              itemCount: state.illusts.length,
-              reverse: true,
+              itemCount: reIllust.length,
               gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return PicturePage(null, state.illusts[index].illustId);
-                      }));
+                            return PicturePage(null,reIllust[index].illustId);
+                          }));
                     },
                     onLongPress: () async {
                       final result = await showDialog(
@@ -51,13 +52,14 @@ class HistoryPage extends StatelessWidget {
                       if (result == "OK") {
                         BlocProvider.of<IllustPersistBloc>(context).add(
                             DeleteIllustPersistEvent(
-                                state.illusts[index].illustId));
+                                reIllust[index].illustId));
                       }
                     },
                     child: Card(
                         margin: EdgeInsets.all(8),
-                        child: PixivImage(state.illusts[index].pictureUrl)));
+                        child: PixivImage(reIllust[index].pictureUrl)));
               });
+        }
         else
           return Center(
             child: CircularProgressIndicator(),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/user/user_page.dart';
@@ -13,17 +15,29 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
+ Completer<WebViewController> _controller =
+  Completer<WebViewController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: WebView(
-          initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
           initialUrl: widget.url,
-          javascriptMode: JavascriptMode.disabled,
+          javascriptMode: JavascriptMode.unrestricted,
+          onPageStarted: (s){
+            print(s);
+          },
+          debuggingEnabled: true,
+          onWebViewCreated: (controller){
+      
+          },
           navigationDelegate: (NavigationRequest request) {
             Uri uri = Uri.parse(request.url);
             final segment = uri.pathSegments;
+            if (request.url.contains("d.pixiv.org")||request.url.contains("connect.facebook.net")||request.url.contains("www.google-analytics.com")||request.url.contains("platform.twitter.com")) {
+              print('blocking navigation to $request}');
+              return NavigationDecision.prevent;
+            }
             if (segment.length == 1 &&
                 request.url.contains("/member.php?id=")) {
               final id = uri.queryParameters['id'];
@@ -42,13 +56,7 @@ class _WebViewPageState extends State<WebViewPage> {
               }));
               return NavigationDecision.prevent;
             }
-            // if (request.url.startsWith('https://pixiv.net/')) {
-            //   print('blocking navigation to $request}');
-            //   if(request.url.contains("article")){
 
-            //   }
-            //   return NavigationDecision.prevent;
-            // }
             print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
