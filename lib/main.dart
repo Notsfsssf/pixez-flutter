@@ -40,6 +40,7 @@ main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     final i18n = I18n.delegate;
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
           title: 'Flutter Demo',
           localeResolutionCallback:
-              i18n.resolution(fallback: new Locale("en", "US")),
+              i18n.resolution(fallback: new Locale("zh", "CN")),
           localizationsDelegates: [
             i18n,
             GlobalMaterialLocalizations.delegate,

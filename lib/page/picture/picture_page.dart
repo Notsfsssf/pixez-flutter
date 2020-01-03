@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:pixez/bloc/bloc.dart';
+import 'package:pixez/bloc/illust_persist_bloc.dart';
+import 'package:pixez/bloc/illust_persist_event.dart';
 import 'package:pixez/bloc/save_bloc.dart';
 import 'package:pixez/bloc/save_event.dart';
 import 'package:pixez/bloc/save_state.dart';
@@ -142,18 +143,20 @@ class _PicturePageState extends State<PicturePage> {
                       if (tempTags.length == 0) tempTags = null;
 
                       if (snapshot is DataState) {
-                        BlocProvider.of<PictureBloc>(context).add(StarEvent(
-                            snapshot.illusts,
-                            state
-                                .bookMarkDetailResponse.bookmarkDetail.restrict,
-                            tempTags));
+                        BlocProvider.of<PictureBloc>(context).add(
+                            StarPictureEvent(
+                                snapshot.illusts,
+                                state.bookMarkDetailResponse.bookmarkDetail
+                                    .restrict,
+                                tempTags));
                       } else {
                         if (illustState is DataIllustState)
-                          BlocProvider.of<PictureBloc>(context).add(StarEvent(
-                              illustState.illusts,
-                              state.bookMarkDetailResponse.bookmarkDetail
-                                  .restrict,
-                              tempTags));
+                          BlocProvider.of<PictureBloc>(context).add(
+                              StarPictureEvent(
+                                  illustState.illusts,
+                                  state.bookMarkDetailResponse.bookmarkDetail
+                                      .restrict,
+                                  tempTags));
                       }
                     },
                   )
@@ -253,7 +256,8 @@ class _PicturePageState extends State<PicturePage> {
                       ? FloatingActionButton(
                           onPressed: () {
                             BlocProvider.of<PictureBloc>(context).add(
-                                StarEvent(snapshot.illusts, "public", null));
+                                StarPictureEvent(
+                                    snapshot.illusts, "public", null));
                           },
                           child: Icon(Icons.star),
                           foregroundColor: snapshot.illusts.isBookmarked
@@ -262,7 +266,8 @@ class _PicturePageState extends State<PicturePage> {
                       : FloatingActionButton(
                           onPressed: () {
                             BlocProvider.of<PictureBloc>(context).add(
-                                StarEvent(illustState.illusts, "public", null));
+                                StarPictureEvent(
+                                    illustState.illusts, "public", null));
                           },
                           child: Icon(Icons.star),
                           foregroundColor: illustState.illusts.isBookmarked

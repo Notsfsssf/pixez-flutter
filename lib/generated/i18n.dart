@@ -225,15 +225,34 @@ class _I18n_en_US extends I18n {
   /// "Not following"
   @override
   String get Un_Follow => "Not following";
+
   /// "history"
   @override
   String get History => "history";
+
   /// "Clear"
   @override
   String get Clear => "Clear";
+
   /// "delete"
   @override
   String get Delete => "delete";
+
+  /// "Home"
+  @override
+  String get Home => "Home";
+
+  /// "Highlights"
+  @override
+  String get Spotlight => "Highlights";
+
+  /// "birthday"
+  @override
+  String get birthday => "birthday";
+
+  /// "More"
+  @override
+  String get More => "More";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

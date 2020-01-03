@@ -8,17 +8,6 @@
     "Works": "Works",
     "Rank": "Rank",
     "Search": "Search",
-    "Mode_List": {
-        "0": "daily",
-        "1": "male",
-        "2": "female",
-        "3": "Original",
-        "4": "Newcomer",
-        "5": "weekly",
-        "6": "per month",
-        "7": "XVIII",
-        "8": "XVIII_Week"
-    },
     "Illust_id": "Illustration id",
     "Pixel": "Resolution",
     "total_view": "Total view",
@@ -50,5 +39,9 @@
     "Un_Follow": "Not following",
     "History": "history",
     "Clear": "Clear",
-    "Delete": "delete"
+    "Delete": "delete",
+    "Home": "Home",
+    "Spotlight": "Highlights",
+    "birthday": "birthday",
+    "More": "More"
 }
