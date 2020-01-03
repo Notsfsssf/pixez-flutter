@@ -117,7 +117,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   flutter_cache_manager:
     dependency: "direct main"
     description:
