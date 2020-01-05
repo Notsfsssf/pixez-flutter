@@ -271,11 +271,21 @@ class ApiClient {
   fun getIllust(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<IllustDetailResponse>
 */
   Future<Response> getIllustDetail(int illust_id) {
-    return httpClient.get("/v1/illust/detail?filter=for_android",queryParameters: {"illust_id":illust_id});
+    return httpClient.get("/v1/illust/detail?filter=for_android",
+        queryParameters: {"illust_id": illust_id});
   }
-    //   @GET("/v1/spotlight/articles?filter=for_android")
-    // fun getPixivisionArticles(@Header("Authorization") paramString1: String, @Query("category") paramString2: String): Observable<SpotlightResponse>
-      Future<Response> getSpotlightArticles(String category) {
-    return httpClient.get("/v1/spotlight/articles?filter=for_android",queryParameters: {"category":category});
+
+  //   @GET("/v1/spotlight/articles?filter=for_android")
+  // fun getPixivisionArticles(@Header("Authorization") paramString1: String, @Query("category") paramString2: String): Observable<SpotlightResponse>
+  Future<Response> getSpotlightArticles(String category) {
+    return httpClient.get("/v1/spotlight/articles?filter=for_android",
+        queryParameters: {"category": category});
+  }
+
+//  @GET("/v1/illust/comments")
+//  fun getIllustComments(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<IllustCommentsResponse>
+  Future<Response> getIllustComments(int illust_id) {
+    return httpClient
+        .get("/v1/illust/comments", queryParameters: {"illust_id": illust_id});
   }
 }

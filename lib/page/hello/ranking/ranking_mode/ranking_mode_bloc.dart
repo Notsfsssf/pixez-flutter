@@ -24,11 +24,6 @@ class RankingModeBloc extends Bloc<RankingModeEvent, RankingModeState> {
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRankingModeState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e == null) {
-          return;
-        }
         print(e);
       }
     }
@@ -41,7 +36,9 @@ class RankingModeBloc extends Bloc<RankingModeEvent, RankingModeState> {
           print(ill.length);
           yield DataRankingModeState(ill, recommend.nextUrl);
         } catch (e) {}
-      } else {}
+      } else {
+        yield LoadMoreSuccessState();
+      }
     }
   }
 }

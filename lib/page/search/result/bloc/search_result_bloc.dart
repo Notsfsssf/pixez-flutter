@@ -64,8 +64,5 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
     if (event is ShowBottomSheetEvent) {
       yield ShowBottomSheetState();
     }
-    if(event is ShowStarNumEvent){
-      yield ShowStarNumState();
-    }
   }
 }

@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:pixez/component/painer_card.dart';
-import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/new/painter/bloc/bloc.dart';
 
 class NewPainterPage extends StatefulWidget {
@@ -25,7 +22,7 @@ class NewPainterPage extends StatefulWidget {
 class _NewPainterPageState extends State<NewPainterPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
   EasyRefreshController _refreshController;
-  NewPainterBloc _bloc;
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +36,6 @@ class _NewPainterPageState extends State<NewPainterPage> {
   @override
   void dispose() {
     super.dispose();
-    _bloc.close();
   }
 
   @override
@@ -57,7 +53,10 @@ class _NewPainterPageState extends State<NewPainterPage> {
           _loadCompleter = Completer();
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text("End")));
+          _refreshController.finishLoad(
+            success: true,
+            noMore: true,
+          );
         }
       },
       child: BlocBuilder<NewPainterBloc, NewPainterState>(
@@ -69,11 +68,13 @@ class _NewPainterPageState extends State<NewPainterPage> {
             return EasyRefresh(
               controller: _refreshController,
               onRefresh: () {
-                _bloc.add(FetchPainterEvent(widget.id, widget.restrict));
+                BlocProvider.of<NewPainterBloc>(context)
+                    .add(FetchPainterEvent(widget.id, widget.restrict));
                 return _refreshCompleter.future;
               },
               onLoad: () {
-                _bloc.add(LoadMoreEvent(state.nextUrl, state.users));
+                BlocProvider.of<NewPainterBloc>(context)
+                    .add(LoadMoreEvent(state.nextUrl, state.users));
                 return _loadCompleter.future;
               },
               child: ListView.builder(

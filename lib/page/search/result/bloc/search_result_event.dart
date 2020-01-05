@@ -31,11 +31,6 @@ class ShowBottomSheetEvent extends SearchResultEvent {
   @override
   List<Object> get props => [];
 }
-class ShowStarNumEvent extends SearchResultEvent{
-  @override
-  List<Object> get props => [];
-  
-}
 class ApplyEvent extends SearchResultEvent {
   final String word, sort, searchTarget;
   final DateTime startDate, endDate;

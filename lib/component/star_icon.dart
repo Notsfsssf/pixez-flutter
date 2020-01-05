@@ -16,7 +16,7 @@ class _StarIconState extends State<StarIcon> {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      Icons.ac_unit,
+      widget.isStar ? Icons.favorite : Icons.favorite_border,
       color: widget.isStar ? Colors.redAccent : Colors.grey,
     );
   }

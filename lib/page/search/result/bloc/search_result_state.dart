@@ -24,8 +24,3 @@ class ShowBottomSheetState extends SearchResultState {
   @override
   List<Object> get props => [];
 }
-class  ShowStarNumState extends  SearchResultState{
-  @override
-  List<Object> get props => [];
-  
-}

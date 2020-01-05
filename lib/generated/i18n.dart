@@ -104,16 +104,24 @@ class I18n implements WidgetsLocalizations {
   String get History => "历史";
   /// "清空"
   String get Clear => "清空";
+
   /// "删除"
   String get Delete => "删除";
+
   /// "首页"
   String get Home => "首页";
+
   /// "亮点"
   String get Spotlight => "亮点";
+
   /// "生日"
   String get birthday => "生日";
+
   /// "更多"
   String get More => "更多";
+
+  /// "超过${starNum}的收藏"
+  String More_then_starNum_Bookmark(String starNum) => "超过${starNum}的用户收藏";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -225,19 +233,15 @@ class _I18n_en_US extends I18n {
   /// "Not following"
   @override
   String get Un_Follow => "Not following";
-
   /// "history"
   @override
   String get History => "history";
-
   /// "Clear"
   @override
   String get Clear => "Clear";
-
   /// "delete"
   @override
   String get Delete => "delete";
-
   /// "Home"
   @override
   String get Home => "Home";
@@ -253,6 +257,11 @@ class _I18n_en_US extends I18n {
   /// "More"
   @override
   String get More => "More";
+
+  /// "More than ${starNum} favorites"
+  @override
+  String More_then_starNum_Bookmark(String starNum) =>
+      "More than ${starNum} favorites";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

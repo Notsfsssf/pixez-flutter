@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
 
 class SplashPage extends StatelessWidget {
   Future<String> initUniLinks() async {
@@ -21,7 +21,6 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    initUniLinks();
     return BlocListener<AccountBloc, AccountState>(
         listener: (_, state) {
           if (state is NoneUserState) {

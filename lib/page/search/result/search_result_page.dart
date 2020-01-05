@@ -134,55 +134,22 @@ class _SearchResultPageState extends State<SearchResultPage>
           if (state is DataState)
             return Scaffold(
               body: NestedScrollView(
-                body: BlocListener<SearchResultBloc, SearchResultState>(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: <Widget>[
-                      _buildFirst(state),
-                      SearchResultPainerPage(
-                        word: widget.word,
-                      )
-                    ],
-                  ),
-                  listener: (BuildContext context, SearchResultState state) {
-                    if (state is ShowStarNumState) {
-                      showDialog(
-                          context: context,
-                          builder: (_) {
-                            return AlertDialog(
-                              content: SingleChildScrollView(
-                                child: ListBody(
-                                  children: starnum
-                                      .map((f) =>
-                                      ListTile(
-                                        title: Text(f.toString()),
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                          BlocProvider.of<SearchResultBloc>(
-                                              context).add(FetchEvent(
-                                              toUserBookString(widget.word, f),
-                                              _sortValue,
-                                              _searchTargetValue,
-                                              startDate,
-                                              endDate,
-                                              enableDuration
-                                          ));
-                                        },
-                                      ))
-                                      .toList(),
-                                ),
-                              ),
-                            );
-                          });
-                    }
-                  },
+                body: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    _buildFirst(state),
+                    SearchResultPainerPage(
+                      word: widget.word,
+                    )
+                  ],
                 ),
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return [
                     SliverAppBar(
                       pinned: true,
-                      title: Text(widget.word),
+                      floating: true,
+                      title: SelectableText(widget.word),
                       actions: <Widget>[
                         IconButton(
                           icon: Icon(Icons.more_vert),
@@ -192,8 +159,8 @@ class _SearchResultPageState extends State<SearchResultPage>
                                 builder: (_) {
                                   return StatefulBuilder(
                                       builder: (_, setBottomSheetState) {
-                                        if (startDate.isAfter(endDate)) {
-                                          startDate = DateTime.now();
+                                    if (startDate.isAfter(endDate)) {
+                                      startDate = DateTime.now();
                                           endDate = DateTime.now();
                                         }
                                         return Container(
@@ -367,14 +334,44 @@ class _SearchResultPageState extends State<SearchResultPage>
                           ),
                         ],
                       ),
-                    )
+                    ),
+
                   ];
                 },
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  BlocProvider.of<SearchResultBloc>(context)
-                      .add(ShowStarNumEvent());
+                  showDialog(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          content: SingleChildScrollView(
+                            child: ListBody(
+                              children: starnum
+                                  .map((f) =>
+                                  ListTile(
+                                    title: Text("$f users入り"),
+                                    subtitle: Text(I18n.of(context)
+                                        .More_then_starNum_Bookmark(
+                                        f.toString())),
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      BlocProvider.of<SearchResultBloc>(
+                                          context).add(FetchEvent(
+                                          toUserBookString(widget.word, f),
+                                          _sortValue,
+                                          _searchTargetValue,
+                                          startDate,
+                                          endDate,
+                                          enableDuration
+                                      ));
+                                    },
+                                  ))
+                                  .toList(),
+                            ),
+                          ),
+                        );
+                      });
                 },
                 child: Icon(Icons.sort),
               ),

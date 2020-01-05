@@ -24,17 +24,20 @@ class _WebViewPageState extends State<WebViewPage> {
         child: WebView(
           initialUrl: widget.url,
           javascriptMode: JavascriptMode.unrestricted,
-          onPageStarted: (s){
+          onPageStarted: (s) {
             print(s);
           },
           debuggingEnabled: true,
-          onWebViewCreated: (controller){
-      
+          onWebViewCreated: (WebViewController controller) {
+
           },
           navigationDelegate: (NavigationRequest request) {
             Uri uri = Uri.parse(request.url);
             final segment = uri.pathSegments;
-            if (request.url.contains("d.pixiv.org")||request.url.contains("connect.facebook.net")||request.url.contains("www.google-analytics.com")||request.url.contains("platform.twitter.com")) {
+            if (request.url.contains("d.pixiv.org") ||
+                request.url.contains("connect.facebook.net") ||
+                request.url.contains("www.google-analytics.com") ||
+                request.url.contains("platform.twitter.com")) {
               print('blocking navigation to $request}');
               return NavigationDecision.prevent;
             }

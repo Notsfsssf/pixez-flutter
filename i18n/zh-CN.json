@@ -29,16 +29,16 @@
   "OK":"确认",
   "Theme":"主题",
   "Path":"路径",
-  "Format":"格式",
-  "Detail":"详情",
-  "Follow":"关注",
-  "Un_Follow":"未关注",
-  "History":"历史",
-  "Clear":"清空",
-  "Delete":"删除",
-  "Home":"首页",
-  "Spotlight":"亮点",
-  "birthday":"生日",
-  "More":"更多"
-
+  "Format": "格式",
+  "Detail": "详情",
+  "Follow": "关注",
+  "Un_Follow": "未关注",
+  "History": "历史",
+  "Clear": "清空",
+  "Delete": "删除",
+  "Home": "首页",
+  "Spotlight": "亮点",
+  "birthday": "生日",
+  "More": "更多",
+  "More_then_starNum_Bookmark": "超过{starNum}的收藏"
 }

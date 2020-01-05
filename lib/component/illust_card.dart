@@ -61,19 +61,24 @@ class _IllustCardState extends State<IllustCard> {
               child: Stack(
                 children: <Widget>[
                   PixivImage(widget._illusts.imageUrls.medium),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 2.0, horizontal: 2.0),
-                          child: cardText(),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black26,
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  Visibility(
+                    visible: widget._illusts.type != "illust" ||
+                        widget._illusts.metaPages.isNotEmpty,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2.0, horizontal: 2.0),
+                            child: cardText(),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.0)),
+                          ),
                         ),
                       ),
                     ),

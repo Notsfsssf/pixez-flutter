@@ -9,11 +9,13 @@ import 'package:pixez/bloc/save_event.dart';
 import 'package:pixez/bloc/save_state.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/transport_appbar.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
 import 'package:share/share.dart';
@@ -244,37 +246,35 @@ class _PicturePageState extends State<PicturePage> {
             }),
             floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
                 builder: (context, illustState) {
-              if (illustState is DataIllustState)
+                  if (illustState is DataIllustState)
                 return InkWell(
-                  splashColor: Colors.blue,
-                  onLongPress: () {
-                    BlocProvider.of<BookmarkDetailBloc>(context)
-                        .add(FetchBookmarkDetailEvent(illustState.illusts.id));
-                  },
-                  onTap: () {},
-                  child: (snapshot is DataState)
-                      ? FloatingActionButton(
-                          onPressed: () {
-                            BlocProvider.of<PictureBloc>(context).add(
-                                StarPictureEvent(
-                                    snapshot.illusts, "public", null));
-                          },
-                          child: Icon(Icons.star),
-                          foregroundColor: snapshot.illusts.isBookmarked
-                              ? Colors.red
-                              : Colors.white)
-                      : FloatingActionButton(
-                          onPressed: () {
-                            BlocProvider.of<PictureBloc>(context).add(
-                                StarPictureEvent(
-                                    illustState.illusts, "public", null));
-                          },
-                          child: Icon(Icons.star),
-                          foregroundColor: illustState.illusts.isBookmarked
-                              ? Colors.red
-                              : Colors.white),
-                );
-              return FloatingActionButton(onPressed: () {},);
+                    splashColor: Colors.blue,
+                    onLongPress: () {
+                      BlocProvider.of<BookmarkDetailBloc>(context).add(
+                          FetchBookmarkDetailEvent(illustState.illusts.id));
+                    },
+                    onTap: () {},
+                    child: (snapshot is DataState)
+                        ? FloatingActionButton(
+                            onPressed: () {
+                              BlocProvider.of<PictureBloc>(context).add(
+                                  StarPictureEvent(
+                                      snapshot.illusts, "public", null));
+                            },
+                            backgroundColor: Colors.white,
+                            child: StarIcon(snapshot.illusts.isBookmarked))
+                        : FloatingActionButton(
+                            onPressed: () {
+                              BlocProvider.of<PictureBloc>(context).add(
+                                  StarPictureEvent(
+                                      illustState.illusts, "public", null));
+                            },
+                            backgroundColor: Colors.white,
+                            child: StarIcon(illustState.illusts.isBookmarked),
+                          ));
+              return FloatingActionButton(
+                onPressed: () {},
+              );
             }),
           );
         }));
@@ -366,7 +366,9 @@ class _PicturePageState extends State<PicturePage> {
                     ListTile(
                       title: Text(I18n.of(context).Share),
                       leading: Icon(Icons.share,
-                          color: Theme.of(context).primaryColor),
+                          color: Theme
+                              .of(context)
+                              .primaryColor),
                       onTap: () {
                         Navigator.of(context).pop();
 
@@ -376,21 +378,17 @@ class _PicturePageState extends State<PicturePage> {
                     ),
                   ],
                 ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      height: 2.0,
-                      color: Colors.grey,
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.cancel,
-                          color: Theme.of(context).primaryColor),
-                      title: Text(I18n.of(context).Cancel),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
+                ListTile(
+                  leading:
+                  Icon(Icons.cancel, color: Theme
+                      .of(context)
+                      .primaryColor),
+                  title: Text(I18n
+                      .of(context)
+                      .Cancel),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                 )
               ],
             ),
@@ -484,8 +482,15 @@ class _PicturePageState extends State<PicturePage> {
                                 BlocProvider.of<SaveBloc>(context)
                                     .add(SaveImageEvent(illust, index));
                               },
-                              title: Text(I18n.of(context).Save),
-                            )
+                              title: Text(I18n
+                                  .of(context)
+                                  .Save),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.cancel),
+                              onTap: () => Navigator.of(context).pop(),
+                              title: Text("Cancel"),
+                            ),
                           ],
                         ),
                       );
@@ -637,9 +642,18 @@ class _PicturePageState extends State<PicturePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                I18n.of(context).View_Comment,
-                textAlign: TextAlign.center,
+              child: FlatButton(
+
+                child: Text(
+                  I18n
+                      .of(context)
+                      .View_Comment,
+                  textAlign: TextAlign.center,
+                ), onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        CommentPage(id: widget.id,)));
+              },
               ),
             )
           ],

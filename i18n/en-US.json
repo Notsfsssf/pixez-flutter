@@ -43,5 +43,17 @@
     "Home": "Home",
     "Spotlight": "Highlights",
     "birthday": "birthday",
-    "More": "More"
+    "More": "More",
+    "Mode_List": {
+        "0": "daily",
+        "1": "male",
+        "2": "female",
+        "3": "Original",
+        "4": "Newcomer",
+        "5": "weekly",
+        "6": "per month",
+        "7": "XVIII",
+        "8": "XVIII_Week"
+    },
+    "More_then_starNum_Bookmark": "More than {starNum} favorites"
 }

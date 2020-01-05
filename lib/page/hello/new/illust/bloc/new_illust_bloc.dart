@@ -7,6 +7,10 @@ import 'package:pixez/network/api_client.dart';
 import './bloc.dart';
 
 class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
+  final ApiClient client;
+
+  NewIllustBloc(this.client);
+
   @override
   NewIllustState get initialState => InitialNewIllustState();
 
@@ -14,8 +18,7 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
   Stream<NewIllustState> mapEventToState(
     NewIllustEvent event,
   ) async* {
-      if (event is FetchIllustEvent) {
-      final client =ApiClient();
+    if (event is FetchIllustEvent) {
       try {
         final response = await client.getFollowIllusts(event.restrict);
         Recommend recommend = Recommend.fromJson(response.data);
@@ -30,7 +33,6 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
       }
     }
     if (event is LoadMoreEvent) {
-      final client = new ApiClient();
       if (event.nextUrl != null) {
         try {
           final response = await client.getNext(event.nextUrl);
@@ -39,9 +41,11 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
           print(ill.length);
           yield DataNewIllustState(ill, recommend.nextUrl);
         } catch (e) {
-          
+
         }
-      } else {}
+      } else {
+
+      }
     }
   }
 }

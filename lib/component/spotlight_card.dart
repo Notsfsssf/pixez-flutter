@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/models/spotlight_response.dart';
-import 'package:pixez/page/webview/webview_page.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pixez/page/soup/soup_page.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
@@ -15,7 +14,7 @@ class SpotlightCard extends StatelessWidget {
       child: GestureDetector(
         onTap: (){
           Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-            return WebViewPage(url:spotlight.articleUrl);
+            return SoupPage(url: spotlight.articleUrl);
           }));
         },
         child: Container(

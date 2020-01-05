@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
 
 class RankingModePage extends StatelessWidget {
@@ -20,9 +19,7 @@ class RankingModePage extends StatelessWidget {
     var _loadCompleter = Completer<void>();
     final _refreshController = EasyRefreshController();
 
-    final _bloc = BlocProvider.of<RankingModeBloc>(context);
     return BlocListener<RankingModeBloc, RankingModeState>(
-        bloc: _bloc,
         listener: (context, state) {
           if (state is DataRankingModeState) {
             _loadCompleter?.complete();
@@ -30,9 +27,15 @@ class RankingModePage extends StatelessWidget {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }
+
+          if (state is LoadMoreSuccessState) {
+            _refreshController.finishRefresh(success: true, noMore: true);
+          }
         },
         child: BlocBuilder<RankingModeBloc, RankingModeState>(
-          bloc: _bloc,
+          condition: (pre, now) {
+            return now is DataRankingModeState;
+          },
           builder: (context, state) {
             if (state is DataRankingModeState)
               return EasyRefresh(
