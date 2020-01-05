@@ -1,21 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
-
+ static const platform = const MethodChannel('samples.flutter.dev/battery');
   const SpotlightCard({Key key, this.spotlight}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(4.0),
       child: GestureDetector(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-            return SoupPage(url: spotlight.articleUrl);
-          }));
+        onTap: () async {
+         final int result = await platform.invokeMethod('getBatteryLevel');
+          // Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+          //   return SoupPage(url: spotlight.articleUrl);
+          // }));
         },
         child: Container(
           height: 230,
