@@ -11,6 +11,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/transport_appbar.dart';
+import 'package:pixez/component/ugoira_animation.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
@@ -189,8 +190,17 @@ class _PicturePageState extends State<PicturePage> {
           ),
           BlocProvider<IllustBloc>(
             create: (BuildContext context) =>
-                IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
-                  ..add(FetchIllustDetailEvent()),
+            IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
+              ..add(FetchIllustDetailEvent()),
+          ),
+          BlocProvider<UgoiraMetadataBloc>(
+            create: (context) =>
+                UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
+          ),
+          BlocProvider<IllustRelatedBloc>(
+            create: (context) =>
+            IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
+              ..add(FetchRelatedEvent(widget.id)),
           )
         ],
         child: BlocBuilder<PictureBloc, PictureState>(
@@ -247,15 +257,15 @@ class _PicturePageState extends State<PicturePage> {
             floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
                 builder: (context, illustState) {
                   if (illustState is DataIllustState)
-                return InkWell(
-                    splashColor: Colors.blue,
-                    onLongPress: () {
-                      BlocProvider.of<BookmarkDetailBloc>(context).add(
-                          FetchBookmarkDetailEvent(illustState.illusts.id));
-                    },
-                    onTap: () {},
-                    child: (snapshot is DataState)
-                        ? FloatingActionButton(
+                    return InkWell(
+                        splashColor: Colors.blue,
+                        onLongPress: () {
+                          BlocProvider.of<BookmarkDetailBloc>(context).add(
+                              FetchBookmarkDetailEvent(illustState.illusts.id));
+                        },
+                        onTap: () {},
+                        child: (snapshot is DataState)
+                            ? FloatingActionButton(
                             onPressed: () {
                               BlocProvider.of<PictureBloc>(context).add(
                                   StarPictureEvent(
@@ -364,7 +374,9 @@ class _PicturePageState extends State<PicturePage> {
                           )
                         : Container(),
                     ListTile(
-                      title: Text(I18n.of(context).Share),
+                      title: Text(I18n
+                          .of(context)
+                          .Share),
                       leading: Icon(Icons.share,
                           color: Theme
                               .of(context)
@@ -410,39 +422,36 @@ class _PicturePageState extends State<PicturePage> {
         );
 
   Widget _buildGridView(DataIllustState illustState) =>
-      BlocProvider<IllustRelatedBloc>(
-        child: BlocBuilder<IllustRelatedBloc, IllustRelatedState>(
-            builder: (context, snapshot) {
-          if (snapshot is DataIllustRelatedState)
-            return GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, //
-                ),
-                shrinkWrap: true,
-                itemCount: snapshot.recommend.illusts.length,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return PicturePage(snapshot.recommend.illusts[index],
-                            snapshot.recommend.illusts[index].id);
-                      }));
-                    },
-                    child: PixivImage(snapshot
-                        .recommend.illusts[index].imageUrls.squareMedium),
-                  );
-                });
-          else
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-        }),
-        create: (BuildContext context) =>
-            IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
-              ..add(FetchRelatedEvent(illustState.illusts)),
-      );
+      BlocBuilder<IllustRelatedBloc, IllustRelatedState>(
+          builder: (context, snapshot) {
+            if (snapshot is DataIllustRelatedState)
+              return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3, //
+                  ),
+                  shrinkWrap: true,
+                  itemCount: snapshot.recommend.illusts.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return PicturePage(
+                                  snapshot.recommend.illusts[index],
+                                  snapshot.recommend.illusts[index].id);
+                            }));
+                      },
+                      child: PixivImage(
+                          snapshot.recommend.illusts[index].imageUrls
+                              .squareMedium),
+                    );
+                  });
+            else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          });
 
   Widget _buildList(Illusts illust, DataIllustState illustState) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
@@ -455,7 +464,9 @@ class _PicturePageState extends State<PicturePage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(I18n.of(context).About_Picture),
+                  child: Text(I18n
+                      .of(context)
+                      .About_Picture),
                 ),
               ],
             );
@@ -465,48 +476,96 @@ class _PicturePageState extends State<PicturePage> {
           }
           if (index == count) {
             return _buildDetail(context, illust);
-          } else
-            return GestureDetector(
-              onLongPress: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (_) {
-                      return Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: Icon(Icons.save_alt),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                BlocProvider.of<SaveBloc>(context)
-                                    .add(SaveImageEvent(illust, index));
-                              },
-                              title: Text(I18n
-                                  .of(context)
-                                  .Save),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.cancel),
-                              onTap: () => Navigator.of(context).pop(),
-                              title: Text("Cancel"),
-                            ),
-                          ],
-                        ),
-                      );
-                    });
-              },
-              onTap: () {},
-              child: illust.metaPages.isEmpty
-                  ? Hero(
-                      child: PixivImage(
-                        illust.imageUrls.large,
-                        placeHolder: illust.imageUrls.medium,
+          }
+          if (illust.type == "ugoira") {
+            return BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
+                builder: (context, snapshot) {
+                  if (snapshot is DownLoadProgressState) {
+                    return Container(
+                      height: 200,
+                      child: CircularProgressIndicator(
+                        value: snapshot.count / snapshot.total,
                       ),
-                      tag: illust.imageUrls.medium,
-                    )
-                  : _buildIllustsItem(index, illust),
-            );
+                    );
+                  }
+                  if (snapshot is PlayUgoiraMetadataState) {
+                    Map<int, Image> imageCaches = Map();
+                    for (int i = 0; i < snapshot.listSync.length; i++) {
+                      imageCaches[i] = Image.file(snapshot.listSync[i]);
+                    }
+                    final height = imageCaches[0].height;
+                    return SizedBox(
+                      height: height,
+                      child: UgoiraAnima(
+                          imageCaches, snapshot.frames, imageCaches[0].width,
+                          height, backColor: Colors.white),
+                    );
+                  }
+                  return Stack(
+                    children: <Widget>[
+                      Hero(
+                        child: PixivImage(
+                          illust.imageUrls.large,
+                          placeHolder: illust.imageUrls.medium,
+                        ),
+                        tag: illust.imageUrls.medium,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: IconButton(
+                          onPressed: () {
+                            BlocProvider.of<UgoiraMetadataBloc>(context)
+                                .add(FetchUgoiraMetadataEvent(illust.id));
+                          },
+                          icon: Icon(Icons.play_arrow),
+                        ),
+                      )
+                    ],
+                  );
+                });
+          }
+
+          return GestureDetector(
+            onLongPress: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (_) {
+                    return Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            leading: Icon(Icons.save_alt),
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                              BlocProvider.of<SaveBloc>(context)
+                                  .add(SaveImageEvent(illust, index));
+                            },
+                            title: Text(I18n
+                                .of(context)
+                                .Save),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.cancel),
+                            onTap: () => Navigator.of(context).pop(),
+                            title: Text("Cancel"),
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+            },
+            onTap: () {},
+            child: illust.metaPages.isEmpty
+                ? Hero(
+              child: PixivImage(
+                illust.imageUrls.large,
+                placeHolder: illust.imageUrls.medium,
+              ),
+              tag: illust.imageUrls.medium,
+            )
+                : _buildIllustsItem(index, illust),
+          );
         });
   }
 
@@ -643,17 +702,19 @@ class _PicturePageState extends State<PicturePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: FlatButton(
-
                 child: Text(
                   I18n
                       .of(context)
                       .View_Comment,
                   textAlign: TextAlign.center,
-                ), onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        CommentPage(id: widget.id,)));
-              },
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          CommentPage(
+                            id: widget.id,
+                          )));
+                },
               ),
             )
           ],

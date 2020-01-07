@@ -1,13 +1,15 @@
+export 'bookmark_detail_bloc.dart';
+export 'bookmark_detail_event.dart';
+export 'bookmark_detail_state.dart';
+export 'illust_bloc.dart';
+export 'illust_event.dart';
+export 'illust_related_bloc.dart';
+export 'illust_related_event.dart';
+export 'illust_related_state.dart';
+export 'illust_state.dart';
 export 'picture_bloc.dart';
 export 'picture_event.dart';
 export 'picture_state.dart';
-
-export 'illust_related_bloc.dart';
-export 'illust_related_event.dart';
-export 'illust_related_state.dart';export 'bookmark_detail_bloc.dart';
-export 'bookmark_detail_event.dart';
-export 'bookmark_detail_state.dart';
-
-export 'illust_bloc.dart';
-export 'illust_event.dart';
-export 'illust_state.dart';
+export 'ugoira_metadata_bloc.dart';
+export 'ugoira_metadata_event.dart';
+export 'ugoira_metadata_state.dart';

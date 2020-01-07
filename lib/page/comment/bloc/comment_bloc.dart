@@ -22,23 +22,27 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   Stream<CommentState> mapEventToState(
     CommentEvent event,
   ) async* {
-    if (event is FetchCommentEvent) {
-      Response response = await client.getIllustComments(event.id);
-      CommentResponse commentResponse = CommentResponse.fromJson(response.data);
-      yield DataCommentState(commentResponse);
-    }
-    if (event is LoadMoreCommentEvent) {
-      var nextUrl = event.commentResponse.nextUrl;
-      if (nextUrl != null && nextUrl.isNotEmpty) {
-        Response response = await client.getNext(nextUrl);
+    try {
+      if (event is FetchCommentEvent) {
+        Response response = await client.getIllustComments(event.id);
         CommentResponse commentResponse =
             CommentResponse.fromJson(response.data);
-        commentResponse.comments = event.commentResponse.comments
-          ..addAll(commentResponse.comments);
         yield DataCommentState(commentResponse);
-      } else {
-        easyRefreshController.finishLoad(success: true, noMore: true); //??????
       }
-    }
+      if (event is LoadMoreCommentEvent) {
+        var nextUrl = event.commentResponse.nextUrl;
+        if (nextUrl != null && nextUrl.isNotEmpty) {
+          Response response = await client.getNext(nextUrl);
+          CommentResponse commentResponse =
+              CommentResponse.fromJson(response.data);
+          commentResponse.comments = event.commentResponse.comments
+            ..addAll(commentResponse.comments);
+          yield DataCommentState(commentResponse);
+        } else {
+          easyRefreshController.finishLoad(
+              success: true, noMore: true); //??????
+        }
+      }
+    } catch (e) {}
   }
 }

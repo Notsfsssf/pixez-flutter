@@ -7,6 +7,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/models/tags.dart';
+import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 class Restrict {
@@ -91,7 +92,7 @@ class ApiClient {
           data: notNullMap({
             "illust_id": illust_id,
             "restrict": restrict,
-            "tags[]": tags.toString()//null toString =="null"
+            "tags[]": tags.toString() //null toString =="null"
           }),
           options: Options(contentType: Headers.formUrlEncodedContentType));
     else
@@ -238,6 +239,7 @@ class ApiClient {
   Future<Response> getSearchAutocomplete(String word) async =>
       httpClient.get("/v2/search/autocomplete?merge_plain_keyword_results=true",
           queryParameters: notNullMap({"word": word}));
+
 /*
   @GET("/v2/illust/related?filter=for_android")
   fun getIllustRecommended(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<RecommendResponse>
@@ -245,6 +247,7 @@ class ApiClient {
   Future<Response> getIllustRelated(int illust_id) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
           queryParameters: notNullMap({"illust_id": illust_id}));
+
   //          @GET("/v2/illust/bookmark/detail")
   // fun getLikeIllustDetail(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<BookMarkDetailResponse>
   Future<Response> getIllustBookmarkDetail(int illust_id) async =>
@@ -258,6 +261,7 @@ class ApiClient {
       httpClient.post("/v1/user/follow/delete",
           data: notNullMap({"user_id": user_id}),
           options: Options(contentType: Headers.formUrlEncodedContentType));
+
 /*  @FormUrlEncoded
   @POST("/v1/user/follow/add")
   fun postFollowUser(@Header("Authorization") paramString1: String, @Field("user_id") paramLong: Long, @Field("restrict") paramString2: String): Observable<ResponseBody>*/
@@ -266,6 +270,7 @@ class ApiClient {
         data: {"user_id": user_id, "restrict": restrict},
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
+
 /*
   @GET("/v1/illust/detail?filter=for_android")
   fun getIllust(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<IllustDetailResponse>
@@ -287,5 +292,31 @@ class ApiClient {
   Future<Response> getIllustComments(int illust_id) {
     return httpClient
         .get("/v1/illust/comments", queryParameters: {"illust_id": illust_id});
+  }
+
+  /* @FormUrlEncoded
+  @POST("v1/illust/comment/add")
+  fun postIllustComment(@Header("Authorization") paramString1: String, @Field("illust_id") illust_id: Long, @Field("comment") comment: String, @Field("parent_comment_id") parent_comment_id: Int?): Observable<ResponseBody>
+*/
+  Future<Response> postIllustComment(int illust_id, String comment,
+      {int parent_comment_id = null}) {
+    return httpClient.post("/v1/illust/comment/add",
+        data: notNullMap({
+          "illust_id": illust_id,
+          "comment": comment,
+          "parent_comment_id": parent_comment_id
+        }),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+//
+//  @GET("/v1/ugoira/metadata")
+//  fun getUgoiraMetadata(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<UgoiraMetadataResponse>
+  Future<UgoiraMetadataResponse> getUgoiraMetadata(int illust_id) async {
+    final result = await httpClient.get(
+      "/v1/ugoira/metadata",
+      queryParameters: notNullMap({"illust_id": illust_id}),
+    );
+    return UgoiraMetadataResponse.fromJson(result.data);
   }
 }

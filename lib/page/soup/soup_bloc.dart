@@ -23,10 +23,10 @@ class SoupBloc extends Bloc<SoupEvent, SoupState> {
     if (event is FetchSoupEvent) {
       Response response = await dio.request(event.url);
       print(response.data);
-      var document = parse(response.data);
+      var document = parse("<html><div><div><p>11</p></div></div></html>");
 
       var ele = document.getElementsByTagName("div")[0].attributes;
-      print(document);
+      print(ele);
     }
   }
 }
