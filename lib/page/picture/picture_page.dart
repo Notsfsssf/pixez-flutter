@@ -190,17 +190,13 @@ class _PicturePageState extends State<PicturePage> {
           ),
           BlocProvider<IllustBloc>(
             create: (BuildContext context) =>
-            IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
-              ..add(FetchIllustDetailEvent()),
-          ),
-          BlocProvider<UgoiraMetadataBloc>(
-            create: (context) =>
-                UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
+                IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
+                  ..add(FetchIllustDetailEvent()),
           ),
           BlocProvider<IllustRelatedBloc>(
             create: (context) =>
-            IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
-              ..add(FetchRelatedEvent(widget.id)),
+                IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
+                  ..add(FetchRelatedEvent(widget.id)),
           )
         ],
         child: BlocBuilder<PictureBloc, PictureState>(
@@ -256,16 +252,16 @@ class _PicturePageState extends State<PicturePage> {
             }),
             floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
                 builder: (context, illustState) {
-                  if (illustState is DataIllustState)
-                    return InkWell(
-                        splashColor: Colors.blue,
-                        onLongPress: () {
-                          BlocProvider.of<BookmarkDetailBloc>(context).add(
-                              FetchBookmarkDetailEvent(illustState.illusts.id));
-                        },
-                        onTap: () {},
-                        child: (snapshot is DataState)
-                            ? FloatingActionButton(
+              if (illustState is DataIllustState)
+                return InkWell(
+                    splashColor: Colors.blue,
+                    onLongPress: () {
+                      BlocProvider.of<BookmarkDetailBloc>(context).add(
+                          FetchBookmarkDetailEvent(illustState.illusts.id));
+                    },
+                    onTap: () {},
+                    child: (snapshot is DataState)
+                        ? FloatingActionButton(
                             onPressed: () {
                               BlocProvider.of<PictureBloc>(context).add(
                                   StarPictureEvent(
@@ -374,13 +370,9 @@ class _PicturePageState extends State<PicturePage> {
                           )
                         : Container(),
                     ListTile(
-                      title: Text(I18n
-                          .of(context)
-                          .Share),
+                      title: Text(I18n.of(context).Share),
                       leading: Icon(Icons.share,
-                          color: Theme
-                              .of(context)
-                              .primaryColor),
+                          color: Theme.of(context).primaryColor),
                       onTap: () {
                         Navigator.of(context).pop();
 
@@ -392,12 +384,8 @@ class _PicturePageState extends State<PicturePage> {
                 ),
                 ListTile(
                   leading:
-                  Icon(Icons.cancel, color: Theme
-                      .of(context)
-                      .primaryColor),
-                  title: Text(I18n
-                      .of(context)
-                      .Cancel),
+                      Icon(Icons.cancel, color: Theme.of(context).primaryColor),
+                  title: Text(I18n.of(context).Cancel),
                   onTap: () {
                     Navigator.of(context).pop();
                   },
@@ -424,34 +412,32 @@ class _PicturePageState extends State<PicturePage> {
   Widget _buildGridView(DataIllustState illustState) =>
       BlocBuilder<IllustRelatedBloc, IllustRelatedState>(
           builder: (context, snapshot) {
-            if (snapshot is DataIllustRelatedState)
-              return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, //
-                  ),
-                  shrinkWrap: true,
-                  itemCount: snapshot.recommend.illusts.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (BuildContext context) {
-                              return PicturePage(
-                                  snapshot.recommend.illusts[index],
-                                  snapshot.recommend.illusts[index].id);
-                            }));
-                      },
-                      child: PixivImage(
-                          snapshot.recommend.illusts[index].imageUrls
-                              .squareMedium),
-                    );
-                  });
-            else
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-          });
+        if (snapshot is DataIllustRelatedState)
+          return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, //
+              ),
+              shrinkWrap: true,
+              itemCount: snapshot.recommend.illusts.length,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return PicturePage(snapshot.recommend.illusts[index],
+                          snapshot.recommend.illusts[index].id);
+                    }));
+                  },
+                  child: PixivImage(
+                      snapshot.recommend.illusts[index].imageUrls.squareMedium),
+                );
+              });
+        else
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+      });
 
   Widget _buildList(Illusts illust, DataIllustState illustState) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
@@ -464,9 +450,7 @@ class _PicturePageState extends State<PicturePage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(I18n
-                      .of(context)
-                      .About_Picture),
+                  child: Text(I18n.of(context).About_Picture),
                 ),
               ],
             );
@@ -478,51 +462,45 @@ class _PicturePageState extends State<PicturePage> {
             return _buildDetail(context, illust);
           }
           if (illust.type == "ugoira") {
-            return BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
-                builder: (context, snapshot) {
-                  if (snapshot is DownLoadProgressState) {
-                    return Container(
-                      height: 200,
-                      child: CircularProgressIndicator(
-                        value: snapshot.count / snapshot.total,
-                      ),
-                    );
-                  }
-                  if (snapshot is PlayUgoiraMetadataState) {
-                    Map<int, Image> imageCaches = Map();
-                    for (int i = 0; i < snapshot.listSync.length; i++) {
-                      imageCaches[i] = Image.file(snapshot.listSync[i]);
+            return BlocProvider<UgoiraMetadataBloc>(
+              child: BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
+                  builder: (context, snapshot) {
+                    if (snapshot is DownLoadProgressState) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: snapshot.count / snapshot.total,
+                        ),
+                      );
                     }
-                    final height = imageCaches[0].height;
-                    return SizedBox(
-                      height: height,
-                      child: UgoiraAnima(
-                          imageCaches, snapshot.frames, imageCaches[0].width,
-                          height, backColor: Colors.white),
-                    );
-                  }
-                  return Stack(
-                    children: <Widget>[
-                      Hero(
-                        child: PixivImage(
+                    if (snapshot is PlayUgoiraMetadataState) {
+              return FrameAnimationImage(snapshot.listSync,interval: snapshot.frames.first.delay,);
+                      // return UgoiraAnima(snapshot.listSync,snapshot.frames);
+                    }
+                    return Stack(
+                      children: <Widget>[
+                        Hero(
+                          child: PixivImage(
                           illust.imageUrls.large,
-                          placeHolder: illust.imageUrls.medium,
+                            placeHolder: illust.imageUrls.medium,
+                          ),
+                          tag: illust.imageUrls.medium,
                         ),
-                        tag: illust.imageUrls.medium,
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: IconButton(
-                          onPressed: () {
-                            BlocProvider.of<UgoiraMetadataBloc>(context)
-                                .add(FetchUgoiraMetadataEvent(illust.id));
-                          },
-                          icon: Icon(Icons.play_arrow),
-                        ),
-                      )
-                    ],
-                  );
-                });
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: IconButton(
+                            onPressed: () {
+                              BlocProvider.of<UgoiraMetadataBloc>(context)
+                                  .add(FetchUgoiraMetadataEvent(illust.id));
+                            },
+                            icon: Icon(Icons.play_arrow),
+                          ),
+                        )
+                      ],
+                    );
+                  }),
+              create: (context) =>
+                  UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
+            );
           }
 
           return GestureDetector(
@@ -541,9 +519,7 @@ class _PicturePageState extends State<PicturePage> {
                               BlocProvider.of<SaveBloc>(context)
                                   .add(SaveImageEvent(illust, index));
                             },
-                            title: Text(I18n
-                                .of(context)
-                                .Save),
+                            title: Text(I18n.of(context).Save),
                           ),
                           ListTile(
                             leading: Icon(Icons.cancel),
@@ -558,12 +534,12 @@ class _PicturePageState extends State<PicturePage> {
             onTap: () {},
             child: illust.metaPages.isEmpty
                 ? Hero(
-              child: PixivImage(
-                illust.imageUrls.large,
-                placeHolder: illust.imageUrls.medium,
-              ),
-              tag: illust.imageUrls.medium,
-            )
+                    child: PixivImage(
+                      illust.imageUrls.large,
+                      placeHolder: illust.imageUrls.medium,
+                    ),
+                    tag: illust.imageUrls.medium,
+                  )
                 : _buildIllustsItem(index, illust),
           );
         });
@@ -695,6 +671,9 @@ class _PicturePageState extends State<PicturePage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Html(
+                  onLinkTap: (String url) {
+                    Share.share(url);
+                  },
                   data: illust.caption.isEmpty ? "~" : illust.caption,
                 ),
               ),
@@ -703,15 +682,12 @@ class _PicturePageState extends State<PicturePage> {
               padding: const EdgeInsets.all(8.0),
               child: FlatButton(
                 child: Text(
-                  I18n
-                      .of(context)
-                      .View_Comment,
+                  I18n.of(context).View_Comment,
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          CommentPage(
+                      builder: (BuildContext context) => CommentPage(
                             id: widget.id,
                           )));
                 },

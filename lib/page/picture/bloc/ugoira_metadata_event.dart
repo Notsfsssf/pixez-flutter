@@ -8,3 +8,9 @@ class FetchUgoiraMetadataEvent extends UgoiraMetadataEvent {
 
   FetchUgoiraMetadataEvent(this.id);
 }
+class ProgressUgoiraMetadataEvent extends UgoiraMetadataEvent {
+  final int count;
+  final int total;
+
+  ProgressUgoiraMetadataEvent(this.count, this.total);
+}
