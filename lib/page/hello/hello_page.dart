@@ -9,6 +9,7 @@ import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -41,6 +42,7 @@ class _HelloPageState extends State<HelloPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: buildDrawer(),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -53,6 +55,66 @@ class _HelloPageState extends State<HelloPage> {
       bottomNavigationBar: _buildBottomNavy(),
     );
   }
+
+  Drawer buildDrawer() => Drawer(
+          child: Container(
+        color: Colors.white,
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Image.asset('assets/images/mahou_teriri.jpg'),
+              ),
+            ),
+
+            ListTile(
+              title: Text('About'),
+                  subtitle: Text('来一起写flutter不啦'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(),
+            ListTile(
+              title: Text('Creator'),
+              subtitle: Text('Perol_Notsfsssf'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Alpha-version'),
+              subtitle: Text('No.525300887039'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Feedback E-mail'),
+              subtitle: Text('PxEzFeedBack@outlook.com'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Made with'),
+              subtitle: Text('Flutter'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+             ListTile(
+              title: Text('Notice'),
+              subtitle: Text('封测版(迫真)'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            //  ListTile(leading: Image.asset('asset/images/mahou_teriri.jpg'),),
+          ],
+        ),
+      ));
 
   Widget _buildBottomNavy() => BottomNavyBar(
         selectedIndex: _selectedIndex,

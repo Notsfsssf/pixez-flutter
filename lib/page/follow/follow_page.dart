@@ -15,7 +15,9 @@ class FollowPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(I18n.of(context).Follow),),
+      appBar: AppBar(
+        title: Text(I18n.of(context).Follow),
+      ),
       body: BlocProvider<NewPainterBloc>(
         child: NewPainterPage(
           id: id,

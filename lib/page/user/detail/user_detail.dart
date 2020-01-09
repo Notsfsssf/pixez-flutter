@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:pixez/page/follow/follow_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserDetailPage extends StatefulWidget {
   @override
@@ -44,11 +45,13 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       DataRow(cells: [
                         DataCell(Text('Total follow users')),
                         DataCell(
-                            Text(detail.profile.total_follow_users.toString()),onTap: (){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                                return FollowPage(state.userDetail.user.id);
-                              }));
-                            }),
+                            Text(detail.profile.total_follow_users.toString()),
+                            onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return FollowPage(state.userDetail.user.id);
+                          }));
+                        }),
                       ]),
                       DataRow(cells: [
                         DataCell(Text('Total mypixiv users')),
@@ -57,8 +60,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       ]),
                       DataRow(cells: [
                         DataCell(Text('Twitter account')),
-                        DataCell(Text(profile.twitter_account), onTap: () {
+                        DataCell(Text(profile.twitter_account),
+                            onTap: () async {
                           final url = profile.twitter_url;
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {}
                         }),
                       ]),
                       DataRow(cells: [
@@ -71,9 +78,13 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       ]),
                       DataRow(cells: [
                         DataCell(Text('Pawoo')),
-                        DataCell(Text(public.pawoo?'Link':'none'),onTap: (){
-                          if(public.pawoo)
-                          detail.profile.pawoo_url;
+                        DataCell(Text(public.pawoo ? 'Link' : 'none'),
+                            onTap: () async {
+                          if (!public.pawoo) return;
+                          var url = detail.profile.pawoo_url;
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {}
                         }),
                       ]),
                     ],
