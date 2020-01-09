@@ -6,7 +6,9 @@ import 'package:pixez/network/onezero_client.dart';
 import './bloc.dart';
 
 class OnezeroBloc extends Bloc<OnezeroEvent, OnezeroState> {
-  OnezeroClient onezeroClient;
+  final OnezeroClient onezeroClient;
+
+  OnezeroBloc(this.onezeroClient);
   @override
   OnezeroState get initialState => InitialOnezeroState();
 
@@ -15,10 +17,14 @@ class OnezeroBloc extends Bloc<OnezeroEvent, OnezeroState> {
     OnezeroEvent event,
   ) async* {
     if (event is FetchOnezeroEvent) {
-      OnezeroResponse onezeroResponse =
-          await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
-  yield DataOnezeroState(onezeroResponse);
-       
+      try {
+        OnezeroResponse onezeroResponse =
+            await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
+        yield DataOnezeroState(onezeroResponse);
+      } catch (e) {
+        print(e);
+        yield FailOnezeroState();
+      }
     }
   }
 }

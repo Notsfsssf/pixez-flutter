@@ -19,6 +19,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
+import 'package:pixez/page/zoom/zoom_page.dart';
 import 'package:share/share.dart';
 
 abstract class ListItem {}
@@ -531,7 +532,11 @@ class _PicturePageState extends State<PicturePage> {
                     );
                   });
             },
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                return ZoomPage(url:illust.metaPages.isEmpty?illust.imageUrls.large:illust.metaPages[index].imageUrls.large ,);
+              }));
+            },
             child: illust.metaPages.isEmpty
                 ? Hero(
                     child: PixivImage(

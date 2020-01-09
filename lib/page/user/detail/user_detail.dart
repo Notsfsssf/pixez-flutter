@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/page/follow/follow_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 
 class UserDetailPage extends StatefulWidget {
@@ -41,32 +42,39 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ],
                     rows: <DataRow>[
                       DataRow(cells: [
-                        DataCell(Text('public.birth_day')),
+                        DataCell(Text('Total follow users')),
                         DataCell(
-                            Text(detail.profile.total_follow_users.toString())),
+                            Text(detail.profile.total_follow_users.toString()),onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                                return FollowPage(state.userDetail.user.id);
+                              }));
+                            }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('public.birth_day')),
+                        DataCell(Text('Total mypixiv users')),
                         DataCell(Text(
                             detail.profile.total_mypixiv_users.toString())),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('public.birth_day')),
+                        DataCell(Text('Twitter account')),
                         DataCell(Text(profile.twitter_account), onTap: () {
                           final url = profile.twitter_url;
                         }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('public.birth_day')),
-                        DataCell(Text(public.gender)),
+                        DataCell(Text('Gender')),
+                        DataCell(Text(detail.profile.gender)),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('public.birth_day')),
-                        DataCell(Text(public.job)),
+                        DataCell(Text('Job')),
+                        DataCell(Text(detail.profile.job)),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('public.birth_day')),
-                        DataCell(Text(public.pawoo.toString())),
+                        DataCell(Text('Pawoo')),
+                        DataCell(Text(public.pawoo?'Link':'none'),onTap: (){
+                          if(public.pawoo)
+                          detail.profile.pawoo_url;
+                        }),
                       ]),
                     ],
                   ),
