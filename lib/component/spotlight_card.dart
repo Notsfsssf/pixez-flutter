@@ -17,7 +17,7 @@ class SpotlightCard extends StatelessWidget {
 //         final int result = await platform.invokeMethod('getBatteryLevel');
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (BuildContext context) {
-            return SoupPage(url: spotlight.articleUrl);
+            return SoupPage(url: spotlight.articleUrl,spotlight:spotlight);
           }));
         },
         child: Container(

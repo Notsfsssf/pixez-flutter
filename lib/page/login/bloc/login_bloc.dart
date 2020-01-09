@@ -4,20 +4,25 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:dio/dio.dart';
 import './bloc.dart';
 import 'package:bloc/bloc.dart';
+
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+ final OAuthClient client;
+
+  LoginBloc(this.client);
   @override
   LoginState get initialState => InitialLoginState();
-int bti(bool bool){
-  if(bool){
-    return 1;
-  }else return 0;
-}
+  int bti(bool bool) {
+    if (bool) {
+      return 1;
+    } else
+      return 0;
+  }
+
   @override
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
     if (event is ClickToAuth) {
-      final client = new OAuthClient();
 
       try {
         final response =
@@ -37,10 +42,9 @@ int bti(bool bool){
           ..name = user.name
           ..isMailAuthorized = bti(user.isMailAuthorized)
           ..isPremium = bti(user.isPremium)
-          ..mailAddress=user.mailAddress
+          ..mailAddress = user.mailAddress
           ..account = user.account
-          ..xRestrict = user.xRestrict
-      );
+          ..xRestrict = user.xRestrict);
         yield SuccessState();
       } on DioError catch (e) {
         // The request was made and the server responded with a status code

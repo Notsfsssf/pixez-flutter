@@ -11,7 +11,7 @@ class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   Dio httpClient;
-
+static const BASE_OAUTH_URL_HOST="oauth.secure.pixiv.net";
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
@@ -33,7 +33,7 @@ class OAuthClient {
         "App-OS": "Android",
         "App-OS-Version": "Android 6.0",
         "App-Version": "5.0.166",
-        "Host": "oauth.secure.pixiv.net"
+        "Host": BASE_OAUTH_URL_HOST
       }
       ..options.contentType = Headers.formUrlEncodedContentType;
     (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)

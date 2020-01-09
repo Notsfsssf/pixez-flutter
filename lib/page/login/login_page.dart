@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_event.dart';
+import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
 
@@ -16,7 +17,8 @@ class LoginPage extends StatelessWidget {
     userNameController = TextEditingController(text: "userbay");
     passWordController = TextEditingController(text: "userpay");
     return BlocProvider(
-      create: (context) => LoginBloc(),
+      create: (context) =>
+          LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
       child: BlocListener<LoginBloc, LoginState>(listener: (context, state) {
         if (state is SuccessState) {
           BlocProvider.of<AccountBloc>(context).add(FetchDataBaseEvent());

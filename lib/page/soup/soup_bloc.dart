@@ -28,7 +28,7 @@ class SoupBloc extends Bloc<SoupEvent, SoupState> {
       var workInfo = document.getElementsByClassName("am__body");
       var nodes = workInfo.first.nodes;
       var amWorkGtmDocument = parse(workInfo.first.innerHtml);
-      var description =document.getElementsByClassName('am__description _medium-editor-text').first.innerHtml;
+      var description =document.getElementsByClassName('am__description _medium-editor-text').first.innerHtml.replaceAll('<p>', '').replaceAll('</p>', '').replaceAll('</br>', '').replaceAll('<br>', '');
       List<AmWork> amWorks = [];
       for (int i = 1; i <= nodes.length; i++) {
         try {

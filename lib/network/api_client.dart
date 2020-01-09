@@ -18,7 +18,7 @@ class ApiClient {
   Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
-
+  static const BASE_API_URL_HOST = 'app-api.pixiv.net';
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
@@ -44,7 +44,7 @@ class ApiClient {
         "App-OS": "Android",
         "App-OS-Version": "Android 6.0",
         "App-Version": "5.0.166",
-        "Host": "app-api.pixiv.net"
+        "Host": BASE_API_URL_HOST
       }
       ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
       ..interceptors.add(RefreshTokenInterceptor());

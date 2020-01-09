@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -66,7 +67,10 @@ class MyApp extends StatelessWidget {
         providers: [
           RepositoryProvider<ApiClient>(
             create: (BuildContext context) => ApiClient(),
-          )
+          ),
+          RepositoryProvider<OAuthClient>(
+            create: (BuildContext context) => OAuthClient(),
+          ),
         ],
         child: MaterialApp(
           darkTheme: ThemeData(primaryColor: Colors.white),
