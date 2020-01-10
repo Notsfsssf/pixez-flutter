@@ -13,83 +13,96 @@ class LoginPage extends StatelessWidget {
   TextEditingController userNameController, passWordController;
 
   @override
-  Widget build(BuildContext context1) {
-    userNameController = TextEditingController(text: "userbay");
-    passWordController = TextEditingController(text: "userpay");
+  Widget build(BuildContext context) {
+    userNameController = TextEditingController(text: "");
+    passWordController = TextEditingController(text: "");
     return BlocProvider(
-      create: (context) =>
-          LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
-      child: BlocListener<LoginBloc, LoginState>(listener: (context, state) {
-        if (state is SuccessState) {
-          BlocProvider.of<AccountBloc>(context).add(FetchDataBaseEvent());
-          Navigator.of(context1).pushReplacementNamed('/hello');
-        } else if (state is FailState) {
-          Scaffold.of(context1).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red,
-              content: Text(state.failMessage),
+        create: (context) =>
+            LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
+        child: 
+        Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {},
+              child: Icon(Icons.arrow_forward),
             ),
-          );
-        }
-      }, child: Builder(builder: (context) {
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {},
-            child: Icon(Icons.arrow_forward),
-          ),
-          body: SingleChildScrollView(
-              child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(80),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
+            body: BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) {
+                if (state is SuccessState) {
+                  BlocProvider.of<AccountBloc>(context)
+                      .add(FetchDataBaseEvent());
+                  Navigator.of(context).pushReplacementNamed('/hello');
+                } else if (state is FailState) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(state.failMessage),
+                    ),
+                  );
+                }
+              },
+              child: BlocBuilder<LoginBloc, LoginState>(
+                builder: (context, snapshot) {
+                  return SingleChildScrollView(
+                      child: Column(
                     children: <Widget>[
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.home),
-                          hintText: 'Name',
-                          labelText: 'Hello *',
-                        ),
-                        controller: userNameController,
+                      Padding(
+                        padding: EdgeInsets.all(80),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.home),
-                          hintText: 'Password',
-                          labelText: 'Password *',
+                        padding: EdgeInsets.all(20),
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                maxLines: 1,
+                                decoration: const InputDecoration(
+                                  icon: Icon(Icons.supervised_user_circle),
+                                  hintText: 'Pixiv id/Email',
+                                  labelText: 'UserName *',
+                                ),
+                                controller: userNameController,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                              ),
+                              TextFormField(
+                                obscureText: true,
+                                maxLines: 1,
+                                decoration: const InputDecoration(
+                                  icon: Icon(Icons.kitchen),
+                                  hintText: 'Password',
+                                  labelText: 'Password *',
+                                ),
+                                controller: passWordController,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                              ),
+                              RaisedButton(
+                                color: Theme.of(context).primaryColor,
+                                child: Text(
+                                  'Login',
+                                ),
+                                onPressed: () => BlocProvider.of<LoginBloc>(context)
+                                    .add(ClickToAuth(
+                                        username:
+                                            userNameController.value.text.trim(),
+                                        password:
+                                            passWordController.value.text.trim())),
+                              )
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                          ),
                         ),
-                        controller: passWordController,
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      RaisedButton(
-                        child: Text(
-                          'Login',
-                        ),
-                        onPressed: () => BlocProvider.of<LoginBloc>(context)
-                            .add(ClickToAuth(
-                                username: userNameController.value.text,
-                                password: passWordController.value.text)),
-                      )
                     ],
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
+                  ));
+                }
               ),
-            ],
-          )),
+            ),
+          )
         );
-      })),
-    );
   }
 }

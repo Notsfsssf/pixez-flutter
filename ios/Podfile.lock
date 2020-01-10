@@ -9,6 +9,8 @@ PODS:
     - Flutter
   - save_in_gallery (0.0.1):
     - Flutter
+  - screen (0.0.1):
+    - Flutter
   - share (0.5.2):
     - Flutter
   - shared_preferences (0.0.1):
@@ -20,6 +22,16 @@ PODS:
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
+  - url_launcher (0.0.1):
+    - Flutter
+  - url_launcher_macos (0.0.1):
+    - Flutter
+  - url_launcher_web (0.0.1):
+    - Flutter
+  - video_player (0.0.1):
+    - Flutter
+  - video_player_web (0.0.1):
+    - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
@@ -28,11 +40,17 @@ DEPENDENCIES:
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - save_in_gallery (from `.symlinks/plugins/save_in_gallery/ios`)
+  - screen (from `.symlinks/plugins/screen/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
+  - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - video_player_web (from `.symlinks/plugins/video_player_web/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
@@ -48,6 +66,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
   save_in_gallery:
     :path: ".symlinks/plugins/save_in_gallery/ios"
+  screen:
+    :path: ".symlinks/plugins/screen/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
@@ -58,6 +78,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_web/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
+  url_launcher_macos:
+    :path: ".symlinks/plugins/url_launcher_macos/ios"
+  url_launcher_web:
+    :path: ".symlinks/plugins/url_launcher_web/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
+  video_player_web:
+    :path: ".symlinks/plugins/video_player_web/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
@@ -67,11 +97,17 @@ SPEC CHECKSUMS:
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   permission_handler: 0fb88b8a3c23e31e5de45b8f1bb8b7de28cf8941
   save_in_gallery: 75c1d76566ed1af3a266f25b38c6c19a1d019a66
+  screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share: bae0a282aab4483288913fc4dc0b935d4b491f2e
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+  url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
+  url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
+  url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
+  video_player: 69c5f029fac4ffe4fc8a85ea7f7b793709661549
+  video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
   webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 
 PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83

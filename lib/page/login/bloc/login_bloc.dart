@@ -52,16 +52,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (e == null) {
           return;
         }
-        if (e.response != null) {
-          print(e.response.data);
-          print(e.response.headers);
-          print(e.response.request);
-          yield FailState(e.response.data);
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.request);
-          print(e.message);
-        }
+       yield FailState(e.message);
       }
     }
   }

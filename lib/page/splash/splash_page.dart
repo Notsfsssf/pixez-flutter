@@ -11,9 +11,7 @@ class SplashPage extends StatelessWidget {
     return BlocProvider<OnezeroBloc>(
       child: MultiBlocListener(
         child: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
+          body: Center(child: CircularProgressIndicator()),
         ),
         listeners: <BlocListener>[
           BlocListener<AccountBloc, AccountState>(
