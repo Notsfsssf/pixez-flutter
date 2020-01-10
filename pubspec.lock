@@ -460,13 +460,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.11"
-  timezone:
-    dependency: "direct main"
-    description:
-      name: timezone
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.5.6"
   typed_data:
     dependency: transitive
     description:

@@ -23,7 +23,6 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^3.1.0
   dio: 3.0.7
-  timezone: ^0.5.6
   crypto: any
   sqflite: ^1.2.0
   path_provider: ^1.5.1
