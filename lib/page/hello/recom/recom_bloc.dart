@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -8,8 +9,8 @@ import './bloc.dart';
 
 class RecomBloc extends Bloc<RecomEvent, RecomState> {
   final ApiClient client;
-
-  RecomBloc(this.client);
+  EasyRefreshController easyRefreshController;
+  RecomBloc(this.client, this.easyRefreshController);
 
   @override
   RecomState get initialState => InitialRecomState();
@@ -24,7 +25,7 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRecomState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        print(e);
+        yield FailRecomState();
       }
     }
     if (event is LoadMoreEvent) {
@@ -36,9 +37,13 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
           print(ill.length);
           yield DataRecomState(ill, recommend.nextUrl);
         } catch (e) {
-
+          easyRefreshController.finishLoad(
+            success: false,
+          );
         }
-      } else {}
+      } else {
+        easyRefreshController.finishLoad(success: true, noMore: true);
+      }
     }
   }
 }

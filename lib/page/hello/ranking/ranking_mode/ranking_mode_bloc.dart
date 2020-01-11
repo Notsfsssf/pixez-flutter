@@ -24,7 +24,7 @@ class RankingModeBloc extends Bloc<RankingModeEvent, RankingModeState> {
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRankingModeState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        print(e);
+      yield FailRankingModeState();
       }
     }
     if (event is LoadMoreEvent) {

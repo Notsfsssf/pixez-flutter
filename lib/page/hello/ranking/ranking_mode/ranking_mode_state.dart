@@ -19,7 +19,11 @@ class DataRankingModeState extends RankingModeState {
   @override
   List<Object> get props => [illusts, nextUrl];
 }
+class FailRankingModeState extends RankingModeState {
+  @override
+  List<Object> get props => [];
 
+}
 class LoadMoreSuccessState extends RankingModeState {
   @override
   List<Object> get props => [];

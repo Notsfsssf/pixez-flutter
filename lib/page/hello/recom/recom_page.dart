@@ -21,22 +21,29 @@ class ReComPage extends StatefulWidget {
 class _ReComPageState extends State<ReComPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
   ScrollController _scrollController;
-
+EasyRefreshController _easyRefreshController;
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _scrollController = ScrollController();
+    _easyRefreshController=EasyRefreshController();
   }
 
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _easyRefreshController?.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RecomBloc>(
           create: (context) =>
-              RecomBloc(RepositoryProvider.of<ApiClient>(context))
+              RecomBloc(RepositoryProvider.of<ApiClient>(context),_easyRefreshController)
                 ..add(FetchEvent()),
         ),
         BlocProvider<SpotlightBloc>(
@@ -61,6 +68,7 @@ class _ReComPageState extends State<ReComPage> {
   BlocBuilder<RecomBloc, RecomState> _buildBlocBuilder() {
     return BlocBuilder<RecomBloc, RecomState>(builder: (context, state) {
       if (state is DataRecomState) return _buildDateBody(state, context);
+      if( state is FailRecomState) return Center(child: Text("QAQ"),);
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -69,6 +77,7 @@ class _ReComPageState extends State<ReComPage> {
 
   Widget _buildDateBody(DataRecomState state, BuildContext context) {
     return EasyRefresh(
+      controller: _easyRefreshController,
       child: StaggeredGridView.countBuilder(
         crossAxisCount: 2,
         controller: _scrollController,

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pixez/component/fail_face.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
 
@@ -27,7 +28,6 @@ class RankingModePage extends StatelessWidget {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
           }
-
           if (state is LoadMoreSuccessState) {
             _refreshController.finishRefresh(success: true, noMore: true);
           }
@@ -59,6 +59,9 @@ class RankingModePage extends StatelessWidget {
                   return _loadCompleter.future;
                 },
               );
+              if(state is FailRankingModeState){
+                return FailFace();
+              }
             return Center(
               child: CircularProgressIndicator(),
             );

@@ -15,5 +15,4 @@ class LoadMoreEvent extends RecomEvent{
   LoadMoreEvent(this.nextUrl,this.illusts);
   @override
   List<Object> get props => [illusts,nextUrl];
-
 }
