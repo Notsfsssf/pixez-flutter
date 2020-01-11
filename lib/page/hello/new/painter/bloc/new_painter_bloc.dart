@@ -23,7 +23,7 @@ class NewPainterBloc extends Bloc<NewPainterEvent, NewPainterState> {
             UserPreviewsResponse.fromJson(response.data);
         yield DataState(userPreviews.user_previews, userPreviews.next_url);
       } catch (e) {
-        print(e);
+      yield FailState();
       }
     }
     if (event is LoadMoreEvent) {

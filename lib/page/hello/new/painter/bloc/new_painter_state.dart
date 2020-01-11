@@ -21,6 +21,11 @@ class DataState extends NewPainterState {
   @override
   List<Object> get props => [users,nextUrl];
 }
+class FailState extends NewPainterState{
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
 class LoadEndState extends NewPainterState{
   @override
   List<Object> get props => [];

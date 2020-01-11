@@ -59,9 +59,9 @@ class RankingModePage extends StatelessWidget {
                   return _loadCompleter.future;
                 },
               );
-              if(state is FailRankingModeState){
-                return FailFace();
-              }
+            if (state is FailRankingModeState) {
+              return FailFace();
+            }
             return Center(
               child: CircularProgressIndicator(),
             );

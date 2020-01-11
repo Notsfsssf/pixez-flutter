@@ -23,13 +23,8 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
         final response = await client.getFollowIllusts(event.restrict);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataNewIllustState(recommend.illusts, recommend.nextUrl);
-      }  catch (e) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e == null) {
-          return;
-        }
-        print(e);
+      } catch (e) {
+        yield FailIllustState();
       }
     }
     if (event is LoadMoreEvent) {
@@ -40,12 +35,8 @@ class NewIllustBloc extends Bloc<NewIllustEvent, NewIllustState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataNewIllustState(ill, recommend.nextUrl);
-        } catch (e) {
-
-        }
-      } else {
-
-      }
+        } catch (e) {}
+      } else {}
     }
   }
 }

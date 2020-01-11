@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:pixez/component/fail_face.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/page/hello/new/painter/bloc/bloc.dart';
@@ -87,7 +88,8 @@ class _NewPainterPageState extends State<NewPainterPage> {
                 },
               ),
             );
-          } else
+          } 
+          if(state is FailState) return FailFace();
             return Center(
               child: CircularProgressIndicator(),
             );

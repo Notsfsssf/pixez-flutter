@@ -9,7 +9,12 @@ class InitialNewIllustState extends NewIllustState {
   @override
   List<Object> get props => [];
 }
+class FailIllustState extends NewIllustState {
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
 
+}
 class DataNewIllustState extends NewIllustState {
   final List<Illusts> illusts;
   final String nextUrl;
