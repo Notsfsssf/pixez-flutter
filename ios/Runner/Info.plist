@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>是否允许App访问您的媒体资料库</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Oh</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -54,21 +58,17 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Oh</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Oh</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Oh</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Oh</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Oh</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	　　　<key>NSContactsUsageDescription</key>
-　　　　<string>contactsDesciption</string>
-	　　　<key>NSCalendarsUsageDescription</key>
-　　　　<string>contactsDesciption</string>
-	　　　<key>NSAppleMusicUsageDescription </key>
-　　　　<string>contactsDesciption</string>
-	　　　<key>NSMotionUsageDescription </key>
-　　　　<string>contactsDesciption</string>
-	　　　<key>NSSpeechRecognitionUsageDescription</key>
-　　　　<string>contactsDesciption</string>
-	　　　<key>NSLocationAlwaysUsageDescription</key>
-　　　　<string>contactsDesciption</string>
-　　　<key>NSLocationWhenInUseUsageDescription </key>
-　　　　<string>contactsDesciption</string>
 </dict>
 </plist>
