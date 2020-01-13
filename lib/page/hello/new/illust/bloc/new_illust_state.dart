@@ -1,31 +1,21 @@
-import 'package:equatable/equatable.dart';
 import 'package:pixez/models/illust.dart';
 
-abstract class NewIllustState extends Equatable {
+abstract class NewIllustState {
   const NewIllustState();
 }
 
-class InitialNewIllustState extends NewIllustState {
-  @override
-  List<Object> get props => [];
-}
-class FailIllustState extends NewIllustState {
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
+class InitialNewIllustState extends NewIllustState {}
 
-}
+class FailIllustState extends NewIllustState {}
+
+class RefreshFailIllustState extends NewIllustState {}
+
 class DataNewIllustState extends NewIllustState {
   final List<Illusts> illusts;
   final String nextUrl;
+
   DataNewIllustState(this.illusts, this.nextUrl);
-  @override
-  // TODO: implement props
-  List<Object> get props => [illusts, nextUrl];
 }
 
 class LoadMoreSuccessState extends NewIllustState {
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
 }

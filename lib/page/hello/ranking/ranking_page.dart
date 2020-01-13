@@ -27,7 +27,7 @@ class _RankingPageState extends State<RankingPage>
     "week_r18"
   ];
   TabController _tabController;
-  @override
+ @override
   void initState() {
     _tabController = TabController(vsync: this, length: modeList.length);
     super.initState();

@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-import 'package:dio/dio.dart';
+
 import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
-
+import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 
 class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   Dio httpClient;
-static const BASE_OAUTH_URL_HOST="oauth.secure.pixiv.net";
+  static const BASE_OAUTH_URL_HOST = "oauth.secure.pixiv.net";
+
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
@@ -81,4 +82,9 @@ static const BASE_OAUTH_URL_HOST="oauth.secure.pixiv.net";
       "get_secure_url": true
     });
   }
+
+//  @FormUrlEncoded
+//  @POST("/api/provisional-accounts/create")
+//  fun createProvisionalAccount(@Field("user_name") paramString1: String, @Field("ref") paramString2: String, @Header("Authorization") paramString3: String): Observable<PixivAccountsResponse>
+
 }

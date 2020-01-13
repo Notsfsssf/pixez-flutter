@@ -1,22 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pixez/bloc/bloc.dart';
+import 'package:pixez/bloc/lighting_bloc.dart';
+import 'package:pixez/bloc/lighting_state.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/page/hello/new/illust/bloc/bloc.dart';
 
-class NewIllustPage extends StatefulWidget {
-  final String restrict;
+class LightingList extends StatefulWidget {
+  String restrict;
 
-  const NewIllustPage({Key key, this.restrict = "public"}) : super(key: key);
   @override
-  _NewIllustPageState createState() => _NewIllustPageState();
+  _LightingListState createState() => _LightingListState();
 }
 
-class _NewIllustPageState extends State<NewIllustPage> {
+class _LightingListState extends State<LightingList> {
   Completer<void> _refreshCompleter, _loadCompleter;
   EasyRefreshController _easyRefreshController;
 
@@ -32,15 +32,15 @@ class _NewIllustPageState extends State<NewIllustPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<NewIllustBloc, NewIllustState>(
+    return BlocListener<LightingBloc, LightingState>(
       listener: (context, state) {
-        if (state is DataNewIllustState) {
+        if (state is LightingLoadSuccess) {
           _loadCompleter?.complete();
           _loadCompleter = Completer();
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
         }
-        if (state is FailIllustState) {
+        if (state is LightingLoadFailure) {
           _easyRefreshController.finishRefresh(
             success: false,
           );
@@ -48,13 +48,12 @@ class _NewIllustPageState extends State<NewIllustPage> {
           _refreshCompleter = Completer();
         }
       },
-      child: BlocBuilder<NewIllustBloc, NewIllustState>(condition: (pre, now) {
-        return now is! FailIllustState;
-      }, builder: (context, state) {
+      child:
+          BlocBuilder<LightingBloc, LightingState>(builder: (context, state) {
         return EasyRefresh(
           controller: _easyRefreshController,
           firstRefresh: true,
-          child: state is DataNewIllustState
+          child: state is LightingLoadSuccess
               ? StaggeredGridView.countBuilder(
                   crossAxisCount: 2,
                   itemCount: state.illusts.length,
@@ -65,14 +64,16 @@ class _NewIllustPageState extends State<NewIllustPage> {
                 )
               : Container(),
           onRefresh: () async {
-            BlocProvider.of<NewIllustBloc>(context)
-                .add(FetchIllustEvent(widget.restrict));
+            BlocProvider.of<LightingBloc>(context)
+                .add(LightingFetch(widget.restrict));
             return _refreshCompleter.future;
           },
           onLoad: () async {
-            if (state is DataNewIllustState)
-              BlocProvider.of<NewIllustBloc>(context)
-                  .add(LoadMoreEvent(state.nextUrl, state.illusts));
+            if (state is LightingLoadSuccess)
+              BlocProvider.of<LightingBloc>(context).add(LightingLoadMore(
+                state.illusts,
+                state.nextUrl,
+              ));
             return _loadCompleter.future;
           },
         );

@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/models/recommend.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
@@ -19,10 +20,10 @@ class ApiClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';
+
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
-
     return dateFormat.format(dateTime);
   }
 
@@ -46,7 +47,7 @@ class ApiClient {
         "App-Version": "5.0.166",
         "Host": BASE_API_URL_HOST
       }
-      ..options.connectTimeout=5000
+      ..options.connectTimeout = 5000
       ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
       ..interceptors.add(RefreshTokenInterceptor());
     (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
@@ -319,5 +320,12 @@ class ApiClient {
       queryParameters: notNullMap({"illust_id": illust_id}),
     );
     return UgoiraMetadataResponse.fromJson(result.data);
+  }
+
+  //  @GET("v1/walkthrough/illusts")
+//  fun walkthroughIllusts(): Observable<IllustNext>
+  Future<Recommend> walkthroughIllusts() async {
+    final result = await httpClient.get('/v1/walkthrough/illusts');
+    return Recommend.fromJson(result.data);
   }
 }
