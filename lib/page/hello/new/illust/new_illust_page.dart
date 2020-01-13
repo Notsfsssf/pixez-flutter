@@ -18,12 +18,16 @@ class NewIllustPage extends StatefulWidget {
 
 class _NewIllustPageState extends State<NewIllustPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
+  EasyRefreshController _easyRefreshController;
+
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
-    BlocProvider.of<NewIllustBloc>(context).add(FetchIllustEvent(widget.restrict));
+    _easyRefreshController = EasyRefreshController();
+    // BlocProvider.of<NewIllustBloc>(context)
+    //     .add(FetchIllustEvent(widget.restrict));
   }
 
   @override
@@ -36,40 +40,43 @@ class _NewIllustPageState extends State<NewIllustPage> {
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
         }
-      },
-      child:
-          BlocBuilder<NewIllustBloc, NewIllustState>(builder: (context, state) {
-        if (state is DataNewIllustState)
-          return _buildEasyRefresh(state, context);
-        else
-          return Center(
-            child: CircularProgressIndicator(),
+        if (state is FailIllustState) {
+          _easyRefreshController.finishRefresh(
+            success: false,
           );
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+        }
+      },
+      child: BlocBuilder<NewIllustBloc, NewIllustState>(condition: (pre, now) {
+        return now is! FailIllustState;
+      }, builder: (context, state) {
+        return EasyRefresh(
+          controller: _easyRefreshController,
+          firstRefresh: true,
+          child: state is DataNewIllustState
+              ? StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  itemCount: state.illusts.length,
+                  itemBuilder: (context, index) {
+                    return IllustCard(state.illusts[index]);
+                  },
+                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                )
+              : Container(),
+          onRefresh: () async {
+            BlocProvider.of<NewIllustBloc>(context)
+                .add(FetchIllustEvent(widget.restrict));
+            return _refreshCompleter.future;
+          },
+          onLoad: () async {
+            if (state is DataNewIllustState)
+              BlocProvider.of<NewIllustBloc>(context)
+                  .add(LoadMoreEvent(state.nextUrl, state.illusts));
+            return _loadCompleter.future;
+          },
+        );
       }),
-    );
-  }
-
-  EasyRefresh _buildEasyRefresh(
-      DataNewIllustState state, BuildContext context) {
-    return EasyRefresh(
-      child: StaggeredGridView.countBuilder(
-        crossAxisCount: 2,
-        itemCount: state.illusts.length,
-        itemBuilder: (context, index) {
-          return IllustCard(state.illusts[index]);
-        },
-        staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-      ),
-      onRefresh: () async {
-        BlocProvider.of<NewIllustBloc>(context)
-            .add(FetchIllustEvent(widget.restrict));
-        return _refreshCompleter.future;
-      },
-      onLoad: () async {
-        BlocProvider.of<NewIllustBloc>(context)
-            .add(LoadMoreEvent(state.nextUrl, state.illusts));
-        return _loadCompleter.future;
-      },
     );
   }
 }

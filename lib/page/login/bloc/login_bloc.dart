@@ -1,14 +1,17 @@
 import 'dart:async';
+
+import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:dio/dio.dart';
+
 import './bloc.dart';
-import 'package:bloc/bloc.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
- final OAuthClient client;
+  final OAuthClient client;
 
   LoginBloc(this.client);
+
   @override
   LoginState get initialState => InitialLoginState();
   int bti(bool bool) {
@@ -25,8 +28,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is ClickToAuth) {
 
       try {
-        final response =
-            await client.postAuthToken(event.username, event.password);
+        final response = await client.postAuthToken(
+            event.username, event.password,
+            deviceToken: event.deviceToken);
         AccountResponse accountResponse =
             Account.fromJson(response.data).response;
         User user = accountResponse.user;

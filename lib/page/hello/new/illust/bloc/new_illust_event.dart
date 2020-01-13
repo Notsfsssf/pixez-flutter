@@ -1,23 +1,22 @@
-import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:pixez/models/illust.dart';
 
-abstract class NewIllustEvent extends Equatable {
+@immutable
+abstract class NewIllustEvent {
   const NewIllustEvent();
 }
-class FetchIllustEvent extends NewIllustEvent{
+
+class FetchIllustEvent extends NewIllustEvent {
   final String restrict;
 
   FetchIllustEvent(this.restrict);
-
-  @override
-  List<Object> get props => [restrict];
-
 }
-class LoadMoreEvent extends NewIllustEvent{
+
+class RefreshIllustEvent extends NewIllustEvent {}
+
+class LoadMoreEvent extends NewIllustEvent {
   final String nextUrl;
   final List<Illusts> illusts;
-  LoadMoreEvent(this.nextUrl,this.illusts);
-  @override
-  List<Object> get props => [illusts,nextUrl];
 
+  LoadMoreEvent(this.nextUrl, this.illusts);
 }
