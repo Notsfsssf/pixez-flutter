@@ -39,7 +39,7 @@ class LoginPage extends StatelessWidget {
                 }
               },
               icon: Icon(Icons.arrow_forward),
-              label: Text("New?"),
+              label: Text("New？"),
             ),
             body: BlocListener<LoginBloc, LoginState>(
               listener: (context, state) {
