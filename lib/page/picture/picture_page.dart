@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -214,9 +215,9 @@ class _PicturePageState extends State<PicturePage> {
                       listener: (BuildContext context, SaveState state) {
                         if (state is SaveSuccesState) {
                           if (state.isNotSave)
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text(I18n.of(context).Saved),
-                            ));
+                            BotToast.showNotification(
+                                leading: (_) => Icon(Icons.save),
+                                title: (_) => Text(I18n.of(context).Save));
                         }
                       },
                     ),
@@ -466,39 +467,42 @@ class _PicturePageState extends State<PicturePage> {
             return BlocProvider<UgoiraMetadataBloc>(
               child: BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
                   builder: (context, snapshot) {
-                    if (snapshot is DownLoadProgressState) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: snapshot.count / snapshot.total,
-                        ),
-                      );
-                    }
-                    if (snapshot is PlayUgoiraMetadataState) {
-              return FrameAnimationImage(snapshot.listSync,interval: snapshot.frames.first.delay,);
-                      // return UgoiraAnima(snapshot.listSync,snapshot.frames);
-                    }
-                    return Stack(
-                      children: <Widget>[
-                        Hero(
-                          child: PixivImage(
-                          illust.imageUrls.large,
-                            placeHolder: illust.imageUrls.medium,
-                          ),
-                          tag: illust.imageUrls.medium,
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: IconButton(
-                            onPressed: () {
-                              BlocProvider.of<UgoiraMetadataBloc>(context)
-                                  .add(FetchUgoiraMetadataEvent(illust.id));
-                            },
-                            icon: Icon(Icons.play_arrow),
-                          ),
-                        )
-                      ],
-                    );
-                  }),
+                if (snapshot is DownLoadProgressState) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: snapshot.count / snapshot.total,
+                    ),
+                  );
+                }
+                if (snapshot is PlayUgoiraMetadataState) {
+                  return FrameAnimationImage(
+                    snapshot.listSync,
+                    interval: snapshot.frames.first.delay,
+                  );
+                  // return UgoiraAnima(snapshot.listSync,snapshot.frames);
+                }
+                return Stack(
+                  children: <Widget>[
+                    Hero(
+                      child: PixivImage(
+                        illust.imageUrls.large,
+                        placeHolder: illust.imageUrls.medium,
+                      ),
+                      tag: illust.imageUrls.medium,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: IconButton(
+                        onPressed: () {
+                          BlocProvider.of<UgoiraMetadataBloc>(context)
+                              .add(FetchUgoiraMetadataEvent(illust.id));
+                        },
+                        icon: Icon(Icons.play_arrow),
+                      ),
+                    )
+                  ],
+                );
+              }),
               create: (context) =>
                   UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
             );
@@ -533,8 +537,13 @@ class _PicturePageState extends State<PicturePage> {
                   });
             },
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                return ZoomPage(url:illust.metaPages.isEmpty?illust.imageUrls.large:illust.metaPages[index].imageUrls.large ,);
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return ZoomPage(
+                  url: illust.metaPages.isEmpty
+                      ? illust.imageUrls.large
+                      : illust.metaPages[index].imageUrls.large,
+                );
               }));
             },
             child: illust.metaPages.isEmpty

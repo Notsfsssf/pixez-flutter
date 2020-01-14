@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -72,27 +73,30 @@ class MyApp extends StatelessWidget {
             create: (BuildContext context) => OAuthClient(),
           ),
         ],
-        child: MaterialApp(
-          darkTheme: ThemeData(primaryColor: Colors.white),
-          routes: {
-            '/login': (context) => LoginPage(),
-            '/hello': (context) => HelloPage(),
-            '/search': (context) => SearchPage(),
-            '/': (context) => SplashPage(),
-            '/history': (context) => HistoryPage(),
-          },
-          initialRoute: '/',
-          title: 'Flutter Demo',
-          localeResolutionCallback:
-              i18n.resolution(fallback: new Locale("zh", "CN")),
-          localizationsDelegates: [
-            i18n,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate
-          ],
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+        child: BotToastInit(
+          child: MaterialApp(
+            navigatorObservers: [BotToastNavigatorObserver()],
+            darkTheme: ThemeData(primaryColor: Colors.white),
+            routes: {
+              '/login': (context) => LoginPage(),
+              '/hello': (context) => HelloPage(),
+              '/search': (context) => SearchPage(),
+              '/': (context) => SplashPage(),
+              '/history': (context) => HistoryPage(),
+            },
+            initialRoute: '/',
+            title: 'Flutter Demo',
+            localeResolutionCallback:
+                i18n.resolution(fallback: new Locale("zh", "CN")),
+            localizationsDelegates: [
+              i18n,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate
+            ],
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
           ),
         ),
       ),
