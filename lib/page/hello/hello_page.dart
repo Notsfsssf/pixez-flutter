@@ -1,7 +1,12 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pixez/bloc/save_bloc.dart';
+import 'package:pixez/bloc/save_state.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
@@ -42,18 +47,44 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: buildDrawer(),
-      body: SizedBox.expand(
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => _selectedIndex = index);
+    return BlocListener<SaveBloc, SaveState>(
+      child: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
           },
-          children: _widgetOptions,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.assessment),
+                title: Text(I18n.of(context).Rank)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_view_day),
+                title: Text(I18n.of(context).Quick_View)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history),
+                title: Text(I18n.of(context).History)),
+          ],
         ),
+        tabBuilder: (BuildContext context, int index) {
+          return CupertinoTabView(
+            builder: (context) {
+              return _widgetOptions[index];
+            },
+          );
+        },
       ),
-      bottomNavigationBar: _buildBottomNavy(),
+      listener: (BuildContext context, SaveState state) {
+        BotToast.showNotification(
+            leading: (_) => Icon(Icons.stay_current_landscape),
+            title: (_) => Text(I18n.of(context).Save));
+      },
     );
   }
 
@@ -71,7 +102,7 @@ class _HelloPageState extends State<HelloPage> {
 
             ListTile(
               title: Text('About'),
-                  subtitle: Text('来一起写flutter不啦'),
+              subtitle: Text('来一起写flutter不啦'),
               onTap: () {
                 Navigator.pop(context);
               },
@@ -105,7 +136,7 @@ class _HelloPageState extends State<HelloPage> {
                 Navigator.pop(context);
               },
             ),
-             ListTile(
+            ListTile(
               title: Text('Notice'),
               subtitle: Text('封测版(迫真)'),
               onTap: () {
@@ -197,7 +228,8 @@ class _HelloPageState extends State<HelloPage> {
     await accountProvider.open();
     List list = await accountProvider.getAllAccount();
     if (list.length <= 0) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
         return LoginPage();
       }));
     }

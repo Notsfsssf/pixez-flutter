@@ -12,7 +12,7 @@ class PainterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context)
+        Navigator.of(context,rootNavigator: true)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           return UserPage(
             id: user.user.id,

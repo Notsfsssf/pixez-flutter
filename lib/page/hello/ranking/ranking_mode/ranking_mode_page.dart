@@ -31,40 +31,39 @@ class RankingModePage extends StatelessWidget {
           if (state is LoadMoreSuccessState) {
             _refreshController.finishRefresh(success: true, noMore: true);
           }
+          if(state is FailRankingModeState){
+            _refreshController.finishRefresh(success: false);
+          }
         },
         child: BlocBuilder<RankingModeBloc, RankingModeState>(
           condition: (pre, now) {
             return now is DataRankingModeState;
           },
           builder: (context, state) {
-            if (state is DataRankingModeState)
               return EasyRefresh(
                 controller: _refreshController,
-                child: StaggeredGridView.countBuilder(
+                firstRefresh: true,
+                child: state is DataRankingModeState?StaggeredGridView.countBuilder(
                   crossAxisCount: 2,
                   itemCount: state.illusts.length,
                   itemBuilder: (context, index) {
                     return IllustCard(state.illusts[index]);
                   },
                   staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                ),
+                ):Container(),
                 onRefresh: () async {
                   BlocProvider.of<RankingModeBloc>(context)
                       .add(FetchEvent(mode, date));
                   return _refreshCompleter.future;
                 },
                 onLoad: () async {
+                  if(state is DataRankingModeState)
                   BlocProvider.of<RankingModeBloc>(context)
                       .add(LoadMoreEvent(state.nextUrl, state.illusts));
                   return _loadCompleter.future;
                 },
               );
-            if (state is FailRankingModeState) {
-              return FailFace();
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+        
           },
         ));
   }

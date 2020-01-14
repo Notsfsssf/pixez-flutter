@@ -28,7 +28,7 @@ class HistoryPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
+                      Navigator.of(context,rootNavigator: true).push(
                           MaterialPageRoute(builder: (BuildContext context) {
                             return PicturePage(null,reIllust[index].illustId);
                           }));

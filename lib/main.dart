@@ -76,9 +76,14 @@ class MyApp extends StatelessWidget {
         child: BotToastInit(
           child: MaterialApp(
             navigatorObservers: [BotToastNavigatorObserver()],
-            darkTheme: ThemeData(primaryColor: Colors.white),
-            home: SplashPage(),
-            title: 'Flutter Demo',
+            home:SplashPage(),
+            title: 'PixEz',
+            theme: ThemeData(
+              brightness: Brightness.light,
+              primarySwatch: Colors.blue,
+            ),
+            darkTheme: ThemeData(
+                brightness: Brightness.dark, primarySwatch: Colors.orange),
             localeResolutionCallback:
                 i18n.resolution(fallback: new Locale("zh", "CN")),
             localizationsDelegates: [
@@ -87,9 +92,6 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate
             ],
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
           ),
         ),
       ),

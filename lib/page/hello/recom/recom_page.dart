@@ -21,30 +21,31 @@ class ReComPage extends StatefulWidget {
 class _ReComPageState extends State<ReComPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
   ScrollController _scrollController;
-EasyRefreshController _easyRefreshController;
+  EasyRefreshController _easyRefreshController;
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _scrollController = ScrollController();
-    _easyRefreshController=EasyRefreshController();
+    _easyRefreshController = EasyRefreshController();
   }
 
-@override
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     _easyRefreshController?.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RecomBloc>(
-          create: (context) =>
-              RecomBloc(RepositoryProvider.of<ApiClient>(context),_easyRefreshController)
-                ..add(FetchEvent()),
+          create: (context) => RecomBloc(
+              RepositoryProvider.of<ApiClient>(context), _easyRefreshController)
+            ..add(FetchEvent()),
         ),
         BlocProvider<SpotlightBloc>(
           create: (BuildContext context) =>
@@ -61,14 +62,18 @@ EasyRefreshController _easyRefreshController;
               _refreshCompleter = Completer();
             }
           },
-          child: Scaffold(body: SafeArea(child: _buildBlocBuilder()))),
+          child: Scaffold(
+              body: SafeArea(bottom: true, child: _buildBlocBuilder()))),
     );
   }
 
   BlocBuilder<RecomBloc, RecomState> _buildBlocBuilder() {
     return BlocBuilder<RecomBloc, RecomState>(builder: (context, state) {
       if (state is DataRecomState) return _buildDateBody(state, context);
-      if( state is FailRecomState) return Center(child: Text("QAQ"),);
+      if (state is FailRecomState)
+        return Center(
+          child: Text("QAQ"),
+        );
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -104,8 +109,8 @@ EasyRefreshController _easyRefreshController;
                     onPressed: () {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return SpotLightPage();
-                          }));
+                        return SpotLightPage();
+                      }));
                     },
                   ),
                   padding: EdgeInsets.all(8.0),
@@ -137,9 +142,7 @@ EasyRefreshController _easyRefreshController;
                       ),
                       Padding(
                         child: Text(
-                          I18n
-                              .of(context)
-                              .Recommend,
+                          I18n.of(context).Recommend,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 30.0),
                         ),

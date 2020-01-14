@@ -64,7 +64,7 @@ class _RankingPageState extends State<RankingPage>
                 return BlocProvider<RankingModeBloc>(
                   create: (BuildContext context) =>
                       RankingModeBloc(RepositoryProvider.of<ApiClient>(context))
-                        ..add(FetchEvent(f, null)),
+                      ,
                   child: BlocListener<RankingBloc, RankingState>(
                     child: RankingModePage(
                       mode: f,

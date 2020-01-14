@@ -284,7 +284,6 @@ class _PicturePageState extends State<PicturePage> {
         context: context,
         builder: (_) {
           return Container(
-            color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -299,7 +298,6 @@ class _PicturePageState extends State<PicturePage> {
                             title: Text(I18n.of(context).Muti_Choice_save),
                             leading: Icon(
                               Icons.save,
-                              color: Theme.of(context).primaryColor,
                             ),
                             onTap: () async {
                               Navigator.of(context).pop();
@@ -365,7 +363,7 @@ class _PicturePageState extends State<PicturePage> {
                     ListTile(
                       title: Text(I18n.of(context).Share),
                       leading: Icon(Icons.share,
-                          color: Theme.of(context).primaryColor),
+                       ),
                       onTap: () {
                         Navigator.of(context).pop();
 
@@ -377,12 +375,13 @@ class _PicturePageState extends State<PicturePage> {
                 ),
                 ListTile(
                   leading:
-                      Icon(Icons.cancel, color: Theme.of(context).primaryColor),
+                      Icon(Icons.cancel, ),
                   title: Text(I18n.of(context).Cancel),
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                )
+                ),
+           
               ],
             ),
           );
@@ -552,7 +551,7 @@ class _PicturePageState extends State<PicturePage> {
 
   Widget colorText(String text) => SelectableText(
         text,
-        style: TextStyle(color: Theme.of(context).primaryColor),
+        style: TextStyle(color: Theme.of(context).accentColor),
       );
 
   Widget _buildDetail(BuildContext context, Illusts illust) => Center(
@@ -580,7 +579,7 @@ class _PicturePageState extends State<PicturePage> {
                         Text(
                           illust.title,
                           style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                              TextStyle(color: Theme.of(context).accentColor),
                         ),
                         Text(illust.user.name),
                         Text(illust.createDate),
@@ -655,7 +654,7 @@ class _PicturePageState extends State<PicturePage> {
                                 child: Text(
                                   "#${f.name}",
                                   style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
+                                      color: Theme.of(context).accentColor),
                                 ),
                               ),
                               Container(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
@@ -33,7 +34,7 @@ class _IllustCardState extends State<IllustCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        Navigator.of(context,rootNavigator: true).push(MaterialPageRoute(builder: (_) {
           return PicturePage(widget._illusts, widget._illusts.id);
         }))
       },

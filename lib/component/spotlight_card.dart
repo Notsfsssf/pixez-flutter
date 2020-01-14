@@ -30,7 +30,7 @@ class SpotlightCard extends StatelessWidget {
                   width: 160.0,
                   height: 90.0,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).splashColor,
                       borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   child: Align(
                     alignment: AlignmentDirectional.bottomCenter,
