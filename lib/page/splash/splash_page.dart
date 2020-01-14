@@ -36,9 +36,11 @@ class SplashPage extends StatelessWidget {
                       .options
                       .baseUrl = 'https://$address';
                 }
-                Navigator.pushReplacementNamed(context, '/hello');
+                if (BlocProvider.of<AccountBloc>(context).state is HasUserState)
+                  Navigator.pushReplacementNamed(context, '/hello');
               } else if (state is FailOnezeroState) {
-                Navigator.pushReplacementNamed(context, '/hello');
+                if (BlocProvider.of<AccountBloc>(context).state is HasUserState)
+                  Navigator.pushReplacementNamed(context, '/hello');
               }
             },
           ),
