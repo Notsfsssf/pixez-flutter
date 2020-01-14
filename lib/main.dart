@@ -77,14 +77,7 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             navigatorObservers: [BotToastNavigatorObserver()],
             darkTheme: ThemeData(primaryColor: Colors.white),
-            routes: {
-              '/login': (context) => LoginPage(),
-              '/hello': (context) => HelloPage(),
-              '/search': (context) => SearchPage(),
-              '/': (context) => SplashPage(),
-              '/history': (context) => HistoryPage(),
-            },
-            initialRoute: '/',
+            home: SplashPage(),
             title: 'Flutter Demo',
             localeResolutionCallback:
                 i18n.resolution(fallback: new Locale("zh", "CN")),

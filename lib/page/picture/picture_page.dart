@@ -211,16 +211,7 @@ class _PicturePageState extends State<PicturePage> {
                     .add(InsertIllustPersistEvent(illustState.illusts));
                 return MultiBlocListener(
                   listeners: [
-                    BlocListener<SaveBloc, SaveState>(
-                      listener: (BuildContext context, SaveState state) {
-                        if (state is SaveSuccesState) {
-                          if (state.isNotSave)
-                            BotToast.showNotification(
-                                leading: (_) => Icon(Icons.save),
-                                title: (_) => Text(I18n.of(context).Save));
-                        }
-                      },
-                    ),
+           
                     BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
                       listener:
                           (BuildContext context, BookmarkDetailState state) {

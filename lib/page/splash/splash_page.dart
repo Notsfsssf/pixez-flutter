@@ -4,6 +4,8 @@ import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
+import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/login/login_page.dart';
 
 class SplashPage extends StatelessWidget {
   @override
@@ -17,7 +19,8 @@ class SplashPage extends StatelessWidget {
           BlocListener<AccountBloc, AccountState>(
             listener: (_, state) {
               if (state is NoneUserState) {
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) => LoginPage()));
               }
             },
           ),
@@ -37,10 +40,16 @@ class SplashPage extends StatelessWidget {
                       .baseUrl = 'https://$address';
                 }
                 if (BlocProvider.of<AccountBloc>(context).state is HasUserState)
-                  Navigator.pushReplacementNamed(context, '/hello');
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HelloPage()));
               } else if (state is FailOnezeroState) {
                 if (BlocProvider.of<AccountBloc>(context).state is HasUserState)
-                  Navigator.pushReplacementNamed(context, '/hello');
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HelloPage()));
               }
             },
           ),

@@ -8,6 +8,7 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/history/history_page.dart';
+import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -196,7 +197,9 @@ class _HelloPageState extends State<HelloPage> {
     await accountProvider.open();
     List list = await accountProvider.getAllAccount();
     if (list.length <= 0) {
-      Navigator.of(context).pushNamed('/login');
+      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+        return LoginPage();
+      }));
     }
   }
 }
