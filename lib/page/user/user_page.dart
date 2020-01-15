@@ -59,7 +59,8 @@ class _UserPageState extends State<UserPage>
                 ..add(FetchEvent(widget.id)),
         ),
         BlocProvider<BookmarkBloc>(
-          create: (context) => BookmarkBloc(),
+          create: (context) =>
+              BookmarkBloc(RepositoryProvider.of<ApiClient>(context)),
         )
       ],
       child: BlocBuilder<UserBloc, UserState>(

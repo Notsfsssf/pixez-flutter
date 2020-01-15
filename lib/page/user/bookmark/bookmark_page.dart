@@ -20,16 +20,14 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
-  EasyRefreshController _refreshController;
+  EasyRefreshController _easyRefreshController;
 
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
-    _refreshController = EasyRefreshController();
-    BlocProvider.of<BookmarkBloc>(context)
-        .add(FetchBookmarkEvent(widget.id, widget.restrict));
+    _easyRefreshController = EasyRefreshController();
   }
 
   @override
@@ -42,32 +40,44 @@ class _BookmarkPageState extends State<BookmarkPage> {
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
         }
+        if (state is FailWorkState) {
+          _easyRefreshController.finishRefresh(success: false);
+        }
+        if (state is LoadMoreFailState) {
+          _easyRefreshController.finishLoad(success: false);
+        }
+        if (state is LoadMoreEndState)
+          _easyRefreshController.finishLoad(success: true, noMore: true);
       },
       child: BlocBuilder<BookmarkBloc, BookmarkState>(
         builder: (context, state) {
-          if (state is DataBookmarkState)
-            return EasyRefresh(
-              controller: _refreshController,
-              child: StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: state.illusts.length,
-                itemBuilder: (context, index) {
-                  return IllustCard(state.illusts[index]);
-                },
-                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-              ),
-              onRefresh: () {
-                BlocProvider.of<BookmarkBloc>(context)
-                    .add(FetchBookmarkEvent(widget.id, widget.restrict));
-                return _refreshCompleter.future;
-              },
-              onLoad: () {
+          return EasyRefresh(
+            controller: _easyRefreshController,
+            firstRefresh: true,
+            child: state is DataBookmarkState
+                ? StaggeredGridView.countBuilder(
+                    crossAxisCount: 2,
+                    itemCount: state.illusts.length,
+                    itemBuilder: (context, index) {
+                      return IllustCard(state.illusts[index]);
+                    },
+                    staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                  )
+                : Container(),
+            onRefresh: () async {
+              BlocProvider.of<BookmarkBloc>(context)
+                  .add(FetchBookmarkEvent(widget.id, widget.restrict));
+              return _refreshCompleter.future;
+            },
+            onLoad: () async {
+              if (state is DataBookmarkState) {
                 BlocProvider.of<BookmarkBloc>(context)
                     .add(LoadMoreEvent(state.nextUrl, state.illusts));
                 return _loadCompleter.future;
-              },
-            );
-          return Container();
+              }
+              return;
+            },
+          );
         },
       ),
     );

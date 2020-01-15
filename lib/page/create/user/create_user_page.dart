@@ -39,8 +39,8 @@ class _CreateUserPageState extends State<CreateUserPage> {
                 maxLines: 1,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.supervised_user_circle),
-                  hintText: 'New UserName',
-                  labelText: 'New UserName *',
+                  hintText: 'New Pixiv UserName',
+                  labelText: 'New Pixiv UserName *',
                 ),
                 controller: _userNameController,
               ),

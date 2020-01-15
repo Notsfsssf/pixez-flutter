@@ -7,6 +7,10 @@ import 'package:pixez/network/api_client.dart';
 import './bloc.dart';
 
 class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
+  final ApiClient client;
+
+  BookmarkBloc(this.client);
+
   @override
   BookmarkState get initialState => InitialBookmarkState();
 
@@ -15,21 +19,17 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
     BookmarkEvent event,
   ) async* {
     if (event is FetchBookmarkEvent) {
-      final client = new ApiClient();
       try {
         final response =
-            await client.getBookmarksIllust(event.user_id, event.type, null);
+        await client.getBookmarksIllust(event.user_id, event.type, null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataBookmarkState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        if (e == null) {
-          return;
-        }
         print(e);
+        yield FailWorkState();
       }
     }
     if (event is LoadMoreEvent) {
-      final client = new ApiClient();
       if (event.nextUrl != null) {
         try {
           final response = await client.getNext(event.nextUrl);
@@ -37,8 +37,12 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataBookmarkState(ill, recommend.nextUrl);
-        } catch (e) {}
-      } else {}
+        } catch (e) {
+          yield LoadMoreFailState();
+        }
+      } else {
+        yield LoadMoreEndState();
+      }
     }
   }
 }

@@ -1,14 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:pixez/models/illust.dart';
 
-abstract class WorksState extends Equatable {
+abstract class WorksState {
   const WorksState();
 }
 
-class InitialWorksState extends WorksState {
-  @override
-  List<Object> get props => [];
-}
+class InitialWorksState extends WorksState {}
 
 class DataWorksState extends WorksState {
   final List<Illusts> illusts;
@@ -20,7 +16,10 @@ class DataWorksState extends WorksState {
   List<Object> get props => [illusts, nextUrl];
 }
 
-class LoadMoreSuccessState extends WorksState {
-  @override
-  List<Object> get props => [];
-}
+class FailWorkState extends WorksState {}
+
+class LoadMoreSuccessState extends WorksState {}
+
+class LoadMoreFailState extends WorksState {}
+
+class LoadMoreEndState extends WorksState {}

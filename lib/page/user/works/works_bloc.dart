@@ -7,6 +7,10 @@ import 'package:pixez/network/api_client.dart';
 import './bloc.dart';
 
 class WorksBloc extends Bloc<WorksEvent, WorksState> {
+  final ApiClient client;
+
+  WorksBloc(this.client);
+
   @override
   WorksState get initialState => InitialWorksState();
 
@@ -15,20 +19,15 @@ class WorksBloc extends Bloc<WorksEvent, WorksState> {
     WorksEvent event,
   ) async* {
     if (event is FetchWorksEvent) {
-      final client = new ApiClient();
       try {
         final response = await client.getUserIllusts(event.user_id, event.type);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataWorksState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        if (e == null) {
-          return;
-        }
-        print(e);
+        yield FailWorkState();
       }
     }
     if (event is LoadMoreEvent) {
-      final client = new ApiClient();
       if (event.nextUrl != null) {
         try {
           final response = await client.getNext(event.nextUrl);
@@ -36,8 +35,12 @@ class WorksBloc extends Bloc<WorksEvent, WorksState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataWorksState(ill, recommend.nextUrl);
-        } catch (e) {}
-      } else {}
+        } catch (e) {
+          yield LoadMoreFailState();
+        }
+      } else {
+        yield LoadMoreEndState();
+      }
     }
   }
 }

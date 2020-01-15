@@ -5,8 +5,6 @@ abstract class BookmarkState {
 }
 
 class InitialBookmarkState extends BookmarkState {
-  @override
-  List<Object> get props => [];
 }
 
 class DataBookmarkState extends BookmarkState {
@@ -14,12 +12,12 @@ class DataBookmarkState extends BookmarkState {
   final String nextUrl;
 
   DataBookmarkState(this.illusts, this.nextUrl);
-
-  @override
-  List<Object> get props => [illusts, nextUrl];
 }
 
-class LoadMoreSuccessState extends BookmarkState {
-  @override
-  List<Object> get props => [];
-}
+class LoadMoreSuccessState extends BookmarkState {}
+
+class FailWorkState extends BookmarkState {}
+
+class LoadMoreFailState extends BookmarkState {}
+
+class LoadMoreEndState extends BookmarkState {}

@@ -7,6 +7,7 @@ import 'package:pixez/network/oauth_client.dart';
 class RefreshTokenInterceptor extends Interceptor {
   @override
   Future onRequest(RequestOptions options) async {
+    if (options.path.contains('v1/walkthrough/illusts')) return options;
     AccountProvider accountProvider = new AccountProvider();
     await accountProvider.open();
     final allAccount = await accountProvider.getAllAccount();
