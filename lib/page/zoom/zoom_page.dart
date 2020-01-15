@@ -16,16 +16,17 @@ class _ZoomPageState extends State<ZoomPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PinchZoomImage(
-        image: PixivImage(widget.url),
-        zoomedBackgroundColor: Color.fromRGBO(240, 240, 240, 1.0),
-        hideStatusBarWhileZooming: true,
-        onZoomStart: () {
-          print('Zoom started');
-        },
-        onZoomEnd: () {
-          print('Zoom finished');
-        },
+      body: Center(
+        child: PinchZoomImage(
+
+          image: PixivImage(widget.url),
+          onZoomStart: () {
+            print('Zoom started');
+          },
+          onZoomEnd: () {
+            print('Zoom finished');
+          },
+        ),
       ),
     );
   }
@@ -34,14 +35,12 @@ class _ZoomPageState extends State<ZoomPage> {
 class PinchZoomImage extends StatefulWidget {
   final Widget image;
   final Color zoomedBackgroundColor;
-  final bool hideStatusBarWhileZooming;
   final Function onZoomStart;
   final Function onZoomEnd;
 
   PinchZoomImage({
     @required this.image,
     this.zoomedBackgroundColor = Colors.transparent,
-    this.hideStatusBarWhileZooming = false,
     this.onZoomStart,
     this.onZoomEnd,
   });

@@ -12,6 +12,7 @@ import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
+import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -30,7 +31,7 @@ class _HelloPageState extends State<HelloPage> {
     RankingPage(),
     NewPage(),
     SearchPage(),
-    HistoryPage()
+    SettingPage()
   ];
 
   @override
@@ -68,8 +69,8 @@ class _HelloPageState extends State<HelloPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.history),
-                title: Text(I18n.of(context).History)),
+                icon: Icon(Icons.settings),
+                title: Text(I18n.of(context).Setting)),
           ],
         ),
         tabBuilder: (BuildContext context, int index) {
@@ -148,7 +149,7 @@ class _HelloPageState extends State<HelloPage> {
         ),
       ));
 
-  Widget _buildBottomNavy() => BottomNavyBar(
+  /*Widget _buildBottomNavy() => BottomNavyBar(
         selectedIndex: _selectedIndex,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         showElevation: false, // use this to remove appBar's elevation
@@ -180,7 +181,7 @@ class _HelloPageState extends State<HelloPage> {
               title: Text(I18n.of(context).History),
               activeColor: Colors.amber),
         ],
-      );
+      );*/
 
   BottomNavigationBar _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
