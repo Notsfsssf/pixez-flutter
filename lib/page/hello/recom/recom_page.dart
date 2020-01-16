@@ -33,7 +33,6 @@ class _ReComPageState extends State<ReComPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _easyRefreshController?.dispose();
   }
@@ -44,8 +43,8 @@ class _ReComPageState extends State<ReComPage> {
       providers: [
         BlocProvider<RecomBloc>(
           create: (context) => RecomBloc(
-              RepositoryProvider.of<ApiClient>(context), _easyRefreshController)
-            ..add(FetchEvent()),
+              RepositoryProvider.of<ApiClient>(context),
+              _easyRefreshController),
         ),
         BlocProvider<SpotlightBloc>(
           create: (BuildContext context) =>
@@ -69,106 +68,103 @@ class _ReComPageState extends State<ReComPage> {
 
   BlocBuilder<RecomBloc, RecomState> _buildBlocBuilder() {
     return BlocBuilder<RecomBloc, RecomState>(builder: (context, state) {
-      if (state is DataRecomState) return _buildDateBody(state, context);
-      if (state is FailRecomState)
-        return Center(
-          child: Text("QAQ"),
-        );
-      return Center(
-        child: CircularProgressIndicator(),
+      return EasyRefresh(
+        firstRefresh: true,
+        controller: _easyRefreshController,
+        child: state is DataRecomState
+            ? StaggeredGridView.countBuilder(
+                crossAxisCount: 2,
+                controller: _scrollController,
+                padding: EdgeInsets.symmetric(vertical: 30.0),
+                itemCount: state.illusts.length + 2,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          child: Padding(
+                            child: Text(
+                              I18n.of(context).Spotlight,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 30.0),
+                            ),
+                            padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
+                          ),
+                        ),
+                        Padding(
+                          child: FlatButton(
+                            child: Text(I18n.of(context).More),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return SpotLightPage();
+                              }));
+                            },
+                          ),
+                          padding: EdgeInsets.all(8.0),
+                        )
+                      ],
+                    );
+                  }
+                  if (index == 1) {
+                    return BlocBuilder<SpotlightBloc, SpotlightState>(
+                      builder: (BuildContext context, SpotlightState state) {
+                        if (state is DataSpotlight) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Container(
+                                height: 230.0,
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    final spotlight = state.articles[index];
+                                    return SpotlightCard(
+                                      spotlight: spotlight,
+                                    );
+                                  },
+                                  itemCount: state.articles.length,
+                                  scrollDirection: Axis.horizontal,
+                                ),
+                              ),
+                              Padding(
+                                  child: Text(
+                                    I18n.of(context).Recommend,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30.0),
+                                  ),
+                                  padding: EdgeInsets.all(20.0)),
+                            ],
+                          );
+                        }
+                        return Container();
+                      },
+                    );
+                  }
+                  return IllustCard(state.illusts[index - 2]);
+                },
+                staggeredTileBuilder: (int index) =>
+                    StaggeredTile.fit(index == 0 || index == 1 ? 2 : 1),
+              )
+            : Center(
+             
+              ),
+        onRefresh: () async {
+          BlocProvider.of<RecomBloc>(context).add(FetchEvent());
+          return _refreshCompleter.future;
+        },
+        onLoad: () async {
+          if (state is DataRecomState) {
+            BlocProvider.of<RecomBloc>(context)
+                .add(LoadMoreEvent(state.nextUrl, state.illusts));
+            return _loadCompleter.future;
+          }
+          return;
+        },
       );
     });
-  }
-
-  Widget _buildDateBody(DataRecomState state, BuildContext context) {
-    return EasyRefresh(
-      controller: _easyRefreshController,
-      child: StaggeredGridView.countBuilder(
-        crossAxisCount: 2,
-        controller: _scrollController,
-        padding: EdgeInsets.symmetric(vertical: 30.0),
-        itemCount: state.illusts.length + 2,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  child: Padding(
-                    child: Text(
-                      I18n.of(context).Spotlight,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 30.0),
-                    ),
-                    padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
-                  ),
-                ),
-                Padding(
-                  child: FlatButton(
-                    child: Text(I18n.of(context).More),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return SpotLightPage();
-                      }));
-                    },
-                  ),
-                  padding: EdgeInsets.all(8.0),
-                )
-              ],
-            );
-          }
-          if (index == 1) {
-            return BlocBuilder<SpotlightBloc, SpotlightState>(
-              builder: (BuildContext context, SpotlightState state) {
-                if (state is DataSpotlight) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        height: 230.0,
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final spotlight = state.articles[index];
-                            return SpotlightCard(
-                              spotlight: spotlight,
-                            );
-                          },
-                          itemCount: state.articles.length,
-                          scrollDirection: Axis.horizontal,
-                        ),
-                      ),
-                      Padding(
-                        child: Text(
-                          I18n.of(context).Recommend,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 30.0),
-                        ),
-                        padding: EdgeInsets.only(left: 20.0),
-                      ),
-                    ],
-                  );
-                }
-                return Container();
-              },
-            );
-          }
-          return IllustCard(state.illusts[index - 2]);
-        },
-        staggeredTileBuilder: (int index) =>
-            StaggeredTile.fit(index == 0 || index == 1 ? 2 : 1),
-      ),
-      onRefresh: () async {
-        BlocProvider.of<RecomBloc>(context).add(FetchEvent());
-        return _refreshCompleter.future;
-      },
-      onLoad: () async {
-        BlocProvider.of<RecomBloc>(context)
-            .add(LoadMoreEvent(state.nextUrl, state.illusts));
-        return _loadCompleter.future;
-      },
-    );
   }
 }

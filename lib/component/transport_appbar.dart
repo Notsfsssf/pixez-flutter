@@ -17,7 +17,7 @@ class TransportAppBar extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  color: Colors.black54,
+                  color: Theme.of(context).textTheme.body1.color,
                 ),
                 onPressed: () =>
                     Navigator.canPop(context) ? Navigator.pop(context) : null,

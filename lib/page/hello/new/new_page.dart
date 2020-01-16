@@ -204,7 +204,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
                                 .of<AccountBloc>(context)
                                 .state;
                         if (route is HasUserState)
-                          Navigator.of(context)
+                          Navigator.of(context,rootNavigator: true)
                               .push(MaterialPageRoute(builder: (_) {
                             return UserPage(
                               id: int.parse(route.list.userId),

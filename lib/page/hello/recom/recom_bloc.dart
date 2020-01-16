@@ -25,7 +25,7 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRecomState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        yield FailRecomState();
+        easyRefreshController.finishRefresh(success: false);
       }
     }
     if (event is LoadMoreEvent) {

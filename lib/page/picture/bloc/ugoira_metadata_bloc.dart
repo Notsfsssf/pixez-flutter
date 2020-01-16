@@ -34,6 +34,7 @@ class UgoiraMetadataBloc
       yield DownLoadProgressState(event.count, event.total);
     }
     if (event is FetchUgoiraMetadataEvent) {
+      yield InitialUgoiraMetadataState();
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
       String fullPath = "$tempPath/${event.id}.zip";
@@ -42,19 +43,34 @@ class UgoiraMetadataBloc
         UgoiraMetadataResponse ugoiraMetadataResponse =
             await client.getUgoiraMetadata(event.id);
         String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium;
-
         if (!fullPathFile.existsSync()) {
           subscription?.cancel();
-          await Dio(BaseOptions(headers: {
+          Dio(BaseOptions(headers: {
             "referer": "https://app-api.pixiv.net/",
             "User-Agent": "PixivIOSApp/5.8.0"
           })).download(zipUrl, fullPath,
               onReceiveProgress: (int count, int total) {
             print("$count/$total");
-
-//            add(ProgressUgoiraMetadataEvent(count, total));
-          });
+            add(ProgressUgoiraMetadataEvent(count, total));
+            if (count / total == 1) {
+              add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
+            }
+          }, deleteOnError: true);
         }
+      } catch (e) {
+        print(e);
+        if (fullPathFile.existsSync()) fullPathFile.deleteSync();
+        if (Directory('$tempPath/${event.id}/').existsSync()) {
+          Directory('$tempPath/${event.id}/').deleteSync(recursive: true);
+        }
+      }
+    }
+    if (event is UnzipUgoiraMetadataEvent) {
+      try {
+              Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      String fullPath = "$tempPath/${event.id}.zip";
+      File fullPathFile = File(fullPath);
         // Read the Zip file from disk.
         final bytes = fullPathFile.readAsBytesSync();
 
@@ -78,14 +94,8 @@ class UgoiraMetadataBloc
         var listSync = zipDirectory.listSync();
         listSync.sort((l, r) => l.path.compareTo(r.path));
         yield PlayUgoiraMetadataState(
-            listSync, ugoiraMetadataResponse.ugoiraMetadata.frames);
-      } catch (e) {
-        print(e);
-        if (fullPathFile.existsSync()) fullPathFile.deleteSync();
-        if (Directory('$tempPath/${event.id}/').existsSync()) {
-          Directory('$tempPath/${event.id}/').deleteSync(recursive: true);
-        }
-      }
+            listSync, event.ugoiraMetadataResponse.ugoiraMetadata.frames);
+      } catch (e) {}
     }
   }
 }

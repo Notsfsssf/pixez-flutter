@@ -82,9 +82,14 @@ class _HelloPageState extends State<HelloPage> {
         },
       ),
       listener: (BuildContext context, SaveState state) {
+        if(state is SaveSuccesState)
         BotToast.showNotification(
             leading: (_) => Icon(Icons.stay_current_landscape),
             title: (_) => Text(I18n.of(context).Save));
+            if(state is SaveAlreadyGoingOnState)
+             BotToast.showNotification(
+            leading: (_) => Icon(Icons.stay_current_landscape),
+            title: (_) => Text("OK")); 
       },
     );
   }

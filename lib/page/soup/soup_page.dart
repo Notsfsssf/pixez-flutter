@@ -69,7 +69,7 @@ class _SoupPageState extends State<SoupPage> {
           AmWork amWork = snapshot.amWorks[index - 1];
           return InkWell(
             onTap: () {
-              Navigator.of(context)
+              Navigator.of(context,rootNavigator: true)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return PicturePage(
                     null,

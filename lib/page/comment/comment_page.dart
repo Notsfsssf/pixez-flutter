@@ -51,62 +51,64 @@ class _CommentPageState extends State<CommentPage> {
                 appBar: AppBar(
                   title: Text(I18n.of(context).View_Comment),
                 ),
-                body: Stack(
-                  children: <Widget>[
-                    EasyRefresh(
-                      controller: easyRefreshController,
-                      onLoad: () {
-                        BlocProvider.of<CommentBloc>(context)
-                            .add(LoadMoreCommentEvent(state.commentResponse));
-                        return _loadCompleter.future;
-                      },
-                      child: ListView.builder(
-                          itemCount: comments.length,
-                          itemBuilder: (context, index) {
-                            var comment = comments[index];
-                            return ListTile(
-                              leading: PainterAvatar(
-                                url: comments[index]
-                                    .user
-                                    .profileImageUrls
-                                    .medium,
-                                id: comments[index].user.id,
-                              ),
-                              title: Flex(
-                                direction: Axis.horizontal,
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Text(
-                                      comment.user.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                body: SafeArea(
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: EasyRefresh(
+                          controller: easyRefreshController,
+                          onLoad: () {
+                            BlocProvider.of<CommentBloc>(context)
+                                .add(LoadMoreCommentEvent(state.commentResponse));
+                            return _loadCompleter.future;
+                          },
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                              itemCount: comments.length,
+                              itemBuilder: (context, index) {
+                                var comment = comments[index];
+                                return ListTile(
+                                  leading: PainterAvatar(
+                                    url: comments[index]
+                                        .user
+                                        .profileImageUrls
+                                        .medium,
+                                    id: comments[index].user.id,
                                   ),
-                                  FlatButton(
-                                      onPressed: () {
-                                        parent_comment_id = comment.id;
-                                        setState(() {
-                                          parentCommentName = comment.user.name;
-                                        });
-                                      },
-                                      child: Text(
-                                        "Reply",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                      ))
-                                ],
-                              ),
-                              subtitle: SelectableText(comment.comment),
-                            );
-                          }),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        color: Colors.white,
+                                  title: Flex(
+                                    direction: Axis.horizontal,
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text(
+                                          comment.user.name,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      FlatButton(
+                                          onPressed: () {
+                                            parent_comment_id = comment.id;
+                                            setState(() {
+                                              parentCommentName = comment.user.name;
+                                            });
+                                          },
+                                          child: Text(
+                                            "Reply",
+                                            style: TextStyle(
+                                                color:
+                                                    Theme.of(context).primaryColor),
+                                          ))
+                                    ],
+                                  ),
+                                  subtitle: SelectableText(comment.comment),
+                                );
+                              }),
+                        ),
+                      ),
+                      Container(
+                        color: Theme.of(context).backgroundColor,
                         padding: EdgeInsets.only(left: 2.0, right: 2.0),
                         child: TextField(
                           controller: _editController,
@@ -134,9 +136,9 @@ class _CommentPageState extends State<CommentPage> {
                                     }
                                   })),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               );
             }

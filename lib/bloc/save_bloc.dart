@@ -10,7 +10,10 @@ import 'package:save_in_gallery/save_in_gallery.dart';
 
 import './bloc.dart';
 
+class AlreadyGoingOnException {}
+
 class SaveBloc extends Bloc<SaveEvent, SaveState> {
+  List<String> taskImages = [];
   final Dio dio = Dio(BaseOptions(headers: {
     "referer": "https://app-api.pixiv.net/",
     "User-Agent": "PixivIOSApp/5.8.0"
@@ -20,6 +23,10 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
   SaveState get initialState => InitialSaveState();
 
   Future<bool> saveImage(String url) async {
+    if (taskImages.contains(url)) {
+      throw AlreadyGoingOnException();
+    }
+    taskImages.add(url);
     var file = await DefaultCacheManager().getFileFromCache(url);
     Uint8List uint8list;
     if (file == null) {
@@ -27,7 +34,9 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
       String tempPath = tempDir.path;
       String fullPath =
           "$tempPath/${DateTime.now().toIso8601String()}.${url.contains("png") ? "png" : "jpg"}"; //???
-      await dio.download(url, fullPath);
+      await dio.download(url, fullPath,onReceiveProgress: (a,b){
+        print('$a/$b');
+      });
       File file = File(fullPath);
       uint8list = await file.readAsBytes();
     } else {
@@ -37,6 +46,7 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
     List<Uint8List> bytesList = [uint8list];
     final res = await _imageSaver.saveImages(
         imageBytes: bytesList, directoryName: 'pxez');
+    taskImages.remove(url);
     return res;
   }
 
@@ -50,11 +60,28 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
       if (illust.metaPages.isNotEmpty) {
         for (int i = 0; i < illust.metaPages.length; i++) {
           if (index[i]) {
-            final res = await saveImage(illust.metaPages[i].imageUrls.original);
+            try {
+              final res =
+                  await saveImage(illust.metaPages[i].imageUrls.original);
+            } catch (e) {
+              if (e is AlreadyGoingOnException) {
+                print("already");
+                yield SaveAlreadyGoingOnState();
+              }
+            }
           }
         }
-      } else
-        await saveImage(illust.metaSinglePage.originalImageUrl);
+      } else {
+        try {
+          final res = await saveImage(illust.metaSinglePage.originalImageUrl);
+          yield SaveSuccesState(res);
+        } catch (e) {
+          if (e is AlreadyGoingOnException) {
+            print('Already');
+            yield SaveAlreadyGoingOnState();
+          }
+        }
+      }
     }
     if (event is SaveImageEvent) {
       try {
@@ -67,6 +94,9 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
         yield SaveSuccesState(res);
       } catch (e) {
         print(e);
+        if (e is AlreadyGoingOnException) {
+          yield SaveAlreadyGoingOnState();
+        }
       }
     }
   }

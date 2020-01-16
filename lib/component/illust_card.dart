@@ -57,6 +57,8 @@ class _IllustCardState extends State<IllustCard> {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Hero(
               child: Stack(

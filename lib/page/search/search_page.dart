@@ -42,7 +42,7 @@ class _SearchPageState extends State<SearchPage> {
               visible: this._searchIcon.icon != Icons.search,
               child: editString.isNotEmpty
                   ? Container(
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
                       child: Suggestions(
                         query: editString,
                       ))
@@ -132,7 +132,7 @@ class _SearchPageState extends State<SearchPage> {
                         ActionChip(
                           label: Text(f.name),
                           onPressed: () {
-                            Navigator.of(context)
+                            Navigator.of(context,rootNavigator: true)
                                 .push(MaterialPageRoute(builder: (context) {
                               return SearchResultPage(
                                 word: f.name,
@@ -174,7 +174,7 @@ class _SearchPageState extends State<SearchPage> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                Navigator.of(context,rootNavigator: true).push(MaterialPageRoute(builder: (_) {
                   return SearchResultPage(
                     word: tags[index].tag,
                   );
@@ -220,7 +220,7 @@ class _SuggestionsState extends State<Suggestions> {
     final SuggestionBloc _bloc =
     SuggestionBloc(RepositoryProvider.of<ApiClient>(context));
     _bloc.add(FetchSuggestionsEvent(widget.query));
-    return BlocBuilder(
+    return BlocBuilder<SuggestionBloc,SuggestionState>(
       bloc: _bloc,
       builder: (context, state) {
         if (state is DataState) {
@@ -229,7 +229,7 @@ class _SuggestionsState extends State<Suggestions> {
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
-                  Navigator.of(context)
+                  Navigator.of(context,rootNavigator: true)
                       .push(MaterialPageRoute(builder: (context) {
                     return SearchResultPage(
                       word: tags[index].name,

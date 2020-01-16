@@ -9,9 +9,9 @@ class PixivImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      placeholder: placeHolder != null
-          ? (BuildContext context, String url) {
+    return placeHolder != null
+        ? CachedNetworkImage(
+            placeholder: (BuildContext context, String url) {
               return CachedNetworkImage(
                 imageUrl: placeHolder,
                 httpHeaders: {
@@ -20,18 +20,27 @@ class PixivImage extends StatelessWidget {
                 },
                 fit: BoxFit.fitWidth,
               );
-            }
-          : (context, url) => Container(
-                height: 100.0,
-                color: Colors.white,
-              ),
-      imageUrl: url,
-      httpHeaders: {
-        "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0"
-      },
-      fit: BoxFit.fitWidth,
-    );
+            },
+            imageUrl: url,
+            httpHeaders: {
+              "referer": "https://app-api.pixiv.net/",
+              "User-Agent": "PixivIOSApp/5.8.0"
+            },
+            fit: BoxFit.fitWidth,
+          )
+        : CachedNetworkImage(
+            imageUrl: url,
+            httpHeaders: {
+              "referer": "https://app-api.pixiv.net/",
+              "User-Agent": "PixivIOSApp/5.8.0"
+            },
+            placeholder: (context, url) {
+              return Container(
+                height: 100,
+              );
+            },
+            fit: BoxFit.fitWidth,
+          );
   }
 }
 

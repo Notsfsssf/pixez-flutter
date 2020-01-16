@@ -199,6 +199,10 @@ class _PicturePageState extends State<PicturePage> {
             create: (context) =>
                 IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
                   ..add(FetchRelatedEvent(widget.id)),
+          ),
+          BlocProvider<UgoiraMetadataBloc>(
+            create: (context) =>
+                UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
           )
         ],
         child: BlocBuilder<PictureBloc, PictureState>(
@@ -211,7 +215,6 @@ class _PicturePageState extends State<PicturePage> {
                     .add(InsertIllustPersistEvent(illustState.illusts));
                 return MultiBlocListener(
                   listeners: [
-           
                     BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
                       listener:
                           (BuildContext context, BookmarkDetailState state) {
@@ -362,8 +365,9 @@ class _PicturePageState extends State<PicturePage> {
                         : Container(),
                     ListTile(
                       title: Text(I18n.of(context).Share),
-                      leading: Icon(Icons.share,
-                       ),
+                      leading: Icon(
+                        Icons.share,
+                      ),
                       onTap: () {
                         Navigator.of(context).pop();
 
@@ -374,14 +378,15 @@ class _PicturePageState extends State<PicturePage> {
                   ],
                 ),
                 ListTile(
-                  leading:
-                      Icon(Icons.cancel, ),
+                  leading: Icon(
+                    Icons.cancel,
+                  ),
                   title: Text(I18n.of(context).Cancel),
                   onTap: () {
                     Navigator.of(context).pop();
                   },
                 ),
-           
+            Container(height: MediaQuery.of(context).padding.bottom,)
               ],
             ),
           );
@@ -454,48 +459,47 @@ class _PicturePageState extends State<PicturePage> {
             return _buildDetail(context, illust);
           }
           if (illust.type == "ugoira") {
-            return BlocProvider<UgoiraMetadataBloc>(
-              child: BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
-                  builder: (context, snapshot) {
-                if (snapshot is DownLoadProgressState) {
-                  return Center(
+            return BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
+                builder: (context, snapshot) {
+              if (snapshot is DownLoadProgressState) {
+                return Container(
+                  height: 200,
+                  child: Center(
                     child: CircularProgressIndicator(
                       value: snapshot.count / snapshot.total,
                     ),
-                  );
-                }
-                if (snapshot is PlayUgoiraMetadataState) {
-                  return FrameAnimationImage(
-                    snapshot.listSync,
-                    interval: snapshot.frames.first.delay,
-                  );
-                  // return UgoiraAnima(snapshot.listSync,snapshot.frames);
-                }
-                return Stack(
-                  children: <Widget>[
-                    Hero(
-                      child: PixivImage(
-                        illust.imageUrls.large,
-                        placeHolder: illust.imageUrls.medium,
-                      ),
-                      tag: illust.imageUrls.medium,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: IconButton(
-                        onPressed: () {
-                          BlocProvider.of<UgoiraMetadataBloc>(context)
-                              .add(FetchUgoiraMetadataEvent(illust.id));
-                        },
-                        icon: Icon(Icons.play_arrow),
-                      ),
-                    )
-                  ],
+                  ),
                 );
-              }),
-              create: (context) =>
-                  UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
-            );
+              }
+              if (snapshot is PlayUgoiraMetadataState) {
+                return FrameAnimationImage(
+                  snapshot.listSync,
+                  interval: snapshot.frames.first.delay,
+                );
+                // return UgoiraAnima(snapshot.listSync,snapshot.frames);
+              }
+              return Stack(
+                children: <Widget>[
+                  Hero(
+                    child: PixivImage(
+                      illust.imageUrls.large,
+                      placeHolder: illust.imageUrls.medium,
+                    ),
+                    tag: illust.imageUrls.medium,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: IconButton(
+                      onPressed: () {
+                        BlocProvider.of<UgoiraMetadataBloc>(context)
+                            .add(FetchUgoiraMetadataEvent(illust.id));
+                      },
+                      icon: Icon(Icons.play_arrow),
+                    ),
+                  )
+                ],
+              );
+            });
           }
 
           return GestureDetector(
@@ -521,6 +525,9 @@ class _PicturePageState extends State<PicturePage> {
                             onTap: () => Navigator.of(context).pop(),
                             title: Text("Cancel"),
                           ),
+                          Container(
+                            height: MediaQuery.of(context).padding.bottom,
+                          )
                         ],
                       ),
                     );
