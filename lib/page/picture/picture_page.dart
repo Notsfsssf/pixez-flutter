@@ -178,6 +178,7 @@ class _PicturePageState extends State<PicturePage> {
     super.initState();
   }
 
+  bool _playButtonVisible = true;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -386,7 +387,9 @@ class _PicturePageState extends State<PicturePage> {
                     Navigator.of(context).pop();
                   },
                 ),
-            Container(height: MediaQuery.of(context).padding.bottom,)
+                Container(
+                  height: MediaQuery.of(context).padding.bottom,
+                )
               ],
             ),
           );
@@ -489,12 +492,18 @@ class _PicturePageState extends State<PicturePage> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: IconButton(
-                      onPressed: () {
-                        BlocProvider.of<UgoiraMetadataBloc>(context)
-                            .add(FetchUgoiraMetadataEvent(illust.id));
-                      },
-                      icon: Icon(Icons.play_arrow),
+                    child: Visibility(
+                      visible: _playButtonVisible,
+                      child: IconButton(
+                        onPressed: () {
+                          BlocProvider.of<UgoiraMetadataBloc>(context)
+                              .add(FetchUgoiraMetadataEvent(illust.id));
+                          setState(() {
+                            _playButtonVisible = false;
+                          });
+                        },
+                        icon: Icon(Icons.play_arrow),
+                      ),
                     ),
                   )
                 ],

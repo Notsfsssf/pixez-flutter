@@ -27,7 +27,7 @@ class _RankingPageState extends State<RankingPage>
     "week_r18"
   ];
   TabController _tabController;
- @override
+  @override
   void initState() {
     _tabController = TabController(vsync: this, length: modeList.length);
     super.initState();
@@ -62,9 +62,8 @@ class _RankingPageState extends State<RankingPage>
               controller: _tabController,
               children: modeList.map((f) {
                 return BlocProvider<RankingModeBloc>(
-                  create: (BuildContext context) =>
-                      RankingModeBloc(RepositoryProvider.of<ApiClient>(context))
-                      ,
+                  create: (BuildContext context) => RankingModeBloc(
+                      RepositoryProvider.of<ApiClient>(context)),
                   child: BlocListener<RankingBloc, RankingState>(
                     child: RankingModePage(
                       mode: f,
@@ -86,29 +85,35 @@ class _RankingPageState extends State<RankingPage>
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-          title: TabBar(
-              isScrollable: true,
-              controller: _tabController,
-              tabs: I18n.of(context).Mode_List.map((f) {
-                return Tab(
-                  text: f,
-                );
-              }).toList()),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.date_range),
-              onPressed: () {
-                DatePicker.showDatePicker(context,
-                    maxDateTime: DateTime.now(),
-                    initialDateTime: DateTime.now(),
-                    onConfirm: (DateTime dateTime, List<int> list) {
-                  BlocProvider.of<RankingBloc>(context)
-                      .add(DateChangeEvent(dateTime));
-                });
-              },
-            )
-          ],
-        );
+      title: TabBar(
+          isScrollable: true,
+          controller: _tabController,
+          tabs: I18n.of(context).Mode_List.map((f) {
+            return Tab(
+              text: f,
+            );
+          }).toList()),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.date_range),
+          onPressed: () {
+            var theme = Theme.of(context);
+            DatePicker.showDatePicker(context,
+                maxDateTime: DateTime.now(),
+                initialDateTime: DateTime.now(),
+                pickerTheme: DateTimePickerTheme(
+                  itemTextStyle: theme.textTheme.subtitle,
+                    backgroundColor: theme.dialogBackgroundColor,
+                    confirmTextStyle: theme.textTheme.subhead,
+                    cancelTextStyle: theme.textTheme.subhead),
+                onConfirm: (DateTime dateTime, List<int> list) {
+              BlocProvider.of<RankingBloc>(context)
+                  .add(DateChangeEvent(dateTime));
+            });
+          },
+        )
+      ],
+    );
   }
 
   @override

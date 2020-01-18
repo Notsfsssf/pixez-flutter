@@ -72,6 +72,8 @@ flutter:
     - assets/mahou_teriri.jpg
     - assets/splash.gif
     - assets/icon.png
+    - assets/no_h.png
+    - assets/me.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

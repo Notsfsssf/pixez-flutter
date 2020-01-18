@@ -40,6 +40,8 @@ class I18n implements WidgetsLocalizations {
   String get Saved => "已保存";
   /// "已存在"
   String get Already_Saved => "已存在";
+  /// "已在列队"
+  String get Already_in_query => "已在列队";
   /// "推荐"
   String get Recommend => "推荐";
   /// "收藏"
@@ -104,24 +106,34 @@ class I18n implements WidgetsLocalizations {
   String get History => "历史";
   /// "清空"
   String get Clear => "清空";
-
   /// "删除"
   String get Delete => "删除";
-
   /// "首页"
   String get Home => "首页";
-
   /// "亮点"
   String get Spotlight => "亮点";
-
   /// "生日"
   String get birthday => "生日";
-
   /// "更多"
   String get More => "更多";
-
   /// "超过${starNum}的收藏"
-  String More_then_starNum_Bookmark(String starNum) => "超过${starNum}的用户收藏";
+  String More_then_starNum_Bookmark(String starNum) => "超过${starNum}的收藏";
+  /// "回复"
+  String get Reply => "回复";
+  /// "历史记录"
+  String get History_record => "历史记录";
+  /// "清除缓存"
+  String get Clearn_cache => "清除缓存";
+  /// "清除全部缓存？"
+  String get Warning => "清除全部缓存？";
+  /// "如果播放动图反复出现问题可以尝试"
+  String get Clearn_cache_hint => "如果播放动图反复出现问题可以尝试";
+  /// "任务进度"
+  String get Task_progress => "任务进度";
+  /// "关于"
+  String get About => "关于";
+  /// "H是不行的!"
+  String get No_H => "H是不行的!";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -146,6 +158,9 @@ class _I18n_en_US extends I18n {
   /// "Already Saved"
   @override
   String get Already_Saved => "Already Saved";
+  /// "Already in line"
+  @override
+  String get Already_in_query => "Already in line";
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
@@ -245,23 +260,42 @@ class _I18n_en_US extends I18n {
   /// "Home"
   @override
   String get Home => "Home";
-
   /// "Highlights"
   @override
   String get Spotlight => "Highlights";
-
   /// "birthday"
   @override
   String get birthday => "birthday";
-
   /// "More"
   @override
   String get More => "More";
-
   /// "More than ${starNum} favorites"
   @override
-  String More_then_starNum_Bookmark(String starNum) =>
-      "More than ${starNum} favorites";
+  String More_then_starNum_Bookmark(String starNum) => "More than ${starNum} favorites";
+  /// "Reply"
+  @override
+  String get Reply => "Reply";
+  /// "history record"
+  @override
+  String get History_record => "history record";
+  /// "clear cache"
+  @override
+  String get Clearn_cache => "clear cache";
+  /// "Clear all cache?"
+  @override
+  String get Warning => "Clear all cache?";
+  /// "If you have repeated problems playing the animation, you can try"
+  @override
+  String get Clearn_cache_hint => "If you have repeated problems playing the animation, you can try";
+  /// "task progress"
+  @override
+  String get Task_progress => "task progress";
+  /// "on"
+  @override
+  String get About => "on";
+  /// "H is not working!"
+  @override
+  String get No_H => "H is not working!";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

@@ -16,9 +16,15 @@ class _ZoomPageState extends State<ZoomPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+      
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: Center(
         child: PinchZoomImage(
-
           image: PixivImage(widget.url),
           onZoomStart: () {
             print('Zoom started');

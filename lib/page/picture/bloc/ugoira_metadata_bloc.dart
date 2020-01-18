@@ -13,13 +13,11 @@ import './bloc.dart';
 class UgoiraMetadataBloc
     extends Bloc<UgoiraMetadataEvent, UgoiraMetadataState> {
   final ApiClient client;
-  StreamSubscription subscription;
 
   UgoiraMetadataBloc(this.client);
 
   @override
   Future<void> close() {
-    subscription?.cancel();
     return super.close();
   }
 
@@ -34,7 +32,6 @@ class UgoiraMetadataBloc
       yield DownLoadProgressState(event.count, event.total);
     }
     if (event is FetchUgoiraMetadataEvent) {
-      yield InitialUgoiraMetadataState();
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
       String fullPath = "$tempPath/${event.id}.zip";
@@ -44,7 +41,6 @@ class UgoiraMetadataBloc
             await client.getUgoiraMetadata(event.id);
         String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium;
         if (!fullPathFile.existsSync()) {
-          subscription?.cancel();
           Dio(BaseOptions(headers: {
             "referer": "https://app-api.pixiv.net/",
             "User-Agent": "PixivIOSApp/5.8.0"
@@ -56,6 +52,8 @@ class UgoiraMetadataBloc
               add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
             }
           }, deleteOnError: true);
+        }else {
+            add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
         }
       } catch (e) {
         print(e);

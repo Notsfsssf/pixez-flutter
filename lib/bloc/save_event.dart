@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
+import 'package:pixez/bloc/save_state.dart';
 import 'package:pixez/models/illust.dart';
 
 @immutable
@@ -9,8 +12,6 @@ class SaveImageEvent extends SaveEvent{
 
   SaveImageEvent(this.illusts, this.index);
 
-  @override
-  List<Object> get props =>[illusts,index];
 }
 class SaveChoiceImageEvent extends SaveEvent{
   final Illusts illusts;
@@ -18,6 +19,16 @@ class SaveChoiceImageEvent extends SaveEvent{
 
   SaveChoiceImageEvent(this.illusts, this.indexs);
 
-  @override
-  List<Object> get props =>[illusts,indexs];
+
+}
+class SaveProgressImageEvent extends SaveEvent{
+
+  final Map<String,ProgressNum> progressMaps;
+
+  SaveProgressImageEvent(this.progressMaps);
+}
+class SaveToPictureFoldEvent extends SaveEvent{
+ final  Uint8List uint8list;
+
+  SaveToPictureFoldEvent(this.uint8list);
 }

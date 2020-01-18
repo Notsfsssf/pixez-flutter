@@ -55,5 +55,14 @@
         "7": "XVIII",
         "8": "XVIII_Week"
     },
-    "More_then_starNum_Bookmark": "More than {starNum} favorites"
+    "More_then_starNum_Bookmark": "More than {starNum} favorites",
+    "Reply": "Reply",
+    "History_record": "history record",
+    "Clearn_cache": "clear cache",
+    "Warning": "Clear all cache?",
+    "Clearn_cache_hint": "If you have repeated problems playing the animation, you can try",
+    "Task_progress": "task progress",
+    "About": "on",
+    "No_H": "H is not working!",
+    "Already_in_query": "Already in line"
 }

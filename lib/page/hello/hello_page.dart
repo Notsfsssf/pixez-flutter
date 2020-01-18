@@ -82,14 +82,14 @@ class _HelloPageState extends State<HelloPage> {
         },
       ),
       listener: (BuildContext context, SaveState state) {
-        if(state is SaveSuccesState)
-        BotToast.showNotification(
-            leading: (_) => Icon(Icons.stay_current_landscape),
-            title: (_) => Text(I18n.of(context).Save));
-            if(state is SaveAlreadyGoingOnState)
-             BotToast.showNotification(
-            leading: (_) => Icon(Icons.stay_current_landscape),
-            title: (_) => Text("OK")); 
+        if (state is SaveSuccesState)
+          BotToast.showNotification(
+              leading: (_) => Icon(Icons.save_alt),
+              title: (_) => Text(I18n.of(context).Saved));
+        if (state is SaveAlreadyGoingOnState)
+          BotToast.showNotification(
+              leading: (_) => Icon(Icons.save_alt)
+              , title: (_) => Text(I18n.of(context).Already_in_query));
       },
     );
   }
@@ -223,21 +223,5 @@ class _HelloPageState extends State<HelloPage> {
     setState(() {
       _selectedIndex = index;
     });
-  }
-
-  Future findUser() async {
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.storage);
-    bool isShown = await PermissionHandler()
-        .shouldShowRequestPermissionRationale(PermissionGroup.storage);
-    AccountProvider accountProvider = new AccountProvider();
-    await accountProvider.open();
-    List list = await accountProvider.getAllAccount();
-    if (list.length <= 0) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
-        return LoginPage();
-      }));
-    }
   }
 }

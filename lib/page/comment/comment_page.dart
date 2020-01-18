@@ -108,7 +108,7 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                       ),
                       Container(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).dialogBackgroundColor,
                         padding: EdgeInsets.only(left: 2.0, right: 2.0),
                         child: TextField(
                           controller: _editController,
