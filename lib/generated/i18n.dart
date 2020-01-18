@@ -134,6 +134,8 @@ class I18n implements WidgetsLocalizations {
   String get About => "关于";
   /// "H是不行的!"
   String get No_H => "H是不行的!";
+  /// "反馈"
+  String get FeedBack => "反馈";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -296,6 +298,9 @@ class _I18n_en_US extends I18n {
   /// "H is not working!"
   @override
   String get No_H => "H is not working!";
+  /// "FeedBack"
+  @override
+  String get FeedBack => "FeedBack";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

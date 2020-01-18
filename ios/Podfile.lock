@@ -3,9 +3,11 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - package_info (0.0.1):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - permission_handler (4.0.0):
+  - "permission_handler (4.2.0+hotfix.1)":
     - Flutter
   - save_in_gallery (0.0.1):
     - Flutter
@@ -37,6 +39,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - save_in_gallery (from `.symlinks/plugins/save_in_gallery/ios`)
@@ -60,6 +63,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  package_info:
+    :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   permission_handler:
@@ -94,8 +99,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
-  permission_handler: 0fb88b8a3c23e31e5de45b8f1bb8b7de28cf8941
+  permission_handler: 59e1b9bd42a8fa96055ca59969723c07af837634
   save_in_gallery: 75c1d76566ed1af3a266f25b38c6c19a1d019a66
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share: bae0a282aab4483288913fc4dc0b935d4b491f2e
@@ -110,6 +116,6 @@ SPEC CHECKSUMS:
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
   webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 
-PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
+PODFILE CHECKSUM: 41d3bcf0e968daa7a167d026d9cf9e272503767f
 
 COCOAPODS: 1.8.4

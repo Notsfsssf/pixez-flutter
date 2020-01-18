@@ -62,7 +62,7 @@ class _ReComPageState extends State<ReComPage> {
             }
           },
           child: Scaffold(
-              body: SafeArea(bottom: true, child: _buildBlocBuilder()))),
+              body: SafeArea(bottom: false, child: _buildBlocBuilder()))),
     );
   }
 

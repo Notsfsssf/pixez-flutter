@@ -7,7 +7,6 @@ import 'package:pixez/bloc/illust_persist_bloc.dart';
 import 'package:pixez/bloc/illust_persist_event.dart';
 import 'package:pixez/bloc/save_bloc.dart';
 import 'package:pixez/bloc/save_event.dart';
-import 'package:pixez/bloc/save_state.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
@@ -510,12 +509,11 @@ class _PicturePageState extends State<PicturePage> {
               );
             });
           }
-
           return GestureDetector(
             onLongPress: () {
               showModalBottomSheet(
                   context: context,
-                  builder: (_) {
+                  builder: (c1) {
                     return Container(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -532,10 +530,10 @@ class _PicturePageState extends State<PicturePage> {
                           ListTile(
                             leading: Icon(Icons.cancel),
                             onTap: () => Navigator.of(context).pop(),
-                            title: Text("Cancel"),
+                            title: Text(I18n.of(context).Cancel),
                           ),
                           Container(
-                            height: MediaQuery.of(context).padding.bottom,
+                            height: MediaQuery.of(c1).padding.bottom,
                           )
                         ],
                       ),

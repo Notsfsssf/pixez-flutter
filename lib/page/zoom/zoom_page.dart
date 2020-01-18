@@ -13,6 +13,7 @@ class ZoomPage extends StatefulWidget {
 }
 
 class _ZoomPageState extends State<ZoomPage> {
+  bool fabvisible =true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +29,23 @@ class _ZoomPageState extends State<ZoomPage> {
           image: PixivImage(widget.url),
           onZoomStart: () {
             print('Zoom started');
+            setState(() {
+              fabvisible=false;
+            });
           },
           onZoomEnd: () {
             print('Zoom finished');
+              setState(() {
+              fabvisible=true;
+            });
+          },
+        ),
+      ),
+      floatingActionButton: Visibility(
+        visible: fabvisible,
+        child: FloatingActionButton(
+          child: Icon(Icons.flip_to_back), onPressed: () {
+            Navigator.of(context).pop();
           },
         ),
       ),

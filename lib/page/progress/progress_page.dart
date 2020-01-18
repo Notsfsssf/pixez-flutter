@@ -58,6 +58,9 @@ class _ProgressPageState extends State<ProgressPage> {
             appBar: AppBar(
               title: Text(I18n.of(context).Task_progress),
             ),
+            body: Center(
+              child: Text("Nobody here but us chickens!"),
+            ),
         );
       });
   }

@@ -85,6 +85,45 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['ENABLE_BITCODE'] = 'NO'
+       # You can remove unused permissions here
+      # for more infomation: https://github.com/BaseflowIT/flutter-permission-handler/blob/develop/ios/Classes/PermissionHandlerEnums.h
+      # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+
+        ## dart: PermissionGroup.calendar
+        'PERMISSION_EVENTS=0',
+
+        ## dart: PermissionGroup.reminders
+        'PERMISSION_REMINDERS=0',
+
+        ## dart: PermissionGroup.contacts
+        'PERMISSION_CONTACTS=0',
+
+        ## dart: PermissionGroup.camera
+        'PERMISSION_CAMERA=0',
+
+        ## dart: PermissionGroup.microphone
+        'PERMISSION_MICROPHONE=0',
+
+        ## dart: PermissionGroup.speech
+        'PERMISSION_SPEECH_RECOGNIZER=0',
+
+        ## dart: PermissionGroup.photos
+        # 'PERMISSION_PHOTOS=0',
+
+        ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
+        'PERMISSION_LOCATION=0',
+       
+        ## dart: PermissionGroup.notification
+        'PERMISSION_NOTIFICATIONS=0',
+
+        ## dart: PermissionGroup.mediaLibrary
+        # 'PERMISSION_MEDIA_LIBRARY=0',
+
+        ## dart: PermissionGroup.sensors
+        'PERMISSION_SENSORS=0'
+      ]
     end
   end
 end

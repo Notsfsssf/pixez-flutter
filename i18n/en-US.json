@@ -64,5 +64,6 @@
     "Task_progress": "task progress",
     "About": "on",
     "No_H": "H is not working!",
-    "Already_in_query": "Already in line"
+    "Already_in_query": "Already in line",
+    "FeedBack":"FeedBack"
 }

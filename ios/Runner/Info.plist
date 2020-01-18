@@ -4,8 +4,6 @@
 <dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>是否允许App访问您的媒体资料库</string>
-	<key>NSContactsUsageDescription</key>
-	<string>Oh</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -38,7 +36,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>save image</string>
+	<string>请允许APP保存图片到相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>请允许APP访问您的相册</string>
 	<key>UILaunchStoryboardName</key>
@@ -58,17 +56,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Oh</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Oh</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Oh</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Oh</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Oh</string>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 </dict>
 </plist>
