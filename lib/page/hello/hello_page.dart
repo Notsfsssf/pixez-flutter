@@ -48,48 +48,36 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SaveBloc, SaveState>(
-      child: CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          currentIndex: _selectedIndex,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.assessment),
-                title: Text(I18n.of(context).Rank)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_view_day),
-                title: Text(I18n.of(context).Quick_View)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                title: Text(I18n.of(context).Setting)),
-          ],
-        ),
-        tabBuilder: (BuildContext context, int index) {
-          return CupertinoTabView(
-            builder: (context) {
-              return _widgetOptions[index];
-            },
-          );
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
         },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.assessment),
+              title: Text(I18n.of(context).Rank)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_view_day),
+              title: Text(I18n.of(context).Quick_View)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text(I18n.of(context).Setting)),
+        ],
       ),
-      listener: (BuildContext context, SaveState state) {
-        if (state is SaveSuccesState)
-          BotToast.showNotification(
-              leading: (_) => Icon(Icons.save_alt),
-              title: (_) => Text(I18n.of(context).Saved));
-        if (state is SaveAlreadyGoingOnState)
-          BotToast.showNotification(
-              leading: (_) => Icon(Icons.save_alt)
-              , title: (_) => Text(I18n.of(context).Already_in_query));
+      tabBuilder: (BuildContext context, int index) {
+        return CupertinoTabView(
+          builder: (context) {
+            return _widgetOptions[index];
+          },
+        );
       },
     );
   }

@@ -7,47 +7,41 @@ import 'package:pixez/page/about/bloc/bloc.dart';
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-  
     return BlocProvider<AboutBloc>(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          title: Text("About"),
         ),
-        extendBody: true,
-        extendBodyBehindAppBar: true,
         body: _buildInfo(context),
-      ), create: (BuildContext context) =>AboutBloc(),
+      ),
+      create: (BuildContext context) => AboutBloc(),
     );
   }
 
   Widget _buildInfo(BuildContext context) {
-    return BlocBuilder<AboutBloc,AboutState>(
-      builder: (context, snapshot) {
-        return ListView(
-          children: <Widget>[
-            ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/me.jpg'),
-              ),
-              title: Text('Perol_Notsfsssf'),
-              subtitle: Text('使用flutter开发'),
+    return BlocBuilder<AboutBloc, AboutState>(builder: (context, snapshot) {
+      return ListView(
+        children: <Widget>[
+          ListTile(
+            leading: CircleAvatar(
+              backgroundImage: AssetImage('assets/images/me.jpg'),
             ),
-    
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('GitHub Page'),
-              subtitle: Text('https://github.com/Notsfsssf'),
-              onTap: () async {},
-            ),
-            ListTile(
-              leading: Icon(Icons.email),
-              title: Text(I18n.of(context).FeedBack),
-              subtitle: SelectableText('PxezFeedBack@outlook.com'),
-            ),
-          ],
-        );
-      }
-    );
+            title: Text('Perol_Notsfsssf'),
+            subtitle: Text('使用flutter开发'),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('GitHub Page'),
+            subtitle: Text('https://github.com/Notsfsssf'),
+            onTap: () async {},
+          ),
+          ListTile(
+            leading: Icon(Icons.email),
+            title: Text(I18n.of(context).FeedBack),
+            subtitle: SelectableText('PxezFeedBack@outlook.com'),
+          ),
+        ],
+      );
+    });
   }
 }

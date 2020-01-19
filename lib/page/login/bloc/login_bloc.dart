@@ -25,6 +25,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
+    if(event is NeedGuidEvent){
+      yield NeedGuidState();
+    }
     if (event is ClickToAuth) {
 
       try {

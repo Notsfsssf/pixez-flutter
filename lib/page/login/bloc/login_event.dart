@@ -14,3 +14,6 @@ class ClickToAuth extends LoginEvent {
     @required this.password,
   });
 }
+class NeedGuidEvent extends LoginEvent{
+  
+}

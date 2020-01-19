@@ -6,11 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/hello/hello_page.dart';
-import 'package:pixez/page/history/history_page.dart';
-import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
-import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 
 import 'generated/i18n.dart';
@@ -76,7 +72,7 @@ class MyApp extends StatelessWidget {
         child: BotToastInit(
           child: MaterialApp(
             navigatorObservers: [BotToastNavigatorObserver()],
-            home:SplashPage(),
+            home: SplashPage(),
             title: 'PixEz',
             theme: ThemeData(
               brightness: Brightness.light,

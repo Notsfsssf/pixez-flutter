@@ -42,7 +42,8 @@ class _SearchPageState extends State<SearchPage> {
               visible: this._searchIcon.icon != Icons.search,
               child: editString.isNotEmpty
                   ? Container(
-                      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).dialogBackgroundColor),
                       child: Suggestions(
                         query: editString,
                       ))
@@ -86,6 +87,16 @@ class _SearchPageState extends State<SearchPage> {
                       editString = query;
                     });
                   },
+                  onSubmitted: (s) {
+                    var word = s.trim();
+                    if (word.isEmpty) return;
+                    Navigator.of(context, rootNavigator: true)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return SearchResultPage(
+                        word: word,
+                      );
+                    }));
+                  },
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -114,9 +125,7 @@ class _SearchPageState extends State<SearchPage> {
         if (index == 0) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(I18n
-                .of(context)
-                .History),
+            child: Text(I18n.of(context).History),
           );
         }
         if (index == 1) {
@@ -128,27 +137,24 @@ class _SearchPageState extends State<SearchPage> {
                   padding: const EdgeInsets.all(5.0),
                   child: Wrap(
                     children: state.tagsPersistList
-                        .map((f) =>
-                        ActionChip(
-                          label: Text(f.name),
-                          onPressed: () {
-                            Navigator.of(context,rootNavigator: true)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return SearchResultPage(
-                                word: f.name,
-                              );
-                            }));
-                          },
-                        ))
+                        .map((f) => ActionChip(
+                              label: Text(f.name),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return SearchResultPage(
+                                    word: f.name,
+                                  );
+                                }));
+                              },
+                            ))
                         .toList()
-                      ..add(ActionChip(
-                          label: Text(I18n
-                              .of(context)
-                              .Clear),
-                          onPressed: () {
-                            BlocProvider.of<TagHistoryBloc>(context)
-                                .add(DeleteAllTagHistoryEvent());
-                          })),
+                          ..add(ActionChip(
+                              label: Text(I18n.of(context).Clear),
+                              onPressed: () {
+                                BlocProvider.of<TagHistoryBloc>(context)
+                                    .add(DeleteAllTagHistoryEvent());
+                              })),
                     runSpacing: 0.0,
                     spacing: 3.0,
                   ),
@@ -174,7 +180,8 @@ class _SearchPageState extends State<SearchPage> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context,rootNavigator: true).push(MaterialPageRoute(builder: (_) {
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(builder: (_) {
                   return SearchResultPage(
                     word: tags[index].tag,
                   );
@@ -218,9 +225,9 @@ class _SuggestionsState extends State<Suggestions> {
   @override
   Widget build(BuildContext context) {
     final SuggestionBloc _bloc =
-    SuggestionBloc(RepositoryProvider.of<ApiClient>(context));
+        SuggestionBloc(RepositoryProvider.of<ApiClient>(context));
     _bloc.add(FetchSuggestionsEvent(widget.query));
-    return BlocBuilder<SuggestionBloc,SuggestionState>(
+    return BlocBuilder<SuggestionBloc, SuggestionState>(
       bloc: _bloc,
       builder: (context, state) {
         if (state is DataState) {
@@ -229,7 +236,7 @@ class _SuggestionsState extends State<Suggestions> {
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
-                  Navigator.of(context,rootNavigator: true)
+                  Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(builder: (context) {
                     return SearchResultPage(
                       word: tags[index].name,

@@ -4,9 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_event.dart';
+import 'package:pixez/bloc/save_bloc.dart';
+import 'package:pixez/bloc/save_state.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/create/user/create_user_page.dart';
+import 'package:pixez/page/guid/guid_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
@@ -16,12 +20,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'bloc/login_event.dart';
 
 class LoginPage extends StatelessWidget {
-  TextEditingController userNameController, passWordController;
-
   @override
   Widget build(BuildContext context) {
-    userNameController = TextEditingController(text: "");
-    passWordController = TextEditingController(text: "");
+    TextEditingController userNameController = TextEditingController(text: "");
+    TextEditingController passWordController = TextEditingController(text: "");
     return BlocProvider(
         create: (context) =>
             LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
@@ -52,7 +54,19 @@ class LoginPage extends StatelessWidget {
                     BlocProvider.of<AccountBloc>(context)
                         .add(FetchDataBaseEvent());
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => HelloPage()));
+                        builder: (BuildContext context) =>
+                            BlocListener<SaveBloc, SaveState>(
+                                listener: (context, state) {
+                                     if (state is SaveSuccesState)
+          BotToast.showNotification(
+              leading: (_) => Icon(Icons.save_alt),
+              title: (_) => Text(I18n.of(context).Saved));
+        if (state is SaveAlreadyGoingOnState)
+          BotToast.showNotification(
+              leading: (_) => Icon(Icons.save_alt)
+              , title: (_) => Text(I18n.of(context).Already_in_query));
+                                },
+                                child: HelloPage())));
                   } else if (state is FailState) {
                     Scaffold.of(context).showSnackBar(
                       SnackBar(
@@ -60,6 +74,12 @@ class LoginPage extends StatelessWidget {
                         content: Text(state.failMessage),
                       ),
                     );
+                  }
+                  if (state is NeedGuidState) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => GuidPage()));
                   }
                 },
                 child: SingleChildScrollView(

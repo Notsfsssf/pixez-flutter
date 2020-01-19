@@ -43,8 +43,8 @@ class _ReComPageState extends State<ReComPage> {
       providers: [
         BlocProvider<RecomBloc>(
           create: (context) => RecomBloc(
-              RepositoryProvider.of<ApiClient>(context),
-              _easyRefreshController),
+            RepositoryProvider.of<ApiClient>(context),
+          ),
         ),
         BlocProvider<SpotlightBloc>(
           create: (BuildContext context) =>
@@ -60,6 +60,12 @@ class _ReComPageState extends State<ReComPage> {
               _refreshCompleter?.complete();
               _refreshCompleter = Completer();
             }
+            if (state is FailRecomState) {
+              _easyRefreshController.finishRefresh(success: false);
+            }
+            if (state is LoadMoreEndState) {
+              _easyRefreshController.finishLoad(success: true, noMore: true);
+            }
           },
           child: Scaffold(
               body: SafeArea(bottom: false, child: _buildBlocBuilder()))),
@@ -67,7 +73,9 @@ class _ReComPageState extends State<ReComPage> {
   }
 
   BlocBuilder<RecomBloc, RecomState> _buildBlocBuilder() {
-    return BlocBuilder<RecomBloc, RecomState>(builder: (context, state) {
+    return BlocBuilder<RecomBloc, RecomState>(condition: (pre, now) {
+      return now is DataRecomState;
+    }, builder: (context, state) {
       return EasyRefresh(
         firstRefresh: true,
         controller: _easyRefreshController,
@@ -149,9 +157,7 @@ class _ReComPageState extends State<ReComPage> {
                 staggeredTileBuilder: (int index) =>
                     StaggeredTile.fit(index == 0 || index == 1 ? 2 : 1),
               )
-            : Center(
-             
-              ),
+            : Center(),
         onRefresh: () async {
           BlocProvider.of<RecomBloc>(context).add(FetchEvent());
           return _refreshCompleter.future;

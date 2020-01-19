@@ -9,8 +9,7 @@ import './bloc.dart';
 
 class RecomBloc extends Bloc<RecomEvent, RecomState> {
   final ApiClient client;
-  EasyRefreshController easyRefreshController;
-  RecomBloc(this.client, this.easyRefreshController);
+  RecomBloc(this.client);
 
   @override
   RecomState get initialState => InitialRecomState();
@@ -25,7 +24,7 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataRecomState(recommend.illusts, recommend.nextUrl);
       } catch (e) {
-        easyRefreshController.finishRefresh(success: false);
+        yield FailRecomState();
       }
     }
     if (event is LoadMoreEvent) {
@@ -37,12 +36,10 @@ class RecomBloc extends Bloc<RecomEvent, RecomState> {
           print(ill.length);
           yield DataRecomState(ill, recommend.nextUrl);
         } catch (e) {
-          easyRefreshController.finishLoad(
-            success: false,
-          );
+       yield LoadMoreFailState();
         }
       } else {
-        easyRefreshController.finishLoad(success: true, noMore: true);
+yield LoadMoreEndState();
       }
     }
   }

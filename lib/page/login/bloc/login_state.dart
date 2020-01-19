@@ -11,7 +11,7 @@ class FailState extends LoginState {
   final String failMessage;
 
   FailState(this.failMessage);
-
-  @override
-  List<Object> get props => [failMessage];
+}
+class NeedGuidState extends LoginState{
+  
 }

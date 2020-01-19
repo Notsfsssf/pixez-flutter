@@ -4,6 +4,6 @@ import 'package:meta/meta.dart';
 abstract class AccountEvent {}
 
 class FetchDataBaseEvent extends AccountEvent {
-  @override
-  List<Object> get props => [];
+
 }
+class DeleteAllAccountEvent extends AccountEvent{}

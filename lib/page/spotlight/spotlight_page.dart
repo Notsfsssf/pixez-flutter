@@ -20,14 +20,16 @@ class SpotLightPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(I18n.of(context).Spotlight),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _controller.animateTo(0,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.arrow_upward), onPressed: () {
+                        _controller.animateTo(0,
                 duration: Duration(seconds: 1), curve: Curves.ease);
-          },
-          child: Icon(Icons.vertical_align_top),
+              },
+            )
+          ],
         ),
+  
         body: BlocListener<SpotlightBloc, SpotlightState>(
           child: BlocBuilder<SpotlightBloc, SpotlightState>(
               builder: (context, snapshot) {

@@ -10,6 +10,5 @@ class ProgressBloc extends Bloc<ProgressEvent, ProgressState> {
   Stream<ProgressState> mapEventToState(
     ProgressEvent event,
   ) async* {
-    // TODO: Add Logic
   }
 }

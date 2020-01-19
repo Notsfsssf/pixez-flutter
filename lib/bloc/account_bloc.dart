@@ -13,6 +13,12 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   Stream<AccountState> mapEventToState(
     AccountEvent event,
   ) async* {
+    if (event is DeleteAllAccountEvent) {
+      AccountProvider accountProvider = new AccountProvider();
+      await accountProvider.open();
+      await accountProvider.deleteAll();
+      add(FetchDataBaseEvent());
+    }
     if (event is FetchDataBaseEvent) {
       AccountProvider accountProvider = new AccountProvider();
       await accountProvider.open();

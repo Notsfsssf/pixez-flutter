@@ -136,6 +136,26 @@ class I18n implements WidgetsLocalizations {
   String get No_H => "H是不行的!";
   /// "反馈"
   String get FeedBack => "反馈";
+  /// "日期降序"
+  String get date_desc => "日期降序";
+  /// "日期升序"
+  String get date_asc => "日期升序";
+  /// "热度降序"
+  String get popular_desc => "热度降序";
+  /// "与标签部分一致"
+  String get Partial_Match_for_tag => "与标签部分一致";
+  /// "与标签完全一致"
+  String get Exact_Match_for_tag => "与标签完全一致";
+  /// "标题和总结"
+  String get title_and_caption => "标题和总结";
+  /// "日期间隔"
+  String get Date_duration => "日期间隔";
+  /// "应用"
+  String get Apply => "应用";
+  /// "登出"
+  String get Logout => "登出";
+  /// "这将清除此APP的登录的账户信息并回到登录页"
+  String get Logout_message => "这将清除此APP的登录的账户信息并回到登录页";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -301,6 +321,36 @@ class _I18n_en_US extends I18n {
   /// "FeedBack"
   @override
   String get FeedBack => "FeedBack";
+  /// "Date descending"
+  @override
+  String get date_desc => "Date descending";
+  /// "Date Ascending"
+  @override
+  String get date_asc => "Date Ascending";
+  /// "Descending order of heat"
+  @override
+  String get popular_desc => "Descending order of heat";
+  /// "Consistent with the label part"
+  @override
+  String get Partial_Match_for_tag => "Consistent with the label part";
+  /// "Exactly the same as the label"
+  @override
+  String get Exact_Match_for_tag => "Exactly the same as the label";
+  /// "Title and summary"
+  @override
+  String get title_and_caption => "Title and summary";
+  /// "Date interval"
+  @override
+  String get Date_duration => "Date interval";
+  /// "application"
+  @override
+  String get Apply => "application";
+  /// "Sign out"
+  @override
+  String get Logout => "Sign out";
+  /// "This will clear the login account information of this APP and return to the login page"
+  @override
+  String get Logout_message => "This will clear the login account information of this APP and return to the login page";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

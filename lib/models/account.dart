@@ -123,7 +123,10 @@ create table $tableAccount (
     return await db
         .delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
   }
-
+ Future<int> deleteAll() async {
+    return await db
+        .delete(tableAccount);
+  }
   Future<int> update(AccountPersist todo) async {
     return await db.update(tableAccount, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
