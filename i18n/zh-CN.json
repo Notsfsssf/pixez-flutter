@@ -60,16 +60,16 @@
   "Task_progress": "任务进度",
   "About": "关于",
   "No_H": "H是不行的!",
-  "FeedBack":"反馈",
-  "date_desc":"日期降序",
-  "date_asc":"日期升序",
-  "popular_desc":"热度降序",
-  "Partial_Match_for_tag":"与标签部分一致",
-  "Exact_Match_for_tag":"与标签完全一致",
-  "title_and_caption":"标题和总结",
-  "Date_duration":"日期间隔",
-  "Apply":"应用",
-  "Logout":"登出",
-"Logout_message":"这将清除此APP的登录的账户信息并回到登录页"
-
+  "FeedBack": "反馈",
+  "date_desc": "日期降序",
+  "date_asc": "日期升序",
+  "popular_desc": "热度降序",
+  "Partial_Match_for_tag": "与标签部分一致",
+  "Exact_Match_for_tag": "与标签完全一致",
+  "title_and_caption": "标题和总结",
+  "Date_duration": "日期间隔",
+  "Apply": "应用",
+  "Logout": "登出",
+  "Logout_message": "这将清除此APP的登录的账户信息并回到登录页",
+  "Account_Message": "账户信息"
 }

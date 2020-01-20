@@ -42,6 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         print(accountResponse.accessToken);
         accountProvider.insert(AccountPersist()
           ..accessToken = accountResponse.accessToken
+          ..passWord = event.password
           ..deviceToken = accountResponse.deviceToken
           ..refreshToken = accountResponse.refreshToken
           ..userImage = user.profileImageUrls.px170x170

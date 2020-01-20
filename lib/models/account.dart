@@ -25,6 +25,7 @@ final String tableAccount = 'account';
 final String columnId = 'id';
 final String columnUserId = 'user_id';
 final String columnUserImage = 'user_image';
+final String columnPassWord = 'password';
 final String columnAccessToken = 'access_token';
 final String columnDeviceToken = 'device_token';
 final String columnRefreshToken = 'refresh_token';
@@ -52,6 +53,7 @@ create table $tableAccount (
   $columnUserId text not null,
   $columnUserImage text not null,
   $columnName text not null,
+  $columnPassWord text not null,
   $columnAccount text not null,
   $columnMailAddress text not null,
   $columnIsPremium integer not null,
@@ -78,6 +80,7 @@ create table $tableAccount (
           columnDeviceToken,
           columnUserId,
           columnName,
+          columnPassWord,
           columnAccount,
           columnMailAddress,
           columnMailAddress,
@@ -106,6 +109,7 @@ create table $tableAccount (
       columnAccount,
       columnMailAddress,
       columnMailAddress,
+      columnPassWord,
       columnIsPremium,
       columnXRestrict,
       columnIsMailAuthorized
@@ -145,6 +149,7 @@ class AccountPersist {
   String name;
   String account;
   String mailAddress;
+  String passWord;
   int isPremium;
   int xRestrict;
   int isMailAuthorized;
@@ -163,6 +168,7 @@ class AccountPersist {
     mailAddress = json['mail_address'];
     isPremium = json['is_premium'];
     xRestrict = json['x_restrict'];
+    passWord=json[columnPassWord];
     isMailAuthorized = json['is_mail_authorized'];
   }
 
@@ -174,6 +180,7 @@ class AccountPersist {
     data[columnRefreshToken] = this.refreshToken;
     data[columnDeviceToken] = this.deviceToken;
     data['name'] = this.name;
+    data[columnPassWord]=this.passWord;
     data['account'] = this.account;
     data['mail_address'] = this.mailAddress;
     data['is_premium'] = this.isPremium;

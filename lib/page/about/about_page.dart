@@ -10,7 +10,7 @@ class AboutPage extends StatelessWidget {
     return BlocProvider<AboutBloc>(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("About"),
+          title: Text(I18n.of(context).About),
         ),
         body: _buildInfo(context),
       ),

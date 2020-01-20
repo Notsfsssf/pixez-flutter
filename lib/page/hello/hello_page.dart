@@ -1,22 +1,12 @@
-import 'package:bot_toast/bot_toast.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:pixez/bloc/save_bloc.dart';
-import 'package:pixez/bloc/save_state.dart';
 import 'package:pixez/generated/i18n.dart';
-import 'package:pixez/models/account.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
-import 'package:pixez/page/history/history_page.dart';
-import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HelloPage extends StatefulWidget {
   @override

@@ -10,6 +10,7 @@ import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/about/about_page.dart';
+import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
@@ -32,20 +33,27 @@ class SettingPage extends StatelessWidget {
                   child: BlocBuilder<AccountBloc, AccountState>(
                     builder: (BuildContext context, AccountState state) {
                       if (state is HasUserState) {
-                        return ListTile(
-                          leading: PainterAvatar(
-                            url: state.list.userImage,
-                          ),
-                          title: Text(state.list.name),
-                          subtitle: Text(state.list.mailAddress),
-                          onTap: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(builder: (_) {
-                              return UserPage(
-                                id: int.parse(state.list.userId),
-                              );
-                            }));
-                          },
+                        return Column(
+                          children: <Widget>[
+                            ListTile(
+                              leading: PainterAvatar(
+                                url: state.list.userImage,
+                              ),
+                              title: Text(state.list.name),
+                              subtitle: Text(state.list.mailAddress),
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return UserPage(
+                                    id: int.parse(state.list.userId),
+                                  );
+                                }));
+                              },
+                            ),
+                            ListTile(leading: Icon(Icons.account_box),title: Text(I18n.of(context).Account_Message),onTap: (){
+                             Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) =>AccountEditPage())); 
+                            },)
+                          ],
                         );
                       }
                       return Container();

@@ -156,6 +156,8 @@ class I18n implements WidgetsLocalizations {
   String get Logout => "登出";
   /// "这将清除此APP的登录的账户信息并回到登录页"
   String get Logout_message => "这将清除此APP的登录的账户信息并回到登录页";
+  /// "账户信息"
+  String get Account_Message => "账户信息";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -180,9 +182,9 @@ class _I18n_en_US extends I18n {
   /// "Already Saved"
   @override
   String get Already_Saved => "Already Saved";
-  /// "Already in line"
+  /// "Already in query"
   @override
-  String get Already_in_query => "Already in line";
+  String get Already_in_query => "Already in query";
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
@@ -312,12 +314,12 @@ class _I18n_en_US extends I18n {
   /// "task progress"
   @override
   String get Task_progress => "task progress";
-  /// "on"
+  /// "About"
   @override
-  String get About => "on";
-  /// "H is not working!"
+  String get About => "About";
+  /// "H is not allow!"
   @override
-  String get No_H => "H is not working!";
+  String get No_H => "H is not allow!";
   /// "FeedBack"
   @override
   String get FeedBack => "FeedBack";
@@ -342,15 +344,18 @@ class _I18n_en_US extends I18n {
   /// "Date interval"
   @override
   String get Date_duration => "Date interval";
-  /// "application"
+  /// "Apply"
   @override
-  String get Apply => "application";
+  String get Apply => "Apply";
   /// "Sign out"
   @override
   String get Logout => "Sign out";
   /// "This will clear the login account information of this APP and return to the login page"
   @override
   String get Logout_message => "This will clear the login account information of this APP and return to the login page";
+  /// "account information"
+  @override
+  String get Account_Message => "account information";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

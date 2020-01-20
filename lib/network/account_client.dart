@@ -6,6 +6,8 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/models/account.dart';
+import 'package:pixez/network/oauth_client.dart';
 
 class AccountClient {
   Dio httpClient;
@@ -35,6 +37,30 @@ class AccountClient {
             Options(contentType: Headers.formUrlEncodedContentType, headers: {
           "Authorization": "Bearer l-f9qZ0ZyqSwRyZs8-MymbtWBbSxmCu1pmbOlyisou8"
         }));
+  }
+
+  Future<Response> accountEdit(
+      {String newMailAddress,
+      currentPassword,
+      newPassword,
+      newUserAccount}) async {
+    AccountProvider accountProvider = new AccountProvider();
+    await accountProvider.open();
+    final allAccount = await accountProvider.getAllAccount();
+    AccountPersist accountPersist = allAccount[0];
+    currentPassword=accountPersist.passWord;
+    return httpClient.post("/api/account/edit",
+        data: {
+          "new_mail_address": newMailAddress,
+          "new_user_account": newUserAccount,
+          "current_password": currentPassword,
+          "new_password": newPassword
+        }..removeWhere((f, n) => n == null),
+        options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            headers: {
+              OAuthClient.AUTHORIZATION: "Bearer " + accountPersist.accessToken
+            }));
   }
 
   AccountClient() {

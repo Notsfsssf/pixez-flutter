@@ -405,7 +405,6 @@ class _PicturePageState extends State<PicturePage> {
         )
       : PixivImage(
           illust.metaPages[index].imageUrls.large,
-          placeHolder: illust.metaPages[index].imageUrls.medium,
         );
 
   Widget _buildGridView(DataIllustState illustState) =>
