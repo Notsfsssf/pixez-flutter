@@ -41,7 +41,7 @@ class AccountProvider {
 
   Future open() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'demo.db');
+    String path = join(databasesPath, 'account.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''
