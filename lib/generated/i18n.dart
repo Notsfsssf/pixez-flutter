@@ -158,6 +158,10 @@ class I18n implements WidgetsLocalizations {
   String get Logout_message => "这将清除此APP的登录的账户信息并回到登录页";
   /// "账户信息"
   String get Account_Message => "账户信息";
+  /// "支持"
+  String get Support => "支持";
+  /// "感谢"
+  String get Thanks => "感谢";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -356,6 +360,12 @@ class _I18n_en_US extends I18n {
   /// "account information"
   @override
   String get Account_Message => "account information";
+  /// "stand by"
+  @override
+  String get Support => "stand by";
+  /// "thank"
+  @override
+  String get Thanks => "thank";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

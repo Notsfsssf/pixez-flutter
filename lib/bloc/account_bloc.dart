@@ -19,6 +19,12 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       await accountProvider.deleteAll();
       add(FetchDataBaseEvent());
     }
+    if (event is UpdateAccountEvent) {
+      AccountProvider accountProvider = new AccountProvider();
+      await accountProvider.open();
+      await accountProvider.update(event.accountPersist);
+      add(FetchDataBaseEvent());
+    }
     if (event is FetchDataBaseEvent) {
       AccountProvider accountProvider = new AccountProvider();
       await accountProvider.open();

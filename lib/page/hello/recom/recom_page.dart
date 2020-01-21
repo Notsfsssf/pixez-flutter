@@ -54,12 +54,11 @@ class _ReComPageState extends State<ReComPage> {
       ],
       child: BlocListener<RecomBloc, RecomState>(
           listener: (context, state) {
-            if (state is DataRecomState) {
-              _loadCompleter?.complete();
-              _loadCompleter = Completer();
-              _refreshCompleter?.complete();
-              _refreshCompleter = Completer();
-            }
+            _loadCompleter?.complete();
+            _loadCompleter = Completer();
+            _refreshCompleter?.complete();
+            _refreshCompleter = Completer();
+            if (state is DataRecomState) {}
             if (state is FailRecomState) {
               _easyRefreshController.finishRefresh(success: false);
             }

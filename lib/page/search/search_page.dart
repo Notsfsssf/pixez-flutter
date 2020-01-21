@@ -19,8 +19,15 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
+    _filter = TextEditingController();
     super.initState();
     BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
+  }
+
+  @override
+  void dispose() {
+    _filter?.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,7 +75,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Icon _searchIcon = Icon(Icons.search);
-  final TextEditingController _filter = TextEditingController();
+  TextEditingController _filter;
 
   AppBar _buildAppBar() {
     return AppBar(

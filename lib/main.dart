@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
             home: SplashPage(),
             title: 'PixEz',
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              primarySwatch: Colors.indigo
             ),
             darkTheme: ThemeData(
                 brightness: Brightness.dark, primarySwatch: Colors.orange),

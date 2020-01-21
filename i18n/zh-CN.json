@@ -71,5 +71,7 @@
   "Apply": "应用",
   "Logout": "登出",
   "Logout_message": "这将清除此APP的登录的账户信息并回到登录页",
-  "Account_Message": "账户信息"
+  "Account_Message": "账户信息",
+  "Support":"支持",
+  "Thanks":"感谢"
 }

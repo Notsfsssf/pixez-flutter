@@ -11,11 +11,9 @@ class HasUserState extends AccountState {
 
   HasUserState(this.list);
 
-  @override
-  List<Object> get props => [list];
+
 }
 
 class NoneUserState extends AccountState {
-  @override
-  List<Object> get props => [];
+
 }

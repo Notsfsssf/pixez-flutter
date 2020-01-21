@@ -32,36 +32,28 @@ class _ProgressPageState extends State<ProgressPage>
     return BlocBuilder<SaveBloc, SaveState>(condition: (pre, now) {
       return now is SaveProgressSate;
     }, builder: (context, snapshot) {
-      if (snapshot is SaveProgressSate)
-        return Scaffold(
-          appBar: AppBar(
-          title: Text(I18n.of(context).Task_progress),),
-          body: TabBarView(
-            controller: _tabController,
-            children: <Widget>[buildListView(snapshot, context)],
-          ),
-        );
+
       return Scaffold(
         appBar: AppBar(
           title: Text(I18n.of(context).Task_progress),
         ),
-        body: Center(
-          child: Text("Nobody here but us chickens!"),
-        ),
+        body: buildListView(context)
       );
     });
   }
 
-  ListView buildListView(SaveProgressSate snapshot, BuildContext context) {
+  ListView buildListView( BuildContext context) {
+   SaveBloc saveBloc= BlocProvider.of<SaveBloc>(context);
     return ListView(
       controller: _scrollController,
-      children: snapshot.progressMaps.values
+      children: saveBloc.progressMaps.values
           .map((f) => Container(
                 child: ListTile(
-                  subtitle: LinearProgressIndicator(
+                  subtitle: Text('${f.min}/${f.max}'),
+                  title: Text(f.illusts.title),
+                  trailing: CircularProgressIndicator(
                     value: f.min / f.max,
                   ),
-                  title: Text(f.illusts.title),
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(

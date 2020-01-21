@@ -51,6 +51,7 @@ class RefreshTokenInterceptor extends Interceptor {
             ..userImage = user.profileImageUrls.px170x170
             ..userId = user.id
             ..name = user.name
+            ..passWord=accountPersist.passWord
             ..isMailAuthorized = bti(user.isMailAuthorized)
             ..isPremium = bti(user.isPremium)
             ..mailAddress = user.mailAddress

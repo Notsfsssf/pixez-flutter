@@ -76,24 +76,23 @@ class _SplashPageState extends State<SplashPage>
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    BlocListener<SaveBloc, SaveState>(
-                                        listener: (context, state) {
-                                          if (state is SaveSuccesState)
-                                            BotToast.showNotification(
-                                                leading: (_) =>
-                                                    Icon(Icons.save_alt),
-                                                title: (_) => Text(
-                                                    I18n.of(context).Saved));
-                                          if (state is SaveAlreadyGoingOnState)
-                                            BotToast.showNotification(
-                                                leading: (_) =>
-                                                    Icon(Icons.save_alt),
-                                                title: (_) => Text(
-                                                    I18n.of(context)
-                                                        .Already_in_query));
-                                        },
-                                        child: HelloPage())));
+                                builder: (BuildContext context) => BlocListener<
+                                        SaveBloc, SaveState>(
+                                    listener: (context, state) {
+                                      if (state is SaveSuccesState)
+                                        BotToast.showNotification(
+                                            leading: (_) =>
+                                                Icon(Icons.save_alt),
+                                            title: (_) => Text(I18n.of(context)
+                                                .Saved));
+                                      if (state is SaveAlreadyGoingOnState)
+                                        BotToast.showNotification(
+                                            leading: (_) =>
+                                                Icon(Icons.save_alt),
+                                            title: (_) => Text(I18n.of(context)
+                                                .Already_in_query));
+                                    },
+                                    child: HelloPage())));
                     } else if (state is FailOnezeroState) {
                       if (BlocProvider.of<AccountBloc>(context).state
                           is HasUserState)
