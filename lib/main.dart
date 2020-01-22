@@ -59,6 +59,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<SaveBloc>(
           create: (context) => SaveBloc(),
         ),
+        BlocProvider<MuteBloc>(
+          create: (context) => MuteBloc()..add(FetchMuteEvent()),
+        )
       ],
       child: MultiRepositoryProvider(
         providers: [

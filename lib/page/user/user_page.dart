@@ -8,6 +8,7 @@ import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/user_detail.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
+import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:pixez/page/user/bloc/user_bloc.dart';
 import 'package:pixez/page/user/bookmark/bloc.dart';
@@ -47,82 +48,111 @@ class _UserPageState extends State<UserPage>
   }
 
   int _selectedIndex = 0;
-  PersistentBottomSheetController controller;
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: <BlocProvider>[
-        BlocProvider<UserBloc>(
-          create: (context) =>
-              UserBloc(RepositoryProvider.of<ApiClient>(context))
-                ..add(FetchEvent(widget.id)),
-        ),
-        BlocProvider<BookmarkBloc>(
-          create: (context) =>
-              BookmarkBloc(RepositoryProvider.of<ApiClient>(context)),
-        )
-      ],
-      child: BlocBuilder<UserBloc, UserState>(
-        builder: (context, state) {
-          return BlocBuilder<AccountBloc, AccountState>(
-              builder: (context, snapshot) {
+    return BlocBuilder<MuteBloc, MuteState>(builder: (context, snapshot) {
+      if (snapshot is DataMuteState) {
+        for (var i in snapshot.banUserIds) {
+          if (i.userId == widget.id.toString())
             return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+              extendBodyBehindAppBar: true,
               extendBody: true,
-              appBar: state is UserDataState
-                  ? AppBar(
-                      actions: _buildActions(context, state, snapshot),
-                      title: Text(state.userDetail.user.name),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('X_X'),
+                    RaisedButton(
+                      child: Text(I18n.of(context).Shielding_settings),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => ShieldPage()));
+                      },
                     )
-                  : AppBar(),
-              body: state is UserDataState
-                  ? _buildTabBarView(context, state)
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    ),
-              bottomNavigationBar: FABBottomAppBar(
-                onTabSelected: (index) {
-                  _tabController.index = index;
-                },
-                color: Colors.grey,
-                selectedColor: Theme.of(context).primaryColor,
-                centerItemText: "A",
-                notchedShape: CircularNotchedRectangle(),
-                items: [
-                  FABBottomAppBarItem(
-                      iconData: Icons.menu, text: I18n.of(context).Works),
-                  FABBottomAppBarItem(
-                      iconData: Icons.bookmark,
-                      text: I18n.of(context).BookMark),
-                  FABBottomAppBarItem(
-                      iconData: Icons.star, text: I18n.of(context).Follow),
-                  FABBottomAppBarItem(
-                      iconData: Icons.info, text: I18n.of(context).Detail),
-                ],
-                followWidget: state is UserDataState
-                    ? _buildFollowButton(
-                    context, state.userDetail, state.choiceRestrict)
-                    : Container(
-                  height: 60.0,
+                  ],
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {},
-                child: state is UserDataState
-                    ? PainterAvatar(
-                        url: state.userDetail.user.profile_image_urls.medium,
-                        id: state.userDetail.user.id,
-                        onTap: () async {},
-                      )
-                    : Icon(Icons.refresh),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
             );
-          });
-        },
-      ),
-    );
+        }
+      }
+      return MultiBlocProvider(
+        providers: <BlocProvider>[
+          BlocProvider<UserBloc>(
+            create: (context) =>
+                UserBloc(RepositoryProvider.of<ApiClient>(context))
+                  ..add(FetchEvent(widget.id)),
+          ),
+          BlocProvider<BookmarkBloc>(
+            create: (context) =>
+                BookmarkBloc(RepositoryProvider.of<ApiClient>(context)),
+          )
+        ],
+        child: BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            return BlocBuilder<AccountBloc, AccountState>(
+                builder: (context, snapshot) {
+              return Scaffold(
+                extendBody: true,
+                appBar: state is UserDataState
+                    ? AppBar(
+                        actions: _buildActions(context, state, snapshot),
+                        title: Text(state.userDetail.user.name),
+                      )
+                    : AppBar(),
+                body: state is UserDataState
+                    ? _buildTabBarView(context, state)
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                bottomNavigationBar: FABBottomAppBar(
+                  onTabSelected: (index) {
+                    _tabController.index = index;
+                  },
+                  color: Colors.grey,
+                  selectedColor: Theme.of(context).primaryColor,
+                  centerItemText: "A",
+                  notchedShape: CircularNotchedRectangle(),
+                  items: [
+                    FABBottomAppBarItem(
+                        iconData: Icons.menu, text: I18n.of(context).Works),
+                    FABBottomAppBarItem(
+                        iconData: Icons.bookmark,
+                        text: I18n.of(context).BookMark),
+                    FABBottomAppBarItem(
+                        iconData: Icons.star, text: I18n.of(context).Follow),
+                    FABBottomAppBarItem(
+                        iconData: Icons.info, text: I18n.of(context).Detail),
+                  ],
+                  followWidget: state is UserDataState
+                      ? _buildFollowButton(
+                          context, state.userDetail, state.choiceRestrict)
+                      : Container(
+                          height: 60.0,
+                        ),
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {},
+                  child: state is UserDataState
+                      ? PainterAvatar(
+                          url: state.userDetail.user.profile_image_urls.medium,
+                          id: state.userDetail.user.id,
+                          onTap: () async {},
+                        )
+                      : Icon(Icons.refresh),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+              );
+            });
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildFollowButton(context, UserDetail userDetail, String restrict) {
@@ -199,11 +229,21 @@ class _UserPageState extends State<UserPage>
       if (int.parse(snapshot.list.userId) != widget.id) {
         return <Widget>[
           IconButton(
+            icon: Icon(Icons.brightness_auto),
+            onPressed: () {
+              if (state is UserDataState)
+                BlocProvider.of<MuteBloc>(context)
+                    .add(InsertBanUserEvent(
+                    widget.id.toString(), state.userDetail.user.name));
+            },
+          ),
+          IconButton(
               icon: Icon(Icons.share),
               onPressed: () {
                 if (state is UserDataState)
                   Share.share(
-                      'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+                      'https://www.pixiv.net/member.php?id=${state.userDetail
+                          .user.id}');
               })
         ];
       }
@@ -212,11 +252,21 @@ class _UserPageState extends State<UserPage>
     if (_selectedIndex != 1)
       return <Widget>[
         IconButton(
+          icon: Icon(Icons.brightness_auto),
+          onPressed: () {
+            if (state is UserDataState)
+              BlocProvider.of<MuteBloc>(context)
+                  .add(InsertBanUserEvent(
+                  widget.id.toString(), state.userDetail.user.name));
+          },
+        ),
+        IconButton(
             icon: Icon(Icons.share),
             onPressed: () {
               if (state is UserDataState)
                 Share.share(
-                    'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+                    'https://www.pixiv.net/member.php?id=${state.userDetail.user
+                        .id}');
             })
       ];
     else

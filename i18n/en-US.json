@@ -78,5 +78,12 @@
     },
     "Account_Message": "account information",
     "Support": "stand by",
-    "Thanks": "thank"
+    "Thanks": "thank",
+    "Terms": "Terms of use",
+    "Ban": "shield",
+    "Skip": "jump over",
+    "report": "Report",
+    "Shielding_settings": "Blocking settings",
+    "Report_Message": "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible",
+    "Shield_message": "{name} has been Shielded by you"
 }

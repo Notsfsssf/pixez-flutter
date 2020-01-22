@@ -14,6 +14,7 @@ import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
+import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/user/user_page.dart';
 
 class SettingPage extends StatelessWidget {
@@ -26,161 +27,178 @@ class SettingPage extends StatelessWidget {
       body: BlocListener<AccountBloc, AccountState>(
         child: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Card(
-                  child: BlocBuilder<AccountBloc, AccountState>(
-                    builder: (BuildContext context, AccountState state) {
-                      if (state is HasUserState) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: <Widget>[
-                              ListTile(
-                                leading: PainterAvatar(
-                                  url: state.list.userImage,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Card(
+                    child: BlocBuilder<AccountBloc, AccountState>(
+                      builder: (BuildContext context, AccountState state) {
+                        if (state is HasUserState) {
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: <Widget>[
+                                ListTile(
+                                  leading: PainterAvatar(
+                                    url: state.list.userImage,
+                                  ),
+                                  title: Text(state.list.name),
+                                  subtitle: Text(state.list.mailAddress),
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(MaterialPageRoute(builder: (_) {
+                                      return UserPage(
+                                        id: int.parse(state.list.userId),
+                                      );
+                                    }));
+                                  },
                                 ),
-                                title: Text(state.list.name),
-                                subtitle: Text(state.list.mailAddress),
-                                onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(MaterialPageRoute(builder: (_) {
-                                    return UserPage(
-                                      id: int.parse(state.list.userId),
-                                    );
-                                  }));
+                                ListTile(
+                                  leading: Icon(Icons.account_box),
+                                  title: Text(I18n.of(context).Account_Message),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                AccountEditPage()));
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                        return Container();
+                      },
+                    ),
+                  ),
+                  Card(
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.history),
+                          title: Text(I18n.of(context).History_record),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) {
+                              return HistoryPage();
+                            }));
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.brightness_auto),
+                          title: Text(I18n.of(context).Shielding_settings),
+                          onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ShieldPage())),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.description),
+                          title: Text(I18n.of(context).Task_progress),
+                          onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ProgressPage())),
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            final result = await showCupertinoDialog(
+                                builder: (BuildContext context) {
+                                  return CupertinoAlertDialog(
+                                    title: Text("Warning"),
+                                    content: Text("Clear all tempFile?"),
+                                    actions: <Widget>[
+                                      CupertinoDialogAction(
+                                        child: Text("OK"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("OK");
+                                        },
+                                      ),
+                                      CupertinoDialogAction(
+                                        child: Text("CANCEL"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("CANCEL");
+                                        },
+                                        isDestructiveAction: true,
+                                      )
+                                    ],
+                                  );
                                 },
-                              ),
-                              ListTile(leading: Icon(Icons.account_box),title: Text(I18n.of(context).Account_Message),onTap: (){
-                               Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) =>AccountEditPage())); 
-                              },)
-                            ],
-                          ),
-                        );
-                      }
-                      return Container();
-                    },
+                                context: context);
+                            switch (result) {
+                              case "OK":
+                                {
+                                  Directory tempDir =
+                                      await getTemporaryDirectory();
+                                  tempDir.deleteSync(recursive: true);
+                                }
+                                break;
+                            }
+                          },
+                          title: Text(I18n.of(context).Clearn_cache),
+                          leading: Icon(Icons.clear),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Card(
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: Icon(Icons.history),
-                        title: Text(I18n.of(context).History_record),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return HistoryPage();
-                          }));
-                        },
-                      ),
-                      ListTile(
-                        onTap: () async {
-                          final result = await showCupertinoDialog(
-                              builder: (BuildContext context) {
-                                return CupertinoAlertDialog(
-                                  title: Text("Warning"),
-                                  content: Text("Clear all tempFile?"),
-                                  actions: <Widget>[
-                                    CupertinoDialogAction(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("OK");
-                                      },
-                                    ),
-                                    CupertinoDialogAction(
-                                      child: Text("CANCEL"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("CANCEL");
-                                      },
-                                      isDestructiveAction: true,
-                                    )
-                                  ],
-                                );
-                              },
-                              context: context);
-                          switch (result) {
-                            case "OK":
-                              {
-                                Directory tempDir =
-                                    await getTemporaryDirectory();
-                                tempDir.deleteSync(recursive: true);
-                              }
-                              break;
-                          }
-                        },
-                        title: Text(I18n.of(context).Clearn_cache),
-                        leading: Icon(Icons.clear),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.description),
-                        title: Text(I18n.of(context).Task_progress),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ProgressPage()));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Card(
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: Icon(Icons.message),
-                        title: Text(I18n.of(context).About),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AboutPage()));
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.arrow_back),
-                        title: Text(I18n.of(context).Logout),
-                        onTap: () async {
-                          final result = await showCupertinoDialog(
-                              builder: (BuildContext context) {
-                                return CupertinoAlertDialog(
-                                  title: Text(I18n.of(context).Logout),
-                                  content:
-                                      Text(I18n.of(context).Logout_message),
-                                  actions: <Widget>[
-                                    CupertinoDialogAction(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("OK");
-                                      },
-                                    ),
-                                    CupertinoDialogAction(
-                                      child: Text("CANCEL"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("CANCEL");
-                                      },
-                                      isDestructiveAction: true,
-                                    )
-                                  ],
-                                );
-                              },
-                              context: context);
-                          switch (result) {
-                            case "OK":
-                              {
-                                BlocProvider.of<AccountBloc>(context)
-                                    .add(DeleteAllAccountEvent());
-                              }
-                              break;
-                            case "CANCEL":
-                              {}
-                              break;
-                          }
-                        },
-                      )
-                    ],
-                  ),
-                )
-              ],
+                  Card(
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.message),
+                          title: Text(I18n.of(context).About),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AboutPage()));
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.arrow_back),
+                          title: Text(I18n.of(context).Logout),
+                          onTap: () async {
+                            final result = await showCupertinoDialog(
+                                builder: (BuildContext context) {
+                                  return CupertinoAlertDialog(
+                                    title: Text(I18n.of(context).Logout),
+                                    content:
+                                        Text(I18n.of(context).Logout_message),
+                                    actions: <Widget>[
+                                      CupertinoDialogAction(
+                                        child: Text("OK"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("OK");
+                                        },
+                                      ),
+                                      CupertinoDialogAction(
+                                        child: Text("CANCEL"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("CANCEL");
+                                        },
+                                        isDestructiveAction: true,
+                                      )
+                                    ],
+                                  );
+                                },
+                                context: context);
+                            switch (result) {
+                              case "OK":
+                                {
+                                  BlocProvider.of<AccountBloc>(context)
+                                      .add(DeleteAllAccountEvent());
+                                }
+                                break;
+                              case "CANCEL":
+                                {}
+                                break;
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

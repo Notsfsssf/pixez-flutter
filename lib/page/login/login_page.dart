@@ -129,7 +129,7 @@ class LoginPage extends StatelessWidget {
                             RaisedButton(
                                 color: Theme.of(context).primaryColor,
                                 child: Text(
-                                  'Login',
+                                  I18n.of(context).Login,
                                 ),
                                 onPressed: () {
                                   if (userNameController.value.text.isEmpty ||
@@ -148,7 +148,9 @@ class LoginPage extends StatelessWidget {
                                 }),
                             OutlineButton(
                               child: Text(
-                                'Terms',
+                                I18n
+                                    .of(context)
+                                    .Terms,
                               ),
                               onPressed: () async {
                                 final url =
@@ -160,7 +162,9 @@ class LoginPage extends StatelessWidget {
                             ),
                             OutlineButton(
                               child: Text(
-                                'Skip',
+                                I18n
+                                    .of(context)
+                                    .Skip,
                               ),
                               onPressed: () async {
                                 Navigator.of(context).push(MaterialPageRoute(

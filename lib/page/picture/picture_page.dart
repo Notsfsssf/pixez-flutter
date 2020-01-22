@@ -1,12 +1,14 @@
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/bloc/illust_persist_bloc.dart';
 import 'package:pixez/bloc/illust_persist_event.dart';
 import 'package:pixez/bloc/save_bloc.dart';
 import 'package:pixez/bloc/save_event.dart';
+import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
@@ -178,108 +180,138 @@ class _PicturePageState extends State<PicturePage> {
   }
 
   bool _playButtonVisible = true;
+
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<PictureBloc>(
-            create: (context) =>
-                PictureBloc(RepositoryProvider.of<ApiClient>(context)),
-          ),
-          BlocProvider<BookmarkDetailBloc>(
-            create: (BuildContext context) =>
-                BookmarkDetailBloc(RepositoryProvider.of<ApiClient>(context)),
-          ),
-          BlocProvider<IllustBloc>(
-            create: (BuildContext context) =>
-                IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
-                  ..add(FetchIllustDetailEvent()),
-          ),
-          BlocProvider<IllustRelatedBloc>(
-            create: (context) =>
-                IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
-                  ..add(FetchRelatedEvent(widget.id)),
-          ),
-          BlocProvider<UgoiraMetadataBloc>(
-            create: (context) =>
-                UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
-          )
-        ],
-        child: BlocBuilder<PictureBloc, PictureState>(
-            builder: (context, snapshot) {
-          return Scaffold(
-            body: BlocBuilder<IllustBloc, IllustState>(
-                builder: (context, illustState) {
-              if (illustState is DataIllustState) {
-                BlocProvider.of<IllustPersistBloc>(context)
-                    .add(InsertIllustPersistEvent(illustState.illusts));
-                return MultiBlocListener(
-                  listeners: [
-                    BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
-                      listener:
-                          (BuildContext context, BookmarkDetailState state) {
-                        if (state is DataBookmarkDetailState)
-                          _showBookMarkDetailDialog(
-                              context, state, snapshot, illustState);
-                      },
-                    )
-                  ],
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      _buildList(illustState.illusts, illustState),
-                      TransportAppBar(
-                        actions: <Widget>[
-                          IconButton(
-                              icon: Icon(Icons.more_vert),
-                              onPressed: () {
-                                buildShowModalBottomSheet(
-                                    context, illustState.illusts);
-                              })
-                        ],
+    return BlocBuilder<MuteBloc, MuteState>(
+        builder: (context, MuteState muteState) {
+      if (muteState is DataMuteState) {
+        for (var i in muteState.banIllustIds) {
+          if (i.illustId == widget.id.toString()) {
+            return BanPage(
+              name: I18n.of(context).Illust,
+            );
+          }
+        }
+        if (widget._illusts != null)
+          for (var j in muteState.banUserIds) {
+            if (j.userId == widget._illusts.user.id.toString()) {
+              return BanPage(
+                name: I18n.of(context).Painter,
+              );
+            }
+          }
+      }
+      return MultiBlocProvider(
+          providers: [
+            BlocProvider<PictureBloc>(
+              create: (context) =>
+                  PictureBloc(RepositoryProvider.of<ApiClient>(context)),
+            ),
+            BlocProvider<BookmarkDetailBloc>(
+              create: (BuildContext context) =>
+                  BookmarkDetailBloc(RepositoryProvider.of<ApiClient>(context)),
+            ),
+            BlocProvider<IllustBloc>(
+              create: (BuildContext context) =>
+                  IllustBloc(ApiClient(), widget.id, illust: widget._illusts)
+                    ..add(FetchIllustDetailEvent()),
+            ),
+            BlocProvider<IllustRelatedBloc>(
+              create: (context) =>
+                  IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
+                    ..add(FetchRelatedEvent(widget.id)),
+            ),
+            BlocProvider<UgoiraMetadataBloc>(
+              create: (context) =>
+                  UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
+            )
+          ],
+          child: BlocBuilder<PictureBloc, PictureState>(
+              builder: (context, snapshot) {
+            return Scaffold(
+              body: BlocBuilder<IllustBloc, IllustState>(
+                  builder: (context, illustState) {
+                if (illustState is DataIllustState) {
+                  if (muteState is DataMuteState) {
+                    for (var j in muteState.banUserIds) {
+                      if (j.userId == illustState.illusts.user.id.toString()) {
+                        return BanPage(
+                          name: I18n.of(context).Painter,
+                        );
+                      }
+                    }
+                  }
+                  BlocProvider.of<IllustPersistBloc>(context)
+                      .add(InsertIllustPersistEvent(illustState.illusts));
+                  return MultiBlocListener(
+                    listeners: [
+                      BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
+                        listener:
+                            (BuildContext context, BookmarkDetailState state) {
+                          if (state is DataBookmarkDetailState)
+                            _showBookMarkDetailDialog(
+                                context, state, snapshot, illustState);
+                        },
                       )
                     ],
-                  ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: <Widget>[
+                        _buildList(illustState.illusts, illustState),
+                        TransportAppBar(
+                          actions: <Widget>[
+                            IconButton(
+                                icon: Icon(Icons.more_vert),
+                                onPressed: () {
+                                  buildShowModalBottomSheet(
+                                      context, illustState.illusts);
+                                })
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                } else
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+              }),
+              floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
+                  builder: (context, illustState) {
+                if (illustState is DataIllustState)
+                  return InkWell(
+                      splashColor: Colors.blue,
+                      onLongPress: () {
+                        BlocProvider.of<BookmarkDetailBloc>(context).add(
+                            FetchBookmarkDetailEvent(illustState.illusts.id));
+                      },
+                      onTap: () {},
+                      child: (snapshot is DataState)
+                          ? FloatingActionButton(
+                              onPressed: () {
+                                BlocProvider.of<PictureBloc>(context).add(
+                                    StarPictureEvent(
+                                        snapshot.illusts, "public", null));
+                              },
+                              backgroundColor: Colors.white,
+                              child: StarIcon(snapshot.illusts.isBookmarked))
+                          : FloatingActionButton(
+                              onPressed: () {
+                                BlocProvider.of<PictureBloc>(context).add(
+                                    StarPictureEvent(
+                                        illustState.illusts, "public", null));
+                              },
+                              backgroundColor: Colors.white,
+                              child: StarIcon(illustState.illusts.isBookmarked),
+                            ));
+                return FloatingActionButton(
+                  onPressed: () {},
                 );
-              } else
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-            }),
-            floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
-                builder: (context, illustState) {
-              if (illustState is DataIllustState)
-                return InkWell(
-                    splashColor: Colors.blue,
-                    onLongPress: () {
-                      BlocProvider.of<BookmarkDetailBloc>(context).add(
-                          FetchBookmarkDetailEvent(illustState.illusts.id));
-                    },
-                    onTap: () {},
-                    child: (snapshot is DataState)
-                        ? FloatingActionButton(
-                            onPressed: () {
-                              BlocProvider.of<PictureBloc>(context).add(
-                                  StarPictureEvent(
-                                      snapshot.illusts, "public", null));
-                            },
-                            backgroundColor: Colors.white,
-                            child: StarIcon(snapshot.illusts.isBookmarked))
-                        : FloatingActionButton(
-                            onPressed: () {
-                              BlocProvider.of<PictureBloc>(context).add(
-                                  StarPictureEvent(
-                                      illustState.illusts, "public", null));
-                            },
-                            backgroundColor: Colors.white,
-                            child: StarIcon(illustState.illusts.isBookmarked),
-                          ));
-              return FloatingActionButton(
-                onPressed: () {},
-              );
-            }),
-          );
-        }));
+              }),
+            );
+          }));
+    });
   }
 
   Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
@@ -375,6 +407,53 @@ class _PicturePageState extends State<PicturePage> {
                             "https://www.pixiv.net/artworks/${widget.id}");
                       },
                     ),
+                    ListTile(
+                      title: Text(I18n
+                          .of(context)
+                          .Ban),
+                      leading: Icon(Icons.brightness_auto),
+                      onTap: () {
+                        BlocProvider.of<MuteBloc>(context).add(
+                            InsertBanIllustEvent(
+                                widget.id.toString(), illusts.title));
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(I18n
+                          .of(context)
+                          .report),
+                      leading: Icon(Icons.report),
+                      onTap: () async {
+                        await showCupertinoDialog(
+                            context: context,
+                            builder: (context) {
+                              return CupertinoAlertDialog(
+                                title: Text(I18n
+                                    .of(context)
+                                    .report),
+                                content: Text(I18n
+                                    .of(context)
+                                    .Report_Message),
+                                actions: <Widget>[
+                                  CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop("OK");
+                                    },
+                                  ),
+                                  CupertinoDialogAction(
+                                    child: Text("CANCEL"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop("CANCEL");
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    )
                   ],
                 ),
                 ListTile(

@@ -152,16 +152,42 @@ class I18n implements WidgetsLocalizations {
   String get Date_duration => "日期间隔";
   /// "应用"
   String get Apply => "应用";
+
   /// "登出"
   String get Logout => "登出";
+
   /// "这将清除此APP的登录的账户信息并回到登录页"
   String get Logout_message => "这将清除此APP的登录的账户信息并回到登录页";
+
   /// "账户信息"
   String get Account_Message => "账户信息";
+
   /// "支持"
   String get Support => "支持";
+
   /// "感谢"
   String get Thanks => "感谢";
+
+  /// "使用条款"
+  String get Terms => "使用条款";
+
+  /// "屏蔽"
+  String get Ban => "屏蔽";
+
+  /// "${name}已被你设为屏蔽"
+  String Shield_message(String name) => "${name}已被你设为屏蔽";
+
+  /// "跳过"
+  String get Skip => "跳过";
+
+  /// "举报"
+  String get report => "举报";
+
+  /// "屏蔽设定"
+  String get Shielding_settings => "屏蔽设定";
+
+  /// "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容"
+  String get Report_Message => "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -348,24 +374,60 @@ class _I18n_en_US extends I18n {
   /// "Date interval"
   @override
   String get Date_duration => "Date interval";
+
   /// "Apply"
   @override
   String get Apply => "Apply";
+
   /// "Sign out"
   @override
   String get Logout => "Sign out";
+
   /// "This will clear the login account information of this APP and return to the login page"
   @override
-  String get Logout_message => "This will clear the login account information of this APP and return to the login page";
+  String get Logout_message =>
+      "This will clear the login account information of this APP and return to the login page";
+
   /// "account information"
   @override
   String get Account_Message => "account information";
+
   /// "stand by"
   @override
   String get Support => "stand by";
+
   /// "thank"
   @override
   String get Thanks => "thank";
+
+  /// "Terms of use"
+  @override
+  String get Terms => "Terms of use";
+
+  /// "shield"
+  @override
+  String get Ban => "shield";
+
+  /// "${name} has been Shielded by you"
+  @override
+  String Shield_message(String name) => "${name} has been Shielded by you";
+
+  /// "jump over"
+  @override
+  String get Skip => "jump over";
+
+  /// "Report"
+  @override
+  String get report => "Report";
+
+  /// "Blocking settings"
+  @override
+  String get Shielding_settings => "Blocking settings";
+
+  /// "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible"
+  @override
+  String get Report_Message =>
+      "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;
