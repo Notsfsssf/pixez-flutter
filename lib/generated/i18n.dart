@@ -34,24 +34,37 @@ class I18n implements WidgetsLocalizations {
 
   /// "登录"
   String get Login => "登录";
+
   /// "保存"
   String get Save => "保存";
+
   /// "已保存"
   String get Saved => "已保存";
+
   /// "已存在"
   String get Already_Saved => "已存在";
+
   /// "已在列队"
   String get Already_in_query => "已在列队";
+
+  /// "加入列队"
+  String get Append_to_query => "加入列队";
+
   /// "推荐"
   String get Recommend => "推荐";
+
   /// "收藏"
   String get BookMark => "收藏";
+
   /// "作品"
   String get Works => "作品";
+
   /// "排行"
   String get Rank => "排行";
+
   /// "搜索"
   String get Search => "搜索";
+
   /// ["每日", "男性", "女性", "原创", "新人", "每周", "每月", "XVIII", "XVIII_Week"]
   List<String> get Mode_List => ["每日", "男性", "女性", "原创", "新人", "每周", "每月", "XVIII", "XVIII_Week"];
   /// "插画id"
@@ -152,25 +165,18 @@ class I18n implements WidgetsLocalizations {
   String get Date_duration => "日期间隔";
   /// "应用"
   String get Apply => "应用";
-
   /// "登出"
   String get Logout => "登出";
-
   /// "这将清除此APP的登录的账户信息并回到登录页"
   String get Logout_message => "这将清除此APP的登录的账户信息并回到登录页";
-
   /// "账户信息"
   String get Account_Message => "账户信息";
-
   /// "支持"
   String get Support => "支持";
-
   /// "感谢"
   String get Thanks => "感谢";
-
   /// "使用条款"
   String get Terms => "使用条款";
-
   /// "屏蔽"
   String get Ban => "屏蔽";
 
@@ -188,6 +194,9 @@ class I18n implements WidgetsLocalizations {
 
   /// "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容"
   String get Report_Message => "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容";
+
+  /// "标签"
+  String get Tag => "标签";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -206,24 +215,35 @@ class _I18n_en_US extends I18n {
   /// "Save"
   @override
   String get Save => "Save";
+
   /// "Saved"
   @override
   String get Saved => "Saved";
+
   /// "Already Saved"
   @override
   String get Already_Saved => "Already Saved";
+
   /// "Already in query"
   @override
   String get Already_in_query => "Already in query";
+
+  /// "Join the queue"
+  @override
+  String get Append_to_query => "Join the queue";
+
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
+
   /// "BookMark"
   @override
   String get BookMark => "BookMark";
+
   /// "Works"
   @override
   String get Works => "Works";
+
   /// "Rank"
   @override
   String get Rank => "Rank";
@@ -374,44 +394,34 @@ class _I18n_en_US extends I18n {
   /// "Date interval"
   @override
   String get Date_duration => "Date interval";
-
   /// "Apply"
   @override
   String get Apply => "Apply";
-
   /// "Sign out"
   @override
   String get Logout => "Sign out";
-
   /// "This will clear the login account information of this APP and return to the login page"
   @override
   String get Logout_message =>
       "This will clear the login account information of this APP and return to the login page";
-
   /// "account information"
   @override
   String get Account_Message => "account information";
-
   /// "stand by"
   @override
   String get Support => "stand by";
-
   /// "thank"
   @override
   String get Thanks => "thank";
-
   /// "Terms of use"
   @override
   String get Terms => "Terms of use";
-
   /// "shield"
   @override
   String get Ban => "shield";
-
   /// "${name} has been Shielded by you"
   @override
   String Shield_message(String name) => "${name} has been Shielded by you";
-
   /// "jump over"
   @override
   String get Skip => "jump over";
@@ -428,6 +438,10 @@ class _I18n_en_US extends I18n {
   @override
   String get Report_Message =>
       "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible";
+
+  /// "label"
+  @override
+  String get Tag => "label";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

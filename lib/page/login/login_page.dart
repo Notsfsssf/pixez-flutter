@@ -15,6 +15,7 @@ import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/progress/progress_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'bloc/login_event.dart';
@@ -57,17 +58,27 @@ class LoginPage extends StatelessWidget {
                         builder: (BuildContext context) =>
                             BlocListener<SaveBloc, SaveState>(
                                 listener: (context, state) {
-                                  if (state is SaveSuccesState)
-                                    BotToast.showNotification(
-                                        leading: (_) => Icon(Icons.save_alt),
-                                        title: (_) =>
-                                            Text(I18n.of(context).Saved));
-                                  if (state is SaveAlreadyGoingOnState)
-                                    BotToast.showNotification(
-                                        leading: (_) => Icon(Icons.save_alt),
-                                        title: (_) => Text(
-                                            I18n.of(context).Already_in_query));
-                                },
+                              if (state is SaveStartState) {
+                                BotToast.showNotification(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => ProgressPage())),
+                                    trailing: (_) => Icon(Icons.chevron_right),
+                                    leading: (_) => Icon(Icons.save_alt),
+                                    title: (_) =>
+                                        Text(I18n.of(context).Append_to_query));
+                              }
+                              if (state is SaveSuccesState)
+                                BotToast.showNotification(
+                                    leading: (_) => Icon(Icons.save_alt),
+                                    title: (_) => Text(I18n.of(context).Saved));
+                              if (state is SaveAlreadyGoingOnState)
+                                BotToast.showNotification(
+                                    leading: (_) => Icon(Icons.save_alt),
+                                    title: (_) => Text(
+                                        I18n.of(context).Already_in_query));
+                            },
                                 child: HelloPage())));
                   } else if (state is FailState) {
                     Scaffold.of(context).showSnackBar(

@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/models/illust.dart';
 
 @immutable
@@ -9,15 +8,17 @@ class InitialSaveState extends SaveState {}
 class SaveAlreadyGoingOnState extends SaveState {}
 class SaveSuccesState extends SaveState {
   final bool isNotSave;
+
   SaveSuccesState(this.isNotSave);
 }
 
+class SaveStartState extends SaveState {}
+
 class SaveChoiceSuccesState extends SaveState {
   final bool isNotSave;
+
   SaveChoiceSuccesState(this.isNotSave);
 }
-
-
 
 class SaveProgressSate extends SaveState {
   final Map<String, ProgressNum> progressMaps;

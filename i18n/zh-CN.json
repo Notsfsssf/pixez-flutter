@@ -4,6 +4,7 @@
   "Saved": "已保存",
   "Already_Saved": "已存在",
   "Already_in_query": "已在列队",
+  "Append_to_query": "加入列队",
   "Recommend": "推荐",
   "BookMark": "收藏",
   "Works": "作品",
@@ -80,5 +81,6 @@
   "Skip": "跳过",
   "report": "举报",
   "Shielding_settings": "屏蔽设定",
-  "Report_Message": "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容"
+  "Report_Message": "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容",
+  "Tag": "标签"
 }

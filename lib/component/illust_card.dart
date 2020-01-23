@@ -48,6 +48,15 @@ class _IllustCardState extends State<IllustCard> {
               child: Container(),
             );
         }
+        for (var t in snapshot.banTags) {
+          for (var f in widget._illusts.tags) {
+            if (f.name == t.name)
+              return Visibility(
+                visible: false,
+                child: Container(),
+              );
+          }
+        }
       }
       return buildInkWell(context);
     });

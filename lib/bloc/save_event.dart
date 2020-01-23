@@ -6,21 +6,23 @@ import 'package:pixez/models/illust.dart';
 
 @immutable
 abstract class SaveEvent {}
-class SaveImageEvent extends SaveEvent{
+
+class SaveImageEvent extends SaveEvent {
   final Illusts illusts;
   final int index;
 
   SaveImageEvent(this.illusts, this.index);
-
 }
-class SaveChoiceImageEvent extends SaveEvent{
+
+class SaveStartEvent extends SaveEvent {}
+
+class SaveChoiceImageEvent extends SaveEvent {
   final Illusts illusts;
   final List<bool> indexs;
 
   SaveChoiceImageEvent(this.illusts, this.indexs);
-
-
 }
+
 class SaveProgressImageEvent extends SaveEvent{
 
   final Map<String,ProgressNum> progressMaps;

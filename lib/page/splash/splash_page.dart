@@ -79,12 +79,26 @@ class _SplashPageState extends State<SplashPage>
                                 builder: (BuildContext context) => BlocListener<
                                         SaveBloc, SaveState>(
                                     listener: (context, state) {
+                                      if (state is SaveStartState) {
+                                        BotToast.showNotification(
+                                            onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ProgressPage())),
+                                            trailing: (_) =>
+                                                Icon(Icons.chevron_right),
+                                            leading: (_) =>
+                                                Icon(Icons.save_alt),
+                                            title: (_) => Text(I18n.of(context)
+                                                .Append_to_query));
+                                      }
                                       if (state is SaveSuccesState)
                                         BotToast.showNotification(
                                             leading: (_) =>
                                                 Icon(Icons.save_alt),
-                                            title: (_) => Text(I18n.of(context)
-                                                .Saved));
+                                            title: (_) =>
+                                                Text(I18n.of(context).Saved));
                                       if (state is SaveAlreadyGoingOnState)
                                         BotToast.showNotification(
                                             leading: (_) =>

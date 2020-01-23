@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
+
 import './bloc.dart';
 
 class AlreadyGoingOnException implements Exception {}
@@ -26,12 +25,11 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
 
   saveImage(String url, Illusts illusts) {
     if (progressMaps.keys.contains(url)) throw AlreadyGoingOnException();
-    BotToast.showNotification(
-        leading: (_) => Icon(Icons.save_alt), title: (_) => Text("Start"));
-    saveAync(url, illusts);
+    add(SaveStartEvent());
+    saveAsync(url, illusts);
   }
 
-  saveAync(String url, Illusts illusts) async {
+  saveAsync(String url, Illusts illusts) async {
     var file = await DefaultCacheManager().getFileFromCache(url);
     Uint8List uint8list;
     if (file == null) {
@@ -73,6 +71,9 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
   Stream<SaveState> mapEventToState(
     SaveEvent event,
   ) async* {
+    if (event is SaveStartEvent) {
+      yield SaveStartState();
+    }
     if (event is SaveToPictureFoldEvent) {
       yield* _mapSaveSuccesState(event);
     }

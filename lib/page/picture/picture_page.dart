@@ -193,7 +193,7 @@ class _PicturePageState extends State<PicturePage> {
             );
           }
         }
-        if (widget._illusts != null)
+        if (widget._illusts != null) {
           for (var j in muteState.banUserIds) {
             if (j.userId == widget._illusts.user.id.toString()) {
               return BanPage(
@@ -201,6 +201,15 @@ class _PicturePageState extends State<PicturePage> {
               );
             }
           }
+          for (var t in muteState.banTags) {
+            for (var t1 in widget._illusts.tags) {
+              if (t.name == t1.name)
+                return BanPage(
+                  name: I18n.of(context).Tag,
+                );
+            }
+          }
+        }
       }
       return MultiBlocProvider(
           providers: [
@@ -233,12 +242,24 @@ class _PicturePageState extends State<PicturePage> {
               body: BlocBuilder<IllustBloc, IllustState>(
                   builder: (context, illustState) {
                 if (illustState is DataIllustState) {
-                  if (muteState is DataMuteState) {
+                  if (muteState is DataMuteState && widget._illusts == null) {
                     for (var j in muteState.banUserIds) {
                       if (j.userId == illustState.illusts.user.id.toString()) {
                         return BanPage(
-                          name: I18n.of(context).Painter,
+                          name: I18n
+                              .of(context)
+                              .Painter,
                         );
+                      }
+                    }
+                    for (var t in muteState.banTags) {
+                      for (var t1 in illustState.illusts.tags) {
+                        if (t.name == t1.name)
+                          return BanPage(
+                            name: I18n
+                                .of(context)
+                                .Tag,
+                          );
                       }
                     }
                   }
@@ -738,15 +759,56 @@ class _PicturePageState extends State<PicturePage> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return SearchResultPage(
-                                      word: f.name,
-                                    );
-                                  }));
+                                        return SearchResultPage(
+                                          word: f.name,
+                                        );
+                                      }));
+                                },
+                                onLongPress: () async {
+                                  switch (await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title:
+                                          Text(I18n
+                                              .of(context)
+                                              .Ban + "?"),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, "OK");
+                                              },
+                                              child: Text(I18n
+                                                  .of(context)
+                                                  .OK),
+                                            ),
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child:
+                                              Text(I18n
+                                                  .of(context)
+                                                  .Cancel),
+                                            )
+                                          ],
+                                        );
+                                      })) {
+                                    case "OK":
+                                      {
+                                        BlocProvider.of<MuteBloc>(context).add(
+                                            InsertBanTagEvent(f.name,
+                                                f.translatedName ?? "_"));
+                                      }
+                                      break;
+                                  }
                                 },
                                 child: Text(
                                   "#${f.name}",
                                   style: TextStyle(
-                                      color: Theme.of(context).accentColor),
+                                      color: Theme
+                                          .of(context)
+                                          .accentColor),
                                 ),
                               ),
                               Container(

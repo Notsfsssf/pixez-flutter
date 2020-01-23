@@ -85,5 +85,7 @@
     "report": "Report",
     "Shielding_settings": "Blocking settings",
     "Report_Message": "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible",
-    "Shield_message": "{name} has been Shielded by you"
+    "Shield_message": "{name} has been Shielded by you",
+    "Tag": "label",
+    "Append_to_query": "Join the queue"
 }

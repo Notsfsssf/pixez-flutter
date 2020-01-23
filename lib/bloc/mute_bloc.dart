@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:pixez/models/ban_illust_id.dart';
+import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
 
 import './bloc.dart';
@@ -9,6 +10,7 @@ import './bloc.dart';
 class MuteBloc extends Bloc<MuteEvent, MuteState> {
   BanIllustIdProvider banIllustIdProvider = BanIllustIdProvider();
   var banUserIdProvider = BanUserIdProvider();
+  var banTagProvider = BanTagProvider();
 
   @override
   MuteState get initialState => InitialMuteState();
@@ -20,13 +22,22 @@ class MuteBloc extends Bloc<MuteEvent, MuteState> {
     if (event is FetchMuteEvent) {
       await banIllustIdProvider.open();
       await banUserIdProvider.open();
+      await banTagProvider.open();
       var illustids = await banIllustIdProvider.getAllAccount();
       var userids = await banUserIdProvider.getAllAccount();
-      yield DataMuteState(illustids, userids);
+      var tags = await banTagProvider.getAllAccount();
+      yield DataMuteState(illustids, userids, tags);
+    }
+    if (event is InsertBanTagEvent) {
+      await banTagProvider.open();
+      await banTagProvider.insert(BanTagPersist()
+        ..name = event.name
+        ..translateName = event.translateName);
+      add(FetchMuteEvent());
     }
     if (event is InsertBanIllustEvent) {
       await banIllustIdProvider.open();
-      banIllustIdProvider.insert(BanIllustIdPersist()
+      await banIllustIdProvider.insert(BanIllustIdPersist()
         ..illustId = event.id
         ..name = event.name);
       add(FetchMuteEvent());
@@ -46,6 +57,11 @@ class MuteBloc extends Bloc<MuteEvent, MuteState> {
     if (event is DeleteIllustEvent) {
       await banIllustIdProvider.open();
       await banIllustIdProvider.delete(event.id);
+      add(FetchMuteEvent());
+    }
+    if (event is DeleteTagEvent) {
+      await banTagProvider.open();
+      await banTagProvider.delete(event.id);
       add(FetchMuteEvent());
     }
   }

@@ -12,6 +12,12 @@ class InsertBanUserEvent extends MuteEvent {
   InsertBanUserEvent(this.id, this.name);
 }
 
+class InsertBanTagEvent extends MuteEvent {
+  final String name, translateName;
+
+  InsertBanTagEvent(this.name, this.translateName);
+}
+
 class InsertBanIllustEvent extends MuteEvent {
   final String id;
   final String name;
@@ -29,4 +35,10 @@ class DeleteUserEvent extends MuteEvent {
   final int id;
 
   DeleteUserEvent(this.id);
+}
+
+class DeleteTagEvent extends MuteEvent {
+  final int id;
+
+  DeleteTagEvent(this.id);
 }
