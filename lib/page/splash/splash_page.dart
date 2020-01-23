@@ -8,6 +8,7 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/progress/progress_page.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -95,16 +96,28 @@ class _SplashPageState extends State<SplashPage>
                                       }
                                       if (state is SaveSuccesState)
                                         BotToast.showNotification(
-                                            leading: (_) =>
-                                                Icon(Icons.save_alt),
+                                            leading: (_) => Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.green,
+                                                ),
                                             title: (_) =>
                                                 Text(I18n.of(context).Saved));
                                       if (state is SaveAlreadyGoingOnState)
                                         BotToast.showNotification(
+                                            onTap: () =>
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            ProgressPage())),
+                                            trailing: (_) =>
+                                                Icon(Icons.chevron_right),
                                             leading: (_) =>
                                                 Icon(Icons.save_alt),
-                                            title: (_) => Text(I18n.of(context)
-                                                .Already_in_query));
+                                            title: (_) =>
+                                                Text(I18n
+                                                    .of(context)
+                                                    .Already_in_query));
                                     },
                                     child: HelloPage())));
                     } else if (state is FailOnezeroState) {

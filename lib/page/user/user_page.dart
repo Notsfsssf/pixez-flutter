@@ -94,6 +94,19 @@ class _UserPageState extends State<UserPage>
         ],
         child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
+            if (state is FZFState) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text("404"),
+                ),
+                body: Center(
+                  child: Text(
+                    '>_<',
+                    style: TextStyle(fontSize: 26),
+                  ),
+                ),
+              );
+            }
             return BlocBuilder<AccountBloc, AccountState>(
                 builder: (context, snapshot) {
               return Scaffold(
@@ -105,50 +118,50 @@ class _UserPageState extends State<UserPage>
                       )
                     : AppBar(),
                 body: state is UserDataState
-                    ? _buildTabBarView(context, state)
-                    : Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                bottomNavigationBar: FABBottomAppBar(
-                  onTabSelected: (index) {
-                    _tabController.index = index;
-                  },
-                  color: Colors.grey,
-                  selectedColor: Theme.of(context).primaryColor,
-                  centerItemText: "A",
-                  notchedShape: CircularNotchedRectangle(),
-                  items: [
-                    FABBottomAppBarItem(
-                        iconData: Icons.menu, text: I18n.of(context).Works),
-                    FABBottomAppBarItem(
-                        iconData: Icons.bookmark,
-                        text: I18n.of(context).BookMark),
-                    FABBottomAppBarItem(
-                        iconData: Icons.star, text: I18n.of(context).Follow),
-                    FABBottomAppBarItem(
-                        iconData: Icons.info, text: I18n.of(context).Detail),
-                  ],
-                  followWidget: state is UserDataState
-                      ? _buildFollowButton(
+                        ? _buildTabBarView(context, state)
+                        : Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    bottomNavigationBar: FABBottomAppBar(
+                      onTabSelected: (index) {
+                        _tabController.index = index;
+                      },
+                      color: Colors.grey,
+                      selectedColor: Theme.of(context).primaryColor,
+                      centerItemText: "A",
+                      notchedShape: CircularNotchedRectangle(),
+                      items: [
+                        FABBottomAppBarItem(
+                            iconData: Icons.menu, text: I18n.of(context).Works),
+                        FABBottomAppBarItem(
+                            iconData: Icons.bookmark,
+                            text: I18n.of(context).BookMark),
+                        FABBottomAppBarItem(
+                            iconData: Icons.star, text: I18n.of(context).Follow),
+                        FABBottomAppBarItem(
+                            iconData: Icons.info, text: I18n.of(context).Detail),
+                      ],
+                      followWidget: state is UserDataState
+                          ? _buildFollowButton(
                           context, state.userDetail, state.choiceRestrict)
-                      : Container(
-                          height: 60.0,
-                        ),
-                ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {},
-                  child: state is UserDataState
-                      ? PainterAvatar(
-                          url: state.userDetail.user.profile_image_urls.medium,
-                          id: state.userDetail.user.id,
-                          onTap: () async {},
-                        )
-                      : Icon(Icons.refresh),
-                ),
-                floatingActionButtonLocation:
+                          : Container(
+                        height: 60.0,
+                      ),
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: () {},
+                      child: state is UserDataState
+                          ? PainterAvatar(
+                        url: state.userDetail.user.profile_image_urls.medium,
+                        id: state.userDetail.user.id,
+                        onTap: () async {},
+                      )
+                          : Icon(Icons.refresh),
+                    ),
+                    floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
-              );
-            });
+                  );
+                });
           },
         ),
       );

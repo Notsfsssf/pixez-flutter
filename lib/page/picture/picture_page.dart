@@ -12,7 +12,6 @@ import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
-import 'package:pixez/component/transport_appbar.dart';
 import 'package:pixez/component/ugoira_animation.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/bookmark_detail.dart';
@@ -239,77 +238,84 @@ class _PicturePageState extends State<PicturePage> {
           child: BlocBuilder<PictureBloc, PictureState>(
               builder: (context, snapshot) {
             return Scaffold(
+              extendBody: true,
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.more_vert),
+                      onPressed: () {
+                        var illustState =
+                            BlocProvider.of<IllustBloc>(context).state;
+                        if (illustState is DataIllustState)
+                          buildShowModalBottomSheet(
+                              context, illustState.illusts);
+                      })
+                ],
+              ),
               body: BlocBuilder<IllustBloc, IllustState>(
                   builder: (context, illustState) {
+                if (illustState is FZFIllustState) {
+                  return Container(
+                      child: Center(
+                    child: Text(illustState.errorMessage.error.user_message),
+                  ));
+                }
                 if (illustState is DataIllustState) {
                   if (muteState is DataMuteState && widget._illusts == null) {
                     for (var j in muteState.banUserIds) {
                       if (j.userId == illustState.illusts.user.id.toString()) {
                         return BanPage(
-                          name: I18n
-                              .of(context)
-                              .Painter,
+                          name: I18n.of(context).Painter,
                         );
                       }
                     }
                     for (var t in muteState.banTags) {
                       for (var t1 in illustState.illusts.tags) {
-                        if (t.name == t1.name)
-                          return BanPage(
-                            name: I18n
-                                .of(context)
-                                .Tag,
-                          );
+                            if (t.name == t1.name)
+                              return BanPage(
+                                name: I18n
+                                    .of(context)
+                                    .Tag,
+                              );
+                          }
+                        }
                       }
-                    }
-                  }
-                  BlocProvider.of<IllustPersistBloc>(context)
-                      .add(InsertIllustPersistEvent(illustState.illusts));
-                  return MultiBlocListener(
-                    listeners: [
-                      BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
-                        listener:
-                            (BuildContext context, BookmarkDetailState state) {
-                          if (state is DataBookmarkDetailState)
-                            _showBookMarkDetailDialog(
-                                context, state, snapshot, illustState);
-                        },
-                      )
-                    ],
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        _buildList(illustState.illusts, illustState),
-                        TransportAppBar(
-                          actions: <Widget>[
-                            IconButton(
-                                icon: Icon(Icons.more_vert),
-                                onPressed: () {
-                                  buildShowModalBottomSheet(
-                                      context, illustState.illusts);
-                                })
-                          ],
-                        )
-                      ],
-                    ),
-                  );
-                } else
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-              }),
+                      BlocProvider.of<IllustPersistBloc>(context)
+                          .add(InsertIllustPersistEvent(illustState.illusts));
+                      return MultiBlocListener(
+                        listeners: [
+                          BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
+                            listener:
+                                (BuildContext context,
+                                BookmarkDetailState state) {
+                              if (state is DataBookmarkDetailState)
+                                _showBookMarkDetailDialog(
+                                    context, state, snapshot, illustState);
+                            },
+                          )
+                        ],
+                        child: _buildList(illustState.illusts, illustState),
+                      );
+                    } else
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                  }),
               floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
                   builder: (context, illustState) {
-                if (illustState is DataIllustState)
-                  return InkWell(
-                      splashColor: Colors.blue,
-                      onLongPress: () {
-                        BlocProvider.of<BookmarkDetailBloc>(context).add(
-                            FetchBookmarkDetailEvent(illustState.illusts.id));
-                      },
-                      onTap: () {},
-                      child: (snapshot is DataState)
-                          ? FloatingActionButton(
+                    if (illustState is DataIllustState)
+                      return InkWell(
+                          splashColor: Colors.blue,
+                          onLongPress: () {
+                            BlocProvider.of<BookmarkDetailBloc>(context).add(
+                                FetchBookmarkDetailEvent(illustState.illusts.id));
+                          },
+                          onTap: () {},
+                          child: (snapshot is DataState)
+                              ? FloatingActionButton(
                               onPressed: () {
                                 BlocProvider.of<PictureBloc>(context).add(
                                     StarPictureEvent(
@@ -317,19 +323,23 @@ class _PicturePageState extends State<PicturePage> {
                               },
                               backgroundColor: Colors.white,
                               child: StarIcon(snapshot.illusts.isBookmarked))
-                          : FloatingActionButton(
-                              onPressed: () {
-                                BlocProvider.of<PictureBloc>(context).add(
-                                    StarPictureEvent(
-                                        illustState.illusts, "public", null));
-                              },
-                              backgroundColor: Colors.white,
-                              child: StarIcon(illustState.illusts.isBookmarked),
-                            ));
-                return FloatingActionButton(
-                  onPressed: () {},
-                );
-              }),
+                              : FloatingActionButton(
+                            onPressed: () {
+                              BlocProvider.of<PictureBloc>(context).add(
+                                  StarPictureEvent(
+                                      illustState.illusts, "public", null));
+                            },
+                            backgroundColor: Colors.white,
+                            child: StarIcon(illustState.illusts.isBookmarked),
+                          ));
+
+                    return FloatingActionButton(
+                      child: Icon(Icons.reply),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  }),
             );
           }));
     });
@@ -541,6 +551,7 @@ class _PicturePageState extends State<PicturePage> {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
     return ListView.builder(
         itemCount: count + 3,
+        padding: EdgeInsets.all(0.0),
         itemBuilder: (BuildContext context, int index) {
           if (index == count + 1) {
             return Column(
@@ -548,7 +559,9 @@ class _PicturePageState extends State<PicturePage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(I18n.of(context).About_Picture),
+                  child: Text(I18n
+                      .of(context)
+                      .About_Picture),
                 ),
               ],
             );

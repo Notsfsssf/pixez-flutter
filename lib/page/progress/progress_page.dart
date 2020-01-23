@@ -51,9 +51,11 @@ class _ProgressPageState extends State<ProgressPage>
                 child: ListTile(
                   subtitle: Text('${f.min}/${f.max}'),
                   title: Text(f.illusts.title),
-                  trailing: CircularProgressIndicator(
-                    value: f.min / f.max,
-                  ),
+                  trailing: f.min / f.max != 1
+                      ? CircularProgressIndicator(
+                          value: f.min / f.max,
+                        )
+                      : Icon(Icons.check_circle),
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -26,7 +25,7 @@ class StarBloc extends Bloc<StarEvent, StarState> {
         if (illusts.isBookmarked) {
           return;
         }
-        Response response = await client.postLikeIllust(
+        await client.postLikeIllust(
             event.illusts.id, event.restrict, event.tags);
 
         illusts.isBookmarked = true;
@@ -39,7 +38,7 @@ class StarBloc extends Bloc<StarEvent, StarState> {
         if (illusts.isBookmarked) {
           return;
         }
-        Response response = await client.postUnLikeIllust(event.illusts.id);
+        await client.postUnLikeIllust(event.illusts.id);
         illusts.isBookmarked = false;
         yield InitialStarState(illusts.isBookmarked);
       } catch (e) {}

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -23,7 +24,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         Response response = await client.getUser(event.id);
         UserDetail userDetail = UserDetail.fromJson(response.data);
         yield UserDataState(userDetail, "public");
-      } on DioError catch (e) {}
+      } on DioError catch (e) {
+        if (e.response != null &&
+            e.response.statusCode == HttpStatus.notFound) {
+          yield FZFState();
+        }
+      }
     }
     if (event is ShowSheetEvent) {
       yield ShowSheetState();

@@ -71,13 +71,27 @@ class LoginPage extends StatelessWidget {
                               }
                               if (state is SaveSuccesState)
                                 BotToast.showNotification(
-                                    leading: (_) => Icon(Icons.save_alt),
+                                    leading: (_) => Icon(
+                                          Icons.check_circle,
+                                          color: Colors.green,
+                                        ),
                                     title: (_) => Text(I18n.of(context).Saved));
                               if (state is SaveAlreadyGoingOnState)
+
                                 BotToast.showNotification(
+                                    onTap: () =>
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    ProgressPage())),
+                                    trailing: (_) => Icon(Icons.chevron_right),
                                     leading: (_) => Icon(Icons.save_alt),
-                                    title: (_) => Text(
-                                        I18n.of(context).Already_in_query));
+                                    title: (_) =>
+                                        Text(
+                                            I18n
+                                                .of(context)
+                                                .Already_in_query));
                             },
                                 child: HelloPage())));
                   } else if (state is FailState) {

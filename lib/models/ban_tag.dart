@@ -33,7 +33,7 @@ class BanTagProvider {
 
   Future open() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'banuserid.db');
+    String path = join(databasesPath, 'bantag.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''

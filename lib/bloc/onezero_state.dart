@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/models/onezero_response.dart';
 
 @immutable

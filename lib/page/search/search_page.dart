@@ -5,21 +5,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
+import 'package:pixez/page/user/user_page.dart';
 
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage>
+    with SingleTickerProviderStateMixin {
   String editString = "";
   Widget _appBarTitle = Text("Search");
 
   @override
   void initState() {
     _filter = TextEditingController();
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
     BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
   }
@@ -27,6 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void dispose() {
     _filter?.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -47,7 +52,7 @@ class _SearchPageState extends State<SearchPage> {
             _buildBlocBuilder(),
             Visibility(
               visible: this._searchIcon.icon != Icons.search,
-              child: editString.isNotEmpty
+              child: editString.isNotEmpty && _tabController.index == 0
                   ? Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).dialogBackgroundColor),
@@ -71,15 +76,38 @@ class _SearchPageState extends State<SearchPage> {
         return Center(
           child: CircularProgressIndicator(),
         );
-    });
+        });
   }
 
   Icon _searchIcon = Icon(Icons.search);
   TextEditingController _filter;
+  TabController _tabController;
 
   AppBar _buildAppBar() {
     return AppBar(
       title: _appBarTitle,
+      bottom: TabBar(
+        controller: _tabController,
+        tabs: <Widget>[
+          Tab(
+            child: Text(I18n
+                .of(context)
+                .Illust),
+          ),
+          Tab(
+            child: Text(I18n
+                .of(context)
+                .Illust_id
+                .toUpperCase()),
+          ),
+          Tab(
+            child: Text(I18n
+                .of(context)
+                .Painter + "ID"),
+          ),
+
+        ],
+      ),
       actions: <Widget>[
         IconButton(
           icon: _searchIcon,
@@ -93,23 +121,93 @@ class _SearchPageState extends State<SearchPage> {
                     setState(() {
                       editString = query;
                     });
+                    if (query.startsWith('https://')) {
+                      Uri uri = Uri.parse(query);
+                      if (!uri.host.contains('pixiv')) {
+                        return;
+                      }
+                      final segment = uri.pathSegments;
+                      if (segment.length == 1 &&
+                          query.contains("/member.php?id=")) {
+                        final id = uri.queryParameters['id'];
+                        Navigator.of(context, rootNavigator: true)
+                            .push(MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return UserPage(
+                                id: int.parse(id),
+                              );
+                            }));
+                        _filter.clear();
+                      }
+                      if (segment.length == 2) {
+                        if (segment[0] == 'artworks') {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return PicturePage(null, int.parse(segment[1]));
+                              }));
+                          _filter.clear();
+                        }
+                        if (segment[0] == 'users') {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return UserPage(
+                                  id: int.parse(segment[1]),
+                                );
+                              }));
+                          _filter.clear();
+                        }
+                      }
+                    }
                   },
                   onSubmitted: (s) {
                     var word = s.trim();
                     if (word.isEmpty) return;
-                    Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return SearchResultPage(
-                        word: word,
-                      );
-                    }));
+
+                    switch (_tabController.index) {
+                      case 0:
+                        {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SearchResultPage(
+                              word: word,
+                            );
+                          }));
+                        }
+                        break;
+                      case 1:
+                        {
+                          var id = int.tryParse(word);
+                          if (id != null) {
+                            Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                    builder: (_) => PicturePage(null, id)));
+                          } else {
+                            _filter.clear();
+                          }
+                        }
+                        break;
+                      case 2:
+                        {
+                          var id = int.tryParse(word);
+                          if (id != null) {
+                            Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                    builder: (_) => UserPage(id: id,)));
+                          } else {
+                            _filter.clear();
+                          }
+                        }
+                        break;
+                    }
                   },
                   style: TextStyle(
                     color: Colors.white,
                   ),
                   decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search, color: Colors.white),
-                      hintText: "Search...",
+                      hintText: "Search word/id or paste link here...",
                       hintStyle: TextStyle(color: Colors.white)),
                 );
               } else {

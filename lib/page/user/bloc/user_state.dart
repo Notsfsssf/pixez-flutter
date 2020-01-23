@@ -4,10 +4,7 @@ abstract class UserState {
   const UserState();
 }
 
-class InitialUserState extends UserState {
-  @override
-  List<Object> get props => [];
-}
+class InitialUserState extends UserState {}
 
 class UserDataState extends UserState {
   final UserDetail userDetail;
@@ -15,13 +12,11 @@ class UserDataState extends UserState {
 
   const UserDataState(this.userDetail, this.choiceRestrict);
 
-  @override
-  List<Object> get props => [userDetail, choiceRestrict];
 }
 
+class FZFState extends UserState {}
+
 class ShowSheetState extends UserState {
-  @override
-  List<Object> get props => [];
 }
 
 class ChoiceRestrictState extends UserState {
@@ -29,6 +24,4 @@ class ChoiceRestrictState extends UserState {
 
   ChoiceRestrictState(this.choiceRestrict);
 
-  @override
-  List<Object> get props => [choiceRestrict];
 }
