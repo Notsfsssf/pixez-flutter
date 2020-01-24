@@ -54,8 +54,7 @@ class _SearchPageState extends State<SearchPage>
               visible: this._searchIcon.icon != Icons.search,
               child: editString.isNotEmpty && _tabController.index == 0
                   ? Container(
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).dialogBackgroundColor),
+                 
                       child: Suggestions(
                         query: editString,
                       ))
@@ -98,7 +97,7 @@ class _SearchPageState extends State<SearchPage>
             child: Text(I18n
                 .of(context)
                 .Illust_id
-                .toUpperCase()),
+                ),
           ),
           Tab(
             child: Text(I18n
@@ -202,13 +201,11 @@ class _SearchPageState extends State<SearchPage>
                         break;
                     }
                   },
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+               
                   decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search, color: Colors.white),
-                      hintText: "Search word/id or paste link here...",
-                      hintStyle: TextStyle(color: Colors.white)),
+                      prefixIcon: Icon(Icons.search),
+                      hintText: I18n.of(context).Search_word_or_paste_link,
+                  )
                 );
               } else {
                 this._searchIcon = Icon(Icons.search);

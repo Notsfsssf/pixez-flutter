@@ -176,6 +176,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
               appBar: AppBar(
                 title: TabBar(
                   isScrollable: true,
+                  indicatorSize: TabBarIndicatorSize.label,
                   controller: _controller,
                   tabs: [
                     Tab(

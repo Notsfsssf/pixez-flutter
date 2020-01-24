@@ -34,37 +34,26 @@ class I18n implements WidgetsLocalizations {
 
   /// "登录"
   String get Login => "登录";
-
   /// "保存"
   String get Save => "保存";
-
   /// "已保存"
   String get Saved => "已保存";
-
   /// "已存在"
   String get Already_Saved => "已存在";
-
   /// "已在列队"
   String get Already_in_query => "已在列队";
-
   /// "加入列队"
   String get Append_to_query => "加入列队";
-
   /// "推荐"
   String get Recommend => "推荐";
-
   /// "收藏"
   String get BookMark => "收藏";
-
   /// "作品"
   String get Works => "作品";
-
   /// "排行"
   String get Rank => "排行";
-
   /// "搜索"
   String get Search => "搜索";
-
   /// ["每日", "男性", "女性", "原创", "新人", "每周", "每月", "XVIII", "XVIII_Week"]
   List<String> get Mode_List => ["每日", "男性", "女性", "原创", "新人", "每周", "每月", "XVIII", "XVIII_Week"];
   /// "插画id"
@@ -95,6 +84,8 @@ class I18n implements WidgetsLocalizations {
   String get New => "动态";
   /// "画师"
   String get Painter => "画师";
+  /// "画师ID"
+  String get Painter_id => "画师ID";
   /// "多选保存"
   String get Muti_Choice_save => "多选保存";
   /// "分享"
@@ -179,24 +170,20 @@ class I18n implements WidgetsLocalizations {
   String get Terms => "使用条款";
   /// "屏蔽"
   String get Ban => "屏蔽";
-
   /// "${name}已被你设为屏蔽"
   String Shield_message(String name) => "${name}已被你设为屏蔽";
-
   /// "跳过"
   String get Skip => "跳过";
-
   /// "举报"
   String get report => "举报";
-
   /// "屏蔽设定"
   String get Shielding_settings => "屏蔽设定";
-
   /// "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容"
   String get Report_Message => "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容";
-
   /// "标签"
   String get Tag => "标签";
+  /// "搜索关键词/ID或粘贴链接"
+  String get Search_word_or_paste_link => "搜索关键词/ID或粘贴链接";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -215,35 +202,27 @@ class _I18n_en_US extends I18n {
   /// "Save"
   @override
   String get Save => "Save";
-
   /// "Saved"
   @override
   String get Saved => "Saved";
-
   /// "Already Saved"
   @override
   String get Already_Saved => "Already Saved";
-
   /// "Already in query"
   @override
   String get Already_in_query => "Already in query";
-
   /// "Join the queue"
   @override
   String get Append_to_query => "Join the queue";
-
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
-
   /// "BookMark"
   @override
   String get BookMark => "BookMark";
-
   /// "Works"
   @override
   String get Works => "Works";
-
   /// "Rank"
   @override
   String get Rank => "Rank";
@@ -292,6 +271,9 @@ class _I18n_en_US extends I18n {
   /// "Artist"
   @override
   String get Painter => "Artist";
+  /// "Artist ID"
+  @override
+  String get Painter_id => "Artist ID";
   /// "Multiple selection save"
   @override
   String get Muti_Choice_save => "Multiple selection save";
@@ -402,8 +384,7 @@ class _I18n_en_US extends I18n {
   String get Logout => "Sign out";
   /// "This will clear the login account information of this APP and return to the login page"
   @override
-  String get Logout_message =>
-      "This will clear the login account information of this APP and return to the login page";
+  String get Logout_message => "This will clear the login account information of this APP and return to the login page";
   /// "account information"
   @override
   String get Account_Message => "account information";
@@ -425,23 +406,21 @@ class _I18n_en_US extends I18n {
   /// "jump over"
   @override
   String get Skip => "jump over";
-
   /// "Report"
   @override
   String get report => "Report";
-
   /// "Blocking settings"
   @override
   String get Shielding_settings => "Blocking settings";
-
   /// "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible"
   @override
-  String get Report_Message =>
-      "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible";
-
+  String get Report_Message => "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible";
   /// "label"
   @override
   String get Tag => "label";
+  /// "Search for keywords or paste links"
+  @override
+  String get Search_word_or_paste_link => "Search for keywords or paste links";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

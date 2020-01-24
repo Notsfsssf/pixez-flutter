@@ -87,6 +87,7 @@ class _RankingPageState extends State<RankingPage>
     return AppBar(
       title: TabBar(
           isScrollable: true,
+          indicatorSize: TabBarIndicatorSize.label,
           controller: _tabController,
           tabs: I18n.of(context).Mode_List.map((f) {
             return Tab(

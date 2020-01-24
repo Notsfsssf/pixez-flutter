@@ -87,5 +87,7 @@
     "Report_Message": "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible",
     "Shield_message": "{name} has been Shielded by you",
     "Tag": "label",
-    "Append_to_query": "Join the queue"
+    "Append_to_query": "Join the queue",
+    "Painter_id": "Artist ID",
+    "Search_word_or_paste_link": "Search for keywords or paste links"
 }

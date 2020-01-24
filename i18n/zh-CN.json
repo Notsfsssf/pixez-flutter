@@ -35,6 +35,7 @@
   "Quick_View": "速览",
   "New": "动态",
   "Painter": "画师",
+  "Painter_id":"画师ID",
   "Muti_Choice_save": "多选保存",
   "Share": "分享",
   "Cancel": "取消",
@@ -82,5 +83,6 @@
   "report": "举报",
   "Shielding_settings": "屏蔽设定",
   "Report_Message": "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容",
-  "Tag": "标签"
+  "Tag": "标签",
+  "Search_word_or_paste_link":"搜索关键词/ID或粘贴链接"
 }

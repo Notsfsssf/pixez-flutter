@@ -176,6 +176,7 @@ class _PicturePageState extends State<PicturePage> {
   @override
   void initState() {
     super.initState();
+    
   }
 
   bool _playButtonVisible = true;
@@ -238,8 +239,8 @@ class _PicturePageState extends State<PicturePage> {
           child: BlocBuilder<PictureBloc, PictureState>(
               builder: (context, snapshot) {
             return Scaffold(
-              extendBody: true,
               extendBodyBehindAppBar: true,
+              extendBody: true,
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0.0,
@@ -255,55 +256,58 @@ class _PicturePageState extends State<PicturePage> {
                       })
                 ],
               ),
-              body: BlocBuilder<IllustBloc, IllustState>(
-                  builder: (context, illustState) {
-                if (illustState is FZFIllustState) {
-                  return Container(
-                      child: Center(
-                    child: Text(illustState.errorMessage.error.user_message),
-                  ));
-                }
-                if (illustState is DataIllustState) {
-                  if (muteState is DataMuteState && widget._illusts == null) {
-                    for (var j in muteState.banUserIds) {
-                      if (j.userId == illustState.illusts.user.id.toString()) {
-                        return BanPage(
-                          name: I18n.of(context).Painter,
-                        );
-                      }
-                    }
-                    for (var t in muteState.banTags) {
-                      for (var t1 in illustState.illusts.tags) {
-                            if (t.name == t1.name)
-                              return BanPage(
-                                name: I18n
-                                    .of(context)
-                                    .Tag,
-                              );
-                          }
+              body: Padding(
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                child: BlocBuilder<IllustBloc, IllustState>(
+                    builder: (context, illustState) {
+                  if (illustState is FZFIllustState) {
+                    return Container(
+                        child: Center(
+                      child: Text(illustState.errorMessage.error.user_message),
+                    ));
+                  }
+                  if (illustState is DataIllustState) {
+                    if (muteState is DataMuteState && widget._illusts == null) {
+                      for (var j in muteState.banUserIds) {
+                        if (j.userId == illustState.illusts.user.id.toString()) {
+                          return BanPage(
+                            name: I18n.of(context).Painter,
+                          );
                         }
                       }
-                      BlocProvider.of<IllustPersistBloc>(context)
-                          .add(InsertIllustPersistEvent(illustState.illusts));
-                      return MultiBlocListener(
-                        listeners: [
-                          BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
-                            listener:
-                                (BuildContext context,
-                                BookmarkDetailState state) {
-                              if (state is DataBookmarkDetailState)
-                                _showBookMarkDetailDialog(
-                                    context, state, snapshot, illustState);
-                            },
-                          )
-                        ],
-                        child: _buildList(illustState.illusts, illustState),
-                      );
-                    } else
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                  }),
+                      for (var t in muteState.banTags) {
+                        for (var t1 in illustState.illusts.tags) {
+                              if (t.name == t1.name)
+                                return BanPage(
+                                  name: I18n
+                                      .of(context)
+                                      .Tag,
+                                );
+                            }
+                          }
+                        }
+                        BlocProvider.of<IllustPersistBloc>(context)
+                            .add(InsertIllustPersistEvent(illustState.illusts));
+                        return MultiBlocListener(
+                          listeners: [
+                            BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
+                              listener:
+                                  (BuildContext context,
+                                  BookmarkDetailState state) {
+                                if (state is DataBookmarkDetailState)
+                                  _showBookMarkDetailDialog(
+                                      context, state, snapshot, illustState);
+                              },
+                            )
+                          ],
+                          child: _buildList(illustState.illusts, illustState),
+                        );
+                      } else
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                    }),
+              ),
               floatingActionButton: BlocBuilder<IllustBloc, IllustState>(
                   builder: (context, illustState) {
                     if (illustState is DataIllustState)
@@ -522,6 +526,7 @@ class _PicturePageState extends State<PicturePage> {
           builder: (context, snapshot) {
         if (snapshot is DataIllustRelatedState)
           return GridView.builder(
+            padding: EdgeInsets.all(0.0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, //
               ),
@@ -554,17 +559,12 @@ class _PicturePageState extends State<PicturePage> {
         padding: EdgeInsets.all(0.0),
         itemBuilder: (BuildContext context, int index) {
           if (index == count + 1) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
+            return    Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(I18n
                       .of(context)
                       .About_Picture),
-                ),
-              ],
-            );
+                );
           }
           if (index == count + 2) {
             return _buildGridView(illustState);

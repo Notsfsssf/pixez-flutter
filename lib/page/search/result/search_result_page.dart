@@ -360,6 +360,9 @@ class _SearchResultPageState extends State<SearchResultPage>
                                                   .primaryColor,
                                               textColor: Colors.white,
                                             ),
+                                          ),
+                                          Container(
+                                            height: MediaQuery.of(context).padding.bottom,
                                           )
                                         ],
                                       ),

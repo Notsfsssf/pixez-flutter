@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
@@ -33,6 +34,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
+  
   runApp(MyApp());
 }
 
@@ -78,7 +80,9 @@ class MyApp extends StatelessWidget {
             home: SplashPage(),
             title: 'PixEz',
             theme: ThemeData(
-              primarySwatch: Colors.indigo
+              primarySwatch: Colors.lightBlue,
+              brightness: Brightness.light,
+              
             ),
             darkTheme: ThemeData(
                 brightness: Brightness.dark, primarySwatch: Colors.orange),
