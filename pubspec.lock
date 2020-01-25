@@ -238,6 +238,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.4"
+  in_app_purchase:
+    dependency: "direct main"
+    description:
+      name: in_app_purchase
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.0"
   intl:
     dependency: transitive
     description:
@@ -245,6 +252,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.16.0"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.1"
   matcher:
     dependency: transitive
     description:
