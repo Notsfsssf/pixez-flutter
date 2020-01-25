@@ -34,7 +34,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  
+
   runApp(MyApp());
 }
 
@@ -46,6 +46,9 @@ class MyApp extends StatelessWidget {
     final i18n = I18n.delegate;
     return MultiBlocProvider(
       providers: [
+        BlocProvider<IapBloc>(
+          create: (context) => IapBloc(),
+        ),
         BlocProvider<RouteBloc>(
           create: (context) => RouteBloc(),
         ),
@@ -63,7 +66,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<MuteBloc>(
           create: (context) => MuteBloc()..add(FetchMuteEvent()),
-        )
+        ),
       ],
       child: MultiRepositoryProvider(
         providers: [
@@ -82,7 +85,6 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.lightBlue,
               brightness: Brightness.light,
-              
             ),
             darkTheme: ThemeData(
                 brightness: Brightness.dark, primarySwatch: Colors.orange),

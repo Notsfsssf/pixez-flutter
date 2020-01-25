@@ -12,6 +12,7 @@ import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/history/history_page.dart';
+import 'package:pixez/page/iap/iap_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
@@ -145,6 +146,14 @@ class SettingPage extends StatelessWidget {
                   Card(
                     child: Column(
                       children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.lock),
+                          title: Text('UnLock'),
+                          onTap: (){
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => IapPage()));
+                          },
+                        ),
                         ListTile(
                           leading: Icon(Icons.message),
                           title: Text(I18n.of(context).About),
