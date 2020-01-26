@@ -184,6 +184,14 @@ class I18n implements WidgetsLocalizations {
   String get Tag => "标签";
   /// "搜索关键词/ID或粘贴链接"
   String get Search_word_or_paste_link => "搜索关键词/ID或粘贴链接";
+  /// "昵称"
+  String get Nickname => "昵称";
+  /// "输入昵称"
+  String get Input_Nickname => "输入昵称";
+  /// "昵称随时可变更"
+  String get Nickname_can_be_change_anytime => "昵称随时可变更";
+  /// "没有账号？"
+  String get Dont_have_account => "没有账号？";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -421,6 +429,18 @@ class _I18n_en_US extends I18n {
   /// "Search for keywords or paste links"
   @override
   String get Search_word_or_paste_link => "Search for keywords or paste links";
+  /// "nickname"
+  @override
+  String get Nickname => "nickname";
+  /// "Enter nickname"
+  @override
+  String get Input_Nickname => "Enter nickname";
+  /// "Nickname can be changed at any time"
+  @override
+  String get Nickname_can_be_change_anytime => "Nickname can be changed at any time";
+  /// "Don't have account?"
+  @override
+  String get Dont_have_account => "Don't have account?";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

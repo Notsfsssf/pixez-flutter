@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/account_client.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CreateUserPage extends StatefulWidget {
   @override
@@ -26,7 +28,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New User"),
+        title: Text(I18n.of(context).Input_Nickname),
       ),
       body: Center(
         child: Padding(
@@ -37,10 +39,10 @@ class _CreateUserPageState extends State<CreateUserPage> {
             children: <Widget>[
               TextFormField(
                 maxLines: 1,
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   icon: Icon(Icons.supervised_user_circle),
-                  hintText: 'New Pixiv UserName',
-                  labelText: 'New Pixiv UserName *',
+                  hintText: I18n.of(context).Nickname,
+                  labelText: '${I18n.of(context).Nickname} *',
                 ),
                 controller: _userNameController,
               ),
@@ -77,8 +79,23 @@ class _CreateUserPageState extends State<CreateUserPage> {
                         .showSnackBar(SnackBar(content: Text("创建次数过多")));
                   }
                 },
-                child: Text("create"),
-              )
+                child: Text("Start"),
+              ),
+              Center(child: Text(I18n.of(context).Nickname_can_be_change_anytime),),
+         FlatButton(
+                              child: Text(
+                                I18n
+                                    .of(context)
+                                    .Terms,
+                              ),
+                              onPressed: () async {
+                                final url =
+                                    'https://www.pixiv.net/terms/?page=term';
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {}
+                              },
+                            ),
             ],
           ),
         ),

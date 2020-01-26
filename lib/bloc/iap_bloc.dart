@@ -25,7 +25,7 @@ class IapBloc extends Bloc<IapEvent, IapState> {
       yield DataIapState(items);
     }
     if (event is MakeIapEvent) {
-      await FlutterInappPurchase.instance.
+
     }
   }
 }

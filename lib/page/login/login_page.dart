@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
                 }
               },
               icon: Icon(Icons.arrow_forward),
-              label: Text("New？"),
+              label: Text(I18n.of(context).Dont_have_account),
             ),
             body: SafeArea(
               child: BlocListener<LoginBloc, LoginState>(
@@ -171,32 +171,8 @@ class LoginPage extends StatelessWidget {
                                               .value.text
                                               .trim()));
                                 }),
-                            OutlineButton(
-                              child: Text(
-                                I18n
-                                    .of(context)
-                                    .Terms,
-                              ),
-                              onPressed: () async {
-                                final url =
-                                    'https://www.pixiv.net/terms/?page=term';
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {}
-                              },
-                            ),
-                            OutlineButton(
-                              child: Text(
-                                I18n
-                                    .of(context)
-                                    .Skip,
-                              ),
-                              onPressed: () async {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        PreviewPage()));
-                              },
-                            ),
+                   
+                    
                           ],
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -89,5 +89,9 @@
     "Tag": "label",
     "Append_to_query": "Join the queue",
     "Painter_id": "Artist ID",
-    "Search_word_or_paste_link": "Search for keywords or paste links"
+    "Search_word_or_paste_link": "Search for keywords or paste links",
+    "Nickname": "nickname",
+    "Nickname_can_be_change_anytime": "Nickname can be changed at any time",
+    "Dont_have_account": "Don't have account?",
+    "Input_Nickname": "Enter nickname"
 }
