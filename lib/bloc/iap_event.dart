@@ -1,4 +1,4 @@
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:flutter_inapp_purchase/modules.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -6,10 +6,10 @@ abstract class IapEvent {}
 
 class FetchIapEvent extends IapEvent {}
 class InitialEvent extends IapEvent{
-  
+
 }
 class MakeIapEvent extends IapEvent {
-  final ProductDetails productDetails;
+  final IAPItem productDetails;
 
   MakeIapEvent(this.productDetails);
 }

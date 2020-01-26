@@ -46,8 +46,8 @@ dependencies:
   zoom_widget: ^0.1.3
   bot_toast: ^2.2.1
   package_info: ^0.4.0+13
-  in_app_purchase: any
   json_serializable: ^3.2.5
+  flutter_inapp_purchase: ^2.1.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
