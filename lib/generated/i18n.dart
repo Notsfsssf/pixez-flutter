@@ -192,6 +192,8 @@ class I18n implements WidgetsLocalizations {
   String get Nickname_can_be_change_anytime => "昵称随时可变更";
   /// "没有账号？"
   String get Dont_have_account => "没有账号？";
+  /// "捐赠"
+  String get Donation => "捐赠";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -441,6 +443,9 @@ class _I18n_en_US extends I18n {
   /// "Don't have account?"
   @override
   String get Dont_have_account => "Don't have account?";
+  /// "Buy me a coffee"
+  @override
+  String get Donation => "Buy me a coffee";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

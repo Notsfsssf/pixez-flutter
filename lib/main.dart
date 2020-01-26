@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<IapBloc>(
-          create: (context) => IapBloc(),
+          create: (context) => IapBloc()..add(InitialEvent()),
         ),
         BlocProvider<RouteBloc>(
           create: (context) => RouteBloc(),
@@ -88,6 +88,7 @@ class MyApp extends StatelessWidget {
             ),
             darkTheme: ThemeData(
                 brightness: Brightness.dark, primarySwatch: Colors.orange),
+            supportedLocales: i18n.supportedLocales,
             localeResolutionCallback:
                 i18n.resolution(fallback: new Locale("zh", "CN")),
             localizationsDelegates: [

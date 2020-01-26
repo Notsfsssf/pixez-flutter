@@ -148,8 +148,9 @@ class SettingPage extends StatelessWidget {
                       children: <Widget>[
                         ListTile(
                           leading: Icon(Icons.lock),
-                          title: Text('UnLock'),
+                          title: Text(I18n.of(context).Donation),
                           onTap: (){
+                            
                                           Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => IapPage()));
                           },

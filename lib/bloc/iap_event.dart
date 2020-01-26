@@ -1,4 +1,4 @@
-import 'package:flutter_inapp_purchase/modules.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -13,3 +13,4 @@ class MakeIapEvent extends IapEvent {
 
   MakeIapEvent(this.productDetails);
 }
+class ThanksEvent extends IapEvent{}
