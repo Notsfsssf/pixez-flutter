@@ -1,6 +1,5 @@
-import 'package:equatable/equatable.dart';
 
-abstract class SuggestionEvent extends Equatable {
+abstract class SuggestionEvent {
   const SuggestionEvent();
 }
 
@@ -9,7 +8,4 @@ class FetchSuggestionsEvent extends SuggestionEvent {
 
   FetchSuggestionsEvent(this.query);
 
-  @override
-  // TODO: implement props
-  List<Object> get props => [query];
 }

@@ -14,7 +14,6 @@ import 'package:pixez/page/guid/guid_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
-import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,24 +29,7 @@ class LoginPage extends StatelessWidget {
             LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
         child: BlocBuilder<LoginBloc, LoginState>(builder: (context, snapshot) {
           return Scaffold(
-            floatingActionButton: FloatingActionButton.extended(
-              onPressed: () async {
-                final result = await Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return CreateUserPage();
-                }));
-                if (result != null && result is CreateUserResponse) {
-                  userNameController.text = result.body.userAccount;
-                  passWordController.text = result.body.password;
-                  BlocProvider.of<LoginBloc>(context).add(ClickToAuth(
-                      username: userNameController.value.text.trim(),
-                      password: passWordController.value.text.trim(),
-                      deviceToken: result.body.deviceToken));
-                }
-              },
-              icon: Icon(Icons.arrow_forward),
-              label: Text(I18n.of(context).Dont_have_account),
-            ),
+ 
             body: SafeArea(
               child: BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
@@ -55,9 +37,9 @@ class LoginPage extends StatelessWidget {
                     BlocProvider.of<AccountBloc>(context)
                         .add(FetchDataBaseEvent());
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            BlocListener<SaveBloc, SaveState>(
-                                listener: (context, state) {
+                        builder: (BuildContext context) => BlocListener<
+                                SaveBloc, SaveState>(
+                            listener: (context, state) {
                               if (state is SaveStartState) {
                                 BotToast.showNotification(
                                     onTap: () => Navigator.push(
@@ -77,23 +59,17 @@ class LoginPage extends StatelessWidget {
                                         ),
                                     title: (_) => Text(I18n.of(context).Saved));
                               if (state is SaveAlreadyGoingOnState)
-
                                 BotToast.showNotification(
-                                    onTap: () =>
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    ProgressPage())),
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => ProgressPage())),
                                     trailing: (_) => Icon(Icons.chevron_right),
                                     leading: (_) => Icon(Icons.save_alt),
-                                    title: (_) =>
-                                        Text(
-                                            I18n
-                                                .of(context)
-                                                .Already_in_query));
+                                    title: (_) => Text(
+                                        I18n.of(context).Already_in_query));
                             },
-                                child: HelloPage())));
+                            child: HelloPage())));
                   } else if (state is FailState) {
                     Scaffold.of(context).showSnackBar(
                       SnackBar(
@@ -171,8 +147,47 @@ class LoginPage extends StatelessWidget {
                                               .value.text
                                               .trim()));
                                 }),
-                   
-                    
+                            RaisedButton(
+                              onPressed: () async {
+                                final result = await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                  return CreateUserPage();
+                                }));
+                                if (result != null &&
+                                    result is CreateUserResponse) {
+                                  userNameController.text =
+                                      result.body.userAccount;
+                                  passWordController.text =
+                                      result.body.password;
+                                  BlocProvider.of<LoginBloc>(context).add(
+                                      ClickToAuth(
+                                          username: userNameController
+                                              .value.text
+                                              .trim(),
+                                          password: passWordController
+                                              .value.text
+                                              .trim(),
+                                          deviceToken:
+                                              result.body.deviceToken));
+                                }
+                              },
+                              child: Text(I18n.of(context).Dont_have_account),
+                            ),
+                                     FlatButton(
+                              child: Text(
+                                I18n
+                                    .of(context)
+                                    .Terms,
+                              ),
+                              onPressed: () async {
+                                final url =
+                                    'https://www.pixiv.net/terms/?page=term';
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {}
+                              },
+                            ),
                           ],
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.stretch,

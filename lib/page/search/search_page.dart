@@ -5,10 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
-import 'package:pixez/page/user/user_page.dart';
+import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -46,22 +45,12 @@ class _SearchPageState extends State<SearchPage>
         )
       ],
       child: Scaffold(
-        appBar: _buildAppBar(),
-        body: Stack(
-          children: <Widget>[
-            _buildBlocBuilder(),
-            Visibility(
-              visible: this._searchIcon.icon != Icons.search,
-              child: editString.isNotEmpty && _tabController.index == 0
-                  ? Container(
-                 
-                      child: Suggestions(
-                        query: editString,
-                      ))
-                  : Container(),
-            )
-          ],
-        ),
+        appBar:AppBar(title: Text(I18n.of(context).Search),actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchSuggestionPage()));
+          },)
+        ],),
+        body: _buildBlocBuilder(),
       ),
     );
   }
@@ -82,143 +71,7 @@ class _SearchPageState extends State<SearchPage>
   TextEditingController _filter;
   TabController _tabController;
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: _appBarTitle,
-      bottom: TabBar(
-        controller: _tabController,
-        tabs: <Widget>[
-          Tab(
-            child: Text(I18n
-                .of(context)
-                .Illust),
-          ),
-          Tab(
-            child: Text(I18n
-                .of(context)
-                .Illust_id
-                ),
-          ),
-          Tab(
-            child: Text(I18n
-                .of(context)
-                .Painter + "ID"),
-          ),
 
-        ],
-      ),
-      actions: <Widget>[
-        IconButton(
-          icon: _searchIcon,
-          onPressed: () {
-            setState(() {
-              if (this._searchIcon.icon == Icons.search) {
-                this._searchIcon = Icon(Icons.close);
-                this._appBarTitle = TextField(
-                  controller: _filter,
-                  onChanged: (query) {
-                    setState(() {
-                      editString = query;
-                    });
-                    if (query.startsWith('https://')) {
-                      Uri uri = Uri.parse(query);
-                      if (!uri.host.contains('pixiv')) {
-                        return;
-                      }
-                      final segment = uri.pathSegments;
-                      if (segment.length == 1 &&
-                          query.contains("/member.php?id=")) {
-                        final id = uri.queryParameters['id'];
-                        Navigator.of(context, rootNavigator: true)
-                            .push(MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return UserPage(
-                                id: int.parse(id),
-                              );
-                            }));
-                        _filter.clear();
-                      }
-                      if (segment.length == 2) {
-                        if (segment[0] == 'artworks') {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return PicturePage(null, int.parse(segment[1]));
-                              }));
-                          _filter.clear();
-                        }
-                        if (segment[0] == 'users') {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return UserPage(
-                                  id: int.parse(segment[1]),
-                                );
-                              }));
-                          _filter.clear();
-                        }
-                      }
-                    }
-                  },
-                  onSubmitted: (s) {
-                    var word = s.trim();
-                    if (word.isEmpty) return;
-
-                    switch (_tabController.index) {
-                      case 0:
-                        {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return SearchResultPage(
-                              word: word,
-                            );
-                          }));
-                        }
-                        break;
-                      case 1:
-                        {
-                          var id = int.tryParse(word);
-                          if (id != null) {
-                            Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                    builder: (_) => PicturePage(null, id)));
-                          } else {
-                            _filter.clear();
-                          }
-                        }
-                        break;
-                      case 2:
-                        {
-                          var id = int.tryParse(word);
-                          if (id != null) {
-                            Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                    builder: (_) => UserPage(id: id,)));
-                          } else {
-                            _filter.clear();
-                          }
-                        }
-                        break;
-                    }
-                  },
-               
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      hintText: I18n.of(context).Search_word_or_paste_link,
-                  )
-                );
-              } else {
-                this._searchIcon = Icon(Icons.search);
-                this._appBarTitle = Text(I18n.of(context).Search);
-                _filter.clear();
-                editString = '';
-              }
-            });
-          },
-        )
-      ],
-    );
-  }
 
   ListView _buildListView(List<Trend_tags> tags) {
     return ListView.builder(
@@ -314,49 +167,4 @@ class _SearchPageState extends State<SearchPage>
       );
 }
 
-class Suggestions extends StatefulWidget {
-  final String query;
 
-  const Suggestions({Key key, this.query}) : super(key: key);
-
-  @override
-  _SuggestionsState createState() => _SuggestionsState();
-}
-
-class _SuggestionsState extends State<Suggestions> {
-  @override
-  Widget build(BuildContext context) {
-    final SuggestionBloc _bloc =
-        SuggestionBloc(RepositoryProvider.of<ApiClient>(context));
-    _bloc.add(FetchSuggestionsEvent(widget.query));
-    return BlocBuilder<SuggestionBloc, SuggestionState>(
-      bloc: _bloc,
-      builder: (context, state) {
-        if (state is DataState) {
-          final tags = state.autoWords.tags;
-          return ListView.separated(
-            itemBuilder: (context, index) {
-              return ListTile(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return SearchResultPage(
-                      word: tags[index].name,
-                    );
-                  }));
-                },
-                title: Text(tags[index].name),
-                subtitle: Text(tags[index].translated_name ?? ""),
-              );
-            },
-            itemCount: tags.length,
-            separatorBuilder: (BuildContext context, int index) {
-              return Divider();
-            },
-          );
-        }
-        return Container();
-      },
-    );
-  }
-}
