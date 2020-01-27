@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -9,6 +10,7 @@ class PainterCard extends StatelessWidget {
   final UserPreviews user;
 
   const PainterCard({Key key, this.user}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -22,6 +24,7 @@ class PainterCard extends StatelessWidget {
       },
       child: Card(
         child: StaggeredGridView.countBuilder(
+          padding: EdgeInsets.all(0.0),
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           crossAxisCount: 3,
@@ -46,6 +49,7 @@ class PainterCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           PainterAvatar(

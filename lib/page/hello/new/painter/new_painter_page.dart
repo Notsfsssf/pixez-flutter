@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:pixez/component/fail_face.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/page/hello/new/painter/bloc/bloc.dart';
@@ -30,12 +29,11 @@ class _NewPainterPageState extends State<NewPainterPage> {
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _refreshController = EasyRefreshController();
-    BlocProvider.of<NewPainterBloc>(context)
-        .add(FetchPainterEvent(widget.id, widget.restrict));
   }
 
   @override
   void dispose() {
+    _refreshController?.dispose();
     super.dispose();
   }
 
@@ -59,40 +57,47 @@ class _NewPainterPageState extends State<NewPainterPage> {
             noMore: true,
           );
         }
+        if (state is FailState) {
+          _loadCompleter?.complete();
+          _loadCompleter = Completer();
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+          _refreshController.finishRefresh(success: false);
+        }
       },
       child: BlocBuilder<NewPainterBloc, NewPainterState>(
         condition: (pre, now) {
           return now is DataState;
         },
         builder: (context, state) {
-          if (state is DataState) {
-            return EasyRefresh(
-              controller: _refreshController,
-              onRefresh: () {
-                BlocProvider.of<NewPainterBloc>(context)
-                    .add(FetchPainterEvent(widget.id, widget.restrict));
-                return _refreshCompleter.future;
-              },
-              onLoad: () {
+          return EasyRefresh(
+            controller: _refreshController,
+            firstRefresh: true,
+            onRefresh: () {
+              BlocProvider.of<NewPainterBloc>(context)
+                  .add(FetchPainterEvent(widget.id, widget.restrict));
+              return _refreshCompleter.future;
+            },
+            onLoad: () {
+              if (state is DataState) {
                 BlocProvider.of<NewPainterBloc>(context)
                     .add(LoadMoreEvent(state.nextUrl, state.users));
                 return _loadCompleter.future;
-              },
-              child: ListView.builder(
-                itemCount: state.users.length,
-                itemBuilder: (BuildContext context, int index) {
-                  UserPreviews user = state.users[index];
-                  return PainterCard(
-                    user: user,
-                  );
-                },
-              ),
-            );
-          } 
-          if(state is FailState) return FailFace();
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+              }
+              return null;
+            },
+            child: state is DataState
+                ? ListView.builder(
+                    itemCount: state.users.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      UserPreviews user = state.users[index];
+                      return PainterCard(
+                        user: user,
+                      );
+                    },
+                  )
+                : Container(),
+          );
         },
       ),
     );

@@ -156,7 +156,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
       ),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.search),
+          icon: Icon(Icons.close),
           onPressed: () {
             _filter.clear();
           },
