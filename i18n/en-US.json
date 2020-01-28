@@ -81,7 +81,7 @@
     "Thanks": "thank",
     "Terms": "Terms of use",
     "Ban": "shield",
-    "Skip": "jump over",
+    "Skip": "Skip",
     "report": "Report",
     "Shielding_settings": "Blocking settings",
     "Report_Message": "If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible",
@@ -94,5 +94,7 @@
     "Nickname_can_be_change_anytime": "Nickname can be changed at any time",
     "Dont_have_account": "Don't have account?",
     "Input_Nickname": "Enter nickname",
-    "Donation": "Buy me a coffee"
+    "Donation": "Buy me a coffee",
+    "Go_to_Login": "Go to login",
+    "Login_message": "Sign in to discover more interesting content"
 }

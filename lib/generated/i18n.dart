@@ -34,6 +34,10 @@ class I18n implements WidgetsLocalizations {
 
   /// "登录"
   String get Login => "登录";
+  /// "前往登录"
+  String get Go_to_Login => "前往登录";
+  /// "登录，发现更多有趣的内容"
+  String get Login_message => "登录，发现更多有趣的内容";
   /// "保存"
   String get Save => "保存";
   /// "已保存"
@@ -209,6 +213,12 @@ class _I18n_en_US extends I18n {
   /// "Login"
   @override
   String get Login => "Login";
+  /// "Go to login"
+  @override
+  String get Go_to_Login => "Go to login";
+  /// "Sign in to discover more interesting content"
+  @override
+  String get Login_message => "Sign in to discover more interesting content";
   /// "Save"
   @override
   String get Save => "Save";
@@ -413,9 +423,9 @@ class _I18n_en_US extends I18n {
   /// "${name} has been Shielded by you"
   @override
   String Shield_message(String name) => "${name} has been Shielded by you";
-  /// "jump over"
+  /// "Skip"
   @override
-  String get Skip => "jump over";
+  String get Skip => "Skip";
   /// "Report"
   @override
   String get report => "Report";

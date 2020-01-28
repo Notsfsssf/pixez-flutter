@@ -25,6 +25,7 @@ class SettingPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(I18n.of(context).Setting),
       ),
+  
       body: BlocListener<AccountBloc, AccountState>(
         child: SafeArea(
           child: SingleChildScrollView(
@@ -146,14 +147,16 @@ class SettingPage extends StatelessWidget {
                   Card(
                     child: Column(
                       children: <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.lock),
-                          title: Text(I18n.of(context).Donation),
-                          onTap: (){
-                            
-                                          Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => IapPage()));
-                          },
+                        Visibility(
+                          visible: false,
+                          child: ListTile(
+                            leading: Icon(Icons.lock),
+                            title: Text(I18n.of(context).Donation),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => IapPage()));
+                            },
+                          ),
                         ),
                         ListTile(
                           leading: Icon(Icons.message),

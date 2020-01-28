@@ -51,7 +51,7 @@ class _HelloPageState extends State<HelloPage> {
               icon: Icon(CupertinoIcons.home),
               title: Text(I18n.of(context).Home)),
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.double_music_note),
+              icon: Icon(CupertinoIcons.shuffle),
               title: Text(I18n.of(context).Rank)),
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.eye),

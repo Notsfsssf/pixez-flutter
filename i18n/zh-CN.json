@@ -1,5 +1,7 @@
 {
   "Login": "登录",
+  "Go_to_Login": "前往登录",
+  "Login_message":"登录，发现更多有趣的内容",
   "Save": "保存",
   "Saved": "已保存",
   "Already_Saved": "已存在",

@@ -39,7 +39,7 @@ class IapBloc extends Bloc<IapEvent, IapState> {
     }
     if (event is FetchIapEvent) {
       List<IAPItem> items =
-          await FlutterInappPurchase.instance.getProducts(['donation']);
+          await FlutterInappPurchase.instance.getProducts(['support']);
       yield DataIapState(items, []);
     }
     if (event is MakeIapEvent) {

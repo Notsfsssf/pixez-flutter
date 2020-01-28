@@ -14,6 +14,7 @@ import 'package:pixez/page/guid/guid_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
+import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,21 +30,26 @@ class LoginPage extends StatelessWidget {
             LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
         child: BlocBuilder<LoginBloc, LoginState>(builder: (context, snapshot) {
           return Scaffold(
- 
+          
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
+            ),
+            extendBody: true,
+            extendBodyBehindAppBar: true,
             body: SafeArea(
               child: BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
                   if (state is SuccessState) {
                     BlocProvider.of<AccountBloc>(context)
                         .add(FetchDataBaseEvent());
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    Navigator.of(context,rootNavigator: true).pushReplacement(MaterialPageRoute(
                         builder: (BuildContext context) => BlocListener<
                                 SaveBloc, SaveState>(
                             listener: (context, state) {
                               if (state is SaveStartState) {
                                 BotToast.showNotification(
-                                    onTap: () => Navigator.push(
-                                        context,
+                                    onTap: () => Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (_) => ProgressPage())),
                                     trailing: (_) => Icon(Icons.chevron_right),
@@ -79,8 +85,8 @@ class LoginPage extends StatelessWidget {
                     );
                   }
                   if (state is NeedGuidState) {
-                    Navigator.push(
-                        context,
+                    Navigator.of(context,rootNavigator: true).push(
+                      
                         MaterialPageRoute(
                             builder: (BuildContext context) => GuidPage()));
                   }
@@ -174,11 +180,12 @@ class LoginPage extends StatelessWidget {
                               },
                               child: Text(I18n.of(context).Dont_have_account),
                             ),
-                                     FlatButton(
+                            RaisedButton(
+                              child: Text(I18n.of(context).Skip), onPressed: () => Navigator.of(context,rootNavigator: true).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => PreviewPage())),
+                            ),
+                            FlatButton(
                               child: Text(
-                                I18n
-                                    .of(context)
-                                    .Terms,
+                                I18n.of(context).Terms,
                               ),
                               onPressed: () async {
                                 final url =
