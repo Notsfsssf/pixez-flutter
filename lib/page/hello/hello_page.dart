@@ -48,17 +48,19 @@ class _HelloPageState extends State<HelloPage> {
         },
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
+              icon: Icon(CupertinoIcons.home),
+              title: Text(I18n.of(context).Home)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.assessment),
+              icon: Icon(CupertinoIcons.double_music_note),
               title: Text(I18n.of(context).Rank)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_day),
+              icon: Icon(CupertinoIcons.eye),
               title: Text(I18n.of(context).Quick_View)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
+              icon: Icon(CupertinoIcons.search),
+              title: Text(I18n.of(context).Search)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: Icon(CupertinoIcons.settings),
               title: Text(I18n.of(context).Setting)),
         ],
       ),
