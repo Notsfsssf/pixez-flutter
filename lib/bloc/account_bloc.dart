@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:pixez/models/account.dart';
+import 'package:pixez/page/account/select/account_select_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './bloc.dart';
 
@@ -32,7 +34,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       if (list.length <= 0) {
         yield NoneUserState();
       } else {
-        yield HasUserState(list[0]);
+        var pre = await SharedPreferences.getInstance();
+        var i = pre.getInt(AccountSelectBloc.ACCOUNT_SELECT_NUM);
+        yield HasUserState(list[i ?? 0]);
       }
     }
   }

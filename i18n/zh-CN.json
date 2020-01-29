@@ -86,10 +86,11 @@
   "Shielding_settings": "屏蔽设定",
   "Report_Message": "如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容",
   "Tag": "标签",
-  "Search_word_or_paste_link":"搜索关键词/ID或粘贴链接",
-  "Nickname":"昵称",
-  "Input_Nickname":"输入昵称",
-  "Nickname_can_be_change_anytime":"昵称随时可变更",
-  "Dont_have_account":"没有账号？",
-  "Donation":"捐赠"
+  "Search_word_or_paste_link": "搜索关键词/ID或粘贴链接",
+  "Nickname": "昵称",
+  "Input_Nickname": "输入昵称",
+  "Nickname_can_be_change_anytime": "昵称随时可变更",
+  "Dont_have_account": "没有账号？",
+  "Donation": "捐赠",
+  "Account_change": "账号切换"
 }

@@ -11,12 +11,12 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
+import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/iap/iap_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
-import 'package:pixez/page/user/user_page.dart';
 
 class SettingPage extends StatelessWidget {
   @override
@@ -44,15 +44,14 @@ class SettingPage extends StatelessWidget {
                                 ListTile(
                                   leading: PainterAvatar(
                                     url: state.list.userImage,
+                                    id: int.parse(state.list.userId),
                                   ),
                                   title: Text(state.list.name),
                                   subtitle: Text(state.list.mailAddress),
                                   onTap: () {
                                     Navigator.of(context, rootNavigator: true)
                                         .push(MaterialPageRoute(builder: (_) {
-                                      return UserPage(
-                                        id: int.parse(state.list.userId),
-                                      );
+                                      return AccountSelectPage();
                                     }));
                                   },
                                 ),

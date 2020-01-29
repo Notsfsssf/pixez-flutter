@@ -96,5 +96,6 @@
     "Input_Nickname": "Enter nickname",
     "Donation": "Buy me a coffee",
     "Go_to_Login": "Go to login",
-    "Login_message": "Sign in to discover more interesting content"
+    "Login_message": "Sign in to discover more interesting content",
+    "Account_change": "Account switching"
 }

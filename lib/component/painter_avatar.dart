@@ -17,7 +17,8 @@ class PainterAvatar extends StatefulWidget {
 
 class _PainterAvatarState extends State<PainterAvatar> {
   void pushToUserPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) {
+    Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
       return UserPage(id: widget.id);
     }));
   }
