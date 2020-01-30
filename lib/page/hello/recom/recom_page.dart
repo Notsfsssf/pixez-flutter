@@ -174,13 +174,16 @@ class _ReComPageState extends State<ReComPage> {
                                 children: <Widget>[
                                   Container(
                                     child: Padding(
-                                      child: Text(
-                                        I18n
-                                            .of(context)
-                                            .Recommend_for_you,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 30.0),
+                                      child: Container(
+                                        child: Text(
+                                          I18n
+                                              .of(context)
+                                              .Recommend_for_you,
+                                              overflow: TextOverflow.clip,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 30.0),
+                                        ),
                                       ),
                                       padding: EdgeInsets.only(
                                           left: 20.0, bottom: 10.0),

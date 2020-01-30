@@ -17,7 +17,6 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   String editString = "";
-  Widget _appBarTitle = Text("Search");
 
   @override
   void initState() {
