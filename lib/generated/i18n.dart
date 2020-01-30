@@ -50,6 +50,8 @@ class I18n implements WidgetsLocalizations {
   String get Append_to_query => "加入列队";
   /// "推荐"
   String get Recommend => "推荐";
+  /// "为你推荐"
+  String get Recommend_for_you => "为你推荐";
   /// "收藏"
   String get BookMark => "收藏";
   /// "作品"
@@ -188,22 +190,16 @@ class I18n implements WidgetsLocalizations {
   String get Tag => "标签";
   /// "搜索关键词/ID或粘贴链接"
   String get Search_word_or_paste_link => "搜索关键词/ID或粘贴链接";
-
   /// "昵称"
   String get Nickname => "昵称";
-
   /// "输入昵称"
   String get Input_Nickname => "输入昵称";
-
   /// "昵称随时可变更"
   String get Nickname_can_be_change_anytime => "昵称随时可变更";
-
   /// "没有账号？"
   String get Dont_have_account => "没有账号？";
-
   /// "捐赠"
   String get Donation => "捐赠";
-
   /// "账号切换"
   String get Account_change => "账号切换";
 }
@@ -245,6 +241,9 @@ class _I18n_en_US extends I18n {
   /// "Recommend"
   @override
   String get Recommend => "Recommend";
+  /// "recommended to you"
+  @override
+  String get Recommend_for_you => "recommended to you";
   /// "BookMark"
   @override
   String get BookMark => "BookMark";
@@ -455,20 +454,15 @@ class _I18n_en_US extends I18n {
   /// "Enter nickname"
   @override
   String get Input_Nickname => "Enter nickname";
-
   /// "Nickname can be changed at any time"
   @override
-  String get Nickname_can_be_change_anytime =>
-      "Nickname can be changed at any time";
-
+  String get Nickname_can_be_change_anytime => "Nickname can be changed at any time";
   /// "Don't have account?"
   @override
   String get Dont_have_account => "Don't have account?";
-
   /// "Buy me a coffee"
   @override
   String get Donation => "Buy me a coffee";
-
   /// "Account switching"
   @override
   String get Account_change => "Account switching";

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
+import 'package:pixez/bloc/account_bloc.dart';
+import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/bloc.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/ranking_mode_page.dart';
+import 'package:pixez/page/preview/preview_page.dart';
 
 class RankingPage extends StatefulWidget {
   @override
@@ -61,21 +64,27 @@ class _RankingPageState extends State<RankingPage>
           body: TabBarView(
               controller: _tabController,
               children: modeList.map((f) {
-                return BlocProvider<RankingModeBloc>(
-                  create: (BuildContext context) => RankingModeBloc(
-                      RepositoryProvider.of<ApiClient>(context)),
-                  child: BlocListener<RankingBloc, RankingState>(
-                    child: RankingModePage(
-                      mode: f,
-                      date: null,
-                    ),
-                    listener: (BuildContext context, state) {
-                      if (state is DateState) {
-                        BlocProvider.of<RankingModeBloc>(context)
-                            .add(FetchEvent(f, toRequestDate(state.dateTime)));
-                      }
-                    },
-                  ),
+                return BlocBuilder<AccountBloc,AccountState>(
+                  builder: (context, snapshot) {
+                    if(snapshot is HasUserState)
+                    return BlocProvider<RankingModeBloc>(
+                      create: (BuildContext context) => RankingModeBloc(
+                          RepositoryProvider.of<ApiClient>(context)),
+                      child: BlocListener<RankingBloc, RankingState>(
+                        child: RankingModePage(
+                          mode: f,
+                          date: null,
+                        ),
+                        listener: (BuildContext context, state) {
+                          if (state is DateState) {
+                            BlocProvider.of<RankingModeBloc>(context)
+                                .add(FetchEvent(f, toRequestDate(state.dateTime)));
+                          }
+                        },
+                      ),
+                    );
+                    return LoginInFirst();
+                  }
                 );
               }).toList()),
         );

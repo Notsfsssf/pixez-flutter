@@ -34,44 +34,50 @@ class SettingPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Card(
-                    child: BlocBuilder<AccountBloc, AccountState>(
-                      builder: (BuildContext context, AccountState state) {
-                        if (state is HasUserState) {
-                          return SingleChildScrollView(
-                            child: Column(
-                              children: <Widget>[
-                                ListTile(
-                                  leading: PainterAvatar(
-                                    url: state.list.userImage,
-                                    id: int.parse(state.list.userId),
-                                  ),
-                                  title: Text(state.list.name),
-                                  subtitle: Text(state.list.mailAddress),
-                                  onTap: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(MaterialPageRoute(builder: (_) {
-                                      return AccountSelectPage();
-                                    }));
-                                  },
+                  BlocBuilder<AccountBloc,AccountState>(
+                    builder: (context, snapshot) {
+                      if(snapshot is HasUserState)
+                      return Card(
+                        child: BlocBuilder<AccountBloc, AccountState>(
+                          builder: (BuildContext context, AccountState state) {
+                            if (state is HasUserState) {
+                              return SingleChildScrollView(
+                                child: Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: PainterAvatar(
+                                        url: state.list.userImage,
+                                        id: int.parse(state.list.userId),
+                                      ),
+                                      title: Text(state.list.name),
+                                      subtitle: Text(state.list.mailAddress),
+                                      onTap: () {
+                                        Navigator.of(context, rootNavigator: true)
+                                            .push(MaterialPageRoute(builder: (_) {
+                                          return AccountSelectPage();
+                                        }));
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.account_box),
+                                      title: Text(I18n.of(context).Account_Message),
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) =>
+                                                    AccountEditPage()));
+                                      },
+                                    )
+                                  ],
                                 ),
-                                ListTile(
-                                  leading: Icon(Icons.account_box),
-                                  title: Text(I18n.of(context).Account_Message),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                AccountEditPage()));
-                                  },
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                        return Container();
-                      },
-                    ),
+                              );
+                            }
+                            return Container();
+                          },
+                        ),
+                      );
+                      return Container();
+                    }
                   ),
                   Card(
                     child: Column(

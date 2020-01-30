@@ -7,7 +7,6 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/hello/hello_page.dart';
-import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -45,13 +44,13 @@ class _SplashPageState extends State<SplashPage>
                   listener: (_, state) {
                     BlocProvider.of<OnezeroBloc>(context)
                         .add(FetchOnezeroEvent());
-                    if (state is NoneUserState) {
-                      setState(() {
-                        helloWord = "(>○<)";
-                      });
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage()));
-                    }
+                    // if (state is NoneUserState) {
+                    //   setState(() {
+                    //     helloWord = "(>○<)";
+                    //   });
+                    //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //       builder: (BuildContext context) => LoginPage()));
+                    // }
                   },
                 ),
                 BlocListener<OnezeroBloc, OnezeroState>(
@@ -72,8 +71,8 @@ class _SplashPageState extends State<SplashPage>
                             .options
                             .baseUrl = 'https://$address';
                       }
-                      if (BlocProvider.of<AccountBloc>(context).state
-                          is HasUserState)
+                      // if (BlocProvider.of<AccountBloc>(context).state
+                      //     is HasUserState)
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -121,8 +120,8 @@ class _SplashPageState extends State<SplashPage>
                                     },
                                     child: HelloPage())));
                     } else if (state is FailOnezeroState) {
-                      if (BlocProvider.of<AccountBloc>(context).state
-                          is HasUserState)
+                      // if (BlocProvider.of<AccountBloc>(context).state
+                      //     is HasUserState)
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
