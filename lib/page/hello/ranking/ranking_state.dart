@@ -1,20 +1,17 @@
-import 'package:equatable/equatable.dart';
-
-abstract class RankingState extends Equatable {
+abstract class RankingState {
   const RankingState();
 }
 
 class InitialRankingState extends RankingState {
-
   @override
   List<Object> get props => [];
 }
-class  DateState extends RankingState {
 
- final DateTime dateTime;
+class DateState extends RankingState {
+  DateTime dateTime;
+  final List<String> modeList;
 
-  DateState(this.dateTime);
-  @override
-  List<Object> get props => [dateTime];
-  
+  DateState(this.dateTime, this.modeList);
 }
+
+class ModifyModeListState extends RankingState {}

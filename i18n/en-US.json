@@ -96,7 +96,11 @@
     "Input_Nickname": "Enter nickname",
     "Donation": "Buy me a coffee",
     "Go_to_Login": "Go to login",
-    "Login_message": "Sign in to discover more interesting content",
     "Account_change": "Account switching",
-    "Recommend_for_you": "recommended to you"
+    "Recommend_for_you": "recommended to you",
+    "Recommand_Tag": "Recommend Signature",
+    "Personal": "personal",
+    "Choice_you_like": "Choose the tags you like",
+    "My": "mine",
+    "Login_message": "Log in and discover a new world"
 }

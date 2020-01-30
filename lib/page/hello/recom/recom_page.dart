@@ -6,11 +6,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pixez/bloc/account_bloc.dart';
+import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
+import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 
 class ReComPage extends StatefulWidget {
@@ -22,6 +26,7 @@ class _ReComPageState extends State<ReComPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
   ScrollController _scrollController;
   EasyRefreshController _easyRefreshController;
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +54,7 @@ class _ReComPageState extends State<ReComPage> {
         BlocProvider<SpotlightBloc>(
           create: (BuildContext context) =>
               SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
-                ..add(FetchSpotlightEvent()),
+          ,
         )
       ],
       child: BlocListener<RecomBloc, RecomState>(
@@ -67,7 +72,34 @@ class _ReComPageState extends State<ReComPage> {
             }
           },
           child: Scaffold(
-              body: SafeArea(bottom: false, child: _buildBlocBuilder()))),
+              body: SafeArea(
+                  bottom: false,
+                  child: BlocBuilder<AccountBloc, AccountState>(
+                      builder: (context, snapshot) {
+                    if (snapshot is HasUserState)
+                      return _buildBlocBuilder();
+                    else
+                      return Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              child: Padding(
+                                child: Text(
+                                  I18n.of(context).Spotlight,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 30.0),
+                                ),
+                                padding:
+                                    EdgeInsets.only(left: 20.0, bottom: 10.0),
+                              ),
+                            ),
+                            Expanded(child: PreviewPage())
+                          ],
+                        ),
+                      );
+                  })))),
     );
   }
 
@@ -136,14 +168,42 @@ class _ReComPageState extends State<ReComPage> {
                                   scrollDirection: Axis.horizontal,
                                 ),
                               ),
-                              Padding(
-                                  child: Text(
-                                    I18n.of(context).Recommend,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 30.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    child: Padding(
+                                      child: Text(
+                                        I18n
+                                            .of(context)
+                                            .Recommend_for_you,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30.0),
+                                      ),
+                                      padding: EdgeInsets.only(
+                                          left: 20.0, bottom: 10.0),
+                                    ),
                                   ),
-                                  padding: EdgeInsets.all(20.0)),
+                                  Padding(
+                                    child: FlatButton(
+                                      child: Text(I18n
+                                          .of(context)
+                                          .More),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (
+                                                    BuildContext context) {
+                                                  return RankingPage();
+                                                }));
+                                      },
+                                    ),
+                                    padding: EdgeInsets.all(8.0),
+                                  )
+                                ],
+                              ),
                             ],
                           );
                         }
@@ -159,6 +219,7 @@ class _ReComPageState extends State<ReComPage> {
             : Center(),
         onRefresh: () async {
           BlocProvider.of<RecomBloc>(context).add(FetchEvent());
+          BlocProvider.of<SpotlightBloc>(context).add(FetchSpotlightEvent());
           return _refreshCompleter.future;
         },
         onLoad: () async {

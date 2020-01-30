@@ -29,16 +29,18 @@ class _RankingPageState extends State<RankingPage>
     "day_r18",
     "week_r18"
   ];
-  TabController _tabController;
+  var boolList = Map<String, bool>();
+
   @override
   void initState() {
-    _tabController = TabController(vsync: this, length: modeList.length);
+    modeList.forEach((f) {
+      boolList[f] = false;
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -55,54 +57,105 @@ class _RankingPageState extends State<RankingPage>
     return MultiBlocProvider(
       providers: <BlocProvider>[
         BlocProvider<RankingBloc>(
-          create: (context) => RankingBloc(),
+          create: (context) => RankingBloc()..add(DateChangeEvent(null)),
         ),
       ],
       child: BlocBuilder<RankingBloc, RankingState>(builder: (context, state) {
-        return Scaffold(
-          appBar: buildAppBar(context),
-          body: TabBarView(
-              controller: _tabController,
-              children: modeList.map((f) {
-                return BlocBuilder<AccountBloc,AccountState>(
-                  builder: (context, snapshot) {
-                    if(snapshot is HasUserState)
-                    return BlocProvider<RankingModeBloc>(
-                      create: (BuildContext context) => RankingModeBloc(
-                          RepositoryProvider.of<ApiClient>(context)),
-                      child: BlocListener<RankingBloc, RankingState>(
-                        child: RankingModePage(
-                          mode: f,
-                          date: null,
-                        ),
-                        listener: (BuildContext context, state) {
-                          if (state is DateState) {
-                            BlocProvider.of<RankingModeBloc>(context)
-                                .add(FetchEvent(f, toRequestDate(state.dateTime)));
-                          }
-                        },
-                      ),
-                    );
-                    return LoginInFirst();
-                  }
+        if (state is DateState) {
+          return DefaultTabController(
+            child: Scaffold(
+              appBar: buildAppBar(context, state.modeList),
+              body: TabBarView(
+                  children: state.modeList.map((f) {
+                    return BlocBuilder<AccountBloc, AccountState>(
+                        builder: (context, snapshot) {
+                          if (snapshot is HasUserState)
+                            return BlocProvider<RankingModeBloc>(
+                              create: (BuildContext context) =>
+                                  RankingModeBloc(
+                                      RepositoryProvider.of<ApiClient>(
+                                          context)),
+                              child: BlocListener<RankingBloc, RankingState>(
+                                child: RankingModePage(
+                                  mode: f,
+                                  date: null,
+                                ),
+                                listener: (BuildContext context, state) {
+                                  if (state is DateState) {
+                                    BlocProvider.of<RankingModeBloc>(context)
+                                        .add(
+                                        FetchEvent(
+                                            f, toRequestDate(state.dateTime)));
+                                  }
+                                },
+                              ),
+                            );
+                          return LoginInFirst();
+                        });
+                  }).toList()),
+            ), length: state.modeList.length,
+          );
+        }
+        if (state is ModifyModeListState) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(I18n
+                  .of(context)
+                  .Choice_you_like),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.save),
+                  onPressed: () {
+                    BlocProvider.of<RankingBloc>(context)
+                        .add(SaveChangeEvent(boolList));
+                  },
+                )
+              ],
+            ),
+            body: ListView.builder(
+              itemCount: I18n
+                  .of(context)
+                  .Mode_List
+                  .length,
+              itemBuilder: (BuildContext context, int index) {
+                var value = modeList[index];
+                return CheckboxListTile(
+                  title: Text(I18n
+                      .of(context)
+                      .Mode_List[index]),
+                  onChanged: (bool value) {
+                    setState(() {
+                      boolList[modeList[index]] = value;
+                    });
+                  },
+                  value: boolList[modeList[index]],
                 );
-              }).toList()),
-        );
+              },
+            ),
+          );
+        }
+        return Scaffold(
+          appBar: AppBar(), body: Center(child: CircularProgressIndicator(),),);
       }),
     );
   }
 
-  AppBar buildAppBar(BuildContext context) {
+  AppBar buildAppBar(BuildContext context,
+      List<String> modeList1) {
+    List<Widget> tabs = [];
+    modeList1.forEach((f) {
+      tabs.add(Tab(
+        text: I18n
+            .of(context)
+            .Mode_List[modeList.indexOf(f)],
+      ));
+    });
     return AppBar(
       title: TabBar(
-          isScrollable: true,
-          indicatorSize: TabBarIndicatorSize.label,
-          controller: _tabController,
-          tabs: I18n.of(context).Mode_List.map((f) {
-            return Tab(
-              text: f,
-            );
-          }).toList()),
+        isScrollable: true,
+        indicatorSize: TabBarIndicatorSize.label,
+        tabs: tabs,
+      ),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.date_range),
@@ -112,14 +165,20 @@ class _RankingPageState extends State<RankingPage>
                 maxDateTime: DateTime.now(),
                 initialDateTime: DateTime.now(),
                 pickerTheme: DateTimePickerTheme(
-                  itemTextStyle: theme.textTheme.subtitle,
+                    itemTextStyle: theme.textTheme.subtitle,
                     backgroundColor: theme.dialogBackgroundColor,
                     confirmTextStyle: theme.textTheme.subhead,
                     cancelTextStyle: theme.textTheme.subhead),
                 onConfirm: (DateTime dateTime, List<int> list) {
-              BlocProvider.of<RankingBloc>(context)
-                  .add(DateChangeEvent(dateTime));
-            });
+                  BlocProvider.of<RankingBloc>(context)
+                      .add(DateChangeEvent(dateTime));
+                });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.undo),
+          onPressed: () {
+            BlocProvider.of<RankingBloc>(context).add(ResetEvent());
           },
         )
       ],

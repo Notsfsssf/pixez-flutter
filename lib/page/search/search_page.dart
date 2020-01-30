@@ -45,11 +45,20 @@ class _SearchPageState extends State<SearchPage>
         )
       ],
       child: Scaffold(
-        appBar:AppBar(title: Text(I18n.of(context).Search),actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchSuggestionPage()));
-          },)
-        ],),
+        appBar: AppBar(
+          title: Text(I18n.of(context).Search),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SearchSuggestionPage()));
+              },
+            )
+          ],
+        ),
         body: _buildBlocBuilder(),
       ),
     );
@@ -58,12 +67,12 @@ class _SearchPageState extends State<SearchPage>
   Widget _buildBlocBuilder() {
     return BlocBuilder<TrendTagsBloc, TrendTagsState>(
         builder: (context, state) {
-      if (state is TrendTagDataState) {
-        return _buildListView(state.trendingTag.trend_tags);
-      } else
-        return Center(
-          child: CircularProgressIndicator(),
-        );
+          if (state is TrendTagDataState) {
+            return _buildListView(state.trendingTag.trend_tags);
+          } else
+            return Center(
+              child: CircularProgressIndicator(),
+            );
         });
   }
 
@@ -71,19 +80,27 @@ class _SearchPageState extends State<SearchPage>
   TextEditingController _filter;
   TabController _tabController;
 
-
-
   ListView _buildListView(List<Trend_tags> tags) {
     return ListView.builder(
-      itemCount: 3,
+      itemCount: 4,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(I18n.of(context).History),
+            child: Text(I18n
+                .of(context)
+                .History),
           );
         }
         if (index == 1) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(I18n
+                .of(context)
+                .Recommand_Tag),
+          );
+        }
+        if (index == 2) {
           return BlocBuilder<TagHistoryBloc, TagHistoryState>(
             builder: (BuildContext context, TagHistoryState state) {
               if (state is TagHistoryDataState &&
@@ -92,8 +109,9 @@ class _SearchPageState extends State<SearchPage>
                   padding: const EdgeInsets.all(5.0),
                   child: Wrap(
                     children: state.tagsPersistList
-                        .map((f) => ActionChip(
-                              label: Text(f.name),
+                        .map((f) =>
+                        ActionChip(
+                          label: Text(f.name),
                               onPressed: () {
                                 Navigator.of(context, rootNavigator: true)
                                     .push(MaterialPageRoute(builder: (context) {
@@ -166,5 +184,3 @@ class _SearchPageState extends State<SearchPage>
         }),
       );
 }
-
-

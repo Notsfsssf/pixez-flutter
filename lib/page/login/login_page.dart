@@ -14,23 +14,27 @@ import 'package:pixez/page/guid/guid_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
-import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'bloc/login_event.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passWordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController userNameController = TextEditingController(text: "");
-    TextEditingController passWordController = TextEditingController(text: "");
     return BlocProvider(
         create: (context) =>
             LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
         child: BlocBuilder<LoginBloc, LoginState>(builder: (context, snapshot) {
           return Scaffold(
-          
             appBar: AppBar(
               elevation: 0.0,
               backgroundColor: Colors.transparent,
@@ -44,28 +48,36 @@ class LoginPage extends StatelessWidget {
                       .add(FetchDataBaseEvent());
                   Navigator.of(context, rootNavigator: true).pushReplacement(
                       MaterialPageRoute(
-                          builder: (BuildContext context) => BlocListener<
-                                  SaveBloc, SaveState>(
-                              listener: (context, state) {
-                                if (state is SaveStartState) {
-                                  BotToast.showNotification(
-                                      onTap: () => Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) => ProgressPage())),
-                                      trailing: (_) =>
-                                          Icon(Icons.chevron_right),
-                                      leading: (_) => Icon(Icons.save_alt),
-                                      title: (_) => Text(
+                          builder: (BuildContext context) =>
+                              BlocListener<
+                                  SaveBloc,
+                                  SaveState>(
+                                  listener: (context, state) {
+                                    if (state is SaveStartState) {
+                                      BotToast.showNotification(
+                                          onTap: () =>
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          ProgressPage())),
+                                          trailing: (_) =>
+                                              Icon(Icons.chevron_right),
+                                          leading: (_) => Icon(Icons.save_alt),
+                                          title: (_) =>
+                                              Text(
                                           I18n.of(context).Append_to_query));
                                 }
                                 if (state is SaveSuccesState)
                                   BotToast.showNotification(
-                                      leading: (_) => Icon(
+                                      leading: (_) =>
+                                          Icon(
                                             Icons.check_circle,
                                             color: Colors.green,
                                           ),
                                       title: (_) =>
-                                          Text(I18n.of(context).Saved));
+                                          Text(I18n
+                                              .of(context)
+                                              .Saved));
                                 if (state is SaveAlreadyGoingOnState)
                                   BotToast.showNotification(
                                       onTap: () => Navigator.push(
@@ -95,7 +107,10 @@ class LoginPage extends StatelessWidget {
               },
               child: Padding(
                 padding:
-                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                EdgeInsets.only(top: MediaQuery
+                    .of(context)
+                    .padding
+                    .top),
                 child: SingleChildScrollView(
                     padding: EdgeInsets.all(0),
                     child: Column(
@@ -185,9 +200,6 @@ class LoginPage extends StatelessWidget {
                                     }
                                   },
                                   child: Text(I18n.of(context).Dont_have_account),
-                                ),
-                                RaisedButton(
-                                  child: Text(I18n.of(context).Skip), onPressed: () => Navigator.of(context,rootNavigator: true).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => PreviewPage())),
                                 ),
                                 FlatButton(
                                   child: Text(

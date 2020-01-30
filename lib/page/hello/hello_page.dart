@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pixez/bloc/account_bloc.dart';
+import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
-import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
+import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 
 class HelloPage extends StatefulWidget {
@@ -18,9 +21,17 @@ class _HelloPageState extends State<HelloPage> {
   PageController _pageController;
   List<Widget> _widgetOptions = <Widget>[
     ReComPage(),
-    RankingPage(),
     NewPage(),
-    SearchPage(),
+    BlocBuilder<AccountBloc, AccountState>(builder: (context, snapshot) {
+      if (snapshot is HasUserState) return SearchPage();
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(I18n.of(context).Search),
+          actions: <Widget>[Icon(Icons.search)],
+        ),
+        body: LoginInFirst(),
+      );
+    }),
     SettingPage()
   ];
 
@@ -49,19 +60,24 @@ class _HelloPageState extends State<HelloPage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
-              title: Text(I18n.of(context).Home)),
+              title: Text(I18n
+                  .of(context)
+                  .Home)),
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.shuffle),
-              title: Text(I18n.of(context).Rank)),
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.eye),
-              title: Text(I18n.of(context).Quick_View)),
+              icon: Icon(CupertinoIcons.profile_circled),
+              title: Text(I18n
+                  .of(context)
+                  .My)),
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.search),
-              title: Text(I18n.of(context).Search)),
+              title: Text(I18n
+                  .of(context)
+                  .Search)),
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.settings),
-              title: Text(I18n.of(context).Setting)),
+              title: Text(I18n
+                  .of(context)
+                  .Setting)),
         ],
       ),
       tabBuilder: (BuildContext context, int index) {
