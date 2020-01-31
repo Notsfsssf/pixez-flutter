@@ -9,8 +9,6 @@ class InitialEvent extends IapEvent{
 
 }
 class MakeIapEvent extends IapEvent {
-  final IAPItem productDetails;
-
-  MakeIapEvent(this.productDetails);
+MakeIapEvent();
 }
 class ThanksEvent extends IapEvent{}

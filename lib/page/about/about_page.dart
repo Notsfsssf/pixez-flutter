@@ -43,12 +43,14 @@ class AboutPage extends StatelessWidget {
   }
 
   Widget _buildInfo(BuildContext context) {
-    return     BlocListener<IapBloc, IapState>(
-              listener: (context, state) {
-                if (state is ThanksState) {
-                  BotToast.showNotification(title: (_) => Text('Thanks!'));
-                }
-              },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<IapBloc, IapState>(listener: (context, state) {
+          if (state is ThanksState) {
+            BotToast.showNotification(title: (_) => Text('Thanks!'));
+          }
+        }),
+      ],
       child: BlocBuilder<AboutBloc, AboutState>(builder: (context, snapshot) {
         return ListView(
           children: <Widget>[
@@ -92,43 +94,17 @@ class AboutPage extends StatelessWidget {
               title: Text(I18n.of(context).Thanks),
               subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
             ),
-            BlocBuilder<IapBloc, IapState>(
-                condition: (pre, now) => now is DataIapState,
-                builder: (context, snapshot) {
-                  return snapshot is DataIapState
-                      ? ListView.builder(
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index < snapshot.products.length) {
-                            var product = snapshot.products[index];
-                            print(product);
-                            return Card(
-                              child: ListTile(
-                                subtitle: Text(
-                                    snapshot.products[index].description),
-                                title: Text(product.title),
-                                trailing: Text('${product.localizedPrice}'),
-                                onTap: () {
-                                  BlocProvider.of<IapBloc>(context)
-                                      .add(MakeIapEvent(product));
-                                },
-                              ),
-                            );
-                          }
-                          var i = index - snapshot.products.length;
-                          var item = snapshot.items[i];
-                          return Card(
-                            child: ListTile(
-                              title: Text(item.productId),
-                              onTap: () async {},
-                            ),
-                          );
-                        },
-                        itemCount: snapshot.products.length +
-                            snapshot.items.length,
-                      )
-                      : Container();
-                })
+            Card(
+              child: ListTile(
+                subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
+                title: Text('支持开发者工作'),
+                trailing: Text('12￥'),
+                onTap: () {
+                  BotToast.showText(text: 'try to Purchase');
+                  BlocProvider.of<IapBloc>(context).add(MakeIapEvent());
+                },
+              ),
+            )
           ],
         );
       }),

@@ -49,7 +49,7 @@ class IapBloc extends Bloc<IapEvent, IapState> {
         await FlutterInappPurchase.instance.finishTransaction(i);
       }
       FlutterInappPurchase.instance
-          .requestPurchase(event.productDetails.productId);
+          .requestPurchase('support');
       add(FetchIapEvent());
     }
   }
