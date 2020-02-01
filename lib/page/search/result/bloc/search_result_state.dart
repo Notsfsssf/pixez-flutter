@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:pixez/models/illust.dart';
 
-abstract class SearchResultState extends Equatable {
+abstract class SearchResultState {
   const SearchResultState();
 }
 
@@ -15,12 +15,11 @@ class DataState extends SearchResultState {
 
   DataState(this.illusts, this.nextUrl);
 
-  @override
-  // TODO: implement props
-  List<Object> get props => [illusts, nextUrl];
 }
 
 class ShowBottomSheetState extends SearchResultState {
-  @override
-  List<Object> get props => [];
+
 }
+class RefreshFailState extends SearchResultState{}
+class LoadEndState extends SearchResultState{}
+class LoadMoreFailState extends SearchResultState{}

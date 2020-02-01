@@ -44,7 +44,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               await client.postUnFollowUser(event.userDetail.user.id);
           yield UserDataState(
               event.userDetail..user.is_followed = false, "${event.restrict}");
-        } catch (e) {}
+        } catch (e) {
+        }
       } else {
         try {
           Response response = await client.postFollowUser(

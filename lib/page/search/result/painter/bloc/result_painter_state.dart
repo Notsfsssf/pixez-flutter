@@ -14,3 +14,9 @@ class  ResultPainterDataState extends ResultPainterState {
 class  LoadEndState extends ResultPainterState{
   
 }
+class LoadMoreFailState extends ResultPainterState{
+
+}
+class RefreshFailState extends ResultPainterState{
+
+}

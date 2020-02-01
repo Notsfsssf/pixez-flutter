@@ -5,3 +5,6 @@ abstract class IllustEvent {}
 class FetchIllustDetailEvent extends IllustEvent{
 
 }
+class FollowUserIllustEvent extends IllustEvent{
+
+}

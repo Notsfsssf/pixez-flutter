@@ -32,6 +32,7 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
           return;
         }
         print(e);
+        yield RefreshFailState();
       }
     }
     if (event is FetchEvent) {
@@ -58,8 +59,12 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataState(ill, recommend.nextUrl);
-        } catch (e) {}
-      } else {}
+        } catch (e) {
+          yield LoadMoreFailState();
+        }
+      } else {
+        yield LoadEndState();
+      }
     }
     if (event is ShowBottomSheetEvent) {
       yield ShowBottomSheetState();

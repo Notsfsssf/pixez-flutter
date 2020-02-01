@@ -21,58 +21,63 @@ class SearchResultPainerPage extends StatelessWidget {
     _refreshController = EasyRefreshController();
     return BlocProvider<ResultPainterBloc>(
       create: (context) =>
-          ResultPainterBloc(RepositoryProvider.of<ApiClient>(context))
-            ..add(FetchEvent(word)),
+          ResultPainterBloc(RepositoryProvider.of<ApiClient>(context)),
       child: BlocListener<ResultPainterBloc, ResultPainterState>(
         listener: (BuildContext context, state) {
-          _loadCompleter.complete();
-          _refreshCompleter.complete();
-          _refreshCompleter = Completer<void>();
-          _loadCompleter = Completer<void>();
+          if(state is ResultPainterDataState){
+            _refreshController.finishRefresh(success: true);
+            _loadCompleter.complete();
+            _refreshCompleter.complete();
+            _refreshCompleter = Completer<void>();
+            _loadCompleter = Completer<void>();
+          }
+          if (state is RefreshFailState) {
+            _refreshController.finishRefresh(success: false);
+            _loadCompleter.complete();
+            _refreshCompleter.complete();
+            _refreshCompleter = Completer<void>();
+            _loadCompleter = Completer<void>();
+          }
           if (state is LoadEndState) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text("End"),
-            ));
+            _refreshController.finishLoad(success: true, noMore: true);
           }
         },
         child: BlocBuilder<ResultPainterBloc, ResultPainterState>(
           condition: (pre, now) {
-            print(now is ResultPainterState);
             return now is ResultPainterDataState;
           },
           builder: (BuildContext context, ResultPainterState state) {
-            if (state is ResultPainterDataState)
-              return EasyRefresh(
-                onRefresh: () async {
-                  BlocProvider.of<ResultPainterBloc>(context)
-                      .add(FetchEvent(word));
-                  return _refreshCompleter.future;
-                },
-                controller: _refreshController,
-                child: ListView.builder(
-                  itemCount: state.userPreviews.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return PainterCard(
-                      user: state.userPreviews[index],
-                    );
-                  },
-                ),
-                onLoad: () async {
+            return EasyRefresh(
+              onRefresh: () async {
+                BlocProvider.of<ResultPainterBloc>(context)
+                    .add(FetchEvent(word));
+                return _refreshCompleter.future;
+              },
+              firstRefresh: true,
+              controller: _refreshController,
+              child: state is ResultPainterDataState
+                  ? ListView.builder(
+                      itemCount: state.userPreviews.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return PainterCard(
+                          user: state.userPreviews[index],
+                        );
+                      },
+                    )
+                  : Container(),
+              onLoad: () async {
+                if (state is ResultPainterDataState) {
                   BlocProvider.of<ResultPainterBloc>(context)
                       .add(LoadMoreEvent(state.nextUrl));
-                  return _loadCompleter.future;
-                },
-              );
-            else
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+                  BlocProvider.of<ResultPainterBloc>(context)
+                      .add(LoadMoreEvent(state.nextUrl));
+                }
+                return;
+              },
+            );
           },
         ),
       ),
     );
   }
-
 }
-
-

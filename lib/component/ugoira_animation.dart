@@ -1,68 +1,89 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 
+/*class MyPainter extends CustomPainter {
+  final List<ui.Image> assetList;
+  final List<Frame> frames;
+  Paint paint1 = Paint();
+
+
+  MyPainter(this.assetList, this.frames);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawImage(
+        assetList.first, Offset(0, 0), paint1);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return oldDelegate!=this;
+  }
+}
+
 class UgoiraAnima extends StatefulWidget {
-  final List<FileSystemEntity> imageCaches;
+  final List<FileSystemEntity> assetList;
+
   final List<Frame> frames;
 
-  UgoiraAnima(this.imageCaches, this.frames, {Key key}) : super(key: key);
+  const UgoiraAnima(
+      {Key key,
+        @required this.assetList,
+
+        @required this.frames})
+      : super(key: key);
 
   @override
   _UgoiraAnimaState createState() => _UgoiraAnimaState();
 }
 
 class _UgoiraAnimaState extends State<UgoiraAnima> {
-  bool _disposed;
-  Duration _duration;
-  int _imageIndex;
-  FileSystemEntity _container;
-
+  List<ui.Image> assetList=[];
+  bool imok=false;
   @override
   void initState() {
     super.initState();
-    _disposed = false;
-    _duration = Duration(milliseconds: widget.frames.first.delay);
-    _imageIndex = 0;
-    _updateImage();
+    loading();
   }
-
-  void _updateImage() {
-    if (_disposed || widget.imageCaches.isEmpty) {
-      return;
-    }
-
-    setState(() {
-      if (_imageIndex >= widget.imageCaches.length) {
-        _imageIndex = 0;
-      }
-      _container = widget.imageCaches[_imageIndex];
-      _imageIndex++;
-    });
-    _duration = Duration(
-        milliseconds: _imageIndex < widget.frames.length
-            ? widget.frames[_imageIndex].delay
-            : widget.frames.first.delay);
-    Future.delayed(_duration, () {
-      _updateImage();
-    });
+  Future<ui.Image> _loadImage(File file) async {
+    final data = await file.readAsBytes();
+    return await decodeImageFromList(data);
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _disposed = true;
-    widget.imageCaches.clear();
-  }
-
+  double width;
+  double height;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _container != null ? Image.file(_container) : Text("load"),
+    if(imok)
+      return FittedBox(
+        child: SizedBox(
+          width:width,
+          height:height,
+          child: CustomPaint(
+            painter: MyPainter(assetList, widget.frames),
+          ),
+        ),
+      );
+    else return Container(
+      height: 80,
     );
   }
-}
+
+  void loading() async{
+    for (var i in widget.assetList){
+      var image = await _loadImage(File(i.path));
+      width = image.width.toDouble();
+      height =image.height.toDouble();
+      assetList.add(image);
+
+    }
+    setState(() {
+      imok=true;
+    });
+  }
+}*/
 
 // 帧动画Image
 class FrameAnimationImage extends StatefulWidget {
@@ -70,9 +91,9 @@ class FrameAnimationImage extends StatefulWidget {
   final double width;
   final double height;
   int interval = 200;
-
+final Illusts illusts;
   FrameAnimationImage(this._assetList,
-      {this.width, this.height, this.interval});
+      {this.width, this.height, this.interval,this.illusts,});
 
   @override
   State<StatefulWidget> createState() {
@@ -129,22 +150,27 @@ class _FrameAnimationImageState extends State<FrameAnimationImage>
 
     List<Widget> images = [];
     // 把所有图片都加载进内容，否则每一帧加载时会卡顿
+    double width,height;
     for (int i = 0; i < widget._assetList.length; ++i) {
       if (i != ix) {
-        images.add(Image.file(
+     var image=   Image.file(
           File(widget._assetList[i].path),
-          width: 0,
-          height: 0,
-        ));
+       width: widget.illusts.width.toDouble(),
+       height:widget.illusts.height.toDouble() ,
+        );
+  if(i==0){
+    width = image.width;
+    height =image.height;
+  }
+        images.add(image);
       }
     }
 
     images.add(Image.file(
       File(widget._assetList[ix].path),
-      width: widget.width,
-      height: widget.height,
+      fit: BoxFit.fitWidth,
     ));
 
-    return Stack(alignment: AlignmentDirectional.center, children: images);
+    return FittedBox(child: SizedBox(child: Stack( children: images),width: width,height: height,));
   }
 }

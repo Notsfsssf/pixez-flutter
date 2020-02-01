@@ -24,7 +24,7 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
         yield ResultPainterDataState(
             userPreviewsResponse.user_previews, userPreviewsResponse.next_url);
       } catch (e) {
-        print(e);
+        yield RefreshFailState();
       }
     }
     if (event is LoadMoreEvent) {
@@ -36,7 +36,7 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
           yield ResultPainterDataState(userPreviewsResponse.user_previews,
               userPreviewsResponse.next_url);
         } catch (e) {
-          print(e);
+        yield LoadMoreFailState();
         }
       }
       else{

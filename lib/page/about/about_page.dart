@@ -8,6 +8,7 @@ import 'package:pixez/bloc/iap_state.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/about/bloc/about_bloc.dart';
 import 'package:pixez/page/about/bloc/bloc.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatelessWidget {
@@ -65,6 +66,12 @@ class AboutPage extends StatelessWidget {
               leading: Icon(Icons.rate_review),
               title: Text('如果你觉得PixEz还不错'),
               subtitle: Text('好评鼓励一下吧！'),
+              onTap: () async {
+                var url ='https://apps.apple.com/cn/app/pixez/id1494435126';
+                if (await canLaunch(url)) {
+                await launch(url);
+                } else {}
+              },
             ),
             Visibility(
               visible: false,
@@ -93,6 +100,14 @@ class AboutPage extends StatelessWidget {
               leading: Icon(Icons.favorite),
               title: Text(I18n.of(context).Thanks),
               subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
+            ),
+            ListTile(
+              leading: Icon(Icons.share),
+              title: Text(I18n.of(context).Share),
+              subtitle: Text(I18n.of(context).Share_this_app_link),
+              onTap: (){
+                Share.share('https://apps.apple.com/cn/app/pixez/id1494435126');
+              },
             ),
             Card(
               child: ListTile(

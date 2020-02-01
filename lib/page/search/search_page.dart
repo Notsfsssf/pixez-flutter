@@ -66,12 +66,7 @@ class _SearchPageState extends State<SearchPage>
   Widget _buildBlocBuilder() {
     return BlocBuilder<TrendTagsBloc, TrendTagsState>(
         builder: (context, state) {
-          if (state is TrendTagDataState) {
-            return _buildListView(state.trendingTag.trend_tags);
-          } else
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return _buildListView(state);
         });
   }
 
@@ -79,7 +74,7 @@ class _SearchPageState extends State<SearchPage>
   TextEditingController _filter;
   TabController _tabController;
 
-  ListView _buildListView(List<Trend_tags> tags) {
+  ListView _buildListView(TrendTagsState state) {
     return ListView.builder(
       itemCount: 4,
       itemBuilder: (BuildContext context, int index) {
@@ -136,7 +131,9 @@ class _SearchPageState extends State<SearchPage>
             },
           );
         } else {
-          return _buildGrid(context, tags);
+          if(state is TrendTagDataState)
+          return _buildGrid(context, state.trendingTag.trend_tags);
+          else   return Container();
         }
       },
     );
