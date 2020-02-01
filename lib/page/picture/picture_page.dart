@@ -13,7 +13,6 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/ugoira_animation.dart';
-import 'package:pixez/component/ugoira_animation.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
@@ -580,6 +579,9 @@ class _PicturePageState extends State<PicturePage> {
                 height: MediaQuery.of(context).padding.top - 56 //??
                 );
           }
+          if (index == count + 1) {
+            return _buildDetail(context, illust);
+          }
           if (index == count + 2) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -589,9 +591,7 @@ class _PicturePageState extends State<PicturePage> {
           if (index == count + 3) {
             return _buildGridView(illustState);
           }
-          if (index == count + 1) {
-            return _buildDetail(context, illust);
-          }
+
           if (illust.type == "ugoira" && index == 1) {
             _playButtonVisible = true;
 
@@ -639,7 +639,7 @@ class _PicturePageState extends State<PicturePage> {
                             onTap: () async {
                               Navigator.of(context).pop();
                               BlocProvider.of<SaveBloc>(context)
-                                  .add(SaveImageEvent(illust, index));
+                                  .add(SaveImageEvent(illust, index - 1));
                             },
                             title: Text(I18n.of(context).Save),
                           ),
@@ -662,19 +662,19 @@ class _PicturePageState extends State<PicturePage> {
                 return ZoomPage(
                   url: illust.metaPages.isEmpty
                       ? illust.imageUrls.large
-                      : illust.metaPages[index].imageUrls.large,
+                      : illust.metaPages[index - 1].imageUrls.large,
                 );
               }));
             },
             child: illust.metaPages.isEmpty
                 ? Hero(
-                    child: PixivImage(
-                      illust.imageUrls.large,
-                      placeHolder: illust.imageUrls.medium,
-                    ),
-                    tag: illust.imageUrls.medium,
-                  )
-                : _buildIllustsItem(index, illust),
+              child: PixivImage(
+                illust.imageUrls.large,
+                placeHolder: illust.imageUrls.medium,
+              ),
+              tag: illust.imageUrls.medium,
+            )
+                : _buildIllustsItem(index - 1, illust),
           );
         });
   }
