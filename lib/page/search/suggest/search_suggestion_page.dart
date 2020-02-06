@@ -18,6 +18,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
     with SingleTickerProviderStateMixin {
   TextEditingController _filter;
   TabController _tabController;
+
   @override
   void initState() {
     _filter = TextEditingController();
@@ -37,21 +38,27 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
     return BlocProvider<SuggestionBloc>(
       create: (BuildContext context) =>
           SuggestionBloc(RepositoryProvider.of<ApiClient>(context)),
-      child: BlocBuilder<SuggestionBloc,SuggestionState>(
-        builder: (context, snapshot) {
-          return Scaffold(
-            appBar: _buildAppBar(context),
-            body: Container(child: Suggestions()),
-          );
-        }
-      ),
+      child: BlocBuilder<SuggestionBloc, SuggestionState>(
+          builder: (context, snapshot) {
+        return Scaffold(
+          appBar: _buildAppBar(context),
+          body: Container(child: Suggestions()),
+        );
+      }),
     );
   }
+
+  FocusNode focusNode = FocusNode();
 
   AppBar _buildAppBar(context) {
     return AppBar(
       title: TextField(
           controller: _filter,
+          focusNode: focusNode,
+          autofocus: true,
+          onTap: () {
+            FocusScope.of(context).requestFocus(focusNode);
+          },
           onChanged: (query) {
             if (query.startsWith('https://')) {
               Uri uri = Uri.parse(query);
@@ -91,7 +98,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
             var word = query.trim();
             if (word.isEmpty) return;
 
-          BlocProvider.of<SuggestionBloc>(context).add(FetchSuggestionsEvent(word));
+            BlocProvider.of<SuggestionBloc>(context)
+                .add(FetchSuggestionsEvent(word));
           },
           onSubmitted: (s) {
             var word = s.trim();
@@ -101,11 +109,11 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
               case 0:
                 {
                   Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return SearchResultPage(
-                      word: word,
-                    );
-                  }));
+                      .push(MaterialPageRoute(
+                      builder: (context) =>
+                          SearchResultPage(
+                            word: word,
+                          )));
                 }
                 break;
               case 1:
@@ -137,7 +145,6 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
             }
           },
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
             hintText: I18n.of(context).Search_word_or_paste_link,
           )),
       bottom: TabBar(
@@ -184,7 +191,7 @@ class _SuggestionsState extends State<Suggestions> {
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
+                  FocusScope.of(context).unfocus();
                   Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(builder: (context) {
                     return SearchResultPage(

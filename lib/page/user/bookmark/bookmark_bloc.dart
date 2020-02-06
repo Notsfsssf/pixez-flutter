@@ -20,8 +20,8 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
   ) async* {
     if (event is FetchBookmarkEvent) {
       try {
-        final response =
-        await client.getBookmarksIllust(event.user_id, event.type, null);
+        final response = await client.getBookmarksIllust(
+            event.user_id, event.type, event.tags);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataBookmarkState(recommend.illusts, recommend.nextUrl);
       } catch (e) {

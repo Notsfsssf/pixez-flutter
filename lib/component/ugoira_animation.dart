@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/models/ugoira_metadata_response.dart';
 
 /*class MyPainter extends CustomPainter {
   final List<ui.Image> assetList;
@@ -91,9 +90,15 @@ class FrameAnimationImage extends StatefulWidget {
   final double width;
   final double height;
   int interval = 200;
-final Illusts illusts;
-  FrameAnimationImage(this._assetList,
-      {this.width, this.height, this.interval,this.illusts,});
+  final Illusts illusts;
+
+  FrameAnimationImage(
+    this._assetList, {
+    this.width,
+    this.height,
+    this.interval,
+    this.illusts,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -150,18 +155,16 @@ class _FrameAnimationImageState extends State<FrameAnimationImage>
 
     List<Widget> images = [];
     // 把所有图片都加载进内容，否则每一帧加载时会卡顿
-    double width,height;
+    double width, height;
     for (int i = 0; i < widget._assetList.length; ++i) {
       if (i != ix) {
-     var image=   Image.file(
+        var image = Image.file(
           File(widget._assetList[i].path),
-       width: widget.illusts.width.toDouble(),
-       height:widget.illusts.height.toDouble() ,
         );
-  if(i==0){
-    width = image.width;
-    height =image.height;
-  }
+        if (i == 0) {
+          width = image.width;
+          height = image.height;
+        }
         images.add(image);
       }
     }
@@ -171,6 +174,6 @@ class _FrameAnimationImageState extends State<FrameAnimationImage>
       fit: BoxFit.fitWidth,
     ));
 
-    return FittedBox(child: SizedBox(child: Stack( children: images),width: width,height: height,));
+    return Stack(children: images);
   }
 }

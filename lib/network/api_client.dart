@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -142,7 +143,8 @@ class ApiClient {
 //  @GET("/v1/user/bookmarks/illust")
 //  fun getLikeIllust(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String, @Query("tag") paramString3: String?): Observable<IllustNext>
 
-  Future<Response> getBookmarksIllust(int user_id, String restrict, tag) async {
+  Future<Response> getBookmarksIllust(
+      int user_id, String restrict, String tag) async {
     return httpClient.get("/v1/user/bookmarks/illust",
         queryParameters:
             notNullMap({"user_id": user_id, "restrict": restrict, "tag": tag}));
@@ -320,6 +322,19 @@ class ApiClient {
       queryParameters: notNullMap({"illust_id": illust_id}),
     );
     return UgoiraMetadataResponse.fromJson(result.data);
+  }
+
+/*
+  @GET("v1/user/bookmark-tags/illust")
+  fun getIllustBookmarkTags(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String): Observable<BookMarkTagsResponse>
+*/
+  Future<IllustBookmarkTagsResponse> getUserBookmarkTagsIllust(int user_id,
+      {String restrict = 'public'}) async {
+    final result = await httpClient.get(
+      "/v1/user/bookmark-tags/illust",
+      queryParameters: notNullMap({"user_id": user_id, "restrict": restrict}),
+    );
+    return IllustBookmarkTagsResponse.fromJson(result.data);
   }
 
   //  @GET("v1/walkthrough/illusts")

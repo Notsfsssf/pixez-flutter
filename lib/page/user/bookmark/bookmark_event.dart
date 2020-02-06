@@ -8,8 +8,9 @@ abstract class BookmarkEvent extends Equatable {
 class FetchBookmarkEvent extends BookmarkEvent {
   final int user_id;
   final String type;
+  final String tags;
 
-  FetchBookmarkEvent(this.user_id, this.type);
+  FetchBookmarkEvent(this.user_id, this.type, {this.tags});
 
   @override
   // TODO: implement props
