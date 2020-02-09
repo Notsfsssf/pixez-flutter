@@ -37,20 +37,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
     AccountState accountState = BlocProvider.of<AccountBloc>(context).state;
     return BlocListener<BookmarkBloc, BookmarkState>(
       listener: (context, state) {
-        if (state is SuccessRefreshState) {
-          _easyRefreshController.finishRefresh(success: true);
+        if (state is RefreshState) {
+          _easyRefreshController.finishRefresh(success: state.success);
         }
-        if (state is LoadMoreSuccessState) {
-          _easyRefreshController.finishLoad(success: true);
-        }
-        if (state is FailWorkState) {
-          _easyRefreshController.finishRefresh(success: false);
-        }
-        if (state is LoadMoreFailState) {
-          _easyRefreshController.finishLoad(success: false);
-        }
-        if (state is LoadMoreEndState)
-          _easyRefreshController.finishLoad(success: true, noMore: true);
+
+        if (state is LoadMoreState)
+          _easyRefreshController.finishLoad(
+              success: state.success, noMore: state.noMore);
       },
       child: BlocBuilder<BookmarkBloc, BookmarkState>(
         condition: (pre, now) => now is DataBookmarkState,

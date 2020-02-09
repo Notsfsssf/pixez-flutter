@@ -26,10 +26,10 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
             event.user_id, event.type, event.tags);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataBookmarkState(recommend.illusts, recommend.nextUrl, tag);
-        yield SuccessRefreshState();
+        yield RefreshState(success: true);
       } catch (e) {
         print(e);
-        yield FailWorkState();
+        yield RefreshState(success: false);
       }
     }
     if (event is LoadMoreEvent) {
@@ -40,12 +40,12 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataBookmarkState(ill, recommend.nextUrl, tag);
-          yield LoadMoreSuccessState();
+          yield LoadMoreState(success: true, noMore: false);
         } catch (e) {
-          yield LoadMoreFailState();
+          yield LoadMoreState(success: false, noMore: false);
         }
       } else {
-        yield LoadMoreEndState();
+        yield LoadMoreState(success: true, noMore: true);
       }
     }
   }

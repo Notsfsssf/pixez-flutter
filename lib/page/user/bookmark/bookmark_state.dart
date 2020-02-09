@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pixez/models/illust.dart';
 
 abstract class BookmarkState {}
@@ -12,11 +13,16 @@ class DataBookmarkState extends BookmarkState {
 
   DataBookmarkState(this.illusts, this.nextUrl, this.tag);
 }
-class LoadMoreSuccessState extends BookmarkState {}
-class FailWorkState extends BookmarkState {}
 
-class LoadMoreFailState extends BookmarkState {}
+class LoadMoreState extends BookmarkState {
+  final bool success;
+  final bool noMore;
 
-class SuccessRefreshState extends BookmarkState {}
+  LoadMoreState({@required this.success, @required this.noMore});
+}
 
-class LoadMoreEndState extends BookmarkState {}
+class RefreshState extends BookmarkState {
+  final bool success;
+
+  RefreshState({@required this.success});
+}

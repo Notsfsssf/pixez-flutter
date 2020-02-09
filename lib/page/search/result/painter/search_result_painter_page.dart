@@ -37,27 +37,16 @@ class _SearchResultPainterPageState extends State<SearchResultPainterPage> {
           ResultPainterBloc(RepositoryProvider.of<ApiClient>(context)),
       child: BlocListener<ResultPainterBloc, ResultPainterState>(
         listener: (BuildContext context, state) {
-          if (state is RefreshSuccessState) {
-            _refreshController.finishRefresh(success: true);
+          if (state is RefreshState) {
+            _refreshController.finishRefresh(success: state.success);
           }
-          if (state is RefreshFailState) {
-            _refreshController.finishRefresh(success: false);
-            ;
-          }
-          if (state is LoadEndState) {
-            _refreshController.finishLoad(success: true, noMore: true);
-          }
-          if (state is LoadMoreSuccessState) {
-            _refreshController.finishLoad(success: true);
-          }
-          if (state is LoadMoreFailState) {
-            _refreshController.finishLoad(success: false);
+          if (state is LoadMoreState) {
+            _refreshController.finishLoad(
+                success: state.success, noMore: state.noMore);
           }
         },
         child: BlocBuilder<ResultPainterBloc, ResultPainterState>(
-          condition: (pre, now) {
-            return now is ResultPainterDataState;
-          },
+          condition: (pre, now) => now is ResultPainterDataState,
           builder: (BuildContext context, ResultPainterState state) {
             return EasyRefresh(
               onRefresh: () async {
@@ -95,5 +84,3 @@ class _SearchResultPainterPageState extends State<SearchResultPainterPage> {
     );
   }
 }
-
-

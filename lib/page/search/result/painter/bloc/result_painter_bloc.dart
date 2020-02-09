@@ -25,9 +25,9 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
             UserPreviewsResponse.fromJson(response.data);
         yield ResultPainterDataState(
             userPreviewsResponse.user_previews, userPreviewsResponse.next_url);
-        yield RefreshSuccessState();
+        yield RefreshState(success: true);
       } catch (e) {
-        yield RefreshFailState();
+        yield RefreshState(success: false);
       }
     }
     if (event is LoadMoreEvent) {
@@ -38,13 +38,13 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
               UserPreviewsResponse.fromJson(response.data);
           yield ResultPainterDataState(userPreviewsResponse.user_previews,
               userPreviewsResponse.next_url);
-          yield LoadMoreSuccessState();
+          yield LoadMoreState(success: true, noMore: false);
         } catch (e) {
-        yield LoadMoreFailState();
+          yield LoadMoreState(success: false, noMore: false);
         }
       }
       else{
-        yield LoadEndState();
+        yield LoadMoreState(success: true, noMore: true);
       }
     }
   }

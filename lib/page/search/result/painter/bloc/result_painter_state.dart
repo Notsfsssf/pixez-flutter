@@ -12,12 +12,15 @@ class  ResultPainterDataState extends ResultPainterState {
   ResultPainterDataState(this.userPreviews, this.nextUrl);
 }
 
-class LoadEndState extends ResultPainterState {}
+class LoadMoreState extends ResultPainterState {
+  final bool success;
+  final bool noMore;
 
-class LoadMoreFailState extends ResultPainterState {}
+  LoadMoreState({@required this.success, @required this.noMore});
+}
 
-class LoadMoreSuccessState extends ResultPainterState {}
+class RefreshState extends ResultPainterState {
+  final bool success;
 
-class RefreshFailState extends ResultPainterState {}
-
-class RefreshSuccessState extends ResultPainterState {}
+  RefreshState({this.success});
+}
