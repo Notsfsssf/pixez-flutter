@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
@@ -7,39 +5,53 @@ import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result/painter/bloc/bloc.dart';
 
-class SearchResultPainerPage extends StatelessWidget {
+class SearchResultPainterPage extends StatefulWidget {
   final String word;
-  Completer<void> _refreshCompleter, _loadCompleter;
+
+  SearchResultPainterPage({Key key, this.word}) : super(key: key);
+
+  @override
+  _SearchResultPainterPageState createState() =>
+      _SearchResultPainterPageState();
+}
+
+class _SearchResultPainterPageState extends State<SearchResultPainterPage> {
   EasyRefreshController _refreshController;
 
-  SearchResultPainerPage({Key key, this.word}) : super(key: key);
+  @override
+  void initState() {
+    _refreshController = EasyRefreshController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _refreshController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _refreshCompleter = Completer<void>();
-    _loadCompleter = Completer<void>();
-    _refreshController = EasyRefreshController();
     return BlocProvider<ResultPainterBloc>(
       create: (context) =>
           ResultPainterBloc(RepositoryProvider.of<ApiClient>(context)),
       child: BlocListener<ResultPainterBloc, ResultPainterState>(
         listener: (BuildContext context, state) {
-          if(state is ResultPainterDataState){
+          if (state is RefreshSuccessState) {
             _refreshController.finishRefresh(success: true);
-            _loadCompleter.complete();
-            _refreshCompleter.complete();
-            _refreshCompleter = Completer<void>();
-            _loadCompleter = Completer<void>();
           }
           if (state is RefreshFailState) {
             _refreshController.finishRefresh(success: false);
-            _loadCompleter.complete();
-            _refreshCompleter.complete();
-            _refreshCompleter = Completer<void>();
-            _loadCompleter = Completer<void>();
+            ;
           }
           if (state is LoadEndState) {
             _refreshController.finishLoad(success: true, noMore: true);
+          }
+          if (state is LoadMoreSuccessState) {
+            _refreshController.finishLoad(success: true);
+          }
+          if (state is LoadMoreFailState) {
+            _refreshController.finishLoad(success: false);
           }
         },
         child: BlocBuilder<ResultPainterBloc, ResultPainterState>(
@@ -50,10 +62,12 @@ class SearchResultPainerPage extends StatelessWidget {
             return EasyRefresh(
               onRefresh: () async {
                 BlocProvider.of<ResultPainterBloc>(context)
-                    .add(FetchEvent(word));
-                return _refreshCompleter.future;
+                    .add(FetchEvent(widget.word));
+                return;
               },
               firstRefresh: true,
+              enableControlFinishLoad: true,
+              enableControlFinishRefresh: true,
               controller: _refreshController,
               child: state is ResultPainterDataState
                   ? ListView.builder(
@@ -81,3 +95,5 @@ class SearchResultPainerPage extends StatelessWidget {
     );
   }
 }
+
+

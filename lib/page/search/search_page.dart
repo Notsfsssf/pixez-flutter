@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,10 +19,13 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   String editString = "";
+  Completer<void> _refreshCompleter, _loadCompleter;
 
   @override
   void initState() {
     _filter = TextEditingController();
+    _refreshCompleter = Completer();
+    _loadCompleter = Completer();
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
@@ -39,8 +44,8 @@ class _SearchPageState extends State<SearchPage>
       providers: [
         BlocProvider<TrendTagsBloc>(
           create: (context) =>
-              TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
-                ..add(FetchEvent()),
+          TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
+            ..add(FetchEvent()),
         )
       ],
       child: Scaffold(
@@ -66,8 +71,8 @@ class _SearchPageState extends State<SearchPage>
   Widget _buildBlocBuilder() {
     return BlocBuilder<TrendTagsBloc, TrendTagsState>(
         builder: (context, state) {
-            return _buildListView(state);
-        });
+      return _buildListView(state);
+    });
   }
 
   Icon _searchIcon = Icon(Icons.search);
@@ -106,22 +111,21 @@ class _SearchPageState extends State<SearchPage>
                         .map((f) =>
                         ActionChip(
                           label: Text(f.name),
-                              onPressed: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return SearchResultPage(
-                                    word: f.name,
-                                  );
-                                }));
-                              },
-                            ))
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(builder: (context) =>
+                                SearchResultPage(
+                                  word: f.name,
+                                )));
+                          },
+                        ))
                         .toList()
-                          ..add(ActionChip(
-                              label: Text(I18n.of(context).Clear),
-                              onPressed: () {
-                                BlocProvider.of<TagHistoryBloc>(context)
-                                    .add(DeleteAllTagHistoryEvent());
-                              })),
+                      ..add(ActionChip(
+                          label: Text(I18n.of(context).Clear),
+                          onPressed: () {
+                            BlocProvider.of<TagHistoryBloc>(context)
+                                .add(DeleteAllTagHistoryEvent());
+                          })),
                     runSpacing: 0.0,
                     spacing: 3.0,
                   ),
@@ -131,9 +135,10 @@ class _SearchPageState extends State<SearchPage>
             },
           );
         } else {
-          if(state is TrendTagDataState)
-          return _buildGrid(context, state.trendingTag.trend_tags);
-          else   return Container();
+          if (state is TrendTagDataState)
+            return _buildGrid(context, state.trendingTag.trend_tags);
+          else
+            return Container();
         }
       },
     );

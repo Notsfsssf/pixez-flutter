@@ -8,8 +8,9 @@ import './bloc.dart';
 
 class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
   final ApiClient client;
+  String tag;
 
-  BookmarkBloc(this.client);
+  BookmarkBloc(this.client, this.tag);
 
   @override
   BookmarkState get initialState => InitialBookmarkState();
@@ -20,10 +21,12 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
   ) async* {
     if (event is FetchBookmarkEvent) {
       try {
+        tag = event.tags;
         final response = await client.getBookmarksIllust(
             event.user_id, event.type, event.tags);
         Recommend recommend = Recommend.fromJson(response.data);
-        yield DataBookmarkState(recommend.illusts, recommend.nextUrl);
+        yield DataBookmarkState(recommend.illusts, recommend.nextUrl, tag);
+        yield SuccessRefreshState();
       } catch (e) {
         print(e);
         yield FailWorkState();
@@ -36,7 +39,8 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
           Recommend recommend = Recommend.fromJson(response.data);
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
-          yield DataBookmarkState(ill, recommend.nextUrl);
+          yield DataBookmarkState(ill, recommend.nextUrl, tag);
+          yield LoadMoreSuccessState();
         } catch (e) {
           yield LoadMoreFailState();
         }

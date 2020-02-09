@@ -24,6 +24,7 @@ class UserBookmarkTagBloc
         var result = await client.getUserBookmarkTagsIllust(event.id,
             restrict: event.restrict);
         yield DataUserBookmarkTagState(result.bookmarkTags, result.nextUrl);
+        yield RefreshSuccess();
       } catch (e) {
         yield RefreshFail();
       }
@@ -35,7 +36,9 @@ class UserBookmarkTagBloc
           var r = IllustBookmarkTagsResponse.fromJson(result.data);
           yield DataUserBookmarkTagState(
               event.bookmarkTags..addAll(r.bookmarkTags), r.nextUrl);
+          yield LoadMoreSuccess();
         } catch (e) {
+          print(e);
           yield LoadMoreFail();
         }
       } else {

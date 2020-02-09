@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/page/follow/follow_page.dart';
 import 'package:pixez/page/user/bloc/bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -93,7 +93,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    child: Html(data: state.userDetail.user.comment),
+                    child: SelectableHtml(data: state.userDetail.user.comment),
                   ),
                 ),
                 Container(

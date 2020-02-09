@@ -1,8 +1,10 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/network/api_client.dart';
+
 import './bloc.dart';
 
 class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
@@ -23,6 +25,7 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
             UserPreviewsResponse.fromJson(response.data);
         yield ResultPainterDataState(
             userPreviewsResponse.user_previews, userPreviewsResponse.next_url);
+        yield RefreshSuccessState();
       } catch (e) {
         yield RefreshFailState();
       }
@@ -35,6 +38,7 @@ class ResultPainterBloc extends Bloc<ResultPainterEvent, ResultPainterState> {
               UserPreviewsResponse.fromJson(response.data);
           yield ResultPainterDataState(userPreviewsResponse.user_previews,
               userPreviewsResponse.next_url);
+          yield LoadMoreSuccessState();
         } catch (e) {
         yield LoadMoreFailState();
         }

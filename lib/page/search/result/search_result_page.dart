@@ -10,7 +10,6 @@ import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/generated/i18n.dart';
-import 'package:pixez/models/account.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/bloc/tag_history_bloc.dart';
@@ -388,20 +387,22 @@ ScrollController _scrollController;
                           startDate,
                           endDate,
                           enableDuration));
-                      return _refreshCompleter.future;
-                    },
-                    firstRefresh: true,
-                    onLoad: () async {
-                      if(state is DataState) {
-                        BlocProvider.of<SearchResultBloc>(context)
-                            .add(LoadMoreEvent(state.nextUrl, state.illusts));
-                        return _loadCompleter.future;}
-                      return ;
-                    },
-                  ),   SearchResultPainerPage(
-                    word: widget.word,
-                  ),
-                ],
+                    return _refreshCompleter.future;
+                  },
+                  firstRefresh: true,
+                  onLoad: () async {
+                    if (state is DataState) {
+                      BlocProvider.of<SearchResultBloc>(context)
+                          .add(LoadMoreEvent(state.nextUrl, state.illusts));
+                      return _loadCompleter.future;
+                    }
+                    return;
+                  },
+                ),
+                SearchResultPainterPage(
+                  word: widget.word,
+                ),
+              ],
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {

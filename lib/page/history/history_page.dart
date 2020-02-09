@@ -51,12 +51,11 @@ class HistoryPage extends StatelessWidget {
                           });
                       if (result == "OK") {
                         BlocProvider.of<IllustPersistBloc>(context).add(
-                            DeleteIllustPersistEvent(
-                                reIllust[index].illustId));
+                            DeleteIllustPersistEvent(reIllust[index].illustId));
                       }
                     },
                     child: Card(
-                        margin: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8.0),
                         child: PixivImage(reIllust[index].pictureUrl)));
               });
         }

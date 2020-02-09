@@ -91,7 +91,7 @@ class _UserPageState extends State<UserPage>
           ),
           BlocProvider<BookmarkBloc>(
             create: (context) =>
-                BookmarkBloc(RepositoryProvider.of<ApiClient>(context)),
+                BookmarkBloc(RepositoryProvider.of<ApiClient>(context), null),
           ),
           BlocProvider<WorksBloc>(
             create: (context) =>

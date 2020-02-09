@@ -15,6 +15,10 @@ class DataUserBookmarkTagState extends UserBookmarkTagState {
 
 class RefreshFail extends UserBookmarkTagState {}
 
+class RefreshSuccess extends UserBookmarkTagState {}
+
 class LoadMoreFail extends UserBookmarkTagState {}
+
+class LoadMoreSuccess extends UserBookmarkTagState {}
 
 class LoadMoreEnd extends UserBookmarkTagState {}

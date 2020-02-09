@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/bloc/illust_persist_bloc.dart';
 import 'package:pixez/bloc/illust_persist_event.dart';
@@ -11,6 +10,7 @@ import 'package:pixez/bloc/save_event.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/ugoira_animation.dart';
 import 'package:pixez/generated/i18n.dart';
@@ -868,10 +868,7 @@ class _PicturePageState extends State<PicturePage> {
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Html(
-                  onLinkTap: (String url) {
-                    Share.share(url);
-                  },
+                child: SelectableHtml(
                   data: illust.caption.isEmpty ? "~" : illust.caption,
                 ),
               ),
