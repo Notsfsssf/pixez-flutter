@@ -9,6 +9,7 @@ class InitialEvent extends IapEvent{
 
 }
 class MakeIapEvent extends IapEvent {
-MakeIapEvent();
+  final String id;
+MakeIapEvent(this.id);
 }
 class ThanksEvent extends IapEvent{}

@@ -116,7 +116,18 @@ class AboutPage extends StatelessWidget {
                 trailing: Text('12￥'),
                 onTap: () {
                   BotToast.showText(text: 'try to Purchase');
-                  BlocProvider.of<IapBloc>(context).add(MakeIapEvent());
+                  BlocProvider.of<IapBloc>(context).add(MakeIapEvent('support'));
+                },
+              ),
+            ),
+                Card(
+              child: ListTile(
+                subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
+                title: Text('支持开发者工作'),
+                trailing: Text('25￥'),
+                onTap: () {
+                  BotToast.showText(text: 'try to Purchase');
+                  BlocProvider.of<IapBloc>(context).add(MakeIapEvent('support1'));
                 },
               ),
             )

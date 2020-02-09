@@ -235,7 +235,7 @@ class _UserPageState extends State<UserPage>
                           userDetail.user.is_followed
                               ? Icons.star
                               : Icons.star_border,
-                          color: Colors.grey,
+                          color: userDetail.user.is_followed?Colors.yellow:Colors.grey,
                         ),
                       ],
                     ),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,11 +91,23 @@ class _IllustCardState extends State<IllustCard> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Hero(
                 child: Stack(
                   children: <Widget>[
-                    PixivImage(widget._illusts.imageUrls.medium),
+                    CachedNetworkImage(
+                      imageUrl: widget._illusts.imageUrls.medium,
+                      placeholder: (context, url) => Container(
+                        height: 200,
+                      ),
+                      httpHeaders: {
+                        "referer": "https://app-api.pixiv.net/",
+                        "User-Agent": "PixivIOSApp/5.8.0"
+                      },
+                      width: widget._illusts.width.toDouble(),
+                      fit: BoxFit.fitWidth,
+                    ),
                     Visibility(
                       visible: widget._illusts.type != "illust" ||
                           widget._illusts.metaPages.isNotEmpty,

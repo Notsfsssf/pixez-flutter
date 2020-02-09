@@ -43,13 +43,14 @@ class IapBloc extends Bloc<IapEvent, IapState> {
       yield DataIapState(items, []);
     }
     if (event is MakeIapEvent) {
+      
       List<PurchasedItem> items =
           await FlutterInappPurchase.instance.getPendingTransactionsIOS();
       for (var i in items) {
         await FlutterInappPurchase.instance.finishTransaction(i);
       }
       FlutterInappPurchase.instance
-          .requestPurchase('support');
+          .requestPurchase(event.id);
       add(FetchIapEvent());
     }
   }

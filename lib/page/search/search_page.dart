@@ -19,13 +19,10 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   String editString = "";
-  Completer<void> _refreshCompleter, _loadCompleter;
 
   @override
   void initState() {
     _filter = TextEditingController();
-    _refreshCompleter = Completer();
-    _loadCompleter = Completer();
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
@@ -55,8 +52,7 @@ class _SearchPageState extends State<SearchPage>
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
-                Navigator.push(
-                    context,
+                Navigator.of(context,rootNavigator: true).push(
                     MaterialPageRoute(
                         builder: (context) => SearchSuggestionPage()));
               },
@@ -75,7 +71,6 @@ class _SearchPageState extends State<SearchPage>
     });
   }
 
-  Icon _searchIcon = Icon(Icons.search);
   TextEditingController _filter;
   TabController _tabController;
 
