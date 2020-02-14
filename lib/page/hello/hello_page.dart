@@ -8,6 +8,7 @@ import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
+import 'package:pixez/page/novel/novel_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 
@@ -32,7 +33,7 @@ class _HelloPageState extends State<HelloPage> {
         body: LoginInFirst(),
       );
     }),
-    SettingPage()
+    NovelPage()
   ];
 
   @override

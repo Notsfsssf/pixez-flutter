@@ -62,6 +62,16 @@ class ApiClient {
     };
   }
 
+  Future<Response> getNovelText(int novel_id) async {
+    return httpClient.get("/v1/novel/text",
+        queryParameters: notNullMap({"novel_id": novel_id}));
+  }
+
+  Future<Response> getNovelRecommended() async {
+    return httpClient.get(
+        "/v1/novel/recommended?include_privacy_policy=true&filter=for_android&include_ranking_novels=true");
+  }
+
   Future<Response> getRecommend() async {
     return httpClient.get(
         "/v1/illust/recommended?filter=for_ios&include_ranking_label=true");

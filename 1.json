@@ -1,0 +1,53 @@
+{
+  "novels": [
+    {
+      "id": 9522469,
+      "title": "その2",
+      "caption": "前作の続きです",
+      "restrict": 0,
+      "x_restrict": 0,
+      "is_original": false,
+      "image_urls": {
+        "square_medium": "https://s.pximg.net/common/images/novel_thumb/novel_thumb_0_128x128.jpg",
+        "medium": "https,://s.pximg.net/common/images/novel_thumb/novel_thumb_0_176mw.jpg",
+        "large": "https://s.pximg.net/common/images/novel_thumb/novel_thumb_0_240mw.jpg"
+      },
+      "create_date": "2018-04-24T23:22:34+09:00",
+      "tags": [
+        {
+          "name": "コナン夢",
+          "translated_name": "柯南梦向",
+          "added_by_uploaded_user": true
+        }
+      ],
+      "page_count": 1,
+      "text_length": 4052,
+      "user": {
+        "id": 20586542,
+        "name": "つゆくさ あめ",
+        "account": "ametuyu",
+        "profile_image_urls": {
+          "medium": "https://i.pximg.net/user-profile/img/2017/06/13/08/14/52/12694403_e9bb25f5b89a15ccac4807c9e0df99d8_170.png"
+        },
+        "is_followed": false
+      },
+      "series": {
+        "id": 957920,
+        "title": "異動先で上司にフルボッコだドン"
+      },
+      "is_bookmarked": false,
+      "total_bookmarks": 2649,
+      "total_view": 42415,
+      "visible": true,
+      "total_comments": 26,
+      "is_muted": false,
+      "is_mypixiv_only": false,
+      "is_x_restricted": false
+    }
+  ],
+  "privacy_policy": {
+    "version": "1-zh",
+    "message": "pixiv响应EU的通用数据保护条例",
+    "url": "https://www.pixiv.net/terms/?page=privacy&appname=pixiv_ios"
+  },
+  "next_url": "https://app-api.pixiv.net/v1/novel/recommended?include_privacy_policy=false&filter=for_android&include_ranking_novels=false&offset=15&max_bookmark_id_for_recommend=623243150"}
