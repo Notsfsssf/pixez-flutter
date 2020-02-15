@@ -62,6 +62,24 @@ class ApiClient {
     };
   }
 
+
+  Future<Response> getUserBookmarkNovel(int user_id, String restrict) async {
+    return httpClient.get('/v1/user/bookmarks/novel',
+        queryParameters: {"user_id": user_id, "restrict": restrict});
+  }
+
+  Future<Response> postNovelBookmarkAdd(int novel_id, String restrict) async {
+    return httpClient.post('/v2/novel/bookmark/add',
+        data: notNullMap({"novel_id": novel_id, "restrict": restrict}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<Response> postNovelBookmarkDelete(int novel_id) async {
+    return httpClient.post('/v1/novel/bookmark/delete',
+        data: notNullMap({"novel_id": novel_id}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
   Future<Response> getNovelText(int novel_id) async {
     return httpClient.get("/v1/novel/text",
         queryParameters: notNullMap({"novel_id": novel_id}));
