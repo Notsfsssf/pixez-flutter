@@ -1,4 +1,3 @@
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:meta/meta.dart';
 
 @immutable

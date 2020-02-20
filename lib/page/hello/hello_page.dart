@@ -33,7 +33,7 @@ class _HelloPageState extends State<HelloPage> {
         body: LoginInFirst(),
       );
     }),
-    NovelPage()
+    SettingPage()
   ];
 
   @override
