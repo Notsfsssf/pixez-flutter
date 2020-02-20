@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pixez/bloc/iap_bloc.dart';
 import 'package:pixez/bloc/iap_event.dart';
 import 'package:pixez/bloc/iap_state.dart';
@@ -11,7 +14,53 @@ import 'package:pixez/page/about/bloc/bloc.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
+  @override
+  _AboutPageState createState() => _AboutPageState();
+}
+void deliverProduct(PurchaseDetails purchaseDetails) async {
+
+}
+class _AboutPageState extends State<AboutPage> {
+
+  StreamSubscription<List<PurchaseDetails>> _subscription;
+  final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+        } else if (purchaseDetails.status == PurchaseStatus.purchased) {
+            deliverProduct(purchaseDetails);
+            return;
+          }
+
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchaseConnection.instance
+              .completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
+  @override
+  void initState() {
+    Stream purchaseUpdated =
+        InAppPurchaseConnection.instance.purchaseUpdatedStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+      // handle error here.
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<IapBloc>(context)..add(FetchIapEvent());
@@ -69,7 +118,7 @@ class AboutPage extends StatelessWidget {
               onTap: () async {
                 var url ='https://apps.apple.com/cn/app/pixez/id1494435126';
                 if (await canLaunch(url)) {
-                await launch(url);
+                  await launch(url);
                 } else {}
               },
             ),
@@ -114,19 +163,30 @@ class AboutPage extends StatelessWidget {
                 subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
                 title: Text('支持开发者工作'),
                 trailing: Text('12￥'),
-                onTap: () {
+                onTap: () async {
                   BotToast.showText(text: 'try to Purchase');
+                  ProductDetailsResponse productDetailResponse =
+                      await _connection.queryProductDetails(Set.of(['support']));
                   BlocProvider.of<IapBloc>(context).add(MakeIapEvent('support'));
                 },
               ),
             ),
-                Card(
+            Card(
               child: ListTile(
                 subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
                 title: Text('支持开发者工作'),
                 trailing: Text('25￥'),
-                onTap: () {
+                onTap: () async {
                   BotToast.showText(text: 'try to Purchase');
+                  ProductDetailsResponse productDetailResponse =
+                      await _connection.queryProductDetails(Set.of(['support1']));
+                  if(productDetailResponse.error!=null){
+                   var purchaseParam= PurchaseParam(
+                      productDetails: productDetailResponse.productDetails[0],
+                      sandboxTesting: true
+                    );
+                   _connection.buyConsumable(purchaseParam: purchaseParam);
+                  }
                   BlocProvider.of<IapBloc>(context).add(MakeIapEvent('support1'));
                 },
               ),
@@ -137,3 +197,4 @@ class AboutPage extends StatelessWidget {
     );
   }
 }
+

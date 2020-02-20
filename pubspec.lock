@@ -216,13 +216,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0-pre.1"
-  flutter_inapp_purchase:
-    dependency: "direct main"
-    description:
-      name: flutter_inapp_purchase
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.1.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -294,6 +287,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.4"
+  in_app_purchase:
+    dependency: "direct main"
+    description:
+      name: in_app_purchase
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.1"
   intl:
     dependency: transitive
     description:
