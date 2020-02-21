@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:pixez/bloc/controller_bloc.dart';
+import 'package:pixez/bloc/controller_state.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/page/hello/new/painter/bloc/bloc.dart';
@@ -22,10 +24,12 @@ class NewPainterPage extends StatefulWidget {
 class _NewPainterPageState extends State<NewPainterPage> {
   Completer<void> _refreshCompleter, _loadCompleter;
   EasyRefreshController _refreshController;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _refreshController = EasyRefreshController();
@@ -34,37 +38,48 @@ class _NewPainterPageState extends State<NewPainterPage> {
   @override
   void dispose() {
     _refreshController?.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<NewPainterBloc, NewPainterState>(
-      listener: (context, state) {
-        if (state is DataState) {
-          _loadCompleter?.complete();
-          _loadCompleter = Completer();
-          _refreshCompleter?.complete();
-          _refreshCompleter = Completer();
-        }
-        if (state is LoadEndState) {
-          _loadCompleter?.complete();
-          _loadCompleter = Completer();
-          _refreshCompleter?.complete();
-          _refreshCompleter = Completer();
-          _refreshController.finishLoad(
-            success: true,
-            noMore: true,
-          );
-        }
-        if (state is FailState) {
-          _loadCompleter?.complete();
-          _loadCompleter = Completer();
-          _refreshCompleter?.complete();
-          _refreshCompleter = Completer();
-          _refreshController.finishRefresh(success: false);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<NewPainterBloc, NewPainterState>(
+            listener: (context, state) {
+          if (state is DataState) {
+            _loadCompleter?.complete();
+            _loadCompleter = Completer();
+            _refreshCompleter?.complete();
+            _refreshCompleter = Completer();
+          }
+          if (state is LoadEndState) {
+            _loadCompleter?.complete();
+            _loadCompleter = Completer();
+            _refreshCompleter?.complete();
+            _refreshCompleter = Completer();
+            _refreshController.finishLoad(
+              success: true,
+              noMore: true,
+            );
+          }
+          if (state is FailState) {
+            _loadCompleter?.complete();
+            _loadCompleter = Completer();
+            _refreshCompleter?.complete();
+            _refreshCompleter = Completer();
+            _refreshController.finishRefresh(success: false);
+          }
+        }),
+        BlocListener<ControllerBloc, ControllerState>(
+          listener: (BuildContext context, ControllerState state) {
+            if (state is ScrollToTopState) {
+              if (state.name == 'painter') _scrollController.jumpTo(0.0);
+            }
+          },
+        )
+      ],
       child: BlocBuilder<NewPainterBloc, NewPainterState>(
         condition: (pre, now) {
           return now is DataState;
@@ -88,6 +103,7 @@ class _NewPainterPageState extends State<NewPainterPage> {
             },
             child: state is DataState
                 ? ListView.builder(
+                    controller: _scrollController,
                     itemCount: state.users.length,
                     itemBuilder: (BuildContext context, int index) {
                       UserPreviews user = state.users[index];

@@ -148,6 +148,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
 
   int _selectIndex = 0;
   NewDataRestrictState _preNewDataRestrictState;
+  var routes = ['dymanic', 'bookmark', 'painter'];
 
   @override
   Widget build(BuildContext context) {
@@ -173,113 +174,129 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
                     RepositoryProvider.of<ApiClient>(context), null),
               )
             ],
-            child: BlocBuilder<NewBloc, NewState>(builder: (context, snapshot) {
-              if (snapshot is NewDataRestrictState) {
-                return Scaffold(
-                  appBar: AppBar(
-                    title: TabBar(
-                      isScrollable: true,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      controller: _controller,
-                      tabs: [
-                        Tab(
-                          child: Text(
-                              '${I18n.of(context).Follow}${I18n.of(context).New}'),
-                        ),
-                        Tab(
-                          child: Text(
-                              '${I18n.of(context).Personal}${I18n.of(context).BookMark}'),
-                        ),
-                        Tab(
-                          child: Text(
-                              '${I18n.of(context).Follow}${I18n.of(context).Painter}'),
-                        ),
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<ControllerBloc, ControllerState>(
+                  listener: (BuildContext context, ControllerState state) {
+                    if (state is ScrollToTopState && state.name == 'new') {
+                      BlocProvider.of<ControllerBloc>(context)
+                          .add(ScrollToTopEvent(routes[_selectIndex]));
+                    }
+                  },
+                )
+              ],
+              child:
+                  BlocBuilder<NewBloc, NewState>(builder: (context, snapshot) {
+                if (snapshot is NewDataRestrictState) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: TabBar(
+                        isScrollable: true,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        controller: _controller,
+                        tabs: [
+                          Tab(
+                            child: Text(
+                                '${I18n.of(context).Follow}${I18n.of(context).New}'),
+                          ),
+                          Tab(
+                            child: Text(
+                                '${I18n.of(context).Personal}${I18n.of(context).BookMark}'),
+                          ),
+                          Tab(
+                            child: Text(
+                                '${I18n.of(context).Follow}${I18n.of(context).Painter}'),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        IconButton(
+                            icon: Icon(Icons.account_circle),
+                            onPressed: () {
+                              AccountState route =
+                                  BlocProvider.of<AccountBloc>(context).state;
+                              if (route is HasUserState)
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return UserPage(
+                                    id: int.parse(route.list.userId),
+                                  );
+                                }));
+                            }),
+                        ..._buildActions(context, snapshot)
                       ],
                     ),
-                    actions: [
-                      IconButton(
-                          icon: Icon(Icons.account_circle),
-                          onPressed: () {
-                            AccountState route =
-                                BlocProvider.of<AccountBloc>(context).state;
-                            if (route is HasUserState)
-                              Navigator.of(context, rootNavigator: true)
-                                  .push(MaterialPageRoute(builder: (_) {
-                                return UserPage(
-                                  id: int.parse(route.list.userId),
-                                );
-                              }));
-                          }),
-                      ..._buildActions(context, snapshot)
-                    ],
-                  ),
-                  body: BlocBuilder<AccountBloc, AccountState>(
-                      builder: (context, state1) {
-                    if (state1 is HasUserState)
-                      return MultiBlocListener(
-                          listeners: [
-                            BlocListener<NewBloc, NewState>(
-                              listener: (context, state) {
-                                if (state is NewDataRestrictState) {
-                                  if (_preNewDataRestrictState != null) {
-                                    if (_preNewDataRestrictState.bookRestrict !=
-                                        state.bookRestrict)
+                    body: BlocBuilder<AccountBloc, AccountState>(
+                        builder: (context, state1) {
+                      if (state1 is HasUserState)
+                        return MultiBlocListener(
+                            listeners: [
+                              BlocListener<NewBloc, NewState>(
+                                listener: (context, state) {
+                                  if (state is NewDataRestrictState) {
+                                    if (_preNewDataRestrictState != null) {
+                                      if (_preNewDataRestrictState
+                                              .bookRestrict !=
+                                          state.bookRestrict)
+                                        BlocProvider.of<BookmarkBloc>(context)
+                                            .add(FetchBookmarkEvent(
+                                                int.parse(state1.list.userId),
+                                                state.bookRestrict));
+                                      if (_preNewDataRestrictState
+                                              .newRestrict !=
+                                          state.newRestrict)
+                                        BlocProvider.of<NewIllustBloc>(context)
+                                            .add(FetchIllustEvent(
+                                                state.newRestrict));
+                                      if (_preNewDataRestrictState
+                                              .painterRestrict !=
+                                          state.painterRestrict)
+                                        BlocProvider.of<NewPainterBloc>(context)
+                                            .add(FetchPainterEvent(
+                                                int.parse(state1.list.userId),
+                                                state.painterRestrict));
+                                    } else {
                                       BlocProvider.of<BookmarkBloc>(context)
                                           .add(FetchBookmarkEvent(
                                               int.parse(state1.list.userId),
                                               state.bookRestrict));
-                                    if (_preNewDataRestrictState.newRestrict !=
-                                        state.newRestrict)
                                       BlocProvider.of<NewIllustBloc>(context)
                                           .add(FetchIllustEvent(
                                               state.newRestrict));
-                                    if (_preNewDataRestrictState
-                                            .painterRestrict !=
-                                        state.painterRestrict)
                                       BlocProvider.of<NewPainterBloc>(context)
                                           .add(FetchPainterEvent(
                                               int.parse(state1.list.userId),
                                               state.painterRestrict));
-                                  } else {
-                                    BlocProvider.of<BookmarkBloc>(context).add(
-                                        FetchBookmarkEvent(
-                                            int.parse(state1.list.userId),
-                                            state.bookRestrict));
-                                    BlocProvider.of<NewIllustBloc>(context).add(
-                                        FetchIllustEvent(state.newRestrict));
-                                    BlocProvider.of<NewPainterBloc>(context)
-                                        .add(FetchPainterEvent(
-                                            int.parse(state1.list.userId),
-                                            state.painterRestrict));
+                                    }
+                                    _preNewDataRestrictState = state; //迷惑行为
                                   }
-                                  _preNewDataRestrictState = state; //迷惑行为
-                                }
-                              },
-                            )
-                          ],
-                          child: TabBarView(
-                            controller: _controller,
-                            children: [
-                              NewIllustPage(
-                                restrict: snapshot.newRestrict,
-                              ),
-                              BookmarkPage(
-                                id: int.parse(state1.list.userId),
-                                restrict: snapshot.bookRestrict,
-                              ),
-                              NewPainterPage(
-                                id: int.parse(state1.list.userId),
-                                restrict: snapshot.painterRestrict,
+                                },
                               )
                             ],
-                          ));
-                    else
-                      return Container();
-                  }),
-                );
-              } else
-                return Scaffold();
-            }));
+                            child: TabBarView(
+                              controller: _controller,
+                              children: [
+                                NewIllustPage(
+                                  restrict: snapshot.newRestrict,
+                                ),
+                                BookmarkPage(
+                                  id: int.parse(state1.list.userId),
+                                  restrict: snapshot.bookRestrict,
+                                ),
+                                NewPainterPage(
+                                  id: int.parse(state1.list.userId),
+                                  restrict: snapshot.painterRestrict,
+                                )
+                              ],
+                            ));
+                      else
+                        return Container();
+                    }),
+                  );
+                } else
+                  return Scaffold();
+              }),
+            ));
       return Scaffold(
         appBar: AppBar(
           title: TabBar(

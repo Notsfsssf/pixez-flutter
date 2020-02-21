@@ -48,20 +48,23 @@ class _HelloPageState extends State<HelloPage> {
     _pageController.dispose();
     super.dispose();
   }
+
   var tapTime = [0, 0, 0, 0];
-var   routes = ['recom', 'my', 'search', 'setting'];
+  var routes = ['recom', 'new', 'search', 'setting'];
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
-          var spaceTime =DateTime.now().millisecondsSinceEpoch - tapTime[index];
+          var spaceTime = DateTime.now().millisecondsSinceEpoch - tapTime[index];
+          print("${spaceTime}/${tapTime[index]}");
           if (spaceTime > 2000) {
-            print("${spaceTime}/${tapTime[index]}");
+            tapTime[index] = DateTime.now().millisecondsSinceEpoch;
+          } else {
             BlocProvider.of<ControllerBloc>(context)
                 .add(ScrollToTopEvent(routes[index]));
-            tapTime[index]=DateTime.now().millisecondsSinceEpoch;
           }
           setState(() {
             _selectedIndex = index;
