@@ -25,3 +25,7 @@ export 'star_state.dart';
 export 'iap_bloc.dart';
 export 'iap_event.dart';
 export 'iap_state.dart';
+
+export 'controller_bloc.dart';
+export 'controller_event.dart';
+export 'controller_state.dart';

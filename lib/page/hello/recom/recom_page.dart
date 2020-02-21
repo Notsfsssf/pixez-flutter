@@ -8,16 +8,19 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
+import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 
 class ReComPage extends StatefulWidget {
+
   @override
   _ReComPageState createState() => _ReComPageState();
 }
@@ -53,12 +56,12 @@ class _ReComPageState extends State<ReComPage> {
         ),
         BlocProvider<SpotlightBloc>(
           create: (BuildContext context) =>
-              SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
-          ,
+              SpotlightBloc(RepositoryProvider.of<ApiClient>(context)),
         )
       ],
-      child: BlocListener<RecomBloc, RecomState>(
-          listener: (context, state) {
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<RecomBloc, RecomState>(listener: (context, state) {
             _loadCompleter?.complete();
             _loadCompleter = Completer();
             _refreshCompleter?.complete();
@@ -70,36 +73,46 @@ class _ReComPageState extends State<ReComPage> {
             if (state is LoadMoreEndState) {
               _easyRefreshController.finishLoad(success: true, noMore: true);
             }
-          },
-          child: Scaffold(
-              body: SafeArea(
-                  bottom: false,
-                  child: BlocBuilder<AccountBloc, AccountState>(
-                      builder: (context, snapshot) {
-                    if (snapshot is HasUserState)
-                      return _buildBlocBuilder();
-                    else
-                      return Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              child: Padding(
-                                child: Text(
-                                  I18n.of(context).Spotlight,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 30.0),
-                                ),
-                                padding:
-                                    EdgeInsets.only(left: 20.0, bottom: 10.0),
+          }),
+          BlocListener<ControllerBloc, ControllerState>(
+            listener: (BuildContext context, ControllerState state) {
+              if (state is ScrollToTopState) {
+                if(state.name=='recom')
+                _scrollController.jumpTo(0.0);
+              }
+            },
+          )
+        ],
+        child: Scaffold(
+            body: SafeArea(
+                bottom: false,
+                child: BlocBuilder<AccountBloc, AccountState>(
+                    builder: (context, snapshot) {
+                  if (snapshot is HasUserState)
+                    return _buildBlocBuilder();
+                  else
+                    return Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: Padding(
+                              child: Text(
+                                I18n.of(context).Spotlight,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30.0),
                               ),
+                              padding:
+                                  EdgeInsets.only(left: 20.0, bottom: 10.0),
                             ),
-                            Expanded(child: PreviewPage())
-                          ],
-                        ),
-                      );
-                  })))),
+                          ),
+                          Expanded(child: PreviewPage())
+                        ],
+                      ),
+                    );
+                }))),
+      ),
     );
   }
 
@@ -169,17 +182,15 @@ class _ReComPageState extends State<ReComPage> {
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Container(
                                     child: Padding(
                                       child: Container(
                                         child: Text(
-                                          I18n
-                                              .of(context)
-                                              .Recommend_for_you,
-                                              overflow: TextOverflow.clip,
+                                          I18n.of(context).Recommend_for_you,
+                                          overflow: TextOverflow.clip,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 30.0),
@@ -191,16 +202,13 @@ class _ReComPageState extends State<ReComPage> {
                                   ),
                                   Padding(
                                     child: FlatButton(
-                                      child: Text(I18n
-                                          .of(context)
-                                          .More),
+                                      child: Text(I18n.of(context).More),
                                       onPressed: () {
                                         Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (
-                                                    BuildContext context) {
-                                                  return RankingPage();
-                                                }));
+                                            MaterialPageRoute(builder:
+                                                (BuildContext context) {
+                                          return RankingPage();
+                                        }));
                                       },
                                     ),
                                     padding: EdgeInsets.all(8.0),

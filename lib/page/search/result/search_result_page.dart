@@ -37,12 +37,12 @@ class _SearchResultPageState extends State<SearchResultPage>
   EasyRefreshController _refreshController;
   Completer<void> _refreshCompleter, _loadCompleter;
   int _selectindex = 0;
-ScrollController _scrollController;
+  ScrollController _scrollController;
+
   @override
   void initState() {
-    _scrollController= ScrollController();
+    _scrollController = ScrollController();
     super.initState();
-
     _refreshCompleter = Completer<void>();
     _loadCompleter = Completer<void>();
     _tabController = TabController(vsync: this, length: 2);
@@ -57,12 +57,15 @@ ScrollController _scrollController;
           ..name = widget.word
           ..translatedName = widget.translatedName));
   }
+
   @override
   void dispose() {
     _tabController?.dispose();
     _scrollController?.dispose();
+    _refreshController?.dispose();
     super.dispose();
   }
+
   List<int> starNum = [
     50000,
     30000,
@@ -92,9 +95,8 @@ ScrollController _scrollController;
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          SearchResultBloc(RepositoryProvider.of<ApiClient>(context))
-,
-      child:           BlocListener<SearchResultBloc, SearchResultState>(
+          SearchResultBloc(RepositoryProvider.of<ApiClient>(context)),
+      child: BlocListener<SearchResultBloc, SearchResultState>(
         listener: (context, state) {
           if (state is DataState) {
             _refreshController.finishRefresh(success: true);
@@ -121,272 +123,255 @@ ScrollController _scrollController;
         },
         child: BlocBuilder<SearchResultBloc, SearchResultState>(
             condition: (pre, now) {
-              return now is DataState;
-            },
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                title: SelectableText(widget.word),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: () {
-                      showModalBottomSheet<void>(
-                          context: context,
-                          builder: (_) {
-                            return StatefulBuilder(
-                                builder: (_, setBottomSheetState) {
-                                  if (startDate.isAfter(endDate)) {
-                                    startDate = DateTime.now();
-                                    endDate = DateTime.now();
-                                  }
-                                  return Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                      mainAxisSize: MainAxisSize.min,
+          return now is DataState;
+        }, builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: SelectableText(widget.word),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                        context: context,
+                        builder: (_) {
+                          return StatefulBuilder(
+                              builder: (_, setBottomSheetState) {
+                            if (startDate.isAfter(endDate)) {
+                              startDate = DateTime.now();
+                              endDate = DateTime.now();
+                            }
+                            return Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: sort[0],
+                                          title:
+                                              Text(I18n.of(context).date_desc),
+                                          groupValue: _sortValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _sortValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: sort[1],
+                                          title:
+                                              Text(I18n.of(context).date_asc),
+                                          groupValue: _sortValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _sortValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: sort[2],
+                                          title: Text(
+                                              I18n.of(context).popular_desc),
+                                          groupValue: _sortValue,
+                                          onChanged: (value) async {
+                                            var userState =
+                                                BlocProvider.of<AccountBloc>(
+                                                        context)
+                                                    .state;
+                                            if (userState is HasUserState) {
+                                              if (userState.list.isPremium == 1)
+                                                setBottomSheetState(() {
+                                                  _sortValue = value;
+                                                });
+                                              else
+                                                BotToast.showText(
+                                                    text: "Not Premium!");
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: search_target[0],
+                                          title: Text(I18n.of(context)
+                                              .Partial_Match_for_tag),
+                                          groupValue: _searchTargetValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _searchTargetValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: search_target[0],
+                                          title: Text(I18n.of(context)
+                                              .Exact_Match_for_tag),
+                                          groupValue: _searchTargetValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _searchTargetValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: search_target[0],
+                                          title: Text(I18n.of(context)
+                                              .title_and_caption),
+                                          groupValue: _searchTargetValue,
+                                          onChanged: (value) {
+                                            setBottomSheetState(() {
+                                              _searchTargetValue = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SwitchListTile(
+                                      title:
+                                          Text(I18n.of(context).Date_duration),
+                                      value: enableDuration,
+                                      onChanged: (v) {
+                                        setBottomSheetState(() {
+                                          enableDuration = v;
+                                        });
+                                      }),
+                                  Visibility(
+                                    child: Row(
                                       children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: RadioListTile<String>(
-                                                value: sort[0],
-                                                title: Text(I18n.of(context)
-                                                    .date_desc),
-                                                groupValue: _sortValue,
-                                                onChanged: (value) {
-                                                  setBottomSheetState(() {
-                                                    _sortValue = value;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: RadioListTile<String>(
-                                                value: sort[1],
-                                                title: Text(I18n.of(context)
-                                                    .date_asc),
-                                                groupValue: _sortValue,
-                                                onChanged: (value) {
-                                                  setBottomSheetState(() {
-                                                    _sortValue = value;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: RadioListTile<String>(
-                                                value: sort[2],
-                                                title: Text(I18n.of(context)
-                                                    .popular_desc),
-                                                groupValue: _sortValue,
-                                                onChanged: (value) async {
-                                                  var userState = BlocProvider
-                                                      .of<AccountBloc>(
-                                                      context)
-                                                      .state;
-                                                  if (userState
-                                                  is HasUserState) {
-                                                    if (userState
-                                                        .list.isPremium ==
-                                                        1)
-                                                      setBottomSheetState(() {
-                                                        _sortValue = value;
-                                                      });
-                                                    else
-                                                      BotToast.showText(
-                                                          text:
-                                                          "Not Premium!");
-                                                  }
-                                                },
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: RadioListTile<String>(
-                                                value: search_target[0],
-                                                title: Text(I18n.of(context)
-                                                    .Partial_Match_for_tag),
-                                                groupValue:
-                                                _searchTargetValue,
-                                                onChanged: (value) {
-                                                  setBottomSheetState(() {
-                                                    _searchTargetValue =
-                                                        value;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: RadioListTile<String>(
-                                                value: search_target[0],
-                                                title: Text(I18n.of(context)
-                                                    .Exact_Match_for_tag),
-                                                groupValue:
-                                                _searchTargetValue,
-                                                onChanged: (value) {
-                                                  setBottomSheetState(() {
-                                                    _searchTargetValue =
-                                                        value;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: RadioListTile<String>(
-                                                value: search_target[0],
-                                                title: Text(I18n.of(context)
-                                                    .title_and_caption),
-                                                groupValue:
-                                                _searchTargetValue,
-                                                onChanged: (value) {
-                                                  setBottomSheetState(() {
-                                                    _searchTargetValue =
-                                                        value;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SwitchListTile(
-                                            title: Text(I18n.of(context)
-                                                .Date_duration),
-                                            value: enableDuration,
-                                            onChanged: (v) {
+                                        OutlineButton(
+                                          onPressed: () {
+                                            DatePicker.showDatePicker(context,
+                                                maxDateTime: endDate,
+                                                initialDateTime: startDate,
+                                                onConfirm: (DateTime dateTime,
+                                                    List<int> list) {
                                               setBottomSheetState(() {
-                                                enableDuration = v;
+                                                startDate = dateTime;
                                               });
-                                            }),
-                                        Visibility(
-                                          child: Row(
-                                            children: <Widget>[
-                                              OutlineButton(
-                                                onPressed: () {
-                                                  DatePicker.showDatePicker(
-                                                      context,
-                                                      maxDateTime: endDate,
-                                                      initialDateTime:
-                                                      startDate,
-                                                      onConfirm: (DateTime
-                                                      dateTime,
-                                                          List<int> list) {
-                                                        setBottomSheetState(() {
-                                                          startDate = dateTime;
-                                                        });
-                                                        setState(() {
-                                                          startDate = dateTime;
-                                                        });
-                                                      });
-                                                },
-                                                child: Text(startDate
-                                                    .toIso8601String()
-                                                    .split("T")[0]), //AXAXAX
-                                              ),
-                                              Text("~"),
-                                              OutlineButton(
-                                                onPressed: () {
-                                                  DatePicker.showDatePicker(
-                                                      context,
-                                                      maxDateTime:
-                                                      DateTime.now(),
-                                                      initialDateTime:
-                                                      endDate,
-                                                      onConfirm: (DateTime
-                                                      dateTime,
-                                                          List<int> list) {
-                                                        setBottomSheetState(() {
-                                                          endDate = dateTime;
-                                                        });
-                                                        setState(() {
-                                                          endDate = dateTime;
-                                                        });
-                                                      });
-                                                },
-                                                child: Text(endDate
-                                                    .toIso8601String()
-                                                    .split("T")[0]),
-                                              ),
-                                            ],
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                          ),
-                                          visible: enableDuration,
+                                              setState(() {
+                                                startDate = dateTime;
+                                              });
+                                            });
+                                          },
+                                          child: Text(startDate
+                                              .toIso8601String()
+                                              .split("T")[0]), //AXAXAX
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, right: 8.0),
-                                          child: RaisedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              BlocProvider.of<
-                                                  SearchResultBloc>(
-                                                  context)
-                                                  .add(ApplyEvent(
-                                                  widget.word,
-                                                  _sortValue,
-                                                  _searchTargetValue,
-                                                  startDate,
-                                                  endDate,
-                                                  enableDuration));
-                                            },
-                                            child:
-                                            Text(I18n.of(context).Apply),
-                                            color: Theme.of(context)
-                                                .primaryColor,
-                                            textColor: Colors.white,
-                                          ),
+                                        Text("~"),
+                                        OutlineButton(
+                                          onPressed: () {
+                                            DatePicker.showDatePicker(context,
+                                                maxDateTime: DateTime.now(),
+                                                initialDateTime: endDate,
+                                                onConfirm: (DateTime dateTime,
+                                                    List<int> list) {
+                                              setBottomSheetState(() {
+                                                endDate = dateTime;
+                                              });
+                                              setState(() {
+                                                endDate = dateTime;
+                                              });
+                                            });
+                                          },
+                                          child: Text(endDate
+                                              .toIso8601String()
+                                              .split("T")[0]),
                                         ),
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                              .padding
-                                              .bottom,
-                                        )
                                       ],
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                     ),
-                                  );
-                                });
+                                    visible: enableDuration,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 8.0),
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        BlocProvider.of<SearchResultBloc>(
+                                                context)
+                                            .add(ApplyEvent(
+                                                widget.word,
+                                                _sortValue,
+                                                _searchTargetValue,
+                                                startDate,
+                                                endDate,
+                                                enableDuration));
+                                      },
+                                      child: Text(I18n.of(context).Apply),
+                                      color: Theme.of(context).primaryColor,
+                                      textColor: Colors.white,
+                                    ),
+                                  ),
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).padding.bottom,
+                                  )
+                                ],
+                              ),
+                            );
                           });
-                    },
-                  )
-                ],
-                bottom: TabBar(
-                  controller: _tabController,
-                  tabs: <Widget>[
-                    Tab(
-                      child: Text(I18n.of(context).Illust),
-                    ),
-                    Tab(
-                      child: Text(I18n.of(context).Painter),
-                    ),
-                  ],
-                ),
-              ),
-              body:TabBarView(
+                        });
+                  },
+                )
+              ],
+              bottom: TabBar(
                 controller: _tabController,
-                children: <Widget>[
-                  EasyRefresh(
-                    controller: _refreshController,
-                    child: state is DataState?StaggeredGridView.countBuilder(
-                      crossAxisCount: 2,
-                      controller: _scrollController,
-                      itemCount: state.illusts.length,
-                      itemBuilder: (context, index) {
-                        return IllustCard(state.illusts[index]);
-                      },
-                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                    ):Container(),
-                    onRefresh: () async {
-                      BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(
-                          widget.word,
-                          _sortValue,
-                          _searchTargetValue,
-                          startDate,
-                          endDate,
-                          enableDuration));
+                onTap: (position){
+
+                },
+                tabs: <Widget>[
+                  Tab(
+                    child: Text(I18n.of(context).Illust),
+                  ),
+                  Tab(
+                    child: Text(I18n.of(context).Painter),
+                  ),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                EasyRefresh(
+                  controller: _refreshController,
+                  child: state is DataState
+                      ? StaggeredGridView.countBuilder(
+                          crossAxisCount: 2,
+                          controller: _scrollController,
+                          itemCount: state.illusts.length,
+                          itemBuilder: (context, index) {
+                            return IllustCard(state.illusts[index]);
+                          },
+                          staggeredTileBuilder: (int index) =>
+                              StaggeredTile.fit(1),
+                        )
+                      : Container(),
+                  onRefresh: () async {
+                    BlocProvider.of<SearchResultBloc>(context).add(FetchEvent(
+                        widget.word,
+                        _sortValue,
+                        _searchTargetValue,
+                        startDate,
+                        endDate,
+                        enableDuration));
                     return _refreshCompleter.future;
                   },
                   firstRefresh: true,
@@ -403,46 +388,45 @@ ScrollController _scrollController;
                   word: widget.word,
                 ),
               ],
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) {
-                        return AlertDialog(
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: starnum
-                                  .map((f) => ListTile(
-                                title: Text("$f users入り"),
-                                subtitle: Text(I18n.of(context)
-                                    .More_then_starNum_Bookmark(
-                                    f.toString())),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  BlocProvider.of<SearchResultBloc>(
-                                      context)
-                                      .add(FetchEvent(
-                                      toUserBookString(
-                                          widget.word, f),
-                                      _sortValue,
-                                      _searchTargetValue,
-                                      startDate,
-                                      endDate,
-                                      enableDuration));
-                                },
-                              ))
-                                  .toList(),
-                            ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: starnum
+                                .map((f) => ListTile(
+                                      title: Text("$f users入り"),
+                                      subtitle: Text(I18n.of(context)
+                                          .More_then_starNum_Bookmark(
+                                              f.toString())),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        BlocProvider.of<SearchResultBloc>(
+                                                context)
+                                            .add(FetchEvent(
+                                                toUserBookString(
+                                                    widget.word, f),
+                                                _sortValue,
+                                                _searchTargetValue,
+                                                startDate,
+                                                endDate,
+                                                enableDuration));
+                                      },
+                                    ))
+                                .toList(),
                           ),
-                        );
-                      });
-                },
-                child: Icon(Icons.sort),
-              ),
-            );
-          }
-        ),
+                        ),
+                      );
+                    });
+              },
+              child: Icon(Icons.sort),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -454,5 +438,4 @@ ScrollController _scrollController;
     "exact_match_for_tags",
     "title_and_caption"
   ];
-
 }
