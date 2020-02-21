@@ -66,7 +66,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
         BlocListener<ControllerBloc, ControllerState>(
           listener: (BuildContext context, ControllerState state) {
             if (state is ScrollToTopState) {
-              if (state.name == 'dymanic') _scrollController.jumpTo(0.0);
+              if (state.name == 'dymanic') _scrollController?.jumpTo(0.0);
             }
           },
         )
