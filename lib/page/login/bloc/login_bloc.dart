@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:pixez/models/account.dart';
+import 'package:pixez/models/error_message.dart';
+import 'package:pixez/models/login_error_response.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 import './bloc.dart';
@@ -14,6 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   LoginState get initialState => InitialLoginState();
+
   int bti(bool bool) {
     if (bool) {
       return 1;
@@ -25,11 +28,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if(event is NeedGuidEvent){
+    if (event is NeedGuidEvent) {
       yield NeedGuidState();
     }
     if (event is ClickToAuth) {
-
       try {
         final response = await client.postAuthToken(
             event.username, event.password,
@@ -60,7 +62,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (e == null) {
           return;
         }
-       yield FailState(e.message);
+        if (e.response.data != null)
+          yield FailState(LoginErrorResponse.fromJson(e.response.data).errors.system.message);
+        else
+          yield FailState(e.message);
       }
     }
   }
