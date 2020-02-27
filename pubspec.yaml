@@ -48,6 +48,7 @@ dependencies:
   package_info: ^0.4.0+13
   json_serializable: ^3.2.5
   in_app_purchase: ^0.3.1
+  gifencoder: ^1.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3

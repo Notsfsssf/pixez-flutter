@@ -252,6 +252,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gifencoder:
+    dependency: "direct main"
+    description:
+      name: gifencoder
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   glob:
     dependency: transitive
     description:

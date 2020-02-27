@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
-
+import 'package:gifencoder/gifencoder.dart' as gifencoder;
 import './bloc.dart';
 
 class UgoiraMetadataBloc
@@ -28,6 +28,9 @@ class UgoiraMetadataBloc
   Stream<UgoiraMetadataState> mapEventToState(
     UgoiraMetadataEvent event,
   ) async* {
+    if (event is EncodeToGifEvent) {
+//      List<int> bytes = gifencoder.makeGif(width, height, data.data);
+    }
     if (event is ProgressUgoiraMetadataEvent) {
       yield DownLoadProgressState(event.count, event.total);
     }
@@ -38,7 +41,7 @@ class UgoiraMetadataBloc
       File fullPathFile = File(fullPath);
       try {
         UgoiraMetadataResponse ugoiraMetadataResponse =
-            await client.getUgoiraMetadata(event.id);
+        await client.getUgoiraMetadata(event.id);
         String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium;
         if (!fullPathFile.existsSync()) {
           Dio(BaseOptions(headers: {
@@ -46,14 +49,14 @@ class UgoiraMetadataBloc
             "User-Agent": "PixivIOSApp/5.8.0"
           })).download(zipUrl, fullPath,
               onReceiveProgress: (int count, int total) {
-            print("$count/$total");
-            add(ProgressUgoiraMetadataEvent(count, total));
-            if (count / total == 1) {
-              add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
-            }
-          }, deleteOnError: true);
+                print("$count/$total");
+                add(ProgressUgoiraMetadataEvent(count, total));
+                if (count / total == 1) {
+                  add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
+                }
+              }, deleteOnError: true);
         }else {
-            add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
+          add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
         }
       } catch (e) {
         print(e);
@@ -65,10 +68,10 @@ class UgoiraMetadataBloc
     }
     if (event is UnzipUgoiraMetadataEvent) {
       try {
-              Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
-      String fullPath = "$tempPath/${event.id}.zip";
-      File fullPathFile = File(fullPath);
+        Directory tempDir = await getTemporaryDirectory();
+        String tempPath = tempDir.path;
+        String fullPath = "$tempPath/${event.id}.zip";
+        File fullPathFile = File(fullPath);
         // Read the Zip file from disk.
         final bytes = fullPathFile.readAsBytesSync();
 

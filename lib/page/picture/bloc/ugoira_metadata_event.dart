@@ -9,14 +9,19 @@ class FetchUgoiraMetadataEvent extends UgoiraMetadataEvent {
 
   FetchUgoiraMetadataEvent(this.id);
 }
+
 class ProgressUgoiraMetadataEvent extends UgoiraMetadataEvent {
   final int count;
   final int total;
 
   ProgressUgoiraMetadataEvent(this.count, this.total);
 }
-class UnzipUgoiraMetadataEvent extends UgoiraMetadataEvent{
+
+class UnzipUgoiraMetadataEvent extends UgoiraMetadataEvent {
   final int id;
-final UgoiraMetadataResponse ugoiraMetadataResponse;
+  final UgoiraMetadataResponse ugoiraMetadataResponse;
+
   UnzipUgoiraMetadataEvent(this.id, this.ugoiraMetadataResponse);
 }
+
+class EncodeToGifEvent extends UgoiraMetadataEvent {}

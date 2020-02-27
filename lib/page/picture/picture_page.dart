@@ -609,10 +609,16 @@ class _PicturePageState extends State<PicturePage> {
               }
               if (snapshot is PlayUgoiraMetadataState) {
                 List<Frame> frames = snapshot.frames;
-                return FrameAnimationImage(
-                  snapshot.listSync,
-                  interval: frames.first.delay,
-                  illusts: illust,
+                return InkWell(
+                  onLongPress: () {
+                    BlocProvider.of<UgoiraMetadataBloc>(context)
+                        .add(EncodeToGifEvent());
+                  },
+                  child: FrameAnimationImage(
+                    snapshot.listSync,
+                    interval: frames.first.delay,
+                    illusts: illust,
+                  ),
                 );
                 // return UgoiraAnima(snapshot.listSync,snapshot.frames);
               }
