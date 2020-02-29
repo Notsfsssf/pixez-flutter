@@ -11,7 +11,7 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - "permission_handler (4.2.0+hotfix.3)":
+  - permission_handler (4.3.0):
     - Flutter
   - save_in_gallery (0.0.1):
     - Flutter
@@ -113,7 +113,7 @@ SPEC CHECKSUMS:
   in_app_purchase: 6b3a6d6944354f353d59eb1f2a0db3fd7a40917b
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
-  permission_handler: 40520ab8ad1bb78a282b832464e995ec87f77ec6
+  permission_handler: 5c75cfde1229eb85f22d367c093900fac03c6c9e
   save_in_gallery: 75c1d76566ed1af3a266f25b38c6c19a1d019a66
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share: bae0a282aab4483288913fc4dc0b935d4b491f2e
