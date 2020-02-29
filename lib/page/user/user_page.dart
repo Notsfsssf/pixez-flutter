@@ -119,52 +119,43 @@ class _UserPageState extends State<UserPage>
                 extendBody: true,
                 appBar: state is UserDataState
                     ? AppBar(
-                  actions: _buildActions(context, state, snapshot),
-                  title: Text(state.userDetail.user.name),
-                )
+                        actions: _buildActions(context, state, snapshot),
+                        title: Text(state.userDetail.user.name),
+                      )
                     : AppBar(),
                 body: state is UserDataState
                     ? _buildTabBarView(context, state)
                     : Center(
-                  child: CircularProgressIndicator(),
-                ),
+                        child: CircularProgressIndicator(),
+                      ),
                 bottomNavigationBar: FABBottomAppBar(
                   onTabSelected: (index) {
                     _tabController.index = index;
                   },
                   color: Colors.grey,
-                  selectedColor: Theme
-                      .of(context)
-                      .primaryColor,
+                  selectedColor: Theme.of(context).primaryColor,
                   centerItemText: "A",
                   notchedShape: CircularNotchedRectangle(),
                   items: [
                     FABBottomAppBarItem(
-                        iconData: Icons.menu, text: I18n
-                        .of(context)
-                        .Works),
+                        iconData: Icons.menu, text: I18n.of(context).Works),
                     FABBottomAppBarItem(
                         iconData: Icons.bookmark,
-                        text: I18n
-                            .of(context)
-                            .BookMark),
+                        text: I18n.of(context).BookMark),
                     FABBottomAppBarItem(
-                        iconData: Icons.star, text: I18n
-                        .of(context)
-                        .Follow),
+                        iconData: Icons.star, text: I18n.of(context).Follow),
                     FABBottomAppBarItem(
-                        iconData: Icons.info, text: I18n
-                        .of(context)
-                        .Detail),
+                        iconData: Icons.info, text: I18n.of(context).Detail),
                   ],
                   followWidget: state is UserDataState
                       ? _buildFollowButton(
-                      context, state.userDetail, state.choiceRestrict)
+                          context, state.userDetail, state.choiceRestrict)
                       : Container(
-                    height: 60.0,
-                  ),
+                          height: 60.0,
+                        ),
                 ),
                 floatingActionButton: FloatingActionButton(
+                  heroTag: widget.id,
                   onPressed: () {},
                   child: state is UserDataState
                       ? PainterAvatar(
@@ -235,7 +226,9 @@ class _UserPageState extends State<UserPage>
                           userDetail.user.is_followed
                               ? Icons.star
                               : Icons.star_border,
-                          color: userDetail.user.is_followed?Colors.yellow:Colors.grey,
+                          color: userDetail.user.is_followed
+                              ? Colors.yellow
+                              : Colors.grey,
                         ),
                       ],
                     ),
@@ -259,10 +252,33 @@ class _UserPageState extends State<UserPage>
         return <Widget>[
           IconButton(
             icon: Icon(Icons.brightness_auto),
-            onPressed: () {
-              if (state is UserDataState)
-                BlocProvider.of<MuteBloc>(context).add(InsertBanUserEvent(
-                    widget.id.toString(), state.userDetail.user.name));
+            onPressed: () async {
+              final result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Shield?"),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop("OK");
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("CANCEL"),
+                          onPressed: () {
+                            Navigator.of(context).pop("OK");
+                          },
+                        )
+                      ],
+                    );
+                  });
+              if (result == "OK") {
+                if (state is UserDataState)
+                  BlocProvider.of<MuteBloc>(context).add(InsertBanUserEvent(
+                      widget.id.toString(), state.userDetail.user.name));
+              }
             },
           ),
           IconButton(
@@ -306,10 +322,27 @@ class _UserPageState extends State<UserPage>
       return <Widget>[
         IconButton(
           icon: Icon(Icons.brightness_auto),
-          onPressed: () {
-            if (state is UserDataState)
-              BlocProvider.of<MuteBloc>(context).add(InsertBanUserEvent(
-                  widget.id.toString(), state.userDetail.user.name));
+          onPressed: () async {
+            final result = await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Shield?"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop("OK");
+                        },
+                      )
+                    ],
+                  );
+                });
+            if (result == "OK") {
+              if (state is UserDataState)
+                BlocProvider.of<MuteBloc>(context).add(InsertBanUserEvent(
+                    widget.id.toString(), state.userDetail.user.name));
+            }
           },
         ),
         IconButton(

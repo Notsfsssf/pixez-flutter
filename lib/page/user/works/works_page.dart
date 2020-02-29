@@ -63,14 +63,16 @@ class _WorksPageState extends State<WorksPage> {
               controller: _easyRefreshController,
               child: state is DataWorksState
                   ? StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: state.illusts.length,
-                itemBuilder: (context, index) {
-                  return IllustCard(state.illusts[index]);
-                },
-                staggeredTileBuilder: (int index) =>
-                    StaggeredTile.fit(1),
-              )
+                      crossAxisCount: 2,
+                      itemCount: state.illusts.length,
+                      itemBuilder: (context, index) {
+                        return IllustCard(
+                          state.illusts[index],
+                          illustList: state.illusts,
+                        );
+                      },
+                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                    )
                   : Container(),
               onRefresh: () async {
                 BlocProvider.of<WorksBloc>(context)

@@ -222,7 +222,10 @@ class _ReComPageState extends State<ReComPage> {
                       },
                     );
                   }
-                  return IllustCard(state.illusts[index - 2]);
+                  return IllustCard(
+                    state.illusts[index - 2],
+                    illustList: state.illusts,
+                  );
                 },
                 staggeredTileBuilder: (int index) =>
                     StaggeredTile.fit(index == 0 || index == 1 ? 2 : 1),

@@ -8,12 +8,14 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 
 class IllustCard extends StatefulWidget {
   Illusts _illusts;
+  final List<Illusts> illustList;
 
-  IllustCard(this._illusts);
+  IllustCard(this._illusts, {this.illustList});
 
   @override
   _IllustCardState createState() => _IllustCardState();
@@ -67,6 +69,12 @@ class _IllustCardState extends State<IllustCard> {
         onTap: () => {
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (_) {
+            if (widget.illustList != null) {
+              return PictureListPage(
+                illusts: widget.illustList,
+                nowPosition: widget.illustList.indexOf(widget._illusts),
+              );
+            }
             return PicturePage(widget._illusts, widget._illusts.id);
           }))
         },
@@ -96,18 +104,30 @@ class _IllustCardState extends State<IllustCard> {
               Hero(
                 child: Stack(
                   children: <Widget>[
-                    CachedNetworkImage(
-                      imageUrl: widget._illusts.imageUrls.medium,
-                      placeholder: (context, url) => Container(
-                        height: 200,
-                      ),
-                      httpHeaders: {
-                        "referer": "https://app-api.pixiv.net/",
-                        "User-Agent": "PixivIOSApp/5.8.0"
-                      },
-                      width: widget._illusts.width.toDouble(),
-                      fit: BoxFit.fitWidth,
-                    ),
+                    widget._illusts.height > 500
+                        ? CachedNetworkImage(
+                            imageUrl: widget._illusts.imageUrls.medium,
+                            placeholder: (context, url) => Container(
+                              height: 200,
+                            ),
+                            httpHeaders: {
+                              "referer": "https://app-api.pixiv.net/",
+                              "User-Agent": "PixivIOSApp/5.8.0"
+                            },
+                            width: widget._illusts.width.toDouble(),
+                            fit: BoxFit.fitWidth,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: widget._illusts.imageUrls.squareMedium,
+                            placeholder: (context, url) => Container(
+                              height: 200,
+                            ),
+                            httpHeaders: {
+                              "referer": "https://app-api.pixiv.net/",
+                              "User-Agent": "PixivIOSApp/5.8.0"
+                            },
+                            fit: BoxFit.fitWidth,
+                          ),
                     Visibility(
                       visible: widget._illusts.type != "illust" ||
                           widget._illusts.metaPages.isNotEmpty,

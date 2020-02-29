@@ -46,7 +46,10 @@ class RankingModePage extends StatelessWidget {
                       crossAxisCount: 2,
                       itemCount: state.illusts.length,
                       itemBuilder: (context, index) {
-                        return IllustCard(state.illusts[index]);
+                        return IllustCard(
+                          state.illusts[index],
+                          illustList: state.illusts,
+                        );
                       },
                       staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
                     )

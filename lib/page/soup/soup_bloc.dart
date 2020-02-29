@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' show parse;
@@ -10,7 +10,7 @@ class SoupBloc extends Bloc<SoupEvent, SoupState> {
   final dio = Dio(BaseOptions(headers: {
     'user-agent':
         'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-    'referer': 'https://www.pixivision.net/zh/'
+    HttpHeaders.refererHeader: 'https://www.pixivision.net/zh/',
   }));
 
   @override
@@ -21,14 +21,20 @@ class SoupBloc extends Bloc<SoupEvent, SoupState> {
     SoupEvent event,
   ) async* {
     if (event is FetchSoupEvent) {
-      AmWork amWork = AmWork();
       Response response = await dio.request(event.url);
       print(response.data);
       var document = parse(response.data);
       var workInfo = document.getElementsByClassName("am__body");
       var nodes = workInfo.first.nodes;
       var amWorkGtmDocument = parse(workInfo.first.innerHtml);
-      var description =document.getElementsByClassName('am__description _medium-editor-text').first.innerHtml.replaceAll('<p>', '').replaceAll('</p>', '').replaceAll('</br>', '').replaceAll('<br>', '');
+      var description = document
+          .getElementsByClassName('am__description _medium-editor-text')
+          .first
+          .innerHtml
+          .replaceAll('<p>', '')
+          .replaceAll('</p>', '')
+          .replaceAll('</br>', '')
+          .replaceAll('<br>', '');
       List<AmWork> amWorks = [];
       for (int i = 1; i <= nodes.length; i++) {
         try {
@@ -65,7 +71,7 @@ class SoupBloc extends Bloc<SoupEvent, SoupState> {
           continue;
         }
       }
-      yield DataSoupState(amWorks,description);
+      yield DataSoupState(amWorks, description);
     }
   }
 }

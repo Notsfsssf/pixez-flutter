@@ -345,6 +345,7 @@ class _PicturePageState extends State<PicturePage> {
                               ),
                             )
                           : FloatingActionButton(
+                        heroTag: widget.id,
                               backgroundColor: Colors.white,
                               child: StarIcon((snapshot is DataState)
                                   ? snapshot.illusts.isBookmarked
@@ -356,8 +357,8 @@ class _PicturePageState extends State<PicturePage> {
                                             ? snapshot.illusts
                                             : illustState.illusts,
                                         "public",
-                                        null));
-                              },
+                                  null));
+                        },
                             ));
                 }
 
@@ -611,8 +612,8 @@ class _PicturePageState extends State<PicturePage> {
                 List<Frame> frames = snapshot.frames;
                 return InkWell(
                   onLongPress: () {
-                    BlocProvider.of<UgoiraMetadataBloc>(context)
-                        .add(EncodeToGifEvent());
+                    /*                BlocProvider.of<UgoiraMetadataBloc>(context)
+                        .add(EncodeToGifEvent());*/
                   },
                   child: FrameAnimationImage(
                     snapshot.listSync,

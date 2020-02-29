@@ -101,7 +101,10 @@ ScrollController _scrollController;
                                 ),
                               )
                             : Visibility(visible: false, child: Container());
-                      return IllustCard(state.illusts[index - 1]);
+                      return IllustCard(
+                        state.illusts[index - 1],
+                        illustList: state.illusts,
+                      );
                     },
                     staggeredTileBuilder: (int index) =>
                         StaggeredTile.fit(index == 0 ? 2 : 1),
