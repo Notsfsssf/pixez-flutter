@@ -268,7 +268,7 @@ class _UserPageState extends State<UserPage>
                         FlatButton(
                           child: Text("CANCEL"),
                           onPressed: () {
-                            Navigator.of(context).pop("OK");
+                            Navigator.of(context).pop();
                           },
                         )
                       ],
