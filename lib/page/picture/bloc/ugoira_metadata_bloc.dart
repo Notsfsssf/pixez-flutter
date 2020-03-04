@@ -7,9 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:gifencoder/gifencoder.dart' as gifencoder;
-import './bloc.dart';
 
+import './bloc.dart';
 class UgoiraMetadataBloc
     extends Bloc<UgoiraMetadataEvent, UgoiraMetadataState> {
   final ApiClient client;
@@ -28,9 +27,7 @@ class UgoiraMetadataBloc
   Stream<UgoiraMetadataState> mapEventToState(
     UgoiraMetadataEvent event,
   ) async* {
-    if (event is EncodeToGifEvent) {
-//      List<int> bytes = gifencoder.makeGif(width, height, data.data);
-    }
+    if (event is EncodeToGifEvent) {}
     if (event is ProgressUgoiraMetadataEvent) {
       yield DownLoadProgressState(event.count, event.total);
     }
@@ -52,11 +49,12 @@ class UgoiraMetadataBloc
                 print("$count/$total");
                 add(ProgressUgoiraMetadataEvent(count, total));
                 if (count / total == 1) {
-                  add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
+                  add(UnzipUgoiraMetadataEvent(
+                      event.id, ugoiraMetadataResponse));
                 }
               }, deleteOnError: true);
-        }else {
-          add(UnzipUgoiraMetadataEvent(event.id,ugoiraMetadataResponse));
+        } else {
+          add(UnzipUgoiraMetadataEvent(event.id, ugoiraMetadataResponse));
         }
       } catch (e) {
         print(e);

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:meta/meta.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 
 @immutable
@@ -24,4 +27,14 @@ class UnzipUgoiraMetadataEvent extends UgoiraMetadataEvent {
   UnzipUgoiraMetadataEvent(this.id, this.ugoiraMetadataResponse);
 }
 
-class EncodeToGifEvent extends UgoiraMetadataEvent {}
+class EncodeToGifEvent extends UgoiraMetadataEvent {
+  final List<FileSystemEntity> listSync;
+  final Illusts illust;
+  final List<Frame> frames;
+
+  EncodeToGifEvent(
+    this.listSync,
+    this.illust,
+    this.frames,
+  );
+}
