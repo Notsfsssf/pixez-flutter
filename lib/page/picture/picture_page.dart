@@ -80,38 +80,43 @@ class _PicturePageState extends State<PicturePage> {
                           },
                         )),
                       ),
-                      ListView.builder(
-                        itemCount: tags.length,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Flex(
-                            direction: Axis.horizontal,
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  state.bookMarkDetailResponse.bookmarkDetail
-                                      .tags[index].name,
-                                  softWrap: true,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Checkbox(
-                                onChanged: (bool value) {
-                                  setBookState(() {
+                      Container(
+                        height: 400,
+                        child: ListView.builder(
+                          itemCount: tags.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Flex(
+                              direction: Axis.horizontal,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
                                     state.bookMarkDetailResponse.bookmarkDetail
-                                        .tags[index].isRegistered = value;
-                                  });
-                                },
-                                value: state.bookMarkDetailResponse
-                                    .bookmarkDetail.tags[index].isRegistered,
-                              )
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                          );
-                        },
+                                        .tags[index].name,
+                                    softWrap: true,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Checkbox(
+                                  onChanged: (bool value) {
+                                    setBookState(() {
+                                      state
+                                          .bookMarkDetailResponse
+                                          .bookmarkDetail
+                                          .tags[index]
+                                          .isRegistered = value;
+                                    });
+                                  },
+                                  value: state.bookMarkDetailResponse
+                                      .bookmarkDetail.tags[index].isRegistered,
+                                )
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                            );
+                          },
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
