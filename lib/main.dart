@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +9,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
+import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/splash/splash_page.dart';
-
+import 'package:pixez/page/user/user_page.dart';
+import 'package:uni_links/uni_links.dart';
 import 'generated/i18n.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
@@ -38,8 +42,15 @@ main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +79,7 @@ class MyApp extends StatelessWidget {
           create: (context) => MuteBloc()..add(FetchMuteEvent()),
         ),
         BlocProvider<ControllerBloc>(
-          create: (context)=>ControllerBloc(),
+          create: (context) => ControllerBloc(),
         )
       ],
       child: MultiRepositoryProvider(

@@ -25,7 +25,7 @@
 			<string>Viewer</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>https</string>
+				<string>pixez</string>
 			</array>
 		</dict>
 	</array>

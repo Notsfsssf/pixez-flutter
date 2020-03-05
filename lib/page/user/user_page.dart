@@ -286,8 +286,7 @@ class _UserPageState extends State<UserPage>
               onPressed: () {
                 if (state is UserDataState)
                   Share.share(
-                      'https://www.pixiv.net/member.php?id=${state.userDetail
-                          .user.id}');
+                      'https://www.pixiv.net/users/${state.userDetail.user.id}');
               }),
           PopupMenuButton<WhyFarther>(
             initialValue: WhyFarther.public,
@@ -350,8 +349,7 @@ class _UserPageState extends State<UserPage>
             onPressed: () {
               if (state is UserDataState)
                 Share.share(
-                    'https://www.pixiv.net/member.php?id=${state.userDetail.user
-                        .id}');
+                    'https://www.pixiv.net/users/${state.userDetail.user.id}');
             })
       ];
     else
@@ -361,7 +359,7 @@ class _UserPageState extends State<UserPage>
             onPressed: () {
               if (state is UserDataState)
                 Share.share(
-                    'https://www.pixiv.net/member.php?id=${state.userDetail.user.id}');
+                    'https://www.pixiv.net/users/${state.userDetail.user.id}');
             }),
         PopupMenuButton<WhyFarther>(
           initialValue: WhyFarther.public,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,8 +12,11 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/novel/novel_page.dart';
+import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/user/user_page.dart';
+import 'package:uni_links/uni_links.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -19,6 +24,71 @@ class HelloPage extends StatefulWidget {
 }
 
 class _HelloPageState extends State<HelloPage> {
+    StreamSubscription _sub;
+  @override
+  void dispose() {
+    _sub?.cancel();
+        _pageController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+        _pageController = PageController();
+    super.initState();
+    initPlatformState();
+  }
+    judgePushPage(Uri link) {
+    if (link.path.contains("artworks")) {
+      List<String> paths = link.pathSegments;
+      int index = paths.indexOf("artworks");
+      if (index != -1) {
+        try {
+          int id = int.parse(paths[index + 1]);
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return PicturePage(null, id);
+          }));
+          return;
+        } catch (e) {}
+      }
+    }
+    if (link.path.contains("users")) {
+      List<String> paths = link.pathSegments;
+      int index = paths.indexOf("users");
+      if (index != -1) {
+        try {
+          int id = int.parse(paths[index + 1]);
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return UserPage(id: id,);
+          }));
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+  }
+
+  initPlatformState() async {
+ 
+    try {
+      Uri initialLink = await getInitialUri();
+      print(initialLink);
+      if(initialLink!=null)
+      judgePushPage(initialLink);
+         _sub = getUriLinksStream().listen((Uri link) {
+      print(link);
+      judgePushPage(link);
+    });
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+    } catch(e) {
+      print(e);
+      // Handle exception by warning the user their action did not succeed
+      // return?
+    }
+  }
   int _selectedIndex = 0;
   PageController _pageController;
   List<Widget> _widgetOptions = <Widget>[
@@ -37,17 +107,9 @@ class _HelloPageState extends State<HelloPage> {
     SettingPage()
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
+
+
 
   var tapTime = [0, 0, 0, 0];
   var routes = ['recom', 'new', 'search', 'setting'];
