@@ -37,7 +37,7 @@ class ApiClient {
   ApiClient() {
     String time = getIsoDate();
     this.httpClient = Dio()
-      ..options.baseUrl = "https://210.140.131.219"
+      ..options.baseUrl = "https://210.140.131.188"
       ..options.headers = {
         "X-Client-Time": time,
         "X-Client-Hash": getHash(time + hashSalt),
@@ -147,7 +147,8 @@ class ApiClient {
   }
 
   Future<Response> getNext(String url) async {
-    String finalUrl = url.replaceAll("app-api.pixiv.net", "210.140.131.219");
+   var a= this.httpClient.options.baseUrl;
+    String finalUrl = url.replaceAll("app-api.pixiv.net", a.replaceAll(a, a.replaceFirst("https://","")));
     return httpClient.get(finalUrl);
   }
 
