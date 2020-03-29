@@ -101,11 +101,12 @@ class _IllustCardState extends State<IllustCard> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Hero(
-                child: Stack(
-                  children: <Widget>[
-                    widget._illusts.height > 500
-                        ? CachedNetworkImage(
+              Stack(
+                children: <Widget>[
+                  widget._illusts.height > 500
+                      ? Hero(
+                          tag: widget._illusts.imageUrls.medium,
+                          child: CachedNetworkImage(
                             imageUrl: widget._illusts.imageUrls.medium,
                             placeholder: (context, url) => Container(
                               height: 200,
@@ -116,8 +117,11 @@ class _IllustCardState extends State<IllustCard> {
                             },
                             width: widget._illusts.width.toDouble(),
                             fit: BoxFit.fitWidth,
-                          )
-                        : CachedNetworkImage(
+                          ),
+                        )
+                      : Hero(
+                          tag: widget._illusts.imageUrls.medium,
+                          child: CachedNetworkImage(
                             imageUrl: widget._illusts.imageUrls.squareMedium,
                             placeholder: (context, url) => Container(
                               height: 200,
@@ -128,31 +132,30 @@ class _IllustCardState extends State<IllustCard> {
                             },
                             fit: BoxFit.fitWidth,
                           ),
-                    Visibility(
-                      visible: widget._illusts.type != "illust" ||
-                          widget._illusts.metaPages.isNotEmpty,
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Container(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 2.0, horizontal: 2.0),
-                              child: cardText(),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black26,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4.0)),
-                            ),
+                        ),
+                  Visibility(
+                    visible: widget._illusts.type != "illust" ||
+                        widget._illusts.metaPages.isNotEmpty,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2.0, horizontal: 2.0),
+                            child: cardText(),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.0)),
                           ),
                         ),
                       ),
-                    )
-                  ],
-                ),
-                tag: widget._illusts.imageUrls.medium,
+                    ),
+                  )
+                ],
               ),
               ListTile(
                 title: Text(
