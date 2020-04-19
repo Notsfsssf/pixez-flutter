@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/models/illust.dart';
@@ -58,13 +59,22 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
     }
   }
 
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
+
   Stream<SaveSuccesState> _mapSaveSuccesState(
       SaveToPictureFoldEvent event) async* {
-    final _imageSaver = ImageSaver();
-    List<Uint8List> bytesList = [event.uint8list];
-    final res = await _imageSaver.saveImages(
-        imageBytes: bytesList, directoryName: 'pxez');
-    yield SaveSuccesState(res);
+    if (Platform.isAndroid) {
+      final inputDate = event.uint8list;
+      final int result =
+          await platform.invokeMethod('getBatteryLevel', inputDate);
+    }
+    if (Platform.isIOS) {
+      final _imageSaver = ImageSaver();
+      List<Uint8List> bytesList = [event.uint8list];
+      final res = await _imageSaver.saveImages(
+          imageBytes: bytesList, directoryName: 'pxez');
+      yield SaveSuccesState(res);
+    }
   }
 
   @override
@@ -122,6 +132,7 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
 class NoNeedException implements Exception {}
 
 List<String> a = [];
+
 tryToDownLoad(String url) {
   if (a.contains(url)) throw NoNeedException();
   Dio().download(url, 'a.txt', onReceiveProgress: (min, max) {});
