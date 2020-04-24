@@ -38,7 +38,7 @@ class UgoiraMetadataBloc
       File fullPathFile = File(fullPath);
       try {
         UgoiraMetadataResponse ugoiraMetadataResponse =
-        await client.getUgoiraMetadata(event.id);
+            await client.getUgoiraMetadata(event.id);
         String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium;
         if (!fullPathFile.existsSync()) {
           Dio(BaseOptions(headers: {

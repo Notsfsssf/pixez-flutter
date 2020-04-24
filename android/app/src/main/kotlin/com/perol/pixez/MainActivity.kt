@@ -1,47 +1,63 @@
 package com.perol.pixez
 
-import android.R.attr.mimeType
 import android.content.ContentValues
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import io.flutter.app.FlutterActivity
+import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
-import java.io.*
+import java.io.File
+import java.io.IOException
 
 
 class MainActivity : FlutterActivity() {
-  @Throws(IOException::class)
-  private fun insertImage(image: File): Boolean {
-    var values: ContentValues
-    // 向 Media Store 插入标记为待定的空白文件
-    values = ContentValues()
-
-    values.put(MediaStore.Images.ImageColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES.toString() + "test") // 不同类型文件可用 RELATIVE_PATH 不用，具体请参阅 MediaProvider 源码
-    values.put(MediaStore.Images.ImageColumns.DISPLAY_NAME, System.currentTimeMillis().toString())
-    values.put(MediaStore.Images.ImageColumns.IS_PENDING, true)
-    val uri: Uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            ?: return false
-    // 写入文件内容
-    val `is`: InputStream = FileInputStream(image)
-    val os: OutputStream = getContentResolver().openOutputStream(uri, "rw")
-    val b = ByteArray(8192)
-    var r: Int
-    while (`is`.read(b).also({ r = it }) != -1) {
-      os.write(b, 0, r)
+    private val CHANNEL = "samples.flutter.dev/battery"
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        GeneratedPluginRegistrant.registerWith(this)
+        MethodChannel(flutterView, CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "getBatteryLevel") {
+                val data = call.argument<ByteArray>("data") as ByteArray
+                insertImage(data)
+                result.success(true)
+            }
+        }
     }
-    os.flush()
-    os.close()
-    `is`.close()
-    // 移除待定标记，其他应用可访问该文件
-    values = ContentValues()
-    values.put(MediaStore.Images.ImageColumns.IS_PENDING, false)
-    return getContentResolver().update(uri, values, null, null) === 1
-  }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    GeneratedPluginRegistrant.registerWith(this)
-  }
+    fun insertImage(data: ByteArray) {
+        val relativeLocation =
+                Environment.DIRECTORY_PICTURES + File.pathSeparator + "Date"
+        val contentValues = ContentValues().apply {
+            put(
+                    MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis()
+                    .toString()
+            )
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relativeLocation)
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+        }
+        val resolver = this.contentResolver
+        val uri =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        try {
+            uri?.let {
+                val stream = resolver.openOutputStream(it)
+                stream?.write(data) ?: throw IOException("Failed to get output stream.")
+            } ?: throw IOException("Failed to create new MediaStore record")
+
+        } catch (e: IOException) {
+            if (uri != null) {
+                resolver.delete(uri, null, null)
+            }
+            throw IOException(e)
+        } finally {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+        }
+
+    }
 }

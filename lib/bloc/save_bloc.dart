@@ -61,12 +61,13 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
 
   static const platform = const MethodChannel('samples.flutter.dev/battery');
 
-  Stream<SaveSuccesState> _mapSaveSuccesState(
+  Stream<SaveSuccesState> _mapSaveSuccessState(
       SaveToPictureFoldEvent event) async* {
     if (Platform.isAndroid) {
       final inputDate = event.uint8list;
-      final int result =
-          await platform.invokeMethod('getBatteryLevel', inputDate);
+      final bool result =
+          await platform.invokeMethod('getBatteryLevel', {"data": inputDate});
+      yield SaveSuccesState(result);
     }
     if (Platform.isIOS) {
       final _imageSaver = ImageSaver();
@@ -85,7 +86,7 @@ class SaveBloc extends Bloc<SaveEvent, SaveState> {
       yield SaveStartState();
     }
     if (event is SaveToPictureFoldEvent) {
-      yield* _mapSaveSuccesState(event);
+      yield* _mapSaveSuccessState(event);
     }
     if (event is SaveProgressImageEvent) {
       yield SaveProgressSate(event.progressMaps);
