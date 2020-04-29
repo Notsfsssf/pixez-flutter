@@ -617,6 +617,33 @@ class _PicturePageState extends State<PicturePage> {
               if (snapshot is PlayUgoiraMetadataState) {
                 List<Frame> frames = snapshot.frames;
                 return InkWell(
+                  onTap: ()async{
+                     final result = await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("${I18n.of(context).Delete}?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.of(context).pop("OK");
+                                },
+                              ),
+                              FlatButton(
+                                child: Text("CANCEL"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                    if (result == "OK") {
+                      BlocProvider.of<UgoiraMetadataBloc>(context)
+                          .add(EncodeToGifEvent(snapshot.listSync,illust,frames));
+                    }
+                  },
                   onLongPress: () async {
                     final result = await showDialog(
                         context: context,

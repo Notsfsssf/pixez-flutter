@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart';
 import 'package:image/image.dart' as Im;
 import 'package:path_provider/path_provider.dart';
@@ -28,32 +29,19 @@ class UgoiraMetadataBloc
 
   @override
   UgoiraMetadataState get initialState => InitialUgoiraMetadataState();
-
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
   @override
   Stream<UgoiraMetadataState> mapEventToState(
     UgoiraMetadataEvent event,
   ) async* {
     if (event is EncodeToGifEvent) {
-      var firstImage =
-          decodeImage(File(event.listSync.first.path).readAsBytesSync());
-      int width = firstImage.width.toInt();
-      int height = firstImage.height.toInt();
-      var frames = new gifencoder.GifBuffer(width, height);
-      for (var i = 0; i < event.listSync.length; i++) {
-        var r = Im.decodeImage(Im.encodeJpg(
-            Im.decodeImage(File(event.listSync[i].path).readAsBytesSync()),
-            quality: 80));
-        frames.add(r.getBytes(format: Format.rgba));
-        print("1");
+      String batteryLevel;
+      try {
+        final int result = await platform.invokeMethod('getBatteryLevel',event.listSync.first.parent.path);
+        batteryLevel = 'Battery level at $result % .';
+      } on PlatformException catch (e) {
+        batteryLevel = "Failed to get battery level: '${e.message}'.";
       }
-      List<int> bytes = frames.build(event.frames.first.delay);
-      final _imageSaver = ImageSaver();
-      BotToast.showText(text: "ok!");
-      await _imageSaver.saveImage(
-          imageBytes: bytes,
-          imageName: "${event.illust.id}.gif",
-          directoryName: 'pxez');
-      BotToast.showText(text: "ohhhh!");
     }
     if (event is ProgressUgoiraMetadataEvent) {
       yield DownLoadProgressState(event.count, event.total);
@@ -73,13 +61,12 @@ class UgoiraMetadataBloc
             "User-Agent": "PixivIOSApp/5.8.0"
           })).download(zipUrl, fullPath,
               onReceiveProgress: (int count, int total) {
-                print("$count/$total");
-                add(ProgressUgoiraMetadataEvent(count, total));
-                if (count / total == 1) {
-                  add(UnzipUgoiraMetadataEvent(
-                      event.id, ugoiraMetadataResponse));
-                }
-              }, deleteOnError: true);
+            print("$count/$total");
+            add(ProgressUgoiraMetadataEvent(count, total));
+            if (count / total == 1) {
+              add(UnzipUgoiraMetadataEvent(event.id, ugoiraMetadataResponse));
+            }
+          }, deleteOnError: true);
         } else {
           add(UnzipUgoiraMetadataEvent(event.id, ugoiraMetadataResponse));
         }
