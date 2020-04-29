@@ -3,12 +3,18 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
+import 'package:image/image.dart';
+import 'package:image/image.dart' as Im;
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/util/gifencoder.dart' as gifencoder;
+import 'package:save_in_gallery/save_in_gallery.dart';
 
 import './bloc.dart';
+
 class UgoiraMetadataBloc
     extends Bloc<UgoiraMetadataEvent, UgoiraMetadataState> {
   final ApiClient client;
@@ -27,7 +33,28 @@ class UgoiraMetadataBloc
   Stream<UgoiraMetadataState> mapEventToState(
     UgoiraMetadataEvent event,
   ) async* {
-    if (event is EncodeToGifEvent) {}
+    if (event is EncodeToGifEvent) {
+      var firstImage =
+          decodeImage(File(event.listSync.first.path).readAsBytesSync());
+      int width = firstImage.width.toInt();
+      int height = firstImage.height.toInt();
+      var frames = new gifencoder.GifBuffer(width, height);
+      for (var i = 0; i < event.listSync.length; i++) {
+        var r = Im.decodeImage(Im.encodeJpg(
+            Im.decodeImage(File(event.listSync[i].path).readAsBytesSync()),
+            quality: 80));
+        frames.add(r.getBytes(format: Format.rgba));
+        print("1");
+      }
+      List<int> bytes = frames.build(event.frames.first.delay);
+      final _imageSaver = ImageSaver();
+      BotToast.showText(text: "ok!");
+      await _imageSaver.saveImage(
+          imageBytes: bytes,
+          imageName: "${event.illust.id}.gif",
+          directoryName: 'pxez');
+      BotToast.showText(text: "ohhhh!");
+    }
     if (event is ProgressUgoiraMetadataEvent) {
       yield DownLoadProgressState(event.count, event.total);
     }

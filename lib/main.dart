@@ -13,6 +13,7 @@ import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/page/user/user_page.dart';
+import 'package:pixez/util/gifencoder.dart';
 import 'package:uni_links/uni_links.dart';
 import 'generated/i18n.dart';
 
@@ -38,7 +39,6 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-
   runApp(MyApp());
 }
 
