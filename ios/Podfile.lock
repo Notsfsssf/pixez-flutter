@@ -30,6 +30,7 @@ PODS:
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
+  - Toast-Swift (5.0.1)
   - uni_links (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
@@ -62,6 +63,7 @@ DEPENDENCIES:
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - Toast-Swift
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
@@ -74,6 +76,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
+    - Toast-Swift
 
 EXTERNAL SOURCES:
   Flutter:
@@ -137,6 +140,7 @@ SPEC CHECKSUMS:
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
@@ -146,6 +150,6 @@ SPEC CHECKSUMS:
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
-PODFILE CHECKSUM: 0b49b8827dfee1da5666c16fc048ce3b7d9a705b
+PODFILE CHECKSUM: afec47a062e2e16ce2d59bd5ee882358ed9871bf
 
 COCOAPODS: 1.9.1

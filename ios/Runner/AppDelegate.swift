@@ -1,6 +1,8 @@
 import UIKit
 import Flutter
 import MobileCoreServices
+import Photos
+import Toast_Swift
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -17,15 +19,19 @@ import MobileCoreServices
           result(FlutterMethodNotImplemented)
           return
         }
-        let path:String = call.arguments as! String;
-        self.receiveBatteryLevel(result: result,path: path )
+    let args = call.arguments as? [String:Any]
+       
+  
+        let path : String = args?["path"] as! String
+        let delay:Int = args?["delay"] as! Int
+        self.receiveBatteryLevel(result: result,path: path ,delay: delay)
   
     })
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-    // 3 实现相应的函数
+
 
         @objc private func saveImage(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: AnyObject) {
 
@@ -72,7 +78,9 @@ import MobileCoreServices
      
      return filePaths;
  }
-    private func receiveBatteryLevel(result: FlutterResult,path:String) {
+
+
+    private func receiveBatteryLevel(result: FlutterResult,path:String,delay:Int) {
 //      let secondVC = UIStoryboard(name: "Spotlight", bundle: nil).instantiateViewController(withIdentifier: "spotlight") as UIViewController
 //      self.window.rootViewController?.present(secondVC, animated: true, completion: nil)
          let docs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -88,39 +96,56 @@ let paths = getAllFilePath(path)
                    }
             
                }
-       let ok = saveGifToDocument(imageArray: imageArray, gifPath)
+       let ok = saveGifToDocument(imageArray: imageArray, gifPath,delay: delay)
         if(ok){
-            UIImageWriteToSavedPhotosAlbum(UIImage.init(named: gifPath)!, self, #selector(saveImage(image:didFinishSavingWithError:contextInfo:)), nil)
+            PHPhotoLibrary.shared().performChanges ({
+              let url = URL(fileURLWithPath: gifPath)
+              PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: url)
+            }) { saved, error in
+              if saved {
+//             let alertController = UIAlertController(title: "encode success", message: nil, preferredStyle: UIAlertController.Style.alert)
+
+                DispatchQueue.main.async {
+  
+                  
+                    UIApplication.shared.keyWindow?.rootViewController?.view.makeToast("Encode success")
+                 }
+                print("Your image was successfully saved")
+              }
+            }
+   
         }
         result(Int(1))
     }
-    // 3.设置GIF属性，利用ImageIO编码GIF文件
-    func saveGifToDocument(imageArray images: NSArray, _ gifPath: String) -> Bool {
+ 
+    func saveGifToDocument(imageArray images: NSArray, _ gifPath: String,delay:Int) -> Bool {
         guard images.count > 0 &&
              gifPath.utf8CString.count > 0 else {
             return false
         }
+      
         let url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, gifPath as CFString, .cfurlposixPathStyle, false)
         let destion = CGImageDestinationCreateWithURL(url!, kUTTypeGIF, images.count, nil)
-        
-        // 设置gif图片属性
-        // 设置每帧之间播放的时间0.1
-        let delayTime = [kCGImagePropertyGIFDelayTime as String:1]
+        let adelay = Float(delay)/Float(100)
+  print("delay time\(adelay)")
+        let delayTime = [kCGImagePropertyGIFUnclampedDelayTime as String:adelay]
         let destDic   = [kCGImagePropertyGIFDictionary as String:delayTime]
-        // 依次为gif图像对象添加每一帧属性
+
+//        let propertiesDic: NSMutableDictionary = NSMutableDictionary()
+//        propertiesDic.setValue(kCGImagePropertyColorModelRGB, forKey: kCGImagePropertyColorModel as String)
+//        propertiesDic.setValue(16, forKey: kCGImagePropertyDepth as String)
+//        propertiesDic.setValue(1, forKey: kCGImagePropertyGIFLoopCount as String)
+//
+//        let gitDestDic = [kCGImagePropertyGIFDictionary as String:propertiesDic]
+//        CGImageDestinationSetProperties(destion!, gitDestDic as CFDictionary?)
         for image in images {
-            CGImageDestinationAddImage(destion!, (image as AnyObject).cgImage!!, destDic as CFDictionary?)
+            CGImageDestinationAddImage(destion!, (image as! UIImage).cgImage!, destDic as CFDictionary)
             print("kkkkkkkk\(images.count)")
         }
-        
-        let propertiesDic: NSMutableDictionary = NSMutableDictionary()
-        propertiesDic.setValue(kCGImagePropertyColorModelRGB, forKey: kCGImagePropertyColorModel as String)
-        propertiesDic.setValue(16, forKey: kCGImagePropertyDepth as String)         // 设置图片的颜色深度
-        propertiesDic.setValue(1, forKey: kCGImagePropertyGIFLoopCount as String)   // 设置Gif执行次数
-        
-//        let gitDestDic = [kCGImagePropertyGIFDictionary as String:propertiesDic]    // 为gif图像设置属性
-//        CGImageDestinationSetProperties(destion!, gitDestDic as CFDictionary?)
-        CGImageDestinationFinalize(destion!)
-        return true
+     return CGImageDestinationFinalize(destion!)
+
+     
+
+  
     }
 }

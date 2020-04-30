@@ -29,19 +29,14 @@ class UgoiraMetadataBloc
 
   @override
   UgoiraMetadataState get initialState => InitialUgoiraMetadataState();
-  static const platform = const MethodChannel('samples.flutter.dev/battery');
+
   @override
   Stream<UgoiraMetadataState> mapEventToState(
     UgoiraMetadataEvent event,
   ) async* {
     if (event is EncodeToGifEvent) {
-      String batteryLevel;
-      try {
-        final int result = await platform.invokeMethod('getBatteryLevel',event.listSync.first.parent.path);
-        batteryLevel = 'Battery level at $result % .';
-      } on PlatformException catch (e) {
-        batteryLevel = "Failed to get battery level: '${e.message}'.";
-      }
+    
+    
     }
     if (event is ProgressUgoiraMetadataEvent) {
       yield DownLoadProgressState(event.count, event.total);

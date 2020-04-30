@@ -1,5 +1,7 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
@@ -180,6 +182,7 @@ class _PicturePageState extends State<PicturePage> {
         ));
   }
 
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
   @override
   void initState() {
     super.initState();
@@ -340,7 +343,7 @@ class _PicturePageState extends State<PicturePage> {
                                   : illustState.illusts.isBookmarked),
                               label: FlatButton(
                                 padding: EdgeInsets.all(0.0),
-                                child: Text('Encode'),
+                                child: Text('Play'),
                                 onPressed: () {
                                   BlocProvider.of<UgoiraMetadataBloc>(context)
                                       .add(FetchUgoiraMetadataEvent(widget.id));
@@ -351,7 +354,7 @@ class _PicturePageState extends State<PicturePage> {
                               ),
                             )
                           : FloatingActionButton(
-                        heroTag: widget.id,
+                              heroTag: widget.id,
                               backgroundColor: Colors.white,
                               child: StarIcon((snapshot is DataState)
                                   ? snapshot.illusts.isBookmarked
@@ -363,8 +366,8 @@ class _PicturePageState extends State<PicturePage> {
                                             ? snapshot.illusts
                                             : illustState.illusts,
                                         "public",
-                                  null));
-                        },
+                                        null));
+                              },
                             ));
                 }
 
@@ -617,12 +620,12 @@ class _PicturePageState extends State<PicturePage> {
               if (snapshot is PlayUgoiraMetadataState) {
                 List<Frame> frames = snapshot.frames;
                 return InkWell(
-                  onTap: ()async{
-                     final result = await showDialog(
+                  onTap: () async {
+                    final result = await showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("${I18n.of(context).Delete}?"),
+                            title: Text("Encode?"),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -640,8 +643,14 @@ class _PicturePageState extends State<PicturePage> {
                           );
                         });
                     if (result == "OK") {
-                      BlocProvider.of<UgoiraMetadataBloc>(context)
-                          .add(EncodeToGifEvent(snapshot.listSync,illust,frames));
+                      try {
+                        platform.invokeMethod('getBatteryLevel', {
+                          "path": snapshot.listSync.first.parent.path,
+                          "delay": snapshot.frames.first.delay
+                        });
+                        BotToast.showCustomText(
+                            toastBuilder: (_) => Text("encoding..."));
+                      } on PlatformException catch (e) {}
                     }
                   },
                   onLongPress: () async {
@@ -649,7 +658,7 @@ class _PicturePageState extends State<PicturePage> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("${I18n.of(context).Delete}?"),
+                            title: Text("Encode?"),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -667,8 +676,14 @@ class _PicturePageState extends State<PicturePage> {
                           );
                         });
                     if (result == "OK") {
-                      BlocProvider.of<UgoiraMetadataBloc>(context)
-                          .add(EncodeToGifEvent(snapshot.listSync,illust,frames));
+                      try {
+                        platform.invokeMethod('getBatteryLevel', {
+                          "path": snapshot.listSync.first.parent.path,
+                          "delay": snapshot.frames.first.delay
+                        });
+                        BotToast.showCustomText(
+                            toastBuilder: (_) => Text("encoding..."));
+                      } on PlatformException catch (e) {}
                     }
                   },
                   child: FrameAnimationImage(
@@ -731,12 +746,12 @@ class _PicturePageState extends State<PicturePage> {
             },
             child: illust.metaPages.isEmpty
                 ? Hero(
-              child: PixivImage(
-                illust.imageUrls.large,
-                placeHolder: illust.imageUrls.medium,
-              ),
-              tag: illust.imageUrls.medium,
-            )
+                    child: PixivImage(
+                      illust.imageUrls.large,
+                      placeHolder: illust.imageUrls.medium,
+                    ),
+                    tag: illust.imageUrls.medium,
+                  )
                 : _buildIllustsItem(index - 1, illust),
           );
         });
@@ -804,7 +819,9 @@ class _PicturePageState extends State<PicturePage> {
                           style:
                               TextStyle(color: Theme.of(context).accentColor),
                         ),
-                        Container(height: 4.0,),
+                        Container(
+                          height: 4.0,
+                        ),
                         Text(illust.user.name),
                         Text(illust.createDate),
                       ],
