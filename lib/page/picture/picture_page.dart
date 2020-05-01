@@ -626,6 +626,7 @@ class _PicturePageState extends State<PicturePage> {
                         builder: (context) {
                           return AlertDialog(
                             title: Text("Encode?"),
+                            content: Text("This will take some time"),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -658,7 +659,8 @@ class _PicturePageState extends State<PicturePage> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Encode?"),
+                                            title: Text("Encode?"),
+                            content: Text("This will take some time"),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
