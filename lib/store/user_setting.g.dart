@@ -26,17 +26,18 @@ mixin _$UserSetting on _UserSettingBase, Store {
     }, _$zoomQualityAtom, name: '${_$zoomQualityAtom.name}_set');
   }
 
-  final _$_UserSettingBaseActionController =
-      ActionController(name: '_UserSettingBase');
+  final _$initAsyncAction = AsyncAction('init');
 
   @override
-  void change(int value) {
-    final _$actionInfo = _$_UserSettingBaseActionController.startAction();
-    try {
-      return super.change(value);
-    } finally {
-      _$_UserSettingBaseActionController.endAction(_$actionInfo);
-    }
+  Future<void> init() {
+    return _$initAsyncAction.run(() => super.init());
+  }
+
+  final _$changeAsyncAction = AsyncAction('change');
+
+  @override
+  Future<void> change(int value) {
+    return _$changeAsyncAction.run(() => super.change(value));
   }
 
   @override

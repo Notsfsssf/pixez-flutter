@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/store/user_setting.dart';
+import 'package:pixez/main.dart';
 
-final UserSetting userSetting = UserSetting();
 
 class SettingQualityPage extends StatefulWidget {
   @override
@@ -12,56 +11,47 @@ class SettingQualityPage extends StatefulWidget {
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
   @override
+  void initState() {
+    userSetting.init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Quality"),
+      ),
       body: Container(
         child: ListView(children: [
-          Card(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  child: Text("data"),
-                  padding: EdgeInsets.all(16),
-                ),
-                TabBar(
-                  tabs: [
-                    Tab(
-                      text: "s",
-                    ),
-                    Tab(
-                      text: "s",
-                    )
-                  ],
-                  onTap: (index) {
-                    userSetting.change(index);
-                  },
-                  controller: TabController(length: 2, vsync: this),
-                )
-              ],
-            ),
-          ),
-          Card(
-            child: Column(
-              children: <Widget>[
-                Observer(builder: (_) {
-                  return Text("data"+userSetting.zoomQuality.toString());
-                }),
-                TabBar(
-                  tabs: [
-                    Tab(
-                      text: "s",
-                    ),
-                    Tab(
-                      text: "s",
-                    )
-                  ],
-                  onTap: (index) {
-                    userSetting.change(index);
-                  },
-                  controller: TabController(length: 2, vsync: this),
-                )
-              ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    child: Text("大图预览缩放"),
+                    padding: EdgeInsets.all(16),
+                  ),
+                  Observer(builder: (_) {
+                    return TabBar(
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Tab(
+                          text: "大图",
+                        ),
+                        Tab(
+                          text: "原图",
+                        )
+                      ],
+                      onTap: (index) {
+                        userSetting.change(index);
+                      },
+                      controller: TabController(length: 2, vsync: this,initialIndex: userSetting.zoomQuality),
+                    );
+                  })
+                ],
+              ),
             ),
           )
         ]),

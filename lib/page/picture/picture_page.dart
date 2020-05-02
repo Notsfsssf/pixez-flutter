@@ -16,6 +16,7 @@ import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/ugoira_animation.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -24,7 +25,6 @@ import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
-import 'package:pixez/page/zoom/zoom_page.dart';
 import 'package:share/share.dart';
 
 abstract class ListItem {}
@@ -659,7 +659,7 @@ class _PicturePageState extends State<PicturePage> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                                            title: Text("Encode?"),
+                            title: Text("Encode?"),
                             content: Text("This will take some time"),
                             actions: <Widget>[
                               FlatButton(
@@ -737,12 +737,13 @@ class _PicturePageState extends State<PicturePage> {
                   });
             },
             onTap: () {
+
+
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return PhotoViewerPage(
-                  url: illust.metaPages.isEmpty
-                      ? illust.imageUrls.large
-                      : illust.metaPages[index - 1].imageUrls.large,
+       index: index-1,
+                  illusts: illust,
                 );
               }));
             },

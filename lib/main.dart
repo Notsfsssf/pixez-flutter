@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -9,14 +8,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/splash/splash_page.dart';
-import 'package:pixez/page/user/user_page.dart';
-import 'package:pixez/util/gifencoder.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:pixez/store/user_setting.dart';
 import 'generated/i18n.dart';
-
+final UserSetting userSetting = UserSetting();
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -49,7 +45,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+@override
+  void initState() {
 
+    super.initState();
+    userSetting.init();
+  }
 
 
   @override
@@ -97,7 +98,7 @@ class _MyAppState extends State<MyApp> {
             home: SplashPage(),
             title: 'PixEz',
             theme: ThemeData(
-              primarySwatch: Colors.lightBlue,
+              primarySwatch: Colors.lightGreen,
               brightness: Brightness.light,
             ),
             darkTheme: ThemeData(
