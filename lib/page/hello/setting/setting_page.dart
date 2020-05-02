@@ -12,6 +12,7 @@ import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
+import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
@@ -94,6 +95,18 @@ class SettingPage extends StatelessWidget {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return HistoryPage();
+                            }));
+                          },
+                        ),
+                           ListTile(
+                          leading: Icon(Icons.history),
+                          title: Text(I18n
+                              .of(context)
+                              .History_record),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return SettingQualityPage();
                             }));
                           },
                         ),
