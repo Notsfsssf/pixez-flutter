@@ -7,8 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/bloc/illust_persist_bloc.dart';
 import 'package:pixez/bloc/illust_persist_event.dart';
-import 'package:pixez/bloc/save_bloc.dart';
-import 'package:pixez/bloc/save_event.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -457,8 +455,7 @@ class _PicturePageState extends State<PicturePage> {
                               switch (result) {
                                 case "OK":
                                   {
-                                    BlocProvider.of<SaveBloc>(context).add(
-                                        SaveChoiceImageEvent(illusts, indexs));
+                                    saveStore.saveChoiceImage(illusts, indexs);
                                   }
                               }
                             },
@@ -647,7 +644,8 @@ class _PicturePageState extends State<PicturePage> {
                       try {
                         platform.invokeMethod('getBatteryLevel', {
                           "path": snapshot.listSync.first.parent.path,
-                          "delay": snapshot.frames.first.delay
+                          "delay": snapshot.frames.first.delay,
+                          "name": widget._illusts.id.toString()
                         });
                         BotToast.showCustomText(
                             toastBuilder: (_) => Text("encoding..."));
@@ -681,7 +679,8 @@ class _PicturePageState extends State<PicturePage> {
                       try {
                         platform.invokeMethod('getBatteryLevel', {
                           "path": snapshot.listSync.first.parent.path,
-                          "delay": snapshot.frames.first.delay
+                          "delay": snapshot.frames.first.delay,
+                          "name": widget._illusts.id.toString()
                         });
                         BotToast.showCustomText(
                             toastBuilder: (_) => Text("encoding..."));
@@ -718,8 +717,7 @@ class _PicturePageState extends State<PicturePage> {
                             leading: Icon(Icons.save_alt),
                             onTap: () async {
                               Navigator.of(context).pop();
-                              BlocProvider.of<SaveBloc>(context)
-                                  .add(SaveImageEvent(illust, index - 1));
+                              saveStore.saveImage(illust, index: index - 1);
                             },
                             title: Text(I18n.of(context).Save),
                           ),
@@ -737,12 +735,10 @@ class _PicturePageState extends State<PicturePage> {
                   });
             },
             onTap: () {
-
-
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return PhotoViewerPage(
-       index: index-1,
+                  index: index - 1,
                   illusts: illust,
                 );
               }));

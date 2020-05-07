@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,15 +9,17 @@ import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
-import 'package:pixez/page/novel/novel_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/user_page.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:pixez/store/save_store.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -24,21 +27,25 @@ class HelloPage extends StatefulWidget {
 }
 
 class _HelloPageState extends State<HelloPage> {
-    StreamSubscription _sub;
+  StreamSubscription _sub;
   @override
   void dispose() {
     _sub?.cancel();
-        _pageController?.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-        _pageController = PageController();
+    _pageController = PageController();
     super.initState();
+    saveStore.saveStream.listen((stream) {
+      listenBehavior(context, stream);
+    });
     initPlatformState();
   }
-    judgePushPage(Uri link) {
+
+  judgePushPage(Uri link) {
     if (link.path.contains("artworks")) {
       List<String> paths = link.pathSegments;
       int index = paths.indexOf("artworks");
@@ -61,34 +68,61 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(paths[index + 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return UserPage(id: id,);
+            return UserPage(
+              id: id,
+            );
           }));
         } catch (e) {
           print(e);
         }
       }
     }
+    if (link.pathSegments.length >= 2) {
+      String i = link.pathSegments[link.pathSegments.length - 2];
+      if (i == "i") {
+        try {
+          int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return PicturePage(null, id);
+          }));
+          return;
+        } catch (e) {}
+      }
+
+      if (i == "u") {
+        try {
+          int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return UserPage(
+              id: id,
+            );
+          }));
+          return;
+        } catch (e) {}
+      }
+    }
   }
 
   initPlatformState() async {
- 
     try {
       Uri initialLink = await getInitialUri();
       print(initialLink);
-      if(initialLink!=null)
-      judgePushPage(initialLink);
-         _sub = getUriLinksStream().listen((Uri link) {
-      print(link);
-      judgePushPage(link);
-    });
+      if (initialLink != null) judgePushPage(initialLink);
+      _sub = getUriLinksStream().listen((Uri link) {
+        print("link:${link}");
+        judgePushPage(link);
+      });
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
-    } catch(e) {
+    } catch (e) {
       print(e);
       // Handle exception by warning the user their action did not succeed
       // return?
     }
   }
+
   int _selectedIndex = 0;
   PageController _pageController;
   List<Widget> _widgetOptions = <Widget>[
@@ -107,10 +141,6 @@ class _HelloPageState extends State<HelloPage> {
     SettingPage()
   ];
 
-
-
-
-
   var tapTime = [0, 0, 0, 0];
   var routes = ['recom', 'new', 'search', 'setting'];
 
@@ -120,7 +150,8 @@ class _HelloPageState extends State<HelloPage> {
       tabBar: CupertinoTabBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
-          var spaceTime = DateTime.now().millisecondsSinceEpoch - tapTime[index];
+          var spaceTime =
+              DateTime.now().millisecondsSinceEpoch - tapTime[index];
           print("${spaceTime}/${tapTime[index]}");
           if (spaceTime > 2000) {
             tapTime[index] = DateTime.now().millisecondsSinceEpoch;
@@ -216,40 +247,6 @@ class _HelloPageState extends State<HelloPage> {
           ],
         ),
       ));
-
-  /*Widget _buildBottomNavy() => BottomNavyBar(
-        selectedIndex: _selectedIndex,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        showElevation: false, // use this to remove appBar's elevation
-        onItemSelected: (index) => setState(() {
-          _selectedIndex = index;
-          _pageController.animateToPage(index,
-              duration: Duration(milliseconds: 300), curve: Curves.ease);
-        }),
-        items: [
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text(I18n.of(context).Home),
-            activeColor: Colors.red,
-          ),
-          BottomNavyBarItem(
-              icon: Icon(Icons.assessment),
-              title: Text(I18n.of(context).Rank),
-              activeColor: Colors.purpleAccent),
-          BottomNavyBarItem(
-              icon: Icon(Icons.calendar_view_day),
-              title: Text(I18n.of(context).Quick_View),
-              activeColor: Colors.pink),
-          BottomNavyBarItem(
-              icon: Icon(Icons.search),
-              title: Text(I18n.of(context).Search),
-              activeColor: Colors.blue),
-          BottomNavyBarItem(
-              icon: Icon(Icons.history),
-              title: Text(I18n.of(context).History),
-              activeColor: Colors.amber),
-        ],
-      );*/
 
   BottomNavigationBar _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(

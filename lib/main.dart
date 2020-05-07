@@ -10,9 +10,11 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/splash/splash_page.dart';
+import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'generated/i18n.dart';
 final UserSetting userSetting = UserSetting();
+final SaveStore saveStore = SaveStore();
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -73,9 +75,6 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<TagHistoryBloc>(
           create: (BuildContext context) => TagHistoryBloc(),
         ),
-        BlocProvider<SaveBloc>(
-          create: (context) => SaveBloc(),
-        ),
         BlocProvider<MuteBloc>(
           create: (context) => MuteBloc()..add(FetchMuteEvent()),
         ),
@@ -92,13 +91,13 @@ class _MyAppState extends State<MyApp> {
             create: (BuildContext context) => OAuthClient(),
           ),
         ],
-        child: BotToastInit(
-          child: MaterialApp(
+        child:  MaterialApp(
             navigatorObservers: [BotToastNavigatorObserver()],
             home: SplashPage(),
             title: 'PixEz',
+            builder: BotToastInit(),
             theme: ThemeData(
-              primarySwatch: Colors.lightGreen,
+              primarySwatch: Colors.lightBlue,
               brightness: Brightness.light,
             ),
             darkTheme: ThemeData(
@@ -113,7 +112,6 @@ class _MyAppState extends State<MyApp> {
               GlobalCupertinoLocalizations.delegate
             ],
           ),
-        ),
       ),
     );
   }

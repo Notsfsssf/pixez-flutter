@@ -55,8 +55,8 @@ class HistoryPage extends StatelessWidget {
                       }
                     },
                     child: Card(
-                        margin: EdgeInsets.all(8.0),
-                        child: PixivImage(reIllust[index].pictureUrl)));
+                      margin: EdgeInsets.all(8),
+                      child: PixivImage(reIllust[index].pictureUrl)));
               });
         }
         else

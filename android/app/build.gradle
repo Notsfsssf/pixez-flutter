@@ -39,7 +39,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.perol.pixez"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -60,6 +60,13 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.afollestad.material-dialogs:core:3.2.1'
+    implementation 'com.afollestad.material-dialogs:files:3.1.1'
+    implementation 'com.afollestad.material-dialogs:bottomsheets:3.2.1'
+    implementation 'com.afollestad.material-dialogs:lifecycle:3.1.1'
+    implementation 'com.afollestad.material-dialogs:input:3.2.1'
+    implementation 'androidx.preference:preference:1.1.1'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

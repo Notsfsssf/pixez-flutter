@@ -3,16 +3,10 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
-import 'package:image/image.dart';
-import 'package:image/image.dart' as Im;
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/util/gifencoder.dart' as gifencoder;
-import 'package:save_in_gallery/save_in_gallery.dart';
 
 import './bloc.dart';
 

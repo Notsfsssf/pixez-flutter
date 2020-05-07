@@ -12,6 +12,6 @@ class LightingBloc extends Bloc<LightingEvent, LightingState> {
   Stream<LightingState> mapEventToState(
     LightingEvent event,
   ) async* {
-    // TODO: Add Logic
+
   }
 }

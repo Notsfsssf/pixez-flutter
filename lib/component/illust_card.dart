@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
@@ -79,16 +79,7 @@ class _IllustCardState extends State<IllustCard> {
           }))
         },
         onLongPress: () {
-          if (widget._illusts.metaPages.isNotEmpty) {
-            List<bool> indexs = List(widget._illusts.metaPages.length);
-            for (int i = 0; i < widget._illusts.metaPages.length; i++) {
-              indexs[i] = true;
-            }
-            BlocProvider.of<SaveBloc>(context)
-                .add(SaveChoiceImageEvent(widget._illusts, indexs));
-          } else
-            BlocProvider.of<SaveBloc>(context)
-                .add(SaveChoiceImageEvent(widget._illusts, [true]));
+          saveStore.saveImage(widget._illusts);
         },
         child: Card(
           margin: EdgeInsets.all(8.0),

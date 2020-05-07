@@ -4,8 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_event.dart';
-import 'package:pixez/bloc/save_bloc.dart';
-import 'package:pixez/bloc/save_state.dart';
+
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/oauth_client.dart';
@@ -14,7 +13,6 @@ import 'package:pixez/page/guid/guid_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
-import 'package:pixez/page/progress/progress_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'bloc/login_event.dart';
@@ -49,48 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.of(context, rootNavigator: true).pushReplacement(
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              BlocListener<
-                                  SaveBloc,
-                                  SaveState>(
-                                  listener: (context, state) {
-                                    if (state is SaveStartState) {
-                                      BotToast.showNotification(
-                                          onTap: () =>
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          ProgressPage())),
-                                          trailing: (_) =>
-                                              Icon(Icons.chevron_right),
-                                          leading: (_) => Icon(Icons.save_alt),
-                                          title: (_) =>
-                                              Text(
-                                          I18n.of(context).Append_to_query));
-                                }
-                                if (state is SaveSuccesState)
-                                  BotToast.showNotification(
-                                      leading: (_) =>
-                                          Icon(
-                                            Icons.check_circle,
-                                            color: Colors.green,
-                                          ),
-                                      title: (_) =>
-                                          Text(I18n
-                                              .of(context)
-                                              .Saved));
-                                if (state is SaveAlreadyGoingOnState)
-                                  BotToast.showNotification(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => ProgressPage())),
-                                      trailing: (_) =>
-                                          Icon(Icons.chevron_right),
-                                      leading: (_) => Icon(Icons.save_alt),
-                                      title: (_) => Text(
-                                          I18n.of(context).Already_in_query));
-                              },
-                              child: HelloPage())));
+                              HelloPage()));
                 } else if (state is FailState) {
                   Scaffold.of(context).showSnackBar(
                     SnackBar(

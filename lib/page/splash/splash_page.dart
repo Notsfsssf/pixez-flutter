@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
@@ -22,6 +23,7 @@ class _SplashPageState extends State<SplashPage>
     controller =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
     super.initState();
+
     controller.forward();
   }
 
@@ -34,6 +36,7 @@ class _SplashPageState extends State<SplashPage>
   String helloWord = "= w =";
   @override
   Widget build(BuildContext context) {
+    saveStore.initContext(I18n.of(context));
     return BlocProvider<OnezeroBloc>(
       child: BlocBuilder<OnezeroBloc, OnezeroState>(
         builder: (BuildContext context, OnezeroState state) {
@@ -73,60 +76,17 @@ class _SplashPageState extends State<SplashPage>
                       }
                       // if (BlocProvider.of<AccountBloc>(context).state
                       //     is HasUserState)
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) => BlocListener<
-                                        SaveBloc, SaveState>(
-                                    listener: (context, state) {
-                                      if (state is SaveStartState) {
-                                        BotToast.showNotification(
-                                            onTap: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        ProgressPage())),
-                                            trailing: (_) =>
-                                                Icon(Icons.chevron_right),
-                                            leading: (_) =>
-                                                Icon(Icons.save_alt),
-                                            title: (_) => Text(I18n.of(context)
-                                                .Append_to_query));
-                                      }
-                                      if (state is SaveSuccesState)
-                                        BotToast.showNotification(
-                                            leading: (_) => Icon(
-                                                  Icons.check_circle,
-                                                  color: Colors.green,
-                                                ),
-                                            title: (_) =>
-                                                Text(I18n.of(context).Saved));
-                                      if (state is SaveAlreadyGoingOnState)
-                                        BotToast.showNotification(
-                                            onTap: () =>
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            ProgressPage())),
-                                            trailing: (_) =>
-                                                Icon(Icons.chevron_right),
-                                            leading: (_) =>
-                                                Icon(Icons.save_alt),
-                                            title: (_) =>
-                                                Text(I18n
-                                                    .of(context)
-                                                    .Already_in_query));
-                                    },
-                                    child: HelloPage())));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => HelloPage()));
                     } else if (state is FailOnezeroState) {
                       // if (BlocProvider.of<AccountBloc>(context).state
                       //     is HasUserState)
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    HelloPage()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => HelloPage()));
                     }
                   },
                 ),

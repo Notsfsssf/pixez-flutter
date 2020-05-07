@@ -212,6 +212,10 @@ class I18n implements WidgetsLocalizations {
   String get Account_change => "账号切换";
   /// "推荐这个App"
   String get Share_this_app_link => "推荐这个App";
+  /// "质量设置"
+  String get Quality_Setting => "质量设置";
+  /// "Android设定"
+  String get Android_Special_Setting => "Android设定";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -488,9 +492,12 @@ class _I18n_en_US extends I18n {
   /// "Account switching"
   @override
   String get Account_change => "Account switching";
-  /// "Share this App"
+  /// "质量设置"
   @override
-  String get Share_this_app_link => "Share this App";
+  String get Quality_Setting => "质量设置";
+  /// "Android设定"
+  @override
+  String get Android_Special_Setting => "Android设定";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;
