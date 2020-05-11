@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/bloc/bloc.dart';
@@ -43,6 +44,11 @@ class _HelloPageState extends State<HelloPage> {
       listenBehavior(context, stream);
     });
     initPlatformState();
+  }
+
+  init() async {
+
+  
   }
 
   judgePushPage(Uri link) {

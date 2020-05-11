@@ -26,11 +26,35 @@ mixin _$UserSetting on _UserSettingBase, Store {
     }, _$zoomQualityAtom, name: '${_$zoomQualityAtom.name}_set');
   }
 
+  final _$pathAtom = Atom(name: '_UserSettingBase.path');
+
+  @override
+  String get path {
+    _$pathAtom.context.enforceReadPolicy(_$pathAtom);
+    _$pathAtom.reportObserved();
+    return super.path;
+  }
+
+  @override
+  set path(String value) {
+    _$pathAtom.context.conditionallyRunInAction(() {
+      super.path = value;
+      _$pathAtom.reportChanged();
+    }, _$pathAtom, name: '${_$pathAtom.name}_set');
+  }
+
   final _$initAsyncAction = AsyncAction('init');
 
   @override
   Future<void> init() {
     return _$initAsyncAction.run(() => super.init());
+  }
+
+  final _$getPathAsyncAction = AsyncAction('getPath');
+
+  @override
+  Future<String> getPath() {
+    return _$getPathAsyncAction.run(() => super.getPath());
   }
 
   final _$changeAsyncAction = AsyncAction('change');
@@ -40,9 +64,23 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return _$changeAsyncAction.run(() => super.change(value));
   }
 
+  final _$_UserSettingBaseActionController =
+      ActionController(name: '_UserSettingBase');
+
+  @override
+  dynamic setPath(dynamic result) {
+    final _$actionInfo = _$_UserSettingBaseActionController.startAction();
+    try {
+      return super.setPath(result);
+    } finally {
+      _$_UserSettingBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
-    final string = 'zoomQuality: ${zoomQuality.toString()}';
+    final string =
+        'zoomQuality: ${zoomQuality.toString()},path: ${path.toString()}';
     return '{$string}';
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
+
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/spotlight_response.dart';
@@ -64,7 +64,7 @@ class _SoupPageState extends State<SoupPage> {
         itemBuilder: (BuildContext context, int index) {
           if (index == 0)
             return Card(
-              child: Html(data: snapshot.description),
+              child: Text(snapshot.description),
             );
           AmWork amWork = snapshot.amWorks[index - 1];
           return InkWell(

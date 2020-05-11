@@ -35,7 +35,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
             });
       },
       child: Html(
-        data: widget.data,
+        data:   widget.data,
         onLinkTap: (String url) {
           Share.share(url);
         },

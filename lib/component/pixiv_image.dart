@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -44,10 +45,11 @@ class PixivImage extends StatelessWidget {
   }
 }
 
-class PixivProvider extends CachedNetworkImageProvider {
-  PixivProvider(String url)
-      : super(url, headers: {
-          "referer": "https://app-api.pixiv.net/",
-          "User-Agent": "PixivIOSApp/5.8.0"
-        });
+class PixivProvider {
+  static CachedNetworkImageProvider url(String url) {
+    return CachedNetworkImageProvider(url, headers: {
+      "referer": "https://app-api.pixiv.net/",
+      "User-Agent": "PixivIOSApp/5.8.0"
+    });
+  }
 }

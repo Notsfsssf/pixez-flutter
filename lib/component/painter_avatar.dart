@@ -36,7 +36,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
         height: 60,
         width: 60,
         child: CircleAvatar(
-          backgroundImage: PixivProvider(
+          backgroundImage: PixivProvider.url(
             widget.url,
           ),
           radius: 100.0,

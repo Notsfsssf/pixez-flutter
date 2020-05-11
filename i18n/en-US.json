@@ -103,6 +103,7 @@
     "Choice_you_like": "Choose the tags you like",
     "My": "mine",
     "Login_message": "Log in and discover a new world",
-    "Quality_Setting":"质量设置",
-    "Android_Special_Setting":"Android设定"
+    "Quality_Setting":"Quality Setting",
+    "Android_Special_Setting":"Android Special Setting",
+    "Choose_directory":"Choose directory"
 }

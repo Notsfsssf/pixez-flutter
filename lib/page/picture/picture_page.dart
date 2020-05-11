@@ -1,3 +1,4 @@
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
-import 'package:pixez/component/ugoira_animation.dart';
+import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/bookmark_detail.dart';
@@ -370,6 +371,7 @@ class _PicturePageState extends State<PicturePage> {
                 }
 
                 return FloatingActionButton(
+                  heroTag: DateTime.now().toIso8601String(),
                   child: Icon(Icons.reply),
                   onPressed: () {
                     Navigator.pop(context);
@@ -645,7 +647,7 @@ class _PicturePageState extends State<PicturePage> {
                         platform.invokeMethod('getBatteryLevel', {
                           "path": snapshot.listSync.first.parent.path,
                           "delay": snapshot.frames.first.delay,
-                          "name": widget._illusts.id.toString()
+                          "name": widget.id.toString()
                         });
                         BotToast.showCustomText(
                             toastBuilder: (_) => Text("encoding..."));
@@ -687,10 +689,17 @@ class _PicturePageState extends State<PicturePage> {
                       } on PlatformException catch (e) {}
                     }
                   },
-                  child: FrameAnimationImage(
-                    snapshot.listSync,
-                    interval: frames.first.delay,
-                    illusts: illust,
+                  child: FittedBox(
+                
+                    child: SizedBox(
+                      width: illust.width.toDouble(),
+                      height: illust.height.toDouble(),
+                      child: UgoiraWidget(
+                        drawPools: snapshot.listSync,
+                        delay: frames.first.delay,
+                        height: illust.height.toDouble(),
+                      ),
+                    ),
                   ),
                 );
                 // return UgoiraAnima(snapshot.listSync,snapshot.frames);

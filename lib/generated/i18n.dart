@@ -216,6 +216,8 @@ class I18n implements WidgetsLocalizations {
   String get Quality_Setting => "质量设置";
   /// "Android设定"
   String get Android_Special_Setting => "Android设定";
+  /// "选择目录"
+  String get Choose_directory => "选择目录";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -492,12 +494,15 @@ class _I18n_en_US extends I18n {
   /// "Account switching"
   @override
   String get Account_change => "Account switching";
-  /// "质量设置"
+  /// "Quality Setting"
   @override
-  String get Quality_Setting => "质量设置";
-  /// "Android设定"
+  String get Quality_Setting => "Quality Setting";
+  /// "Android Special Setting"
   @override
-  String get Android_Special_Setting => "Android设定";
+  String get Android_Special_Setting => "Android Special Setting";
+  /// "Choose directory"
+  @override
+  String get Choose_directory => "Choose directory";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

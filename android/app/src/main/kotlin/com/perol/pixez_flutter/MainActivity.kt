@@ -1,4 +1,4 @@
-package com.perol.pixez
+package com.perol.pixez_flutter
 
 import android.content.ContentValues
 import android.graphics.BitmapFactory
@@ -7,19 +7,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.preference.PreferenceManager
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.files.folderChooser
-import io.flutter.app.FlutterActivity
+import io.flutter.Log
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-
+import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
@@ -27,23 +26,41 @@ class MainActivity : FlutterActivity() {
     val pref by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
+    var storePath = ""
 
-    var storePath = pref.getString("store_path", Environment.DIRECTORY_PICTURES + File.separator + "pxez")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        GeneratedPluginRegistrant.registerWith(this)
-        MethodChannel(flutterView, CHANNEL).setMethodCallHandler { call, result ->
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        storePath = pref.getString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez")!!
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "save") {
-                val data = call.argument<String>("data") as ByteArray
+                val data = call.argument<ByteArray>("data") as ByteArray
                 val type = call.argument<String>("name") as String
                 insertImageOldWay(data, type)
                 result.success(true)
             }
+            if (call.method == "scan") {
+                val path = call.argument<String>("path") as String
+                MediaScannerConnection.scanFile(
+                        this@MainActivity,
+                        arrayOf(path),
+                        arrayOf(
+                                MimeTypeMap.getSingleton()
+                                        .getMimeTypeFromExtension(File(path).extension)
+                        )
+                ) { _, _ ->
+                }
+                result.success(true);
+
+            }
             if (call.method == "select_path") {
-                selectSavePath()
+                result.success("")
             }
             if (call.method == "get_path") {
-                getPath()
+                result.success(getPath())
+            }
+            if (call.method == "restore_path") {
+                pref.edit().putString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez").apply()
+                result.success("")
             }
             if (call.method == "exist") {
                 val type = call.argument<String>("name") as String
@@ -51,11 +68,7 @@ class MainActivity : FlutterActivity() {
                 result.success(isFileExist)
             }
         }
-        MethodChannel(flutterView, UGOIRA_CHANNEL).setMethodCallHandler { call, result ->
-/*            platform.invokeMethod('getBatteryLevel', {
-                "path": snapshot.listSync.first.parent.path,
-                "delay": snapshot.frames.first.delay
-            });*/
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, UGOIRA_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "getBatteryLevel") {
                 val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
@@ -66,60 +79,76 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun getPath() {
+    private fun getPath() = pref.getString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez")
 
-    }
 
-    private fun selectSavePath() {
-        MaterialDialog(this).show {
-            title(R.string.title_save_path)
-            folderChooser(allowFolderCreation = true) { _, folder ->
-                PreferenceManager.getDefaultSharedPreferences(applicationContext).apply {
-                    this.edit().putString("store_path", folder.absolutePath).apply()
-                }
-            }
-            cornerRadius(2.0F)
-            negativeButton(android.R.string.cancel)
-            positiveButton(android.R.string.ok)
-        }
-    }
 
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
-        file.parentFile?.let {
-            val listFiles = it.listFiles()
-            if (listFiles == null || listFiles.isEmpty()) {
-                throw RuntimeException("unzip files not found")
-            }
-            listFiles.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
-            val bos = ByteArrayOutputStream()
-            val encoder = AnimatedGifEncoder()
-            encoder.start(bos)
-            for (i in listFiles) {
-                encoder.addFrame(BitmapFactory.decodeFile(i.path))
-            }
-            encoder.finish()
-            val tempFile = File.createTempFile(name, "gif")
-            bos.writeTo(tempFile.outputStream())
-            val targetFile = File(storePath, name + File.separator + ".gif")
-            tempFile.copyTo(targetFile, overwrite = true)
-            MediaScannerConnection.scanFile(
-                    this@MainActivity,
-                    arrayOf(targetFile.path),
-                    arrayOf(
-                            MimeTypeMap.getSingleton()
-                                    .getMimeTypeFromExtension(targetFile.extension)
-                    )
-            ) { _, _ ->
+        file.let {
+            val tempFile = File(context.cacheDir, "${name}.gif")
+            try {
 
+                if (!tempFile.exists()) {
+                    tempFile.createNewFile()
+                }
+                Log.d("tempFile path:", tempFile.path)
+                val listFiles = it.listFiles()
+                if (listFiles == null || listFiles.isEmpty()) {
+                    throw RuntimeException("unzip files not found")
+                }
+                val arrayFile = mutableListOf<File>()
+                for (i in listFiles) {
+                    if (i.name.contains("jpg") || i.name.contains("png")) {
+                        arrayFile.add(i)
+                    }
+                }
+                arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
+                val bos = ByteArrayOutputStream()
+                val encoder = AnimatedGifEncoder()
+                encoder.setQuality(20)
+                encoder.setDelay(delay)
+                encoder.start(bos)
+
+                for (i in arrayFile) {
+                    Log.d("fileName", i.path)
+                    encoder.addFrame(BitmapFactory.decodeFile(i.path))
+                    Log.d("frame:", i.path)
+                }
+                encoder.finish()
+
+                bos.writeTo(tempFile.outputStream())
+                val targetFile = File(storePath, "${name}.gif")
+                tempFile.copyTo(targetFile, overwrite = true)
+                MediaScannerConnection.scanFile(
+                        this@MainActivity,
+                        arrayOf(targetFile.path),
+                        arrayOf(
+                                MimeTypeMap.getSingleton()
+                                        .getMimeTypeFromExtension(targetFile.extension)
+                        )
+                ) { _, _ ->
+
+                }
+                Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.d("exception", e.localizedMessage)
+                tempFile.delete()
+                it.deleteRecursively()
             }
-            Toast.makeText(this,"encode success",Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun insertImageOldWay(data: ByteArray, name: String) {
         File(storePath, name).run {
-            outputStream().write(data)
+            if (!this.exists()) {
+                this.createNewFile()
+            }
+            outputStream().apply {
+                write(data)
+                flush()
+                close()
+            }
             MediaScannerConnection.scanFile(
                     this@MainActivity,
                     arrayOf(this.path),
@@ -134,7 +163,7 @@ class MainActivity : FlutterActivity() {
 
     }
 
-    private fun isOldFileExist(name: String) = File(storePath,name).exists()
+    private fun isOldFileExist(name: String) = File(storePath, name).exists()
     private fun isFileExist(name: String): Boolean {
         /**
          * A key concept when working with Android [ContentProvider]s is something called

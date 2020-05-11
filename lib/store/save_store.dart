@@ -11,6 +11,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
@@ -43,7 +44,7 @@ void listenBehavior(BuildContext context, SaveStream stream) {
       break;
     case SaveState.JOIN:
       BotToast.showNotification(
-          trailing: (_) => Icon(Icons.arrow_right),
+          leading: (_) => Icon(Icons.arrow_downward),
           title: (_) => Text("${I18n.of(context).Append_to_query}"),
           onTap: () {
             Navigator.of(context, rootNavigator: true)
@@ -52,7 +53,17 @@ void listenBehavior(BuildContext context, SaveStream stream) {
             }));
           });
       break;
-
+    case SaveState.ALREADY:
+      BotToast.showNotification(
+          leading: (_) => Icon(Icons.info),
+          title: (_) => Text("${I18n.of(context).Already_Saved}"),
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return ProgressPage();
+            }));
+          });
+      break;
     default:
   }
 }
@@ -62,7 +73,7 @@ class SaveStore = _SaveStoreBase with _$SaveStore;
 abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     _streamController = StreamController();
-    saveStream = ObservableStream(_streamController.stream);
+    saveStream = ObservableStream(_streamController.stream.asBroadcastStream());
   }
 
   @override
@@ -84,12 +95,18 @@ abstract class _SaveStoreBase with Store {
     "referer": "https://app-api.pixiv.net/",
     "User-Agent": "PixivIOSApp/5.8.0"
   }));
-  _saveInternal(String url, Illusts illusts) async {
-    BotToast.showNotification(title: (_) => Text(i18n.Append_to_query));
-    var file = await DefaultCacheManager().getFileFromCache(url);
+  _saveInternal(String url, Illusts illusts, String fileName) async {
+    try {
+      final fullPath = "${userSetting.path}/${fileName}";
+      if (File(fullPath).existsSync()) {
+        _streamController.add(SaveStream(SaveState.ALREADY, illusts));
+        return;
+      }
+    } catch (e) {}
+    _streamController.add(SaveStream(SaveState.JOIN, illusts));
+    FileInfo fileInfo = await DefaultCacheManager().getFileFromCache(url);
     Uint8List uint8list;
-
-    if (file == null) {
+    if (fileInfo == null) {
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
       String fullPath =
@@ -102,7 +119,7 @@ abstract class _SaveStoreBase with Store {
           if (a / b >= 1) {
             File file = File(fullPath);
             uint8list = await file.readAsBytes();
-            await _saveToGallery(uint8list, illusts);
+            await _saveToGallery(uint8list, fileName);
             progressMaps.remove(url);
             _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
           }
@@ -111,20 +128,18 @@ abstract class _SaveStoreBase with Store {
         progressMaps.remove(url);
       }
     } else {
-      uint8list = await file.file.readAsBytes();
-      _saveToGallery(uint8list, illusts);
+      uint8list = await fileInfo.file.readAsBytes();
+      _saveToGallery(uint8list, fileName);
     }
   }
 
   static const platform = const MethodChannel('com.perol.dev/save');
-  Future<void> _saveToGallery(Uint8List uint8list, Illusts illusts) async {
-    String fileName = "";
-    String memType = illusts.imageUrls.large.contains("png") ? "png" : "jpg";
-    fileName = "${illusts.id}_p${illusts.pageCount - 1}.${memType}";
+  Future<void> _saveToGallery(Uint8List uint8list, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        await platform
-            .invokeMethod('save', {"data": uint8list, "name": fileName});
+        final fullPath = "${userSetting.path}/${fileName}";
+        await File(fullPath).writeAsBytes(uint8list);
+        await platform.invokeMethod('scan', {"path": fullPath});
       } catch (e) {}
       return;
     } else {
@@ -150,36 +165,28 @@ abstract class _SaveStoreBase with Store {
 
   @action
   Future<void> saveImage(Illusts illusts, {int index}) async {
-    String fileName = "";
-    String memType = illusts.imageUrls.large.contains("png") ? "png" : "jpg";
-    fileName = "${illusts.id}_p${illusts.pageCount - 1}.${memType}";
-    if (Platform.isAndroid) {
-      try {
-        bool result = await platform.invokeMethod("exist",{"name":fileName});
-
-        if (result) {
-          _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
-          return;
-        }
-      } catch (e) {}
-    }
+    final memType = illusts.imageUrls.large.contains("png")
+        ? ".png"
+        : ".jpg";
     if (illusts.pageCount == 1) {
-      _saveInternal(illusts.metaSinglePage.originalImageUrl, illusts);
+      String fileName = "${illusts.id}_p0${memType}";
+      _saveInternal(illusts.metaSinglePage.originalImageUrl, illusts, fileName);
     } else {
       if (index != null) {
+        String fileName = "${illusts.id}_p${index}${memType}";
         var url = illusts.metaPages[index].imageUrls.original;
         if (progressMaps.keys.contains(url)) {
           _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
           return;
         }
-        _saveInternal(url, illusts);
+        _saveInternal(url, illusts, fileName);
       } else {
+        int index = 0;
         illusts.metaPages.forEach((f) {
           var url = f.imageUrls.original;
-          if (progressMaps.keys.contains(url)) {
-            _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
-          } else
-            _saveInternal(url, illusts);
+          String fileName = "${illusts.id}_p${index}${memType}";
+          _saveInternal(url, illusts, fileName);
+          index++;
         });
       }
     }

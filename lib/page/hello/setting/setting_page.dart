@@ -15,6 +15,7 @@ import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/platform/platform_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 
@@ -24,6 +25,16 @@ class SettingPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.of(context).Setting),
+        actions: (Platform.isAndroid)
+            ? <Widget>[
+                IconButton(
+                    icon: Icon(Icons.settings_ethernet),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PlatformPage()));
+                    })
+              ]
+            : [],
       ),
       body: BlocListener<AccountBloc, AccountState>(
         child: SafeArea(
@@ -52,61 +63,55 @@ class SettingPage extends StatelessWidget {
                                       subtitle: Text(state.list.mailAddress),
                                       onTap: () {
                                         Navigator.of(context,
-                                            rootNavigator: true)
+                                                rootNavigator: true)
                                             .push(
-                                            MaterialPageRoute(builder: (_) {
-                                              return AccountSelectPage();
-                                            }));
+                                                MaterialPageRoute(builder: (_) {
+                                          return AccountSelectPage();
+                                        }));
                                       },
                                     ),
                                     ListTile(
                                       leading: Icon(Icons.account_box),
                                       title: Text(
-                                          I18n
-                                              .of(context)
-                                              .Account_Message),
+                                          I18n.of(context).Account_Message),
                                       onTap: () {
                                         Navigator.of(context).push(
                                             MaterialPageRoute(
                                                 builder:
                                                     (BuildContext context) =>
-                                                    AccountEditPage()));
+                                                        AccountEditPage()));
                                       },
                                     )
-                                      ],
-                                    ),
-                                  );
-                                }
-                                return Container();
-                              },
-                            ),
-                          );
-                        return Container();
-                      }),
+                                  ],
+                                ),
+                              );
+                            }
+                            return Container();
+                          },
+                        ),
+                      );
+                    return Container();
+                  }),
                   Card(
                     child: Column(
                       children: <Widget>[
                         ListTile(
                           leading: Icon(Icons.history),
-                          title: Text(I18n
-                              .of(context)
-                              .History_record),
+                          title: Text(I18n.of(context).History_record),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  return HistoryPage();
+                              return HistoryPage();
                             }));
                           },
                         ),
-                           ListTile(
-                          leading: Icon(Icons.history),
-                          title: Text(I18n
-                              .of(context)
-                              .History_record),
+                        ListTile(
+                          leading: Icon(Icons.settings),
+                          title: Text(I18n.of(context).Quality_Setting),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  return SettingQualityPage();
+                              return SettingQualityPage();
                             }));
                           },
                         ),
@@ -170,12 +175,9 @@ class SettingPage extends StatelessWidget {
                   Card(
                     child: Column(
                       children: <Widget>[
-              
                         ListTile(
                           leading: Icon(Icons.message),
-                          title: Text(I18n
-                              .of(context)
-                              .About),
+                          title: Text(I18n.of(context).About),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => AboutPage()));
@@ -183,69 +185,58 @@ class SettingPage extends StatelessWidget {
                         ),
                         BlocBuilder<AccountBloc, AccountState>(
                             builder: (context, snapshot) {
-                              if (snapshot is HasUserState)
-                                return ListTile(
-                                  leading: Icon(Icons.arrow_back),
-                                  title: Text(I18n
-                                      .of(context)
-                                      .Logout),
-                                  onTap: () async {
-                                    final result = await showCupertinoDialog(
-                                        builder: (BuildContext context) {
-                                          return CupertinoAlertDialog(
-                                            title: Text(I18n
-                                                .of(context)
-                                                .Logout),
-                                            content: Text(
-                                                I18n
-                                                    .of(context)
-                                                    .Logout_message),
-                                            actions: <Widget>[
-                                              CupertinoDialogAction(
-                                                child: Text("OK"),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop(
-                                                      "OK");
-                                                },
-                                              ),
-                                              CupertinoDialogAction(
-                                                child: Text("CANCEL"),
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pop("CANCEL");
-                                                },
-                                                isDestructiveAction: true,
-                                              )
-                                            ],
-                                          );
-                                        },
-                                        context: context);
-                                    switch (result) {
-                                      case "OK":
-                                        {
-                                          BlocProvider.of<AccountBloc>(context)
-                                              .add(DeleteAllAccountEvent());
-                                        }
-                                        break;
-                                      case "CANCEL":
-                                        {}
-                                        break;
+                          if (snapshot is HasUserState)
+                            return ListTile(
+                              leading: Icon(Icons.arrow_back),
+                              title: Text(I18n.of(context).Logout),
+                              onTap: () async {
+                                final result = await showCupertinoDialog(
+                                    builder: (BuildContext context) {
+                                      return CupertinoAlertDialog(
+                                        title: Text(I18n.of(context).Logout),
+                                        content: Text(
+                                            I18n.of(context).Logout_message),
+                                        actions: <Widget>[
+                                          CupertinoDialogAction(
+                                            child: Text("OK"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop("OK");
+                                            },
+                                          ),
+                                          CupertinoDialogAction(
+                                            child: Text("CANCEL"),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop("CANCEL");
+                                            },
+                                            isDestructiveAction: true,
+                                          )
+                                        ],
+                                      );
+                                    },
+                                    context: context);
+                                switch (result) {
+                                  case "OK":
+                                    {
+                                      BlocProvider.of<AccountBloc>(context)
+                                          .add(DeleteAllAccountEvent());
                                     }
-                                  },
-                                );
-                              else
-                                return ListTile(
-                                  leading: Icon(Icons.arrow_back),
-                                  title: Text(I18n
-                                      .of(context)
-                                      .Login),
-                                  onTap: () =>
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginPage())),
-                                );
-                            })
+                                    break;
+                                  case "CANCEL":
+                                    {}
+                                    break;
+                                }
+                              },
+                            );
+                          else
+                            return ListTile(
+                              leading: Icon(Icons.arrow_back),
+                              title: Text(I18n.of(context).Login),
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage())),
+                            );
+                        })
                       ],
                     ),
                   )

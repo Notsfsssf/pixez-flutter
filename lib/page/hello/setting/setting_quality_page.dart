@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/main.dart';
 
 
@@ -10,17 +11,12 @@ class SettingQualityPage extends StatefulWidget {
 
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
-  @override
-  void initState() {
-    userSetting.init();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Quality"),
+        title: Text(I18n.of(context).Quality_Setting),
       ),
       body: Container(
         child: ListView(children: [
