@@ -26,7 +26,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Column(
                 children: <Widget>[
                   Padding(
-                    child: Text("大图预览缩放"),
+                    child: Text(I18n.of(context).Large_preview_zoom_quality),
                     padding: EdgeInsets.all(16),
                   ),
                   Observer(builder: (_) {
@@ -34,10 +34,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
                         Tab(
-                          text: "大图",
+                          text: I18n.of(context).Large,
                         ),
                         Tab(
-                          text: "原图",
+                          text: I18n.of(context).Source,
                         )
                       ],
                       onTap: (index) {

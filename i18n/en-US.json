@@ -105,5 +105,8 @@
     "Login_message": "Log in and discover a new world",
     "Quality_Setting":"Quality Setting",
     "Android_Special_Setting":"Android Special Setting",
-    "Choose_directory":"Choose directory"
+    "Choose_directory":"Choose directory",
+    "Large":"large",
+    "Source":"source",
+    "Large_preview_zoom_quality":"Large preview zoom quality"
 }

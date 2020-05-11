@@ -128,6 +128,9 @@ class _AboutPageState extends State<AboutPage> {
               ),
               title: Text('Perol_Notsfsssf'),
               subtitle: Text('使用flutter开发'),
+              onTap: (){
+                
+              },
             ),
             ListTile(
               leading: Icon(Icons.rate_review),

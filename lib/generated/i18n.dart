@@ -218,6 +218,12 @@ class I18n implements WidgetsLocalizations {
   String get Android_Special_Setting => "Android设定";
   /// "选择目录"
   String get Choose_directory => "选择目录";
+  /// "大图"
+  String get Large => "大图";
+  /// "原图"
+  String get Source => "原图";
+  /// "大图预览缩放"
+  String get Large_preview_zoom_quality => "大图预览缩放";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -503,6 +509,15 @@ class _I18n_en_US extends I18n {
   /// "Choose directory"
   @override
   String get Choose_directory => "Choose directory";
+  /// "large"
+  @override
+  String get Large => "large";
+  /// "source"
+  @override
+  String get Source => "source";
+  /// "Large preview zoom quality"
+  @override
+  String get Large_preview_zoom_quality => "Large preview zoom quality";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

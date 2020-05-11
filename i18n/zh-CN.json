@@ -101,5 +101,8 @@
   "Share_this_app_link":"推荐这个App",
   "Quality_Setting":"质量设置",
   "Android_Special_Setting":"Android设定",
-  "Choose_directory":"选择目录"
+  "Choose_directory":"选择目录",
+  "Large":"大图",
+  "Source":"原图",
+  "Large_preview_zoom_quality":"大图预览缩放"
 }
