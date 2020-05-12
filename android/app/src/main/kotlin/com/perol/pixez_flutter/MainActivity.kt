@@ -1,6 +1,7 @@
 package com.perol.pixez_flutter
 
 import android.content.ContentValues
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.os.Build
@@ -11,6 +12,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.preference.PreferenceManager
+import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -19,6 +21,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
+import kotlin.concurrent.thread
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
@@ -82,13 +85,11 @@ class MainActivity : FlutterActivity() {
     private fun getPath() = pref.getString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez")
 
 
-
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
         file.let {
             val tempFile = File(context.cacheDir, "${name}.gif")
             try {
-
                 if (!tempFile.exists()) {
                     tempFile.createNewFile()
                 }
@@ -103,21 +104,18 @@ class MainActivity : FlutterActivity() {
                         arrayFile.add(i)
                     }
                 }
+
                 arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
-                val bos = ByteArrayOutputStream()
-                val encoder = AnimatedGifEncoder()
-                encoder.setQuality(20)
-                encoder.setDelay(delay)
-                encoder.start(bos)
-
-                for (i in arrayFile) {
-                    Log.d("fileName", i.path)
-                    encoder.addFrame(BitmapFactory.decodeFile(i.path))
-                    Log.d("frame:", i.path)
+                val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
+                val encoder = GifEncoder()
+                encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
+                for (i in arrayFile.indices) {
+                    if (i != 0) {
+                        encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
+                    } else encoder.encodeFrame(bitmap, delay)
                 }
-                encoder.finish()
 
-                bos.writeTo(tempFile.outputStream())
+                encoder.close()
                 val targetFile = File(storePath, "${name}.gif")
                 tempFile.copyTo(targetFile, overwrite = true)
                 MediaScannerConnection.scanFile(
@@ -131,8 +129,9 @@ class MainActivity : FlutterActivity() {
 
                 }
                 Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show()
+
             } catch (e: Exception) {
-                Log.d("exception", e.localizedMessage)
+                Log.d("exception", "${e.localizedMessage}")
                 tempFile.delete()
                 it.deleteRecursively()
             }

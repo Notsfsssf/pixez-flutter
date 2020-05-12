@@ -31,13 +31,17 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
     super.initState();
     initBind();
   }
+  @override
+  void dispose() {
+    _timer?.cancel(); 
+    super.dispose();
+  }
 
   Timer _timer;
 
   initBind() async {
     _timer =
         Timer.periodic(Duration(milliseconds: widget.delay), (timer) async {
-      print("task in");
       File file = widget.drawPools[point];
       point++;
       if (point >= widget.drawPools.length) point = 0;

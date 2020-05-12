@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
@@ -129,7 +130,18 @@ class _AboutPageState extends State<AboutPage> {
               title: Text('Perol_Notsfsssf'),
               subtitle: Text('使用flutter开发'),
               onTap: (){
-                
+               showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        height: 200.0,
+                        color: Color(0xfff1f1f1),
+                        child: Center(
+                          child: Text("底部面板,点击消失"),
+                        ),
+                      );
+                    },
+                  );
               },
             ),
             ListTile(
@@ -179,7 +191,8 @@ class _AboutPageState extends State<AboutPage> {
                 Share.share('https://apps.apple.com/cn/app/pixez/id1494435126');
               },
             ),
-            Card(
+            ...(Platform.isIOS)?[
+                   Card(
               child: ListTile(
                 subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
                 title: Text('支持开发者工作'),
@@ -218,6 +231,8 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
             )
+            ]:[],
+       
           ],
         );
       }),
