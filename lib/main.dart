@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +12,10 @@ import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'generated/i18n.dart';
+
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
+
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -46,18 +47,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-@override
+  final i18n = I18n.delegate;
+  @override
   void initState() {
-
     super.initState();
+    I18n.onLocaleChanged = onLocaleChange;
     userSetting.init();
   }
 
+  void onLocaleChange(Locale locale) {
+    setState(() {
+      I18n.locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final i18n = I18n.delegate;
+    I18n.locale = i18n.supportedLocales[userSetting.languageNum];
     return MultiBlocProvider(
       providers: [
         BlocProvider<IapBloc>(
@@ -91,27 +97,27 @@ class _MyAppState extends State<MyApp> {
             create: (BuildContext context) => OAuthClient(),
           ),
         ],
-        child:  MaterialApp(
-            navigatorObservers: [BotToastNavigatorObserver()],
-            home: SplashPage(),
-            title: 'PixEz',
-            builder: BotToastInit(),
-            theme: ThemeData(
-              primarySwatch: Colors.lightBlue,
-              brightness: Brightness.light,
-            ),
-            darkTheme: ThemeData(
-                brightness: Brightness.dark, primarySwatch: Colors.orange),
-            supportedLocales: i18n.supportedLocales,
-            localeResolutionCallback:
-                i18n.resolution(fallback: new Locale("zh", "CN")),
-            localizationsDelegates: [
-              i18n,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate
-            ],
+        child: MaterialApp(
+          navigatorObservers: [BotToastNavigatorObserver()],
+          home: SplashPage(),
+          title: 'PixEz',
+          builder: BotToastInit(),
+          theme: ThemeData(
+            primarySwatch: Colors.lightBlue,
+            brightness: Brightness.light,
           ),
+          darkTheme: ThemeData(
+              brightness: Brightness.dark, primarySwatch: Colors.orange),
+          supportedLocales: i18n.supportedLocales,
+          localeResolutionCallback: i18n.resolution(
+              fallback: i18n.supportedLocales[userSetting.languageNum]),
+          localizationsDelegates: [
+            i18n,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate
+          ],
+        ),
       ),
     );
   }
