@@ -64,7 +64,11 @@ class _SoupPageState extends State<SoupPage> {
         itemBuilder: (BuildContext context, int index) {
           if (index == 0)
             return Card(
-              child: Text(snapshot.description),
+              
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(snapshot.description),
+              ),
             );
           AmWork amWork = snapshot.amWorks[index - 1];
           return InkWell(

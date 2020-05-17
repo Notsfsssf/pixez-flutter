@@ -100,9 +100,14 @@
   "Account_change": "账号切换",
   "Share_this_app_link":"推荐这个App",
   "Quality_Setting":"质量设置",
-  "Android_Special_Setting":"Android设定",
+  "Android_Special_Setting":"安卓设定",
   "Choose_directory":"选择目录",
   "Large":"大图",
   "Source":"原图",
   "Large_preview_zoom_quality":"大图预览缩放",
+  "Save_format":"保存格式",
+  "Save_path":"保存路径",
+  "Title":"标题",
+  "Painter_Name":"画师名",
+  "Which_part":"第几张"
 }

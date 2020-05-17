@@ -308,9 +308,11 @@ packages:
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
-      name: flutter_staggered_grid_view
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: eee016faa2d2b82b8021cb374e6dfdba0f63db6d
+      url: "https://github.com/BertrandBev/flutter_staggered_grid_view.git"
+    source: git
     version: "0.3.0"
   flutter_svg:
     dependency: "direct overridden"

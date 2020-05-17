@@ -63,7 +63,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    I18n.locale = i18n.supportedLocales[userSetting.languageNum];
     return MultiBlocProvider(
       providers: [
         BlocProvider<IapBloc>(

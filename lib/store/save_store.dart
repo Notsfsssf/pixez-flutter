@@ -163,17 +163,33 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
+  String _handleFileName(Illusts illust, int index, String memType) {
+    final result = userSetting.format
+        .replaceAll("{illust_id}", illust.id.toString())
+        .replaceAll("{user_id}", illust.user.id.toString())
+        .replaceAll("{part}", index.toString())
+        .replaceAll("{user_name}", illust.user.name.toString())
+        .replaceAll("{title}", illust.title);
+    return "$result$memType"
+        .replaceAll("/", "")
+        .replaceAll("\\", "")
+        .replaceAll(":", "")
+        .replaceAll("*", "")
+        .replaceAll("?", "")
+        .replaceAll(">", "")
+        .replaceAll("|", "")
+        .replaceAll("<", "");
+  }
+
   @action
   Future<void> saveImage(Illusts illusts, {int index}) async {
-    final memType = illusts.imageUrls.large.contains("png")
-        ? ".png"
-        : ".jpg";
+    final memType = illusts.imageUrls.large.contains("png") ? ".png" : ".jpg";
     if (illusts.pageCount == 1) {
-      String fileName = "${illusts.id}_p0${memType}";
+      String fileName = _handleFileName(illusts, 0, memType);
       _saveInternal(illusts.metaSinglePage.originalImageUrl, illusts, fileName);
     } else {
       if (index != null) {
-        String fileName = "${illusts.id}_p${index}${memType}";
+        String fileName = _handleFileName(illusts, index, memType);
         var url = illusts.metaPages[index].imageUrls.original;
         if (progressMaps.keys.contains(url)) {
           _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
@@ -184,7 +200,7 @@ abstract class _SaveStoreBase with Store {
         int index = 0;
         illusts.metaPages.forEach((f) {
           var url = f.imageUrls.original;
-          String fileName = "${illusts.id}_p${index}${memType}";
+          String fileName = _handleFileName(illusts, index, memType);
           _saveInternal(url, illusts, fileName);
           index++;
         });

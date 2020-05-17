@@ -108,5 +108,10 @@
     "Choose_directory":"Choose directory",
     "Large":"large",
     "Source":"source",
-    "Large_preview_zoom_quality":"Large preview zoom quality"
+    "Large_preview_zoom_quality":"Large preview zoom quality",
+    "Save_format":"Save format",
+    "Save_path":"Save_path",
+    "Title":"Title",
+    "Painter_Name":"Painter name",
+    "Which_part":"Index of the illusts"
 }

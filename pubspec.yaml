@@ -28,7 +28,9 @@ dependencies:
   path_provider: ^1.6.7
   shared_preferences: ^0.5.7+1
   equatable: ^1.1.1
-  flutter_staggered_grid_view: ^0.3.0
+  flutter_staggered_grid_view:
+    git:
+      url: https://github.com/BertrandBev/flutter_staggered_grid_view.git
   cached_network_image: ^2.0.0-rc.1
   flutter_cache_manager: ^1.2.2
   flutter_easyrefresh: ^2.0.8
@@ -48,8 +50,8 @@ dependencies:
   json_serializable: ^3.2.5
   in_app_purchase: ^0.3.1
   uni_links: ^0.2.0
-  mobx: ^1.0.0
-  flutter_mobx: ^1.0.0
+  mobx: ^1.1.0
+  flutter_mobx: ^1.1.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
@@ -86,6 +88,8 @@ flutter:
     - assets/icon.png
     - assets/no_h.png
     - assets/me.jpg
+    - assets/right_now.jpg
+    - assets/sustain.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

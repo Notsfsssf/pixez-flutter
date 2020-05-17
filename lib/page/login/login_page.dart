@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,6 +12,7 @@ import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/create/user/create_user_page.dart';
 import 'package:pixez/page/guid/guid_page.dart';
+import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
@@ -47,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.of(context, rootNavigator: true).pushReplacement(
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              HelloPage()));
+                              Platform.isIOS? HelloPage():AndroidHelloPage()));
                 } else if (state is FailState) {
                   Scaffold.of(context).showSnackBar(
                     SnackBar(

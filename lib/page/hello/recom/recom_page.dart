@@ -13,7 +13,6 @@ import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/i18n.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
 import 'package:pixez/page/preview/preview_page.dart';

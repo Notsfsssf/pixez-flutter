@@ -21,7 +21,7 @@ class ApiClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';
-
+static String Accept_Language="zh-CN";
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
@@ -42,7 +42,7 @@ class ApiClient {
         "X-Client-Time": time,
         "X-Client-Hash": getHash(time + hashSalt),
         "User-Agent": "PixivAndroidApp/5.0.155 (Android 6.0; Pixel C)",
-        "Accept-Language": "zh-CN",
+        "Accept-Language": Accept_Language,
         "App-OS": "Android",
         "App-OS-Version": "Android 6.0",
         "App-Version": "5.0.166",

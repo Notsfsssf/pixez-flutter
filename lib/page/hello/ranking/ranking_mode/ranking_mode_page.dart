@@ -25,7 +25,9 @@ class RankingModePage extends StatelessWidget {
           _loadCompleter = Completer();
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
-          if (state is DataRankingModeState) {}
+          if (state is DataRankingModeState) {
+                 _refreshController.finishRefresh(success: true);
+          }
           if (state is LoadMoreSuccessState) {
             _refreshController.finishLoad(success: true, noMore: true);
           }

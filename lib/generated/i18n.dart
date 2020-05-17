@@ -214,8 +214,8 @@ class I18n implements WidgetsLocalizations {
   String get Share_this_app_link => "推荐这个App";
   /// "质量设置"
   String get Quality_Setting => "质量设置";
-  /// "Android设定"
-  String get Android_Special_Setting => "Android设定";
+  /// "安卓设定"
+  String get Android_Special_Setting => "安卓设定";
   /// "选择目录"
   String get Choose_directory => "选择目录";
   /// "大图"
@@ -224,6 +224,16 @@ class I18n implements WidgetsLocalizations {
   String get Source => "原图";
   /// "大图预览缩放"
   String get Large_preview_zoom_quality => "大图预览缩放";
+  /// "保存格式"
+  String get Save_format => "保存格式";
+  /// "保存路径"
+  String get Save_path => "保存路径";
+  /// "标题"
+  String get Title => "标题";
+  /// "画师名"
+  String get Painter_Name => "画师名";
+  /// "第几张"
+  String get Which_part => "第几张";
 }
 
 class _I18n_zh_CN extends I18n {
@@ -518,6 +528,21 @@ class _I18n_en_US extends I18n {
   /// "Large preview zoom quality"
   @override
   String get Large_preview_zoom_quality => "Large preview zoom quality";
+  /// "Save format"
+  @override
+  String get Save_format => "Save format";
+  /// "Save_path"
+  @override
+  String get Save_path => "Save_path";
+  /// "标题"
+  @override
+  String get Title => "标题";
+  /// "画师名"
+  @override
+  String get Painter_Name => "画师名";
+  /// "第几张"
+  @override
+  String get Which_part => "第几张";
 
   @override
   TextDirection get textDirection => TextDirection.ltr;

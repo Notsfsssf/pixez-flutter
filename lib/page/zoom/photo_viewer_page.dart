@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/main.dart';
@@ -23,6 +25,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
   }
 
   Widget _buildPager() => PageView(
+        pageSnapping: false,
         onPageChanged: (index) {
           setState(() {
             this.index = index;
@@ -37,6 +40,23 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
               ))
         ],
       );
+  Widget _buildMuti() => PhotoViewGallery.builder(
+      onPageChanged: (i) {
+        setState(() {
+          this.index = i;
+        });
+      },
+      pageController: PageController(initialPage: widget.index),
+      itemCount: widget.illusts.metaPages.length,
+      builder: (context, index) {
+        return PhotoViewGalleryPageOptions(
+          imageProvider: PixivProvider.url(
+              widget.illusts.metaPages[index].imageUrls.large),
+          initialScale: PhotoViewComputedScale.contained * 1,
+          heroAttributes: PhotoViewHeroAttributes(
+              tag: widget.illusts.metaPages[index].imageUrls.large),
+        );
+      });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +86,6 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                     ? widget.illusts.imageUrls.large
                     : widget.illusts.metaSinglePage.originalImageUrl),
               )
-            : _buildPager());
+            : _buildMuti());
   }
 }

@@ -215,8 +215,11 @@ class _SearchResultPageState extends State<SearchResultPage>
                                                       _sortValue = value;
                                                     });
                                                   else
-                                                    BotToast.showText(
+                                                 {
+                                                      BotToast.showText(
                                                         text: "Not Premium!");
+                                                        
+                                                 }
                                                 }
                                               },
                                             ),

@@ -26,10 +26,14 @@ class _IllustCardState extends State<IllustCard> {
     if (widget._illusts.type != "illust") {
       return Text(
         widget._illusts.type,
+        style: TextStyle(color: Colors.white),
       );
     }
     if (widget._illusts.metaPages.isNotEmpty) {
-      return Text(widget._illusts.metaPages.length.toString());
+      return Text(
+        widget._illusts.metaPages.length.toString(),
+        style: TextStyle(color: Colors.white),
+      );
     }
   }
 

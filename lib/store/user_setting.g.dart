@@ -26,6 +26,23 @@ mixin _$UserSetting on _UserSettingBase, Store {
     }, _$zoomQualityAtom, name: '${_$zoomQualityAtom.name}_set');
   }
 
+  final _$languageNumAtom = Atom(name: '_UserSettingBase.languageNum');
+
+  @override
+  int get languageNum {
+    _$languageNumAtom.context.enforceReadPolicy(_$languageNumAtom);
+    _$languageNumAtom.reportObserved();
+    return super.languageNum;
+  }
+
+  @override
+  set languageNum(int value) {
+    _$languageNumAtom.context.conditionallyRunInAction(() {
+      super.languageNum = value;
+      _$languageNumAtom.reportChanged();
+    }, _$languageNumAtom, name: '${_$languageNumAtom.name}_set');
+  }
+
   final _$pathAtom = Atom(name: '_UserSettingBase.path');
 
   @override
@@ -43,6 +60,23 @@ mixin _$UserSetting on _UserSettingBase, Store {
     }, _$pathAtom, name: '${_$pathAtom.name}_set');
   }
 
+  final _$formatAtom = Atom(name: '_UserSettingBase.format');
+
+  @override
+  String get format {
+    _$formatAtom.context.enforceReadPolicy(_$formatAtom);
+    _$formatAtom.reportObserved();
+    return super.format;
+  }
+
+  @override
+  set format(String value) {
+    _$formatAtom.context.conditionallyRunInAction(() {
+      super.format = value;
+      _$formatAtom.reportChanged();
+    }, _$formatAtom, name: '${_$formatAtom.name}_set');
+  }
+
   final _$initAsyncAction = AsyncAction('init');
 
   @override
@@ -55,6 +89,20 @@ mixin _$UserSetting on _UserSettingBase, Store {
   @override
   Future<String> getPath() {
     return _$getPathAsyncAction.run(() => super.getPath());
+  }
+
+  final _$setLanguageNumAsyncAction = AsyncAction('setLanguageNum');
+
+  @override
+  Future setLanguageNum(int value) {
+    return _$setLanguageNumAsyncAction.run(() => super.setLanguageNum(value));
+  }
+
+  final _$setFormatAsyncAction = AsyncAction('setFormat');
+
+  @override
+  Future setFormat(String format) {
+    return _$setFormatAsyncAction.run(() => super.setFormat(format));
   }
 
   final _$changeAsyncAction = AsyncAction('change');
@@ -80,7 +128,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   @override
   String toString() {
     final string =
-        'zoomQuality: ${zoomQuality.toString()},path: ${path.toString()}';
+        'zoomQuality: ${zoomQuality.toString()},languageNum: ${languageNum.toString()},path: ${path.toString()},format: ${format.toString()}';
     return '{$string}';
   }
 }

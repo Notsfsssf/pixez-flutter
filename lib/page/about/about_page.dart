@@ -34,7 +34,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    if (Platform.isIOS) initPlatformState();
   }
 
 // Platform messages are asynchronous, so we initialize in an async method.
@@ -42,7 +42,8 @@ class _AboutPageState extends State<AboutPage> {
     // prepare
     var result = await FlutterInappPurchase.instance.initConnection;
     print('result: $result');
-       List<IAPItem> iaps=   await  FlutterInappPurchase.instance.getProducts(_productLists);
+    List<IAPItem> iaps =
+        await FlutterInappPurchase.instance.getProducts(_productLists);
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
@@ -61,9 +62,9 @@ class _AboutPageState extends State<AboutPage> {
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
       print('purchase-updated: $productItem');
-      if(productItem.transactionStateIOS==TransactionState.purchased){
-          await FlutterInappPurchase.instance.finishTransaction(productItem);
-         BotToast.showNotification(title: (_) => Text('Thanks!'));
+      if (productItem.transactionStateIOS == TransactionState.purchased) {
+        await FlutterInappPurchase.instance.finishTransaction(productItem);
+        BotToast.showNotification(title: (_) => Text('Thanks!'));
       }
     });
 
@@ -129,19 +130,44 @@ class _AboutPageState extends State<AboutPage> {
               ),
               title: Text('Perol_Notsfsssf'),
               subtitle: Text('使用flutter开发'),
-              onTap: (){
-               showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                        height: 200.0,
-                        color: Color(0xfff1f1f1),
-                        child: Center(
-                          child: Text("底部面板,点击消失"),
-                        ),
-                      );
-                    },
-                  );
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      decoration: new BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
+                      height: 300.0,
+                      padding: EdgeInsets.all(0.0),
+                      child: Image.asset(
+                        'assets/images/sustain.png',
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/right_now.jpg'),
+              ),
+              title: Text('Perol_Notsfsssf'),
+              subtitle: Text('完成应用图标的绘制'),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 200.0,
+                      color: Color(0xfff1f1f1),
+                      child: Center(
+                        child: Text("底部面板,点击消失"),
+                      ),
+                    );
+                  },
+                );
               },
             ),
             ListTile(
@@ -149,10 +175,12 @@ class _AboutPageState extends State<AboutPage> {
               title: Text('如果你觉得PixEz还不错'),
               subtitle: Text('好评鼓励一下吧！'),
               onTap: () async {
-                var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
-                if (await canLaunch(url)) {
-                  await launch(url);
-                } else {}
+                if (Platform.isIOS) {
+                  var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {}
+                }
               },
             ),
             Visibility(
@@ -188,51 +216,59 @@ class _AboutPageState extends State<AboutPage> {
               title: Text(I18n.of(context).Share),
               subtitle: Text(I18n.of(context).Share_this_app_link),
               onTap: () {
-                Share.share('https://apps.apple.com/cn/app/pixez/id1494435126');
+                if (Platform.isIOS) {
+                  Share.share(
+                      'https://apps.apple.com/cn/app/pixez/id1494435126');
+                }
               },
             ),
-            ...(Platform.isIOS)?[
-                   Card(
-              child: ListTile(
-                subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
-                title: Text('支持开发者工作'),
-                trailing: Text('12￥'),
-                onTap: () async {
-                  BotToast.showText(text: 'try to Purchase');
-                               List<PurchasedItem> items = await FlutterInappPurchase
-                      .instance
-                      .getPendingTransactionsIOS();
-                  for (var i in items) {
-                    await FlutterInappPurchase.instance.finishTransaction(i);
-                  }
-                 await FlutterInappPurchase.instance.requestPurchase('support');
-                  BlocProvider.of<IapBloc>(context)
-                      .add(MakeIapEvent('support'));
-                },
-              ),
-            ),
-            Card(
-              child: ListTile(
-                subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
-                title: Text('支持开发者工作'),
-                trailing: Text('25￥'),
-                onTap: () async {
-                  BotToast.showText(text: 'try to Purchase');
-      
-                  List<PurchasedItem> items = await FlutterInappPurchase
-                      .instance
-                      .getPendingTransactionsIOS();
-                  for (var i in items) {
-                    await FlutterInappPurchase.instance.finishTransaction(i);
-                  }
-                 await FlutterInappPurchase.instance.requestPurchase('support1');
-                  BlocProvider.of<IapBloc>(context)
-                      .add(MakeIapEvent('support1'));
-                },
-              ),
-            )
-            ]:[],
-       
+            ...(Platform.isIOS)
+                ? [
+                    Card(
+                      child: ListTile(
+                        subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
+                        title: Text('支持开发者工作'),
+                        trailing: Text('12￥'),
+                        onTap: () async {
+                          BotToast.showText(text: 'try to Purchase');
+                          List<PurchasedItem> items = await FlutterInappPurchase
+                              .instance
+                              .getPendingTransactionsIOS();
+                          for (var i in items) {
+                            await FlutterInappPurchase.instance
+                                .finishTransaction(i);
+                          }
+                          await FlutterInappPurchase.instance
+                              .requestPurchase('support');
+                          BlocProvider.of<IapBloc>(context)
+                              .add(MakeIapEvent('support'));
+                        },
+                      ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
+                        title: Text('支持开发者工作'),
+                        trailing: Text('25￥'),
+                        onTap: () async {
+                          BotToast.showText(text: 'try to Purchase');
+
+                          List<PurchasedItem> items = await FlutterInappPurchase
+                              .instance
+                              .getPendingTransactionsIOS();
+                          for (var i in items) {
+                            await FlutterInappPurchase.instance
+                                .finishTransaction(i);
+                          }
+                          await FlutterInappPurchase.instance
+                              .requestPurchase('support1');
+                          BlocProvider.of<IapBloc>(context)
+                              .add(MakeIapEvent('support1'));
+                        },
+                      ),
+                    )
+                  ]
+                : [],
           ],
         );
       }),

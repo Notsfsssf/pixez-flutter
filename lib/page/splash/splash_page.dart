@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
+import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/progress/progress_page.dart';
 
@@ -79,14 +82,14 @@ class _SplashPageState extends State<SplashPage>
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => HelloPage()));
+                              builder: (BuildContext context) =>Platform.isIOS? HelloPage():AndroidHelloPage()));
                     } else if (state is FailOnezeroState) {
                       // if (BlocProvider.of<AccountBloc>(context).state
                       //     is HasUserState)
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => HelloPage()));
+                              builder: (BuildContext context) => Platform.isIOS? HelloPage():AndroidHelloPage()));
                     }
                   },
                 ),
