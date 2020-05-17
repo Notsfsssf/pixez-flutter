@@ -1,11 +1,10 @@
-package com.perol.pixez_flutter
+package com.perol.pixez
 
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.os.Build
-import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
@@ -17,11 +16,12 @@ import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import java.io.ByteArrayOutputStream
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
-import kotlin.concurrent.thread
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
@@ -89,52 +89,58 @@ class MainActivity : FlutterActivity() {
         val file = File(path)
         file.let {
             val tempFile = File(context.cacheDir, "${name}.gif")
-            try {
-                if (!tempFile.exists()) {
-                    tempFile.createNewFile()
-                }
-                Log.d("tempFile path:", tempFile.path)
-                val listFiles = it.listFiles()
-                if (listFiles == null || listFiles.isEmpty()) {
-                    throw RuntimeException("unzip files not found")
-                }
-                val arrayFile = mutableListOf<File>()
-                for (i in listFiles) {
-                    if (i.name.contains("jpg") || i.name.contains("png")) {
-                        arrayFile.add(i)
+            Observable.create<File> { ot ->
+                try {
+
+                    if (!tempFile.exists()) {
+                        tempFile.createNewFile()
                     }
-                }
+                    Log.d("tempFile path:", tempFile.path)
+                    val listFiles = it.listFiles()
+                    if (listFiles == null || listFiles.isEmpty()) {
+                        throw RuntimeException("unzip files not found")
+                    }
+                    val arrayFile = mutableListOf<File>()
+                    for (i in listFiles) {
+                        if (i.name.contains("jpg") || i.name.contains("png")) {
+                            arrayFile.add(i)
+                        }
+                    }
 
-                arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
-                val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
-                val encoder = GifEncoder()
-                encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
-                for (i in arrayFile.indices) {
-                    if (i != 0) {
-                        encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
-                    } else encoder.encodeFrame(bitmap, delay)
-                }
+                    arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
+                    val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
+                    val encoder = GifEncoder()
+                    encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
+                    for (i in arrayFile.indices) {
+                        if (i != 0) {
+                            encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
+                        } else encoder.encodeFrame(bitmap, delay)
+                    }
 
-                encoder.close()
-                val targetFile = File(storePath, "${name}.gif")
-                tempFile.copyTo(targetFile, overwrite = true)
+                    encoder.close()
+                    val targetFile = File(storePath, "${name}.gif")
+                    tempFile.copyTo(targetFile, overwrite = true)
+                    ot.onNext(targetFile)
+                    ot.onComplete()
+                } catch (e: Exception) {
+                    Log.d("exception", "${e.localizedMessage}")
+                    tempFile.delete()
+                    it.deleteRecursively()
+                }
+            }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
                 MediaScannerConnection.scanFile(
                         this@MainActivity,
-                        arrayOf(targetFile.path),
+                        arrayOf(it.path),
                         arrayOf(
                                 MimeTypeMap.getSingleton()
-                                        .getMimeTypeFromExtension(targetFile.extension)
+                                        .getMimeTypeFromExtension(it.extension)
                         )
                 ) { _, _ ->
 
                 }
                 Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show()
+            }, {}, {})
 
-            } catch (e: Exception) {
-                Log.d("exception", "${e.localizedMessage}")
-                tempFile.delete()
-                it.deleteRecursively()
-            }
         }
     }
 
