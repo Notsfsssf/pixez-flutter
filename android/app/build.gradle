@@ -21,6 +21,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -41,8 +47,8 @@ android {
         applicationId "com.perol.pixez"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 2
+        versionName "0.0.2"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -51,11 +57,19 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -65,6 +79,7 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.google.android.play:core:1.7.3'
     implementation('com.waynejo:androidndkgif:0.3.3')
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.0")
     implementation 'androidx.preference:preference:1.1.1'

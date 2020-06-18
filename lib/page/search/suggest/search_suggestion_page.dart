@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/suggestion_bloc.dart';
 import 'package:pixez/page/search/bloc/suggestion_event.dart';
 import 'package:pixez/page/search/bloc/suggestion_state.dart';
-import 'package:pixez/page/search/result/search_result_page.dart';
-import 'package:pixez/page/user/user_page.dart';
+import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
   @override
@@ -69,25 +69,23 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
               if (segment.length == 1 && query.contains("/member.php?id=")) {
                 final id = uri.queryParameters['id'];
                 Navigator.of(context, rootNavigator: true)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return UserPage(
-                    id: int.parse(id),
-                  );
-                }));
+                    .push(MaterialPageRoute(
+                        builder: (BuildContext context) => UsersPage(
+                              id: int.parse(id),
+                            )));
                 _filter.clear();
               }
               if (segment.length == 2) {
                 if (segment[0] == 'artworks') {
                   Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return PicturePage(null, int.parse(segment[1]));
-                  }));
+                      .push(MaterialPageRoute(builder: (BuildContext context) =>
+                      PicturePage(null, int.parse(segment[1]))));
                   _filter.clear();
                 }
                 if (segment[0] == 'users') {
                   Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return UserPage(
+                    return UsersPage(
                       id: int.parse(segment[1]),
                     );
                   }));
@@ -104,14 +102,13 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
           onSubmitted: (s) {
             var word = s.trim();
             if (word.isEmpty) return;
-
             switch (_tabController.index) {
               case 0:
                 {
                   Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(
                       builder: (context) =>
-                          SearchResultPage(
+                          ResultPage(
                             word: word,
                           )));
                 }
@@ -134,7 +131,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                   if (id != null) {
                     Navigator.of(context, rootNavigator: true)
                         .push(MaterialPageRoute(
-                            builder: (_) => UserPage(
+                        builder: (_) => UsersPage(
                                   id: id,
                                 )));
                   } else {
@@ -151,7 +148,9 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
         controller: _tabController,
         tabs: <Widget>[
           Tab(
-            child: Text(I18n.of(context).Illust),
+            child: Text(I18n
+                .of(context)
+                .Key_Word),
           ),
           Tab(
             child: Text(I18n.of(context).Illust_id),
@@ -194,7 +193,7 @@ class _SuggestionsState extends State<Suggestions> {
                   FocusScope.of(context).unfocus();
                   Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(builder: (context) {
-                    return SearchResultPage(
+                    return ResultPage(
                       word: tags[index].name,
                     );
                   }));

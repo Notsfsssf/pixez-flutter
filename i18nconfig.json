@@ -1,14 +1,16 @@
 {
-    "defaultLocale": "zh-CN",
+  "defaultLocale": "zh-CN",
   "locales": [
     "zh-CN",
-    "en-US"
+    "en-US",
+    "zh-RW"
   ],
   "localePath": "i18n",
   "generatedPath": "lib/generated",
   "ltr": [
     "zh-CN",
-    "en-US"
+    "en-US",
+    "zh-RW"
   ],
   "rtl": [],
   "googleTranslateApiKey": "AIzaSyAFHTQV56MxMduQStM4DpAFcuoHvaiP5AY"

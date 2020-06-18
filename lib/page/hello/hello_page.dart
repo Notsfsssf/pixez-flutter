@@ -1,24 +1,22 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/bloc/bloc.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/recom/recom_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
-import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:pixez/page/user/user_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:pixez/store/save_store.dart';
 
@@ -74,7 +72,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(paths[index + 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return UserPage(
+            return UsersPage(
               id: id,
             );
           }));
@@ -101,7 +99,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return UserPage(
+            return UsersPage(
               id: id,
             );
           }));
@@ -134,8 +132,8 @@ class _HelloPageState extends State<HelloPage> {
   List<Widget> _widgetOptions = <Widget>[
     ReComPage(),
     NewPage(),
-    BlocBuilder<AccountBloc, AccountState>(builder: (context, snapshot) {
-      if (snapshot is HasUserState) return SearchPage();
+    Observer(builder: (context) {
+      if (accountStore.now != null) return SearchPage();
       return Scaffold(
         appBar: AppBar(
           title: Text(I18n.of(context).Search),
@@ -162,8 +160,7 @@ class _HelloPageState extends State<HelloPage> {
           if (spaceTime > 2000) {
             tapTime[index] = DateTime.now().millisecondsSinceEpoch;
           } else {
-            BlocProvider.of<ControllerBloc>(context)
-                .add(ScrollToTopEvent(routes[index]));
+
           }
           setState(() {
             _selectedIndex = index;

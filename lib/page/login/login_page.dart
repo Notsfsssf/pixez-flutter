@@ -7,13 +7,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_event.dart';
 
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/oauth_client.dart';
+import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/create/user/create_user_page.dart';
 import 'package:pixez/page/guid/guid_page.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/login/bloc/bloc.dart';
 import 'package:pixez/page/login/bloc/login_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -36,6 +39,25 @@ class _LoginPageState extends State<LoginPage> {
             LoginBloc(RepositoryProvider.of<OAuthClient>(context)),
         child: BlocBuilder<LoginBloc, LoginState>(builder: (context, snapshot) {
           return Scaffold(
+            bottomNavigationBar: BottomAppBar(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SettingQualityPage()));
+                      }),
+                  IconButton(
+                      icon: Icon(Icons.message),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AboutPage()));
+                      })
+                ],
+              ),
+            ),
             appBar: AppBar(
               elevation: 0.0,
               backgroundColor: Colors.transparent,
@@ -45,12 +67,10 @@ class _LoginPageState extends State<LoginPage> {
             body: BlocListener<LoginBloc, LoginState>(
               listener: (context, state) {
                 if (state is SuccessState) {
-                  BlocProvider.of<AccountBloc>(context)
-                      .add(FetchDataBaseEvent());
-                  Navigator.of(context, rootNavigator: true).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              Platform.isIOS? HelloPage():AndroidHelloPage()));
+                  accountStore.fetch();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          Platform.isIOS ? HelloPage() : AndroidHelloPage()));
                 } else if (state is FailState) {
                   Scaffold.of(context).showSnackBar(
                     SnackBar(
@@ -67,10 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Padding(
                 padding:
-                EdgeInsets.only(top: MediaQuery
-                    .of(context)
-                    .padding
-                    .top),
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: SingleChildScrollView(
                     padding: EdgeInsets.all(0),
                     child: Column(
@@ -120,7 +137,8 @@ class _LoginPageState extends State<LoginPage> {
                                       I18n.of(context).Login,
                                     ),
                                     onPressed: () {
-                                      if (userNameController.value.text.isEmpty ||
+                                      if (userNameController
+                                              .value.text.isEmpty ||
                                           userNameController.value.text.isEmpty)
                                         return;
                                       BotToast.showText(
@@ -136,11 +154,11 @@ class _LoginPageState extends State<LoginPage> {
                                     }),
                                 RaisedButton(
                                   onPressed: () async {
-                                    final result = await Navigator.of(context).push(
-                                        MaterialPageRoute(
+                                    final result = await Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                             builder: (BuildContext context) {
-                                              return CreateUserPage();
-                                            }));
+                                      return CreateUserPage();
+                                    }));
                                     if (result != null &&
                                         result is CreateUserResponse) {
                                       userNameController.text =
@@ -156,10 +174,11 @@ class _LoginPageState extends State<LoginPage> {
                                                   .value.text
                                                   .trim(),
                                               deviceToken:
-                                              result.body.deviceToken));
+                                                  result.body.deviceToken));
                                     }
                                   },
-                                  child: Text(I18n.of(context).Dont_have_account),
+                                  child:
+                                      Text(I18n.of(context).Dont_have_account),
                                 ),
                                 FlatButton(
                                   child: Text(

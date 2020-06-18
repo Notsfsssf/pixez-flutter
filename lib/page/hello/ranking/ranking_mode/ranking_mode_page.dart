@@ -8,17 +8,36 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
 
-class RankingModePage extends StatelessWidget {
+class RankingModePage extends StatefulWidget {
   final String mode, date;
 
   const RankingModePage({Key key, this.mode, this.date}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var _refreshCompleter = Completer<void>();
-    var _loadCompleter = Completer<void>();
-    final _refreshController = EasyRefreshController();
+  _RankingModePageState createState() => _RankingModePageState();
+}
 
+class _RankingModePageState extends State<RankingModePage>
+    with AutomaticKeepAliveClientMixin {
+  EasyRefreshController _refreshController;
+  Completer<void> _refreshCompleter = Completer<void>();
+  Completer<void> _loadCompleter = Completer<void>();
+
+  @override
+  void initState() {
+    _refreshController = EasyRefreshController();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _refreshController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocListener<RankingModeBloc, RankingModeState>(
         listener: (context, state) {
           _loadCompleter?.complete();
@@ -26,7 +45,7 @@ class RankingModePage extends StatelessWidget {
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
           if (state is DataRankingModeState) {
-                 _refreshController.finishRefresh(success: true);
+            _refreshController.finishRefresh(success: true);
           }
           if (state is LoadMoreSuccessState) {
             _refreshController.finishLoad(success: true, noMore: true);
@@ -45,20 +64,20 @@ class RankingModePage extends StatelessWidget {
               firstRefresh: true,
               child: state is DataRankingModeState
                   ? StaggeredGridView.countBuilder(
-                      crossAxisCount: 2,
-                      itemCount: state.illusts.length,
-                      itemBuilder: (context, index) {
-                        return IllustCard(
-                          state.illusts[index],
-                          illustList: state.illusts,
-                        );
-                      },
-                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                    )
+                crossAxisCount: 2,
+                itemCount: state.illusts.length,
+                itemBuilder: (context, index) {
+                  return IllustCard(
+                    state.illusts[index],
+                    illustList: state.illusts,
+                  );
+                },
+                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+              )
                   : Container(),
               onRefresh: () async {
                 BlocProvider.of<RankingModeBloc>(context)
-                    .add(FetchEvent(mode, date));
+                    .add(FetchEvent(widget.mode, widget.date));
                 return _refreshCompleter.future;
               },
               onLoad: () async {
@@ -71,4 +90,7 @@ class RankingModePage extends StatelessWidget {
           },
         ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

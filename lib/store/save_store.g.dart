@@ -13,25 +13,23 @@ mixin _$SaveStore on _SaveStoreBase, Store {
 
   @override
   ObservableMap<String, ProgressNum> get progressMaps {
-    _$progressMapsAtom.context.enforceReadPolicy(_$progressMapsAtom);
-    _$progressMapsAtom.reportObserved();
+    _$progressMapsAtom.reportRead();
     return super.progressMaps;
   }
 
   @override
   set progressMaps(ObservableMap<String, ProgressNum> value) {
-    _$progressMapsAtom.context.conditionallyRunInAction(() {
+    _$progressMapsAtom.reportWrite(value, super.progressMaps, () {
       super.progressMaps = value;
-      _$progressMapsAtom.reportChanged();
-    }, _$progressMapsAtom, name: '${_$progressMapsAtom.name}_set');
+    });
   }
 
-  final _$saveImageAsyncAction = AsyncAction('saveImage');
+  final _$saveImageAsyncAction = AsyncAction('_SaveStoreBase.saveImage');
 
   @override
-  Future<void> saveImage(Illusts illusts, {int index}) {
+  Future<void> saveImage(Illusts illusts, {int index, bool redo = false}) {
     return _$saveImageAsyncAction
-        .run(() => super.saveImage(illusts, index: index));
+        .run(() => super.saveImage(illusts, index: index, redo: redo));
   }
 
   final _$_SaveStoreBaseActionController =
@@ -39,7 +37,8 @@ mixin _$SaveStore on _SaveStoreBase, Store {
 
   @override
   void initContext(I18n context) {
-    final _$actionInfo = _$_SaveStoreBaseActionController.startAction();
+    final _$actionInfo = _$_SaveStoreBaseActionController.startAction(
+        name: '_SaveStoreBase.initContext');
     try {
       return super.initContext(context);
     } finally {
@@ -49,7 +48,8 @@ mixin _$SaveStore on _SaveStoreBase, Store {
 
   @override
   void saveChoiceImage(Illusts illusts, List<bool> indexs) {
-    final _$actionInfo = _$_SaveStoreBaseActionController.startAction();
+    final _$actionInfo = _$_SaveStoreBaseActionController.startAction(
+        name: '_SaveStoreBase.saveChoiceImage');
     try {
       return super.saveChoiceImage(illusts, indexs);
     } finally {
@@ -59,7 +59,8 @@ mixin _$SaveStore on _SaveStoreBase, Store {
 
   @override
   String toString() {
-    final string = 'progressMaps: ${progressMaps.toString()}';
-    return '{$string}';
+    return '''
+progressMaps: ${progressMaps}
+    ''';
   }
 }

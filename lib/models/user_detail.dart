@@ -129,9 +129,9 @@ class Profile {
   int total_illust_bookmarks_public;
   int total_illust_series;
   int total_novel_series;
-  Object background_image_url;
+  String background_image_url;
   String twitter_account;
-  Object twitter_url;
+  String twitter_url;
   String pawoo_url;
   bool is_premium;
   bool is_using_custom_profile_image;

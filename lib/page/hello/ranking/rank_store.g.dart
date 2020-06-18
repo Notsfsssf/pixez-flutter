@@ -13,61 +13,58 @@ mixin _$RankStore on _RankStoreBase, Store {
 
   @override
   ObservableList<String> get modeList {
-    _$modeListAtom.context.enforceReadPolicy(_$modeListAtom);
-    _$modeListAtom.reportObserved();
+    _$modeListAtom.reportRead();
     return super.modeList;
   }
 
   @override
   set modeList(ObservableList<String> value) {
-    _$modeListAtom.context.conditionallyRunInAction(() {
+    _$modeListAtom.reportWrite(value, super.modeList, () {
       super.modeList = value;
-      _$modeListAtom.reportChanged();
-    }, _$modeListAtom, name: '${_$modeListAtom.name}_set');
+    });
   }
 
   final _$modifyUIAtom = Atom(name: '_RankStoreBase.modifyUI');
 
   @override
   bool get modifyUI {
-    _$modifyUIAtom.context.enforceReadPolicy(_$modifyUIAtom);
-    _$modifyUIAtom.reportObserved();
+    _$modifyUIAtom.reportRead();
     return super.modifyUI;
   }
 
   @override
   set modifyUI(bool value) {
-    _$modifyUIAtom.context.conditionallyRunInAction(() {
+    _$modifyUIAtom.reportWrite(value, super.modifyUI, () {
       super.modifyUI = value;
-      _$modifyUIAtom.reportChanged();
-    }, _$modifyUIAtom, name: '${_$modifyUIAtom.name}_set');
+    });
   }
 
-  final _$resetAsyncAction = AsyncAction('reset');
+  final _$resetAsyncAction = AsyncAction('_RankStoreBase.reset');
 
   @override
   Future<void> reset() {
     return _$resetAsyncAction.run(() => super.reset());
   }
 
-  final _$initAsyncAction = AsyncAction('init');
+  final _$initAsyncAction = AsyncAction('_RankStoreBase.init');
 
   @override
   Future<void> init() {
     return _$initAsyncAction.run(() => super.init());
   }
 
-  final _$saveChangeAsyncAction = AsyncAction('saveChange');
+  final _$saveChangeAsyncAction = AsyncAction('_RankStoreBase.saveChange');
 
   @override
-  Future<void> saveChange(Map<String, bool> selectMap) {
+  Future<void> saveChange(Map<int, bool> selectMap) {
     return _$saveChangeAsyncAction.run(() => super.saveChange(selectMap));
   }
 
   @override
   String toString() {
-    final string =
-        'modeList: ${modeList.toString()},modifyUI: ${modifyUI.toString()}';
-    return '{$string}';
+    return '''
+modeList: ${modeList},
+modifyUI: ${modifyUI}
+    ''';
   }
 }

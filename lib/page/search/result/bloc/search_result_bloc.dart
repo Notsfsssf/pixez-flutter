@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter_easyrefresh/src/refresher.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -8,8 +9,9 @@ import './bloc.dart';
 
 class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
   final ApiClient client;
+  EasyRefreshController refreshController;
 
-  SearchResultBloc(this.client);
+  SearchResultBloc(this.client, this.refreshController);
 
   @override
   SearchResultState get initialState => InitialSearchResultState();
@@ -18,6 +20,19 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
   Stream<SearchResultState> mapEventToState(
     SearchResultEvent event,
   ) async* {
+    if (event is PreviewEvent) {
+      try {
+        final recommend = await client.getPopularPreview(event.word);
+        refreshController.finishRefresh(success: true);
+      } catch (e) {
+        if (e == null) {
+          return;
+        }
+        print(e);
+        yield RefreshFailState();
+        refreshController.finishRefresh(success: false);
+      }
+    }
     if (event is ApplyEvent) {
       try {
         final response = await client.getSearchIllust(event.word,
@@ -27,12 +42,14 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
             end_date: event.enableDuration ? event.endDate : null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataState(recommend.illusts, recommend.nextUrl);
+        refreshController.finishRefresh(success: true);
       } catch (e) {
         if (e == null) {
           return;
         }
         print(e);
         yield RefreshFailState();
+        refreshController.finishRefresh(success: false);
       }
     }
     if (event is FetchEvent) {
@@ -44,11 +61,13 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
             end_date: event.enableDuration ? event.endDate : null);
         Recommend recommend = Recommend.fromJson(response.data);
         yield DataState(recommend.illusts, recommend.nextUrl);
+        refreshController.finishRefresh(success: true);
       } catch (e) {
         if (e == null) {
           return;
         }
         print(e);
+        refreshController.finishRefresh(success: false);
       }
     }
     if (event is LoadMoreEvent) {
@@ -59,11 +78,12 @@ class SearchResultBloc extends Bloc<SearchResultEvent, SearchResultState> {
           final ill = event.illusts..addAll(recommend.illusts);
           print(ill.length);
           yield DataState(ill, recommend.nextUrl);
+          refreshController.finishLoad(success: true, noMore: false);
         } catch (e) {
-          yield LoadMoreFailState();
+          refreshController.finishLoad(success: false);
         }
       } else {
-        yield LoadEndState();
+        refreshController.finishLoad(success: true, noMore: true);
       }
     }
     if (event is ShowBottomSheetEvent) {

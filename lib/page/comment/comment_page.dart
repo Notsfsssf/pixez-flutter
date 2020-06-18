@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/bloc/bloc.dart';
 
@@ -109,32 +109,47 @@ class _CommentPageState extends State<CommentPage> {
                       ),
                       Container(
                         color: Theme.of(context).dialogBackgroundColor,
-                        padding: EdgeInsets.only(left: 2.0, right: 2.0),
-                        child: TextField(
-                          controller: _editController,
-                          decoration: InputDecoration(
-                              labelText:
-                                  "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
-                              suffixIcon: IconButton(
-                                  icon: Icon(Icons.reply),
-                                  onPressed: () async {
-                                    final client =
-                                        RepositoryProvider.of<ApiClient>(
-                                            context);
-                                    String txt = _editController.text.trim();
-                                    try {
-                                      if (txt.isNotEmpty)
-                                        Response reponse = await client
-                                            .postIllustComment(widget.id, txt,
-                                                parent_comment_id:
-                                                    parent_comment_id);
-                                      _editController.clear();
-                                      BlocProvider.of<CommentBloc>(context)
-                                          .add(FetchCommentEvent(widget.id));
-                                    } catch (e) {
-                                      print(e);
-                                    }
-                                  })),
+                        child: Row(
+                          children: <Widget>[
+                            IconButton(icon: Icon(Icons.book),onPressed: (){
+                          setState(() {
+                                parentCommentName=null;
+                              parent_comment_id = null;
+
+                          });
+                            },),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom:2.0,right: 8.0),
+                                child: TextField(
+                                  controller: _editController,
+                                  decoration: InputDecoration(
+                                      labelText:
+                                          "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                      suffixIcon: IconButton(
+                                          icon: Icon(Icons.reply),
+                                          onPressed: () async {
+                                            final client =
+                                                RepositoryProvider.of<ApiClient>(
+                                                    context);
+                                            String txt = _editController.text.trim();
+                                            try {
+                                              if (txt.isNotEmpty)
+                                                Response reponse = await client
+                                                    .postIllustComment(widget.id, txt,
+                                                        parent_comment_id:
+                                                            parent_comment_id);
+                                              _editController.clear();
+                                              BlocProvider.of<CommentBloc>(context)
+                                                  .add(FetchCommentEvent(widget.id));
+                                            } catch (e) {
+                                              print(e);
+                                            }
+                                          })),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       )
                     ],

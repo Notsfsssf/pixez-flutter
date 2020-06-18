@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/directory/directory_store.dart';
 
 class DirectoryPage extends StatefulWidget {

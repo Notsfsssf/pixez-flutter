@@ -1,6 +1,9 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:pixez/network/account_client.dart';
+
 import './bloc.dart';
 
 class AccountEditBloc extends Bloc<AccountEditEvent, AccountEditState> {
@@ -22,8 +25,17 @@ class AccountEditBloc extends Bloc<AccountEditEvent, AccountEditState> {
         print(response.data);
         yield SuccessAccountEditState();
       } catch (e) {
-        print(e);
-        yield FailAccountEditState(e);
+        if (e is DioError) {
+          try {
+            var a = e.response.data['body']['validation_errors'].toString();
+            yield FailAccountEditState(a);
+          } catch (e) {
+            yield FailAccountEditState(e);
+          }
+        } else {
+          print(e);
+          yield FailAccountEditState(e);
+        }
       }
     }
   }

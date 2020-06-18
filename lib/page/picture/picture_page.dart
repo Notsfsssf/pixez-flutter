@@ -1,4 +1,3 @@
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/ugoira_painter.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
@@ -23,8 +22,11 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/bloc/bloc.dart';
 import 'package:pixez/page/search/result/search_result_page.dart';
+import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share/share.dart';
+import 'package:intl/intl.dart';
 
 abstract class ListItem {}
 
@@ -35,8 +37,9 @@ class DetailItem implements ListItem {}
 class PicturePage extends StatefulWidget {
   final Illusts _illusts;
   final int id;
+  final String heroString;
 
-  PicturePage(this._illusts, this.id);
+  PicturePage(this._illusts, this.id, {this.heroString});
 
   @override
   _PicturePageState createState() => _PicturePageState();
@@ -182,12 +185,27 @@ class _PicturePageState extends State<PicturePage> {
   }
 
   static const platform = const MethodChannel('samples.flutter.dev/battery');
+
   @override
   void initState() {
     super.initState();
   }
 
   bool _playButtonVisible = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  String toShortTime(String dateString) {
+    try {
+      var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
+      return formatter.format(DateTime.parse(dateString));
+    } catch (e) {
+      return dateString;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +220,7 @@ class _PicturePageState extends State<PicturePage> {
           }
         }
         if (widget._illusts != null) {
-          for (var j in muteState.banUserIds) {
+          for (var j in muteStore.banUserIds) {
             if (j.userId == widget._illusts.user.id.toString()) {
               return BanPage(
                 name: I18n.of(context).Painter,
@@ -254,6 +272,17 @@ class _PicturePageState extends State<PicturePage> {
                 elevation: 0.0,
                 actions: <Widget>[
                   IconButton(
+                      icon: Icon(Icons.expand_less),
+                      onPressed: () {
+                        var illustState =
+                            BlocProvider.of<IllustBloc>(context).state;
+                        if (illustState is DataIllustState)
+                          itemScrollController.scrollTo(
+                              index: illustState.illusts.pageCount + 1,
+                              duration: Duration(seconds: 1),
+                              curve: Curves.easeInOutCubic);
+                      }),
+                  IconButton(
                       icon: Icon(Icons.more_vert),
                       onPressed: () {
                         var illustState =
@@ -274,7 +303,7 @@ class _PicturePageState extends State<PicturePage> {
                 }
                 if (illustState is DataIllustState) {
                   if (muteState is DataMuteState && widget._illusts == null) {
-                    for (var j in muteState.banUserIds) {
+                    for (var j in muteStore.banUserIds) {
                       if (j.userId == illustState.illusts.user.id.toString()) {
                         return BanPage(
                           name: I18n.of(context).Painter,
@@ -385,150 +414,178 @@ class _PicturePageState extends State<PicturePage> {
 
   Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
     return showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16),
+          ),
+        ),
         builder: (_) {
           return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    illusts.metaPages.isNotEmpty
-                        ? ListTile(
-                            title: Text(I18n.of(context).Muti_Choice_save),
-                            leading: Icon(
-                              Icons.save,
-                            ),
-                            onTap: () async {
-                              Navigator.of(context).pop();
-                              List<bool> indexs =
-                                  List(illusts.metaPages.length);
-                              for (int i = 0;
-                                  i < illusts.metaPages.length;
-                                  i++) {
-                                indexs[i] = false;
-                              }
-                              final result = await showDialog(
-                                context: context,
-                                child: StatefulBuilder(
-                                    builder: (context, setDialogState) {
-                                  return AlertDialog(
-                                    title: Text("Select"),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, "OK");
-                                        },
-                                        child: Text(I18n.of(context).OK),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0))),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _buildNameAvatar(context, illusts),
+                      illusts.metaPages.isNotEmpty
+                          ? ListTile(
+                              title: Text(I18n.of(context).Muti_Choice_save),
+                              leading: Icon(
+                                Icons.save,
+                              ),
+                              onTap: () async {
+                                Navigator.of(context).pop();
+                                List<bool> indexs =
+                                    List(illusts.metaPages.length);
+                                for (int i = 0;
+                                    i < illusts.metaPages.length;
+                                    i++) {
+                                  indexs[i] = false;
+                                }
+                                final result = await showDialog(
+                                  context: context,
+                                  child: StatefulBuilder(
+                                      builder: (context, setDialogState) {
+                                    return AlertDialog(
+                                      title: Text("Select"),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, "OK");
+                                          },
+                                          child: Text(I18n.of(context).OK),
+                                        ),
+                                        FlatButton(
+                                          child: Text(I18n.of(context).Cancel),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                      content: Container(
+                                        width: double.maxFinite,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title: Text(index.toString()),
+                                              trailing: Checkbox(
+                                                  value: indexs[index],
+                                                  onChanged: (ischeck) {
+                                                    setDialogState(() {
+                                                      indexs[index] = ischeck;
+                                                    });
+                                                  }),
+                                            );
+                                          },
+                                          itemCount: illusts.metaPages.length,
+                                        ),
                                       ),
-                                      FlatButton(
-                                        child: Text(I18n.of(context).Cancel),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ],
-                                    content: Container(
-                                      width: double.maxFinite,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return ListTile(
-                                            title: Text(index.toString()),
-                                            trailing: Checkbox(
-                                                value: indexs[index],
-                                                onChanged: (ischeck) {
-                                                  setDialogState(() {
-                                                    indexs[index] = ischeck;
-                                                  });
-                                                }),
-                                          );
-                                        },
-                                        itemCount: illusts.metaPages.length,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              );
-                              switch (result) {
-                                case "OK":
-                                  {
-                                    saveStore.saveChoiceImage(illusts, indexs);
-                                  }
-                              }
-                            },
-                          )
-                        : Container(),
-                    ListTile(
-                      title: Text(I18n.of(context).Share),
-                      leading: Icon(
-                        Icons.share,
+                                    );
+                                  }),
+                                );
+                                switch (result) {
+                                  case "OK":
+                                    {
+                                      saveStore.saveChoiceImage(
+                                          illusts, indexs);
+                                    }
+                                }
+                              },
+                            )
+                          : Container(),
+                      ListTile(
+                        title: Text(I18n.of(context).CopyMessage),
+                        leading: Icon(
+                          Icons.local_library,
+                        ),
+                        onTap: () async {
+                          await Clipboard.setData(ClipboardData(
+                              text:
+                                  'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
+                          BotToast.showText(text: 'Copyed');
+                          Navigator.of(context).pop();
+                        },
                       ),
-                      onTap: () {
-                        Navigator.of(context).pop();
+                      ListTile(
+                        title: Text(I18n.of(context).Share),
+                        leading: Icon(
+                          Icons.share,
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
 
-                        Share.share(
-                            "https://www.pixiv.net/artworks/${widget.id}");
-                      },
-                    ),
-                    ListTile(
-                      title: Text(I18n.of(context).Ban),
-                      leading: Icon(Icons.brightness_auto),
-                      onTap: () {
-                        BlocProvider.of<MuteBloc>(context).add(
-                            InsertBanIllustEvent(
-                                widget.id.toString(), illusts.title));
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: Text(I18n.of(context).report),
-                      leading: Icon(Icons.report),
-                      onTap: () async {
-                        await showCupertinoDialog(
-                            context: context,
-                            builder: (context) {
-                              return CupertinoAlertDialog(
-                                title: Text(I18n.of(context).report),
-                                content: Text(I18n.of(context).Report_Message),
-                                actions: <Widget>[
-                                  CupertinoDialogAction(
-                                    isDefaultAction: true,
-                                    child: Text("OK"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop("OK");
-                                    },
-                                  ),
-                                  CupertinoDialogAction(
-                                    child: Text("CANCEL"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop("CANCEL");
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                    )
-                  ],
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.cancel,
+                          Share.share(
+                              "https://www.pixiv.net/artworks/${widget.id}");
+                        },
+                      ),
+                      ListTile(
+                        title: Text(I18n.of(context).Ban),
+                        leading: Icon(Icons.brightness_auto),
+                        onTap: () {
+                          BlocProvider.of<MuteBloc>(context).add(
+                              InsertBanIllustEvent(
+                                  widget.id.toString(), illusts.title));
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text(I18n.of(context).report),
+                        leading: Icon(Icons.report),
+                        onTap: () async {
+                          await showCupertinoDialog(
+                              context: context,
+                              builder: (context) {
+                                return CupertinoAlertDialog(
+                                  title: Text(I18n.of(context).report),
+                                  content:
+                                      Text(I18n.of(context).Report_Message),
+                                  actions: <Widget>[
+                                    CupertinoDialogAction(
+                                      isDefaultAction: true,
+                                      child: Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("OK");
+                                      },
+                                    ),
+                                    CupertinoDialogAction(
+                                      child: Text("CANCEL"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("CANCEL");
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                      )
+                    ],
                   ),
-                  title: Text(I18n.of(context).Cancel),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                Container(
-                  height: MediaQuery.of(context).padding.bottom,
-                )
-              ],
+                  ListTile(
+                    leading: Icon(
+                      Icons.cancel,
+                    ),
+                    title: Text(I18n.of(context).Cancel),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).padding.bottom,
+                  )
+                ],
+              ),
             ),
           );
         });
@@ -540,7 +597,7 @@ class _PicturePageState extends State<PicturePage> {
             illust.metaPages[index].imageUrls.large,
             placeHolder: illust.metaPages[index].imageUrls.medium,
           ),
-          tag: illust.imageUrls.medium,
+          tag: '${illust.imageUrls.medium}${widget.heroString}',
         )
       : PixivImage(
           illust.metaPages[index].imageUrls.large,
@@ -576,10 +633,17 @@ class _PicturePageState extends State<PicturePage> {
             child: CircularProgressIndicator(),
           );
       });
-
+  Illusts _illusts;
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
   Widget _buildList(context, Illusts illust, DataIllustState illustState) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
-    return ListView.builder(
+    _illusts = illust;
+
+    return ScrollablePositionedList.builder(
+        itemScrollController: itemScrollController,
+        itemPositionsListener: itemPositionsListener,
         itemCount: count + 4,
         padding: EdgeInsets.all(0.0),
         itemBuilder: (BuildContext context, int index) {
@@ -603,7 +667,6 @@ class _PicturePageState extends State<PicturePage> {
 
           if (illust.type == "ugoira" && index == 1) {
             _playButtonVisible = true;
-
             return BlocBuilder<UgoiraMetadataBloc, UgoiraMetadataState>(
                 builder: (context, snapshot) {
               if (snapshot is DownLoadProgressState) {
@@ -618,6 +681,12 @@ class _PicturePageState extends State<PicturePage> {
               }
               if (snapshot is PlayUgoiraMetadataState) {
                 List<Frame> frames = snapshot.frames;
+                debugPrint('radio:' +
+                    ((illust.height.toDouble() / illust.width.toDouble()) *
+                            MediaQuery.of(context).size.width)
+                        .toString() +
+                    "width:" +
+                    MediaQuery.of(context).size.width.toString());
                 return InkWell(
                   onTap: () async {
                     final result = await showDialog(
@@ -689,27 +758,25 @@ class _PicturePageState extends State<PicturePage> {
                       } on PlatformException catch (e) {}
                     }
                   },
-                  child: FittedBox(
-                
-                    child: SizedBox(
-                      width: illust.width.toDouble(),
-                      height: illust.height.toDouble(),
-                      child: UgoiraWidget(
-                        drawPools: snapshot.listSync,
-                        delay: frames.first.delay,
-                        height: illust.height.toDouble(),
-                      ),
+                  child: Container(
+                    height:
+                        (illust.height.toDouble() / illust.width.toDouble()) *
+                            MediaQuery.of(context).size.width.toDouble(),
+                    width: MediaQuery.of(context).size.width.toDouble(),
+                    child: UgoiraWidget(
+                      size: Size(
+                          MediaQuery.of(context).size.width.toDouble(),
+                          (illust.height.toDouble() / illust.width.toDouble()) *
+                              MediaQuery.of(context).size.width.toDouble()),
+                      drawPools: snapshot.listSync,
+                      delay: frames.first.delay,
                     ),
                   ),
                 );
                 // return UgoiraAnima(snapshot.listSync,snapshot.frames);
               }
-              return Hero(
-                child: PixivImage(
-                  illust.imageUrls.large,
-                  placeHolder: illust.imageUrls.medium,
-                ),
-                tag: illust.imageUrls.medium,
+              return PixivImage(
+                illust.imageUrls.medium,
               );
             });
           }
@@ -717,11 +784,85 @@ class _PicturePageState extends State<PicturePage> {
             onLongPress: () {
               showModalBottomSheet(
                   context: context,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
                   builder: (c1) {
                     return Container(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          illust.metaPages.isNotEmpty
+                              ? ListTile(
+                                  title:
+                                      Text(I18n.of(context).Muti_Choice_save),
+                                  leading: Icon(
+                                    Icons.save,
+                                  ),
+                                  onTap: () async {
+                                    Navigator.of(context).pop();
+                                    List<bool> indexs =
+                                        List(illust.metaPages.length);
+                                    for (int i = 0;
+                                        i < illust.metaPages.length;
+                                        i++) {
+                                      indexs[i] = false;
+                                    }
+                                    final result = await showDialog(
+                                      context: context,
+                                      child: StatefulBuilder(
+                                          builder: (context, setDialogState) {
+                                        return AlertDialog(
+                                          title: Text("Select"),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, "OK");
+                                              },
+                                              child: Text(I18n.of(context).OK),
+                                            ),
+                                            FlatButton(
+                                              child:
+                                                  Text(I18n.of(context).Cancel),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            )
+                                          ],
+                                          content: Container(
+                                            width: double.maxFinite,
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) =>
+                                                  ListTile(
+                                                title: Text(index.toString()),
+                                                trailing: Checkbox(
+                                                    value: indexs[index],
+                                                    onChanged: (ischeck) {
+                                                      setDialogState(() {
+                                                        indexs[index] = ischeck;
+                                                      });
+                                                    }),
+                                              ),
+                                              itemCount:
+                                                  illust.metaPages.length,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    );
+                                    switch (result) {
+                                      case "OK":
+                                        {
+                                          saveStore.saveChoiceImage(
+                                              illust, indexs);
+                                        }
+                                    }
+                                  },
+                                )
+                              : Container(),
                           ListTile(
                             leading: Icon(Icons.save_alt),
                             onTap: () async {
@@ -758,7 +899,7 @@ class _PicturePageState extends State<PicturePage> {
                       illust.imageUrls.large,
                       placeHolder: illust.imageUrls.medium,
                     ),
-                    tag: illust.imageUrls.medium,
+                    tag: '${illust.imageUrls.medium}${widget.heroString}',
                   )
                 : _buildIllustsItem(index - 1, illust),
           );
@@ -775,69 +916,7 @@ class _PicturePageState extends State<PicturePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                    child: GestureDetector(
-                      onLongPress: () {
-                        BlocProvider.of<IllustBloc>(context)
-                            .add(FollowUserIllustEvent());
-                      },
-                      child: Container(
-                        height: 70,
-                        width: 70,
-                        child: Stack(
-                          children: <Widget>[
-                            Center(
-                              child: SizedBox(
-                                height: 70,
-                                width: 70,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: illust.user.isFollowed
-                                        ? Colors.yellow
-                                        : Theme.of(context).accentColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: PainterAvatar(
-                                url: illust.user.profileImageUrls.medium,
-                                id: illust.user.id,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    padding: EdgeInsets.all(8.0)),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          illust.title,
-                          style:
-                              TextStyle(color: Theme.of(context).accentColor),
-                        ),
-                        Container(
-                          height: 4.0,
-                        ),
-                        Text(illust.user.name),
-                        Text(illust.createDate),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _buildNameAvatar(context, illust),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -895,7 +974,7 @@ class _PicturePageState extends State<PicturePage> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return SearchResultPage(
+                                    return ResultPage(
                                       word: f.name,
                                     );
                                   }));
@@ -936,6 +1015,7 @@ class _PicturePageState extends State<PicturePage> {
                                 child: Text(
                                   "#${f.name}",
                                   style: TextStyle(
+                                      fontSize: 14.0,
                                       color: Theme.of(context).accentColor),
                                 ),
                               ),
@@ -948,6 +1028,7 @@ class _PicturePageState extends State<PicturePage> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 softWrap: true,
+                                style: Theme.of(context).textTheme.caption,
                               ))
                             ]))
                     .toList(),
@@ -967,6 +1048,8 @@ class _PicturePageState extends State<PicturePage> {
                 child: Text(
                   I18n.of(context).View_Comment,
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: Theme.of(context).textTheme.bodyText1.fontSize),
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -979,4 +1062,77 @@ class _PicturePageState extends State<PicturePage> {
           ],
         ),
       );
+
+  Widget _buildNameAvatar(BuildContext context, Illusts illust) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+            child: GestureDetector(
+              onLongPress: () {
+                BlocProvider.of<IllustBloc>(context)
+                    .add(FollowUserIllustEvent());
+              },
+              child: Container(
+                height: 70,
+                width: 70,
+                child: Stack(
+                  children: <Widget>[
+                    Center(
+                      child: SizedBox(
+                        height: 70,
+                        width: 70,
+                        child: Container(
+                          decoration: illust != null
+                              ? BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: illust.user.isFollowed
+                                      ? Colors.yellow
+                                      : Theme.of(context).accentColor,
+                                )
+                              : BoxDecoration(),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: PainterAvatar(
+                        url: illust.user.profileImageUrls.medium,
+                        id: illust.user.id,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            padding: EdgeInsets.all(8.0)),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SelectableText(
+                  illust.title,
+                  style: TextStyle(color: Theme.of(context).accentColor),
+                ),
+                Container(
+                  height: 4.0,
+                ),
+                SelectableText(
+                  illust.user.name,
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                Text(
+                  toShortTime(illust.createDate),
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

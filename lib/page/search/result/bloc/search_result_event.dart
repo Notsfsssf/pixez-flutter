@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:pixez/models/illust.dart';
 
-abstract class SearchResultEvent extends Equatable {
+abstract class SearchResultEvent {
   const SearchResultEvent();
 }
 
@@ -12,9 +12,6 @@ class FetchEvent extends SearchResultEvent {
 
   FetchEvent(this.word, this.sort, this.searchTarget, this.startDate,
       this.endDate, this.enableDuration);
-
-  @override
-  List<Object> get props => [];
 }
 
 class LoadMoreEvent extends SearchResultEvent {
@@ -22,15 +19,16 @@ class LoadMoreEvent extends SearchResultEvent {
   final List<Illusts> illusts;
 
   LoadMoreEvent(this.nextUrl, this.illusts);
-
-  @override
-  List<Object> get props => [illusts, nextUrl];
 }
 
-class ShowBottomSheetEvent extends SearchResultEvent {
-  @override
-  List<Object> get props => [];
+class ShowBottomSheetEvent extends SearchResultEvent {}
+
+class PreviewEvent extends SearchResultEvent {
+  final String word;
+
+  PreviewEvent(this.word);
 }
+
 class ApplyEvent extends SearchResultEvent {
   final String word, sort, searchTarget;
   final DateTime startDate, endDate;
@@ -38,7 +36,4 @@ class ApplyEvent extends SearchResultEvent {
 
   ApplyEvent(this.word, this.sort, this.searchTarget, this.startDate,
       this.endDate, this.enableDuration);
-
-  @override
-  List<Object> get props => [word, sort, searchTarget];
 }

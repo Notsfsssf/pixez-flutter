@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
@@ -21,7 +22,8 @@ class ApiClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';
-static String Accept_Language="zh-CN";
+  static String Accept_Language = "zh-CN";
+
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
     DateFormat dateFormat = new DateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
@@ -60,8 +62,19 @@ static String Accept_Language="zh-CN";
       };
       return httpClient;
     };
+    initA(time);
   }
 
+  initA(time) async {
+    if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      var headers = this.httpClient.options.headers;
+      headers['User-Agent'] =
+          "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
+      headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
+    }
+  }
 
   Future<Response> getUserBookmarkNovel(int user_id, String restrict) async {
     return httpClient.get('/v1/user/bookmarks/novel',
@@ -147,8 +160,9 @@ static String Accept_Language="zh-CN";
   }
 
   Future<Response> getNext(String url) async {
-   var a= this.httpClient.options.baseUrl;
-    String finalUrl = url.replaceAll("app-api.pixiv.net", a.replaceAll(a, a.replaceFirst("https://","")));
+    var a = this.httpClient.options.baseUrl;
+    String finalUrl = url.replaceAll(
+        "app-api.pixiv.net", a.replaceAll(a, a.replaceFirst("https://", "")));
     return httpClient.get(finalUrl);
   }
 
@@ -372,4 +386,14 @@ static String Accept_Language="zh-CN";
     final result = await httpClient.get('/v1/walkthrough/illusts');
     return Recommend.fromJson(result.data);
   }
+
+//  https://app-api.pixiv.net/v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&word={keyword}&search_target=partial_match_for_tags
+  Future<Response> getPopularPreview(String keyword) async {
+    String a = this.httpClient.options.baseUrl;
+    String previewUrl =
+        '${a}/v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&word=${keyword}&search_target=partial_match_for_tags';
+    final result = await httpClient.get(previewUrl);
+    return result;
+  }
+
 }

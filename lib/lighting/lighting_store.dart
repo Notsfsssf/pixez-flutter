@@ -4,24 +4,32 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
+
 part 'lighting_store.g.dart';
 
 class LightingStore = _LightingStoreBase with _$LightingStore;
+typedef Future<Response> FutureGet();
 
 abstract class _LightingStoreBase with Store {
-  @observable
-  Future<Response> source;
   final ApiClient _apiClient;
   final EasyRefreshController _controller;
+  FutureGet source;
+
   String nextUrl;
   @observable
   ObservableList<Illusts> illusts = ObservableList();
-  _LightingStoreBase(this.source, this._apiClient, this._controller);
+
+  _LightingStoreBase(
+    this.source,
+    this._apiClient,
+    this._controller,
+  );
+
   @action
   fetch() async {
+    nextUrl=null;
     try {
-      
-      final result = await source;
+      final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
       nextUrl = recommend.nextUrl;
       illusts.clear();

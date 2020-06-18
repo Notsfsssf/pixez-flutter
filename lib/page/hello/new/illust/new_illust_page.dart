@@ -1,109 +1,94 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:pixez/bloc/controller_bloc.dart';
-import 'package:pixez/bloc/controller_state.dart';
-import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/page/hello/new/illust/bloc/bloc.dart';
+
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/lighting/lighting_page.dart';
+import 'package:pixez/network/api_client.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 
 class NewIllustPage extends StatefulWidget {
   final String restrict;
 
-  const NewIllustPage({Key key, this.restrict = "public"}) : super(key: key);
+  const NewIllustPage({Key key, this.restrict = "all"}) : super(key: key);
 
   @override
   _NewIllustPageState createState() => _NewIllustPageState();
 }
 
-class _NewIllustPageState extends State<NewIllustPage> {
-  Completer<void> _refreshCompleter, _loadCompleter;
-  EasyRefreshController _easyRefreshController;
-  ScrollController _scrollController;
+class _NewIllustPageState extends State<NewIllustPage>
+    with AutomaticKeepAliveClientMixin {
+  FutureGet futureGet;
 
   @override
   void initState() {
+    futureGet = () => RepositoryProvider.of<ApiClient>(context)
+        .getFollowIllusts(widget.restrict);
     super.initState();
-    _scrollController = ScrollController();
-    _refreshCompleter = Completer<void>();
-    _loadCompleter = Completer<void>();
-    _easyRefreshController = EasyRefreshController();
-    // BlocProvider.of<NewIllustBloc>(context)
-    //     .add(FetchIllustEvent(widget.restrict));
-  }
-
-  @override
-  void dispose() {
-    _scrollController?.dispose();
-    _easyRefreshController?.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<NewIllustBloc, NewIllustState>(
-          listener: (context, state) {
-            if (state is DataNewIllustState) {
-              _loadCompleter?.complete();
-              _loadCompleter = Completer();
-              _refreshCompleter?.complete();
-              _refreshCompleter = Completer();
-            }
-            if (state is FailIllustState) {
-              _easyRefreshController.finishRefresh(
-                success: false,
-              );
-              _refreshCompleter?.complete();
-              _refreshCompleter = Completer();
-            }
-          },
-        ),
-        BlocListener<ControllerBloc, ControllerState>(
-          listener: (BuildContext context, ControllerState state) {
-            if (state is ScrollToTopState) {
-              if (state.name == 'dymanic') _scrollController?.jumpTo(0.0);
-            }
-          },
-        )
-      ],
-      child: BlocBuilder<NewIllustBloc, NewIllustState>(condition: (pre, now) {
-        return now is! FailIllustState;
-      }, builder: (context, state) {
-        return EasyRefresh(
-          controller: _easyRefreshController,
-          firstRefresh: true,
-          child: state is DataNewIllustState
-              ? StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  controller: _scrollController,
-                  itemCount: state.illusts.length,
-                  itemBuilder: (context, index) {
-                    return IllustCard(
-                      state.illusts[index],
-                      illustList: state.illusts,
-                    );
-                  },
-                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                )
-              : Container(),
-          onRefresh: () async {
-            BlocProvider.of<NewIllustBloc>(context)
-                .add(FetchIllustEvent(widget.restrict));
-            return _refreshCompleter.future;
-          },
-          onLoad: () async {
-            if (state is DataNewIllustState)
-              BlocProvider.of<NewIllustBloc>(context)
-                  .add(LoadMoreEvent(state.nextUrl, state.illusts));
-            return _loadCompleter.future;
-          },
-        );
-      }),
+    super.build(context);
+    return LightingList(
+      header: Container(
+          child: Align(
+        alignment: Alignment.centerRight,
+        child: IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () {
+              showModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            title: Text(I18n.of(context).All),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet = () =>
+                                    RepositoryProvider.of<ApiClient>(context)
+                                        .getFollowIllusts('all');
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: Text(I18n.of(context).public),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet = () =>
+                                    RepositoryProvider.of<ApiClient>(context)
+                                        .getFollowIllusts('public');
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: Text(I18n.of(context).private),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet = () =>
+                                    RepositoryProvider.of<ApiClient>(context)
+                                        .getFollowIllusts('private');
+                              });
+                            },
+                          ),
+                        ],
+                      ));
+            }),
+      )),
+      source: futureGet,
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

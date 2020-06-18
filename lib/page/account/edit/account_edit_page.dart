@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_event.dart';
 import 'package:pixez/bloc/account_state.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/account/edit/bloc/account_edit_bloc.dart';
 import 'package:pixez/page/account/edit/bloc/account_edit_event.dart';
 import 'package:pixez/page/account/edit/bloc/account_edit_state.dart';
@@ -25,14 +26,21 @@ class _AccountEditPageState extends State<AccountEditPage> {
     _emailController = TextEditingController();
     _accountController = TextEditingController();
     _oldPasswordController = TextEditingController();
-    var state1 = BlocProvider.of<AccountBloc>(context).state;
-    if (state1 is HasUserState) {
-      _oldPasswordController.text = state1.list.passWord;
-      _accountController.text = state1.list.account;
-      _emailController.text = state1.list.mailAddress;
+    if (accountStore.now != null) {
+      _oldPasswordController.text = accountStore.now.passWord;
+      _accountController.text = accountStore.now.account;
+      _emailController.text = accountStore.now.mailAddress;
     }
 
     super.initState();
+  }
+
+  bool _obscureText = true;
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
   @override
@@ -60,9 +68,8 @@ class _AccountEditPageState extends State<AccountEditPage> {
                         alignment: Alignment(0, 0.8),
                         child: Card(
                           child: ListTile(
-                            leading: Icon(Icons.error),
-                            title:Text("Email format error")
-                          ),
+                              leading: Icon(Icons.error),
+                              title: Text("Email format error")),
                         ),
                       ),
                     );
@@ -85,21 +92,20 @@ class _AccountEditPageState extends State<AccountEditPage> {
           body: BlocListener<AccountEditBloc, AccountEditState>(
             listener: (context, now) {
               if (now is SuccessAccountEditState) {
-                final bloc = BlocProvider.of<AccountBloc>(context);
-                var state = bloc.state;
-                if (state is HasUserState) {
+                if (accountStore.now != null) {
                   if (_passwordController.text.isNotEmpty) {
-                    state.list.passWord = _passwordController.text;
+                    accountStore.now.passWord = _passwordController.text;
                   }
                   if (_emailController.text.isNotEmpty) {
-                    state.list.mailAddress = _emailController.text;
+                    accountStore.now.mailAddress = _emailController.text;
                   }
-                  bloc.add(UpdateAccountEvent(state.list));
+                  accountStore.updateSingle(accountStore.now);
                 }
               }
               if (now is FailAccountEditState) {
                 Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text('error'),
+                  content: Text('${now.e}'),
+                  backgroundColor: Colors.red,
                 ));
               }
             },
@@ -111,24 +117,38 @@ class _AccountEditPageState extends State<AccountEditPage> {
                     TextFormField(
                       controller: _accountController,
                       enabled: false,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Account',
                         labelText: 'Account',
                       ),
                     ),
                     TextFormField(
-                      enabled: false,
+                      obscureText: _obscureText,
                       controller: _oldPasswordController,
-                      decoration: const InputDecoration(
-                          hintText: 'CurrentPassword',
-                          labelText: 'CurrentPassword',
-                          enabled: false),
+                      decoration: InputDecoration(
+                        hintText: I18n
+                            .of(context)
+                            .Current_Password,
+                        labelText: I18n
+                            .of(context)
+                            .Current_Password,
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(icon: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ), onPressed: _toggle),
+                      ),
                     ),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
-                        hintText: 'New PassWord',
-                        labelText: 'New PassWord',
+                      decoration: InputDecoration(
+                        hintText: I18n
+                            .of(context)
+                            .New_Password,
+                        labelText: I18n
+                            .of(context)
+                            .New_Password,
                       ),
                     ),
                     TextFormField(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/account_client.dart';
 import 'package:url_launcher/url_launcher.dart';

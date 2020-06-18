@@ -7,7 +7,7 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/login/login_page.dart';

@@ -11,7 +11,8 @@ part of 'theme_setting.dart';
 mixin _$ThemeSetting on _ThemeSettingBase, Store {
   @override
   String toString() {
-    final string = '';
-    return '{$string}';
+    return '''
+
+    ''';
   }
 }

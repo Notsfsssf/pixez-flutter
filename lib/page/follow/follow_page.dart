@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/new/painter/bloc/new_painter_bloc.dart';
 import 'package:pixez/page/hello/new/painter/new_painter_page.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 
 class BanPage extends StatefulWidget {

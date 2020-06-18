@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/bloc.dart';
@@ -19,7 +21,6 @@ import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 
 class ReComPage extends StatefulWidget {
-
   @override
   _ReComPageState createState() => _ReComPageState();
 }
@@ -73,44 +74,64 @@ class _ReComPageState extends State<ReComPage> {
               _easyRefreshController.finishLoad(success: true, noMore: true);
             }
           }),
-          BlocListener<ControllerBloc, ControllerState>(
-            listener: (BuildContext context, ControllerState state) {
-              if (state is ScrollToTopState) {
-                if(state.name=='recom')
-                _scrollController.jumpTo(0.0);
-              }
-            },
-          )
         ],
-        child: Scaffold(
-            body: SafeArea(
-                bottom: false,
-                child: BlocBuilder<AccountBloc, AccountState>(
-                    builder: (context, snapshot) {
-                  if (snapshot is HasUserState)
-                    return _buildBlocBuilder();
-                  else
-                    return Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            child: Padding(
-                              child: Text(
-                                I18n.of(context).Spotlight,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 30.0),
-                              ),
-                              padding:
-                                  EdgeInsets.only(left: 20.0, bottom: 10.0),
-                            ),
-                          ),
-                          Expanded(child: PreviewPage())
-                        ],
+        child: Scaffold(body: Observer(builder: (context) {
+          if (accountStore.now != null)
+            return Column(children: <Widget>[
+              AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      child: Padding(
+                        child: Text(
+                          I18n.of(context).Spotlight,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 30.0),
+                        ),
+                        padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
                       ),
-                    );
-                }))),
+                    ),
+                    Padding(
+                      child: FlatButton(
+                        child: Text(I18n.of(context).More),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return SpotLightPage();
+                          }));
+                        },
+                      ),
+                      padding: EdgeInsets.all(8.0),
+                    )
+                  ],
+                ),
+              ),
+              Expanded(child: _buildBlocBuilder())
+            ]);
+          else
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Padding(
+                      child: Text(
+                        I18n.of(context).Spotlight,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30.0),
+                      ),
+                      padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
+                    ),
+                  ),
+                  Expanded(child: PreviewPage())
+                ],
+              ),
+            );
+        })),
       ),
     );
   }
@@ -124,59 +145,30 @@ class _ReComPageState extends State<ReComPage> {
         controller: _easyRefreshController,
         child: state is DataRecomState
             ? StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                controller: _scrollController,
-                padding: EdgeInsets.symmetric(vertical: 30.0),
-                itemCount: state.illusts.length + 2,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisCount: 2,
+          controller: _scrollController,
+          padding: EdgeInsets.symmetric(vertical: 30.0),
+          itemCount: state.illusts.length + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return BlocBuilder<SpotlightBloc, SpotlightState>(
+                builder: (BuildContext context, SpotlightState state) {
+                  if (state is DataSpotlight) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Container(
-                          child: Padding(
-                            child: Text(
-                              I18n.of(context).Spotlight,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 30.0),
-                            ),
-                            padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
-                          ),
-                        ),
-                        Padding(
-                          child: FlatButton(
-                            child: Text(I18n.of(context).More),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return SpotLightPage();
-                              }));
+                          height: 230.0,
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final spotlight = state.articles[index];
+                              return SpotlightCard(
+                                spotlight: spotlight,
+                              );
                             },
-                          ),
-                          padding: EdgeInsets.all(8.0),
-                        )
-                      ],
-                    );
-                  }
-                  if (index == 1) {
-                    return BlocBuilder<SpotlightBloc, SpotlightState>(
-                      builder: (BuildContext context, SpotlightState state) {
-                        if (state is DataSpotlight) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Container(
-                                height: 230.0,
-                                child: ListView.builder(
-                                  controller: _scrollController,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    final spotlight = state.articles[index];
-                                    return SpotlightCard(
-                                      spotlight: spotlight,
-                                    );
-                                  },
-                                  itemCount: state.articles.length,
+                            itemCount: state.articles.length,
                                   scrollDirection: Axis.horizontal,
                                 ),
                               ),
@@ -222,7 +214,7 @@ class _ReComPageState extends State<ReComPage> {
                     );
                   }
                   return IllustCard(
-                    state.illusts[index - 2],
+                    state.illusts[index - 1],
                     illustList: state.illusts,
                   );
                 },

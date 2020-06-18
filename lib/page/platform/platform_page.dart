@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:package_info/package_info.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
-import 'package:pixez/store/save_store.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -13,18 +13,35 @@ class PlatformPage extends StatefulWidget {
 
 class _PlatformPageState extends State<PlatformPage> {
   String path = "";
+
   @override
   void initState() {
     super.initState();
     userSetting.getPath();
-
+    initVoid();
   }
+
+  initVoid() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo.version;
+    });
+  }
+
+  String version = "";
+  bool singleFolder = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Platform Setting"),
+        title: ListTile(
+          title: Text("Platform Setting"),
+          subtitle: Text(
+            "For Android",
+            style: TextStyle(color: Colors.greenAccent),
+          ),
+        ),
       ),
       body: Container(
         child: Observer(builder: (_) {
@@ -56,6 +73,25 @@ class _PlatformPageState extends State<PlatformPage> {
                   }
                   // if (result != null) userSetting.setPath(result);
                 },
+              ),
+              Observer(
+                builder: (_) {
+                  return SwitchListTile(
+                    secondary: Icon(Icons.folder_shared),
+                    onChanged: (bool value) async {
+                      await userSetting.setSingleFolder(value);
+                    },
+                    title: Text(I18n.of(context).Separate_Folder),
+                    subtitle: Text(I18n.of(context).Separate_Folder_Message),
+                    value: userSetting.singleFolder,
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.info),
+                title: Text("Version"),
+                subtitle: Text("0.0.2"),
+                onTap: () async {},
               )
             ],
           );

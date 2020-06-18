@@ -6,16 +6,15 @@ import 'package:pixez/network/api_client.dart';
 
 class RankModePage extends StatefulWidget {
   final String mode, date;
- 
-  const RankModePage({Key key, this.mode, this.date})
-      : super(key: key);
+
+  const RankModePage({Key key, this.mode, this.date}) : super(key: key);
+
   @override
   _RankModePageState createState() => _RankModePageState();
 }
 
-class _RankModePageState extends State<RankModePage> {
-  EasyRefreshController controller;
-  
+class _RankModePageState extends State<RankModePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -23,11 +22,15 @@ class _RankModePageState extends State<RankModePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return LightingList(
-      source: RepositoryProvider.of<ApiClient>(context).getIllustRanking(
+      source: () => RepositoryProvider.of<ApiClient>(context).getIllustRanking(
         widget.mode,
         widget.date,
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

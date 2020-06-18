@@ -1,17 +1,21 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
-import 'package:pixez/page/search/result/search_result_page.dart';
+import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class SearchPage extends StatefulWidget {
+  final String preWord;
+
+  const SearchPage({Key key, this.preWord}) : super(key: key);
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -22,7 +26,7 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   void initState() {
-    _filter = TextEditingController();
+    _filter = TextEditingController(text: widget.preWord);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
@@ -41,26 +45,30 @@ class _SearchPageState extends State<SearchPage>
       providers: [
         BlocProvider<TrendTagsBloc>(
           create: (context) =>
-          TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
-            ..add(FetchEvent()),
+              TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
+                ..add(FetchEvent()),
         )
       ],
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(I18n.of(context).Search),
+      child: Column(children: <Widget>[
+        AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            I18n.of(context).Search,
+            style: Theme.of(context).textTheme.headline6,
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
-                Navigator.of(context,rootNavigator: true).push(
+                Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
                         builder: (context) => SearchSuggestionPage()));
               },
             )
           ],
         ),
-        body: _buildBlocBuilder(),
-      ),
+        Expanded(child: _buildBlocBuilder())
+      ]),
     );
   }
 
@@ -81,12 +89,10 @@ class _SearchPageState extends State<SearchPage>
         if (index == 0) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(I18n
-                .of(context)
-                .History),
+            child: Text(I18n.of(context).History),
           );
         }
-        if (index == 1) {
+        if (index == 2) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(I18n
@@ -94,7 +100,7 @@ class _SearchPageState extends State<SearchPage>
                 .Recommand_Tag),
           );
         }
-        if (index == 2) {
+        if (index == 1) {
           return BlocBuilder<TagHistoryBloc, TagHistoryState>(
             builder: (BuildContext context, TagHistoryState state) {
               if (state is TagHistoryDataState &&
@@ -108,15 +114,18 @@ class _SearchPageState extends State<SearchPage>
                           label: Text(f.name),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(builder: (context) =>
-                                SearchResultPage(
-                                  word: f.name,
-                                )));
+                                .push(MaterialPageRoute(
+                                builder: (context) =>
+                                    ResultPage(
+                                      word: f.name,
+                                    )));
                           },
                         ))
                         .toList()
                       ..add(ActionChip(
-                          label: Text(I18n.of(context).Clear),
+                          label: Text(I18n
+                              .of(context)
+                              .Clear),
                           onPressed: () {
                             BlocProvider.of<TagHistoryBloc>(context)
                                 .add(DeleteAllTagHistoryEvent());
@@ -151,9 +160,15 @@ class _SearchPageState extends State<SearchPage>
               onTap: () {
                 Navigator.of(context, rootNavigator: true)
                     .push(MaterialPageRoute(builder: (_) {
-                  return SearchResultPage(
+                  return ResultPage(
                     word: tags[index].tag,
                   );
+                }));
+              },
+              onLongPress: () {
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(builder: (_) {
+                  return PicturePage(null, tags[index].illust.id);
                 }));
               },
               child: ClipRRect(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SelectableHtml extends StatefulWidget {
   final String data;
@@ -35,9 +36,13 @@ class _SelectableHtmlState extends State<SelectableHtml> {
             });
       },
       child: Html(
-        data:   widget.data,
-        onLinkTap: (String url) {
-          Share.share(url);
+        data: widget.data ?? '~',
+        onLinkTap: (String url) async {
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            Share.share(url);
+          }
         },
       ),
     );

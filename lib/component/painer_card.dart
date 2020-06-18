@@ -4,7 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
-import 'package:pixez/page/user/user_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 
 class PainterCard extends StatelessWidget {
   final UserPreviews user;
@@ -17,12 +17,15 @@ class PainterCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-          return UserPage(
+          return UsersPage(
             id: user.user.id,
           );
         }));
       },
       child: Card(
+                shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        clipBehavior: Clip.antiAlias,
         child: StaggeredGridView.countBuilder(
           padding: EdgeInsets.all(0.0),
           shrinkWrap: true,
@@ -49,13 +52,13 @@ class PainterCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           PainterAvatar(
               url: user.user.profileImageUrls.medium, id: user.user.id),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(user.user.name),
           )
         ],

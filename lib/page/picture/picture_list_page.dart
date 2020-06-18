@@ -5,9 +5,13 @@ import 'package:pixez/page/picture/picture_page.dart';
 class PictureListPage extends StatefulWidget {
   final List<Illusts> illusts;
   final int nowPosition;
+  final String heroString;
 
   const PictureListPage(
-      {Key key, @required this.illusts, @required this.nowPosition})
+      {Key key,
+      @required this.illusts,
+      @required this.nowPosition,
+      this.heroString})
       : super(key: key);
 
   @override
@@ -27,7 +31,10 @@ class _PictureListPageState extends State<PictureListPage> {
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
-      children: <Widget>[...widget.illusts.map((f) => PicturePage(f, f.id))],
+      children: <Widget>[
+        ...widget.illusts.map((f) =>
+            PicturePage(f, f.id, heroString: widget.heroString,))
+      ],
     );
   }
 }

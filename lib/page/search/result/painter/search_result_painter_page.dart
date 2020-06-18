@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:pixez/bloc/controller_bloc.dart';
-import 'package:pixez/bloc/controller_state.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result/painter/bloc/bloc.dart';
@@ -52,13 +50,6 @@ ScrollController  _scrollController;
                   success: state.success, noMore: state.noMore);
             }
           }),
-          BlocListener<ControllerBloc, ControllerState>(
-            listener: (BuildContext context, ControllerState state) {
-              if (state is ScrollToTopState && state.name =='result/painter') {
-                _scrollController.jumpTo(0.0);
-              }
-            },
-          )
         ],
         child: BlocBuilder<ResultPainterBloc, ResultPainterState>(
           condition: (pre, now) => now is ResultPainterDataState,

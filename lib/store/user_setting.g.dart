@@ -13,99 +13,115 @@ mixin _$UserSetting on _UserSettingBase, Store {
 
   @override
   int get zoomQuality {
-    _$zoomQualityAtom.context.enforceReadPolicy(_$zoomQualityAtom);
-    _$zoomQualityAtom.reportObserved();
+    _$zoomQualityAtom.reportRead();
     return super.zoomQuality;
   }
 
   @override
   set zoomQuality(int value) {
-    _$zoomQualityAtom.context.conditionallyRunInAction(() {
+    _$zoomQualityAtom.reportWrite(value, super.zoomQuality, () {
       super.zoomQuality = value;
-      _$zoomQualityAtom.reportChanged();
-    }, _$zoomQualityAtom, name: '${_$zoomQualityAtom.name}_set');
+    });
   }
 
   final _$languageNumAtom = Atom(name: '_UserSettingBase.languageNum');
 
   @override
   int get languageNum {
-    _$languageNumAtom.context.enforceReadPolicy(_$languageNumAtom);
-    _$languageNumAtom.reportObserved();
+    _$languageNumAtom.reportRead();
     return super.languageNum;
   }
 
   @override
   set languageNum(int value) {
-    _$languageNumAtom.context.conditionallyRunInAction(() {
+    _$languageNumAtom.reportWrite(value, super.languageNum, () {
       super.languageNum = value;
-      _$languageNumAtom.reportChanged();
-    }, _$languageNumAtom, name: '${_$languageNumAtom.name}_set');
+    });
+  }
+
+  final _$singleFolderAtom = Atom(name: '_UserSettingBase.singleFolder');
+
+  @override
+  bool get singleFolder {
+    _$singleFolderAtom.reportRead();
+    return super.singleFolder;
+  }
+
+  @override
+  set singleFolder(bool value) {
+    _$singleFolderAtom.reportWrite(value, super.singleFolder, () {
+      super.singleFolder = value;
+    });
   }
 
   final _$pathAtom = Atom(name: '_UserSettingBase.path');
 
   @override
   String get path {
-    _$pathAtom.context.enforceReadPolicy(_$pathAtom);
-    _$pathAtom.reportObserved();
+    _$pathAtom.reportRead();
     return super.path;
   }
 
   @override
   set path(String value) {
-    _$pathAtom.context.conditionallyRunInAction(() {
+    _$pathAtom.reportWrite(value, super.path, () {
       super.path = value;
-      _$pathAtom.reportChanged();
-    }, _$pathAtom, name: '${_$pathAtom.name}_set');
+    });
   }
 
   final _$formatAtom = Atom(name: '_UserSettingBase.format');
 
   @override
   String get format {
-    _$formatAtom.context.enforceReadPolicy(_$formatAtom);
-    _$formatAtom.reportObserved();
+    _$formatAtom.reportRead();
     return super.format;
   }
 
   @override
   set format(String value) {
-    _$formatAtom.context.conditionallyRunInAction(() {
+    _$formatAtom.reportWrite(value, super.format, () {
       super.format = value;
-      _$formatAtom.reportChanged();
-    }, _$formatAtom, name: '${_$formatAtom.name}_set');
+    });
   }
 
-  final _$initAsyncAction = AsyncAction('init');
+  final _$initAsyncAction = AsyncAction('_UserSettingBase.init');
 
   @override
   Future<void> init() {
     return _$initAsyncAction.run(() => super.init());
   }
 
-  final _$getPathAsyncAction = AsyncAction('getPath');
+  final _$setSingleFolderAsyncAction =
+      AsyncAction('_UserSettingBase.setSingleFolder');
+
+  @override
+  Future<void> setSingleFolder(bool value) {
+    return _$setSingleFolderAsyncAction.run(() => super.setSingleFolder(value));
+  }
+
+  final _$getPathAsyncAction = AsyncAction('_UserSettingBase.getPath');
 
   @override
   Future<String> getPath() {
     return _$getPathAsyncAction.run(() => super.getPath());
   }
 
-  final _$setLanguageNumAsyncAction = AsyncAction('setLanguageNum');
+  final _$setLanguageNumAsyncAction =
+      AsyncAction('_UserSettingBase.setLanguageNum');
 
   @override
   Future setLanguageNum(int value) {
     return _$setLanguageNumAsyncAction.run(() => super.setLanguageNum(value));
   }
 
-  final _$setFormatAsyncAction = AsyncAction('setFormat');
+  final _$setFormatAsyncAction = AsyncAction('_UserSettingBase.setFormat');
 
   @override
   Future setFormat(String format) {
     return _$setFormatAsyncAction.run(() => super.setFormat(format));
   }
 
-  final _$changeAsyncAction = AsyncAction('change');
+  final _$changeAsyncAction = AsyncAction('_UserSettingBase.change');
 
   @override
   Future<void> change(int value) {
@@ -117,7 +133,8 @@ mixin _$UserSetting on _UserSettingBase, Store {
 
   @override
   dynamic setPath(dynamic result) {
-    final _$actionInfo = _$_UserSettingBaseActionController.startAction();
+    final _$actionInfo = _$_UserSettingBaseActionController.startAction(
+        name: '_UserSettingBase.setPath');
     try {
       return super.setPath(result);
     } finally {
@@ -127,8 +144,12 @@ mixin _$UserSetting on _UserSettingBase, Store {
 
   @override
   String toString() {
-    final string =
-        'zoomQuality: ${zoomQuality.toString()},languageNum: ${languageNum.toString()},path: ${path.toString()},format: ${format.toString()}';
-    return '{$string}';
+    return '''
+zoomQuality: ${zoomQuality},
+languageNum: ${languageNum},
+singleFolder: ${singleFolder},
+path: ${path},
+format: ${format}
+    ''';
   }
 }

@@ -7,13 +7,15 @@ import 'package:flutter/widgets.dart';
 class UgoiraWidget extends StatefulWidget {
   final List<FileSystemEntity> drawPools;
   final int delay;
-  final double height;
-  const UgoiraWidget(
-      {Key key,
-      @required this.drawPools,
-      @required this.delay,
-      @required this.height})
-      : super(key: key);
+  final Size size;
+
+  const UgoiraWidget({
+    Key key,
+    @required this.drawPools,
+    @required this.delay,
+    @required this.size,
+  }) : super(key: key);
+
   @override
   _UgoiraWidgetState createState() => _UgoiraWidgetState();
 }
@@ -26,14 +28,16 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
 
   int point = 0;
   ui.Image image;
+
   @override
   void initState() {
     super.initState();
     initBind();
   }
+
   @override
   void dispose() {
-    _timer?.cancel(); 
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -57,7 +61,7 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
     return image != null
         ? CustomPaint(
             painter: UgoiraPainter(image),
-            //  size: Size(MediaQuery.of(context).size.width, widget.height),
+            size: widget.size,
           )
         : Container();
   }
@@ -67,14 +71,19 @@ class UgoiraPainter extends CustomPainter {
   final ui.Image image;
 
   Paint _paint = Paint();
+
   UgoiraPainter(this.image);
+
   @override
   Future<void> paint(Canvas canvas, Size size) async {
-    canvas.drawImage(image, Offset.zero, _paint);
+   Rect dstRect = Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
+   canvas.drawImageRect(
+       image, dstRect,Rect.fromLTWH(0, 0,size.width.toDouble(), size.height.toDouble()), _paint);
+    // canvas.drawImage(image, Offset.zero, _paint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(UgoiraPainter oldDelegate) {
+    return oldDelegate.image != image;
   }
 }

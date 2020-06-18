@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_event.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/account/select/account_select_bloc.dart';
 import 'package:pixez/page/account/select/account_select_event.dart';
@@ -23,7 +24,7 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
         body: BlocListener<AccountSelectBloc, AccountSelectState>(
           listener: (context, state) {
             if (state is SelectState) {
-              BlocProvider.of<AccountBloc>(context).add(FetchDataBaseEvent());
+              accountStore.fetch();
             }
           },
           child: BlocBuilder<AccountSelectBloc, AccountSelectState>(

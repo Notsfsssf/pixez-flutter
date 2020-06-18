@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/component/selectable_html.dart';
-import 'package:pixez/page/follow/follow_page.dart';
-import 'package:pixez/page/user/bloc/bloc.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/models/user_detail.dart';
+import 'package:pixez/page/follow/follow_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserDetailPage extends StatefulWidget {
+  final UserDetail userDetail;
+
+  const UserDetailPage({Key key, @required this.userDetail}) : super(key: key);
+
   @override
   _UserDetailPageState createState() => _UserDetailPageState();
 }
@@ -17,29 +21,37 @@ class _UserDetailPageState extends State<UserDetailPage> {
         style: TextStyle(color: Theme.of(context).primaryColor),
       );
 
-  List<Widget> buildProfile(UserDataState state) {
-// state.userDetail.profile_publicity.
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      bloc: BlocProvider.of<UserBloc>(context),
-      builder: (context, state) {
-        if (state is UserDataState) {
-          final detail = state.userDetail;
-          final public = detail.profile_publicity;
-          final profile = detail.profile;
-          return SingleChildScrollView(
+    if (widget.userDetail == null) {
+      return Container();
+    }
+    var detail = widget.userDetail;
+    var profile = widget.userDetail.profile;
+    var public = widget.userDetail.profile_publicity;
+    return widget.userDetail != null
+        ? SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: widget.userDetail.user.comment.isNotEmpty
+                        ? SelectableHtml(data: widget.userDetail.user.comment)
+                        : SelectableHtml(
+                            data: '~',
+                          ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: DataTable(
                     columns: <DataColumn>[
                       DataColumn(label: Text("Name")),
-                      DataColumn(label: Text("Value")),
+                      DataColumn(
+                          label: Expanded(
+                              child: SelectableText(detail.user.name))),
                     ],
                     rows: <DataRow>[
                       DataRow(cells: [
@@ -49,7 +61,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
                             onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) {
-                            return FollowPage(state.userDetail.user.id);
+                            return Scaffold(
+                              appBar: AppBar(
+                                title: Text(I18n.of(context).Search),
+                              ),
+                              body: FollowList(id: widget.userDetail.user.id),
+                            );
                           }));
                         }),
                       ]),
@@ -90,23 +107,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: SelectableHtml(data: state.userDetail.user.comment),
-                  ),
-                ),
                 Container(
                   height: 200,
                 )
               ],
             ),
-          );
-        } else
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-      },
-    );
+          )
+        : Container();
   }
 }

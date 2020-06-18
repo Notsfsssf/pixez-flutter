@@ -8,11 +8,9 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/bloc/account_bloc.dart';
 import 'package:pixez/bloc/account_state.dart';
-import 'package:pixez/bloc/controller_bloc.dart';
-import 'package:pixez/bloc/controller_event.dart';
-import 'package:pixez/bloc/controller_state.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/bloc/tag_history_bloc.dart';
@@ -57,8 +55,8 @@ class _SearchResultPageState extends State<SearchResultPage>
     });
     BlocProvider.of<TagHistoryBloc>(context)
         .add(InsertTagHistoryEvent(TagsPersist()
-      ..name = widget.word
-      ..translatedName = widget.translatedName));
+          ..name = widget.word
+          ..translatedName = widget.translatedName));
   }
 
   @override
@@ -101,40 +99,26 @@ class _SearchResultPageState extends State<SearchResultPage>
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          SearchResultBloc(RepositoryProvider.of<ApiClient>(context)),
+          SearchResultBloc(
+              RepositoryProvider.of<ApiClient>(context), _refreshController),
       child: MultiBlocListener(
         listeners: [
           BlocListener<SearchResultBloc, SearchResultState>(
             listener: (context, state) {
               if (state is DataState) {
-                _refreshController.finishRefresh(success: true);
                 _loadCompleter?.complete();
                 _loadCompleter = Completer();
                 _refreshCompleter?.complete();
                 _refreshCompleter = Completer();
               }
               if (state is RefreshFailState) {
-                _refreshController.finishRefresh(success: false);
                 _loadCompleter.complete();
                 _refreshCompleter.complete();
                 _refreshCompleter = Completer<void>();
                 _loadCompleter = Completer<void>();
               }
-              if (state is LoadEndState) {
-                _refreshController.finishLoad(success: true, noMore: true);
-              }
-              if (state is LoadMoreFailState) {
-                _refreshController.finishLoad(success: false);
-              }
             },
           ),
-          BlocListener<ControllerBloc, ControllerState>(
-            listener: (BuildContext context, ControllerState state) {
-              if (state is ScrollToTopState && state.name == routes[0]) {
-                _scrollController.jumpTo(0.0);
-              }
-            },
-          )
         ],
         child: BlocBuilder<SearchResultBloc, SearchResultState>(
             condition: (pre, now) {
@@ -149,28 +133,30 @@ class _SearchResultPageState extends State<SearchResultPage>
                   onPressed: () {
                     showModalBottomSheet<void>(
                         context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                        ),
                         builder: (_) {
                           return StatefulBuilder(
                               builder: (_, setBottomSheetState) {
-                                if (startDate.isAfter(endDate)) {
-                                  startDate = DateTime.now();
-                                  endDate = DateTime.now();
-                                }
-                                return Container(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .stretch,
-                                    mainAxisSize: MainAxisSize.min,
+                            if (startDate.isAfter(endDate)) {
+                              startDate = DateTime.now();
+                              endDate = DateTime.now();
+                            }
+                            return Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Row(
                                     children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Flexible(
-                                            child: RadioListTile<String>(
-                                              value: sort[0],
-                                              title:
-                                              Text(I18n
-                                                  .of(context)
-                                                  .date_desc),
+                                      Flexible(
+                                        child: RadioListTile<String>(
+                                          value: sort[0],
+                                          title:
+                                              Text(I18n.of(context).date_desc),
                                               groupValue: _sortValue,
                                               onChanged: (value) {
                                                 setBottomSheetState(() {
@@ -203,23 +189,21 @@ class _SearchResultPageState extends State<SearchResultPage>
                                                       .popular_desc),
                                               groupValue: _sortValue,
                                               onChanged: (value) async {
-                                                var userState =
-                                                    BlocProvider
-                                                        .of<AccountBloc>(
-                                                        context)
-                                                        .state;
-                                                if (userState is HasUserState) {
-                                                  if (userState.list
+                                                if (accountStore.now != null) {
+                                                  if (accountStore.now
                                                       .isPremium == 1)
                                                     setBottomSheetState(() {
                                                       _sortValue = value;
                                                     });
-                                                  else
-                                                 {
-                                                      BotToast.showText(
+                                                  else {
+                                                    BotToast.showText(
                                                         text: "Not Premium!");
-                                                        
-                                                 }
+                                                    BlocProvider.of<
+                                                        SearchResultBloc>(
+                                                        context)
+                                                        .add(PreviewEvent(
+                                                        widget.word));
+                                                  }
                                                 }
                                               },
                                             ),
@@ -378,13 +362,17 @@ class _SearchResultPageState extends State<SearchResultPage>
               bottom: TabBar(
                 controller: _tabController,
                 onTap: (position) {
-                  var spaceTime = DateTime.now().millisecondsSinceEpoch - tapTime;
+                  var spaceTime =
+                      DateTime
+                          .now()
+                          .millisecondsSinceEpoch - tapTime;
                   print("${spaceTime}/${tapTime}");
                   if (spaceTime > 2000) {
-                    tapTime = DateTime.now().millisecondsSinceEpoch;
+                    tapTime = DateTime
+                        .now()
+                        .millisecondsSinceEpoch;
                   } else {
-                    BlocProvider.of<ControllerBloc>(context)
-                        .add(ScrollToTopEvent(routes[position]));
+
                   }
                 },
                 tabs: <Widget>[
@@ -406,6 +394,8 @@ class _SearchResultPageState extends State<SearchResultPage>
               children: <Widget>[
                 EasyRefresh(
                   controller: _refreshController,
+                  enableControlFinishLoad: true,
+                  enableControlFinishRefresh: true,
                   child: state is DataState
                       ? StaggeredGridView.countBuilder(
                     crossAxisCount: 2,
@@ -413,10 +403,10 @@ class _SearchResultPageState extends State<SearchResultPage>
                     itemCount: state.illusts.length,
                     itemBuilder: (context, index) {
                       return IllustCard(
-                              state.illusts[index],
-                              illustList: state.illusts,
-                            );
-                          },
+                        state.illusts[index],
+                        illustList: state.illusts,
+                      );
+                    },
                     staggeredTileBuilder: (int index) =>
                         StaggeredTile.fit(1),
                   )

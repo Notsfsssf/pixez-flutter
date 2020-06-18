@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 
 class HistoryPage extends StatelessWidget {

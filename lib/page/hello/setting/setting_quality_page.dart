@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 
 class SettingQualityPage extends StatefulWidget {
@@ -29,6 +29,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   ),
                   Observer(builder: (_) {
                     return TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
                         Tab(
@@ -61,23 +62,37 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {
-                  return TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
-                      Tab(
-                        text: "ZH",
-                      ),
-                      Tab(
-                        text: "EN",
-                      )
-                    ],
-                    onTap: (index) {
-                      userSetting.setLanguageNum(index);
-                    },
-                    controller: TabController(
-                        length: 2,
-                        vsync: this,
-                        initialIndex: userSetting.languageNum),
+                  return Theme(
+                    data: Theme.of(context).copyWith(tabBarTheme: TabBarTheme(
+                        labelColor: Colors.black
+                    )),
+                    child: TabBar(
+                      labelColor: Theme
+                          .of(context)
+                          .textTheme
+                          .headline6
+                          .color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Tab(
+                          text: "en-US",
+                        ),
+                        Tab(
+                          text: "zh-CN",
+                        ),
+                        Tab(
+                          text: "zh-TW",
+                        )
+                      ],
+                      onTap: (index) async {
+                        await userSetting.setLanguageNum(index);
+                        setState(() {});
+                      },
+                      controller: TabController(
+                          length: 3,
+                          vsync: this,
+                          initialIndex: userSetting.languageNum),
+                    ),
                   );
                 })
               ],

@@ -5,16 +5,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/splash/splash_page.dart';
+import 'package:pixez/store/account_store.dart';
+import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'generated/i18n.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
+final MuteStore muteStore = MuteStore();
+final AccountStore accountStore = AccountStore();
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -38,6 +42,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
+
   runApp(MyApp());
 }
 
@@ -47,35 +52,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final i18n = I18n.delegate;
   @override
   void initState() {
+    accountStore.fetch();
     super.initState();
-    I18n.onLocaleChanged = onLocaleChange;
     userSetting.init();
-  }
-
-  void onLocaleChange(Locale locale) {
-    setState(() {
-      I18n.locale = locale;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<IapBloc>(
-          create: (context) => IapBloc()..add(InitialEvent()),
-        ),
-        BlocProvider<RouteBloc>(
-          create: (context) => RouteBloc(),
-        ),
         BlocProvider<IllustPersistBloc>(
           create: (context) => IllustPersistBloc(),
-        ),
-        BlocProvider<AccountBloc>(
-          create: (context) => AccountBloc()..add(FetchDataBaseEvent()),
         ),
         BlocProvider<TagHistoryBloc>(
           create: (BuildContext context) => TagHistoryBloc(),
@@ -83,9 +72,6 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<MuteBloc>(
           create: (context) => MuteBloc()..add(FetchMuteEvent()),
         ),
-        BlocProvider<ControllerBloc>(
-          create: (context) => ControllerBloc(),
-        )
       ],
       child: MultiRepositoryProvider(
         providers: [
@@ -98,20 +84,24 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
           navigatorObservers: [BotToastNavigatorObserver()],
-          home: SplashPage(),
+          home: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+              child: SplashPage()),
           title: 'PixEz',
           builder: BotToastInit(),
           theme: ThemeData(
-            primarySwatch: Colors.lightBlue,
             brightness: Brightness.light,
+            primaryColor: Colors.cyan[500],
+            accentColor: Colors.cyan[400],
+            indicatorColor: Colors.cyan[500],
           ),
           darkTheme: ThemeData(
-              brightness: Brightness.dark, primarySwatch: Colors.orange),
-          supportedLocales: i18n.supportedLocales,
-          localeResolutionCallback: i18n.resolution(
-              fallback: i18n.supportedLocales[userSetting.languageNum]),
+              brightness: Brightness.dark,
+              accentColor: Colors.cyan[500],
+              ),
+          supportedLocales: I18n.delegate.supportedLocales,
           localizationsDelegates: [
-            i18n,
+            I18n.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate

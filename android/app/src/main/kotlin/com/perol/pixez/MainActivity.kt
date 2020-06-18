@@ -7,6 +7,7 @@ import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Xml
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -19,7 +20,11 @@ import io.flutter.plugin.common.MethodChannel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.Exception
 
@@ -33,9 +38,11 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        storePath = pref.getString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez")!!
+
+        storePath = pref.getString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez")!!
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "save") {
+
+        if (call.method == "save") {
                 val data = call.argument<ByteArray>("data") as ByteArray
                 val type = call.argument<String>("name") as String
                 insertImageOldWay(data, type)
@@ -62,7 +69,7 @@ class MainActivity : FlutterActivity() {
                 result.success(getPath())
             }
             if (call.method == "restore_path") {
-                pref.edit().putString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez").apply()
+                pref.edit().putString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez").apply()
                 result.success("")
             }
             if (call.method == "exist") {
@@ -82,8 +89,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun getPath() = pref.getString("store_path", getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!.absolutePath + File.separator + "pxez")
-
+    private fun getPath() = pref.getString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez")
 
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
@@ -189,7 +195,7 @@ class MainActivity : FlutterActivity() {
                 MediaStore.Images.Media.DATE_ADDED
         )
         val relativeLocation =
-                Environment.DIRECTORY_PICTURES + File.separator + "pxez"
+                Environment.DIRECTORY_PICTURES + File.separator + "pixez"
 
         /**
          * The `selection` is the "WHERE ..." clause of a SQL statement. It's also possible
@@ -235,7 +241,7 @@ class MainActivity : FlutterActivity() {
 
     private fun insertImage(data: ByteArray, name: String) {
         val relativeLocation =
-                Environment.DIRECTORY_PICTURES + File.separator + "pxez"
+                Environment.DIRECTORY_PICTURES + File.separator + "pixez"
         val contentValues = ContentValues().apply {
             put(
                     MediaStore.MediaColumns.DISPLAY_NAME, name

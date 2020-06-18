@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:pixez/bloc/account_bloc.dart';
-import 'package:pixez/bloc/account_state.dart';
-import 'package:pixez/generated/i18n.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/user/bookmark/tag/bloc.dart';
 
@@ -70,8 +69,7 @@ class NewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final EasyRefreshController _easyRefreshController =
         EasyRefreshController();
-    AccountBloc accountBloc = BlocProvider.of<AccountBloc>(context);
-    AccountState accountState = accountBloc.state;
+
     return BlocListener<UserBookmarkTagBloc, UserBookmarkTagState>(
       listener: (BuildContext context, UserBookmarkTagState state) {
         if (state is RefreshFail) {
@@ -127,10 +125,10 @@ class NewWidget extends StatelessWidget {
                     )
                   : Container(),
               onRefresh: () async {
-                if (accountState is HasUserState) {
+                if (accountStore.now != null) {
                   BlocProvider.of<UserBookmarkTagBloc>(context).add(
                       FetchUserBookmarkTagEvent(
-                          int.parse(accountState.list.userId), restrict));
+                          int.parse(accountStore.now.userId), restrict));
                 }
                 return;
               },

@@ -3,9 +3,11 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/network/api_client.dart';
 
 class OAuthClient {
   final String hashSalt =
@@ -20,6 +22,17 @@ class OAuthClient {
   }
 
   static final String AUTHORIZATION = "Authorization";
+
+  initA(time) async {
+    if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      var headers = this.httpClient.options.headers;
+      headers['User-Agent'] =
+          "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
+      headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
+    }
+  }
 
   OAuthClient() {
     String time = getIsoDate();
@@ -44,8 +57,10 @@ class OAuthClient {
           (X509Certificate cert, String host, int port) {
         return true;
       };
+
       return httpClient;
     };
+    initA(time);
   }
 
   static String getHash(String string) {

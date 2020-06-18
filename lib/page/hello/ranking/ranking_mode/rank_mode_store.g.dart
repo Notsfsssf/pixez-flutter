@@ -13,20 +13,18 @@ mixin _$RankModeStore on _RankModeStoreBase, Store {
 
   @override
   ObservableList<Illusts> get illusts {
-    _$illustsAtom.context.enforceReadPolicy(_$illustsAtom);
-    _$illustsAtom.reportObserved();
+    _$illustsAtom.reportRead();
     return super.illusts;
   }
 
   @override
   set illusts(ObservableList<Illusts> value) {
-    _$illustsAtom.context.conditionallyRunInAction(() {
+    _$illustsAtom.reportWrite(value, super.illusts, () {
       super.illusts = value;
-      _$illustsAtom.reportChanged();
-    }, _$illustsAtom, name: '${_$illustsAtom.name}_set');
+    });
   }
 
-  final _$startAsyncAction = AsyncAction('start');
+  final _$startAsyncAction = AsyncAction('_RankModeStoreBase.start');
 
   @override
   Future<void> start() {
@@ -35,7 +33,8 @@ mixin _$RankModeStore on _RankModeStoreBase, Store {
 
   @override
   String toString() {
-    final string = 'illusts: ${illusts.toString()}';
-    return '{$string}';
+    return '''
+illusts: ${illusts}
+    ''';
   }
 }
