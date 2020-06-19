@@ -56,27 +56,29 @@ class _FollowListState extends State<FollowList> {
                                   ),
                                 ),
                                 context: context,
-                                builder: (context1) => Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        ListTile(
-                                          title: Text(I18n.of(context).public),
-                                          onTap: () {
-                                            Navigator.of(context1).pop();
-                                            followStore.fetch('public');
-                                            restrict = 'public';
-                                          },
-                                        ),
-                                        ListTile(
-                                          title: Text(I18n.of(context).private),
-                                          onTap: () {
-                                            Navigator.of(context1).pop();
-                                            followStore.fetch('private');
-                                            restrict = 'private';
-                                          },
-                                        ),
-                                      ],
-                                    ));
+                                builder: (context1) => SafeArea(
+                                  child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          ListTile(
+                                            title: Text(I18n.of(context).public),
+                                            onTap: () {
+                                              Navigator.of(context1).pop();
+                                              followStore.fetch('public');
+                                              restrict = 'public';
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text(I18n.of(context).private),
+                                            onTap: () {
+                                              Navigator.of(context1).pop();
+                                              followStore.fetch('private');
+                                              restrict = 'private';
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                ));
                           }),
                     );
                   }

@@ -103,43 +103,46 @@ class _PreviewPageState extends State<PreviewPage> {
       child: BlocListener<WalkThroughBloc, WalkThroughState>(
         child: BlocBuilder<WalkThroughBloc, WalkThroughState>(
             builder: (context, state) {
-              return EasyRefresh(
-                onLoad: () async {
-                  if (state is DataWalkThroughState) {
-                    BlocProvider.of<WalkThroughBloc>(context)
-                        .add(LoadMoreWalkThroughEvent(
-                      state.nextUrl,
-                      state.illusts,
-                    ));
-                    return _loadCompleter.future;
-                  }
-                  return;
-                },
-                controller: _easyRefreshController,
-                child: (state is DataWalkThroughState)
-                    ? StaggeredGridView.countBuilder(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                GoToLoginPage(illust: state
-                                    .illusts[index])));
-                      },
-                      child: Card(
-                        child: Container(
-                          child: PixivImage(
-                              state.illusts[index].imageUrls.squareMedium),
-                        ),
-                      ),
-                    );
+              return SafeArea(
+                child: EasyRefresh(
+                  
+                  onLoad: () async {
+                    if (state is DataWalkThroughState) {
+                      BlocProvider.of<WalkThroughBloc>(context)
+                          .add(LoadMoreWalkThroughEvent(
+                        state.nextUrl,
+                        state.illusts,
+                      ));
+                      return _loadCompleter.future;
+                    }
+                    return;
                   },
-                  itemCount: state.illusts.length,
-                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                )
-                    : Container(),
+                  controller: _easyRefreshController,
+                  child: (state is DataWalkThroughState)
+                      ? StaggeredGridView.countBuilder(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  GoToLoginPage(illust: state
+                                      .illusts[index])));
+                        },
+                        child: Card(
+                          child: Container(
+                            child: PixivImage(
+                                state.illusts[index].imageUrls.squareMedium),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: state.illusts.length,
+                    staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                  )
+                      : Container(),
+                ),
               );
             }),
         listener: (BuildContext context, WalkThroughState state) {

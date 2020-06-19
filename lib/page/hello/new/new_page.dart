@@ -1,15 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
-import 'package:pixez/page/hello/new/bloc/bloc.dart';
 import 'package:pixez/page/hello/new/illust/new_illust_page.dart';
-import 'package:pixez/page/hello/new/painter/new_painter_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/users_page.dart';

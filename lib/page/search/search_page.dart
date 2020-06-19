@@ -8,10 +8,12 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/picture_page.dart';
+import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/main.dart';
+
 class SearchPage extends StatefulWidget {
   final String preWord;
 
@@ -42,35 +44,55 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<TrendTagsBloc>(
-          create: (context) =>
-              TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
-                ..add(FetchEvent()),
-        )
-      ],
-      child: Column(children: <Widget>[
-        AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(
-            I18n.of(context).Search,
-            style: Theme.of(context).textTheme.headline6,
+    return Observer(builder: (_) {
+      if(accountStore.now!=null)
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider<TrendTagsBloc>(
+            create: (context) =>
+                TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
+                  ..add(FetchEvent()),
+          )
+        ],
+        child: Column(children: <Widget>[
+          AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              I18n.of(context).Search,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (context) => SearchSuggestionPage()));
+                },
+              )
+            ],
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                        builder: (context) => SearchSuggestionPage()));
-              },
-            )
-          ],
-        ),
-        Expanded(child: _buildBlocBuilder())
-      ]),
-    );
+          Expanded(child: _buildBlocBuilder())
+        ]),
+      );
+      return Column(children: <Widget>[
+             AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              I18n.of(context).Search,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+             actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+
+                },
+              )
+            ],),
+            Expanded(child: LoginInFirst())
+      ]);
+    });
   }
 
   Widget _buildBlocBuilder() {
@@ -96,9 +118,7 @@ class _SearchPageState extends State<SearchPage>
         if (index == 2) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(I18n
-                .of(context)
-                .Recommand_Tag),
+            child: Text(I18n.of(context).Recommand_Tag),
           );
         }
         if (index == 1) {
@@ -109,27 +129,24 @@ class _SearchPageState extends State<SearchPage>
                   padding: const EdgeInsets.all(5.0),
                   child: Wrap(
                     children: tagHistoryStore.tags
-                        .map((f) =>
-                        ActionChip(
-                          label: Text(f.name),
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(
-                                builder: (context) =>
-                                    ResultPage(
-                                      word: f.name,
-                                      translatedName: f.translatedName??'',
-                                    )));
-                          },
-                        ))
+                        .map((f) => ActionChip(
+                              label: Text(f.name),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(
+                                        builder: (context) => ResultPage(
+                                              word: f.name,
+                                              translatedName:
+                                                  f.translatedName ?? '',
+                                            )));
+                              },
+                            ))
                         .toList()
-                      ..add(ActionChip(
-                          label: Text(I18n
-                              .of(context)
-                              .Clear),
-                          onPressed: () {
-                       tagHistoryStore.deleteAll();
-                          })),
+                          ..add(ActionChip(
+                              label: Text(I18n.of(context).Clear),
+                              onPressed: () {
+                                tagHistoryStore.deleteAll();
+                              })),
                     runSpacing: 0.0,
                     spacing: 3.0,
                   ),

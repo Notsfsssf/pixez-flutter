@@ -195,116 +195,118 @@ class _ResultIllustListState extends State<ResultIllustList> {
             borderRadius: BorderRadius.vertical(top: Radius.circular(8.0))),
         builder: (context) {
           return StatefulBuilder(builder: (_, setS) {
-            return Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
+            return SafeArea(
+              child: Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: CupertinoSlidingSegmentedControl(
+                            groupValue: search_target.indexOf(searchTarget),
+                            children: <int, Widget>{
+                              0: Text(I18n.of(context).Partial_Match_for_tag),
+                              1: Text(I18n.of(context).Exact_Match_for_tag),
+                              2: Text(I18n.of(context).title_and_caption),
+                            },
+                            onValueChanged: (int index) {
+                              if (accountStore.now != null) {
+                                if (accountStore.now.isPremium == 0) {
+                                  BotToast.showText(text: 'not premium');
+                                  setState(() {
+                                    futureGet = () =>
+                                        RepositoryProvider.of<ApiClient>(context)
+                                            .getPopularPreview(widget.word);
+                                  });
+                                  Navigator.of(context).pop();
+                                  return;
+                                }
+                              }
+                              setS(() {
+                                searchTarget = search_target[index];
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: CupertinoSlidingSegmentedControl(
+                            groupValue: sort.indexOf(selectSort),
+                            children: <int, Widget>{
+                              0: Text(I18n.of(context).date_desc),
+                              1: Text(I18n.of(context).date_asc),
+                              2: Text(I18n.of(context).popular_desc),
+                            },
+                            onValueChanged: (int index) {
+                              setS(() {
+                                selectSort = sort[index];
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(starValue != 0
+                              ? I18n.of(context).More_then_starNum_Bookmark(
+                              starNum[starValue.toInt()])
+                              : 'users入り'),
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                      ),
+                      SizedBox(
                         width: double.infinity,
-                        child: CupertinoSlidingSegmentedControl(
-                          groupValue: search_target.indexOf(searchTarget),
-                          children: <int, Widget>{
-                            0: Text(I18n.of(context).Partial_Match_for_tag),
-                            1: Text(I18n.of(context).Exact_Match_for_tag),
-                            2: Text(I18n.of(context).title_and_caption),
+                        child: CupertinoSlider(
+                          onChanged: (double value) {
+                            int v = value.toInt();
+                            setS(() {
+                              starValue = v.toDouble();
+                            });
                           },
-                          onValueChanged: (int index) {
-                            if (accountStore.now != null) {
-                              if (accountStore.now.isPremium == 0) {
-                                BotToast.showText(text: 'not premium');
+                          value: starValue,
+                          max: 8.0,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: RaisedButton(
+                              child: Text(I18n.of(context).Apply),
+                              onPressed: () {
                                 setState(() {
-                                  futureGet = () =>
-                                      RepositoryProvider.of<ApiClient>(context)
-                                          .getPopularPreview(widget.word);
+                                  if (starValue == 0)
+                                    futureGet = () =>
+                                        RepositoryProvider.of<ApiClient>(context)
+                                            .getSearchIllust(widget.word,
+                                            search_target: searchTarget,
+                                            sort: selectSort);
+                                  else
+                                    futureGet = () => RepositoryProvider.of<
+                                        ApiClient>(context)
+                                        .getSearchIllust(
+                                        '${widget.word} ${starNum[starValue.toInt()]}users入り',
+                                        search_target: searchTarget,
+                                        sort: selectSort);
                                 });
                                 Navigator.of(context).pop();
-                                return;
-                              }
-                            }
-                            setS(() {
-                              searchTarget = search_target[index];
-                            });
-                          },
+                              }),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: CupertinoSlidingSegmentedControl(
-                          groupValue: sort.indexOf(selectSort),
-                          children: <int, Widget>{
-                            0: Text(I18n.of(context).date_desc),
-                            1: Text(I18n.of(context).date_asc),
-                            2: Text(I18n.of(context).popular_desc),
-                          },
-                          onValueChanged: (int index) {
-                            setS(() {
-                              selectSort = sort[index];
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(starValue != 0
-                            ? I18n.of(context).More_then_starNum_Bookmark(
-                            starNum[starValue.toInt()])
-                            : 'users入り'),
-                      ),
-                      padding: const EdgeInsets.all(8.0),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: CupertinoSlider(
-                        onChanged: (double value) {
-                          int v = value.toInt();
-                          setS(() {
-                            starValue = v.toDouble();
-                          });
-                        },
-                        value: starValue,
-                        max: 8.0,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: RaisedButton(
-                            child: Text(I18n.of(context).Apply),
-                            onPressed: () {
-                              setState(() {
-                                if (starValue == 0)
-                                  futureGet = () =>
-                                      RepositoryProvider.of<ApiClient>(context)
-                                          .getSearchIllust(widget.word,
-                                          search_target: searchTarget,
-                                          sort: selectSort);
-                                else
-                                  futureGet = () => RepositoryProvider.of<
-                                      ApiClient>(context)
-                                      .getSearchIllust(
-                                      '${widget.word} ${starNum[starValue.toInt()]}users入り',
-                                      search_target: searchTarget,
-                                      sort: selectSort);
-                              });
-                              Navigator.of(context).pop();
-                            }),
-                      ),
-                    )
-                  ],
-                ));
+                      )
+                    ],
+                  )),
+            );
           });
         });
   }

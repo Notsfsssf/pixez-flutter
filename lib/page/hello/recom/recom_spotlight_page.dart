@@ -44,38 +44,40 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return EasyRefresh(
-        controller: _easyRefreshController,
-        enableControlFinishLoad: true,
-        enableControlFinishRefresh: true,
-        firstRefresh: true,
-        onRefresh: () {
-          return fetchT();
-        },
-        onLoad: () {
-          return _lightingStore.fetchNext();
-        },
-        child: _lightingStore.illusts.isNotEmpty
-            ? StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                padding: EdgeInsets.all(0.0),
-                staggeredTileBuilder: (int index) =>
-                    StaggeredTile.fit(index < 3 ? 2 : 1),
-                itemCount: _lightingStore.illusts.length + 3,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) return _buildFirstRow(context);
-                  if (index == 1) return _buildSpotlightContainer();
-                  if (index == 2) return _buildSecondRow(context);
-                  if (index >= 3)
-                    return IllustCard(
-                      _lightingStore.illusts[index - 3],
-                      illustList: _lightingStore.illusts,
-                    );
+      return SafeArea(
+        child: EasyRefresh(
+          controller: _easyRefreshController,
+          enableControlFinishLoad: true,
+          enableControlFinishRefresh: true,
+          firstRefresh: true,
+          onRefresh: () {
+            return fetchT();
+          },
+          onLoad: () {
+            return _lightingStore.fetchNext();
+          },
+          child: _lightingStore.illusts.isNotEmpty
+              ? StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  padding: EdgeInsets.all(0.0),
+                  staggeredTileBuilder: (int index) =>
+                      StaggeredTile.fit(index < 3 ? 2 : 1),
+                  itemCount: _lightingStore.illusts.length + 3,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == 0) return _buildFirstRow(context);
+                    if (index == 1) return _buildSpotlightContainer();
+                    if (index == 2) return _buildSecondRow(context);
+                    if (index >= 3)
+                      return IllustCard(
+                        _lightingStore.illusts[index - 3],
+                        illustList: _lightingStore.illusts,
+                      );
 
-                  return Container();
-                },
-              )
-            : Container(),
+                    return Container();
+                  },
+                )
+              : Container(),
+        ),
       );
     });
   }
