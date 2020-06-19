@@ -976,6 +976,7 @@ class _PicturePageState extends State<PicturePage> {
                                       MaterialPageRoute(builder: (context) {
                                     return ResultPage(
                                       word: f.name,
+                                      translatedName: f.translatedName??'',
                                     );
                                   }));
                                 },

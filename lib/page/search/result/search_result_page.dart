@@ -1,20 +1,15 @@
 import 'dart:async';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:pixez/bloc/account_bloc.dart';
-import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/search/bloc/tag_history_bloc.dart';
-import 'package:pixez/page/search/bloc/tag_history_event.dart';
 import 'package:pixez/page/search/result/bloc/search_result_bloc.dart';
 import 'package:pixez/page/search/result/bloc/search_result_state.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
@@ -53,10 +48,9 @@ class _SearchResultPageState extends State<SearchResultPage>
         _selectindex = this._tabController.index;
       });
     });
-    BlocProvider.of<TagHistoryBloc>(context)
-        .add(InsertTagHistoryEvent(TagsPersist()
+    tagHistoryStore.insert(TagsPersist()
           ..name = widget.word
-          ..translatedName = widget.translatedName));
+          ..translatedName = widget.translatedName);
   }
 
   @override

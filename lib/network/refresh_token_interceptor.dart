@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/error_message.dart';
 import 'package:pixez/network/api_client.dart';
@@ -24,26 +25,31 @@ class RefreshTokenInterceptor extends Interceptor {
       return 0;
   }
 
+  DateTime successRefreshDate = DateTime.now();
+
   @override
   onError(DioError err) async {
-    if (err.response != null && err.response.statusCode == 400) {
+    ApiClient.httpClient.interceptors.requestLock.lock();
+    DateTime errorDate = DateTime.now();
+    if (err.response != null &&
+        err.response.statusCode == 400 &&
+        errorDate.millisecondsSinceEpoch >=
+            successRefreshDate.millisecondsSinceEpoch) {
       try {
-        final errorMessage = ErrorMessage.fromJson(err.response.data);
-        if (errorMessage.error.message.contains("OAuth")) {
+        ErrorMessage errorMessage = ErrorMessage.fromJson(err.response.data);
+        if (errorMessage.error.message.contains("OAuth") &&
+            accountStore.now != null) {
           final client = OAuthClient();
-          AccountProvider accountProvider = new AccountProvider();
-          await accountProvider.open();
-          final allAccount = await accountProvider.getAllAccount();
-          AccountPersist accountPersist = allAccount[0];
+          AccountPersist accountPersist = accountStore.now;
           print("eeeeeeeeeeeeeeeeeeeeeeee");
-          final response1 = await client.postRefreshAuthToken(
+          Response response1 = await client.postRefreshAuthToken(
               refreshToken: accountPersist.refreshToken,
               deviceToken: accountPersist.deviceToken);
           AccountResponse accountResponse =
               Account.fromJson(response1.data).response;
           print("eeeeeeeeeeeeeeeeeeeeeeee11");
           final user = accountResponse.user;
-          accountProvider.update(AccountPersist()
+          accountStore.updateSingle(AccountPersist()
             ..id = accountPersist.id
             ..accessToken = accountResponse.accessToken
             ..deviceToken = accountResponse.deviceToken
@@ -51,7 +57,7 @@ class RefreshTokenInterceptor extends Interceptor {
             ..userImage = user.profileImageUrls.px170x170
             ..userId = user.id
             ..name = user.name
-            ..passWord=accountPersist.passWord
+            ..passWord = accountPersist.passWord
             ..isMailAuthorized = bti(user.isMailAuthorized)
             ..isPremium = bti(user.isPremium)
             ..mailAddress = user.mailAddress
@@ -60,22 +66,25 @@ class RefreshTokenInterceptor extends Interceptor {
           var request = err.response.request;
           request.headers[OAuthClient.AUTHORIZATION] =
               "Bearer " + accountResponse.accessToken;
-          var response = await ApiClient().httpClient.request(
-                request.path,
-                data: request.data,
-                queryParameters: request.queryParameters,
-                cancelToken: request.cancelToken,
-                options: request,
-              );
+          var response = await ApiClient.httpClient.request(
+            request.path,
+            data: request.data,
+            queryParameters: request.queryParameters,
+            cancelToken: request.cancelToken,
+            options: request,
+          );
+          ApiClient.httpClient.interceptors.requestLock.unlock();
+          successRefreshDate = DateTime.now();
           return response;
         }
         if (errorMessage.error.message.contains("Limit")) {}
       } catch (e) {
+        ApiClient.httpClient.interceptors.requestLock.unlock();
         print(e);
         return e;
       }
     }
-
+    ApiClient.httpClient.interceptors.requestLock.unlock();
     super.onError(err);
   }
 }

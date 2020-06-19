@@ -18,7 +18,7 @@ class Restrict {
 }
 
 class ApiClient {
-  Dio httpClient;
+ static Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';
@@ -38,7 +38,7 @@ class ApiClient {
 
   ApiClient() {
     String time = getIsoDate();
-    this.httpClient = Dio()
+    httpClient = Dio()
       ..options.baseUrl = "https://210.140.131.188"
       ..options.headers = {
         "X-Client-Time": time,
@@ -53,7 +53,7 @@ class ApiClient {
       ..options.connectTimeout = 10000
       ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
       ..interceptors.add(RefreshTokenInterceptor());
-    (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+    (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
       HttpClient httpClient = new HttpClient();
       httpClient.badCertificateCallback =
@@ -69,7 +69,7 @@ class ApiClient {
     if (Platform.isAndroid) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      var headers = this.httpClient.options.headers;
+      var headers = httpClient.options.headers;
       headers['User-Agent'] =
           "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
       headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
@@ -160,7 +160,7 @@ class ApiClient {
   }
 
   Future<Response> getNext(String url) async {
-    var a = this.httpClient.options.baseUrl;
+    var a = httpClient.options.baseUrl;
     String finalUrl = url.replaceAll(
         "app-api.pixiv.net", a.replaceAll(a, a.replaceFirst("https://", "")));
     return httpClient.get(finalUrl);
@@ -389,7 +389,7 @@ class ApiClient {
 
 //  https://app-api.pixiv.net/v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&word={keyword}&search_target=partial_match_for_tags
   Future<Response> getPopularPreview(String keyword) async {
-    String a = this.httpClient.options.baseUrl;
+    String a = httpClient.options.baseUrl;
     String previewUrl =
         '${a}/v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&word=${keyword}&search_target=partial_match_for_tags';
     final result = await httpClient.get(previewUrl);

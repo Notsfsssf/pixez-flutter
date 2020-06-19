@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
 import 'package:pixez/page/search/search_page.dart';
-
+import 'package:pixez/main.dart';
 class ResultPage extends StatefulWidget {
   final String word;
-
-  const ResultPage({Key key, this.word}) : super(key: key);
+  final String translatedName;
+  const ResultPage({Key key, this.word, this.translatedName=''}) : super(key: key);
   @override
   _ResultPageState createState() => _ResultPageState();
 }
 
 class _ResultPageState extends State<ResultPage> {
+  @override
+  void initState() {
+    super.initState();
+    tagHistoryStore.insert(TagsPersist()
+          ..name = widget.word
+          ..translatedName = widget.translatedName);
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

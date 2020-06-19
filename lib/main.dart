@@ -8,18 +8,18 @@ import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/user_setting.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
 final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
-
+final TagHistoryStore tagHistoryStore = TagHistoryStore();
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -65,9 +65,6 @@ class _MyAppState extends State<MyApp> {
       providers: [
         BlocProvider<IllustPersistBloc>(
           create: (context) => IllustPersistBloc(),
-        ),
-        BlocProvider<TagHistoryBloc>(
-          create: (BuildContext context) => TagHistoryBloc(),
         ),
         BlocProvider<MuteBloc>(
           create: (context) => MuteBloc()..add(FetchMuteEvent()),

@@ -53,7 +53,7 @@ void listenBehavior(BuildContext context, SaveStream stream) {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 2.0),
+                            horizontal: 8.0, vertical: 4.0),
                         child: Text(
                             "${stream.data.title} ${I18n.of(context).Saved}"),
                       )
@@ -269,8 +269,9 @@ abstract class _SaveStoreBase with Store {
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
       if (redo) {
-        var file = File(fileName);
-        if (file.existsSync()) file.delete();
+        final fullPath = "${userSetting.path}/${fileName}";
+        var file = File(fullPath);
+        if (file.existsSync()) file.deleteSync();
       }
       _saveInternal(url, illusts, fileName);
     } else {
@@ -283,7 +284,8 @@ abstract class _SaveStoreBase with Store {
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
         if (redo) {
-          var file = File(fileName);
+          final fullPath = "${userSetting.path}/${fileName}";
+          var file = File(fullPath);
           if (file.existsSync()) file.deleteSync();
         }
         _saveInternal(url, illusts, fileName);
@@ -293,7 +295,8 @@ abstract class _SaveStoreBase with Store {
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
           if (redo) {
-            var file = File(fileName);
+            final fullPath = "${userSetting.path}/${fileName}";
+            var file = File(fullPath);
             if (file.existsSync()) file.deleteSync();
           }
           _saveInternal(url, illusts, fileName);

@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/about/bloc/about_bloc.dart';
 import 'package:pixez/page/about/bloc/bloc.dart';
@@ -19,10 +17,7 @@ class AboutPage extends StatefulWidget {
   _AboutPageState createState() => _AboutPageState();
 }
 
-void deliverProduct(PurchaseDetails purchaseDetails) async {
-  print("deliverProduct");
-  await InAppPurchaseConnection.instance.completePurchase(purchaseDetails);
-}
+
 
 class _AboutPageState extends State<AboutPage> {
   StreamSubscription _purchaseUpdatedSubscription;

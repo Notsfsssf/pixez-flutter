@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
@@ -10,7 +11,7 @@ import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
-
+import 'package:pixez/main.dart';
 class SearchPage extends StatefulWidget {
   final String preWord;
 
@@ -29,7 +30,7 @@ class _SearchPageState extends State<SearchPage>
     _filter = TextEditingController(text: widget.preWord);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
-    BlocProvider.of<TagHistoryBloc>(context).add(FetchAllTagHistoryEvent());
+    tagHistoryStore.fetch();
   }
 
   @override
@@ -101,14 +102,13 @@ class _SearchPageState extends State<SearchPage>
           );
         }
         if (index == 1) {
-          return BlocBuilder<TagHistoryBloc, TagHistoryState>(
-            builder: (BuildContext context, TagHistoryState state) {
-              if (state is TagHistoryDataState &&
-                  state.tagsPersistList.isNotEmpty) {
+          return Observer(
+            builder: (BuildContext context) {
+              if (tagHistoryStore.tags.isNotEmpty) {
                 return Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Wrap(
-                    children: state.tagsPersistList
+                    children: tagHistoryStore.tags
                         .map((f) =>
                         ActionChip(
                           label: Text(f.name),
@@ -118,6 +118,7 @@ class _SearchPageState extends State<SearchPage>
                                 builder: (context) =>
                                     ResultPage(
                                       word: f.name,
+                                      translatedName: f.translatedName??'',
                                     )));
                           },
                         ))
@@ -127,8 +128,7 @@ class _SearchPageState extends State<SearchPage>
                               .of(context)
                               .Clear),
                           onPressed: () {
-                            BlocProvider.of<TagHistoryBloc>(context)
-                                .add(DeleteAllTagHistoryEvent());
+                       tagHistoryStore.deleteAll();
                           })),
                     runSpacing: 0.0,
                     spacing: 3.0,

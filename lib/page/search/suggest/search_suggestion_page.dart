@@ -195,6 +195,7 @@ class _SuggestionsState extends State<Suggestions> {
                       .push(MaterialPageRoute(builder: (context) {
                     return ResultPage(
                       word: tags[index].name,
+                      translatedName: tags[index].translated_name??'',
                     );
                   }));
                 },
