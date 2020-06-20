@@ -34,7 +34,7 @@ class Restrict {
 }
 
 class ApiClient {
- static Dio httpClient;
+  static Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';
@@ -147,15 +147,20 @@ class ApiClient {
 //  fun postLikeIllust(@Header("Authorization") paramString1: String, @Field("illust_id") paramLong: Long, @Field("restrict") paramString2: String, @Field("tags[]") paramList: List<String>?): Observable<ResponseBody>
   Future<Response> postLikeIllust(
       int illust_id, String restrict, List<String> tags) async {
-    if (tags != null && tags.isNotEmpty)
+    if (tags != null && tags.isNotEmpty) {
+      String tagString = tags.first;
+      for (var i = 1; i < tags.length; i++) {
+        tagString = tagString + ' ' + tags[i].trim();
+      }
       return httpClient.post("/v2/illust/bookmark/add",
           data: notNullMap({
             "illust_id": illust_id,
             "restrict": restrict,
-            "tags[]": tags.toString() //null toString =="null"
+            "tags[]": tagString
+            //null toString =="null"
           }),
           options: Options(contentType: Headers.formUrlEncodedContentType));
-    else
+    } else
       return httpClient.post("/v2/illust/bookmark/add",
           data: notNullMap({
             "illust_id": illust_id,
@@ -411,5 +416,4 @@ class ApiClient {
     final result = await httpClient.get(previewUrl);
     return result;
   }
-
 }

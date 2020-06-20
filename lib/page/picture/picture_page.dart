@@ -78,7 +78,7 @@ class _PicturePageState extends State<PicturePage> {
                 content: Container(
                   width: double.maxFinite,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       TextField(
                         controller: textEditingController,
@@ -100,8 +100,7 @@ class _PicturePageState extends State<PicturePage> {
                           },
                         )),
                       ),
-                      Container(
-                        height: 400,
+                      Expanded(
                         child: ListView.builder(
                           itemCount: tags.length,
                           itemBuilder: (BuildContext context, int index) {
