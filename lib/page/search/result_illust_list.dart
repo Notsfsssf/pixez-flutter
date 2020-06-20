@@ -130,13 +130,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
 
   DatePeriod datePeriod = DatePeriod(
       DateTime.fromMillisecondsSinceEpoch(
-          DateTime
-              .now()
-              .millisecondsSinceEpoch - (24 * 60 * 60 * 8 * 1000)),
+          DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 8 * 1000)),
       DateTime.fromMillisecondsSinceEpoch(
-          DateTime
-              .now()
-              .millisecondsSinceEpoch - (24 * 60 * 60 * 1000)));
+          DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000)));
 
   Future _buildShowDateRange(BuildContext context) {
     return showModalBottomSheet(
@@ -155,25 +151,21 @@ class _ResultIllustListState extends State<ResultIllustList> {
                   children: <Widget>[
                     FlatButton(
                         onPressed: () {},
-                        child: Text(I18n
-                            .of(context)
-                            .Date_duration)),
+                        child: Text(I18n.of(context).Date_duration)),
                     FlatButton(
                         onPressed: () {
                           setState(() {
                             futureGet = () =>
                                 RepositoryProvider.of<ApiClient>(context)
                                     .getSearchIllust(widget.word,
-                                    search_target: searchTarget,
-                                    sort: selectSort,
-                                    start_date: datePeriod.start,
-                                    end_date: datePeriod.end);
+                                        search_target: searchTarget,
+                                        sort: selectSort,
+                                        start_date: datePeriod.start,
+                                        end_date: datePeriod.end);
                           });
                           Navigator.of(context).pop();
                         },
-                        child: Text(I18n
-                            .of(context)
-                            .Apply))
+                        child: Text(I18n.of(context).Apply))
                   ],
                 ),
                 Expanded(
@@ -182,9 +174,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                     child: RangePicker(
                       datePickerStyles: DatePickerRangeStyles(),
                       firstDate: DateTime.fromMillisecondsSinceEpoch(
-                          DateTime
-                              .now()
-                              .millisecondsSinceEpoch -
+                          DateTime.now().millisecondsSinceEpoch -
                               (24 * 60 * 60 * 365 * 1000 * 8)),
                       lastDate: DateTime.now(),
                       onChanged: (DatePeriod value) {
@@ -211,10 +201,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
           return StatefulBuilder(builder: (_, setS) {
             return SafeArea(
               child: Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -231,18 +218,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               2: Text(I18n.of(context).title_and_caption),
                             },
                             onValueChanged: (int index) {
-                              if (accountStore.now != null) {
-                                if (accountStore.now.isPremium == 0) {
-                                  BotToast.showText(text: 'not premium');
-                                  setState(() {
-                                    futureGet = () =>
-                                        RepositoryProvider.of<ApiClient>(context)
-                                            .getPopularPreview(widget.word);
-                                  });
-                                  Navigator.of(context).pop();
-                                  return;
-                                }
-                              }
                               setS(() {
                                 searchTarget = search_target[index];
                               });
@@ -262,6 +237,19 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               2: Text(I18n.of(context).popular_desc),
                             },
                             onValueChanged: (int index) {
+                              if (accountStore.now != null && index == 2) {
+                                if (accountStore.now.isPremium == 0) {
+                                  BotToast.showText(text: 'not premium');
+                                  setState(() {
+                                    futureGet = () =>
+                                        RepositoryProvider.of<ApiClient>(
+                                                context)
+                                            .getPopularPreview(widget.word);
+                                  });
+                                  Navigator.of(context).pop();
+                                  return;
+                                }
+                              }
                               setS(() {
                                 selectSort = sort[index];
                               });
@@ -274,7 +262,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           alignment: Alignment.centerLeft,
                           child: Text(starValue != 0
                               ? I18n.of(context).More_then_starNum_Bookmark(
-                              starNum[starValue.toInt()])
+                                  starNum[starValue.toInt()])
                               : 'users入り'),
                         ),
                         padding: const EdgeInsets.all(8.0),
@@ -302,17 +290,18 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                 setState(() {
                                   if (starValue == 0)
                                     futureGet = () =>
-                                        RepositoryProvider.of<ApiClient>(context)
+                                        RepositoryProvider.of<ApiClient>(
+                                                context)
                                             .getSearchIllust(widget.word,
-                                            search_target: searchTarget,
-                                            sort: selectSort);
+                                                search_target: searchTarget,
+                                                sort: selectSort);
                                   else
                                     futureGet = () => RepositoryProvider.of<
-                                        ApiClient>(context)
+                                            ApiClient>(context)
                                         .getSearchIllust(
-                                        '${widget.word} ${starNum[starValue.toInt()]}users入り',
-                                        search_target: searchTarget,
-                                        sort: selectSort);
+                                            '${widget.word} ${starNum[starValue.toInt()]}users入り',
+                                            search_target: searchTarget,
+                                            sort: selectSort);
                                 });
                                 Navigator.of(context).pop();
                               }),
