@@ -41,16 +41,10 @@ class RefreshTokenInterceptor extends Interceptor {
       return 0;
   }
 
-  DateTime successRefreshDate = DateTime.now();
-
   @override
   onError(DioError err) async {
-    ApiClient.httpClient.interceptors.requestLock.lock();
-    DateTime errorDate = DateTime.now();
     if (err.response != null &&
-        err.response.statusCode == 400 &&
-        errorDate.millisecondsSinceEpoch >=
-            successRefreshDate.millisecondsSinceEpoch) {
+        err.response.statusCode == 400) {
       try {
         ErrorMessage errorMessage = ErrorMessage.fromJson(err.response.data);
         if (errorMessage.error.message.contains("OAuth") &&
@@ -89,18 +83,14 @@ class RefreshTokenInterceptor extends Interceptor {
             cancelToken: request.cancelToken,
             options: request,
           );
-          ApiClient.httpClient.interceptors.requestLock.unlock();
-          successRefreshDate = DateTime.now();
           return response;
         }
         if (errorMessage.error.message.contains("Limit")) {}
       } catch (e) {
-        ApiClient.httpClient.interceptors.requestLock.unlock();
         print(e);
         return e;
       }
     }
-    ApiClient.httpClient.interceptors.requestLock.unlock();
     super.onError(err);
   }
 }
