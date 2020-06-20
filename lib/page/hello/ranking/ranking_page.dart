@@ -1,17 +1,28 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/bloc/account_bloc.dart';
-import 'package:pixez/bloc/account_state.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/bloc.dart';
-import 'package:pixez/page/hello/ranking/ranking_mode/bloc.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
-import 'package:pixez/page/hello/ranking/ranking_mode/ranking_mode_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 
 class RankingPage extends StatefulWidget {
