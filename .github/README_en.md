@@ -1,4 +1,4 @@
-<img src="./android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" alt="logo" width="144" height="144" align="right" />
+<img src="../android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" alt="logo" width="144" height="144" align="right" />
 
 # PixEz Flutter ![](https://camo.githubusercontent.com/f2b4fa6779c8a4825e0e7347076746a2047ed100/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d47504c2d2d332e302d6f72616e67652e737667)
 
@@ -15,7 +15,7 @@ Can access pixiv directly from Mainland China.
 
 # Preview
 
-|![Preview](./.github/preview/2.jpg) | ![Preview](./.github/preview/1.jpg) | 
+|![Preview](../.github/preview/2.jpg) | ![Preview](../.github/preview/1.jpg) | 
 |:-------------------:|:------------------------:|
 
 # Contribute
