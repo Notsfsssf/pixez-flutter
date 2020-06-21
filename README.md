@@ -2,6 +2,8 @@
 
 # PixEz Flutter ![](https://camo.githubusercontent.com/f2b4fa6779c8a4825e0e7347076746a2047ed100/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d47504c2d2d332e302d6f72616e67652e737667)
 
+[English README Here](./.github/README_en.md)
+
 使用 Flutter 编写的 pixiv 第三方客户端。
 
 同样支持中国大陆地区直连。
@@ -35,10 +37,13 @@
 觉得有些地方设计的不妥？同样欢迎分享设计。
 
 # 交流
+
 邮件反馈：PxezFeedback@outlook.com
 
 也可以在 Telegram 群交流反馈：[@PixEzViewer](https://t.me/PixEzViewer)
 
 你可以进企鹅群交流经验或者反馈：815791942（闲聊为主）
 
-当然，怎么注册，怎么开 🔞 之类的问题，还是算了吧
+当然，怎么注册，怎么开 🔞 之类的问题，还是算了吧。
+
+（后续可能会撰写 FAQ 页来说明这些问题）
