@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Clear" : MessageLookupByLibrary.simpleMessage("清空"),
     "Clearn_cache" : MessageLookupByLibrary.simpleMessage("清除暫存"),
     "Clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("如果播放動態圖反覆出現問題可以嘗試"),
+    "Copied_To_Clipboard" : MessageLookupByLibrary.simpleMessage("已復制到剪切板"),
     "CopyMessage" : MessageLookupByLibrary.simpleMessage("資訊"),
     "Current_Password" : MessageLookupByLibrary.simpleMessage("當前密碼"),
     "Date_duration" : MessageLookupByLibrary.simpleMessage("日期間隔"),

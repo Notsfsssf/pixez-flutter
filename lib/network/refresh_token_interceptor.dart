@@ -76,7 +76,7 @@ class RefreshTokenInterceptor extends Interceptor {
           var request = err.response.request;
           request.headers[OAuthClient.AUTHORIZATION] =
               "Bearer " + accountResponse.accessToken;
-          var response = await ApiClient.httpClient.request(
+          var response = await ApiClient().httpClient.request(
             request.path,
             data: request.data,
             queryParameters: request.queryParameters,

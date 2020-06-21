@@ -114,5 +114,6 @@
   "Separate_Folder_Message": "Create separate Folder for every painter",
   "Current_Password": "Current password",
   "New_Password": "New PassWord",
-  "Key_Word": "Keyword"
+  "Key_Word": "Keyword",
+  "Copied_To_Clipboard":"Copied to clipboard"
 }

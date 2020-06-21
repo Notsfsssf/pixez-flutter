@@ -63,8 +63,8 @@ android {
         applicationId "com.perol.pixez"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 5
-        versionName "0.0.4"
+        versionCode 6
+        versionName "0.0.5"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

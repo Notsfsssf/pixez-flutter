@@ -96,7 +96,6 @@ class UgoiraPainter extends CustomPainter {
    Rect dstRect = Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
    canvas.drawImageRect(
        image, dstRect,Rect.fromLTWH(0, 0,size.width.toDouble(), size.height.toDouble()), _paint);
-    // canvas.drawImage(image, Offset.zero, _paint);
   }
 
   @override

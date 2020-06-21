@@ -528,7 +528,7 @@ class _PicturePageState extends State<PicturePage> {
                           await Clipboard.setData(ClipboardData(
                               text:
                                   'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
-                          BotToast.showText(text: 'Copyed');
+                          BotToast.showText(text: I18n.of(context).Copied_To_Clipboard);
                           Navigator.of(context).pop();
                         },
                       ),

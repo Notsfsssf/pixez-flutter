@@ -1182,6 +1182,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Copied to clipboard`
+  String get Copied_To_Clipboard {
+    return Intl.message(
+      'Copied to clipboard',
+      name: 'Copied_To_Clipboard',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

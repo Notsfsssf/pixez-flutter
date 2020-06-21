@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Clear" : MessageLookupByLibrary.simpleMessage("Clear"),
     "Clearn_cache" : MessageLookupByLibrary.simpleMessage("Clear cache"),
     "Clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("Try this when you have problems while playing gifs"),
+    "Copied_To_Clipboard" : MessageLookupByLibrary.simpleMessage("Copied to clipboard"),
     "CopyMessage" : MessageLookupByLibrary.simpleMessage("Copy illust info"),
     "Current_Password" : MessageLookupByLibrary.simpleMessage("Current password"),
     "Date_duration" : MessageLookupByLibrary.simpleMessage("Date range"),

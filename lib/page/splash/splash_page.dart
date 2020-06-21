@@ -56,7 +56,8 @@ class _SplashPageState extends State<SplashPage>
           var address = splashStore.onezeroResponse.answer.first.data;
           print('address:$address');
           if (address != null && address.isNotEmpty) {
-            ApiClient.httpClient
+             RepositoryProvider.of<ApiClient>(context)
+                .httpClient
                 .options
                 .baseUrl = 'https://$address';
             RepositoryProvider.of<OAuthClient>(context)

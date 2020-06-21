@@ -34,7 +34,7 @@ class Restrict {
 }
 
 class ApiClient {
-  static Dio httpClient;
+ Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';

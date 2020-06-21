@@ -114,5 +114,6 @@
   "Separate_Folder_Message": "为每个画师创建单独文件夹",
   "Current_Password": "当前密码",
   "New_Password": "新密码",
-  "Key_Word": "关键词"
+  "Key_Word": "关键词",
+  "Copied_To_Clipboard":"已复制到剪切板"
 }

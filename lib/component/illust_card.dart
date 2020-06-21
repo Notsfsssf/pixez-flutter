@@ -174,36 +174,55 @@ class _IllustCardState extends State<IllustCard> {
                 )
               ],
             ),
-            ListTile(
-              title: Text(
-                widget._illusts.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            Container(
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:8.0,right: 34.0,top:4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        Text(
+                          widget._illusts.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        Text(
+                          widget._illusts.user.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: Theme.of(context).textTheme.caption,
+                        )
+                      ]),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                        icon: StarIcon(widget._illusts.isBookmarked),
+                        onPressed: () async {
+                          final ApiClient client =
+                              RepositoryProvider.of<ApiClient>(context);
+                          try {
+                            if (widget._illusts.isBookmarked) {
+                              Response response =
+                                  await client.postUnLikeIllust(widget._illusts.id);
+                            } else {
+                              Response response = await client.postLikeIllust(
+                                  widget._illusts.id, "public", null);
+                            }
+                            setState(() {
+                              widget._illusts.isBookmarked =
+                                  !widget._illusts.isBookmarked;
+                            });
+                          } catch (e) {} //懒得用bloc了
+                        }),
+                  )
+                ],
               ),
-              subtitle: Text(
-                widget._illusts.user.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: IconButton(
-                  icon: StarIcon(widget._illusts.isBookmarked),
-                  onPressed: () async {
-                    final ApiClient client =
-                        RepositoryProvider.of<ApiClient>(context);
-                    try {
-                      if (widget._illusts.isBookmarked) {
-                        Response response =
-                            await client.postUnLikeIllust(widget._illusts.id);
-                      } else {
-                        Response response = await client.postLikeIllust(
-                            widget._illusts.id, "public", null);
-                      }
-                      setState(() {
-                        widget._illusts.isBookmarked =
-                            !widget._illusts.isBookmarked;
-                      });
-                    } catch (e) {} //懒得用bloc了
-                  }),
             )
           ],
         ),

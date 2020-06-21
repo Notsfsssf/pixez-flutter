@@ -114,5 +114,6 @@
   "Separate_Folder_Message": "為每個繪師單獨建立資料夾",
   "Current_Password": "當前密碼",
   "New_Password": "新密碼",
-  "Key_Word": "關鍵詞"
+  "Key_Word": "關鍵詞",
+  "Copied_To_Clipboard":"已復制到剪切板"
 }
