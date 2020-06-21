@@ -69,6 +69,12 @@
                 <data
                         android:host="pixiv.net"
                         android:scheme="http"/>
+                                <data
+                                 android:host="users"
+                        android:scheme="pixiv"/>
+                                <data
+                                   android:host="illusts"
+                        android:scheme="pixiv"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

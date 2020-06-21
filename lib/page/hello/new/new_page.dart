@@ -77,7 +77,7 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
                         text: I18n.of(context).BookMark,
                       ),
                       Tab(
-                        text: I18n.of(context).Painter,
+                        text: I18n.of(context).Followed,
                       ),
                     ]),
                 actions: <Widget>[

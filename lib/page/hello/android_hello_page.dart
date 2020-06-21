@@ -30,6 +30,7 @@ import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/user/user_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,83 +99,109 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   judgePushPage(Uri link) {
-    if (link.path.contains("artworks")) {
-      List<String> paths = link.pathSegments;
-      int index = paths.indexOf("artworks");
-      if (index != -1) {
-        try {
-          int id = int.parse(paths[index + 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return PicturePage(null, id);
-          }));
-          return;
-        } catch (e) {}
-      }
-    }
-    if (link.path.contains("users")) {
-      List<String> paths = link.pathSegments;
-      int index = paths.indexOf("users");
-      if (index != -1) {
-        try {
-          int id = int.parse(paths[index + 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: id,
-            );
-          }));
-        } catch (e) {
-          print(e);
-        }
-      }
-    }
-    if (link.queryParameters['illust_id'] != null) {
+    if (link.host.contains('illusts')) {
+      var idSource = link.pathSegments.last;
       try {
-        var id = link.queryParameters['illust_id'];
+        int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (context) {
-          return PicturePage(null, int.parse(id));
+          return PicturePage(null, id);
         }));
-
-        return;
       } catch (e) {}
+      return;
     }
-    if (link.queryParameters['id'] != null) {
+    if (link.host.contains('user')) {
+      var idSource = link.pathSegments.last;
       try {
-        var id = link.queryParameters['id'];
-        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (context) => UsersPage(
-                  id: int.parse(id),
-                )));
-
-        return;
+        int id = int.parse(idSource);
+        Navigator.of(context, rootNavigator: true)
+            .push(MaterialPageRoute(builder: (context) {
+          return UsersPage(
+            id: id,
+          );
+        }));
       } catch (e) {}
+      return;
     }
-    if (link.pathSegments.length >= 2) {
-      String i = link.pathSegments[link.pathSegments.length - 2];
-      if (i == "i") {
+    if (link.host.contains('pixiv')) {
+      if (link.path.contains("artworks")) {
+        List<String> paths = link.pathSegments;
+        int index = paths.indexOf("artworks");
+        if (index != -1) {
+          try {
+            int id = int.parse(paths[index + 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return PicturePage(null, id);
+            }));
+            return;
+          } catch (e) {}
+        }
+      }
+      if (link.path.contains("users")) {
+        List<String> paths = link.pathSegments;
+        int index = paths.indexOf("users");
+        if (index != -1) {
+          try {
+            int id = int.parse(paths[index + 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return UsersPage(
+                id: id,
+              );
+            }));
+          } catch (e) {
+            print(e);
+          }
+        }
+      }
+      if (link.queryParameters['illust_id'] != null) {
         try {
-          int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+          var id = link.queryParameters['illust_id'];
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return PicturePage(null, id);
+            return PicturePage(null, int.parse(id));
           }));
+
           return;
         } catch (e) {}
       }
-
-      if (i == "u") {
+      if (link.queryParameters['id'] != null) {
         try {
-          int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: id,
-            );
-          }));
+          var id = link.queryParameters['id'];
+          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+              builder: (context) => UsersPage(
+                    id: int.parse(id),
+                  )));
+
           return;
         } catch (e) {}
+      }
+      if (link.pathSegments.length >= 2) {
+        String i = link.pathSegments[link.pathSegments.length - 2];
+        if (i == "i") {
+          try {
+            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return PicturePage(null, id);
+            }));
+            return;
+          } catch (e) {}
+        }
+
+        if (i == "u") {
+          try {
+            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return UsersPage(
+                id: id,
+              );
+            }));
+            return;
+          } catch (e) {}
+        }
       }
     }
   }
@@ -212,5 +239,4 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
     }
   }
-
 }
