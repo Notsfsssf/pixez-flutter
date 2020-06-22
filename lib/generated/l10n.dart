@@ -173,10 +173,10 @@ class I18n {
     );
   }
 
-  /// `Choose the tags you like`
+  /// `Tags will be showing`
   String get Choice_you_like {
     return Intl.message(
-      'Choose the tags you like',
+      'Tags will be showing',
       name: 'Choice_you_like',
       desc: '',
       args: [],
@@ -263,10 +263,10 @@ class I18n {
     );
   }
 
-  /// `User Info`
+  /// `User info`
   String get Detail {
     return Intl.message(
-      'User Info',
+      'User info',
       name: 'Detail',
       desc: '',
       args: [],
@@ -293,10 +293,10 @@ class I18n {
     );
   }
 
-  /// `Tag Perfect Match`
+  /// `Tag perfect match`
   String get Exact_Match_for_tag {
     return Intl.message(
-      'Tag Perfect Match',
+      'Tag perfect match',
       name: 'Exact_Match_for_tag',
       desc: '',
       args: [],
@@ -433,10 +433,10 @@ class I18n {
     );
   }
 
-  /// `Enter the dark side of the world`
+  /// `Enter dark side of the world`
   String get Login_message {
     return Intl.message(
-      'Enter the dark side of the world',
+      'Enter dark side of the world',
       name: 'Login_message',
       desc: '',
       args: [],
@@ -473,10 +473,10 @@ class I18n {
     );
   }
 
-  /// `More than {starNum} favorites`
+  /// `More than {starNum} likes`
   String More_then_starNum_Bookmark(Object starNum) {
     return Intl.message(
-      'More than $starNum favorites',
+      'More than $starNum likes',
       name: 'More_then_starNum_Bookmark',
       desc: '',
       args: [starNum],
@@ -583,10 +583,10 @@ class I18n {
     );
   }
 
-  /// `Tag Partial Match`
+  /// `Tag partial match`
   String get Partial_Match_for_tag {
     return Intl.message(
-      'Tag Partial Match',
+      'Tag partial match',
       name: 'Partial_Match_for_tag',
       desc: '',
       args: [],
@@ -693,10 +693,10 @@ class I18n {
     );
   }
 
-  /// `Rank`
+  /// `Rankings`
   String get Rank {
     return Intl.message(
-      'Rank',
+      'Rankings',
       name: 'Rank',
       desc: '',
       args: [],
@@ -753,10 +753,10 @@ class I18n {
     );
   }
 
-  /// `If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible`
+  /// `Report this content if it makes you feel uncomfortable, we will remove it ASAP once we confirmed that it's harmful.`
   String get Report_Message {
     return Intl.message(
-      'If the content makes you feel uncomfortable, click OK to report back to the review, the content will be deleted immediately after verification, and we will process the content as soon as possible',
+      'Report this content if it makes you feel uncomfortable, we will remove it ASAP once we confirmed that it\'s harmful.',
       name: 'Report_Message',
       desc: '',
       args: [],
@@ -783,20 +783,20 @@ class I18n {
     );
   }
 
-  /// `Save format`
+  /// `Naming format`
   String get Save_format {
     return Intl.message(
-      'Save format',
+      'Naming format',
       name: 'Save_format',
       desc: '',
       args: [],
     );
   }
 
-  /// `Save path`
+  /// `Save location`
   String get Save_path {
     return Intl.message(
-      'Save path',
+      'Save location',
       name: 'Save_path',
       desc: '',
       args: [],
@@ -973,20 +973,20 @@ class I18n {
     );
   }
 
-  /// `Title and Description`
+  /// `Title and description`
   String get title_and_caption {
     return Intl.message(
-      'Title and Description',
+      'Title and description',
       name: 'title_and_caption',
       desc: '',
       args: [],
     );
   }
 
-  /// `Total collection`
+  /// `Total likes`
   String get total_bookmark {
     return Intl.message(
-      'Total collection',
+      'Total likes',
       name: 'total_bookmark',
       desc: '',
       args: [],
@@ -1003,10 +1003,10 @@ class I18n {
     );
   }
 
-  /// `Total view`
+  /// `Total viewers`
   String get total_view {
     return Intl.message(
-      'Total view',
+      'Total viewers',
       name: 'total_view',
       desc: '',
       args: [],
@@ -1053,10 +1053,10 @@ class I18n {
     );
   }
 
-  /// `Order of illusts`
+  /// `Index`
   String get Which_part {
     return Intl.message(
-      'Order of illusts',
+      'Index',
       name: 'Which_part',
       desc: '',
       args: [],
@@ -1123,30 +1123,30 @@ class I18n {
     );
   }
 
-  /// `Block user`
+  /// `Mute this user`
   String get Block_User {
     return Intl.message(
-      'Block user',
+      'Mute this user',
       name: 'Block_User',
       desc: '',
       args: [],
     );
   }
 
-  /// `Separate Folder`
+  /// `Separate folders`
   String get Separate_Folder {
     return Intl.message(
-      'Separate Folder',
+      'Separate folders',
       name: 'Separate_Folder',
       desc: '',
       args: [],
     );
   }
 
-  /// `Create separate Folder for every painter`
+  /// `Create separate folders for each user`
   String get Separate_Folder_Message {
     return Intl.message(
-      'Create separate Folder for every painter',
+      'Create separate folders for each user',
       name: 'Separate_Folder_Message',
       desc: '',
       args: [],
@@ -1163,20 +1163,20 @@ class I18n {
     );
   }
 
-  /// `New PassWord`
+  /// `New password`
   String get New_Password {
     return Intl.message(
-      'New PassWord',
+      'New password',
       name: 'New_Password',
       desc: '',
       args: [],
     );
   }
 
-  /// `Keyword`
+  /// `Keywords`
   String get Key_Word {
     return Intl.message(
-      'Keyword',
+      'Keywords',
       name: 'Key_Word',
       desc: '',
       args: [],
