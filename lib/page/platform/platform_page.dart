@@ -15,6 +15,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -29,7 +31,8 @@ class PlatformPage extends StatefulWidget {
 
 class _PlatformPageState extends State<PlatformPage> {
   String path = "";
-
+  List<DisplayMode> modes = <DisplayMode>[];
+  DisplayMode selected;
   @override
   void initState() {
     super.initState();
@@ -37,11 +40,44 @@ class _PlatformPageState extends State<PlatformPage> {
     initVoid();
   }
 
+  Future<void> fetchModes() async {
+    try {
+      var modeList = await FlutterDisplayMode.supported;
+      setState(() {
+        modes = modeList;
+      });
+
+      /// On OnePlus 7 Pro:
+      /// #1 1080x2340 @ 60Hz
+      /// #2 1080x2340 @ 90Hz
+      /// #3 1440x3120 @ 90Hz
+      /// #4 1440x3120 @ 60Hz
+
+      /// On OnePlus 8 Pro:
+      /// #1 1080x2376 @ 60Hz
+      /// #2 1440x3168 @ 120Hz
+      /// #3 1440x3168 @ 60Hz
+      /// #4 1080x2376 @ 120Hz
+    } on PlatformException catch (e) {
+      print(e);
+
+      /// e.code =>
+      /// noAPI - No API support. Only Marshmallow and above.
+      /// noActivity - Activity is not available. Probably app is in background
+    }
+    selected =
+        modes.firstWhere((DisplayMode m) => m.selected, orElse: () => null);
+    // if (mounted) {
+    //   setState(() {});
+    // }
+  }
+
   initVoid() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
       version = packageInfo.version;
     });
+    fetchModes();
   }
 
   String version = "";
@@ -104,12 +140,54 @@ class _PlatformPageState extends State<PlatformPage> {
                 },
               ),
               ListTile(
+                leading: Icon(Icons.mobile_screen_share),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(8.0))),
+                      builder: (_) {
+                        return SafeArea(
+                          child: Container(
+                              child: modes.isNotEmpty
+                                  ? ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: modes.length + 1,
+                                      itemBuilder: (context, index) {
+                                        if (index == 0)
+                                          return ListTile(
+                                            title: Text(I18n.of(context)
+                                                .Display_Mode_Message),
+                                            subtitle: Text(I18n.of(context)
+                                                .Display_Mode_Warning),
+                                            onTap: () async {},
+                                          );
+                                        return ListTile(
+                                          title:
+                                              Text(modes[index - 1].toString()),
+                                          onTap: () async {
+                                            await FlutterDisplayMode.setMode(
+                                                modes[index - 1]);
+                                            setState(() {
+                                              selected = modes[index - 1];
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                        );
+                                      })
+                                  : Container()),
+                        );
+                      });
+                },
+                title: Text(I18n.of(context).Display_Mode),
+                subtitle: Text(selected.toString() ?? ''),
+              ),
+              ListTile(
                 leading: Icon(Icons.info),
                 title: Text("Version"),
                 subtitle: Text("0.0.5"),
-                onTap: () async {
-                 
-                },
+                onTap: () async {},
               )
             ],
           );

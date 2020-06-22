@@ -1192,6 +1192,36 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Display mode`
+  String get Display_Mode {
+    return Intl.message(
+      'Display mode',
+      name: 'Display_Mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select display mode (experimental)`
+  String get Display_Mode_Message {
+    return Intl.message(
+      'Select display mode (experimental)',
+      name: 'Display_Mode_Message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It is intended to solve the problem of some whitelist mechanisms that support high refresh rate models. If there is no problem, please do not change it at will`
+  String get Display_Mode_Warning {
+    return Intl.message(
+      'It is intended to solve the problem of some whitelist mechanisms that support high refresh rate models. If there is no problem, please do not change it at will',
+      name: 'Display_Mode_Warning',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {
