@@ -124,7 +124,7 @@ class _ShieldPageState extends State<ShieldPage> {
           title: Text(I18n
               .of(context)
               .Delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).Shield_delete_message),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
@@ -163,7 +163,7 @@ class _ShieldPageState extends State<ShieldPage> {
           title: Text(I18n
               .of(context)
               .Delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).Shield_delete_message),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
@@ -202,7 +202,7 @@ class _ShieldPageState extends State<ShieldPage> {
           title: Text(I18n
               .of(context)
               .Delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).Shield_delete_message),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
