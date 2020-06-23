@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
@@ -39,6 +40,8 @@ abstract class _UserSettingBase with Store {
   @observable
   int languageNum = 0;
   @observable
+  int displayMode;
+  @observable
   bool singleFolder = false;
   @observable
   String path = "";
@@ -52,10 +55,15 @@ abstract class _UserSettingBase with Store {
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
     singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
     path = prefs.getString("store_path");
+    displayMode = prefs.getInt('display_mode');
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
       await prefs.setString("store_path", path);
+      var modeList = await FlutterDisplayMode.supported;
+      if (displayMode != null && modeList.length > displayMode) {
+        await FlutterDisplayMode.setMode(modeList[displayMode]);
+      }
     }
     debugPrint("path==========${path}");
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
@@ -66,9 +74,15 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setDisplayMode(int value) async {
+    await prefs.setInt('display_mode', value);
+    displayMode = value;
+  }
+
+  @action
   Future<void> setSingleFolder(bool value) async {
-    singleFolder = value;
     await prefs.setBool(SINGLE_FOLDER_KEY, value);
+    singleFolder = value;
   }
 
   @action

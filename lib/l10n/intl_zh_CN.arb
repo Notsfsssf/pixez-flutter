@@ -118,5 +118,5 @@
   "Copied_To_Clipboard":"已复制到剪切板",
   "Display_Mode":"显示模式",
   "Display_Mode_Message":"选择支持的显示模式（实验性）",
-  "Display_Mode_Warning":"意在解决部分支持高刷新率机型白名单机制的问题,如果没有问题，请不要随意改动"
+  "Display_Mode_Warning":"意在解决部分支持高刷新率机型白名单机制的问题,如果没有问题，请不要随意改动,出现任何问题，请清除应用数据"
 }

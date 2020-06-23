@@ -19,6 +19,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -36,6 +37,7 @@ final SaveStore saveStore = SaveStore();
 final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
+
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -57,7 +59,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 }
 
 main() {
-  BlocSupervisor.delegate = SimpleBlocDelegate();
+  // BlocSupervisor.delegate = SimpleBlocDelegate();
 
   runApp(MyApp());
 }
@@ -72,7 +74,13 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     accountStore.fetch();
     super.initState();
-    userSetting.init();
+
+    initStep();
+  }
+
+  initStep() async {
+    await userSetting.init();
+  
   }
 
   @override
@@ -109,9 +117,9 @@ class _MyAppState extends State<MyApp> {
             indicatorColor: Colors.cyan[500],
           ),
           darkTheme: ThemeData(
-              brightness: Brightness.dark,
-              accentColor: Colors.cyan[500],
-              ),
+            brightness: Brightness.dark,
+            accentColor: Colors.cyan[500],
+          ),
           supportedLocales: I18n.delegate.supportedLocales,
           localizationsDelegates: [
             I18n.delegate,

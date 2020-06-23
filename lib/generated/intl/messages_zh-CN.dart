@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Detail" : MessageLookupByLibrary.simpleMessage("详情"),
     "Display_Mode" : MessageLookupByLibrary.simpleMessage("显示模式"),
     "Display_Mode_Message" : MessageLookupByLibrary.simpleMessage("选择支持的显示模式（实验性）"),
-    "Display_Mode_Warning" : MessageLookupByLibrary.simpleMessage("意在解决部分支持高刷新率机型白名单机制的问题,如果没有问题，请不要随意改动"),
+    "Display_Mode_Warning" : MessageLookupByLibrary.simpleMessage("意在解决部分支持高刷新率机型白名单机制的问题,如果没有问题，请不要随意改动,出现任何问题，请清除应用数据"),
     "Donation" : MessageLookupByLibrary.simpleMessage("捐赠"),
     "Dont_have_account" : MessageLookupByLibrary.simpleMessage("没有账号？"),
     "Exact_Match_for_tag" : MessageLookupByLibrary.simpleMessage("与标签完全一致"),

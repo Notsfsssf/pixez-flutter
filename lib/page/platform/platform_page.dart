@@ -169,6 +169,8 @@ class _PlatformPageState extends State<PlatformPage> {
                                           onTap: () async {
                                             await FlutterDisplayMode.setMode(
                                                 modes[index - 1]);
+                                            userSetting
+                                                .setDisplayMode(index - 1);
                                             setState(() {
                                               selected = modes[index - 1];
                                             });
