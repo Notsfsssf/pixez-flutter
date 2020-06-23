@@ -41,7 +41,7 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
         }
       });
       if (needBack) {
-        BotToast.showText(text: "illegal text");
+        BotToast.showText(Text(I18n.of(context).Format_toast)));
         _textEditingController.text = beforeText;
       }
     });
@@ -101,8 +101,8 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
                 controller: _textEditingController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Input File Name Format',
-                  labelText: 'File Name Format',
+                  hintText: I18n.of(context).Format_inputbox_tip_inline,
+                  labelText: I18n.of(context).Format_inputbox_tip,
                 )),
           ),
           Padding(
@@ -110,39 +110,39 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
             child: Wrap(
               spacing: 4.0,
               children: <Widget>[
-                _buildActionText("title"),
+                _buildActionText(I18n.of(context).Format_user_name),
+                _buildActionText(I18n.of(context).Format_user_id),
+                _buildActionText(I18n.of(context).Format_illust_name),
+                _buildActionText(I18n.of(context).Format_illust_id),
+                _buildActionText(I18n.of(context).Format_illust_index),
                 _buildActionText("_"),
-                _buildActionText("part"),
-                _buildActionText("illust_id"),
-                _buildActionText("user_id"),
-                _buildActionText("user_name"),
               ],
             ),
           ),
           DataTable(
             columns: <DataColumn>[
-              DataColumn(label: Text("Name")),
-              DataColumn(label: Text("Result")),
+              DataColumn(label: Text(I18n.of(context).Format_name)),
+              DataColumn(label: Text(I18n.of(context).Format_result)),
             ],
             rows: <DataRow>[
               DataRow(cells: [
-                DataCell(Text('{illust_id}')),
+                DataCell(Text('{${Format_user_name}}')),
                 DataCell(Text(I18n.of(context).Illust_id)),
               ]),
               DataRow(cells: [
-                DataCell(Text('{title}')),
+                DataCell(Text('{${Format_user_id}}')),
                 DataCell(Text(I18n.of(context).Title)),
               ]),
               DataRow(cells: [
-                DataCell(Text('{user_id}')),
+                DataCell(Text('{${Format_illust_name}}')),
                 DataCell(Text(I18n.of(context).Painter_id)),
               ]),
               DataRow(cells: [
-                DataCell(Text('{user_name}')),
+                DataCell(Text('{${Format_illust_id}}')),
                 DataCell(Text(I18n.of(context).Painter_Name)),
               ]),
               DataRow(cells: [
-                DataCell(Text('part')),
+                DataCell(Text('{${Format_illust_index}}')),
                 DataCell(Text(I18n.of(context).Which_part)),
               ]),
             ],

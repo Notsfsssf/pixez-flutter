@@ -139,5 +139,15 @@
   "Page_url": "https://github.com/Notsfsssf",
   "Price": "12￥",
   "SauceNao": "SauceNao",
-  "Play": "Play"
+  "Play": "Play",
+  "Format_inputbox_tip": "File naming format",
+  "Format_inputbox_tip_inline": "Whitespace and (Back)Slash are not allowed",
+  "Format_name": "Name",
+  "Format_result": "Result",
+  "Format_user_id": "user_id",
+  "Format_user_name": "user_name",
+  "Format_illust_id": "illust id",
+  "Format_illust_name": "illust title",
+  "Format_illust_index": "illust index",
+  "Format_toast": "Detected invalid characters, please retry!"
 }
