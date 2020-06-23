@@ -385,7 +385,7 @@ class _PicturePageState extends State<PicturePage> {
                                   : illustState.illusts.isBookmarked),
                               label: FlatButton(
                                 padding: EdgeInsets.all(0.0),
-                                child: Text('Play'),
+                                child: Text(I18n.of(context).Play),
                                 onPressed: () {
                                   BlocProvider.of<UgoiraMetadataBloc>(context)
                                       .add(FetchUgoiraMetadataEvent(widget.id));
