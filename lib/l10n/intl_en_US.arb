@@ -153,4 +153,6 @@
   "404": "404 NOT FOUND",
   "Http_error": "HTTP ERROR",
   "Retry": "Retry"
+  "x_x": "X_X",
+  ">_<": ">_<",
 }

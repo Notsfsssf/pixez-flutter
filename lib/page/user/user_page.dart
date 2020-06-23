@@ -84,7 +84,7 @@ class _UserPageState extends State<UserPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('X_X'),
+                    Text(I18n.of(context).x_x),
                     RaisedButton(
                       child: Text(I18n.of(context).Shielding_settings),
                       onPressed: () {
@@ -119,11 +119,11 @@ class _UserPageState extends State<UserPage>
             if (state is FZFState) {
               return Scaffold(
                 appBar: AppBar(
-                  title: Text("404"),
+                  title: Text(I18n.of(context).404),
                 ),
                 body: Center(
                   child: Text(
-                    '>_<',
+                    I18n.of(context).>_<,
                     style: TextStyle(fontSize: 26),
                   ),
                 ),
@@ -229,7 +229,7 @@ class _UserPageState extends State<UserPage>
                     },
                     onLongPress: () {
                       Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Private"),
+                        content: Text(I18n.of(context).Private),
                       ));
                       BlocProvider.of<UserBloc>(context).add(
                           FollowUserEvent(userDetail, restrict, "private"));
@@ -273,7 +273,7 @@ class _UserPageState extends State<UserPage>
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text("Shield?"),
+                      title: Text('${I18n.of(context).Ban}?'),
                       actions: <Widget>[
                         FlatButton(
                           child: Text("OK"),
@@ -325,7 +325,7 @@ class _UserPageState extends State<UserPage>
               ),
               PopupMenuItem<WhyFarther>(
                 value: WhyFarther.private,
-                child: Text('manga'),
+                child: Text(I18n.of(context).Manga),
               ),
             ],
           )
@@ -342,7 +342,7 @@ class _UserPageState extends State<UserPage>
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text("Shield?"),
+                    title: Text(I18n.of(context).Ban),
                     actions: <Widget>[
                       FlatButton(
                         child: Text("OK"),
