@@ -81,7 +81,7 @@ class _UsersPageState extends State<UsersPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('X_X'),
+                  Text(I18n.of(context).x_x),
                   RaisedButton(
                     child: Text(I18n.of(context).Shielding_settings),
                     onPressed: () {
@@ -102,7 +102,7 @@ class _UsersPageState extends State<UsersPage>
             appBar: AppBar(),
             body: Container(
                 child: Center(
-              child: Text('404 not found'),
+              child: Text(I18n.of(context).404),
             )),
           );
         return Scaffold(
@@ -116,7 +116,7 @@ class _UsersPageState extends State<UsersPage>
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Http error'),
+                  child: Text(I18n.of(context).Http_error),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -126,7 +126,7 @@ class _UsersPageState extends State<UsersPage>
                       userStore.errorMessage = null;
                       userStore.firstFetch();
                     },
-                    child: Text('Refresh'),
+                    child: Text(I18n.of(context).Retry),
                   ),
                 )
               ],
