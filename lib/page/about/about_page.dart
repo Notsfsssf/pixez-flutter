@@ -84,7 +84,7 @@ class _AboutPageState extends State<AboutPage> {
               developerPayload: productItem.developerPayloadAndroid);
         }
         print('purchase-acknowledgePurchaseAndroid: ok');
-        BotToast.showText(text: 'thanks');
+        BotToast.showText(text: I18n.of.(context).Tanks);
       }
     });
 
@@ -127,7 +127,7 @@ class _AboutPageState extends State<AboutPage> {
       print('purchase-updated: $productItem');
       if (productItem.transactionStateIOS == TransactionState.purchased) {
         await FlutterInappPurchase.instance.finishTransaction(productItem);
-        BotToast.showNotification(title: (_) => Text('Thanks!'));
+        BotToast.showNotification(title: (_) => Text(I18n.of.(context).Thanks));
       }
     });
 
@@ -167,8 +167,8 @@ class _AboutPageState extends State<AboutPage> {
           leading: CircleAvatar(
             backgroundImage: AssetImage('assets/images/me.jpg'),
           ),
-          title: Text('Perol_Notsfsssf'),
-          subtitle: Text('使用flutter开发'),
+          title: Text(I18n.of.(context).Authour),
+          subtitle: Text(I18n.of.(context).Authour_message),
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -192,8 +192,8 @@ class _AboutPageState extends State<AboutPage> {
           leading: CircleAvatar(
             backgroundImage: AssetImage('assets/images/right_now.jpg'),
           ),
-          title: Text('Right now'),
-          subtitle: Text('完成应用图标的绘制'),
+          title: Text(I18n.of.(context).Designer),
+          subtitle: Text(I18n.of.(context).Designer_message),
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -211,8 +211,8 @@ class _AboutPageState extends State<AboutPage> {
         ),
         ListTile(
           leading: Icon(Icons.rate_review),
-          title: Text('如果你觉得PixEz还不错'),
-          subtitle: Text('好评鼓励一下吧！'),
+          title: Text(I18n.of.(context).Rate),
+          subtitle: Text(I18n.of.(context).Rate_message),
           onTap: () async {
             if (Platform.isIOS) {
               var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
@@ -226,10 +226,10 @@ class _AboutPageState extends State<AboutPage> {
           visible: false,
           child: ListTile(
               leading: Icon(Icons.home),
-              title: Text('GitHub Page'),
-              subtitle: Text('https://github.com/Notsfsssf'),
+              title: Text(I18n.of.(context).Page),
+              subtitle: Text(I18n.of.(context).Page_message),
               onTap: () async {
-                var url = 'https://github.com/Notsfsssf';
+                var url = I18n.of.(context).Page_url;
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {}
@@ -240,21 +240,21 @@ class _AboutPageState extends State<AboutPage> {
           title: Text(I18n
               .of(context)
               .FeedBack),
-          subtitle: SelectableText('PxezFeedBack@outlook.com'),
+          subtitle: SelectableText(I18n.of.(context).FeedBack_message),
         ),
         ListTile(
           leading: Icon(Icons.stars),
           title: Text(I18n
               .of(context)
               .Support),
-          subtitle: SelectableText('欢迎反馈建议或共同开发:)'),
+          subtitle: SelectableText(I18n.of.(context).Support_message)'),
         ),
         ListTile(
           leading: Icon(Icons.favorite),
           title: Text(I18n
               .of(context)
               .Thanks),
-          subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
+          subtitle: Text(I18n.of.(context).Thanks_message),
         ),
         ListTile(
           leading: Icon(Icons.share),
@@ -275,11 +275,11 @@ class _AboutPageState extends State<AboutPage> {
             .map((IAPItem iapitem) =>
             Card(
               child: ListTile(
-                subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
-                title: Text('支持开发者工作'),
+                subtitle: Text(I18n.of(context).Donate_message),
+                title: Text(I18n.of(context).Donate),
                 trailing: Text(iapitem.price),
                 onTap: () async {
-                  BotToast.showText(text: 'try to Purchase');
+                  BotToast.showText(text: I18n.of.(context).Donate_toast);
                   await FlutterInappPurchase.instance
                       .requestPurchase(iapitem.productId);
                 },
@@ -291,11 +291,11 @@ class _AboutPageState extends State<AboutPage> {
             ? [
           Card(
             child: ListTile(
-              subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
-              title: Text('支持开发者工作'),
-              trailing: Text('12￥'),
+              subtitle: Text(I18n.of(context).Donate_message),
+              title: Text(I18n.of(context).Donate),
+              trailing: Text(I18n.of(context).Price),
               onTap: () async {
-                BotToast.showText(text: 'try to Purchase');
+                BotToast.showText(text: I18n.of.(context).Donate_toast);
                 List<PurchasedItem> items = await FlutterInappPurchase
                     .instance
                     .getPendingTransactionsIOS();
@@ -310,11 +310,11 @@ class _AboutPageState extends State<AboutPage> {
           ),
           Card(
             child: ListTile(
-              subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
-              title: Text('支持开发者工作'),
-              trailing: Text('25￥'),
+              subtitle: Text(I18n.of.(context).Donate_message),
+              title: Text(I18n.of(context).Donate),
+              trailing: Text(I18n.of.(context).Donate_price),
               onTap: () async {
-                BotToast.showText(text: 'try to Purchase');
+                BotToast.showText(text: I18n.of.(context).Donate_toast);
 
                 List<PurchasedItem> items = await FlutterInappPurchase
                     .instance
