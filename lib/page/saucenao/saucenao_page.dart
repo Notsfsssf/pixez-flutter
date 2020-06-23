@@ -58,7 +58,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
             Card(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Center(child: Text('SauceNao')),
+                child: Center(child: Text(I18n.of(context).SauceNao)),
               ),
             ),
             Observer(
