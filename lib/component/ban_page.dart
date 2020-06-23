@@ -43,7 +43,7 @@ class _BanPageState extends State<BanPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                I18n.of.(context).Ban_message,
+                'X_X',
                 style: TextStyle(fontSize: 26),
               ),
             ),
