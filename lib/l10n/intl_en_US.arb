@@ -158,5 +158,7 @@
   "User_Intro": "This user does't write any thing here.",
   "Platform_settings": "Platform settings",
   "Version": "Version",
-  "Version_number": "0.0.6"
+  "Version_number": "0.0.6",
+  "Over-frequent": "You have created too much accounts in a short time",
+  "Start": "Start"
 }

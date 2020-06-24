@@ -92,10 +92,10 @@ class _CreateUserPageState extends State<CreateUserPage> {
                       ..xRestrict = user.xRestrict);*/
                   } catch (e) {
                     Scaffold.of(context)
-                        .showSnackBar(SnackBar(content: Text("创建次数过多")));
+                        .showSnackBar(SnackBar(content: Text(I18n.of(context).over-frequent)));
                   }
                 },
-                child: Text("Start"),
+                child: Text(I18n.of(context).Start),
               ),
               Center(child: Text(I18n.of(context).Nickname_can_be_change_anytime),),
          FlatButton(
