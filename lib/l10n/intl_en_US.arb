@@ -155,5 +155,8 @@
   "Retry": "Retry",
   "x_x": "X_X",
   ">_<": ">_<",
-  "User_Intro": "This user does't write any thing here."
+  "User_Intro": "This user does't write any thing here.",
+  "Platform_settings": "Platform settings",
+  "Version": "Version",
+  "Version_number": "0.0.6"
 }

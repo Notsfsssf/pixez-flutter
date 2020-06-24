@@ -88,7 +88,7 @@ class _PlatformPageState extends State<PlatformPage> {
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
-          title: Text("Platform Setting"),
+          title: Text(I18n.of(context).Platform_settings),
           subtitle: Text(
             "For Android",
             style: TextStyle(color: Colors.greenAccent),
@@ -187,8 +187,8 @@ class _PlatformPageState extends State<PlatformPage> {
               ),
               ListTile(
                 leading: Icon(Icons.info),
-                title: Text("Version"),
-                subtitle: Text("0.0.5"),
+                title: Text(I18n.of(context).Version),
+                subtitle: Text(I18n.of(context).Version_number),
                 onTap: () async {},
               )
             ],
