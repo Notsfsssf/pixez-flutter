@@ -50,7 +50,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
           UserBookmarkTagBloc(RepositoryProvider.of<ApiClient>(context)),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Tag'),
+          title: Text(I18n.of(context).Tag),
           bottom: TabBar(
             controller: _tabController,
             tabs: <Widget>[
@@ -119,7 +119,7 @@ class NewWidget extends StatelessWidget {
                       itemBuilder: (context, index) {
                         if (index == 0)
                           return ListTile(
-                            title: Text("All"),
+                            title: Text(I18n.of(context).All),
                             onTap: () {
                               Navigator.pop(
                                   context, {"tag": null, "restrict": restrict});
