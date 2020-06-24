@@ -86,7 +86,7 @@ class HistoryPage extends StatelessWidget {
     BlocProvider.of<IllustPersistBloc>(context).add(FetchIllustPersistEvent());
     return Scaffold(
       appBar: AppBar(
-        title: Text("History"),
+        title: Text(I18n.of(context).History),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.clear_all),
