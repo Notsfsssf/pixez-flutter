@@ -84,7 +84,7 @@ class LoginInFirst extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(child: Text('>_<',style: TextStyle(fontSize: 26),),),
+          Center(child: Text(I18n.of(context).>_<,style: TextStyle(fontSize: 26),),),
           Center(child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(I18n.of(context).Login_message),
