@@ -46,7 +46,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Select Language语言选择"),
+                  child: Text(I18n.of(context).Language),
                 ),
                 Observer(builder: (_) {
                   return TabBar(
@@ -54,13 +54,13 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                     indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
                       Tab(
-                        text: "en-US",
+                        text: Text(I18n.of(context).Language_en),
                       ),
                       Tab(
-                        text: "zh-CN",
+                        text: Text(I18n.of(context).Language_zh-CN),
                       ),
                       Tab(
-                        text: "zh-TW",
+                        text: Text(I18n.of(context).Language_zh-TW),
                       )
                     ],
                     onTap: (index) async {

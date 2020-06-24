@@ -166,6 +166,9 @@
   "Encoder_message": "This will take some time",
   "Encoding": "Encoding",
   "Language": "Language",
+  "Language_en-US": "English",
+  "Language_zh-CN": "中文（简体）",
+  "Language_zh-TW": "中文（繁體）",
   "Warning": "WARNING",
   "Clear_message": "Clear all temp files?",
   "Account_error": "Email format error"
