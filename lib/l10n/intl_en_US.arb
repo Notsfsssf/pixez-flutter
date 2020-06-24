@@ -167,5 +167,6 @@
   "Encoding": "Encoding",
   "Language": "Language",
   "Warning": "WARNING",
-  "Clear_message": "Clear all temp files?"
+  "Clear_message": "Clear all temp files?",
+  "Account_error": "Email format error"
 }
