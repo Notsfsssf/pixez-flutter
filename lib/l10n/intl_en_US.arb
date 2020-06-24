@@ -165,5 +165,7 @@
   "Encoder": "Encoder?",
   "Encoder_message": "This will take some time",
   "Encoding": "Encoding",
-  "Language": "Language"
+  "Language": "Language",
+  "Warning": "WARNING",
+  "Clear_message": "Clear all temp files?"
 }

@@ -139,8 +139,8 @@ class SettingPage extends StatelessWidget {
                         final result = await showDialog(
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text("Warning"),
-                                content: Text("Clear all tempFile?"),
+                                title: Text(I18n.of(context).Warning),
+                                content: Text(I18n.of(context).Clear_message),
                                 actions: <Widget>[
                                   FlatButton(
                                     child: Text("OK"),
