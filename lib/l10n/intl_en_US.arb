@@ -160,5 +160,9 @@
   "Version": "Version",
   "Version_number": "0.0.6",
   "Over-frequent": "You have created too much accounts in a short time",
-  "Start": "Start"
+  "Start": "Start",
+  "Select": "Select",
+  "Encoder": "Encoder?",
+  "Encoder_message": "This will take some time",
+  "Encoding": "Encoding"
 }

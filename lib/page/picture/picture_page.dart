@@ -159,7 +159,7 @@ class _PicturePageState extends State<PicturePage> {
                 ),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text("Ok"),
+                    child: Text(I18n.of(context).OK),
                     onPressed: () {
                       Navigator.of(context).pop();
                       final tags =
@@ -472,7 +472,7 @@ class _PicturePageState extends State<PicturePage> {
                                   child: StatefulBuilder(
                                       builder: (context, setDialogState) {
                                     return AlertDialog(
-                                      title: Text("Select"),
+                                      title: Text(I18n.of(context).Select),
                                       actions: <Widget>[
                                         FlatButton(
                                           onPressed: () {
@@ -707,8 +707,8 @@ class _PicturePageState extends State<PicturePage> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Encode?"),
-                            content: Text("This will take some time"),
+                            title: Text(I18n.of(context).Encoder),
+                            content: Text(I18n.of(context).Encoder_message),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -733,7 +733,7 @@ class _PicturePageState extends State<PicturePage> {
                           "name": widget.id.toString()
                         });
                         BotToast.showCustomText(
-                            toastBuilder: (_) => Text("encoding..."));
+                            toastBuilder: (_) => Text(I18n.of(context).Encoding));
                       } on PlatformException catch (e) {}
                     }
                   },
@@ -742,8 +742,8 @@ class _PicturePageState extends State<PicturePage> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Encode?"),
-                            content: Text("This will take some time"),
+                            title: Text(I18n.of(context).Encoder),
+                            content: Text(I18n.of(context).Encoder_message),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -768,7 +768,7 @@ class _PicturePageState extends State<PicturePage> {
                           "name": widget._illusts.id.toString()
                         });
                         BotToast.showCustomText(
-                            toastBuilder: (_) => Text("encoding..."));
+                            toastBuilder: (_) => Text(I18n.of(context).Encoder_message));
                       } on PlatformException catch (e) {}
                     }
                   },
@@ -829,7 +829,7 @@ class _PicturePageState extends State<PicturePage> {
                                       child: StatefulBuilder(
                                           builder: (context, setDialogState) {
                                         return AlertDialog(
-                                          title: Text("Select"),
+                                          title: Text(I18n.of(context).Select),
                                           actions: <Widget>[
                                             FlatButton(
                                               onPressed: () {
