@@ -74,7 +74,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 child: Column(
               children: <Widget>[
                 Padding(
-                  child: Text("Language"),
+                  child: Text(I18n.of(context).Language),
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {

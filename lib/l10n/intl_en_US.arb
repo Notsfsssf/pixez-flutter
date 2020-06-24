@@ -164,5 +164,6 @@
   "Select": "Select",
   "Encoder": "Encoder?",
   "Encoder_message": "This will take some time",
-  "Encoding": "Encoding"
+  "Encoding": "Encoding",
+  "Language": "Language"
 }
