@@ -152,7 +152,8 @@
   "Format_toast": "Detected invalid characters, please retry!",
   "404": "404 NOT FOUND",
   "Http_error": "HTTP ERROR",
-  "Retry": "Retry"
+  "Retry": "Retry",
   "x_x": "X_X",
   ">_<": ">_<",
+  "User_Intro": "This user does't write any thing here."
 }

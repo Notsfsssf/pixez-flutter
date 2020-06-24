@@ -302,7 +302,7 @@ class _SearchResultPageState extends State<SearchResultPage>
                                                   .toIso8601String()
                                                   .split("T")[0]), //AXAXAX
                                             ),
-                                            Text("~"),
+                                            Text(I18n.of(context).User_intro),
                                             OutlineButton(
                                               onPressed: () {
                                                 DatePicker.showDatePicker(
