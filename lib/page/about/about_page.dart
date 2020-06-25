@@ -202,7 +202,7 @@ class _AboutPageState extends State<AboutPage> {
                   height: 200.0,
                   color: Color(0xfff1f1f1),
                   child: Center(
-                    child: Text("这里空空的，这个设计师显然没有什么话要说"),
+                    child: Text(I18n.of(context).Designer_intro),
                   ),
                 );
               },
