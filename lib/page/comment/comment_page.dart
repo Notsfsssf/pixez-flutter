@@ -111,7 +111,7 @@ class _CommentPageState extends State<CommentPage> {
                                             });
                                           },
                                           child: Text(
-                                            "Reply",
+                                            I18n.of(context).Reply,
                                             style: TextStyle(
                                                 color:
                                                     Theme.of(context).primaryColor),
