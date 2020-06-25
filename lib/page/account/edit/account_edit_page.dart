@@ -82,7 +82,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
                         child: Card(
                           child: ListTile(
                               leading: Icon(Icons.error),
-                              title: Text("I18n.of(context).Account_error")),
+                              title: Text(I18n.of(context).Account_error)),
                         ),
                       ),
                     );
