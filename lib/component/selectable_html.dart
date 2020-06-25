@@ -38,7 +38,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text("长按复制"),
+                title: Text(I18n.of(context).To_copy),
                 content: SelectableText(widget.data ?? ""),
                 actions: <Widget>[
                   FlatButton(
