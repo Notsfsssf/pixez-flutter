@@ -90,7 +90,7 @@ class _PlatformPageState extends State<PlatformPage> {
         title: ListTile(
           title: Text(I18n.of(context).Platform_settings),
           subtitle: Text(
-            "For Android",
+            I18n.of(context).Platform_settings_message,
             style: TextStyle(color: Colors.greenAccent),
           ),
         ),
