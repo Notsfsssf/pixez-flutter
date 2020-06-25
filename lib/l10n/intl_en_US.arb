@@ -171,5 +171,10 @@
   "Language_zh-TW": "中文（繁體）",
   "Warning": "WARNING",
   "Clear_message": "Clear all temp files?",
-  "Account_error": "Email format error"
+  "Account_error": "Email format error",
+  "User_my_pivix": "My pixiv",
+  "User_twitter": "Twitter",
+  "User_sex": "Sex",
+  "User_occupation": "Occupation",
+  "User_pawoo": "Pawoo"
 }

@@ -64,14 +64,14 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: DataTable(
                     columns: <DataColumn>[
-                      DataColumn(label: Text("Name")),
+                      DataColumn(label: Text(I18n.of(context).Format_name)),
                       DataColumn(
                           label: Expanded(
                               child: SelectableText(detail.user.name))),
                     ],
                     rows: <DataRow>[
                       DataRow(cells: [
-                        DataCell(Text('Total follow users')),
+                        DataCell(Text(I18n.of(context).Followed)),
                         DataCell(
                             Text(detail.profile.total_follow_users.toString()),
                             onTap: () {
@@ -87,12 +87,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Total mypixiv users')),
+                        DataCell(Text()),
                         DataCell(Text(
                             detail.profile.total_mypixiv_users.toString())),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Twitter account')),
+                        DataCell(Text(I18n.of(context).Twitter)),
                         DataCell(Text(profile.twitter_account),
                             onTap: () async {
                           final url = profile.twitter_url;
@@ -102,15 +102,15 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Gender')),
+                        DataCell(Text(I18n.of(context).Sex)),
                         DataCell(Text(detail.profile.gender)),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Job')),
+                        DataCell(Text(I18n.of(context).User_occupation)),
                         DataCell(Text(detail.profile.job)),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Pawoo')),
+                        DataCell(Text(I18n.of(context).User_pawoo)),
                         DataCell(Text(public.pawoo ? 'Link' : 'none'),
                             onTap: () async {
                           if (!public.pawoo) return;
