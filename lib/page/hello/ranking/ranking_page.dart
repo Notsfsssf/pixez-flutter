@@ -157,7 +157,6 @@ class _RankingPageState extends State<RankingPage>
             body: ListView.builder(
               itemCount: I18n.of(context).Mode_List.split(' ').length,
               itemBuilder: (BuildContext context, int index) {
-                var value = modeList[index];
                 return CheckboxListTile(
                   title: Text(I18n.of(context).Mode_List.split(' ')[index]),
                   onChanged: (bool value) {

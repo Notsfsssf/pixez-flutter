@@ -188,7 +188,7 @@ class _PlatformPageState extends State<PlatformPage> {
               ListTile(
                 leading: Icon(Icons.info),
                 title: Text("Version"),
-                subtitle: Text("0.0.5"),
+                subtitle: Text("0.0.6"),
                 onTap: () async {},
               )
             ],

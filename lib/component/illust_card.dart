@@ -121,13 +121,13 @@ class _IllustCardState extends State<IllustCard> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                widget._illusts.height > 500
+                (widget._illusts.height.toDouble()/widget._illusts.width.toDouble()) > 2
                     ? Hero(
                         tag: '${widget._illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
-                          imageUrl: widget._illusts.imageUrls.medium,
+                          imageUrl: widget._illusts.imageUrls.squareMedium,
                           placeholder: (context, url) => Container(
-                            height: 200,
+                            height:150,
                           ),
                           httpHeaders: {
                             "referer": "https://app-api.pixiv.net/",
@@ -140,9 +140,9 @@ class _IllustCardState extends State<IllustCard> {
                     : Hero(
                         tag: '${widget._illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
-                          imageUrl: widget._illusts.imageUrls.squareMedium,
+                          imageUrl: widget._illusts.imageUrls.medium,
                           placeholder: (context, url) => Container(
-                            height: 200,
+                            height: 150,
                           ),
                           httpHeaders: {
                             "referer": "https://app-api.pixiv.net/",
