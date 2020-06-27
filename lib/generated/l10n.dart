@@ -1222,6 +1222,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Unsaved`
+  String get Unsaved {
+    return Intl.message(
+      'Unsaved',
+      name: 'Unsaved',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

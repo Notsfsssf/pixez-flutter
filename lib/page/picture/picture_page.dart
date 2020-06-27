@@ -528,7 +528,8 @@ class _PicturePageState extends State<PicturePage> {
                           await Clipboard.setData(ClipboardData(
                               text:
                                   'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
-                          BotToast.showText(text: I18n.of(context).Copied_To_Clipboard);
+                          BotToast.showText(
+                              text: I18n.of(context).Copied_To_Clipboard);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -796,6 +797,8 @@ class _PicturePageState extends State<PicturePage> {
           }
           return GestureDetector(
             onLongPress: () {
+              final isFileExist =
+                  saveStore.isIllustPartExist(illust, index: index - 1);
               showModalBottomSheet(
                   context: context,
                   shape: RoundedRectangleBorder(
@@ -808,6 +811,17 @@ class _PicturePageState extends State<PicturePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          ListTile(
+                            title: Text(illust.title),
+                            subtitle:
+                               isFileExist==null? Text(I18n.of(context).Unsaved):Text('${I18n.of(context).Already_Saved} ${isFileExist.toString()}'),
+                            trailing: isFileExist == null
+                                ? Icon(Icons.info)
+                                : Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                  ),
+                          ),
                           illust.metaPages.isNotEmpty
                               ? ListTile(
                                   title:
@@ -990,7 +1004,7 @@ class _PicturePageState extends State<PicturePage> {
                                       MaterialPageRoute(builder: (context) {
                                     return ResultPage(
                                       word: f.name,
-                                      translatedName: f.translatedName??'',
+                                      translatedName: f.translatedName ?? '',
                                     );
                                   }));
                                 },

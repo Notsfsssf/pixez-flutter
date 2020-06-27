@@ -72,6 +72,18 @@ class _LightingListState extends State<LightingList> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.header == null)
+      return _buildNoHeader(context);
+    else
+      return Column(
+        children: <Widget>[
+          widget.header,
+          Expanded(child: _buildWithHeader(context)),
+        ],
+      );
+  }
+
+  Widget _buildWithHeader(BuildContext context) {
     return Observer(builder: (_) {
       return EasyRefresh(
         header: MaterialHeader(),
@@ -86,31 +98,73 @@ class _LightingListState extends State<LightingList> {
         },
         child: _store.illusts.isNotEmpty
             ? StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
                 padding: EdgeInsets.all(0.0),
                 itemBuilder: (context, index) {
-                  if (widget.header == null) {
-                    final data = _store.illusts[index];
-                    return IllustCard(
-                      data,
-                      illustList: _store.illusts,
-                    );
-                  } else {
-                    if (index == 0)
-                      return widget.header;
-                    else {
-                      final data = _store.illusts[index - 1];
-                      return IllustCard(data, illustList: _store.illusts);
-                    }
-                  }
+                  final data = _store.illusts[index];
+                  return IllustCard(
+                    data,
+                    illustList: _store.illusts,
+                  );
                 },
                 staggeredTileBuilder: (int index) {
-                  return StaggeredTile.fit(
-                      widget.header != null && index == 0 ? 2 : 1);
+                  double screanWidth = MediaQuery.of(context).size.width;
+                  double itemWidth = (screanWidth / 2.0) - 32.0;
+                  double radio = _store.illusts[index].height.toDouble() /
+                      _store.illusts[index].width.toDouble();
+                  double mainAxisExtent;
+                  if (radio > 2)
+                    mainAxisExtent = itemWidth;
+                  else
+                    mainAxisExtent = itemWidth * radio;
+
+                  return StaggeredTile.extent(1, mainAxisExtent + 80.0);
                 },
-                itemCount: widget.header != null
-                    ? _store.illusts.length + 1
-                    : _store.illusts.length,
+                itemCount: _store.illusts.length,
+                crossAxisCount: 2,
+              )
+            : Container(),
+      );
+    });
+  }
+
+  Widget _buildNoHeader(BuildContext context) {
+    return Observer(builder: (_) {
+      return EasyRefresh(
+        header: MaterialHeader(),
+        controller: _easyRefreshController,
+        enableControlFinishLoad: true,
+        enableControlFinishRefresh: true,
+        onRefresh: () {
+          return _store.fetch();
+        },
+        onLoad: () {
+          return _store.fetchNext();
+        },
+        child: _store.illusts.isNotEmpty
+            ? StaggeredGridView.countBuilder(
+                padding: EdgeInsets.all(0.0),
+                itemBuilder: (context, index) {
+                  final data = _store.illusts[index];
+                  return IllustCard(
+                    data,
+                    illustList: _store.illusts,
+                  );
+                },
+                staggeredTileBuilder: (int index) {
+                  double screanWidth = MediaQuery.of(context).size.width;
+                  double itemWidth = (screanWidth / 2.0) - 32.0;
+                  double radio = _store.illusts[index].height.toDouble() /
+                      _store.illusts[index].width.toDouble();
+                  double mainAxisExtent;
+                  if (radio > 2)
+                    mainAxisExtent = itemWidth;
+                  else
+                    mainAxisExtent = itemWidth * radio;
+
+                  return StaggeredTile.extent(1, mainAxisExtent + 80.0);
+                },
+                itemCount: _store.illusts.length,
+                crossAxisCount: 2,
               )
             : Container(),
       );

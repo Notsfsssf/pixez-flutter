@@ -86,6 +86,16 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget buildInkWell(BuildContext context) {
+    double screanWidth = MediaQuery.of(context).size.width;
+    double itemWidth = (screanWidth / 2.0) - 32.0;
+    double radio =
+        widget._illusts.height.toDouble() / widget._illusts.width.toDouble();
+    double mainAxisExtent = 80.0;
+    if (radio > 2)
+      mainAxisExtent += itemWidth;
+    else
+      mainAxisExtent += itemWidth * radio;
+
     String heroString = DateTime.now().millisecondsSinceEpoch.toString();
     return InkWell(
       onTap: () => {
@@ -114,27 +124,27 @@ class _IllustCardState extends State<IllustCard> {
         clipBehavior: Clip.antiAlias,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                (widget._illusts.height.toDouble()/widget._illusts.width.toDouble()) > 2
+        child: Container(
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topCenter,
+                child: (widget._illusts.height.toDouble() /
+                            widget._illusts.width.toDouble()) >
+                        2
                     ? Hero(
                         tag: '${widget._illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
                           imageUrl: widget._illusts.imageUrls.squareMedium,
                           placeholder: (context, url) => Container(
-                            height:150,
+                            height: 150,
                           ),
                           httpHeaders: {
                             "referer": "https://app-api.pixiv.net/",
                             "User-Agent": "PixivIOSApp/5.8.0"
                           },
                           width: widget._illusts.width.toDouble(),
-                          fit: BoxFit.fitWidth,
+                          // fit: BoxFit.fitWidth,
                         ),
                       )
                     : Hero(
@@ -148,83 +158,94 @@ class _IllustCardState extends State<IllustCard> {
                             "referer": "https://app-api.pixiv.net/",
                             "User-Agent": "PixivIOSApp/5.8.0"
                           },
-                          fit: BoxFit.fitWidth,
+                          // fit: BoxFit.fitWidth,
                         ),
                       ),
-                Visibility(
-                  visible: widget._illusts.type != "illust" ||
-                      widget._illusts.metaPages.isNotEmpty,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 2.0, horizontal: 2.0),
-                          child: cardText(),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black26,
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Container(
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left:8.0,right: 34.0,top:4),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        Text(
-                          widget._illusts.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                                  style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                        Text(
-                          widget._illusts.user.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                          style: Theme.of(context).textTheme.caption,
-                        )
-                      ]),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                        icon: StarIcon(widget._illusts.isBookmarked),
-                        onPressed: () async {
-                          final ApiClient client =
-                              RepositoryProvider.of<ApiClient>(context);
-                          try {
-                            if (widget._illusts.isBookmarked) {
-                              Response response =
-                                  await client.postUnLikeIllust(widget._illusts.id);
-                            } else {
-                              Response response = await client.postLikeIllust(
-                                  widget._illusts.id, "public", null);
-                            }
-                            setState(() {
-                              widget._illusts.isBookmarked =
-                                  !widget._illusts.isBookmarked;
-                            });
-                          } catch (e) {} //懒得用bloc了
-                        }),
-                  )
-                ],
               ),
-            )
-          ],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  color: Theme.of(context).cardColor,
+                  height: 46,
+                  child: Stack(
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 34.0, top: 4),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget._illusts.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                                Text(
+                                  widget._illusts.user.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style: Theme.of(context).textTheme.caption,
+                                )
+                              ]),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                            icon: StarIcon(widget._illusts.isBookmarked),
+                            onPressed: () async {
+                              final ApiClient client =
+                                  RepositoryProvider.of<ApiClient>(context);
+                              try {
+                                if (widget._illusts.isBookmarked) {
+                                  Response response = await client
+                                      .postUnLikeIllust(widget._illusts.id);
+                                } else {
+                                  Response response =
+                                      await client.postLikeIllust(
+                                          widget._illusts.id, "public", null);
+                                }
+                                setState(() {
+                                  widget._illusts.isBookmarked =
+                                      !widget._illusts.isBookmarked;
+                                });
+                              } catch (e) {} //懒得用bloc了
+                            }),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Align(child: _buildVisibility(),alignment: Alignment.topRight,)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Visibility _buildVisibility() {
+    return Visibility(
+      visible: widget._illusts.type != "illust" ||
+          widget._illusts.metaPages.isNotEmpty,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Container(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+              child: cardText(),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            ),
+          ),
         ),
       ),
     );

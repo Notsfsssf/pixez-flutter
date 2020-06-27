@@ -130,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Total_bookmark" : MessageLookupByLibrary.simpleMessage("Likes"),
     "Total_view" : MessageLookupByLibrary.simpleMessage("Viewers"),
     "Un_Follow" : MessageLookupByLibrary.simpleMessage("Not following"),
+    "Unsaved" : MessageLookupByLibrary.simpleMessage("Unsaved"),
     "View_Comment" : MessageLookupByLibrary.simpleMessage("View comments"),
     "Warning" : MessageLookupByLibrary.simpleMessage("Clear all cache?"),
     "Which_part" : MessageLookupByLibrary.simpleMessage("Index"),

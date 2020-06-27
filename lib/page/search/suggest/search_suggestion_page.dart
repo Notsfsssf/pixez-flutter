@@ -172,7 +172,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
             child: Text(I18n.of(context).Illust_id),
           ),
           Tab(
-            child: Text(I18n.of(context).Painter + "ID"),
+            child: Text(I18n.of(context).Painter_id),
           ),
         ],
       ),

@@ -34,7 +34,7 @@ import 'package:save_in_gallery/save_in_gallery.dart';
 
 part 'save_store.g.dart';
 
-enum SaveState { JOIN, SUCCESS, ALREADY }
+enum SaveState { JOIN, SUCCESS, ALREADY, INQUEUE }
 
 class ProgressNum {
   int min, max;
@@ -99,6 +99,29 @@ void listenBehavior(BuildContext context, SaveStream stream) {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text("${I18n.of(context).Append_to_query}"),
+                      )
+                    ],
+                  ),
+                ),
+              ));
+      break;
+    case SaveState.INQUEUE:
+       BotToast.showCustomText(
+          onlyOne: true,
+          duration: Duration(seconds: 1),
+          toastBuilder: (textCancel) => Align(
+                alignment: Alignment(0, 0.8),
+                child: Card(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.info),
+                          onPressed: () {
+                          }),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("${I18n.of(context).Already_in_query}"),
                       )
                     ],
                   ),
@@ -203,8 +226,8 @@ abstract class _SaveStoreBase with Store {
 
   static const platform = const MethodChannel('com.perol.dev/save');
 
-  Future<void> _saveToGallery(Uint8List uint8list, Illusts illusts,
-      String fileName) async {
+  Future<void> _saveToGallery(
+      Uint8List uint8list, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
         String path = userSetting.path;
@@ -276,6 +299,29 @@ abstract class _SaveStoreBase with Store {
         .replaceAll("<", "");
   }
 
+  toFullPath(String name) => '${userSetting.path}/${name}';
+  DateTime isIllustPartExist(Illusts illusts, {int index}) {
+    String memType;
+    if (illusts.pageCount == 1) {
+      String url = illusts.metaSinglePage.originalImageUrl;
+      memType = url.contains('.png') ? '.png' : '.jpg';
+      String fileName = toFullPath(_handleFileName(illusts, 0, memType));
+      return File(fileName).existsSync()
+          ? File(fileName).lastModifiedSync()
+          : null;
+    } else {
+      if (index != null) {
+        var url = illusts.metaPages[index].imageUrls.original;
+        memType = url.contains('.png') ? '.png' : '.jpg';
+        String fileName = _handleFileName(illusts, index, memType);
+        final fullPath = "${userSetting.path}/${fileName}";
+        var file = File(fullPath);
+        return file.existsSync() ? file.lastModifiedSync() : null;
+      }
+      return null;
+    }
+  }
+
   @action
   Future<void> saveImage(Illusts illusts,
       {int index, bool redo = false}) async {
@@ -294,7 +340,7 @@ abstract class _SaveStoreBase with Store {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls.original;
         if (progressMaps.keys.contains(url)) {
-          _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
+          _streamController.add(SaveStream(SaveState.INQUEUE, illusts));
           return;
         }
         memType = url.contains('.png') ? '.png' : '.jpg';

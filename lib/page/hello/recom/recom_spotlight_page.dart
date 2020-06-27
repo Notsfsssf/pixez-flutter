@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2020. by perol_notsf, All rights reserved
  *
@@ -76,8 +75,23 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
               ? StaggeredGridView.countBuilder(
                   crossAxisCount: 2,
                   padding: EdgeInsets.all(0.0),
-                  staggeredTileBuilder: (int index) =>
-                      StaggeredTile.fit(index < 3 ? 2 : 1),
+                  staggeredTileBuilder: (int index) {
+                    if (index < 3)
+                      return StaggeredTile.fit(2);
+                    else {
+                      double screanWidth = MediaQuery.of(context).size.width;
+                      double itemWidth = (screanWidth / 2.0) - 32.0;
+                      double radio = _lightingStore.illusts[index - 3].height
+                              .toDouble() /
+                          _lightingStore.illusts[index - 3].width.toDouble();
+                      double mainAxisExtent;
+                      if (radio > 2)
+                        mainAxisExtent = itemWidth;
+                      else
+                        mainAxisExtent = itemWidth * radio;
+                      return StaggeredTile.extent(1, mainAxisExtent + 80.0);
+                    }
+                  },
                   itemCount: _lightingStore.illusts.length + 3,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) return _buildFirstRow(context);
@@ -125,7 +139,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
           automaticallyImplyLeading: false,
           titleSpacing: 0.0,
           title: Padding(
-            padding: const EdgeInsets.only(top:10.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -133,8 +147,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
                   child: Padding(
                     child: Text(
                       I18n.of(context).Spotlight,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0,color: Theme.of(context).textTheme.headline6.color),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30.0,
+                          color: Theme.of(context).textTheme.headline6.color),
                     ),
                     padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
                   ),
@@ -157,7 +173,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
           elevation: 0.0,
           backgroundColor: Colors.transparent,
         ),
-
       ],
     );
   }

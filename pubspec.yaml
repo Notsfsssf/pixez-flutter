@@ -29,8 +29,7 @@ dependencies:
   shared_preferences: ^0.5.7+3
   equatable: ^1.1.1
   flutter_staggered_grid_view:
-    git:
-      url: https://github.com/BertrandBev/flutter_staggered_grid_view.git
+    path: plugins/flutter_staggered_grid_view
   cached_network_image: ^2.2.0+1
   flutter_cache_manager: ^1.4.1
   flutter_easyrefresh: ^2.1.1

@@ -130,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Total_bookmark" : MessageLookupByLibrary.simpleMessage("總收藏"),
     "Total_view" : MessageLookupByLibrary.simpleMessage("總查看"),
     "Un_Follow" : MessageLookupByLibrary.simpleMessage("未關註"),
+    "Unsaved" : MessageLookupByLibrary.simpleMessage("未儲存"),
     "View_Comment" : MessageLookupByLibrary.simpleMessage("查看評論"),
     "Warning" : MessageLookupByLibrary.simpleMessage("清除全部暫存？"),
     "Which_part" : MessageLookupByLibrary.simpleMessage("第幾張"),

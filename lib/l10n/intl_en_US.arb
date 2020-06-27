@@ -118,5 +118,6 @@
   "Copied_To_Clipboard": "Copied to clipboard",
   "Display_Mode": "Display mode",
   "Display_Mode_Message": "Select display mode (experimental)",
-  "Display_Mode_Warning": "It is intended to solve the problem of some whitelist mechanisms that support high refresh rate models. If there is no problem, please do not change it at will"
+  "Display_Mode_Warning": "It is intended to solve the problem of some whitelist mechanisms that support high refresh rate models. If there is no problem, please do not change it at will",
+  "Unsaved":"Unsaved"
 }

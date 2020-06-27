@@ -30,7 +30,6 @@ import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:pixez/page/user/user_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,15 +49,23 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     SettingPage()
   ];
   int index = 0;
-
+  PageController _pageController;
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       if (accountStore.now != null)
         return Scaffold(
-          body: IndexedStack(
-            index: index,
-            children: _widgetOptions,
+          body: PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                this.index = index;
+              });
+            },
+            itemCount: 5,
+            itemBuilder: (BuildContext context, int index) {
+              return _widgetOptions[index];
+            },
           ),
           bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
@@ -67,6 +74,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 setState(() {
                   this.index = index;
                 });
+                _pageController.jumpToPage(index);
               },
               items: [
                 BottomNavigationBarItem(
@@ -91,6 +99,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   void initState() {
+    _pageController = PageController();
     super.initState();
     saveStore.saveStream.listen((stream) {
       listenBehavior(context, stream);
