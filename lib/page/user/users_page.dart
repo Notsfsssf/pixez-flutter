@@ -375,6 +375,7 @@ class _UsersPageState extends State<UsersPage>
               child: PainterAvatar(
                 url: userStore.userDetail.user.profile_image_urls.medium,
                 size: Size(80, 80),
+                onTap: (){},
               ),
             ),
             Padding(

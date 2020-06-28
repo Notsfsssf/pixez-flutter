@@ -14,10 +14,12 @@
  *
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingQualityPage extends StatefulWidget {
   @override
@@ -26,6 +28,56 @@ class SettingQualityPage extends StatefulWidget {
 
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
+  Widget _languageTranlator;
+  @override
+  void initState() {
+    _languageTranlator = _group[userSetting.languageNum];
+    super.initState();
+  }
+
+  var _group = [
+    InkWell(
+      onTap: () {
+        try {
+          launch('https://github.com/itzXian');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars1.githubusercontent.com/u/34748039?s=400&u=9e784e6754531c9ecadc5d92ed6bc58647053657&v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Xian'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
+    Container(),
+    InkWell(
+      onTap: () {
+        try {
+          launch('https://github.com/TragicLifeHu');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars3.githubusercontent.com/u/16817202?s=460&v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Tragic Life'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,20 +126,21 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 child: Column(
               children: <Widget>[
                 Padding(
-                  child: Text("Language"),
+                  child: Row(
+                    children: <Widget>[
+                      Text("Language"),
+                      _languageTranlator,
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {
                   return Theme(
-                    data: Theme.of(context).copyWith(tabBarTheme: TabBarTheme(
-                        labelColor: Colors.black
-                    )),
+                    data: Theme.of(context).copyWith(
+                        tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
-                      labelColor: Theme
-                          .of(context)
-                          .textTheme
-                          .headline6
-                          .color,
+                      labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
                         Tab(
@@ -102,7 +155,9 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       ],
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
-                        setState(() {});
+                        setState(() {
+                          _languageTranlator = _group[index];
+                        });
                       },
                       controller: TabController(
                           length: 3,
