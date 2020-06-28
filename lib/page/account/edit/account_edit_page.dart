@@ -33,7 +33,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
       _oldPasswordController,
       _emailController,
       _accountController;
-      
+
   @override
   void initState() {
     _passwordController = TextEditingController();
@@ -41,7 +41,9 @@ class _AccountEditPageState extends State<AccountEditPage> {
     _accountController = TextEditingController();
     _oldPasswordController = TextEditingController();
     if (accountStore.now != null) {
-      _oldPasswordController.text = accountStore.now.passWord;
+      if (accountStore.now.isMailAuthorized != 1) {
+        _oldPasswordController.text = accountStore.now.passWord;
+      }
       _accountController.text = accountStore.now.account;
       _emailController.text = accountStore.now.mailAddress;
     }
@@ -140,29 +142,23 @@ class _AccountEditPageState extends State<AccountEditPage> {
                       obscureText: _obscureText,
                       controller: _oldPasswordController,
                       decoration: InputDecoration(
-                        hintText: I18n
-                            .of(context)
-                            .Current_Password,
-                        labelText: I18n
-                            .of(context)
-                            .Current_Password,
+                        hintText: I18n.of(context).Current_Password,
+                        labelText: I18n.of(context).Current_Password,
                         border: InputBorder.none,
-                        suffixIcon: IconButton(icon: Icon(
-                          _obscureText
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ), onPressed: _toggle),
+                        suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: _toggle),
                       ),
                     ),
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        hintText: I18n
-                            .of(context)
-                            .New_Password,
-                        labelText: I18n
-                            .of(context)
-                            .New_Password,
+                        hintText: I18n.of(context).New_Password,
+                        labelText: I18n.of(context).New_Password,
                       ),
                     ),
                     TextFormField(

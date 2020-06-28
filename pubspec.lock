@@ -573,7 +573,7 @@ packages:
       name: path_provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.11"
+    version: "1.6.10"
   path_provider_linux:
     dependency: transitive
     description:

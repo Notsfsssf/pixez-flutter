@@ -15,22 +15,20 @@ import androidx.preference.PreferenceManager
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserException
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
-    private val UGOIRA_CHANNEL = "samples.flutter.dev/battery"
+    private val AUTH_CHANNEL = "com.perol.dev/auth"
+    private val BIOMETRIC_CHANNEL = "samples.flutter.dev/biometric"
     val pref by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
@@ -42,7 +40,7 @@ class MainActivity : FlutterActivity() {
         storePath = pref.getString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez")!!
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
 
-        if (call.method == "save") {
+            if (call.method == "save") {
                 val data = call.argument<ByteArray>("data") as ByteArray
                 val type = call.argument<String>("name") as String
                 insertImageOldWay(data, type)
@@ -78,8 +76,16 @@ class MainActivity : FlutterActivity() {
                 result.success(isFileExist)
             }
         }
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, UGOIRA_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "getBatteryLevel") {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BIOMETRIC_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "auth") {
+
+
+
+
+            }
+        }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, AUTH_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "auth") {
                 val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!
@@ -94,7 +100,7 @@ class MainActivity : FlutterActivity() {
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
         file.let {
-            val tempFile = File(context.cacheDir, "${name}.gif")
+            val tempFile = File(applicationContext.cacheDir, "${name}.gif")
             Observable.create<File> { ot ->
                 try {
 

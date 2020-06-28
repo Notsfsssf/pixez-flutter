@@ -63,8 +63,8 @@ android {
         applicationId "com.perol.pixez"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 7
-        versionName "0.0.6 always blue"
+        versionCode 9
+        versionName "0.0.7 calculator ratio"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -95,10 +95,10 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.google.android.play:core:1.7.3'
     implementation('com.waynejo:androidndkgif:0.3.3')
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.0")
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+//    implementation 'androidx.biometric:biometric:1.0.1'
 }
