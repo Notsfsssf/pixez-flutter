@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2020. by perol_notsf, All rights reserved
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'user_setting.dart';
@@ -52,6 +36,37 @@ mixin _$UserSetting on _UserSettingBase, Store {
   set languageNum(int value) {
     _$languageNumAtom.reportWrite(value, super.languageNum, () {
       super.languageNum = value;
+    });
+  }
+
+  final _$displayModeAtom = Atom(name: '_UserSettingBase.displayMode');
+
+  @override
+  int get displayMode {
+    _$displayModeAtom.reportRead();
+    return super.displayMode;
+  }
+
+  @override
+  set displayMode(int value) {
+    _$displayModeAtom.reportWrite(value, super.displayMode, () {
+      super.displayMode = value;
+    });
+  }
+
+  final _$disableBypassSniAtom =
+      Atom(name: '_UserSettingBase.disableBypassSni');
+
+  @override
+  bool get disableBypassSni {
+    _$disableBypassSniAtom.reportRead();
+    return super.disableBypassSni;
+  }
+
+  @override
+  set disableBypassSni(bool value) {
+    _$disableBypassSniAtom.reportWrite(value, super.disableBypassSni, () {
+      super.disableBypassSni = value;
     });
   }
 
@@ -107,6 +122,14 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
+  final _$setDisplayModeAsyncAction =
+      AsyncAction('_UserSettingBase.setDisplayMode');
+
+  @override
+  Future setDisplayMode(int value) {
+    return _$setDisplayModeAsyncAction.run(() => super.setDisplayMode(value));
+  }
+
   final _$setSingleFolderAsyncAction =
       AsyncAction('_UserSettingBase.setSingleFolder');
 
@@ -148,6 +171,17 @@ mixin _$UserSetting on _UserSettingBase, Store {
       ActionController(name: '_UserSettingBase');
 
   @override
+  dynamic setDisableBypassSni(bool value) {
+    final _$actionInfo = _$_UserSettingBaseActionController.startAction(
+        name: '_UserSettingBase.setDisableBypassSni');
+    try {
+      return super.setDisableBypassSni(value);
+    } finally {
+      _$_UserSettingBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setPath(dynamic result) {
     final _$actionInfo = _$_UserSettingBaseActionController.startAction(
         name: '_UserSettingBase.setPath');
@@ -163,6 +197,8 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return '''
 zoomQuality: ${zoomQuality},
 languageNum: ${languageNum},
+displayMode: ${displayMode},
+disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},
 path: ${path},
 format: ${format}

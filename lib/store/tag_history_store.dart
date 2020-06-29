@@ -31,13 +31,17 @@ abstract class _TagHistoryStoreBase with Store {
     tags.clear();
     tags.addAll(result);
   }
- @action
+
+  @action
   insert(TagsPersist tagsPersist) async {
-    await tagsPersistProvider.open();
-    await tagsPersistProvider.insert(tagsPersist);
-    await fetch();
+    if (!tags.contains(tagsPersist)) {
+      await tagsPersistProvider.open();
+      await tagsPersistProvider.insert(tagsPersist);
+      await fetch();
+    }
   }
- @action
+
+  @action
   deleteAll() async {
     await tagsPersistProvider.open();
     await tagsPersistProvider.deleteAll();

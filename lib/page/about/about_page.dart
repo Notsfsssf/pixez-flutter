@@ -240,7 +240,8 @@ class _AboutPageState extends State<AboutPage> {
                               children: <Widget>[
                                 ListTile(
                                   title: Text('Version 0.0.7'),
-                                  subtitle: Text(I18n.of(context).Go_To_Project_Address),
+                                  subtitle: Text(
+                                      I18n.of(context).Go_To_Project_Address),
                                   onTap: () {
                                     try {
                                       launch(
@@ -257,20 +258,14 @@ class _AboutPageState extends State<AboutPage> {
                                       }),
                                 ),
                                 ListTile(
-                                  title: Text(I18n.of(context).Check_For_Updates),
+                                  title:
+                                      Text(I18n.of(context).Check_For_Updates),
                                   onTap: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (_) => UpdatePage()));
                                   },
-                                  trailing: IconButton(
-                                      icon: Icon(Icons.link),
-                                      onPressed: () {
-                                        try {
-                                          launch(
-                                              'https://github.com/Notsfsssf/pixez-flutter');
-                                        } catch (e) {}
-                                      }),
+                                  trailing: Icon(Icons.update),
                                 ),
                                 ListTile(
                                   leading: CircleAvatar(
