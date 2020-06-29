@@ -173,7 +173,7 @@ class _IllustCardState extends State<IllustCard> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 8.0, right: 34.0, top: 4),
+                              left: 8.0, right: 34.0, top: 4,bottom: 4),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
