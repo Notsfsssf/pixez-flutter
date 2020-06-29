@@ -42,6 +42,8 @@ abstract class _UserSettingBase with Store {
   @observable
   int displayMode;
   @observable
+  bool disableBypassSni = false;
+  @observable
   bool singleFolder = false;
   @observable
   String path = "";
@@ -56,6 +58,7 @@ abstract class _UserSettingBase with Store {
     singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
     path = prefs.getString("store_path");
     displayMode = prefs.getInt('display_mode');
+    disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -71,6 +74,11 @@ abstract class _UserSettingBase with Store {
     debugPrint("language:${languageNum}");
     ApiClient.Accept_Language = languageList[languageNum];
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
+  }
+
+  @action
+  setDisableBypassSni(bool value) {
+    disableBypassSni = value;
   }
 
   @action

@@ -119,5 +119,15 @@
   "Display_Mode":"顯示模式",
   "Display_Mode_Message":"選擇支持的顯示模式（實驗性）",
   "Display_Mode_Warning":"意在解決部分支持高刷新率機型白名單機制的問題,如果沒有問題，請不要隨意改動,出現任何問題，請清除應用數據",
-  "Unsaved":"未儲存"
+  "Unsaved":"未儲存",
+  "Latest_Version": "最新版本",
+  "Download_Address": "下載地址",
+  "New_Version_Update_Information": "新版更新內容",
+  "Update": "更新",
+  "Check_For_Updates":"檢查更新",
+  "Please_Note_That": "請註意",
+  "Please_Note_That_Content": "只有在確保妳的代理或是所處地區能夠訪問到pixiv時，才能夠打開這個開關，開關開啟後壹切網絡問題都與應用無關了，不要反饋無法連接的問題",
+  "Disable_Sni_Bypass":"不需要Bypass Sni",
+  "Disable_Sni_Bypass_Message":"節省冷啟動時dns over https的時間",
+  "Go_To_Project_Address":"前往項目地址"
 }

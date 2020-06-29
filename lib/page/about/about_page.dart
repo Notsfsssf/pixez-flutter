@@ -27,6 +27,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/about/bloc/about_bloc.dart';
 import 'package:pixez/page/about/bloc/bloc.dart';
 import 'package:pixez/page/about/thanks_list.dart';
+import 'package:pixez/page/about/update_page.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -238,13 +239,29 @@ class _AboutPageState extends State<AboutPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                  title: Text('还没有搞定应用内更新的问题'),
-                                  subtitle: Text('前往项目地址看看有无更新吧'),
+                                  title: Text('Version 0.0.7'),
+                                  subtitle: Text(I18n.of(context).Go_To_Project_Address),
                                   onTap: () {
                                     try {
                                       launch(
                                           'https://github.com/Notsfsssf/pixez-flutter');
                                     } catch (e) {}
+                                  },
+                                  trailing: IconButton(
+                                      icon: Icon(Icons.link),
+                                      onPressed: () {
+                                        try {
+                                          launch(
+                                              'https://github.com/Notsfsssf/pixez-flutter');
+                                        } catch (e) {}
+                                      }),
+                                ),
+                                ListTile(
+                                  title: Text(I18n.of(context).Check_For_Updates),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (_) => UpdatePage()));
                                   },
                                   trailing: IconButton(
                                       icon: Icon(Icons.link),

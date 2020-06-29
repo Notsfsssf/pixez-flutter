@@ -14,7 +14,6 @@
  *
  */
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -168,6 +167,47 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 })
               ],
             )),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Observer(builder: (_) {
+              return Card(
+                child: SwitchListTile(
+                    value: userSetting.disableBypassSni,
+                    title: Text(I18n.of(context).Disable_Sni_Bypass),
+                    subtitle: Text(I18n.of(context).Disable_Sni_Bypass_Message),
+                    onChanged: (value) async {
+                      if (value) {
+                        final result = await showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Text(I18n.of(context).Please_Note_That),
+                                content: Text(
+                                    I18n.of(context).Please_Note_That_Content),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop('OK');
+                                      },
+                                      child: Text('ok')),
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop('OK');
+                                      },
+                                      child: Text('cancel'))
+                                ],
+                              );
+                            });
+                        if (result == 'OK') {
+                          userSetting.setDisableBypassSni(value);
+                        }
+                      } else {
+                        userSetting.setDisableBypassSni(value);
+                      }
+                    }),
+              );
+            }),
           )
         ]),
       ),

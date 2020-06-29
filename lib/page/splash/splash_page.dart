@@ -48,26 +48,36 @@ class _SplashPageState extends State<SplashPage>
     controller.forward();
   }
 
-  ReactionDisposer reactionDisposer;
+  ReactionDisposer reactionDisposer, userDisposer;
   initMethod() {
+    userDisposer = reaction((_) => userSetting.displayMode, (_) {
+      if (userSetting.disableBypassSni)
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+    });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
-      try {
-        if (splashStore.onezeroResponse != null) {
-          var address = splashStore.onezeroResponse.answer.first.data;
-          print('address:$address');
-          if (address != null && address.isNotEmpty) {
-             RepositoryProvider.of<ApiClient>(context)
-                .httpClient
-                .options
-                .baseUrl = 'https://$address';
-            RepositoryProvider.of<OAuthClient>(context)
-                .httpClient
-                .options
-                .baseUrl = 'https://$address';
+      if (!userSetting.disableBypassSni) {
+        try {
+          if (splashStore.onezeroResponse != null) {
+            var address = splashStore.onezeroResponse.answer.first.data;
+            print('address:$address');
+            if (address != null && address.isNotEmpty) {
+              RepositoryProvider.of<ApiClient>(context)
+                  .httpClient
+                  .options
+                  .baseUrl = 'https://$address';
+              RepositoryProvider.of<OAuthClient>(context)
+                  .httpClient
+                  .options
+                  .baseUrl = 'https://$address';
+            }
           }
+        } catch (e) {
+          print(e);
         }
-      } catch (e) {
-        print(e);
       }
       Navigator.pushReplacement(
           context,
@@ -80,7 +90,9 @@ class _SplashPageState extends State<SplashPage>
   @override
   void dispose() {
     controller?.dispose();
+    userDisposer();
     reactionDisposer();
+
     super.dispose();
   }
 

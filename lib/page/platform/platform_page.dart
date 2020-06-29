@@ -185,12 +185,7 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).Display_Mode),
                 subtitle: Text(selected.toString() ?? ''),
               ),
-              ListTile(
-                leading: Icon(Icons.info),
-                title: Text("Version"),
-                subtitle: Text("0.0.6"),
-                onTap: () async {},
-              )
+     
             ],
           );
         }),

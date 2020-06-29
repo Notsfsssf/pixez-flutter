@@ -119,5 +119,15 @@
   "Display_Mode": "Display mode",
   "Display_Mode_Message": "Select display mode (experimental)",
   "Display_Mode_Warning": "It is intended to solve the problem of some whitelist mechanisms that support high refresh rate models. If there is no problem, please do not change it at will",
-  "Unsaved":"Unsaved"
+  "Unsaved": "Unsaved",
+  "Latest_Version": "Latest version",
+  "Download_Address": "Download address",
+  "New_Version_Update_Information": "New version update information",
+  "Update": "Update",
+  "Check_For_Updates":"Check for updates",
+  "Please_Note_That": "Please note that",
+  "Please_Note_That_Content": "Only when you make sure that your agent or area can access pixiv, you can turn on this switch. After the switch is turned on, all network problems have nothing to do with the application. Don't feed back the problem that you can't connect",
+  "Disable_Sni_Bypass":"Disable Sni Bypass",
+  "Disable_Sni_Bypass_Message":"Save time of DNS over HTTPS during cold start",
+  "Go_To_Project_Address":"Go to project address"
 }

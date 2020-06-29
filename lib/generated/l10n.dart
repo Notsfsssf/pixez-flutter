@@ -1232,6 +1232,106 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Latest version`
+  String get Latest_Version {
+    return Intl.message(
+      'Latest version',
+      name: 'Latest_Version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download address`
+  String get Download_Address {
+    return Intl.message(
+      'Download address',
+      name: 'Download_Address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New version update information`
+  String get New_Version_Update_Information {
+    return Intl.message(
+      'New version update information',
+      name: 'New_Version_Update_Information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get Update {
+    return Intl.message(
+      'Update',
+      name: 'Update',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check for updates`
+  String get Check_For_Updates {
+    return Intl.message(
+      'Check for updates',
+      name: 'Check_For_Updates',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please note that`
+  String get Please_Note_That {
+    return Intl.message(
+      'Please note that',
+      name: 'Please_Note_That',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only when you make sure that your agent or area can access pixiv, you can turn on this switch. After the switch is turned on, all network problems have nothing to do with the application. Don't feed back the problem that you can't connect`
+  String get Please_Note_That_Content {
+    return Intl.message(
+      'Only when you make sure that your agent or area can access pixiv, you can turn on this switch. After the switch is turned on, all network problems have nothing to do with the application. Don\'t feed back the problem that you can\'t connect',
+      name: 'Please_Note_That_Content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable Sni Bypass`
+  String get Disable_Sni_Bypass {
+    return Intl.message(
+      'Disable Sni Bypass',
+      name: 'Disable_Sni_Bypass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save time of DNS over HTTPS during cold start`
+  String get Disable_Sni_Bypass_Message {
+    return Intl.message(
+      'Save time of DNS over HTTPS during cold start',
+      name: 'Disable_Sni_Bypass_Message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to project address`
+  String get Go_To_Project_Address {
+    return Intl.message(
+      'Go to project address',
+      name: 'Go_To_Project_Address',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {
