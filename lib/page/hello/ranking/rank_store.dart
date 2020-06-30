@@ -32,7 +32,8 @@ abstract class _RankStoreBase with Store {
     "week",
     "month",
     "day_r18",
-    "week_r18"
+    "week_r18",
+    "week_r18g"
   ];
   @observable
   ObservableList<String> modeList = ObservableList();

@@ -122,6 +122,15 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
+  final _$setDisableBypassSniAsyncAction =
+      AsyncAction('_UserSettingBase.setDisableBypassSni');
+
+  @override
+  Future setDisableBypassSni(bool value) {
+    return _$setDisableBypassSniAsyncAction
+        .run(() => super.setDisableBypassSni(value));
+  }
+
   final _$setDisplayModeAsyncAction =
       AsyncAction('_UserSettingBase.setDisplayMode');
 
@@ -169,17 +178,6 @@ mixin _$UserSetting on _UserSettingBase, Store {
 
   final _$_UserSettingBaseActionController =
       ActionController(name: '_UserSettingBase');
-
-  @override
-  dynamic setDisableBypassSni(bool value) {
-    final _$actionInfo = _$_UserSettingBaseActionController.startAction(
-        name: '_UserSettingBase.setDisableBypassSni');
-    try {
-      return super.setDisableBypassSni(value);
-    } finally {
-      _$_UserSettingBaseActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   dynamic setPath(dynamic result) {

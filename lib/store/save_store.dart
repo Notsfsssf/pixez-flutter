@@ -106,7 +106,7 @@ void listenBehavior(BuildContext context, SaveStream stream) {
               ));
       break;
     case SaveState.INQUEUE:
-       BotToast.showCustomText(
+      BotToast.showCustomText(
           onlyOne: true,
           duration: Duration(seconds: 1),
           toastBuilder: (textCancel) => Align(
@@ -115,10 +115,7 @@ void listenBehavior(BuildContext context, SaveStream stream) {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: () {
-                          }),
+                      IconButton(icon: Icon(Icons.info), onPressed: () {}),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text("${I18n.of(context).Already_in_query}"),
@@ -352,6 +349,7 @@ abstract class _SaveStoreBase with Store {
         }
         _saveInternal(url, illusts, fileName);
       } else {
+        int index = 0;
         illusts.metaPages.forEach((f) {
           String url = f.imageUrls.original;
           memType = url.contains('.png') ? '.png' : '.jpg';

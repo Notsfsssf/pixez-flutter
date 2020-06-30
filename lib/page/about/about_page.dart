@@ -239,7 +239,7 @@ class _AboutPageState extends State<AboutPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                  title: Text('Version 0.0.7'),
+                                  title: Text('Version 0.0.8'),
                                   subtitle: Text(
                                       I18n.of(context).Go_To_Project_Address),
                                   onTap: () {

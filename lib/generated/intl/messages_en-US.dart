@@ -81,7 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Logout" : MessageLookupByLibrary.simpleMessage("Logout"),
     "Logout_message" : MessageLookupByLibrary.simpleMessage("See you~"),
     "Manga" : MessageLookupByLibrary.simpleMessage("Manga"),
-    "Mode_List" : MessageLookupByLibrary.simpleMessage("Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY"),
+    "Mode_List" : MessageLookupByLibrary.simpleMessage("Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G"),
     "More" : MessageLookupByLibrary.simpleMessage("More"),
     "More_then_starNum_Bookmark" : m0,
     "Muti_Choice_save" : MessageLookupByLibrary.simpleMessage("Seve selected ones"),

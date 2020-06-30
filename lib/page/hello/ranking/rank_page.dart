@@ -26,7 +26,8 @@ class RankPage extends StatefulWidget {
   _RankPageState createState() => _RankPageState();
 }
 
-class _RankPageState extends State<RankPage> {
+class _RankPageState extends State<RankPage>
+    with AutomaticKeepAliveClientMixin {
   RankStore rankStore;
   final modeList = [
     "day",
@@ -37,7 +38,8 @@ class _RankPageState extends State<RankPage> {
     "week",
     "month",
     "day_r18",
-    "week_r18"
+    "week_r18",
+    "week_r18g"
   ];
   var boolList = Map<int, bool>();
   DateTime nowDate;
@@ -64,6 +66,7 @@ class _RankPageState extends State<RankPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (_) {
       if (rankStore.modeList.isNotEmpty) {
         var list = I18n.of(context).Mode_List.split(' ');
@@ -78,7 +81,7 @@ class _RankPageState extends State<RankPage> {
             children: <Widget>[
               AppBar(
                 title: TabBar(
-                  isScrollable: true,
+                    isScrollable: true,
                     tabs: titles
                         .map((element) => Tab(
                               text: element,
@@ -163,4 +166,7 @@ class _RankPageState extends State<RankPage> {
       }
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

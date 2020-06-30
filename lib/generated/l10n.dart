@@ -1073,10 +1073,10 @@ class I18n {
     );
   }
 
-  /// `Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY`
+  /// `Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G`
   String get Mode_List {
     return Intl.message(
-      'Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY',
+      'Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G',
       name: 'Mode_List',
       desc: '',
       args: [],

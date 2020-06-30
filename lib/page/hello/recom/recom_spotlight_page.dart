@@ -33,7 +33,8 @@ class RecomSpolightPage extends StatefulWidget {
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
 }
 
-class _RecomSpolightPageState extends State<RecomSpolightPage> {
+class _RecomSpolightPageState extends State<RecomSpolightPage>
+    with AutomaticKeepAliveClientMixin {
   SpotlightStore spotlightStore;
   LightingStore _lightingStore;
 
@@ -58,6 +59,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (_) {
       return SafeArea(
         child: EasyRefresh(
@@ -210,4 +212,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -73,14 +73,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     accountStore.fetch();
+    userSetting.init();
     super.initState();
-
-    initStep();
-  }
-
-  initStep() async {
-    await userSetting.init();
-  
   }
 
   @override

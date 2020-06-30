@@ -34,11 +34,15 @@ abstract class _TagHistoryStoreBase with Store {
 
   @action
   insert(TagsPersist tagsPersist) async {
-    if (!tags.contains(tagsPersist)) {
-      await tagsPersistProvider.open();
-      await tagsPersistProvider.insert(tagsPersist);
-      await fetch();
+    for (int i = 0; i < tags.length; i++) {
+      if (tags[i].name == tagsPersist.name) {
+        return;
+        break;
+      }
     }
+    await tagsPersistProvider.open();
+    await tagsPersistProvider.insert(tagsPersist);
+    await fetch();
   }
 
   @action

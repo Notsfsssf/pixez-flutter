@@ -63,8 +63,8 @@ android {
         applicationId "com.perol.pixez"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 9
-        versionName "0.0.7 calculator ratio"
+        versionCode 10
+        versionName "0.0.8 pagestore"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

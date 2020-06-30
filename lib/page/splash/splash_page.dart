@@ -50,7 +50,7 @@ class _SplashPageState extends State<SplashPage>
 
   ReactionDisposer reactionDisposer, userDisposer;
   initMethod() {
-    userDisposer = reaction((_) => userSetting.displayMode, (_) {
+    userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
       if (userSetting.disableBypassSni)
         Navigator.pushReplacement(
             context,
@@ -92,7 +92,6 @@ class _SplashPageState extends State<SplashPage>
     controller?.dispose();
     userDisposer();
     reactionDisposer();
-
     super.dispose();
   }
 

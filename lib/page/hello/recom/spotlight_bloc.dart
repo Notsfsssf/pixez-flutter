@@ -15,12 +15,10 @@
  */
 
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/network/api_client.dart';
-
 import './bloc.dart';
 
 class SpotlightBloc extends Bloc<SpotlightEvent, SpotlightState> {

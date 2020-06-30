@@ -43,7 +43,8 @@ class NewPage extends StatefulWidget {
 enum WhyFarther { public, private }
 enum WhyFartherAll { all, public, private }
 
-class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
+class _NewPageState extends State<NewPage>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   TabController _controller;
 
   @override
@@ -53,11 +54,18 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
         TabController(initialIndex: _selectIndex, vsync: this, length: 3);
   }
 
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   int _selectIndex = 0;
   var routes = ['dymanic', 'bookmark', 'painter'];
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (context) {
       if (accountStore.now != null)
         return Scaffold(
@@ -141,5 +149,6 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
     });
   }
 
-
+  @override
+  bool get wantKeepAlive => true;
 }

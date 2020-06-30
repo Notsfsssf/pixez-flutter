@@ -77,7 +77,8 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
-  setDisableBypassSni(bool value) {
+  setDisableBypassSni(bool value) async {
+    await prefs.setBool('disable_bypass_sni', value);
     disableBypassSni = value;
   }
 
