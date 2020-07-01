@@ -46,6 +46,8 @@ abstract class _UserSettingBase with Store {
   @observable
   bool singleFolder = false;
   @observable
+  bool hIsNotAllow = false;
+  @observable
   String path = "";
   @observable
   String format = "";
@@ -59,6 +61,7 @@ abstract class _UserSettingBase with Store {
     path = prefs.getString("store_path");
     displayMode = prefs.getInt('display_mode');
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
+    hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -68,12 +71,16 @@ abstract class _UserSettingBase with Store {
         await FlutterDisplayMode.setMode(modeList[displayMode]);
       }
     }
-    debugPrint("path==========${path}");
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     format = prefs.getString(SAVE_FORMAT_KEY) ?? intialFormat;
-    debugPrint("language:${languageNum}");
     ApiClient.Accept_Language = languageList[languageNum];
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
+  }
+
+  @action
+  setHIsNotAllow(bool value) async {
+    await prefs.setBool('h_is_not_allow', value);
+    hIsNotAllow = value;
   }
 
   @action

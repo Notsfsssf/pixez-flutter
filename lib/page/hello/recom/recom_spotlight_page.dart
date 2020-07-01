@@ -16,6 +16,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyrefresh/bezier_circle_header.dart';
+import 'package:flutter_easyrefresh/bezier_hour_glass_header.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -61,57 +63,71 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Observer(builder: (_) {
-      return SafeArea(
-        child: EasyRefresh(
-          controller: _easyRefreshController,
-          enableControlFinishLoad: true,
-          enableControlFinishRefresh: true,
-          firstRefresh: true,
-          onRefresh: () {
-            return fetchT();
-          },
-          onLoad: () {
-            return _lightingStore.fetchNext();
-          },
-          child: _lightingStore.illusts.isNotEmpty
-              ? StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.all(0.0),
-                  staggeredTileBuilder: (int index) {
-                    if (index < 3)
-                      return StaggeredTile.fit(2);
-                    else {
-                      double screanWidth = MediaQuery.of(context).size.width;
-                      double itemWidth = (screanWidth / 2.0) - 32.0;
-                      double radio = _lightingStore.illusts[index - 3].height
-                              .toDouble() /
-                          _lightingStore.illusts[index - 3].width.toDouble();
-                      double mainAxisExtent;
-                      if (radio > 2)
-                        mainAxisExtent = itemWidth;
-                      else
-                        mainAxisExtent = itemWidth * radio;
-                      return StaggeredTile.extent(1, mainAxisExtent + 80.0);
-                    }
-                  },
-                  itemCount: _lightingStore.illusts.length + 3,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == 0) return _buildFirstRow(context);
-                    if (index == 1) return _buildSpotlightContainer();
-                    if (index == 2) return _buildSecondRow(context);
-                    if (index >= 3)
-                      return IllustCard(
-                        _lightingStore.illusts[index - 3],
-                        illustList: _lightingStore.illusts,
-                      );
-
-                    return Container();
-                  },
-                )
-              : Container(),
-        ),
-      );
+      return buildEasyRefresh(context);
     });
+  }
+
+  Widget buildEasyRefresh(BuildContext context) {
+    return EasyRefresh(
+      controller: _easyRefreshController,
+      enableControlFinishLoad: true,
+      enableControlFinishRefresh: true,
+      header:
+          BezierCircleHeader(backgroundColor: Theme.of(context).accentColor),
+      firstRefresh: true,
+      onRefresh: () {
+        return fetchT();
+      },
+      firstRefreshWidget: Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      onLoad: () {
+        return _lightingStore.fetchNext();
+      },
+      child: _lightingStore.illusts.isNotEmpty
+          ? StaggeredGridView.countBuilder(
+              crossAxisCount: 2,
+              padding: EdgeInsets.all(0.0),
+              staggeredTileBuilder: (int index) {
+                if (index < 3)
+                  return StaggeredTile.fit(2);
+                else {
+                  double screanWidth = MediaQuery.of(context).size.width;
+                  double itemWidth = (screanWidth / 2.0) - 32.0;
+                  double radio =
+                      _lightingStore.illusts[index - 3].height.toDouble() /
+                          _lightingStore.illusts[index - 3].width.toDouble();
+                  double mainAxisExtent;
+                  if (radio > 2)
+                    mainAxisExtent = itemWidth;
+                  else
+                    mainAxisExtent = itemWidth * radio;
+                  return StaggeredTile.extent(1, mainAxisExtent + 80.0);
+                }
+              },
+              itemCount: _lightingStore.illusts.length + 3,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0)
+                  return AppBar(
+                    elevation: 0.0,
+                    backgroundColor: Colors.transparent,
+                    title: _buildFirstRow(context),
+                  );
+                if (index == 1) return _buildSpotlightContainer();
+                if (index == 2) return _buildSecondRow(context);
+                if (index >= 3)
+                  return IllustCard(
+                    _lightingStore.illusts[index - 3],
+                    illustList: _lightingStore.illusts,
+                  );
+
+                return Container();
+              },
+            )
+          : Container(),
+    );
   }
 
   Container _buildSpotlightContainer() {
@@ -134,48 +150,37 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget _buildFirstRow(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        AppBar(
-          automaticallyImplyLeading: false,
-          titleSpacing: 0.0,
-          title: Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  child: Padding(
-                    child: Text(
-                      I18n.of(context).Spotlight,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                          color: Theme.of(context).textTheme.headline6.color),
-                    ),
-                    padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
-                  ),
-                ),
-                Padding(
-                  child: FlatButton(
-                    child: Text(I18n.of(context).More),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return SpotLightPage();
-                      }));
-                    },
-                  ),
-                  padding: EdgeInsets.all(8.0),
-                )
-              ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            child: Padding(
+              child: Text(
+                I18n.of(context).Spotlight,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30.0,
+                    color: Theme.of(context).textTheme.headline6.color),
+              ),
+              padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
             ),
           ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-        ),
-      ],
+          Padding(
+            child: FlatButton(
+              child: Text(I18n.of(context).More),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return SpotLightPage();
+                }));
+              },
+            ),
+            padding: EdgeInsets.all(8.0),
+          )
+        ],
+      ),
     );
   }
 

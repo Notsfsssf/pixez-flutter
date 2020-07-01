@@ -208,6 +208,21 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     }),
               );
             }),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Observer(builder: (_) {
+              return Card(
+                child: SwitchListTile(
+                    value: userSetting.hIsNotAllow,
+                    title: Text(userSetting.hIsNotAllow?'H是不行的！':'H是可以的！(ˉ﹃ˉ)'),
+                    onChanged: (value) async {
+            
+                        userSetting.setHIsNotAllow(value);
+                   
+                    }),
+              );
+            }),
           )
         ]),
       ),

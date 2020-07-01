@@ -19,6 +19,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
@@ -55,33 +56,68 @@ class _IllustCardState extends State<IllustCard> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MuteBloc, MuteState>(builder: (context, snapshot) {
-      if (snapshot is DataMuteState) {
-        for (var i in snapshot.banIllustIds) {
-          if (i.illustId == widget._illusts.id.toString())
-            return Visibility(
-              visible: false,
-              child: Container(),
+    return Observer(builder: (_) {
+      if (userSetting.hIsNotAllow)
+        for (int i = 0; i < widget._illusts.tags.length; i++) {
+          if (widget._illusts.tags[i].name.startsWith('R-18'))
+            return InkWell(
+              onTap: () => {
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(builder: (_) {
+                  if (widget.illustList != null) {
+                    return PictureListPage(
+                      illusts: widget.illustList,
+                      nowPosition: widget.illustList.indexOf(widget._illusts),
+                    );
+                  }
+                  return PicturePage(
+                    widget._illusts,
+                    widget._illusts.id,
+                  );
+                }))
+              },
+              onLongPress: () {
+                saveStore.saveImage(widget._illusts);
+              },
+              child: Card(
+                margin: EdgeInsets.all(8.0),
+                elevation: 8.0,
+                clipBehavior: Clip.antiAlias,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                child: Image.asset('assets/h.jpg'),
+              ),
             );
         }
-        for (var j in snapshot.banUserIds) {
-          if (j.userId == widget._illusts.user.id.toString())
-            return Visibility(
-              visible: false,
-              child: Container(),
-            );
-        }
-        for (var t in snapshot.banTags) {
-          for (var f in widget._illusts.tags) {
-            if (f.name == t.name)
+
+      return BlocBuilder<MuteBloc, MuteState>(builder: (context, snapshot) {
+        if (snapshot is DataMuteState) {
+          for (var i in snapshot.banIllustIds) {
+            if (i.illustId == widget._illusts.id.toString())
               return Visibility(
                 visible: false,
                 child: Container(),
               );
           }
+          for (var j in snapshot.banUserIds) {
+            if (j.userId == widget._illusts.user.id.toString())
+              return Visibility(
+                visible: false,
+                child: Container(),
+              );
+          }
+          for (var t in snapshot.banTags) {
+            for (var f in widget._illusts.tags) {
+              if (f.name == t.name)
+                return Visibility(
+                  visible: false,
+                  child: Container(),
+                );
+            }
+          }
         }
-      }
-      return buildInkWell(context);
+        return buildInkWell(context);
+      });
     });
   }
 
@@ -173,7 +209,7 @@ class _IllustCardState extends State<IllustCard> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 8.0, right: 34.0, top: 4,bottom: 4),
+                              left: 8.0, right: 34.0, top: 4, bottom: 4),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -219,7 +255,10 @@ class _IllustCardState extends State<IllustCard> {
                   ),
                 ),
               ),
-              Align(child: _buildVisibility(),alignment: Alignment.topRight,)
+              Align(
+                child: _buildVisibility(),
+                alignment: Alignment.topRight,
+              )
             ],
           ),
         ),

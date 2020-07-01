@@ -85,6 +85,21 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$hIsNotAllowAtom = Atom(name: '_UserSettingBase.hIsNotAllow');
+
+  @override
+  bool get hIsNotAllow {
+    _$hIsNotAllowAtom.reportRead();
+    return super.hIsNotAllow;
+  }
+
+  @override
+  set hIsNotAllow(bool value) {
+    _$hIsNotAllowAtom.reportWrite(value, super.hIsNotAllow, () {
+      super.hIsNotAllow = value;
+    });
+  }
+
   final _$pathAtom = Atom(name: '_UserSettingBase.path');
 
   @override
@@ -120,6 +135,14 @@ mixin _$UserSetting on _UserSettingBase, Store {
   @override
   Future<void> init() {
     return _$initAsyncAction.run(() => super.init());
+  }
+
+  final _$setHIsNotAllowAsyncAction =
+      AsyncAction('_UserSettingBase.setHIsNotAllow');
+
+  @override
+  Future setHIsNotAllow(bool value) {
+    return _$setHIsNotAllowAsyncAction.run(() => super.setHIsNotAllow(value));
   }
 
   final _$setDisableBypassSniAsyncAction =
@@ -198,6 +221,7 @@ languageNum: ${languageNum},
 displayMode: ${displayMode},
 disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},
+hIsNotAllow: ${hIsNotAllow},
 path: ${path},
 format: ${format}
     ''';
