@@ -41,7 +41,8 @@ class _RankingPageState extends State<RankingPage>
     "week",
     "month",
     "day_r18",
-    "week_r18"
+    "week_r18",
+    "week_r18g"
   ];
   var boolList = Map<String, bool>();
 

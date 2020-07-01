@@ -26,6 +26,7 @@ import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
@@ -209,7 +210,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return Scaffold(
-                  body: RankingPage(),
+                  body: RankPage(),
                 );
               }));
             },
