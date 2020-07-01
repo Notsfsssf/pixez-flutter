@@ -171,57 +171,52 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Observer(builder: (_) {
-              return Card(
-                child: SwitchListTile(
-                    value: userSetting.disableBypassSni,
-                    title: Text(I18n.of(context).Disable_Sni_Bypass),
-                    subtitle: Text(I18n.of(context).Disable_Sni_Bypass_Message),
-                    onChanged: (value) async {
-                      if (value) {
-                        final result = await showDialog(
-                            context: context,
-                            builder: (_) {
-                              return AlertDialog(
-                                title: Text(I18n.of(context).Please_Note_That),
-                                content: Text(
-                                    I18n.of(context).Please_Note_That_Content),
-                                actions: <Widget>[
-                                  FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop('OK');
-                                      },
-                                      child: Text('ok')),
-                                  FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop('OK');
-                                      },
-                                      child: Text('cancel'))
-                                ],
-                              );
-                            });
-                        if (result == 'OK') {
-                          userSetting.setDisableBypassSni(value);
-                        }
-                      } else {
+              return SwitchListTile(
+                  value: userSetting.disableBypassSni,
+                  title: Text(I18n.of(context).Disable_Sni_Bypass),
+                  subtitle: Text(I18n.of(context).Disable_Sni_Bypass_Message),
+                  onChanged: (value) async {
+                    if (value) {
+                      final result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              title: Text(I18n.of(context).Please_Note_That),
+                              content: Text(
+                                  I18n.of(context).Please_Note_That_Content),
+                              actions: <Widget>[
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop('OK');
+                                    },
+                                    child: Text('ok')),
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop('OK');
+                                    },
+                                    child: Text('cancel'))
+                              ],
+                            );
+                          });
+                      if (result == 'OK') {
                         userSetting.setDisableBypassSni(value);
                       }
-                    }),
-              );
+                    } else {
+                      userSetting.setDisableBypassSni(value);
+                    }
+                  });
             }),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Observer(builder: (_) {
-              return Card(
-                child: SwitchListTile(
-                    value: userSetting.hIsNotAllow,
-                    title: Text(userSetting.hIsNotAllow?'H是不行的！':'H是可以的！(ˉ﹃ˉ)'),
-                    onChanged: (value) async {
-            
-                        userSetting.setHIsNotAllow(value);
-                   
-                    }),
-              );
+              return SwitchListTile(
+                  value: userSetting.hIsNotAllow,
+                  title:
+                      Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
+                  onChanged: (value) async {
+                    userSetting.setHIsNotAllow(value);
+                  });
             }),
           )
         ]),

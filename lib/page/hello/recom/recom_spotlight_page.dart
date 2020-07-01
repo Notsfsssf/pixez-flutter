@@ -112,6 +112,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 if (index == 0)
                   return AppBar(
                     elevation: 0.0,
+                    titleSpacing: 0.0,
+                    automaticallyImplyLeading: false,
                     backgroundColor: Colors.transparent,
                     title: _buildFirstRow(context),
                   );

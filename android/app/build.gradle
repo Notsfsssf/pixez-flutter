@@ -64,7 +64,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 10
-        versionName "0.0.8 pagestore"
+        versionName "0.0.9 h"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
