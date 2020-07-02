@@ -298,6 +298,7 @@ abstract class _SaveStoreBase with Store {
 
   toFullPath(String name) => '${userSetting.path}/${name}';
   DateTime isIllustPartExist(Illusts illusts, {int index}) {
+    if (Platform.isIOS) return null;
     String memType;
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage.originalImageUrl;

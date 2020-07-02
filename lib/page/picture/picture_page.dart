@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -811,17 +813,21 @@ class _PicturePageState extends State<PicturePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          ListTile(
-                            title: Text(illust.title),
-                            subtitle:
-                               isFileExist==null? Text(I18n.of(context).Unsaved):Text('${I18n.of(context).Already_Saved} ${isFileExist.toString()}'),
-                            trailing: isFileExist == null
-                                ? Icon(Icons.info)
-                                : Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                  ),
-                          ),
+                          Platform.isAndroid
+                              ? ListTile(
+                                  title: Text(illust.title),
+                                  subtitle: isFileExist == null
+                                      ? Text(I18n.of(context).Unsaved)
+                                      : Text(
+                                          '${I18n.of(context).Already_Saved} ${isFileExist.toString()}'),
+                                  trailing: isFileExist == null
+                                      ? Icon(Icons.info)
+                                      : Icon(
+                                          Icons.check_circle,
+                                          color: Colors.green,
+                                        ),
+                                )
+                              : Container(),
                           illust.metaPages.isNotEmpty
                               ? ListTile(
                                   title:

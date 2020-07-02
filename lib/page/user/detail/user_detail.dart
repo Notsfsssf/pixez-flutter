@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -70,6 +71,16 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               child: SelectableText(detail.user.name))),
                     ],
                     rows: <DataRow>[
+                      DataRow(cells: [
+                        DataCell(Text('User id')),
+                        DataCell(SelectableText(detail.user.id.toString()),
+                            onTap: () {
+                              try {
+                                Clipboard.setData(ClipboardData(text: detail.user.id.toString()));
+                              } catch (e) {
+                              }
+                            }),
+                      ]),
                       DataRow(cells: [
                         DataCell(Text('Total follow users')),
                         DataCell(
