@@ -839,6 +839,7 @@ class _PicturePageState extends State<PicturePage> {
                                     Navigator.of(context).pop();
                                     List<bool> indexs =
                                         List(illust.metaPages.length);
+                                    bool allOn = false;
                                     for (int i = 0;
                                         i < illust.metaPages.length;
                                         i++) {
@@ -870,18 +871,47 @@ class _PicturePageState extends State<PicturePage> {
                                             child: ListView.builder(
                                               shrinkWrap: true,
                                               itemBuilder: (context, index) =>
-                                                  ListTile(
-                                                title: Text(index.toString()),
-                                                trailing: Checkbox(
-                                                    value: indexs[index],
-                                                    onChanged: (ischeck) {
-                                                      setDialogState(() {
-                                                        indexs[index] = ischeck;
-                                                      });
-                                                    }),
-                                              ),
+                                                  index == 0
+                                                      ? ListTile(
+                                                          title: Text('all'),
+                                                          trailing: Checkbox(
+                                                              value: allOn,
+                                                              onChanged:
+                                                                  (ischeck) {
+                                                                setDialogState(
+                                                                    () {
+                                                                  allOn = true;
+                                                                  for (int i =
+                                                                          0;
+                                                                      i <
+                                                                          indexs
+                                                                              .length;
+                                                                      i++) {
+                                                                    indexs[i] =
+                                                                        true;
+                                                                  }//这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                                                                });
+                                                              }),
+                                                        )
+                                                      : ListTile(
+                                                          title: Text(
+                                                              (index - 1)
+                                                                  .toString()),
+                                                          trailing: Checkbox(
+                                                              value: indexs[
+                                                                  index - 1],
+                                                              onChanged:
+                                                                  (ischeck) {
+                                                                setDialogState(
+                                                                    () {
+                                                                  indexs[index -
+                                                                          1] =
+                                                                      ischeck;
+                                                                });
+                                                              }),
+                                                        ),
                                               itemCount:
-                                                  illust.metaPages.length,
+                                                  illust.metaPages.length + 1,
                                             ),
                                           ),
                                         );

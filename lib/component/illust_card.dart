@@ -202,7 +202,7 @@ class _IllustCardState extends State<IllustCard> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   color: Theme.of(context).cardColor,
-                  height: 46,
+                  height: 48,
                   child: Stack(
                     children: <Widget>[
                       Align(
