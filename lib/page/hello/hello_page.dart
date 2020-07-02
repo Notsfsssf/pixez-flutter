@@ -44,11 +44,14 @@ class _HelloPageState extends State<HelloPage> {
   @override
   void dispose() {
     _sub?.cancel();
+    _pageController?.dispose();
     super.dispose();
   }
 
+  PageController _pageController;
   @override
   void initState() {
+    _pageController = PageController();
     super.initState();
     saveStore.saveStream.listen((stream) {
       listenBehavior(context, stream);
@@ -128,8 +131,8 @@ class _HelloPageState extends State<HelloPage> {
     } catch (e) {
       print(e);
     }
-      var prefs = await SharedPreferences.getInstance();
-       if (prefs.getInt('language_num') == null) {
+    var prefs = await SharedPreferences.getInstance();
+    if (prefs.getInt('language_num') == null) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
     }
@@ -141,17 +144,35 @@ class _HelloPageState extends State<HelloPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Observer(builder: (_) {
-        return IndexedStack(
-          index: index,
-          children: accountStore.now != null
-              ? <Widget>[
-                  RecomSpolightPage(),
-                  NewPage(),
-                  SearchPage(),
-                  SettingPage()
-                ]
-              : [PreviewPage(), NewPage(), SearchPage(), SettingPage()],
-        );
+        return accountStore.now != null
+            ? PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    this.index = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  var lists = <Widget>[
+                    RecomSpolightPage(),
+                    NewPage(),
+                    SearchPage(),
+                    SettingPage()
+                  ];
+
+                  return lists[index];
+                })
+            : PageView.builder(
+                controller: _pageController,
+                itemBuilder: (context, index) {
+                  var lists = [
+                    PreviewPage(),
+                    NewPage(),
+                    SearchPage(),
+                    SettingPage()
+                  ];
+                  return lists[index];
+                });
       }),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -160,6 +181,7 @@ class _HelloPageState extends State<HelloPage> {
             setState(() {
               this.index = index;
             });
+            _pageController.jumpToPage(index);
           },
           items: [
             BottomNavigationBarItem(

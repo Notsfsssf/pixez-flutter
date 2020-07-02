@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -38,6 +40,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
+                    if(Platform.isAndroid)
           launch('https://github.com/itzXian');
         } catch (e) {}
       },
@@ -59,6 +62,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
+          if(Platform.isAndroid)
           launch('https://github.com/TragicLifeHu');
         } catch (e) {}
       },

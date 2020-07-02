@@ -306,6 +306,7 @@ class _AboutPageState extends State<AboutPage> {
           title: Text(I18n.of(context).Thanks),
           subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
           onTap: () {
+            if(Platform.isAndroid)
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => Scaffold(
                       appBar: AppBar(),
@@ -323,7 +324,7 @@ class _AboutPageState extends State<AboutPage> {
             }
           },
         ),
-        ...[
+        ...Platform.isAndroid?[
           ListTile(
             title: Text('如果你觉得这个应用还不错'),
             subtitle: Text('支持一下开发者吧!'),
@@ -354,7 +355,7 @@ class _AboutPageState extends State<AboutPage> {
               },
             ),
           ),
-        ],
+        ]:[],
         ...(Platform.isIOS)
             ? [
                 Card(
