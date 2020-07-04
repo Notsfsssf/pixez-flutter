@@ -889,7 +889,7 @@ class _PicturePageState extends State<PicturePage> {
                                                                       i++) {
                                                                     indexs[i] =
                                                                         true;
-                                                                  }//这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                                                                  } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
                                                                 });
                                                               }),
                                                         )

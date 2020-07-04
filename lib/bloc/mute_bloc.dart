@@ -23,6 +23,7 @@ import 'package:pixez/models/ban_user_id.dart';
 
 import './bloc.dart';
 
+@Deprecated('mobx')
 class MuteBloc extends Bloc<MuteEvent, MuteState> {
   BanIllustIdProvider banIllustIdProvider = BanIllustIdProvider();
   var banUserIdProvider = BanUserIdProvider();

@@ -19,7 +19,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -74,6 +73,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     accountStore.fetch();
     userSetting.init();
+    muteStore.fetchBanUserIds();
+    muteStore.fetchBanIllusts();
+    muteStore.fetchBanTags();
     super.initState();
   }
 

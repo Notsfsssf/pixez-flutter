@@ -40,6 +40,9 @@ abstract class _UserSettingBase with Store {
   @observable
   int languageNum = 0;
   @observable
+  int welcomePageNum = 0;
+
+  @observable
   int displayMode;
   @observable
   bool disableBypassSni = false;
@@ -62,6 +65,7 @@ abstract class _UserSettingBase with Store {
     displayMode = prefs.getInt('display_mode');
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
+    welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -75,6 +79,12 @@ abstract class _UserSettingBase with Store {
     format = prefs.getString(SAVE_FORMAT_KEY) ?? intialFormat;
     ApiClient.Accept_Language = languageList[languageNum];
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
+  }
+
+  @action
+  setWelcomePageNum(int value) async {
+    await prefs.setInt('welcome_page_num', value);
+    welcomePageNum = value;
   }
 
   @action

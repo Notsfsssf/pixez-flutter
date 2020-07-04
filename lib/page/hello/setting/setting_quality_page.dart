@@ -40,8 +40,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
-                    if(Platform.isAndroid)
-          launch('https://github.com/itzXian');
+          if (Platform.isAndroid) launch('https://github.com/itzXian');
         } catch (e) {}
       },
       child: Row(
@@ -62,8 +61,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
-          if(Platform.isAndroid)
-          launch('https://github.com/TragicLifeHu');
+          if (Platform.isAndroid) launch('https://github.com/TragicLifeHu');
         } catch (e) {}
       },
       child: Row(
@@ -166,6 +164,67 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           length: 3,
                           vsync: this,
                           initialIndex: userSetting.languageNum),
+                    ),
+                  );
+                })
+              ],
+            )),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(
+                child: Column(
+              children: <Widget>[
+                Padding(
+                  child: Text("Welcome Page"),
+                  padding: EdgeInsets.all(16),
+                ),
+                Observer(builder: (_) {
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                        tabBarTheme: TabBarTheme(labelColor: Colors.black)),
+                    child: TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: Platform.isAndroid
+                          ? [
+                              Tab(
+                                text: I18n.of(context).Home,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Rank,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Quick_View,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Search,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Setting,
+                              ),
+                            ]
+                          : [
+                              Tab(
+                                text: I18n.of(context).Home,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Quick_View,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Search,
+                              ),
+                              Tab(
+                                text: I18n.of(context).Setting,
+                              ),
+                            ],
+                      onTap: (index) {
+                        userSetting.setWelcomePageNum(index);
+                      },
+                      controller: TabController(
+                          length: 3,
+                          vsync: this,
+                          initialIndex: userSetting.welcomePageNum),
                     ),
                   );
                 })

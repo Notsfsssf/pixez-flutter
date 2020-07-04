@@ -48,13 +48,16 @@ class _HelloPageState extends State<HelloPage> {
     super.dispose();
   }
 
+  int index;
   PageController _pageController;
   @override
   void initState() {
-    _pageController = PageController();
+    index = userSetting.welcomePageNum;
+    _pageController = PageController(initialPage: userSetting.welcomePageNum);
     super.initState();
+    saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {
-      listenBehavior(context, stream);
+      saveStore.listenBehavior(stream);
     });
     initPlatformState();
   }
@@ -137,8 +140,6 @@ class _HelloPageState extends State<HelloPage> {
           .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
     }
   }
-
-  int index = 0;
 
   @override
   Widget build(BuildContext context) {

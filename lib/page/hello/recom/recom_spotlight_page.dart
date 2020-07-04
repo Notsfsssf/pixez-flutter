@@ -61,6 +61,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   @override
+  void dispose() {
+    _easyRefreshController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Observer(builder: (_) {

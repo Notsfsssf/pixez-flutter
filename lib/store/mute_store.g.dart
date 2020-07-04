@@ -34,6 +34,53 @@ mixin _$MuteStore on _MuteStoreBase, Store {
     return _$deleteBanUserIdAsyncAction.run(() => super.deleteBanUserId(id));
   }
 
+  final _$fetchBanTagsAsyncAction = AsyncAction('_MuteStoreBase.fetchBanTags');
+
+  @override
+  Future fetchBanTags() {
+    return _$fetchBanTagsAsyncAction.run(() => super.fetchBanTags());
+  }
+
+  final _$insertBanTagAsyncAction = AsyncAction('_MuteStoreBase.insertBanTag');
+
+  @override
+  Future insertBanTag(BanTagPersist banTagsPersist) {
+    return _$insertBanTagAsyncAction
+        .run(() => super.insertBanTag(banTagsPersist));
+  }
+
+  final _$deleteBanTagAsyncAction = AsyncAction('_MuteStoreBase.deleteBanTag');
+
+  @override
+  Future deleteBanTag(int id) {
+    return _$deleteBanTagAsyncAction.run(() => super.deleteBanTag(id));
+  }
+
+  final _$fetchBanIllustsAsyncAction =
+      AsyncAction('_MuteStoreBase.fetchBanIllusts');
+
+  @override
+  Future fetchBanIllusts() {
+    return _$fetchBanIllustsAsyncAction.run(() => super.fetchBanIllusts());
+  }
+
+  final _$insertBanIllustsAsyncAction =
+      AsyncAction('_MuteStoreBase.insertBanIllusts');
+
+  @override
+  Future insertBanIllusts(BanIllustIdPersist banIllustIdPersist) {
+    return _$insertBanIllustsAsyncAction
+        .run(() => super.insertBanIllusts(banIllustIdPersist));
+  }
+
+  final _$deleteBanIllustsAsyncAction =
+      AsyncAction('_MuteStoreBase.deleteBanIllusts');
+
+  @override
+  Future deleteBanIllusts(int id) {
+    return _$deleteBanIllustsAsyncAction.run(() => super.deleteBanIllusts(id));
+  }
+
   @override
   String toString() {
     return '''

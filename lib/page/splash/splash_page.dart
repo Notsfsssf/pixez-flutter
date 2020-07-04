@@ -97,7 +97,6 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    saveStore.initContext(I18n.of(context));
     return Observer(builder: (_) {
       return Scaffold(
         body: Column(

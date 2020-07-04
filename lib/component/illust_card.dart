@@ -20,7 +20,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -31,8 +30,12 @@ import 'package:pixez/page/picture/picture_page.dart';
 class IllustCard extends StatefulWidget {
   Illusts _illusts;
   final List<Illusts> illustList;
-
-  IllustCard(this._illusts, {this.illustList});
+  bool needToBan;
+  IllustCard(
+    this._illusts, {
+    this.illustList,
+    this.needToBan = false,
+  });
 
   @override
   _IllustCardState createState() => _IllustCardState();
@@ -89,35 +92,30 @@ class _IllustCardState extends State<IllustCard> {
               ),
             );
         }
-
-      return BlocBuilder<MuteBloc, MuteState>(builder: (context, snapshot) {
-        if (snapshot is DataMuteState) {
-          for (var i in snapshot.banIllustIds) {
-            if (i.illustId == widget._illusts.id.toString())
-              return Visibility(
-                visible: false,
-                child: Container(),
-              );
-          }
-          for (var j in snapshot.banUserIds) {
-            if (j.userId == widget._illusts.user.id.toString())
-              return Visibility(
-                visible: false,
-                child: Container(),
-              );
-          }
-          for (var t in snapshot.banTags) {
-            for (var f in widget._illusts.tags) {
-              if (f.name == t.name)
-                return Visibility(
-                  visible: false,
-                  child: Container(),
-                );
-            }
-          }
+      for (var i in muteStore.banillusts) {
+        if (i.illustId == widget._illusts.id.toString())
+          return Visibility(
+            visible: false,
+            child: Container(),
+          );
+      }
+      for (var j in muteStore.banUserIds) {
+        if (j.userId == widget._illusts.user.id.toString())
+          return Visibility(
+            visible: false,
+            child: Container(),
+          );
+      }
+      for (var t in muteStore.banTags) {
+        for (var f in widget._illusts.tags) {
+          if (f.name == t.name)
+            return Visibility(
+              visible: false,
+              child: Container(),
+            );
         }
-        return buildInkWell(context);
-      });
+      }
+      return buildInkWell(context);
     });
   }
 

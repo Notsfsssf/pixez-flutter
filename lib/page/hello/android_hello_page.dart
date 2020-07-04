@@ -48,8 +48,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     SearchPage(),
     SettingPage()
   ];
-  int index = 0;
-  PageController _pageController;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -97,12 +96,16 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     });
   }
 
+  int index;
+  PageController _pageController;
   @override
   void initState() {
-    _pageController = PageController();
+    index = userSetting.welcomePageNum;
+    _pageController = PageController(initialPage: userSetting.welcomePageNum);
     super.initState();
+    saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {
-      listenBehavior(context, stream);
+      saveStore.listenBehavior(stream);
     });
     initPlatformState();
   }
@@ -114,6 +117,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(builder: (context) {
+          saveStore.context = context;
           return PicturePage(null, id);
         }));
       } catch (e) {}
@@ -125,6 +129,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(builder: (context) {
+          saveStore.context = context;
           return UsersPage(
             id: id,
           );
@@ -141,6 +146,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
+              saveStore.context = context;
               return PicturePage(null, id);
             }));
             return;
@@ -155,6 +161,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
+              saveStore.context = context;
               return UsersPage(
                 id: id,
               );
@@ -169,6 +176,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           var id = link.queryParameters['illust_id'];
           Navigator.of(context, rootNavigator: true)
               .pushReplacement(MaterialPageRoute(builder: (context) {
+            saveStore.context = context;
             return PicturePage(null, int.parse(id));
           }));
 
@@ -178,10 +186,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       if (link.queryParameters['id'] != null) {
         try {
           var id = link.queryParameters['id'];
-          Navigator.of(context, rootNavigator: true).pushReplacement(MaterialPageRoute(
-              builder: (context) => UsersPage(
-                    id: int.parse(id),
-                  )));
+          Navigator.of(context, rootNavigator: true)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
+            saveStore.context = context;
+            return UsersPage(
+              id: int.parse(id),
+            );
+          }));
 
           return;
         } catch (e) {}
@@ -193,6 +204,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
+              saveStore.context = context;
               return PicturePage(null, id);
             }));
             return;
@@ -204,6 +216,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
+              saveStore.context = context;
               return UsersPage(
                 id: id,
               );

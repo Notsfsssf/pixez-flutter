@@ -51,108 +51,6 @@ class SaveStream {
   SaveStream(this.state, this.data, {this.index});
 }
 
-void listenBehavior(BuildContext context, SaveStream stream) {
-  switch (stream.state) {
-    case SaveState.SUCCESS:
-      BotToast.showCustomText(
-          onlyOne: true,
-          duration: Duration(seconds: 1),
-          toastBuilder: (textCancel) => Align(
-                alignment: Alignment(0, 0.8),
-                child: Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4.0),
-                        child: Text(
-                            "${stream.data.title} ${I18n.of(context).Saved}"),
-                      )
-                    ],
-                  ),
-                ),
-              ));
-      break;
-    case SaveState.JOIN:
-      BotToast.showCustomText(
-          onlyOne: true,
-          duration: Duration(seconds: 1),
-          toastBuilder: (textCancel) => Align(
-                alignment: Alignment(0, 0.8),
-                child: Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.arrow_downward),
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return ProgressPage();
-                            }));
-                          }),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("${I18n.of(context).Append_to_query}"),
-                      )
-                    ],
-                  ),
-                ),
-              ));
-      break;
-    case SaveState.INQUEUE:
-      BotToast.showCustomText(
-          onlyOne: true,
-          duration: Duration(seconds: 1),
-          toastBuilder: (textCancel) => Align(
-                alignment: Alignment(0, 0.8),
-                child: Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(icon: Icon(Icons.info), onPressed: () {}),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("${I18n.of(context).Already_in_query}"),
-                      )
-                    ],
-                  ),
-                ),
-              ));
-      break;
-    case SaveState.ALREADY:
-      BotToast.showCustomText(
-          onlyOne: true,
-          duration: Duration(seconds: 1),
-          toastBuilder: (textCancel) => Align(
-                alignment: Alignment(0, 0.8),
-                child: Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.refresh),
-                          onPressed: () {
-                            saveStore.redo(stream.data, stream.index);
-                          }),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("${I18n.of(context).Already_Saved}"),
-                      )
-                    ],
-                  ),
-                ),
-              ));
-      break;
-    default:
-  }
-}
-
 class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
@@ -166,12 +64,109 @@ abstract class _SaveStoreBase with Store {
     await _streamController?.close();
   }
 
-  I18n i18n;
-
-  @action
-  void initContext(I18n context) {
-    this.i18n = context;
+  void listenBehavior(SaveStream stream) {
+    switch (stream.state) {
+      case SaveState.SUCCESS:
+        BotToast.showCustomText(
+            onlyOne: true,
+            duration: Duration(seconds: 1),
+            toastBuilder: (textCancel) => Align(
+                  alignment: Alignment(0, 0.8),
+                  child: Card(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 4.0),
+                          child: Text(
+                              "${stream.data.title} ${I18n.of(context).Saved}"),
+                        )
+                      ],
+                    ),
+                  ),
+                ));
+        break;
+      case SaveState.JOIN:
+        BotToast.showCustomText(
+            onlyOne: true,
+            duration: Duration(seconds: 1),
+            toastBuilder: (textCancel) => Align(
+                  alignment: Alignment(0, 0.8),
+                  child: Card(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.arrow_downward),
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return ProgressPage();
+                              }));
+                            }),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text("${I18n.of(context).Append_to_query}"),
+                        )
+                      ],
+                    ),
+                  ),
+                ));
+        break;
+      case SaveState.INQUEUE:
+        BotToast.showCustomText(
+            onlyOne: true,
+            duration: Duration(seconds: 1),
+            toastBuilder: (textCancel) => Align(
+                  alignment: Alignment(0, 0.8),
+                  child: Card(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(icon: Icon(Icons.info), onPressed: () {}),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text("${I18n.of(context).Already_in_query}"),
+                        )
+                      ],
+                    ),
+                  ),
+                ));
+        break;
+      case SaveState.ALREADY:
+        BotToast.showCustomText(
+            onlyOne: true,
+            duration: Duration(seconds: 1),
+            toastBuilder: (textCancel) => Align(
+                  alignment: Alignment(0, 0.8),
+                  child: Card(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.refresh),
+                            onPressed: () {
+                              saveStore.redo(stream.data, stream.index);
+                            }),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text("${I18n.of(context).Already_Saved}"),
+                        )
+                      ],
+                    ),
+                  ),
+                ));
+        break;
+      default:
+    }
   }
+
+  BuildContext context;
 
   @observable
   ObservableMap<String, ProgressNum> progressMaps = ObservableMap();

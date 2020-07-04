@@ -25,9 +25,11 @@ class MuteStore = _MuteStoreBase with _$MuteStore;
 
 abstract class _MuteStoreBase with Store {
   BanIllustIdProvider banIllustIdProvider = BanIllustIdProvider();
-  var banUserIdProvider = BanUserIdProvider();
-  var banTagProvider = BanTagProvider();
+  BanUserIdProvider banUserIdProvider = BanUserIdProvider();
+  BanTagProvider banTagProvider = BanTagProvider();
   ObservableList<BanUserIdPersist> banUserIds = ObservableList();
+  ObservableList<BanTagPersist> banTags = ObservableList();
+  ObservableList<BanIllustIdPersist> banillusts = ObservableList();
 
   _MuteStoreBase() {
     fetchBanUserIds();
@@ -55,5 +57,49 @@ abstract class _MuteStoreBase with Store {
     await banUserIdProvider.open();
     await banUserIdProvider.delete(id);
     await fetchBanUserIds();
+  }
+
+  @action
+  fetchBanTags() async {
+    await banTagProvider.open();
+    var results = await banTagProvider.getAllAccount();
+    banTags.clear();
+    banTags.addAll(results);
+  }
+
+  @action
+  insertBanTag(BanTagPersist banTagsPersist) async {
+    await banTagProvider.open();
+    await banTagProvider.insert(banTagsPersist);
+    await fetchBanTags();
+  }
+
+  @action
+  deleteBanTag(int id) async {
+    await banTagProvider.open();
+    await banTagProvider.delete(id);
+    await fetchBanTags();
+  }
+
+  @action
+  fetchBanIllusts() async {
+    await banIllustIdProvider.open();
+    var results = await banIllustIdProvider.getAllAccount();
+    banillusts.clear();
+    banillusts.addAll(results);
+  }
+
+  @action
+  insertBanIllusts(BanIllustIdPersist banIllustIdPersist) async {
+    await banIllustIdProvider.open();
+    await banIllustIdProvider.insert(banIllustIdPersist);
+    await fetchBanTags();
+  }
+
+  @action
+  deleteBanIllusts(int id) async {
+    await banIllustIdProvider.open();
+    await banIllustIdProvider.delete(id);
+    await fetchBanTags();
   }
 }

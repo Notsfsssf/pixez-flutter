@@ -36,17 +36,6 @@ mixin _$SaveStore on _SaveStoreBase, Store {
       ActionController(name: '_SaveStoreBase');
 
   @override
-  void initContext(I18n context) {
-    final _$actionInfo = _$_SaveStoreBaseActionController.startAction(
-        name: '_SaveStoreBase.initContext');
-    try {
-      return super.initContext(context);
-    } finally {
-      _$_SaveStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void saveChoiceImage(Illusts illusts, List<bool> indexs) {
     final _$actionInfo = _$_SaveStoreBaseActionController.startAction(
         name: '_SaveStoreBase.saveChoiceImage');
