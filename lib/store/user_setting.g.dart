@@ -39,6 +39,21 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$welcomePageNumAtom = Atom(name: '_UserSettingBase.welcomePageNum');
+
+  @override
+  int get welcomePageNum {
+    _$welcomePageNumAtom.reportRead();
+    return super.welcomePageNum;
+  }
+
+  @override
+  set welcomePageNum(int value) {
+    _$welcomePageNumAtom.reportWrite(value, super.welcomePageNum, () {
+      super.welcomePageNum = value;
+    });
+  }
+
   final _$displayModeAtom = Atom(name: '_UserSettingBase.displayMode');
 
   @override
@@ -137,6 +152,15 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
+  final _$setWelcomePageNumAsyncAction =
+      AsyncAction('_UserSettingBase.setWelcomePageNum');
+
+  @override
+  Future setWelcomePageNum(int value) {
+    return _$setWelcomePageNumAsyncAction
+        .run(() => super.setWelcomePageNum(value));
+  }
+
   final _$setHIsNotAllowAsyncAction =
       AsyncAction('_UserSettingBase.setHIsNotAllow');
 
@@ -218,6 +242,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return '''
 zoomQuality: ${zoomQuality},
 languageNum: ${languageNum},
+welcomePageNum: ${welcomePageNum},
 displayMode: ${displayMode},
 disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},

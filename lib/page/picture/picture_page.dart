@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/bloc/illust_persist_bloc.dart';
@@ -34,6 +35,8 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_illust_id.dart';
+import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -225,31 +228,28 @@ class _PicturePageState extends State<PicturePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MuteBloc, MuteState>(
-        builder: (context, MuteState muteState) {
-      if (muteState is DataMuteState) {
-        for (var i in muteState.banIllustIds) {
-          if (i.illustId == widget.id.toString()) {
+    return Observer(builder: (context) {
+      for (var i in muteStore.banillusts) {
+        if (i.illustId == widget.id.toString()) {
+          return BanPage(
+            name: I18n.of(context).Illust,
+          );
+        }
+      }
+      if (widget._illusts != null) {
+        for (var j in muteStore.banUserIds) {
+          if (j.userId == widget._illusts.user.id.toString()) {
             return BanPage(
-              name: I18n.of(context).Illust,
+              name: I18n.of(context).Painter,
             );
           }
         }
-        if (widget._illusts != null) {
-          for (var j in muteStore.banUserIds) {
-            if (j.userId == widget._illusts.user.id.toString()) {
+        for (var t in muteStore.banTags) {
+          for (var t1 in widget._illusts.tags) {
+            if (t.name == t1.name)
               return BanPage(
-                name: I18n.of(context).Painter,
+                name: I18n.of(context).Tag,
               );
-            }
-          }
-          for (var t in muteState.banTags) {
-            for (var t1 in widget._illusts.tags) {
-              if (t.name == t1.name)
-                return BanPage(
-                  name: I18n.of(context).Tag,
-                );
-            }
           }
         }
       }
@@ -318,7 +318,7 @@ class _PicturePageState extends State<PicturePage> {
                   ));
                 }
                 if (illustState is DataIllustState) {
-                  if (muteState is DataMuteState && widget._illusts == null) {
+                  if (widget._illusts == null) {
                     for (var j in muteStore.banUserIds) {
                       if (j.userId == illustState.illusts.user.id.toString()) {
                         return BanPage(
@@ -326,7 +326,7 @@ class _PicturePageState extends State<PicturePage> {
                         );
                       }
                     }
-                    for (var t in muteState.banTags) {
+                    for (var t in muteStore.banTags) {
                       for (var t1 in illustState.illusts.tags) {
                         if (t.name == t1.name)
                           return BanPage(
@@ -551,9 +551,9 @@ class _PicturePageState extends State<PicturePage> {
                         title: Text(I18n.of(context).Ban),
                         leading: Icon(Icons.brightness_auto),
                         onTap: () {
-                          BlocProvider.of<MuteBloc>(context).add(
-                              InsertBanIllustEvent(
-                                  widget.id.toString(), illusts.title));
+                          muteStore.insertBanIllusts(BanIllustIdPersist()
+                            ..illustId = widget.id.toString()
+                            ..name = illusts.title);
                           Navigator.pop(context);
                         },
                       ),
@@ -1070,9 +1070,10 @@ class _PicturePageState extends State<PicturePage> {
                                       })) {
                                     case "OK":
                                       {
-                                        BlocProvider.of<MuteBloc>(context).add(
-                                            InsertBanTagEvent(f.name,
-                                                f.translatedName ?? "_"));
+                                        muteStore.insertBanTag(BanTagPersist()
+                                          ..name = f.name
+                                          ..translateName =
+                                              f.translatedName ?? '_');
                                       }
                                       break;
                                   }

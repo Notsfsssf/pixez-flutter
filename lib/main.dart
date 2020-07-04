@@ -86,9 +86,6 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<IllustPersistBloc>(
           create: (context) => IllustPersistBloc(),
         ),
-        BlocProvider<MuteBloc>(
-          create: (context) => MuteBloc()..add(FetchMuteEvent()),
-        ),
       ],
       child: MultiRepositoryProvider(
         providers: [

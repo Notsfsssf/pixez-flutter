@@ -32,7 +32,6 @@ abstract class _MuteStoreBase with Store {
   ObservableList<BanIllustIdPersist> banillusts = ObservableList();
 
   _MuteStoreBase() {
-    fetchBanUserIds();
   }
 
   @action
@@ -93,13 +92,13 @@ abstract class _MuteStoreBase with Store {
   insertBanIllusts(BanIllustIdPersist banIllustIdPersist) async {
     await banIllustIdProvider.open();
     await banIllustIdProvider.insert(banIllustIdPersist);
-    await fetchBanTags();
+    await fetchBanIllusts();
   }
 
   @action
   deleteBanIllusts(int id) async {
     await banIllustIdProvider.open();
     await banIllustIdProvider.delete(id);
-    await fetchBanTags();
+    await fetchBanIllusts();
   }
 }

@@ -33,7 +33,7 @@ class NewIllustPage extends StatefulWidget {
 }
 
 class _NewIllustPageState extends State<NewIllustPage>
-    with AutomaticKeepAliveClientMixin {
+   {
   FutureGet futureGet;
 
   @override
@@ -45,7 +45,6 @@ class _NewIllustPageState extends State<NewIllustPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return LightingList(
       header: Container(
           child: Align(
@@ -106,6 +105,4 @@ class _NewIllustPageState extends State<NewIllustPage>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

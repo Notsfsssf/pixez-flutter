@@ -180,49 +180,50 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {
+                  var tablist = Platform.isAndroid
+                      ? [
+                          Tab(
+                            text: I18n.of(context).Home,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Rank,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Quick_View,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Search,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Setting,
+                          ),
+                        ]
+                      : [
+                          Tab(
+                            text: I18n.of(context).Home,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Quick_View,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Search,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Setting,
+                          ),
+                        ];
                   return Theme(
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      tabs: Platform.isAndroid
-                          ? [
-                              Tab(
-                                text: I18n.of(context).Home,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Rank,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Quick_View,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Search,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Setting,
-                              ),
-                            ]
-                          : [
-                              Tab(
-                                text: I18n.of(context).Home,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Quick_View,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Search,
-                              ),
-                              Tab(
-                                text: I18n.of(context).Setting,
-                              ),
-                            ],
+                      tabs: tablist,
                       onTap: (index) {
                         userSetting.setWelcomePageNum(index);
                       },
                       controller: TabController(
-                          length: 3,
+                          length: tablist.length,
                           vsync: this,
                           initialIndex: userSetting.welcomePageNum),
                     ),
