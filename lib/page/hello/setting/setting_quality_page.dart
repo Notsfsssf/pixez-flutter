@@ -176,7 +176,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 child: Column(
               children: <Widget>[
                 Padding(
-                  child: Text("Welcome Page"),
+                  child: Text(I18n.of(context).Welcome_Page),
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {

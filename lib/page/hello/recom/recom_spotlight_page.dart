@@ -17,7 +17,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/bezier_circle_header.dart';
-import 'package:flutter_easyrefresh/bezier_hour_glass_header.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -25,9 +24,10 @@ import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
-import 'package:pixez/page/hello/ranking/ranking_page.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 
@@ -74,6 +74,21 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     });
   }
 
+  bool needToBan(Illusts illust) {
+    for (var i in muteStore.banillusts) {
+      if (i.illustId == illust.id.toString()) return true;
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == illust.user.id.toString()) return true;
+    }
+    for (var t in muteStore.banTags) {
+      for (var f in illust.tags) {
+        if (f.name == t.name) return true;
+      }
+    }
+    return false;
+  }
+
   Widget buildEasyRefresh(BuildContext context) {
     return EasyRefresh(
       controller: _easyRefreshController,
@@ -101,6 +116,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 if (index < 3)
                   return StaggeredTile.fit(2);
                 else {
+                  var illust = _lightingStore.illusts[index - 3];
+                  if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
                   double screanWidth = MediaQuery.of(context).size.width;
                   double itemWidth = (screanWidth / 2.0) - 32.0;
                   double radio =
@@ -126,11 +143,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                   );
                 if (index == 1) return _buildSpotlightContainer();
                 if (index == 2) return _buildSecondRow(context);
-                if (index >= 3)
+                if (index >= 3) {
                   return IllustCard(
                     _lightingStore.illusts[index - 3],
                     illustList: _lightingStore.illusts,
                   );
+                }
 
                 return Container();
               },
@@ -139,7 +157,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  Container _buildSpotlightContainer() {
+  Widget _buildSpotlightContainer() {
     return Container(
       height: 230.0,
       child: spotlightStore.articles.isNotEmpty

@@ -143,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Update" : MessageLookupByLibrary.simpleMessage("更新"),
     "View_Comment" : MessageLookupByLibrary.simpleMessage("查看评论"),
     "Warning" : MessageLookupByLibrary.simpleMessage("清除全部缓存？"),
+    "Welcome_Page" : MessageLookupByLibrary.simpleMessage("欢迎页"),
     "Which_part" : MessageLookupByLibrary.simpleMessage("第几张"),
     "Works" : MessageLookupByLibrary.simpleMessage("作品"),
     "birthday" : MessageLookupByLibrary.simpleMessage("生日"),

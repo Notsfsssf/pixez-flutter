@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
@@ -43,15 +44,17 @@ abstract class SauceStoreBase with Store {
     await _streamController?.close();
   }
 
-  Future findImage() async {
+  Future findImage({String path}) async {
     results.clear();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
+    if (path == null)
+      path = (await picker.getImage(source: ImageSource.gallery))?.path;
+    if (path == null) return;
     var formData = FormData();
     formData.files.addAll([
       MapEntry(
         "file",
-        MultipartFile.fromFileSync(pickedFile.path),
+        MultipartFile.fromFileSync(path),
       ),
     ]);
     Response response = await dio.post('/search.php', data: formData);

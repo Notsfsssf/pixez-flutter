@@ -29,9 +29,11 @@ import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
+import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -98,6 +100,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   int index;
   PageController _pageController;
+  StreamSubscription _intentDataStreamSubscription;
   @override
   void initState() {
     index = userSetting.welcomePageNum;
@@ -108,6 +111,28 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
+    // For sharing images coming from outside the app while the app is in the memory
+    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+        .listen((List<SharedMediaFile> value) {
+      if (value != null)
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return SauceNaoPage(
+            path: value.first.path,
+          );
+        }));
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      if (value != null)
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return SauceNaoPage(
+            path: value.first.path,
+          );
+        }));
+    });
   }
 
   judgePushPage(Uri link) {
@@ -233,6 +258,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void dispose() {
     _sub?.cancel();
+    _intentDataStreamSubscription?.cancel();
     super.dispose();
   }
 

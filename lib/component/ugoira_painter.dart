@@ -67,6 +67,7 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
       point++;
       if (point >= widget.drawPools.length) point = 0;
       final data = await _loadImage(file);
+      if(!mounted)
       setState(() {
         image = data;
       });

@@ -267,17 +267,20 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         ),
                         padding: const EdgeInsets.all(8.0),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: CupertinoSlider(
-                          onChanged: (double value) {
-                            int v = value.toInt();
-                            setS(() {
-                              starValue = v.toDouble();
-                            });
-                          },
-                          value: starValue,
-                          max: 8.0,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: CupertinoSlider(
+                            onChanged: (double value) {
+                              int v = value.toInt();
+                              setS(() {
+                                starValue = v.toDouble();
+                              });
+                            },
+                            value: starValue,
+                            max: 9.0,
+                          ),
                         ),
                       ),
                       Padding(

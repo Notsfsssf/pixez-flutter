@@ -129,5 +129,6 @@
   "Please_Note_That_Content": "只有在確保妳的代理或是所處地區能夠訪問 Pixiv 時，才建議啟用此選項，選項開啟後任何網路問題都與本程式無關，不要回報無法連線的問題",
   "Disable_Sni_Bypass":"不需要 Bypass Sni",
   "Disable_Sni_Bypass_Message":"節省冷啟動時 Dns Over Https 的時間",
-  "Go_To_Project_Address":"前往項目地址"
+  "Go_To_Project_Address":"前往項目地址",
+  "Welcome_Page":"歡迎頁"
 }

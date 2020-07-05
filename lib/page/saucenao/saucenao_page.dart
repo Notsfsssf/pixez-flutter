@@ -20,6 +20,9 @@ import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 
 class SauceNaoPage extends StatefulWidget {
+  final String path;
+
+  const SauceNaoPage({Key key, this.path}) : super(key: key);
   @override
   _SauceNaoPageState createState() => _SauceNaoPageState();
 }
@@ -40,6 +43,9 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
                 )));
       }
     });
+    if (widget.path != null) {
+      _store.findImage(path: widget.path);
+    }
   }
 
   @override

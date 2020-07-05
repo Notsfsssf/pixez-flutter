@@ -387,7 +387,7 @@ class _PicturePageState extends State<PicturePage> {
                                   : illustState.illusts.isBookmarked),
                               label: FlatButton(
                                 padding: EdgeInsets.all(0.0),
-                                child: Text('Play'),
+                                child: Text('PLAY',style: TextStyle(color: Colors.black,)),
                                 onPressed: () {
                                   BlocProvider.of<UgoiraMetadataBloc>(context)
                                       .add(FetchUgoiraMetadataEvent(widget.id));
@@ -1049,8 +1049,8 @@ class _PicturePageState extends State<PicturePage> {
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title:
-                                              Text(I18n.of(context).Ban + "?"),
+                                          title: Text(I18n.of(context).Ban +
+                                              "'${f.name}'?"),
                                           actions: <Widget>[
                                             FlatButton(
                                               onPressed: () {

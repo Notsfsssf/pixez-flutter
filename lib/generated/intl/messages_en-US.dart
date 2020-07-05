@@ -143,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Update" : MessageLookupByLibrary.simpleMessage("Update"),
     "View_Comment" : MessageLookupByLibrary.simpleMessage("View comments"),
     "Warning" : MessageLookupByLibrary.simpleMessage("Clear all cache?"),
+    "Welcome_Page" : MessageLookupByLibrary.simpleMessage("Welcome Page"),
     "Which_part" : MessageLookupByLibrary.simpleMessage("Index"),
     "Works" : MessageLookupByLibrary.simpleMessage("Works"),
     "birthday" : MessageLookupByLibrary.simpleMessage("Birthday"),

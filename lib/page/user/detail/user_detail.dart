@@ -72,7 +72,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ],
                     rows: <DataRow>[
                       DataRow(cells: [
-                        DataCell(Text('User id')),
+                        DataCell(Text('User Id')),
                         DataCell(SelectableText(detail.user.id.toString()),
                             onTap: () {
                               try {

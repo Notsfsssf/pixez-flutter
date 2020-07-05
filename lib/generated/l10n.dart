@@ -1332,6 +1332,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Welcome Page`
+  String get Welcome_Page {
+    return Intl.message(
+      'Welcome Page',
+      name: 'Welcome_Page',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

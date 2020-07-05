@@ -60,10 +60,6 @@ class _IllustCardState extends State<IllustCard> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      muteStore.banTags.forEach((element) {
-        debugPrint('${element.name}');
-      });
-      debugPrint('${muteStore.banTags.toString()}:${widget._illusts.id}');
       if (userSetting.hIsNotAllow)
         for (int i = 0; i < widget._illusts.tags.length; i++) {
           if (widget._illusts.tags[i].name.startsWith('R-18'))

@@ -135,7 +135,6 @@ class _LightingListState extends State<LightingList> {
                     mainAxisExtent = itemWidth;
                   else
                     mainAxisExtent = itemWidth * radio;
-
                   return StaggeredTile.extent(1, mainAxisExtent + 80.0);
                 },
                 itemCount: _store.illusts.length,
