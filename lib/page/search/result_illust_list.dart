@@ -206,6 +206,34 @@ class _ResultIllustListState extends State<ResultIllustList> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          FlatButton(
+                              onPressed: () {}, child: Text('Selection')),
+                          FlatButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (starValue == 0)
+                                    futureGet = () =>
+                                        RepositoryProvider.of<ApiClient>(
+                                                context)
+                                            .getSearchIllust(widget.word,
+                                                search_target: searchTarget,
+                                                sort: selectSort);
+                                  else
+                                    futureGet = () => RepositoryProvider.of<
+                                            ApiClient>(context)
+                                        .getSearchIllust(
+                                            '${widget.word} ${starNum[starValue.toInt()]}users入り',
+                                            search_target: searchTarget,
+                                            sort: selectSort);
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(I18n.of(context).Apply)),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
@@ -265,13 +293,16 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                   starNum[starValue.toInt()])
                               : 'users入り'),
                         ),
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 16.0),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 8.0),
                         child: SizedBox(
                           width: double.infinity,
-                          child: CupertinoSlider(
+                          child: Slider(
+                            activeColor: Theme.of(context).accentColor,
                             onChanged: (double value) {
                               int v = value.toInt();
                               setS(() {
@@ -283,32 +314,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: RaisedButton(
-                              child: Text(I18n.of(context).Apply),
-                              onPressed: () {
-                                setState(() {
-                                  if (starValue == 0)
-                                    futureGet = () =>
-                                        RepositoryProvider.of<ApiClient>(
-                                                context)
-                                            .getSearchIllust(widget.word,
-                                                search_target: searchTarget,
-                                                sort: selectSort);
-                                  else
-                                    futureGet = () => RepositoryProvider.of<
-                                            ApiClient>(context)
-                                        .getSearchIllust(
-                                            '${widget.word} ${starNum[starValue.toInt()]}users入り',
-                                            search_target: searchTarget,
-                                            sort: selectSort);
-                                });
-                                Navigator.of(context).pop();
-                              }),
-                        ),
+                      Container(
+                        height: 16,
                       )
                     ],
                   )),

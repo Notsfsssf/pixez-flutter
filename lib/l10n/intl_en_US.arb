@@ -130,5 +130,7 @@
   "Disable_Sni_Bypass": "Disable Sni Bypass",
   "Disable_Sni_Bypass_Message": "Save time of DNS over HTTPS during cold start",
   "Go_To_Project_Address": "Go to project address",
-  "Welcome_Page": "Welcome Page"
+  "Welcome_Page": "Welcome Page",
+  "Encode":"Encode",
+  "Encode_Message":"This will take time and may fail"
 }

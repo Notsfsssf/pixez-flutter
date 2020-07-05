@@ -130,5 +130,7 @@
   "Disable_Sni_Bypass":"不需要 Bypass Sni",
   "Disable_Sni_Bypass_Message":"節省冷啟動時 Dns Over Https 的時間",
   "Go_To_Project_Address":"前往項目地址",
-  "Welcome_Page":"歡迎頁"
+  "Welcome_Page":"歡迎頁",
+  "Encode":"合成",
+  "Encode_Message":"這將會消耗壹些時間，並可能會失敗"
 }

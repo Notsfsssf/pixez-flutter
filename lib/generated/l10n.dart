@@ -1342,6 +1342,26 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Encode`
+  String get Encode {
+    return Intl.message(
+      'Encode',
+      name: 'Encode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will take time and may fail`
+  String get Encode_Message {
+    return Intl.message(
+      'This will take time and may fail',
+      name: 'Encode_Message',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

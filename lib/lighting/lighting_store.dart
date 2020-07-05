@@ -35,15 +35,18 @@ abstract class _LightingStoreBase with Store {
   @observable
   ObservableList<Illusts> illusts = ObservableList();
 
+  @observable
+  String errorMessage;
   _LightingStoreBase(
     this.source,
     this._apiClient,
     this._controller,
-  );
+  ) {}
 
   @action
   fetch() async {
-    nextUrl=null;
+    nextUrl = null;
+    errorMessage = null;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
@@ -52,12 +55,14 @@ abstract class _LightingStoreBase with Store {
       illusts.addAll(recommend.illusts);
       _controller.finishRefresh(success: true);
     } catch (e) {
+      errorMessage = e.toString();
       _controller.finishRefresh(success: false);
     }
   }
 
   @action
   fetchNext() async {
+    errorMessage = null;
     try {
       if (nextUrl != null && nextUrl.isNotEmpty) {
         Response result = await _apiClient.getNext(nextUrl);

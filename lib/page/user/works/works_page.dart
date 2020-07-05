@@ -24,15 +24,14 @@ import 'package:pixez/network/api_client.dart';
 
 class WorksPage extends StatefulWidget {
   final int id;
-
-  const WorksPage({Key key, @required this.id}) : super(key: key);
+  final ScrollController scrollController;
+  const WorksPage({Key key, @required this.id,this.scrollController}) : super(key: key);
 
   @override
   _WorksPageState createState() => _WorksPageState();
 }
 
-class _WorksPageState extends State<WorksPage>
- {
+class _WorksPageState extends State<WorksPage> {
   FutureGet futureGet;
 
   @override
@@ -46,7 +45,6 @@ class _WorksPageState extends State<WorksPage>
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -54,6 +52,7 @@ class _WorksPageState extends State<WorksPage>
         Expanded(
           child: LightingList(
             source: futureGet,
+            // scrollController: widget.scrollController,
           ),
         )
       ],
@@ -62,7 +61,6 @@ class _WorksPageState extends State<WorksPage>
 
   Widget _buildHeader() {
     return Container(
-
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
         child: Wrap(
@@ -73,9 +71,13 @@ class _WorksPageState extends State<WorksPage>
               backgroundColor: now == 'illust'
                   ? Theme.of(context).accentColor
                   : Colors.transparent,
-              label: Text(I18n.of(context).Illust,style: TextStyle(
-                color: now == 'illust'?Colors.white:Theme.of(context).textTheme.headline6.color
-              ),),
+              label: Text(
+                I18n.of(context).Illust,
+                style: TextStyle(
+                    color: now == 'illust'
+                        ? Colors.white
+                        : Theme.of(context).textTheme.headline6.color),
+              ),
               onPressed: () {
                 setState(() {
                   futureGet = () => RepositoryProvider.of<ApiClient>(context)
@@ -85,9 +87,13 @@ class _WorksPageState extends State<WorksPage>
               },
             ),
             ActionChip(
-              label: Text(I18n.of(context).Manga,style: TextStyle(
-                color: now == 'manga'?Colors.white:Theme.of(context).textTheme.headline6.color
-              ),),
+              label: Text(
+                I18n.of(context).Manga,
+                style: TextStyle(
+                    color: now == 'manga'
+                        ? Colors.white
+                        : Theme.of(context).textTheme.headline6.color),
+              ),
               onPressed: () {
                 setState(() {
                   futureGet = () => RepositoryProvider.of<ApiClient>(context)
@@ -104,5 +110,4 @@ class _WorksPageState extends State<WorksPage>
       ),
     );
   }
-
 }

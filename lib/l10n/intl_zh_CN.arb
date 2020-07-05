@@ -130,5 +130,7 @@
   "Disable_Sni_Bypass":"不需要Bypass Sni",
   "Disable_Sni_Bypass_Message":"节省冷启动时dns over https的时间",
   "Go_To_Project_Address":"前往项目地址",
-  "Welcome_Page":"欢迎页"
+  "Welcome_Page":"欢迎页",
+  "Encode":"合成",
+  "Encode_Message":"这将会消耗一定时间，并可能会失败"
 }

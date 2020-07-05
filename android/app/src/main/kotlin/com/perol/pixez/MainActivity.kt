@@ -7,7 +7,6 @@ import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Xml
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -15,7 +14,6 @@ import androidx.preference.PreferenceManager
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -27,8 +25,7 @@ import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
-    private val AUTH_CHANNEL = "com.perol.dev/auth"
-    private val BIOMETRIC_CHANNEL = "samples.flutter.dev/biometric"
+    private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     val pref by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
@@ -76,16 +73,8 @@ class MainActivity : FlutterActivity() {
                 result.success(isFileExist)
             }
         }
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BIOMETRIC_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "auth") {
-
-
-
-
-            }
-        }
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, AUTH_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "auth") {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENCODE_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "getBatteryLevel") {
                 val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!

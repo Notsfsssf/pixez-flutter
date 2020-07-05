@@ -59,6 +59,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "Donation" : MessageLookupByLibrary.simpleMessage("捐赠"),
     "Dont_have_account" : MessageLookupByLibrary.simpleMessage("没有账号？"),
     "Download_Address" : MessageLookupByLibrary.simpleMessage("下载地址"),
+    "Encode" : MessageLookupByLibrary.simpleMessage("合成"),
+    "Encode_Message" : MessageLookupByLibrary.simpleMessage("这将会消耗一定时间，并可能会失败"),
     "Exact_Match_for_tag" : MessageLookupByLibrary.simpleMessage("与标签完全一致"),
     "FeedBack" : MessageLookupByLibrary.simpleMessage("反馈"),
     "Follow" : MessageLookupByLibrary.simpleMessage("关注"),

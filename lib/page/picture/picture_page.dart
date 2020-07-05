@@ -387,7 +387,10 @@ class _PicturePageState extends State<PicturePage> {
                                   : illustState.illusts.isBookmarked),
                               label: FlatButton(
                                 padding: EdgeInsets.all(0.0),
-                                child: Text('PLAY',style: TextStyle(color: Colors.black,)),
+                                child: Text('PLAY',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    )),
                                 onPressed: () {
                                   BlocProvider.of<UgoiraMetadataBloc>(context)
                                       .add(FetchUgoiraMetadataEvent(widget.id));
@@ -654,6 +657,7 @@ class _PicturePageState extends State<PicturePage> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
+  bool isEncoding = false;
   Widget _buildList(context, Illusts illust, DataIllustState illustState) {
     final count = illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
     _illusts = illust;
@@ -706,12 +710,13 @@ class _PicturePageState extends State<PicturePage> {
                     MediaQuery.of(context).size.width.toString());
                 return InkWell(
                   onTap: () async {
+                    if (isEncoding) return;
                     final result = await showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Encode?"),
-                            content: Text("This will take some time"),
+                            title: Text('${I18n.of(context).Encode}?'),
+                            content: Text(I18n.of(context).Encode_Message),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -730,6 +735,7 @@ class _PicturePageState extends State<PicturePage> {
                         });
                     if (result == "OK") {
                       try {
+                        isEncoding = true;
                         platform.invokeMethod('getBatteryLevel', {
                           "path": snapshot.listSync.first.parent.path,
                           "delay": snapshot.frames.first.delay,
@@ -737,16 +743,19 @@ class _PicturePageState extends State<PicturePage> {
                         });
                         BotToast.showCustomText(
                             toastBuilder: (_) => Text("encoding..."));
-                      } on PlatformException catch (e) {}
+                      } on PlatformException catch (e) {
+                        isEncoding = false;
+                      }
                     }
                   },
                   onLongPress: () async {
+                    if (isEncoding) return;
                     final result = await showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Encode?"),
-                            content: Text("This will take some time"),
+                            title: Text('${I18n.of(context).Encode}?'),
+                            content: Text(I18n.of(context).Encode_Message),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text("OK"),
@@ -765,14 +774,17 @@ class _PicturePageState extends State<PicturePage> {
                         });
                     if (result == "OK") {
                       try {
+                        isEncoding = true;
                         platform.invokeMethod('getBatteryLevel', {
                           "path": snapshot.listSync.first.parent.path,
                           "delay": snapshot.frames.first.delay,
-                          "name": widget._illusts.id.toString()
+                          "name": widget.id.toString()
                         });
                         BotToast.showCustomText(
                             toastBuilder: (_) => Text("encoding..."));
-                      } on PlatformException catch (e) {}
+                      } on PlatformException catch (e) {
+                        isEncoding = false;
+                      }
                     }
                   },
                   child: Container(

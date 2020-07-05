@@ -74,12 +74,12 @@ class _CommentPageState extends State<CommentPage> {
                         child: EasyRefresh(
                           controller: easyRefreshController,
                           onLoad: () {
-                            BlocProvider.of<CommentBloc>(context)
-                                .add(LoadMoreCommentEvent(state.commentResponse));
+                            BlocProvider.of<CommentBloc>(context).add(
+                                LoadMoreCommentEvent(state.commentResponse));
                             return _loadCompleter.future;
                           },
                           child: ListView.builder(
-                            shrinkWrap: true,
+                              shrinkWrap: true,
                               itemCount: comments.length,
                               itemBuilder: (context, index) {
                                 var comment = comments[index];
@@ -91,31 +91,41 @@ class _CommentPageState extends State<CommentPage> {
                                         .medium,
                                     id: comments[index].user.id,
                                   ),
-                                  title: Flex(
-                                    direction: Axis.horizontal,
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                          comment.user.name,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            comment.user.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          FlatButton(
+                                              onPressed: () {
+                                                parent_comment_id = comment.id;
+                                                setState(() {
+                                                  parentCommentName =
+                                                      comment.user.name;
+                                                });
+                                              },
+                                              child: Text(
+                                                "Reply",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ))
+                                        ],
                                       ),
-                                      FlatButton(
-                                          onPressed: () {
-                                            parent_comment_id = comment.id;
-                                            setState(() {
-                                              parentCommentName = comment.user.name;
-                                            });
-                                          },
-                                          child: Text(
-                                            "Reply",
-                                            style: TextStyle(
-                                                color:
-                                                    Theme.of(context).primaryColor),
-                                          ))
+                                      ...comment.parentComment.user != null
+                                          ? [
+                                              Text(
+                                                  'To ${comment.parentComment.user.name}')
+                                            ]
+                                          : []
                                     ],
                                   ),
                                   subtitle: SelectableText(comment.comment),
@@ -127,16 +137,19 @@ class _CommentPageState extends State<CommentPage> {
                         color: Theme.of(context).dialogBackgroundColor,
                         child: Row(
                           children: <Widget>[
-                            IconButton(icon: Icon(Icons.book),onPressed: (){
-                          setState(() {
-                                parentCommentName=null;
-                              parent_comment_id = null;
-
-                          });
-                            },),
+                            IconButton(
+                              icon: Icon(Icons.book),
+                              onPressed: () {
+                                setState(() {
+                                  parentCommentName = null;
+                                  parent_comment_id = null;
+                                });
+                              },
+                            ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(bottom:2.0,right: 8.0),
+                                padding: const EdgeInsets.only(
+                                    bottom: 2.0, right: 8.0),
                                 child: TextField(
                                   controller: _editController,
                                   decoration: InputDecoration(
@@ -145,19 +158,22 @@ class _CommentPageState extends State<CommentPage> {
                                       suffixIcon: IconButton(
                                           icon: Icon(Icons.reply),
                                           onPressed: () async {
-                                            final client =
-                                                RepositoryProvider.of<ApiClient>(
-                                                    context);
-                                            String txt = _editController.text.trim();
+                                            final client = RepositoryProvider
+                                                .of<ApiClient>(context);
+                                            String txt =
+                                                _editController.text.trim();
                                             try {
                                               if (txt.isNotEmpty)
                                                 Response reponse = await client
-                                                    .postIllustComment(widget.id, txt,
+                                                    .postIllustComment(
+                                                        widget.id, txt,
                                                         parent_comment_id:
                                                             parent_comment_id);
                                               _editController.clear();
-                                              BlocProvider.of<CommentBloc>(context)
-                                                  .add(FetchCommentEvent(widget.id));
+                                              BlocProvider.of<CommentBloc>(
+                                                      context)
+                                                  .add(FetchCommentEvent(
+                                                      widget.id));
                                             } catch (e) {
                                               print(e);
                                             }
@@ -185,8 +201,7 @@ class _CommentPageState extends State<CommentPage> {
           }
         },
       ),
-      create: (BuildContext context) =>
-      CommentBloc(
+      create: (BuildContext context) => CommentBloc(
           RepositoryProvider.of<ApiClient>(context), easyRefreshController)
         ..add(FetchCommentEvent(widget.id)),
     );

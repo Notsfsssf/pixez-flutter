@@ -59,6 +59,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "Donation" : MessageLookupByLibrary.simpleMessage("Buy me a coffee"),
     "Dont_have_account" : MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
     "Download_Address" : MessageLookupByLibrary.simpleMessage("Download address"),
+    "Encode" : MessageLookupByLibrary.simpleMessage("Encode"),
+    "Encode_Message" : MessageLookupByLibrary.simpleMessage("This will take time and may fail"),
     "Exact_Match_for_tag" : MessageLookupByLibrary.simpleMessage("Tag perfect match"),
     "FeedBack" : MessageLookupByLibrary.simpleMessage("Feedback"),
     "Follow" : MessageLookupByLibrary.simpleMessage("Follow"),

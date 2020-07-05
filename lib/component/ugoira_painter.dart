@@ -67,10 +67,11 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
       point++;
       if (point >= widget.drawPools.length) point = 0;
       final data = await _loadImage(file);
-      if(!mounted)
-      setState(() {
-        image = data;
-      });
+      if (mounted) {
+        setState(() {
+          image = data;
+        });
+      }
     });
   }
 
@@ -94,9 +95,13 @@ class UgoiraPainter extends CustomPainter {
 
   @override
   Future<void> paint(Canvas canvas, Size size) async {
-   Rect dstRect = Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
-   canvas.drawImageRect(
-       image, dstRect,Rect.fromLTWH(0, 0,size.width.toDouble(), size.height.toDouble()), _paint);
+    Rect dstRect =
+        Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
+    canvas.drawImageRect(
+        image,
+        dstRect,
+        Rect.fromLTWH(0, 0, size.width.toDouble(), size.height.toDouble()),
+        _paint);
   }
 
   @override

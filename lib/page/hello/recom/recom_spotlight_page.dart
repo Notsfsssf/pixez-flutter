@@ -100,60 +100,50 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       onRefresh: () {
         return fetchT();
       },
-      firstRefreshWidget: Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
       onLoad: () {
         return _lightingStore.fetchNext();
       },
-      child: _lightingStore.illusts.isNotEmpty
-          ? StaggeredGridView.countBuilder(
-              crossAxisCount: 2,
-              padding: EdgeInsets.all(0.0),
-              staggeredTileBuilder: (int index) {
-                if (index < 3)
-                  return StaggeredTile.fit(2);
-                else {
-                  var illust = _lightingStore.illusts[index - 3];
-                  if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
-                  double screanWidth = MediaQuery.of(context).size.width;
-                  double itemWidth = (screanWidth / 2.0) - 32.0;
-                  double radio =
-                      _lightingStore.illusts[index - 3].height.toDouble() /
-                          _lightingStore.illusts[index - 3].width.toDouble();
-                  double mainAxisExtent;
-                  if (radio > 2)
-                    mainAxisExtent = itemWidth;
-                  else
-                    mainAxisExtent = itemWidth * radio;
-                  return StaggeredTile.extent(1, mainAxisExtent + 80.0);
-                }
-              },
-              itemCount: _lightingStore.illusts.length + 3,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == 0)
-                  return AppBar(
-                    elevation: 0.0,
-                    titleSpacing: 0.0,
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Colors.transparent,
-                    title: _buildFirstRow(context),
-                  );
-                if (index == 1) return _buildSpotlightContainer();
-                if (index == 2) return _buildSecondRow(context);
-                if (index >= 3) {
-                  return IllustCard(
-                    _lightingStore.illusts[index - 3],
-                    illustList: _lightingStore.illusts,
-                  );
-                }
+      child: _buildBody(),
+    );
+  }
 
-                return Container();
-              },
-            )
-          : Container(),
+  Widget _buildBody() {
+    return StaggeredGridView.countBuilder(
+      crossAxisCount: 2,
+      staggeredTileBuilder: (int index) {
+        if (index < 3) return StaggeredTile.fit(2);
+        var illust = _lightingStore.illusts[index - 3];
+        if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
+        double screanWidth = MediaQuery.of(context).size.width;
+        double itemWidth = (screanWidth / 2.0) - 32.0;
+        double radio = _lightingStore.illusts[index - 3].height.toDouble() /
+            _lightingStore.illusts[index - 3].width.toDouble();
+        double mainAxisExtent;
+        if (radio > 2)
+          mainAxisExtent = itemWidth;
+        else
+          mainAxisExtent = itemWidth * radio;
+        return StaggeredTile.extent(1, mainAxisExtent + 80.0);
+      },
+      itemCount: _lightingStore.illusts.length + 3,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 0)
+          return AppBar(
+            elevation: 0.0,
+            titleSpacing: 0.0,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            title: _buildFirstRow(context),
+          );
+        if (index == 1) return _buildSpotlightContainer();
+        if (index == 2) return _buildSecondRow(context);
+        if (_lightingStore.illusts.isNotEmpty)
+          return IllustCard(
+            _lightingStore.illusts[index - 3],
+            illustList: _lightingStore.illusts,
+          );
+        return Container();
+      },
     );
   }
 

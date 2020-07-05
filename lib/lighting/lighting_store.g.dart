@@ -6,7 +6,7 @@ part of 'lighting_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$LightingStore on _LightingStoreBase, Store {
   final _$illustsAtom = Atom(name: '_LightingStoreBase.illusts');
@@ -21,6 +21,21 @@ mixin _$LightingStore on _LightingStoreBase, Store {
   set illusts(ObservableList<Illusts> value) {
     _$illustsAtom.reportWrite(value, super.illusts, () {
       super.illusts = value;
+    });
+  }
+
+  final _$errorMessageAtom = Atom(name: '_LightingStoreBase.errorMessage');
+
+  @override
+  String get errorMessage {
+    _$errorMessageAtom.reportRead();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String value) {
+    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
+      super.errorMessage = value;
     });
   }
 
@@ -41,7 +56,8 @@ mixin _$LightingStore on _LightingStoreBase, Store {
   @override
   String toString() {
     return '''
-illusts: ${illusts}
+illusts: ${illusts},
+errorMessage: ${errorMessage}
     ''';
   }
 }
