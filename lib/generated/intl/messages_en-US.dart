@@ -63,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Encode_Message" : MessageLookupByLibrary.simpleMessage("This will take time and may fail"),
     "Exact_Match_for_tag" : MessageLookupByLibrary.simpleMessage("Tag perfect match"),
     "FeedBack" : MessageLookupByLibrary.simpleMessage("Feedback"),
+    "Filter" : MessageLookupByLibrary.simpleMessage("Filter"),
     "Follow" : MessageLookupByLibrary.simpleMessage("Follow"),
     "Followed" : MessageLookupByLibrary.simpleMessage("Following"),
     "Format" : MessageLookupByLibrary.simpleMessage("Format"),

@@ -63,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Encode_Message" : MessageLookupByLibrary.simpleMessage("这将会消耗一定时间，并可能会失败"),
     "Exact_Match_for_tag" : MessageLookupByLibrary.simpleMessage("与标签完全一致"),
     "FeedBack" : MessageLookupByLibrary.simpleMessage("反馈"),
+    "Filter" : MessageLookupByLibrary.simpleMessage("筛选"),
     "Follow" : MessageLookupByLibrary.simpleMessage("关注"),
     "Followed" : MessageLookupByLibrary.simpleMessage("已关注"),
     "Format" : MessageLookupByLibrary.simpleMessage("格式"),

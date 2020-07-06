@@ -1362,6 +1362,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Filter`
+  String get Filter {
+    return Intl.message(
+      'Filter',
+      name: 'Filter',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

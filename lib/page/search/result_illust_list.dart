@@ -210,7 +210,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           FlatButton(
-                              onPressed: () {}, child: Text('Selection')),
+                              onPressed: () {}, child: Text(I18n.of(context).Filter)),
                           FlatButton(
                               onPressed: () {
                                 setState(() {

@@ -41,27 +41,25 @@ class NovelRecomBloc extends Bloc<NovelRecomEvent, NovelRecomState> {
     NovelRecomEvent event,
   ) async* {
     if (event is LoadMoreNovelRecomEvent) {
-if(event.nextUrl!=null&&event.nextUrl.isNotEmpty) {
-  try {
-    var response = await client.getNext(event.nextUrl);
-    NovelRecomResponse novelRecomResponse =
-    NovelRecomResponse.fromJson(response.data);
-    yield DataNovelRecomState(
-        event.novels..addAll(novelRecomResponse.novels),
-        novelRecomResponse.nextUrl);
-  } catch (e) {}
-}
+      if (event.nextUrl != null && event.nextUrl.isNotEmpty) {
+        try {
+          var response = await client.getNext(event.nextUrl);
+          NovelRecomResponse novelRecomResponse =
+              NovelRecomResponse.fromJson(response.data);
+          yield DataNovelRecomState(
+              event.novels..addAll(novelRecomResponse.novels),
+              novelRecomResponse.nextUrl);
+        } catch (e) {}
+      }
     }
     if (event is NovelRecomEvent) {
-     try{
-       var response = await client.getNovelRecommended();
-       NovelRecomResponse novelRecomResponse =
-       NovelRecomResponse.fromJson(response.data);
-       yield DataNovelRecomState(
-           novelRecomResponse.novels, novelRecomResponse.nextUrl);
-     }catch(e){
-
-     }
+      try {
+        var response = await client.getNovelRecommended();
+        NovelRecomResponse novelRecomResponse =
+            NovelRecomResponse.fromJson(response.data);
+        yield DataNovelRecomState(
+            novelRecomResponse.novels, novelRecomResponse.nextUrl);
+      } catch (e) {}
     }
   }
 }
