@@ -253,12 +253,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                                     onPressed: () {
                                       Navigator.of(context).pop('OK');
                                     },
-                                    child: Text('ok')),
+                                    child: Text(I18n.of(context).OK)),
                                 FlatButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop('OK');
+                                      Navigator.of(context).pop();
                                     },
-                                    child: Text('cancel'))
+                                    child: Text(I18n.of(context).Cancel))
                               ],
                             );
                           });
