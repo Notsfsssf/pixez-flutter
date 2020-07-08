@@ -46,8 +46,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBookmarkTagBloc>(
-      create: (context) =>
-          UserBookmarkTagBloc(RepositoryProvider.of<ApiClient>(context)),
+      create: (context) => UserBookmarkTagBloc(apiClient),
       child: Scaffold(
         appBar: AppBar(
           title: Text('Tag'),

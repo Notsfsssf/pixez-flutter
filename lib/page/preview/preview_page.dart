@@ -28,6 +28,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/preview/bloc.dart';
+
 class GoToLoginPage extends StatelessWidget {
   final Illusts illust;
 
@@ -84,15 +85,22 @@ class LoginInFirst extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(child: Text('>_<',style: TextStyle(fontSize: 26),),),
-          Center(child: Padding(
+          Center(
+            child: Text(
+              '>_<',
+              style: TextStyle(fontSize: 26),
+            ),
+          ),
+          Center(
+              child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(I18n.of(context).Login_message),
           )),
           RaisedButton(
             child: Text(I18n.of(context).Go_to_Login),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) {
                 return LoginPage();
               }));
             },
@@ -110,8 +118,7 @@ class PreviewPage extends StatefulWidget {
 
 class _PreviewPageState extends State<PreviewPage> {
   EasyRefreshController _easyRefreshController = EasyRefreshController();
-  Completer<void> _refreshCompleter = Completer(),
-      _loadCompleter = Completer();
+  Completer<void> _refreshCompleter = Completer(), _loadCompleter = Completer();
 
   @override
   Widget build(BuildContext context) {
@@ -119,48 +126,47 @@ class _PreviewPageState extends State<PreviewPage> {
       child: BlocListener<WalkThroughBloc, WalkThroughState>(
         child: BlocBuilder<WalkThroughBloc, WalkThroughState>(
             builder: (context, state) {
-              return SafeArea(
-                child: EasyRefresh(
-                  
-                  onLoad: () async {
-                    if (state is DataWalkThroughState) {
-                      BlocProvider.of<WalkThroughBloc>(context)
-                          .add(LoadMoreWalkThroughEvent(
-                        state.nextUrl,
-                        state.illusts,
-                      ));
-                      return _loadCompleter.future;
-                    }
-                    return;
-                  },
-                  controller: _easyRefreshController,
-                  child: (state is DataWalkThroughState)
-                      ? StaggeredGridView.countBuilder(
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  GoToLoginPage(illust: state
-                                      .illusts[index])));
-                        },
-                        child: Card(
-                          child: Container(
-                            child: PixivImage(
-                                state.illusts[index].imageUrls.squareMedium),
+          return SafeArea(
+            child: EasyRefresh(
+              onLoad: () async {
+                if (state is DataWalkThroughState) {
+                  BlocProvider.of<WalkThroughBloc>(context)
+                      .add(LoadMoreWalkThroughEvent(
+                    state.nextUrl,
+                    state.illusts,
+                  ));
+                  return _loadCompleter.future;
+                }
+                return;
+              },
+              controller: _easyRefreshController,
+              child: (state is DataWalkThroughState)
+                  ? StaggeredGridView.countBuilder(
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    GoToLoginPage(
+                                        illust: state.illusts[index])));
+                          },
+                          child: Card(
+                            child: Container(
+                              child: PixivImage(
+                                  state.illusts[index].imageUrls.squareMedium),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    itemCount: state.illusts.length,
-                    staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                  )
-                      : Container(),
-                ),
-              );
-            }),
+                        );
+                      },
+                      itemCount: state.illusts.length,
+                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                    )
+                  : Container(),
+            ),
+          );
+        }),
         listener: (BuildContext context, WalkThroughState state) {
           if (state is DataWalkThroughState) {
             _loadCompleter?.complete();
@@ -171,8 +177,7 @@ class _PreviewPageState extends State<PreviewPage> {
         },
       ),
       create: (context) =>
-      WalkThroughBloc(RepositoryProvider.of<ApiClient>(context))
-        ..add(FetchWalkThroughEvent()),
+          WalkThroughBloc(apiClient)..add(FetchWalkThroughEvent()),
     );
   }
 }

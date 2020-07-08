@@ -64,12 +64,11 @@ class _ReComPageState extends State<ReComPage> {
       providers: [
         BlocProvider<RecomBloc>(
           create: (context) => RecomBloc(
-            RepositoryProvider.of<ApiClient>(context),
+            apiClient,
           ),
         ),
         BlocProvider<SpotlightBloc>(
-          create: (BuildContext context) =>
-              SpotlightBloc(RepositoryProvider.of<ApiClient>(context)),
+          create: (BuildContext context) => SpotlightBloc(apiClient),
         )
       ],
       child: MultiBlocListener(
@@ -158,30 +157,30 @@ class _ReComPageState extends State<ReComPage> {
         controller: _easyRefreshController,
         child: state is DataRecomState
             ? StaggeredGridView.countBuilder(
-          crossAxisCount: 2,
-          controller: _scrollController,
-          padding: EdgeInsets.symmetric(vertical: 30.0),
-          itemCount: state.illusts.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return BlocBuilder<SpotlightBloc, SpotlightState>(
-                builder: (BuildContext context, SpotlightState state) {
-                  if (state is DataSpotlight) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Container(
-                          height: 230.0,
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final spotlight = state.articles[index];
-                              return SpotlightCard(
-                                spotlight: spotlight,
-                              );
-                            },
-                            itemCount: state.articles.length,
+                crossAxisCount: 2,
+                controller: _scrollController,
+                padding: EdgeInsets.symmetric(vertical: 30.0),
+                itemCount: state.illusts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return BlocBuilder<SpotlightBloc, SpotlightState>(
+                      builder: (BuildContext context, SpotlightState state) {
+                        if (state is DataSpotlight) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Container(
+                                height: 230.0,
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    final spotlight = state.articles[index];
+                                    return SpotlightCard(
+                                      spotlight: spotlight,
+                                    );
+                                  },
+                                  itemCount: state.articles.length,
                                   scrollDirection: Axis.horizontal,
                                 ),
                               ),

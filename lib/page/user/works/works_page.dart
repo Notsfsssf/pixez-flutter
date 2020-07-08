@@ -25,7 +25,8 @@ import 'package:pixez/network/api_client.dart';
 class WorksPage extends StatefulWidget {
   final int id;
   final ScrollController scrollController;
-  const WorksPage({Key key, @required this.id,this.scrollController}) : super(key: key);
+  const WorksPage({Key key, @required this.id, this.scrollController})
+      : super(key: key);
 
   @override
   _WorksPageState createState() => _WorksPageState();
@@ -36,8 +37,7 @@ class _WorksPageState extends State<WorksPage> {
 
   @override
   void initState() {
-    futureGet = () => RepositoryProvider.of<ApiClient>(context)
-        .getUserIllusts(widget.id, 'illust');
+    futureGet = () => apiClient.getUserIllusts(widget.id, 'illust');
     super.initState();
   }
 
@@ -80,8 +80,8 @@ class _WorksPageState extends State<WorksPage> {
               ),
               onPressed: () {
                 setState(() {
-                  futureGet = () => RepositoryProvider.of<ApiClient>(context)
-                      .getUserIllusts(widget.id, 'illust');
+                  futureGet =
+                      () => apiClient.getUserIllusts(widget.id, 'illust');
                   now = 'illust';
                 });
               },
@@ -96,8 +96,8 @@ class _WorksPageState extends State<WorksPage> {
               ),
               onPressed: () {
                 setState(() {
-                  futureGet = () => RepositoryProvider.of<ApiClient>(context)
-                      .getUserIllusts(widget.id, 'manga');
+                  futureGet =
+                      () => apiClient.getUserIllusts(widget.id, 'manga');
                   now = 'manga';
                 });
               },

@@ -29,12 +29,14 @@ import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
+final ApiClient apiClient = ApiClient();
+
 class Restrict {
   static String PUBLIC = "public", PRIVATE = "private", ALL = "all";
 }
 
 class ApiClient {
- Dio httpClient;
+  Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'app-api.pixiv.net';

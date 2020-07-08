@@ -39,7 +39,7 @@ class _RankModePageState extends State<RankModePage>
   Widget build(BuildContext context) {
     super.build(context);
     return LightingList(
-      source: () => RepositoryProvider.of<ApiClient>(context).getIllustRanking(
+      source: () => apiClient.getIllustRanking(
         widget.mode,
         widget.date,
       ),

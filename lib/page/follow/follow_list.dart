@@ -44,7 +44,7 @@ class _FollowListState extends State<FollowList> {
   void initState() {
     _controller = EasyRefreshController();
     followStore = FollowStore(
-        RepositoryProvider.of<ApiClient>(context), widget.id, _controller);
+        apiClient, widget.id, _controller);
     super.initState();
   }
 

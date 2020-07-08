@@ -41,8 +41,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
 
   @override
   void initState() {
-    futureGet = () =>
-        RepositoryProvider.of<ApiClient>(context).getSearchIllust(widget.word);
+    futureGet = () => apiClient.getSearchIllust(widget.word);
 
     super.initState();
   }
@@ -155,13 +154,12 @@ class _ResultIllustListState extends State<ResultIllustList> {
                     FlatButton(
                         onPressed: () {
                           setState(() {
-                            futureGet = () =>
-                                RepositoryProvider.of<ApiClient>(context)
-                                    .getSearchIllust(widget.word,
-                                        search_target: searchTarget,
-                                        sort: selectSort,
-                                        start_date: datePeriod.start,
-                                        end_date: datePeriod.end);
+                            futureGet = () => apiClient.getSearchIllust(
+                                widget.word,
+                                search_target: searchTarget,
+                                sort: selectSort,
+                                start_date: datePeriod.start,
+                                end_date: datePeriod.end);
                           });
                           Navigator.of(context).pop();
                         },
@@ -210,7 +208,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           FlatButton(
-                              onPressed: () {}, child: Text(I18n.of(context).Filter)),
+                              onPressed: () {},
+                              child: Text(I18n.of(context).Filter)),
                           FlatButton(
                               onPressed: () {
                                 setState(() {

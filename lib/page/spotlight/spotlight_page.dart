@@ -38,14 +38,14 @@ class SpotLightPage extends StatelessWidget {
           title: Text(I18n.of(context).Spotlight),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.arrow_upward), onPressed: () {
-                        _controller.animateTo(0,
-                duration: Duration(seconds: 1), curve: Curves.ease);
+              icon: Icon(Icons.arrow_upward),
+              onPressed: () {
+                _controller.animateTo(0,
+                    duration: Duration(seconds: 1), curve: Curves.ease);
               },
             )
           ],
         ),
-  
         body: BlocListener<SpotlightBloc, SpotlightState>(
           child: BlocBuilder<SpotlightBloc, SpotlightState>(
               builder: (context, snapshot) {
@@ -68,11 +68,11 @@ class SpotLightPage extends StatelessWidget {
                     staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
                     itemCount: snapshot.articles.length,
                   ));
-                else
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-              }),
+            else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          }),
           listener: (BuildContext context, state) {
             if (state is DataSpotlight) {
               _loadCompleter?.complete();
@@ -84,8 +84,7 @@ class SpotLightPage extends StatelessWidget {
         ),
       ),
       create: (BuildContext context) =>
-      SpotlightBloc(RepositoryProvider.of<ApiClient>(context))
-        ..add(FetchSpotlightEvent()),
+          SpotlightBloc(apiClient)..add(FetchSpotlightEvent()),
     );
   }
 }

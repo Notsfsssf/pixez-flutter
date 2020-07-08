@@ -52,9 +52,9 @@ class _SplashPageState extends State<SplashPage>
   initMethod() {
     userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
       if (userSetting.disableBypassSni) {
-        RepositoryProvider.of<ApiClient>(context).httpClient.options.baseUrl =
+        apiClient.httpClient.options.baseUrl =
             'https://${ApiClient.BASE_API_URL_HOST}';
-        RepositoryProvider.of<OAuthClient>(context).httpClient.options.baseUrl =
+        oAuthClient.httpClient.options.baseUrl =
             'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
         Navigator.pushReplacement(
             context,
@@ -70,14 +70,8 @@ class _SplashPageState extends State<SplashPage>
             var address = splashStore.onezeroResponse.answer.first.data;
             print('address:$address');
             if (address != null && address.isNotEmpty) {
-              RepositoryProvider.of<ApiClient>(context)
-                  .httpClient
-                  .options
-                  .baseUrl = 'https://$address';
-              RepositoryProvider.of<OAuthClient>(context)
-                  .httpClient
-                  .options
-                  .baseUrl = 'https://$address';
+              apiClient.httpClient.options.baseUrl = 'https://$address';
+              oAuthClient.httpClient.options.baseUrl = 'https://$address';
             }
           }
         } catch (e) {

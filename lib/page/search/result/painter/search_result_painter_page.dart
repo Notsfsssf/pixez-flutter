@@ -33,10 +33,10 @@ class SearchResultPainterPage extends StatefulWidget {
 
 class _SearchResultPainterPageState extends State<SearchResultPainterPage> {
   EasyRefreshController _refreshController;
-ScrollController  _scrollController;
+  ScrollController _scrollController;
   @override
   void initState() {
-    _scrollController=ScrollController();
+    _scrollController = ScrollController();
 
     _refreshController = EasyRefreshController();
     super.initState();
@@ -52,8 +52,7 @@ ScrollController  _scrollController;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ResultPainterBloc>(
-      create: (context) =>
-          ResultPainterBloc(RepositoryProvider.of<ApiClient>(context)),
+      create: (context) => ResultPainterBloc(apiClient),
       child: MultiBlocListener(
         listeners: [
           BlocListener<ResultPainterBloc, ResultPainterState>(

@@ -33,7 +33,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () async {
-        ApiClient client = RepositoryProvider.of<ApiClient>(context);
+        ApiClient client = apiClient;
         if (!widget.novel.isBookmarked) {
           try {
             await client.postNovelBookmarkAdd(widget.novel.id, "private");
@@ -55,7 +55,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
             ? Icon(Icons.bookmark)
             : Icon(Icons.bookmark_border),
         onPressed: () async {
-          ApiClient client = RepositoryProvider.of<ApiClient>(context);
+          ApiClient client = apiClient;
           if (!widget.novel.isBookmarked) {
             try {
               await client.postNovelBookmarkAdd(widget.novel.id, "public");

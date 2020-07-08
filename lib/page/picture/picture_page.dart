@@ -253,12 +253,10 @@ class _PicturePageState extends State<PicturePage> {
       return MultiBlocProvider(
           providers: [
             BlocProvider<PictureBloc>(
-              create: (context) =>
-                  PictureBloc(RepositoryProvider.of<ApiClient>(context)),
+              create: (context) => PictureBloc(apiClient),
             ),
             BlocProvider<BookmarkDetailBloc>(
-              create: (BuildContext context) =>
-                  BookmarkDetailBloc(RepositoryProvider.of<ApiClient>(context)),
+              create: (BuildContext context) => BookmarkDetailBloc(apiClient),
             ),
             BlocProvider<IllustBloc>(
               create: (BuildContext context) =>
@@ -266,13 +264,11 @@ class _PicturePageState extends State<PicturePage> {
                     ..add(FetchIllustDetailEvent()),
             ),
             BlocProvider<IllustRelatedBloc>(
-              create: (context) =>
-                  IllustRelatedBloc(RepositoryProvider.of<ApiClient>(context))
-                    ..add(FetchRelatedEvent(widget.id)),
+              create: (context) => IllustRelatedBloc(apiClient)
+                ..add(FetchRelatedEvent(widget.id)),
             ),
             BlocProvider<UgoiraMetadataBloc>(
-              create: (context) =>
-                  UgoiraMetadataBloc(RepositoryProvider.of<ApiClient>(context)),
+              create: (context) => UgoiraMetadataBloc(apiClient),
             )
           ],
           child: BlocBuilder<PictureBloc, PictureState>(

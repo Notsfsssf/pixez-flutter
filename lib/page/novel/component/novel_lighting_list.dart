@@ -40,8 +40,8 @@ class _NovelLightingListState extends State<NovelLightingList> {
   @override
   void initState() {
     _easyRefreshController = EasyRefreshController();
-    _store = NovelLightingStore(widget.futureGet,
-        RepositoryProvider.of<ApiClient>(context), _easyRefreshController);
+    _store =
+        NovelLightingStore(widget.futureGet, apiClient, _easyRefreshController);
     super.initState();
   }
 

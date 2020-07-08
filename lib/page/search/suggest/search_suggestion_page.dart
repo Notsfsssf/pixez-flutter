@@ -52,8 +52,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SuggestionBloc>(
-      create: (BuildContext context) =>
-          SuggestionBloc(RepositoryProvider.of<ApiClient>(context)),
+      create: (BuildContext context) => SuggestionBloc(apiClient),
       child: BlocBuilder<SuggestionBloc, SuggestionState>(
           builder: (context, snapshot) {
         return Scaffold(
@@ -93,9 +92,10 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
               }
               if (segment.length == 2) {
                 if (segment[0] == 'artworks') {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (BuildContext context) =>
-                      PicturePage(null, int.parse(segment[1]))));
+                  Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              PicturePage(null, int.parse(segment[1]))));
                   _filter.clear();
                 }
                 if (segment[0] == 'users') {
@@ -123,10 +123,9 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                 {
                   Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(
-                      builder: (context) =>
-                          ResultPage(
-                            word: word,
-                          )));
+                          builder: (context) => ResultPage(
+                                word: word,
+                              )));
                 }
                 break;
               case 1:
@@ -147,7 +146,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                   if (id != null) {
                     Navigator.of(context, rootNavigator: true)
                         .push(MaterialPageRoute(
-                        builder: (_) => UsersPage(
+                            builder: (_) => UsersPage(
                                   id: id,
                                 )));
                   } else {
@@ -164,9 +163,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
         controller: _tabController,
         tabs: <Widget>[
           Tab(
-            child: Text(I18n
-                .of(context)
-                .Key_Word),
+            child: Text(I18n.of(context).Key_Word),
           ),
           Tab(
             child: Text(I18n.of(context).Illust_id),
@@ -211,7 +208,7 @@ class _SuggestionsState extends State<Suggestions> {
                       .push(MaterialPageRoute(builder: (context) {
                     return ResultPage(
                       word: tags[index].name,
-                      translatedName: tags[index].translated_name??'',
+                      translatedName: tags[index].translated_name ?? '',
                     );
                   }));
                 },

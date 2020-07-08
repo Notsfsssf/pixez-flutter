@@ -102,16 +102,13 @@ class _UserPageState extends State<UserPage>
         providers: <BlocProvider>[
           BlocProvider<UserBloc>(
             create: (context) =>
-                UserBloc(RepositoryProvider.of<ApiClient>(context))
-                  ..add(FetchEvent(widget.id)),
+                UserBloc(apiClient)..add(FetchEvent(widget.id)),
           ),
           BlocProvider<BookmarkBloc>(
-            create: (context) =>
-                BookmarkBloc(RepositoryProvider.of<ApiClient>(context), null),
+            create: (context) => BookmarkBloc(apiClient, null),
           ),
           BlocProvider<WorksBloc>(
-            create: (context) =>
-                WorksBloc(RepositoryProvider.of<ApiClient>(context)),
+            create: (context) => WorksBloc(apiClient),
           )
         ],
         child: BlocBuilder<UserBloc, UserState>(
@@ -175,16 +172,16 @@ class _UserPageState extends State<UserPage>
                   onPressed: () {},
                   child: state is UserDataState
                       ? PainterAvatar(
-                    url: state.userDetail.user.profile_image_urls.medium,
-                    id: state.userDetail.user.id,
-                    onTap: () async {},
-                  )
+                          url: state.userDetail.user.profile_image_urls.medium,
+                          id: state.userDetail.user.id,
+                          onTap: () async {},
+                        )
                       : Icon(Icons.refresh),
                 ),
                 floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
+                    FloatingActionButtonLocation.centerDocked,
               );
-                });
+            });
           },
         ),
       );
@@ -315,13 +312,10 @@ class _UserPageState extends State<UserPage>
                     .add(FetchWorksEvent(widget.id, "manga"));
               }
             },
-            itemBuilder: (BuildContext context) =>
-            <PopupMenuEntry<WhyFarther>>[
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
               PopupMenuItem<WhyFarther>(
                 value: WhyFarther.public,
-                child: Text(I18n
-                    .of(context)
-                    .Illust),
+                child: Text(I18n.of(context).Illust),
               ),
               PopupMenuItem<WhyFarther>(
                 value: WhyFarther.private,
@@ -419,7 +413,9 @@ class _UserPageState extends State<UserPage>
               restrict: state.choiceRestrict,
             )),
         Container(),
-        UserDetailPage(userDetail: state.userDetail,),
+        UserDetailPage(
+          userDetail: state.userDetail,
+        ),
       ],
     );
   }

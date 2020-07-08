@@ -65,7 +65,7 @@ class _NewPainterPageState extends State<NewPainterPage>
   Widget build(BuildContext context) {
     return BlocProvider<NewPainterBloc>(
       create: (BuildContext context) {
-        return NewPainterBloc(RepositoryProvider.of<ApiClient>(context))
+        return NewPainterBloc(apiClient)
           ..add(FetchPainterEvent(widget.id, widget.restrict));
       },
       child: MultiBlocListener(
@@ -121,48 +121,61 @@ class _NewPainterPageState extends State<NewPainterPage>
               },
               child: state is DataState
                   ? ListView.builder(
-                controller: _scrollController,
-                itemCount: state.users.length+1,
-                itemBuilder: (BuildContext context, int index) {
-                  if(index==0){
-                    return   Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(icon: Icon(Icons.list), onPressed: (){
-                        showModalBottomSheet(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16),
-                              ),
-                            ),
-                            context: context,
-                            builder: (context1) => Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  title: Text(I18n.of(context).public),
-                                  onTap: () {
-                                    Navigator.of(context1).pop();
-                                    BlocProvider.of<NewPainterBloc>(context).add(FetchPainterEvent(widget.id, 'public'));
-                                  },
-                                ),
-                                ListTile(
-                                  title: Text(I18n.of(context).private),
-                                  onTap: () {
-                                    Navigator.of(context1).pop();
-                                    BlocProvider.of<NewPainterBloc>(context).add(FetchPainterEvent(widget.id, 'private'));
-                                  },
-                                ),
-                              ],
-                            ));
-                      }),
-                    );
-                  }
-                  UserPreviews user = state.users[index-1];
-                  return PainterCard(
-                    user: user,
-                  );
-                },
-              )
+                      controller: _scrollController,
+                      itemCount: state.users.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0) {
+                          return Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                                icon: Icon(Icons.list),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(16),
+                                        ),
+                                      ),
+                                      context: context,
+                                      builder: (context1) => Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListTile(
+                                                title: Text(
+                                                    I18n.of(context).public),
+                                                onTap: () {
+                                                  Navigator.of(context1).pop();
+                                                  BlocProvider.of<
+                                                              NewPainterBloc>(
+                                                          context)
+                                                      .add(FetchPainterEvent(
+                                                          widget.id, 'public'));
+                                                },
+                                              ),
+                                              ListTile(
+                                                title: Text(
+                                                    I18n.of(context).private),
+                                                onTap: () {
+                                                  Navigator.of(context1).pop();
+                                                  BlocProvider.of<
+                                                              NewPainterBloc>(
+                                                          context)
+                                                      .add(FetchPainterEvent(
+                                                          widget.id,
+                                                          'private'));
+                                                },
+                                              ),
+                                            ],
+                                          ));
+                                }),
+                          );
+                        }
+                        UserPreviews user = state.users[index - 1];
+                        return PainterCard(
+                          user: user,
+                        );
+                      },
+                    )
                   : Container(),
             );
           },

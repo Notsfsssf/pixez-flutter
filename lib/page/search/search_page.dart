@@ -61,52 +61,49 @@ class _SearchPageState extends State<SearchPage>
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      if(accountStore.now!=null)
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider<TrendTagsBloc>(
-            create: (context) =>
-                TrendTagsBloc(RepositoryProvider.of<ApiClient>(context))
-                  ..add(FetchEvent()),
-          )
-        ],
-        child: Column(children: <Widget>[
-          AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(
-              I18n.of(context).Search,
-              style: Theme.of(context).textTheme.headline6,
+      if (accountStore.now != null)
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<TrendTagsBloc>(
+              create: (context) => TrendTagsBloc(apiClient)..add(FetchEvent()),
+            )
+          ],
+          child: Column(children: <Widget>[
+            AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(
+                I18n.of(context).Search,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                            builder: (context) => SearchSuggestionPage()));
+                  },
+                )
+              ],
             ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                          builder: (context) => SearchSuggestionPage()));
-                },
-              )
-            ],
-          ),
-          Expanded(child: _buildBlocBuilder())
-        ]),
-      );
+            Expanded(child: _buildBlocBuilder())
+          ]),
+        );
       return Column(children: <Widget>[
-             AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(
-              I18n.of(context).Search,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-             actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-
-                },
-              )
-            ],),
-            Expanded(child: LoginInFirst())
+        AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            I18n.of(context).Search,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {},
+            )
+          ],
+        ),
+        Expanded(child: LoginInFirst())
       ]);
     });
   }

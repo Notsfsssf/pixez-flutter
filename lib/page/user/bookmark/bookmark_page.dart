@@ -36,14 +36,13 @@ class BookmarkPage extends StatefulWidget {
   _BookmarkPageState createState() => _BookmarkPageState();
 }
 
-class _BookmarkPageState extends State<BookmarkPage>
- {
+class _BookmarkPageState extends State<BookmarkPage> {
   FutureGet futureGet;
 
   @override
   void initState() {
-    futureGet = () => RepositoryProvider.of<ApiClient>(context)
-        .getBookmarksIllust(widget.id, widget.restrict, null);
+    futureGet =
+        () => apiClient.getBookmarksIllust(widget.id, widget.restrict, null);
     super.initState();
   }
 
@@ -66,9 +65,8 @@ class _BookmarkPageState extends State<BookmarkPage>
                       String tag = result['tag'];
                       String restrict = result['restrict'];
                       setState(() {
-                        futureGet = () =>
-                            RepositoryProvider.of<ApiClient>(context)
-                                .getBookmarksIllust(widget.id, restrict, tag);
+                        futureGet = () => apiClient.getBookmarksIllust(
+                            widget.id, restrict, tag);
                       });
                     }
                   }),
@@ -83,5 +81,4 @@ class _BookmarkPageState extends State<BookmarkPage>
       return Container();
     }
   }
-
 }

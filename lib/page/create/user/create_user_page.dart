@@ -55,7 +55,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
             children: <Widget>[
               TextFormField(
                 maxLines: 1,
-                decoration:  InputDecoration(
+                decoration: InputDecoration(
                   icon: Icon(Icons.supervised_user_circle),
                   hintText: I18n.of(context).Nickname,
                   labelText: '${I18n.of(context).Nickname} *',
@@ -97,21 +97,20 @@ class _CreateUserPageState extends State<CreateUserPage> {
                 },
                 child: Text("Start"),
               ),
-              Center(child: Text(I18n.of(context).Nickname_can_be_change_anytime),),
-         FlatButton(
-                              child: Text(
-                                I18n
-                                    .of(context)
-                                    .Terms,
-                              ),
-                              onPressed: () async {
-                                final url =
-                                    'https://www.pixiv.net/terms/?page=term';
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {}
-                              },
-                            ),
+              Center(
+                child: Text(I18n.of(context).Nickname_can_be_change_anytime),
+              ),
+              FlatButton(
+                child: Text(
+                  I18n.of(context).Terms,
+                ),
+                onPressed: () async {
+                  final url = 'https://www.pixiv.net/terms/?page=term';
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {}
+                },
+              ),
             ],
           ),
         ),

@@ -40,9 +40,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                 .add(FetchNovelRecomEvent());
             return;
           },
-          onLoad: (){
-
-          },
+          onLoad: () {},
           child: state is DataNovelRecomState
               ? ListView.builder(
                   itemCount: state.novels.length,
@@ -50,26 +48,26 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                     var novel = state.novels[index];
                     return ListTile(
                       title: Text(novel.title),
-                      subtitle: Text(novel.user.name,maxLines: 1,),
+                      subtitle: Text(
+                        novel.user.name,
+                        maxLines: 1,
+                      ),
                       onTap: () {
                         Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     NovelViewerPage(
-                                     id: novel.id,
+                                      id: novel.id,
                                       novel: novel,
                                     )));
                       },
-                      trailing: NovelBookmarkButton(
-                        novel:novel
-                      ),
+                      trailing: NovelBookmarkButton(novel: novel),
                     );
                   })
               : Container(),
         );
       }),
-      create: (BuildContext context) =>
-          NovelRecomBloc(RepositoryProvider.of<ApiClient>(context)),
+      create: (BuildContext context) => NovelRecomBloc(apiClient),
     );
   }
 }

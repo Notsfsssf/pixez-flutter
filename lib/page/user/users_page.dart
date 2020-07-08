@@ -47,7 +47,7 @@ class _UsersPageState extends State<UsersPage>
   ScrollController _scrollController;
   @override
   void initState() {
-    userStore = UserStore(RepositoryProvider.of<ApiClient>(context), widget.id);
+    userStore = UserStore(apiClient, widget.id);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     super.initState();
@@ -239,20 +239,20 @@ class _UsersPageState extends State<UsersPage>
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   background: Container(
-                         color: Theme.of(context).cardColor,
+                    color: Theme.of(context).cardColor,
                     child: Stack(
                       children: <Widget>[
                         Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).padding.top+160,
+                            height: MediaQuery.of(context).padding.top + 160,
                             child: userStore.userDetail.profile
                                         .background_image_url !=
                                     null
                                 ? PixivImage(userStore
                                     .userDetail.profile.background_image_url)
                                 : Container(
-                                   color: Theme.of(context).accentColor,
-                                )),
+                                    color: Theme.of(context).accentColor,
+                                  )),
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Column(
@@ -375,7 +375,7 @@ class _UsersPageState extends State<UsersPage>
               child: PainterAvatar(
                 url: userStore.userDetail.user.profile_image_urls.medium,
                 size: Size(80, 80),
-                onTap: (){},
+                onTap: () {},
               ),
             ),
             Padding(

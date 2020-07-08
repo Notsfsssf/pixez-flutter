@@ -158,8 +158,7 @@ class _CommentPageState extends State<CommentPage> {
                                       suffixIcon: IconButton(
                                           icon: Icon(Icons.reply),
                                           onPressed: () async {
-                                            final client = RepositoryProvider
-                                                .of<ApiClient>(context);
+                                            final client = apiClient;
                                             String txt =
                                                 _editController.text.trim();
                                             try {
@@ -202,7 +201,7 @@ class _CommentPageState extends State<CommentPage> {
         },
       ),
       create: (BuildContext context) => CommentBloc(
-          RepositoryProvider.of<ApiClient>(context), easyRefreshController)
+          apiClient, easyRefreshController)
         ..add(FetchCommentEvent(widget.id)),
     );
   }

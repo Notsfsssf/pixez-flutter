@@ -40,7 +40,7 @@ class FollowPage extends StatelessWidget {
           restrict: 'public',
         ),
         create: (context) =>
-            NewPainterBloc(RepositoryProvider.of<ApiClient>(context)),
+            NewPainterBloc(apiClient),
       ),
     );
   }

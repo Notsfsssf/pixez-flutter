@@ -60,19 +60,30 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 Container(
                   height: MediaQuery.of(context).padding.top,
                 ),
-                Center(child: Container(
-                  height: 160,
-                    child: PixivImage(widget.novel.imageUrls.medium))),
+                Center(
+                    child: Container(
+                        height: 160,
+                        child: PixivImage(widget.novel.imageUrls.medium))),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(state.novelTextResponse.novelText,scrollPhysics: NeverScrollableScrollPhysics(),),
+                  child: SelectableText(
+                    state.novelTextResponse.novelText,
+                    scrollPhysics: NeverScrollableScrollPhysics(),
+                  ),
                 ),
                 Container(
-                  child: ListTile(subtitle:Text(widget.novel.user.name),title:Text(widget.novel.title??""),leading: PainterAvatar(url: widget.novel.user.profileImageUrls.medium,id: widget.novel.user.id,onTap: (){},),),
+                  child: ListTile(
+                    subtitle: Text(widget.novel.user.name),
+                    title: Text(widget.novel.title ?? ""),
+                    leading: PainterAvatar(
+                      url: widget.novel.user.profileImageUrls.medium,
+                      id: widget.novel.user.id,
+                      onTap: () {},
+                    ),
+                  ),
                 ),
                 buildListTile(seriesPrev),
                 buildListTile(seriesNext),
-
                 Container(
                   height: MediaQuery.of(context).padding.bottom,
                 )
@@ -82,10 +93,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         }
         return Scaffold();
       }),
-      create: (BuildContext context) => NovelTextBloc(
-          RepositoryProvider.of<ApiClient>(context),
-          id: widget.id)
-        ..add(FetchEvent()),
+      create: (BuildContext context) =>
+          NovelTextBloc(apiClient, id: widget.id)..add(FetchEvent()),
     );
   }
 
@@ -97,7 +106,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             .pushReplacement(MaterialPageRoute(
                 builder: (BuildContext context) => NovelViewerPage(
                       id: series.id,
-                  novel: series,
+                      novel: series,
                     )));
       },
     );

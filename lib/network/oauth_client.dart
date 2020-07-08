@@ -24,6 +24,8 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 
+final OAuthClient oAuthClient = OAuthClient();
+
 class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";

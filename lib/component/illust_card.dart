@@ -18,7 +18,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
@@ -231,8 +230,7 @@ class _IllustCardState extends State<IllustCard> {
                         child: IconButton(
                             icon: StarIcon(widget._illusts.isBookmarked),
                             onPressed: () async {
-                              final ApiClient client =
-                                  RepositoryProvider.of<ApiClient>(context);
+                              final ApiClient client = apiClient;
                               try {
                                 if (widget._illusts.isBookmarked) {
                                   Response response = await client

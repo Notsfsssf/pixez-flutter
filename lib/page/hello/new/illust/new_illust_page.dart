@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2020. by perol_notsf, All rights reserved
  *
@@ -32,14 +31,12 @@ class NewIllustPage extends StatefulWidget {
   _NewIllustPageState createState() => _NewIllustPageState();
 }
 
-class _NewIllustPageState extends State<NewIllustPage>
-   {
+class _NewIllustPageState extends State<NewIllustPage> {
   FutureGet futureGet;
 
   @override
   void initState() {
-    futureGet = () => RepositoryProvider.of<ApiClient>(context)
-        .getFollowIllusts(widget.restrict);
+    futureGet = () => apiClient.getFollowIllusts(widget.restrict);
     super.initState();
   }
 
@@ -60,7 +57,7 @@ class _NewIllustPageState extends State<NewIllustPage>
                   ),
                   context: context,
                   builder: (context) => SafeArea(
-                    child: Column(
+                        child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             ListTile(
@@ -68,9 +65,8 @@ class _NewIllustPageState extends State<NewIllustPage>
                               onTap: () {
                                 Navigator.of(context).pop();
                                 setState(() {
-                                  futureGet = () =>
-                                      RepositoryProvider.of<ApiClient>(context)
-                                          .getFollowIllusts('all');
+                                  futureGet =
+                                      () => apiClient.getFollowIllusts('all');
                                 });
                               },
                             ),
@@ -80,8 +76,7 @@ class _NewIllustPageState extends State<NewIllustPage>
                                 Navigator.of(context).pop();
                                 setState(() {
                                   futureGet = () =>
-                                      RepositoryProvider.of<ApiClient>(context)
-                                          .getFollowIllusts('public');
+                                      apiClient.getFollowIllusts('public');
                                 });
                               },
                             ),
@@ -91,18 +86,16 @@ class _NewIllustPageState extends State<NewIllustPage>
                                 Navigator.of(context).pop();
                                 setState(() {
                                   futureGet = () =>
-                                      RepositoryProvider.of<ApiClient>(context)
-                                          .getFollowIllusts('private');
+                                      apiClient.getFollowIllusts('private');
                                 });
                               },
                             ),
                           ],
                         ),
-                  ));
+                      ));
             }),
       )),
       source: futureGet,
     );
   }
-
 }

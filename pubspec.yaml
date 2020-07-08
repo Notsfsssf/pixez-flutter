@@ -44,8 +44,8 @@ dependencies:
   package_info: ^0.4.1
   json_serializable: ^3.3.0
   uni_links: ^0.4.0
-  mobx: ^1.1.0
-  flutter_mobx: ^1.1.0
+  mobx: ^1.2.1+1
+  flutter_mobx: ^1.1.0+1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
@@ -66,8 +66,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.7.2
-  mobx_codegen: ^1.0.0
+  build_runner: ^1.10.0
+  mobx_codegen: ^1.1.0+1
 
 
 

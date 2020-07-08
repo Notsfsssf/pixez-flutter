@@ -63,7 +63,7 @@ class _LightingListState extends State<LightingList> {
   void initState() {
     _easyRefreshController = widget.controller ?? EasyRefreshController();
     _store = LightingStore(widget.source,
-        RepositoryProvider.of<ApiClient>(context), _easyRefreshController);
+        apiClient, _easyRefreshController);
     _scrollController = widget.scrollController ?? ScrollController();
     // _scrollController.addListener(() {
     //   bool temp;
