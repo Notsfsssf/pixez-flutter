@@ -26,11 +26,11 @@ import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:pixez/store/save_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -71,7 +71,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(paths[index + 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return PicturePage(null, id);
+            return IllustPage(id:id);
           }));
           return;
         } catch (e) {}
@@ -85,9 +85,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(paths[index + 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: id,
-            );
+            return IllustPage(id:id);
           }));
         } catch (e) {
           print(e);
@@ -101,7 +99,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return PicturePage(null, id);
+            return IllustPage(id:id);
           }));
           return;
         } catch (e) {}

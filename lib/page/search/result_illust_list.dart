@@ -214,19 +214,15 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               onPressed: () {
                                 setState(() {
                                   if (starValue == 0)
-                                    futureGet = () =>
-                                        RepositoryProvider.of<ApiClient>(
-                                                context)
-                                            .getSearchIllust(widget.word,
-                                                search_target: searchTarget,
-                                                sort: selectSort);
+                                    futureGet = () => apiClient.getSearchIllust(
+                                        widget.word,
+                                        search_target: searchTarget,
+                                        sort: selectSort);
                                   else
-                                    futureGet = () => RepositoryProvider.of<
-                                            ApiClient>(context)
-                                        .getSearchIllust(
-                                            '${widget.word} ${starNum[starValue.toInt()]}users入り',
-                                            search_target: searchTarget,
-                                            sort: selectSort);
+                                    futureGet = () => apiClient.getSearchIllust(
+                                        '${widget.word} ${starNum[starValue.toInt()]}users入り',
+                                        search_target: searchTarget,
+                                        sort: selectSort);
                                 });
                                 Navigator.of(context).pop();
                               },
@@ -268,10 +264,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                 if (accountStore.now.isPremium == 0) {
                                   BotToast.showText(text: 'not premium');
                                   setState(() {
-                                    futureGet = () =>
-                                        RepositoryProvider.of<ApiClient>(
-                                                context)
-                                            .getPopularPreview(widget.word);
+                                    futureGet = () => apiClient
+                                        .getPopularPreview(widget.word);
                                   });
                                   Navigator.of(context).pop();
                                   return;

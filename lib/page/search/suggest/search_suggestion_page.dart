@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/search/bloc/suggestion_bloc.dart';
 import 'package:pixez/page/search/bloc/suggestion_event.dart';
@@ -95,7 +96,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                   Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              PicturePage(null, int.parse(segment[1]))));
+                              IllustPage(id:int.parse(segment[1]))));
                   _filter.clear();
                 }
                 if (segment[0] == 'users') {
@@ -134,7 +135,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                   if (id != null) {
                     Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
-                            builder: (_) => PicturePage(null, id)));
+                            builder: (_) => IllustPage(id:id)));
                   } else {
                     _filter.clear();
                   }

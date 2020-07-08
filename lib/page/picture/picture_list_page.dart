@@ -16,7 +16,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/page/picture/picture_page.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 
 class PictureListPage extends StatefulWidget {
   final List<Illusts> illusts;
@@ -44,12 +44,21 @@ class _PictureListPageState extends State<PictureListPage> {
   }
 
   @override
+  void dispose() {
+    _pageController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
       children: <Widget>[
-        ...widget.illusts.map((f) =>
-            PicturePage(f, f.id, heroString: widget.heroString,))
+        ...widget.illusts.map((f) => IllustPage(
+              id: f.id,
+              illusts: f,
+              heroString: widget.heroString,
+            ))
       ],
     );
   }

@@ -24,6 +24,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
@@ -198,7 +199,7 @@ class _SearchPageState extends State<SearchPage>
               onLongPress: () {
                 Navigator.of(context, rootNavigator: true)
                     .push(MaterialPageRoute(builder: (_) {
-                  return PicturePage(null, tags[index].illust.id);
+                  return IllustPage(id:tags[index].illust.id);
                 }));
               },
               child: ClipRRect(

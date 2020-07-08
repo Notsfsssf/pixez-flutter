@@ -50,7 +50,7 @@ abstract class ListItem {}
 class IllustsItem implements ListItem {}
 
 class DetailItem implements ListItem {}
-
+@Deprecated('illustpage')
 class PicturePage extends StatefulWidget {
   final Illusts _illusts;
   final int id;

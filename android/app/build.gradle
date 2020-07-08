@@ -87,25 +87,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    flavorDimensions "deploy"
-
-    productFlavors{
-        fdroid {
-            dimension "deploy"
-            signingConfig null
-        }
-
-        fdebug {
-            dimension "deploy"
-            signingConfig null
-        }
-
-        fmain {
-            dimension "deploy"
-            signingConfig signingConfigs.release
-        }
-
-    }
 }
 
 flutter {

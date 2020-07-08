@@ -83,40 +83,30 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<ApiClient>(
-          create: (BuildContext context) => ApiClient(),
-        ),
-        RepositoryProvider<OAuthClient>(
-          create: (BuildContext context) => OAuthClient(),
-        ),
-      ],
-      child: MaterialApp(
-        navigatorObservers: [BotToastNavigatorObserver()],
-        home: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-            child: SplashPage()),
-        title: 'PixEz',
-        builder: BotToastInit(),
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.cyan[500],
-          accentColor: Colors.cyan[400],
-          indicatorColor: Colors.cyan[500],
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          accentColor: Colors.cyan[500],
-        ),
-        supportedLocales: I18n.delegate.supportedLocales,
-        localizationsDelegates: [
-          I18n.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate
-        ],
+    return MaterialApp(
+      navigatorObservers: [BotToastNavigatorObserver()],
+      home: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+          child: SplashPage()),
+      title: 'PixEz',
+      builder: BotToastInit(),
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.cyan[500],
+        accentColor: Colors.cyan[400],
+        indicatorColor: Colors.cyan[500],
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        accentColor: Colors.cyan[500],
+      ),
+      supportedLocales: I18n.delegate.supportedLocales,
+      localizationsDelegates: [
+        I18n.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
     );
   }
 }

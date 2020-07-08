@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/page/picture/picture_page.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 
 class SauceNaoPage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PageView(
                   children: _store.results
-                      .map((element) => PicturePage(null, element))
+                      .map((element) => IllustPage(id:element))
                       .toList(),
                 )));
       }
@@ -83,7 +83,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
                               builder: (context) => PageView(
                                     children: _store.results
                                         .map((element) =>
-                                            PicturePage(null, element))
+                                            IllustPage(id:element))
                                         .toList(),
                                   )));
                         }

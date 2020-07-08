@@ -23,8 +23,8 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
-import 'package:pixez/page/picture/picture_page.dart';
 
 class IllustCard extends StatefulWidget {
   Illusts _illusts;
@@ -72,9 +72,9 @@ class _IllustCardState extends State<IllustCard> {
                       nowPosition: widget.illustList.indexOf(widget._illusts),
                     );
                   }
-                  return PicturePage(
-                    widget._illusts,
-                    widget._illusts.id,
+                  return IllustPage(
+                    illusts: widget._illusts,
+                    id: widget._illusts.id,
                   );
                 }))
               },
@@ -141,9 +141,9 @@ class _IllustCardState extends State<IllustCard> {
               heroString: heroString,
             );
           }
-          return PicturePage(
-            widget._illusts,
-            widget._illusts.id,
+          return IllustPage(
+            id: widget._illusts.id,
+            illusts: widget._illusts,
             heroString: heroString,
           );
         }))

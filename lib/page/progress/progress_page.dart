@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/picture/picture_page.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 
 class ProgressPage extends StatefulWidget {
   @override
@@ -70,7 +70,7 @@ class _ProgressPageState extends State<ProgressPage>
                       Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(
                               builder: (context) =>
-                                  PicturePage(f.illusts, f.illusts.id)));
+                                  IllustPage(illusts: f.illusts, id:f.illusts.id)));
                     },
                   ),
                 ))

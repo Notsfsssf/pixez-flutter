@@ -28,7 +28,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/picture/picture_page.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/users_page.dart';
@@ -61,6 +61,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   var railIndex = 0;
+
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
@@ -104,6 +105,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   int index;
   PageController _pageController;
   StreamSubscription _intentDataStreamSubscription;
+
   @override
   void initState() {
     index = userSetting.welcomePageNum;
@@ -146,7 +148,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           saveStore.context = context;
-          return PicturePage(null, id);
+          return IllustPage(id: id);
+          ;
         }));
       } catch (e) {}
       return;
@@ -175,7 +178,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             Navigator.of(context, rootNavigator: true)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
-              return PicturePage(null, id);
+              return IllustPage(id: id);
+              ;
             }));
             return;
           } catch (e) {}
@@ -205,7 +209,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           Navigator.of(context, rootNavigator: true)
               .pushReplacement(MaterialPageRoute(builder: (context) {
             saveStore.context = context;
-            return PicturePage(null, int.parse(id));
+            return IllustPage(id: int.parse(id));
           }));
 
           return;
@@ -233,7 +237,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             Navigator.of(context, rootNavigator: true)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
-              return PicturePage(null, id);
+              return IllustPage(id: id);
+              ;
             }));
             return;
           } catch (e) {}
