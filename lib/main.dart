@@ -24,6 +24,7 @@ import 'package:pixez/bloc/bloc.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
+import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/mute_store.dart';
@@ -36,6 +37,7 @@ final SaveStore saveStore = SaveStore();
 final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
+final HistoryStore historyStore = HistoryStore();
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -81,46 +83,39 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider<IllustPersistBloc>(
-          create: (context) => IllustPersistBloc(),
+        RepositoryProvider<ApiClient>(
+          create: (BuildContext context) => ApiClient(),
+        ),
+        RepositoryProvider<OAuthClient>(
+          create: (BuildContext context) => OAuthClient(),
         ),
       ],
-      child: MultiRepositoryProvider(
-        providers: [
-          RepositoryProvider<ApiClient>(
-            create: (BuildContext context) => ApiClient(),
-          ),
-          RepositoryProvider<OAuthClient>(
-            create: (BuildContext context) => OAuthClient(),
-          ),
-        ],
-        child: MaterialApp(
-          navigatorObservers: [BotToastNavigatorObserver()],
-          home: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-              child: SplashPage()),
-          title: 'PixEz',
-          builder: BotToastInit(),
-          theme: ThemeData(
-            brightness: Brightness.light,
-            primaryColor: Colors.cyan[500],
-            accentColor: Colors.cyan[400],
-            indicatorColor: Colors.cyan[500],
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            accentColor: Colors.cyan[500],
-          ),
-          supportedLocales: I18n.delegate.supportedLocales,
-          localizationsDelegates: [
-            I18n.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate
-          ],
+      child: MaterialApp(
+        navigatorObservers: [BotToastNavigatorObserver()],
+        home: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+            child: SplashPage()),
+        title: 'PixEz',
+        builder: BotToastInit(),
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.cyan[500],
+          accentColor: Colors.cyan[400],
+          indicatorColor: Colors.cyan[500],
         ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Colors.cyan[500],
+        ),
+        supportedLocales: I18n.delegate.supportedLocales,
+        localizationsDelegates: [
+          I18n.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
       ),
     );
   }

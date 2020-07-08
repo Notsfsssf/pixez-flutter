@@ -32,7 +32,6 @@ import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:pixez/store/save_store.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -54,48 +53,52 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      if (accountStore.now != null)
-        return Scaffold(
-          body: PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                this.index = index;
-              });
-            },
-            itemCount: 5,
-            itemBuilder: (BuildContext context, int index) {
-              return _widgetOptions[index];
-            },
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              currentIndex: index,
-              onTap: (index) {
-                setState(() {
-                  this.index = index;
-                });
-                _pageController.jumpToPage(index);
-              },
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.ac_unit),
-                    title: Text(I18n.of(context).Rank)),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.bookmark),
-                    title: Text(I18n.of(context).Quick_View)),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.search),
-                    title: Text(I18n.of(context).Search)),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    title: Text(I18n.of(context).Setting)),
-              ]),
-        );
+      if (accountStore.now != null) {
+        return _buildScaffold(context);
+      }
       return LoginPage();
     });
+  }
+
+  var railIndex = 0;
+  Widget _buildScaffold(BuildContext context) {
+    return Scaffold(
+      body: PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            this.index = index;
+          });
+        },
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) {
+          return _widgetOptions[index];
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: index,
+          onTap: (index) {
+            setState(() {
+              this.index = index;
+            });
+            _pageController.jumpToPage(index);
+          },
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.ac_unit), title: Text(I18n.of(context).Rank)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.bookmark),
+                title: Text(I18n.of(context).Quick_View)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                title: Text(I18n.of(context).Setting)),
+          ]),
+    );
   }
 
   int index;

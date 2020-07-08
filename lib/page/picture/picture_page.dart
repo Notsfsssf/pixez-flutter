@@ -24,9 +24,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
-import 'package:pixez/bloc/bloc.dart';
-import 'package:pixez/bloc/illust_persist_bloc.dart';
-import 'package:pixez/bloc/illust_persist_event.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -335,8 +332,7 @@ class _PicturePageState extends State<PicturePage> {
                       }
                     }
                   }
-                  BlocProvider.of<IllustPersistBloc>(context)
-                      .add(InsertIllustPersistEvent(illustState.illusts));
+                  historyStore.insert(illustState.illusts);
                   return MultiBlocListener(
                     listeners: [
                       BlocListener<BookmarkDetailBloc, BookmarkDetailState>(

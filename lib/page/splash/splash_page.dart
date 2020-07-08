@@ -51,12 +51,17 @@ class _SplashPageState extends State<SplashPage>
   ReactionDisposer reactionDisposer, userDisposer;
   initMethod() {
     userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
-      if (userSetting.disableBypassSni)
+      if (userSetting.disableBypassSni) {
+        RepositoryProvider.of<ApiClient>(context).httpClient.options.baseUrl =
+            'https://${ApiClient.BASE_API_URL_HOST}';
+        RepositoryProvider.of<OAuthClient>(context).httpClient.options.baseUrl =
+            'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
                     Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+      }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
       if (!userSetting.disableBypassSni) {

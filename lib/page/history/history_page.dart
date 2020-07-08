@@ -15,13 +15,15 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pixez/bloc/bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/picture_page.dart';
 
 class HistoryPage extends StatelessWidget {
+  final HistoryStore _store = historyStore;
   Widget buildAppBarUI(context) => Container(
         child: Padding(
           child: Text(
@@ -32,22 +34,20 @@ class HistoryPage extends StatelessWidget {
         ),
       );
 
-  Widget buildBody() => BlocBuilder<IllustPersistBloc, IllustPersistState>(
-          builder: (context, state) {
-        if (state is DataIllustPersistState)
-        {
-          var reIllust = state.illusts.reversed.toList();
+  Widget buildBody() => Observer(builder: (context) {
+        var reIllust = _store.data.reversed.toList();
+        if (reIllust.isNotEmpty)
           return GridView.builder(
               itemCount: reIllust.length,
               gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
-                      Navigator.of(context,rootNavigator: true).push(
+                      Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return PicturePage(null,reIllust[index].illustId);
-                          }));
+                        return PicturePage(null, reIllust[index].illustId);
+                      }));
                     },
                     onLongPress: () async {
                       final result = await showDialog(
@@ -57,33 +57,36 @@ class HistoryPage extends StatelessWidget {
                               title: Text("${I18n.of(context).Delete}?"),
                               actions: <Widget>[
                                 FlatButton(
-                                  child: Text("OK"),
+                                  child: Text(I18n.of(context).OK),
                                   onPressed: () {
                                     Navigator.of(context).pop("OK");
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text(I18n.of(context).Cancel),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
                                   },
                                 )
                               ],
                             );
                           });
                       if (result == "OK") {
-                        BlocProvider.of<IllustPersistBloc>(context).add(
-                            DeleteIllustPersistEvent(reIllust[index].illustId));
+                        _store.delete(reIllust[index].illustId);
                       }
                     },
                     child: Card(
-                      margin: EdgeInsets.all(8),
-                      child: PixivImage(reIllust[index].pictureUrl)));
+                        margin: EdgeInsets.all(8),
+                        child: PixivImage(reIllust[index].pictureUrl)));
               });
-        }
-        else
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       });
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<IllustPersistBloc>(context).add(FetchIllustPersistEvent());
+    _store.fetch();
     return Scaffold(
       appBar: AppBar(
         title: Text("History"),
@@ -98,17 +101,22 @@ class HistoryPage extends StatelessWidget {
                       title: Text("${I18n.of(context).Delete} All?"),
                       actions: <Widget>[
                         FlatButton(
-                          child: Text("OK"),
+                          child: Text(I18n.of(context).OK),
                           onPressed: () {
                             Navigator.of(context).pop("OK");
+                          },
+                        ),
+                        FlatButton(
+                          child: Text(I18n.of(context).Cancel),
+                          onPressed: () {
+                            Navigator.of(context).pop();
                           },
                         )
                       ],
                     );
                   });
               if (result == "OK") {
-                BlocProvider.of<IllustPersistBloc>(context)
-                    .add(DeleteAllIllustPersistEvent());
+                _store.deleteAll();
               }
             },
           )
