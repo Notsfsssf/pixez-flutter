@@ -133,5 +133,6 @@
   "Welcome_Page":"歡迎頁",
   "Encode":"合成",
   "Encode_Message":"這將會消耗壹些時間，並可能會失敗",
-  "Filter":"篩選"
+  "Filter":"篩選",
+  "Attempting_To_Log_In":"嘗試登入"
 }

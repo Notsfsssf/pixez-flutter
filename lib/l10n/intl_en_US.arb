@@ -45,7 +45,7 @@
   "Logout_message": "See you~",
   "More": "More",
   "More_then_starNum_Bookmark": "More than {starNum} likes",
-  "Muti_Choice_save": "Seve selected ones",
+  "Muti_Choice_save": "Save selected ones",
   "My": "Mine",
   "New": "Activities",
   "Nickname": "Nickname",
@@ -133,5 +133,6 @@
   "Welcome_Page": "Welcome Page",
   "Encode":"Encode",
   "Encode_Message":"This will take time and may fail",
-  "Filter":"Filter"
+  "Filter":"Filter",
+  "Attempting_To_Log_In":"Attempting to log in"
 }

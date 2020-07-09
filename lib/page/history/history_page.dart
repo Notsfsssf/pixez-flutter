@@ -93,13 +93,13 @@ class HistoryPage extends StatelessWidget {
         title: Text("History"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.clear_all),
+            icon: Icon(Icons.delete),
             onPressed: () async {
               final result = await showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text("${I18n.of(context).Delete} All?"),
+                      title: Text("${I18n.of(context).Delete} ${I18n.of(context).All}?"),
                       actions: <Widget>[
                         FlatButton(
                           child: Text(I18n.of(context).OK),

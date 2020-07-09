@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/bezier_circle_header.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -46,7 +45,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     _easyRefreshController = EasyRefreshController();
     spotlightStore = SpotlightStore(apiClient);
     _lightingStore = LightingStore(
-        () => apiClient.getRecommend(), apiClient, _easyRefreshController);
+        () => apiClient.getRecommend(), _easyRefreshController);
 
     super.initState();
   }

@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 
   initReact() {
     reactionDisposer = reaction((_) => _loginStore.errorMessage, (_) {
-      if (_loginStore.errorMessage != null)
+      if (_loginStore.errorMessage != null&&context!=null)
         Scaffold.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
@@ -158,7 +158,8 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () async {
                             if (userNameController.value.text.isEmpty ||
                                 userNameController.value.text.isEmpty) return;
-                            BotToast.showText(text: 'Attempting to log in');
+                            BotToast.showText(
+                                text: I18n.of(context).Attempting_To_Log_In);
                             bool isAuth = await _loginStore.auth(
                                 userNameController.value.text.trim(),
                                 passWordController.value.text.trim());

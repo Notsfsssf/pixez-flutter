@@ -483,10 +483,10 @@ class I18n {
     );
   }
 
-  /// `Seve selected ones`
+  /// `Save selected ones`
   String get Muti_Choice_save {
     return Intl.message(
-      'Seve selected ones',
+      'Save selected ones',
       name: 'Muti_Choice_save',
       desc: '',
       args: [],
@@ -1368,6 +1368,16 @@ class I18n {
     return Intl.message(
       'Filter',
       name: 'Filter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attempting to log in`
+  String get Attempting_To_Log_In {
+    return Intl.message(
+      'Attempting to log in',
+      name: 'Attempting_To_Log_In',
       desc: '',
       args: [],
     );

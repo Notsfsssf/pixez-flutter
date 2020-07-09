@@ -16,17 +16,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/network/api_client.dart';
 
 class LightingList extends StatefulWidget {
   final EasyRefreshController controller;
@@ -62,8 +59,7 @@ class _LightingListState extends State<LightingList> {
   @override
   void initState() {
     _easyRefreshController = widget.controller ?? EasyRefreshController();
-    _store = LightingStore(widget.source,
-        apiClient, _easyRefreshController);
+    _store = LightingStore(widget.source, _easyRefreshController);
     _scrollController = widget.scrollController ?? ScrollController();
     // _scrollController.addListener(() {
     //   bool temp;
@@ -172,15 +168,15 @@ class _LightingListState extends State<LightingList> {
                 ],
               ),
             )
-          : _buildBody(),
+          : _buildNoHeader(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildNoHeader(BuildContext context) {
     return _store.illusts.isNotEmpty
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
-            // controller: _scrollController,
+            controller: _scrollController,
             itemBuilder: (context, index) {
               final data = _store.illusts[index];
               return IllustCard(
@@ -189,8 +185,6 @@ class _LightingListState extends State<LightingList> {
               );
             },
             staggeredTileBuilder: (int index) {
-              var illust = _store.illusts[index];
-              if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
               double screanWidth = MediaQuery.of(context).size.width;
               double itemWidth = (screanWidth / 2.0) - 32.0;
               double radio = _store.illusts[index].height.toDouble() /
@@ -200,54 +194,12 @@ class _LightingListState extends State<LightingList> {
                 mainAxisExtent = itemWidth;
               else
                 mainAxisExtent = itemWidth * radio;
+
               return StaggeredTile.extent(1, mainAxisExtent + 80.0);
             },
             itemCount: _store.illusts.length,
             crossAxisCount: 2,
           )
         : Container();
-  }
-
-  Widget _buildNoHeader(BuildContext context) {
-    return EasyRefresh(
-      header: MaterialHeader(),
-      // controller: _easyRefreshController,
-      enableControlFinishLoad: true,
-      enableControlFinishRefresh: true,
-      onRefresh: () {
-        return _store.fetch();
-      },
-      onLoad: () {
-        return _store.fetchNext();
-      },
-      child: _store.illusts.isNotEmpty
-          ? StaggeredGridView.countBuilder(
-              padding: EdgeInsets.all(0.0),
-              controller: _scrollController,
-              itemBuilder: (context, index) {
-                final data = _store.illusts[index];
-                return IllustCard(
-                  data,
-                  illustList: _store.illusts,
-                );
-              },
-              staggeredTileBuilder: (int index) {
-                double screanWidth = MediaQuery.of(context).size.width;
-                double itemWidth = (screanWidth / 2.0) - 32.0;
-                double radio = _store.illusts[index].height.toDouble() /
-                    _store.illusts[index].width.toDouble();
-                double mainAxisExtent;
-                if (radio > 2)
-                  mainAxisExtent = itemWidth;
-                else
-                  mainAxisExtent = itemWidth * radio;
-
-                return StaggeredTile.extent(1, mainAxisExtent + 80.0);
-              },
-              itemCount: _store.illusts.length,
-              crossAxisCount: 2,
-            )
-          : Container(),
-    );
   }
 }

@@ -27,7 +27,6 @@ class LightingStore = _LightingStoreBase with _$LightingStore;
 typedef Future<Response> FutureGet();
 
 abstract class _LightingStoreBase with Store {
-  final ApiClient _apiClient;
   final EasyRefreshController _controller;
   FutureGet source;
 
@@ -39,9 +38,8 @@ abstract class _LightingStoreBase with Store {
   String errorMessage;
   _LightingStoreBase(
     this.source,
-    this._apiClient,
     this._controller,
-  ) {}
+  );
 
   @action
   fetch() async {
@@ -65,7 +63,7 @@ abstract class _LightingStoreBase with Store {
     errorMessage = null;
     try {
       if (nextUrl != null && nextUrl.isNotEmpty) {
-        Response result = await _apiClient.getNext(nextUrl);
+        Response result = await apiClient.getNext(nextUrl);
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
         illusts.addAll(recommend.illusts);

@@ -176,7 +176,7 @@ class _IllustCardState extends State<IllustCard> {
                             "referer": "https://app-api.pixiv.net/",
                             "User-Agent": "PixivIOSApp/5.8.0"
                           },
-                          width: widget._illusts.width.toDouble(),
+                          // width: widget._illusts.width.toDouble(),
                           // fit: BoxFit.fitWidth,
                         ),
                       )

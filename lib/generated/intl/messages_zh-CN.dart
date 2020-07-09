@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Android_Special_Setting" : MessageLookupByLibrary.simpleMessage("安卓设定"),
     "Append_to_query" : MessageLookupByLibrary.simpleMessage("加入列队"),
     "Apply" : MessageLookupByLibrary.simpleMessage("应用"),
+    "Attempting_To_Log_In" : MessageLookupByLibrary.simpleMessage("尝试登录"),
     "Ban" : MessageLookupByLibrary.simpleMessage("屏蔽"),
     "Block_User" : MessageLookupByLibrary.simpleMessage("屏蔽用户"),
     "BookMark" : MessageLookupByLibrary.simpleMessage("收藏"),

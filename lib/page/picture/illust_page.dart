@@ -1,18 +1,26 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_about_grid.dart';
 import 'package:pixez/page/picture/illust_detail_body.dart';
+import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 
 class IllustPage extends StatefulWidget {
   final int id;
@@ -41,6 +49,270 @@ class _IllustPageState extends State<IllustPage> {
     super.dispose();
   }
 
+  String toShortTime(String dateString) {
+    try {
+      var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
+      return formatter.format(DateTime.parse(dateString));
+    } catch (e) {
+      return dateString;
+    }
+  }
+
+  Widget _buildNameAvatar(BuildContext context, Illusts illust) {
+    IllustDetailStore illustDetailStore = IllustDetailStore(illust);
+    return Observer(builder: (_) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+              child: GestureDetector(
+                onLongPress: () {
+                  illustDetailStore.followUser();
+                },
+                child: Container(
+                  height: 70,
+                  width: 70,
+                  child: Stack(
+                    children: <Widget>[
+                      Center(
+                        child: SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: Container(
+                            decoration: illust != null
+                                ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: illustDetailStore.isFollow
+                                        ? Colors.yellow
+                                        : Theme.of(context).accentColor,
+                                  )
+                                : BoxDecoration(),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: PainterAvatar(
+                          url: illust.user.profileImageUrls.medium,
+                          id: illust.user.id,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              padding: EdgeInsets.all(8.0)),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SelectableText(
+                    illust.title,
+                    style: TextStyle(color: Theme.of(context).accentColor),
+                  ),
+                  Container(
+                    height: 4.0,
+                  ),
+                  SelectableText(
+                    illust.user.name,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  Text(
+                    toShortTime(illust.createDate),
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
+    return showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16),
+          ),
+        ),
+        builder: (_) {
+          return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0))),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _buildNameAvatar(context, illusts),
+                      illusts.metaPages.isNotEmpty
+                          ? ListTile(
+                              title: Text(I18n.of(context).Muti_Choice_save),
+                              leading: Icon(
+                                Icons.save,
+                              ),
+                              onTap: () async {
+                                Navigator.of(context).pop();
+                                List<bool> indexs =
+                                    List(illusts.metaPages.length);
+                                for (int i = 0;
+                                    i < illusts.metaPages.length;
+                                    i++) {
+                                  indexs[i] = false;
+                                }
+                                final result = await showDialog(
+                                  context: context,
+                                  child: StatefulBuilder(
+                                      builder: (context, setDialogState) {
+                                    return AlertDialog(
+                                      title: Text("Select"),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, "OK");
+                                          },
+                                          child: Text(I18n.of(context).OK),
+                                        ),
+                                        FlatButton(
+                                          child: Text(I18n.of(context).Cancel),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                      content: Container(
+                                        width: double.maxFinite,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title: Text(index.toString()),
+                                              trailing: Checkbox(
+                                                  value: indexs[index],
+                                                  onChanged: (ischeck) {
+                                                    setDialogState(() {
+                                                      indexs[index] = ischeck;
+                                                    });
+                                                  }),
+                                            );
+                                          },
+                                          itemCount: illusts.metaPages.length,
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                );
+                                switch (result) {
+                                  case "OK":
+                                    {
+                                      saveStore.saveChoiceImage(
+                                          illusts, indexs);
+                                    }
+                                }
+                              },
+                            )
+                          : Container(),
+                      ListTile(
+                        title: Text(I18n.of(context).CopyMessage),
+                        leading: Icon(
+                          Icons.local_library,
+                        ),
+                        onTap: () async {
+                          await Clipboard.setData(ClipboardData(
+                              text:
+                                  'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
+                          BotToast.showText(
+                              text: I18n.of(context).Copied_To_Clipboard);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
+                        title: Text(I18n.of(context).Share),
+                        leading: Icon(
+                          Icons.share,
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+
+                          Share.share(
+                              "https://www.pixiv.net/artworks/${widget.id}");
+                        },
+                      ),
+                      ListTile(
+                        title: Text(I18n.of(context).Ban),
+                        leading: Icon(Icons.brightness_auto),
+                        onTap: () {
+                          muteStore.insertBanIllusts(BanIllustIdPersist()
+                            ..illustId = widget.id.toString()
+                            ..name = illusts.title);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text(I18n.of(context).report),
+                        leading: Icon(Icons.report),
+                        onTap: () async {
+                          await showCupertinoDialog(
+                              context: context,
+                              builder: (context) {
+                                return CupertinoAlertDialog(
+                                  title: Text(I18n.of(context).report),
+                                  content:
+                                      Text(I18n.of(context).Report_Message),
+                                  actions: <Widget>[
+                                    CupertinoDialogAction(
+                                      isDefaultAction: true,
+                                      child: Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("OK");
+                                      },
+                                    ),
+                                    CupertinoDialogAction(
+                                      child: Text("CANCEL"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("CANCEL");
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                      )
+                    ],
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.cancel,
+                    ),
+                    title: Text(I18n.of(context).Cancel),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).padding.bottom,
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -50,6 +322,21 @@ class _IllustPageState extends State<IllustPage> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0.0,
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.expand_less),
+                    onPressed: () {
+                      itemScrollController.scrollTo(
+                          index: _illustStore.illusts.pageCount + 1,
+                          duration: Duration(seconds: 1),
+                          curve: Curves.easeInOutCubic);
+                    }),
+                IconButton(
+                    icon: Icon(Icons.more_vert),
+                    onPressed: () {
+                      buildShowModalBottomSheet(context, _illustStore.illusts);
+                    })
+              ],
             ),
             extendBodyBehindAppBar: true,
             extendBody: true,
@@ -72,7 +359,8 @@ class _IllustPageState extends State<IllustPage> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(':(', style: Theme.of(context).textTheme.headline4),
+                    child: Text(':(',
+                        style: Theme.of(context).textTheme.headline4),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -194,7 +482,7 @@ class _IllustPageState extends State<IllustPage> {
                                 child: StatefulBuilder(
                                     builder: (context, setDialogState) {
                                   return AlertDialog(
-                                    title: Text("Select"),
+                                    title: Text(I18n.of(context).Muti_Choice_save),
                                     actions: <Widget>[
                                       FlatButton(
                                         onPressed: () {
@@ -216,19 +504,32 @@ class _IllustPageState extends State<IllustPage> {
                                         itemBuilder: (context, index) =>
                                             index == 0
                                                 ? ListTile(
-                                                    title: Text('all'),
+                                                    title: Text(
+                                                        I18n.of(context).All),
                                                     trailing: Checkbox(
                                                         value: allOn,
                                                         onChanged: (ischeck) {
                                                           setDialogState(() {
-                                                            allOn = true;
-                                                            for (int i = 0;
-                                                                i <
-                                                                    indexs
-                                                                        .length;
-                                                                i++) {
-                                                              indexs[i] = true;
-                                                            } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                                                            allOn = ischeck;
+                                                            if (ischeck)
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      indexs
+                                                                          .length;
+                                                                  i++) {
+                                                                indexs[i] =
+                                                                    true;
+                                                              } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                                                            else {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      indexs
+                                                                          .length;
+                                                                  i++) {
+                                                                indexs[i] =
+                                                                    false;
+                                                              }
+                                                            }
                                                           });
                                                         }),
                                                   )

@@ -133,5 +133,6 @@
   "Welcome_Page":"欢迎页",
   "Encode":"合成",
   "Encode_Message":"这将会消耗一定时间，并可能会失败",
-  "Filter":"筛选"
+  "Filter":"筛选",
+  "Attempting_To_Log_In":"尝试登录"
 }
