@@ -26,8 +26,9 @@ class IllustPage extends StatefulWidget {
   final int id;
   final Illusts illusts;
   final String heroString;
-
-  const IllustPage({Key key, @required this.id, this.illusts, this.heroString})
+  final IllustStore store;
+  const IllustPage(
+      {Key key, @required this.id, this.illusts, this.heroString, this.store})
       : super(key: key);
   @override
   _IllustPageState createState() => _IllustPageState();
@@ -40,7 +41,8 @@ class _IllustPageState extends State<IllustPage> {
       ItemPositionsListener.create();
   @override
   void initState() {
-    _illustStore = IllustStore(widget.id, widget.illusts)..fetch();
+    _illustStore = widget.store ?? IllustStore(widget.id, widget.illusts);
+    _illustStore.fetch();
     super.initState();
   }
 
@@ -344,7 +346,7 @@ class _IllustPageState extends State<IllustPage> {
               heroTag: widget.id,
               backgroundColor: Colors.white,
               onPressed: () => _illustStore.star(),
-              child: StarIcon(_illustStore.isBookmark),
+              child: StarIcon(illustStore: _illustStore,),
             ),
             body: _buildBody(context, data));
       } else {
@@ -482,7 +484,8 @@ class _IllustPageState extends State<IllustPage> {
                                 child: StatefulBuilder(
                                     builder: (context, setDialogState) {
                                   return AlertDialog(
-                                    title: Text(I18n.of(context).Muti_Choice_save),
+                                    title:
+                                        Text(I18n.of(context).Muti_Choice_save),
                                     actions: <Widget>[
                                       FlatButton(
                                         onPressed: () {

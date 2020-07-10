@@ -374,9 +374,7 @@ class _PicturePageState extends State<PicturePage> {
                                         null));
                               },
                               backgroundColor: Colors.white,
-                              icon: StarIcon((snapshot is DataState)
-                                  ? snapshot.illusts.isBookmarked
-                                  : illustState.illusts.isBookmarked),
+                         
                               label: FlatButton(
                                 padding: EdgeInsets.all(0.0),
                                 child: Text('PLAY',
@@ -395,9 +393,7 @@ class _PicturePageState extends State<PicturePage> {
                           : FloatingActionButton(
                               heroTag: widget.id,
                               backgroundColor: Colors.white,
-                              child: StarIcon((snapshot is DataState)
-                                  ? snapshot.illusts.isBookmarked
-                                  : illustState.illusts.isBookmarked),
+                       
                               onPressed: () {
                                 BlocProvider.of<PictureBloc>(context).add(
                                     StarPictureEvent(

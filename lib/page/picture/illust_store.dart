@@ -28,7 +28,7 @@ abstract class _IllustStoreBase with Store {
         Response response = await client.getIllustDetail(id);
 
         final result = Illusts.fromJson(response.data['illust']);
-        
+
         illusts = result;
       } on DioError catch (e) {
         if (e.response != null) {
@@ -38,24 +38,25 @@ abstract class _IllustStoreBase with Store {
         }
       }
     }
-    if(illusts!=null)
-    historyStore.insert(illusts);
+    if (illusts != null) historyStore.insert(illusts);
   }
 
   @action
-  star({String restrict = 'public', List<String> tags}) async {
+  Future<bool> star({String restrict = 'public', List<String> tags}) async {
     if (!illusts.isBookmarked) {
       try {
         Response response =
             await client.postLikeIllust(illusts.id, restrict, tags);
         illusts.isBookmarked = true;
         isBookmark = true;
+        return true;
       } catch (e) {}
     } else {
       try {
         Response response = await client.postUnLikeIllust(illusts.id);
         illusts.isBookmarked = false;
         isBookmark = false;
+        return false;
       } catch (e) {}
     }
   }

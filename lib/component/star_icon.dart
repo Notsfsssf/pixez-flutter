@@ -15,25 +15,58 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:like_button/like_button.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 
 class StarIcon extends StatefulWidget {
-  final bool isStar;
-
-  const StarIcon(
-    this.isStar, {
+  final IllustStore illustStore;
+  const StarIcon({
     Key key,
+    @required this.illustStore,
   }) : super(key: key);
 
   @override
   _StarIconState createState() => _StarIconState();
 }
 
-class _StarIconState extends State<StarIcon> {
+class _StarIconState extends State<StarIcon>
+    with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Icon(
-      widget.isStar ? Icons.favorite : Icons.favorite_border,
-      color: widget.isStar ? Colors.redAccent : Colors.grey,
-    );
+    return Observer(builder: (_) {
+      return Container(
+        width: 32,
+        child: LikeButton(
+          size: 26,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          padding: EdgeInsets.all(0.0),
+          circleColor:
+              CircleColor(start: Colors.transparent, end: Colors.redAccent),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: Colors.red,
+            dotSecondaryColor: Colors.redAccent,
+          ),
+          isLiked: widget.illustStore.isBookmark,
+          likeBuilder: (context) {
+            return Icon(
+              widget.illustStore.isBookmark
+                  ? Icons.favorite
+                  : Icons.favorite_border,
+              color: widget.illustStore.isBookmark ? Colors.red : Colors.grey,
+            );
+          },
+          onTap: (v) {
+            return widget.illustStore.star();
+          },
+        ),
+      );
+    });
   }
 }

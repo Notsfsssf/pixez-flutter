@@ -64,7 +64,7 @@ mixin _$IllustStore on _IllustStoreBase, Store {
   final _$starAsyncAction = AsyncAction('_IllustStoreBase.star');
 
   @override
-  Future star({String restrict = 'public', List<String> tags}) {
+  Future<bool> star({String restrict = 'public', List<String> tags}) {
     return _$starAsyncAction
         .run(() => super.star(restrict: restrict, tags: tags));
   }

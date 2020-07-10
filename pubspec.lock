@@ -462,6 +462,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.3.0"
+  like_button:
+    dependency: "direct main"
+    description:
+      name: like_button
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   logging:
     dependency: transitive
     description:

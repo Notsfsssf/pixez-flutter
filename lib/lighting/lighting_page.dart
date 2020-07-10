@@ -176,7 +176,6 @@ class _LightingListState extends State<LightingList> {
     return _store.illusts.isNotEmpty
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
-            controller: _scrollController,
             itemBuilder: (context, index) {
               final data = _store.illusts[index];
               return IllustCard(

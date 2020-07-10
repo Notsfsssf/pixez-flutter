@@ -17,17 +17,19 @@
 import 'package:flutter/widgets.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 
 class PictureListPage extends StatefulWidget {
   final List<Illusts> illusts;
   final int nowPosition;
   final String heroString;
-
+  final IllustStore currentStore;
   const PictureListPage(
       {Key key,
       @required this.illusts,
       @required this.nowPosition,
-      this.heroString})
+      this.heroString,
+      this.currentStore})
       : super(key: key);
 
   @override
@@ -58,6 +60,10 @@ class _PictureListPageState extends State<PictureListPage> {
               id: f.id,
               illusts: f,
               heroString: widget.heroString,
+              store:
+                  widget.currentStore?.id == widget.illusts[widget.nowPosition].id
+                      ? widget.currentStore
+                      : null,
             ))
       ],
     );

@@ -15,15 +15,14 @@
  */
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
 class IllustCard extends StatefulWidget {
@@ -41,6 +40,7 @@ class IllustCard extends StatefulWidget {
 }
 
 class _IllustCardState extends State<IllustCard> {
+  IllustStore illustStore;
   Widget cardText() {
     if (widget._illusts.type != "illust") {
       return Text(
@@ -54,6 +54,12 @@ class _IllustCardState extends State<IllustCard> {
         style: TextStyle(color: Colors.white),
       );
     }
+  }
+
+  @override
+  void initState() {
+    illustStore = IllustStore(widget._illusts.id, widget._illusts);
+    super.initState();
   }
 
   @override
@@ -139,12 +145,14 @@ class _IllustCardState extends State<IllustCard> {
               illusts: widget.illustList,
               nowPosition: widget.illustList.indexOf(widget._illusts),
               heroString: heroString,
+              currentStore: illustStore,
             );
           }
           return IllustPage(
             id: widget._illusts.id,
             illusts: widget._illusts,
             heroString: heroString,
+            store: illustStore,
           );
         }))
       },
@@ -227,25 +235,9 @@ class _IllustCardState extends State<IllustCard> {
                       ),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: IconButton(
-                            icon: StarIcon(widget._illusts.isBookmarked),
-                            onPressed: () async {
-                              final ApiClient client = apiClient;
-                              try {
-                                if (widget._illusts.isBookmarked) {
-                                  Response response = await client
-                                      .postUnLikeIllust(widget._illusts.id);
-                                } else {
-                                  Response response =
-                                      await client.postLikeIllust(
-                                          widget._illusts.id, "public", null);
-                                }
-                                setState(() {
-                                  widget._illusts.isBookmarked =
-                                      !widget._illusts.isBookmarked;
-                                });
-                              } catch (e) {} //懒得用bloc了
-                            }),
+                        child: StarIcon(
+                          illustStore: illustStore,
+                        ),
                       )
                     ],
                   ),
