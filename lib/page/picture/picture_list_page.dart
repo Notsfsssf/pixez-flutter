@@ -15,21 +15,15 @@
  */
 
 import 'package:flutter/widgets.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class PictureListPage extends StatefulWidget {
-  final List<Illusts> illusts;
-  final int nowPosition;
+  final IllustStore store;
+  final List<IllustStore> iStores;
   final String heroString;
-  final IllustStore currentStore;
   const PictureListPage(
-      {Key key,
-      @required this.illusts,
-      @required this.nowPosition,
-      this.heroString,
-      this.currentStore})
+      {Key key, @required this.store, @required this.iStores, this.heroString})
       : super(key: key);
 
   @override
@@ -41,7 +35,8 @@ class _PictureListPageState extends State<PictureListPage> {
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: widget.nowPosition);
+    int nowPosition = widget.iStores.indexOf(widget.store);
+    _pageController = PageController(initialPage: nowPosition);
     super.initState();
   }
 
@@ -56,14 +51,10 @@ class _PictureListPageState extends State<PictureListPage> {
     return PageView(
       controller: _pageController,
       children: <Widget>[
-        ...widget.illusts.map((f) => IllustPage(
+        ...widget.iStores.map((f) => IllustPage(
               id: f.id,
-              illusts: f,
               heroString: widget.heroString,
-              store:
-                  widget.currentStore?.id == widget.illusts[widget.nowPosition].id
-                      ? widget.currentStore
-                      : null,
+              store: widget.store,
             ))
       ],
     );

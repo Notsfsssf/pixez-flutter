@@ -20,18 +20,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
 class IllustCard extends StatefulWidget {
-  Illusts _illusts;
-  final List<Illusts> illustList;
+  final IllustStore store;
+  final List<IllustStore> iStores;
   bool needToBan;
-  IllustCard(
-    this._illusts, {
-    this.illustList,
+  IllustCard({
+    @required this.store,
+    this.iStores,
     this.needToBan = false,
   });
 
@@ -42,15 +41,15 @@ class IllustCard extends StatefulWidget {
 class _IllustCardState extends State<IllustCard> {
   IllustStore illustStore;
   Widget cardText() {
-    if (widget._illusts.type != "illust") {
+    if (illustStore.illusts.type != "illust") {
       return Text(
-        widget._illusts.type,
+        illustStore.illusts.type,
         style: TextStyle(color: Colors.white),
       );
     }
-    if (widget._illusts.metaPages.isNotEmpty) {
+    if (illustStore.illusts.metaPages.isNotEmpty) {
       return Text(
-        widget._illusts.metaPages.length.toString(),
+        illustStore.illusts.metaPages.length.toString(),
         style: TextStyle(color: Colors.white),
       );
     }
@@ -58,7 +57,7 @@ class _IllustCardState extends State<IllustCard> {
 
   @override
   void initState() {
-    illustStore = IllustStore(widget._illusts.id, widget._illusts);
+    illustStore = widget.store;
     super.initState();
   }
 
@@ -66,26 +65,26 @@ class _IllustCardState extends State<IllustCard> {
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (userSetting.hIsNotAllow)
-        for (int i = 0; i < widget._illusts.tags.length; i++) {
-          if (widget._illusts.tags[i].name.startsWith('R-18'))
+        for (int i = 0; i < illustStore.illusts.tags.length; i++) {
+          if (illustStore.illusts.tags[i].name.startsWith('R-18'))
             return InkWell(
               onTap: () => {
                 Navigator.of(context, rootNavigator: true)
                     .push(MaterialPageRoute(builder: (_) {
-                  if (widget.illustList != null) {
+                  if (widget.store != null) {
                     return PictureListPage(
-                      illusts: widget.illustList,
-                      nowPosition: widget.illustList.indexOf(widget._illusts),
+                   iStores: widget.iStores,
+                   store: widget.store,
                     );
                   }
                   return IllustPage(
-                    illusts: widget._illusts,
-                    id: widget._illusts.id,
+                    store: illustStore,
+                    id: illustStore.illusts.id,
                   );
                 }))
               },
               onLongPress: () {
-                saveStore.saveImage(widget._illusts);
+                saveStore.saveImage(illustStore.illusts);
               },
               child: Card(
                 margin: EdgeInsets.all(8.0),
@@ -98,21 +97,21 @@ class _IllustCardState extends State<IllustCard> {
             );
         }
       for (var i in muteStore.banillusts) {
-        if (i.illustId == widget._illusts.id.toString())
+        if (i.illustId == illustStore.illusts.id.toString())
           return Visibility(
             visible: false,
             child: Container(),
           );
       }
       for (var j in muteStore.banUserIds) {
-        if (j.userId == widget._illusts.user.id.toString())
+        if (j.userId == illustStore.illusts.user.id.toString())
           return Visibility(
             visible: false,
             child: Container(),
           );
       }
       for (var t in muteStore.banTags) {
-        for (var f in widget._illusts.tags) {
+        for (var f in illustStore.illusts.tags) {
           if (f.name == t.name)
             return Visibility(
               visible: false,
@@ -128,7 +127,7 @@ class _IllustCardState extends State<IllustCard> {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / 2.0) - 32.0;
     double radio =
-        widget._illusts.height.toDouble() / widget._illusts.width.toDouble();
+        illustStore.illusts.height.toDouble() / illustStore.illusts.width.toDouble();
     double mainAxisExtent = 80.0;
     if (radio > 2)
       mainAxisExtent += itemWidth;
@@ -140,24 +139,22 @@ class _IllustCardState extends State<IllustCard> {
       onTap: () => {
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (_) {
-          if (widget.illustList != null) {
+          if (widget.iStores != null) {
             return PictureListPage(
-              illusts: widget.illustList,
-              nowPosition: widget.illustList.indexOf(widget._illusts),
               heroString: heroString,
-              currentStore: illustStore,
+             store: widget.store,
+             iStores: widget.iStores,
             );
           }
           return IllustPage(
-            id: widget._illusts.id,
-            illusts: widget._illusts,
+            id: illustStore.illusts.id,
             heroString: heroString,
             store: illustStore,
           );
         }))
       },
       onLongPress: () {
-        saveStore.saveImage(widget._illusts);
+        saveStore.saveImage(illustStore.illusts);
       },
       child: Card(
         margin: EdgeInsets.all(8.0),
@@ -170,13 +167,13 @@ class _IllustCardState extends State<IllustCard> {
             children: <Widget>[
               Align(
                 alignment: Alignment.topCenter,
-                child: (widget._illusts.height.toDouble() /
-                            widget._illusts.width.toDouble()) >
+                child: (illustStore.illusts.height.toDouble() /
+                            illustStore.illusts.width.toDouble()) >
                         2
                     ? Hero(
-                        tag: '${widget._illusts.imageUrls.medium}${heroString}',
+                        tag: '${illustStore.illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
-                          imageUrl: widget._illusts.imageUrls.squareMedium,
+                          imageUrl: illustStore.illusts.imageUrls.squareMedium,
                           placeholder: (context, url) => Container(
                             height: 150,
                           ),
@@ -184,14 +181,14 @@ class _IllustCardState extends State<IllustCard> {
                             "referer": "https://app-api.pixiv.net/",
                             "User-Agent": "PixivIOSApp/5.8.0"
                           },
-                          // width: widget._illusts.width.toDouble(),
+                          // width: illustStore.illusts.width.toDouble(),
                           // fit: BoxFit.fitWidth,
                         ),
                       )
                     : Hero(
-                        tag: '${widget._illusts.imageUrls.medium}${heroString}',
+                        tag: '${illustStore.illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
-                          imageUrl: widget._illusts.imageUrls.medium,
+                          imageUrl: illustStore.illusts.imageUrls.medium,
                           placeholder: (context, url) => Container(
                             height: 150,
                           ),
@@ -219,13 +216,13 @@ class _IllustCardState extends State<IllustCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget._illusts.title,
+                                  illustStore.illusts.title,
                                   maxLines: 1,
                                   overflow: TextOverflow.clip,
                                   style: Theme.of(context).textTheme.bodyText2,
                                 ),
                                 Text(
-                                  widget._illusts.user.name,
+                                  illustStore.illusts.user.name,
                                   maxLines: 1,
                                   overflow: TextOverflow.clip,
                                   style: Theme.of(context).textTheme.caption,
@@ -256,8 +253,8 @@ class _IllustCardState extends State<IllustCard> {
 
   Visibility _buildVisibility() {
     return Visibility(
-      visible: widget._illusts.type != "illust" ||
-          widget._illusts.metaPages.isNotEmpty,
+      visible: illustStore.illusts.type != "illust" ||
+          illustStore.illusts.metaPages.isNotEmpty,
       child: Align(
         alignment: Alignment.topRight,
         child: Padding(

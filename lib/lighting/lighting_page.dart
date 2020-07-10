@@ -173,21 +173,21 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildNoHeader(BuildContext context) {
-    return _store.illusts.isNotEmpty
+    return _store.iStores.isNotEmpty
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
             itemBuilder: (context, index) {
-              final data = _store.illusts[index];
+              final data = _store.iStores[index].illusts;
               return IllustCard(
-                data,
-                illustList: _store.illusts,
+      store: _store.iStores[index],
+                iStores: _store.iStores,
               );
             },
             staggeredTileBuilder: (int index) {
               double screanWidth = MediaQuery.of(context).size.width;
               double itemWidth = (screanWidth / 2.0) - 32.0;
-              double radio = _store.illusts[index].height.toDouble() /
-                  _store.illusts[index].width.toDouble();
+              double radio =  _store.iStores[index].illusts.height.toDouble() /
+                   _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;
               if (radio > 2)
                 mainAxisExtent = itemWidth;
@@ -196,7 +196,7 @@ class _LightingListState extends State<LightingList> {
 
               return StaggeredTile.extent(1, mainAxisExtent + 80.0);
             },
-            itemCount: _store.illusts.length,
+            itemCount: _store.iStores.length,
             crossAxisCount: 2,
           )
         : Container();

@@ -109,12 +109,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       crossAxisCount: 2,
       staggeredTileBuilder: (int index) {
         if (index < 3) return StaggeredTile.fit(2);
-        var illust = _lightingStore.illusts[index - 3];
+        var illust = _lightingStore.iStores[index - 3].illusts;
         if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
         double screanWidth = MediaQuery.of(context).size.width;
         double itemWidth = (screanWidth / 2.0) - 32.0;
-        double radio = _lightingStore.illusts[index - 3].height.toDouble() /
-            _lightingStore.illusts[index - 3].width.toDouble();
+        double radio = _lightingStore.iStores[index - 3].illusts.height.toDouble() /
+            _lightingStore.iStores[index - 3].illusts.width.toDouble();
         double mainAxisExtent;
         if (radio > 2)
           mainAxisExtent = itemWidth;
@@ -122,7 +122,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           mainAxisExtent = itemWidth * radio;
         return StaggeredTile.extent(1, mainAxisExtent + 80.0);
       },
-      itemCount: _lightingStore.illusts.length + 3,
+      itemCount: _lightingStore.iStores.length + 3,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0)
           return AppBar(
@@ -134,10 +134,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           );
         if (index == 1) return _buildSpotlightContainer();
         if (index == 2) return _buildSecondRow(context);
-        if (_lightingStore.illusts.isNotEmpty)
+        if (_lightingStore.iStores.isNotEmpty)
           return IllustCard(
-            _lightingStore.illusts[index - 3],
-            illustList: _lightingStore.illusts,
+            store:_lightingStore.iStores[index - 3],
+            iStores: _lightingStore.iStores,
           );
         return Container();
       },

@@ -24,11 +24,10 @@ import 'package:share/share.dart';
 
 class IllustPage extends StatefulWidget {
   final int id;
-  final Illusts illusts;
   final String heroString;
   final IllustStore store;
   const IllustPage(
-      {Key key, @required this.id, this.illusts, this.heroString, this.store})
+      {Key key, @required this.id,@required this.store,this.heroString})
       : super(key: key);
   @override
   _IllustPageState createState() => _IllustPageState();
@@ -41,7 +40,7 @@ class _IllustPageState extends State<IllustPage> {
       ItemPositionsListener.create();
   @override
   void initState() {
-    _illustStore = widget.store ?? IllustStore(widget.id, widget.illusts);
+    _illustStore = widget.store ?? IllustStore(widget.id,null);
     _illustStore.fetch();
     super.initState();
   }

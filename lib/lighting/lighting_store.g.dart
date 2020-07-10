@@ -9,18 +9,18 @@ part of 'lighting_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$LightingStore on _LightingStoreBase, Store {
-  final _$illustsAtom = Atom(name: '_LightingStoreBase.illusts');
+  final _$iStoresAtom = Atom(name: '_LightingStoreBase.iStores');
 
   @override
-  ObservableList<Illusts> get illusts {
-    _$illustsAtom.reportRead();
-    return super.illusts;
+  ObservableList<IllustStore> get iStores {
+    _$iStoresAtom.reportRead();
+    return super.iStores;
   }
 
   @override
-  set illusts(ObservableList<Illusts> value) {
-    _$illustsAtom.reportWrite(value, super.illusts, () {
-      super.illusts = value;
+  set iStores(ObservableList<IllustStore> value) {
+    _$iStoresAtom.reportWrite(value, super.iStores, () {
+      super.iStores = value;
     });
   }
 
@@ -56,7 +56,7 @@ mixin _$LightingStore on _LightingStoreBase, Store {
   @override
   String toString() {
     return '''
-illusts: ${illusts},
+iStores: ${iStores},
 errorMessage: ${errorMessage}
     ''';
   }

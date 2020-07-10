@@ -20,6 +20,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 
 part 'lighting_store.g.dart';
 
@@ -32,7 +33,8 @@ abstract class _LightingStoreBase with Store {
 
   String nextUrl;
   @observable
-  ObservableList<Illusts> illusts = ObservableList();
+  ObservableList<IllustStore> iStores = ObservableList();
+  //?是否需要一个顶层store来装每个item的状态
 
   @observable
   String errorMessage;
@@ -49,8 +51,8 @@ abstract class _LightingStoreBase with Store {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
       nextUrl = recommend.nextUrl;
-      illusts.clear();
-      illusts.addAll(recommend.illusts);
+      iStores.clear();
+      iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id,e)));
       _controller.finishRefresh(success: true);
     } catch (e) {
       errorMessage = e.toString();
@@ -66,7 +68,7 @@ abstract class _LightingStoreBase with Store {
         Response result = await apiClient.getNext(nextUrl);
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
-        illusts.addAll(recommend.illusts);
+        iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id,e)));
         _controller.finishLoad(success: true, noMore: false);
       } else {
         _controller.finishLoad(success: true, noMore: true);
