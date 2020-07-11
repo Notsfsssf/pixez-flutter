@@ -40,10 +40,15 @@ class _FollowListState extends State<FollowList> {
   EasyRefreshController _controller;
 
   @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     _controller = EasyRefreshController();
-    followStore = FollowStore(
-        apiClient, widget.id, _controller);
+    followStore = FollowStore(apiClient, widget.id, _controller);
     super.initState();
   }
 
@@ -70,11 +75,12 @@ class _FollowListState extends State<FollowList> {
                                 ),
                                 context: context,
                                 builder: (context1) => SafeArea(
-                                  child: Column(
+                                      child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           ListTile(
-                                            title: Text(I18n.of(context).public),
+                                            title:
+                                                Text(I18n.of(context).public),
                                             onTap: () {
                                               Navigator.of(context1).pop();
                                               followStore.fetch('public');
@@ -82,7 +88,8 @@ class _FollowListState extends State<FollowList> {
                                             },
                                           ),
                                           ListTile(
-                                            title: Text(I18n.of(context).private),
+                                            title:
+                                                Text(I18n.of(context).private),
                                             onTap: () {
                                               Navigator.of(context1).pop();
                                               followStore.fetch('private');
@@ -91,7 +98,7 @@ class _FollowListState extends State<FollowList> {
                                           ),
                                         ],
                                       ),
-                                ));
+                                    ));
                           }),
                     );
                   }

@@ -15,14 +15,18 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pixez/constraint.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
+import 'package:pixez/page/about/last_release.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
@@ -42,13 +46,7 @@ class AndroidHelloPage extends StatefulWidget {
 }
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
-  List<Widget> _widgetOptions = <Widget>[
-    RecomSpolightPage(),
-    RankPage(),
-    NewPage(),
-    SearchPage(),
-    SettingPage()
-  ];
+  List<Widget> _widgetOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -104,40 +102,23 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   int index;
   PageController _pageController;
-  StreamSubscription _intentDataStreamSubscription;
+  StreamSubscription _intentDataStreamSubscription, _sub;
 
-  @override
-  void initState() {
-    index = userSetting.welcomePageNum;
-    _pageController = PageController(initialPage: userSetting.welcomePageNum);
-    super.initState();
-    saveStore.context = this.context;
-    saveStore.saveStream.listen((stream) {
-      saveStore.listenBehavior(stream);
-    });
-    initPlatformState();
-    // For sharing images coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
-        .listen((List<SharedMediaFile> value) {
-      if (value != null)
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return SauceNaoPage(
-            path: value.first.path,
-          );
-        }));
-    }, onError: (err) {
-      print("getIntentDataStream error: $err");
-    });
-
-    // For sharing images coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      if (value != null)
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return SauceNaoPage(
-            path: value.first.path,
-          );
-        }));
-    });
+  initPlatform() async {
+    if (Platform.isAndroid) {
+      try {
+        Uri initialLink = await getInitialUri();
+        print(initialLink);
+        if (initialLink != null) judgePushPage(initialLink);
+        _sub = getUriLinksStream().listen((Uri link) {
+          print("link:${link}");
+          judgePushPage(link);
+        });
+      } catch (e) {
+        print(e);
+      }
+      // checkUpdate();
+    }
   }
 
   judgePushPage(Uri link) {
@@ -148,8 +129,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(builder: (context) {
           saveStore.context = context;
-          return IllustPage(id: id);
-          ;
+          return IllustPage(
+            id: id,
+          );
         }));
       } catch (e) {}
       return;
@@ -179,7 +161,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
               return IllustPage(id: id);
-              ;
             }));
             return;
           } catch (e) {}
@@ -238,7 +219,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
               return IllustPage(id: id);
-              ;
             }));
             return;
           } catch (e) {}
@@ -261,31 +241,86 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
   }
 
-  StreamSubscription _sub;
+  bool hasNewVersion = false;
+  checkUpdate() async {
+    try {
+      Response response = await Dio(BaseOptions(
+        baseUrl: 'https://api.github.com'
+      )).get(
+          '/repos/Notsfsssf/pixez-flutter/releases/latest');
+      final result = LastRelease.fromJson(response.data);
+      List<int> versionNums =
+          result.tagName.split('.').map((e) => int.parse(e));
+      debugPrint(versionNums.toString());
+      for (var i in versionNums) {
+        for (var j in Constrains.tagName.split('.').map((e) => int.parse(e))) {
+          if (j > i) {
+            if (mounted) {
+              setState(() {
+                hasNewVersion = true;
+              });
+            }
+            break;
+          }
+        }
+        if (hasNewVersion) {
+          break;
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    index = userSetting.welcomePageNum;
+    _pageController = PageController(initialPage: userSetting.welcomePageNum);
+    _widgetOptions = <Widget>[
+      RecomSpolightPage(),
+      RankPage(),
+      NewPage(),
+      SearchPage(),
+      SettingPage(hasNewVersion: hasNewVersion),
+    ];
+    super.initState();
+    saveStore.context = this.context;
+    saveStore.saveStream.listen((stream) {
+      saveStore.listenBehavior(stream);
+    });
+    initPlatformState();
+    // For sharing images coming from outside the app while the app is in the memory
+    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+        .listen((List<SharedMediaFile> value) {
+      if (value != null)
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return SauceNaoPage(
+            path: value.first.path,
+          );
+        }));
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      if (value != null)
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return SauceNaoPage(
+            path: value.first.path,
+          );
+        }));
+    });
+  }
 
   @override
   void dispose() {
-    _sub?.cancel();
     _intentDataStreamSubscription?.cancel();
     super.dispose();
   }
 
   initPlatformState() async {
-    try {
-      Uri initialLink = await getInitialUri();
-      print(initialLink);
-      if (initialLink != null) judgePushPage(initialLink);
-      _sub = getUriLinksStream().listen((Uri link) {
-        print("link:${link}");
-        judgePushPage(link);
-      });
-      // Parse the link and warn the user, if it is not correct,
-      // but keep in mind it could be `null`.
-    } catch (e) {
-      print(e);
-      // Handle exception by warning the user their action did not succeed
-      // return?
-    }
+    initPlatform();
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
     ].request();

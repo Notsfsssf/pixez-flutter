@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +35,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
           onPressed: () async {
             var prefs = await SharedPreferences.getInstance();
             await prefs.setInt('language_num', userSetting.languageNum);
+            
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => AndroidHelloPage()));
           },

@@ -14,9 +14,9 @@
  *
  */
 
+import 'package:pixez/constraint.dart';
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -239,7 +239,7 @@ class _AboutPageState extends State<AboutPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                  title: Text('Version 0.0.10'),
+                                  title: Text('Version ${Constrains.tagName}'),
                                   subtitle: Text(
                                       I18n.of(context).Go_To_Project_Address),
                                   onTap: () {

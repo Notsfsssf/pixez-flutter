@@ -134,5 +134,7 @@
   "Encode":"Encode",
   "Encode_Message":"This will take time and may fail",
   "Filter":"Filter",
-  "Attempting_To_Log_In":"Attempting to log in"
+  "Attempting_To_Log_In":"Attempting to log in",
+  "Bookmarked":"Bookmarked",
+  "Not_Bookmarked":"Not_Bookmarked"
 }

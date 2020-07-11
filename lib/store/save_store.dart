@@ -82,7 +82,7 @@ abstract class _SaveStoreBase with Store {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 4.0),
+                              horizontal: 8.0, vertical: 8.0),
                           child: Text(
                               "${stream.data.title} ${I18n.of(context).Saved}"),
                         )

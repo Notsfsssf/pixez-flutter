@@ -14,6 +14,9 @@
  *
  */
 
+import 'dart:async';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +28,15 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/history/history_store.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/splash/splash_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:uni_links/uni_links.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -72,14 +78,22 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   void initState() {
     accountStore.fetch();
     userSetting.init();
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
+
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {

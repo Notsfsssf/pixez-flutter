@@ -47,7 +47,7 @@ class _UsersPageState extends State<UsersPage>
   ScrollController _scrollController;
   @override
   void initState() {
-    userStore = UserStore(apiClient, widget.id);
+    userStore = UserStore(widget.id);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     super.initState();

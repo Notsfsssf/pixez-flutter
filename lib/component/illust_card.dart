@@ -73,8 +73,8 @@ class _IllustCardState extends State<IllustCard> {
                     .push(MaterialPageRoute(builder: (_) {
                   if (widget.store != null) {
                     return PictureListPage(
-                   iStores: widget.iStores,
-                   store: widget.store,
+                      iStores: widget.iStores,
+                      store: widget.store,
                     );
                   }
                   return IllustPage(
@@ -123,18 +123,9 @@ class _IllustCardState extends State<IllustCard> {
     });
   }
 
+  String heroString =
+      DateTime.now().millisecondsSinceEpoch.toString(); //两个作品可能出现在相邻页，用时间保证唯一herotag
   Widget buildInkWell(BuildContext context) {
-    double screanWidth = MediaQuery.of(context).size.width;
-    double itemWidth = (screanWidth / 2.0) - 32.0;
-    double radio =
-        illustStore.illusts.height.toDouble() / illustStore.illusts.width.toDouble();
-    double mainAxisExtent = 80.0;
-    if (radio > 2)
-      mainAxisExtent += itemWidth;
-    else
-      mainAxisExtent += itemWidth * radio;
-
-    String heroString = DateTime.now().millisecondsSinceEpoch.toString();
     return InkWell(
       onTap: () => {
         Navigator.of(context, rootNavigator: true)
@@ -142,8 +133,8 @@ class _IllustCardState extends State<IllustCard> {
           if (widget.iStores != null) {
             return PictureListPage(
               heroString: heroString,
-             store: widget.store,
-             iStores: widget.iStores,
+              store: widget.store,
+              iStores: widget.iStores,
             );
           }
           return IllustPage(
@@ -171,7 +162,8 @@ class _IllustCardState extends State<IllustCard> {
                             illustStore.illusts.width.toDouble()) >
                         2
                     ? Hero(
-                        tag: '${illustStore.illusts.imageUrls.medium}${heroString}',
+                        tag:
+                            '${illustStore.illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
                           imageUrl: illustStore.illusts.imageUrls.squareMedium,
                           placeholder: (context, url) => Container(
@@ -186,7 +178,8 @@ class _IllustCardState extends State<IllustCard> {
                         ),
                       )
                     : Hero(
-                        tag: '${illustStore.illusts.imageUrls.medium}${heroString}',
+                        tag:
+                            '${illustStore.illusts.imageUrls.medium}${heroString}',
                         child: CachedNetworkImage(
                           imageUrl: illustStore.illusts.imageUrls.medium,
                           placeholder: (context, url) => Container(
@@ -251,7 +244,7 @@ class _IllustCardState extends State<IllustCard> {
     );
   }
 
-  Visibility _buildVisibility() {
+  Widget _buildVisibility() {
     return Visibility(
       visible: illustStore.illusts.type != "illust" ||
           illustStore.illusts.metaPages.isNotEmpty,

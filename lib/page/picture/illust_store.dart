@@ -59,5 +59,6 @@ abstract class _IllustStoreBase with Store {
         return false;
       } catch (e) {}
     }
+    return null;
   }
 }

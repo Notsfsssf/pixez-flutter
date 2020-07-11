@@ -26,7 +26,7 @@ part 'user_store.g.dart';
 class UserStore = _UserStoreBase with _$UserStore;
 
 abstract class _UserStoreBase with Store {
-  final ApiClient client;
+  final ApiClient client=apiClient;
   final int id;
   @observable
   UserDetail userDetail;
@@ -35,7 +35,7 @@ abstract class _UserStoreBase with Store {
   @observable
   int value = 0;
 
-  _UserStoreBase(this.client, this.id);
+  _UserStoreBase(this.id,{this.userDetail});
 
   @action
   Future<void> follow({bool needPrivate = false}) async {

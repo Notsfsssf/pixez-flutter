@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,7 +35,22 @@ import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
+  final bool hasNewVersion;
+
+  const SettingPage({Key key, this.hasNewVersion}) : super(key: key);
+  @override
+  _SettingPageState createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  bool hasNewVersion;
+  @override
+  void initState() {
+    hasNewVersion = widget.hasNewVersion ?? false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,13 +191,17 @@ class SettingPage extends StatelessWidget {
                 Divider(),
                 Column(
                   children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.message),
-                      title: Text(I18n.of(context).About),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => AboutPage()));
-                      },
+                    Badge(
+                      showBadge: hasNewVersion,
+                      badgeContent: Text('New'),
+                      child: ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text(I18n.of(context).About),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AboutPage()));
+                        },
+                      ),
                     ),
                     Observer(builder: (context) {
                       if (accountStore.now != null)

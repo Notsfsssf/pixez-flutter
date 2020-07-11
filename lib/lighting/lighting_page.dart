@@ -91,36 +91,40 @@ class _LightingListState extends State<LightingList> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return Stack(
-        children: <Widget>[
-          _buildMain(context),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Visibility(
-              visible: backToTopEnable,
-              child: IconButton(
-                  padding: EdgeInsets.all(0.0),
-                  icon: Icon(Icons.expand_less),
-                  onPressed: () {
-                    _scrollController.jumpTo(0.0);
-                  }),
+      return Container(
+        child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: widget.header == null ? 0 : 36.0),
+              child: _buildWithHeader(context),
             ),
-          )
-        ],
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                    height: 36,
+                    child: widget.header,
+                  ) ??
+                  Visibility(
+                    child: Container(),
+                    visible: false,
+                  ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Visibility(
+                visible: backToTopEnable,
+                child: IconButton(
+                    padding: EdgeInsets.all(0.0),
+                    icon: Icon(Icons.expand_less),
+                    onPressed: () {
+                      _scrollController.jumpTo(0.0);
+                    }),
+              ),
+            )
+          ],
+        ),
       );
     });
-  }
-
-  Widget _buildMain(BuildContext context) {
-    if (widget.header == null)
-      return _buildWithHeader(context);
-    else
-      return Column(
-        children: <Widget>[
-          widget.header,
-          Expanded(child: _buildWithHeader(context)),
-        ],
-      );
   }
 
   bool needToBan(Illusts illust) {
@@ -179,15 +183,15 @@ class _LightingListState extends State<LightingList> {
             itemBuilder: (context, index) {
               final data = _store.iStores[index].illusts;
               return IllustCard(
-      store: _store.iStores[index],
+                store: _store.iStores[index],
                 iStores: _store.iStores,
               );
             },
             staggeredTileBuilder: (int index) {
               double screanWidth = MediaQuery.of(context).size.width;
               double itemWidth = (screanWidth / 2.0) - 32.0;
-              double radio =  _store.iStores[index].illusts.height.toDouble() /
-                   _store.iStores[index].illusts.width.toDouble();
+              double radio = _store.iStores[index].illusts.height.toDouble() /
+                  _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;
               if (radio > 2)
                 mainAxisExtent = itemWidth;

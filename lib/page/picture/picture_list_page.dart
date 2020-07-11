@@ -54,7 +54,7 @@ class _PictureListPageState extends State<PictureListPage> {
         ...widget.iStores.map((f) => IllustPage(
               id: f.id,
               heroString: widget.heroString,
-              store: widget.store,
+              store: f,
             ))
       ],
     );

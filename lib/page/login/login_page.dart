@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         extendBody: true,
         extendBodyBehindAppBar: true,
-        body: Observer(builder: (context) {
+        body: Builder(builder: (context) {
           this.context = context;
           return _buildBody(context);
         }));

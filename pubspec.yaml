@@ -61,6 +61,7 @@ dependencies:
   flutter_displaymode: ^0.1.0
   receive_sharing_intent: ^1.4.0+2
   like_button: ^1.0.1
+  badges: ^1.1.1
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

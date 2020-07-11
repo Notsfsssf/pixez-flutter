@@ -27,7 +27,7 @@ class IllustPage extends StatefulWidget {
   final String heroString;
   final IllustStore store;
   const IllustPage(
-      {Key key, @required this.id,@required this.store,this.heroString})
+      {Key key, @required this.id, this.store,this.heroString})
       : super(key: key);
   @override
   _IllustPageState createState() => _IllustPageState();

@@ -1382,6 +1382,26 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Bookmarked`
+  String get Bookmarked {
+    return Intl.message(
+      'Bookmarked',
+      name: 'Bookmarked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not_Bookmarked`
+  String get Not_Bookmarked {
+    return Intl.message(
+      'Not_Bookmarked',
+      name: 'Not_Bookmarked',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

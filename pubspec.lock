@@ -36,6 +36,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.1"
+  badges:
+    dependency: "direct main"
+    description:
+      name: badges
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   bloc:
     dependency: transitive
     description:
