@@ -25,16 +25,14 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_page.dart';
-import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class SearchPage extends StatefulWidget {
-  final String preWord;
 
-  const SearchPage({Key key, this.preWord}) : super(key: key);
+  const SearchPage({Key key}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -46,7 +44,6 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   void initState() {
-    _filter = TextEditingController(text: widget.preWord);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     tagHistoryStore.fetch();
@@ -54,7 +51,6 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   void dispose() {
-    _filter?.dispose();
     _tabController?.dispose();
     super.dispose();
   }
@@ -116,7 +112,6 @@ class _SearchPageState extends State<SearchPage>
     });
   }
 
-  TextEditingController _filter;
   TabController _tabController;
 
   ListView _buildListView(TrendTagsState state) {

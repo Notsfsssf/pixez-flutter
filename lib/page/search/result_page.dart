@@ -20,7 +20,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
-import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class ResultPage extends StatefulWidget {
   final String word;
@@ -50,10 +50,7 @@ class _ResultPageState extends State<ResultPage> {
             child: Text(widget.word),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                          body: SearchPage(
-                        preWord: widget.word,
-                      ))));
+                  builder: (context) => SearchSuggestionPage(preword: widget.word,)));
             },
           ),
           bottom: TabBar(tabs: [

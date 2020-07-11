@@ -62,6 +62,12 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   @override
+  void didUpdateWidget(IllustCard oldWidget) {
+    illustStore = widget.store;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (userSetting.hIsNotAllow)
@@ -123,8 +129,9 @@ class _IllustCardState extends State<IllustCard> {
     });
   }
 
-  String heroString =
-      DateTime.now().millisecondsSinceEpoch.toString(); //两个作品可能出现在相邻页，用时间保证唯一herotag
+  String heroString = DateTime.now()
+      .millisecondsSinceEpoch
+      .toString(); //两个作品可能出现在相邻页，用时间保证唯一herotag
   Widget buildInkWell(BuildContext context) {
     return InkWell(
       onTap: () => {
@@ -160,7 +167,7 @@ class _IllustCardState extends State<IllustCard> {
                 alignment: Alignment.topCenter,
                 child: (illustStore.illusts.height.toDouble() /
                             illustStore.illusts.width.toDouble()) >
-                        2
+                        3
                     ? Hero(
                         tag:
                             '${illustStore.illusts.imageUrls.medium}${heroString}',

@@ -27,6 +27,9 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
+  final String preword;
+
+  const SearchSuggestionPage({Key key, this.preword}) : super(key: key);
   @override
   _SearchSuggestionPageState createState() => _SearchSuggestionPageState();
 }
@@ -38,7 +41,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
 
   @override
   void initState() {
-    _filter = TextEditingController();
+    _filter = TextEditingController(text: widget.preword??'');
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
@@ -96,7 +99,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                   Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              IllustPage(id:int.parse(segment[1]))));
+                              IllustPage(id: int.parse(segment[1]))));
                   _filter.clear();
                 }
                 if (segment[0] == 'users') {
@@ -134,8 +137,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
                   var id = int.tryParse(word);
                   if (id != null) {
                     Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(
-                            builder: (_) => IllustPage(id:id)));
+                        MaterialPageRoute(builder: (_) => IllustPage(id: id)));
                   } else {
                     _filter.clear();
                   }

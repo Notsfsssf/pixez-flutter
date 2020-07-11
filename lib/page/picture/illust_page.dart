@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
@@ -317,6 +318,30 @@ class _IllustPageState extends State<IllustPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
+            for (var i in muteStore.banillusts) {
+        if (i.illustId == widget.id.toString()) {
+          return BanPage(
+            name: I18n.of(context).Illust,
+          );
+        }
+      }
+      if (_illustStore.illusts != null) {
+        for (var j in muteStore.banUserIds) {
+          if (j.userId == _illustStore.illusts.user.id.toString()) {
+            return BanPage(
+              name: I18n.of(context).Painter,
+            );
+          }
+        }
+        for (var t in muteStore.banTags) {
+          for (var t1 in _illustStore.illusts.tags) {
+            if (t.name == t1.name)
+              return BanPage(
+                name: I18n.of(context).Tag,
+              );
+          }
+        }
+      }
       if (_illustStore.illusts != null) {
         final data = _illustStore.illusts;
         return Scaffold(

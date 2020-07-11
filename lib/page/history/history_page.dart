@@ -82,7 +82,7 @@ class HistoryPage extends StatelessWidget {
                         child: PixivImage(reIllust[index].pictureUrl)));
               });
         return Center(
-          child: CircularProgressIndicator(),
+          child: Container(),
         );
       });
 
@@ -91,7 +91,7 @@ class HistoryPage extends StatelessWidget {
     _store.fetch();
     return Scaffold(
       appBar: AppBar(
-        title: Text("History"),
+        title: Text(I18n.of(context).History),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),

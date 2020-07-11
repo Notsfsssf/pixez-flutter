@@ -181,23 +181,29 @@ class _LightingListState extends State<LightingList> {
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
             itemBuilder: (context, index) {
-              final data = _store.iStores[index].illusts;
+              // final data = _store.iStores[index].illusts;
+              // if (needToBan(data))
+              //   return Visibility(
+              //     visible: false,
+              //     child: Container(),
+              //   );
               return IllustCard(
                 store: _store.iStores[index],
                 iStores: _store.iStores,
               );
             },
             staggeredTileBuilder: (int index) {
+              if (needToBan(_store.iStores[index].illusts))
+                return StaggeredTile.extent(1, 0.0);
               double screanWidth = MediaQuery.of(context).size.width;
               double itemWidth = (screanWidth / 2.0) - 32.0;
               double radio = _store.iStores[index].illusts.height.toDouble() /
                   _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;
-              if (radio > 2)
+              if (radio > 3)
                 mainAxisExtent = itemWidth;
               else
                 mainAxisExtent = itemWidth * radio;
-
               return StaggeredTile.extent(1, mainAxisExtent + 80.0);
             },
             itemCount: _store.iStores.length,
