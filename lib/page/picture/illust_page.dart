@@ -643,5 +643,9 @@ class _IllustPageState extends State<IllustPage> {
         )
       : PixivImage(
           illust.metaPages[index].imageUrls.large,
+          placeWidget: Container(
+            height: 150,
+            child: Center(child: Text('${(index+1)}', style: Theme.of(context).textTheme.headline4),),
+          ),
         );
 }

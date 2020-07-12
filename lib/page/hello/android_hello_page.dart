@@ -244,27 +244,22 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   bool hasNewVersion = false;
   checkUpdate() async {
     try {
-      Response response = await Dio(BaseOptions(
-        baseUrl: 'https://api.github.com'
-      )).get(
-          '/repos/Notsfsssf/pixez-flutter/releases/latest');
+      Response response =
+          await Dio(BaseOptions(baseUrl: 'https://api.github.com'))
+              .get('/repos/Notsfsssf/pixez-flutter/releases/latest');
       final result = LastRelease.fromJson(response.data);
       List<int> versionNums =
           result.tagName.split('.').map((e) => int.parse(e));
       debugPrint(versionNums.toString());
-      for (var i in versionNums) {
-        for (var j in Constrains.tagName.split('.').map((e) => int.parse(e))) {
-          if (j > i) {
-            if (mounted) {
-              setState(() {
-                hasNewVersion = true;
-              });
-            }
-            break;
+      List<int> newNums =
+          Constrains.tagName.split('.').map((e) => int.parse(e));
+      for (int i = 0; i < versionNums.length; i++) {
+        if (versionNums[i] < newNums[i]) {
+          if (mounted) {
+            setState(() {
+              hasNewVersion = true;
+            });
           }
-        }
-        if (hasNewVersion) {
-          break;
         }
       }
     } catch (e) {

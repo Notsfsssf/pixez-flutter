@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2020. by perol_notsf, All rights reserved
  *
@@ -22,10 +21,24 @@ import 'package:flutter/widgets.dart';
 class PixivImage extends StatelessWidget {
   final String url;
   final String placeHolder;
-  PixivImage(this.url, {this.placeHolder});
+  final Widget placeWidget;
+  PixivImage(this.url, {this.placeHolder, this.placeWidget});
 
   @override
   Widget build(BuildContext context) {
+    if (placeWidget != null) {
+      return CachedNetworkImage(
+        placeholder: (BuildContext context, String url) {
+          return placeWidget;
+        },
+        imageUrl: url,
+        httpHeaders: {
+          "referer": "https://app-api.pixiv.net/",
+          "User-Agent": "PixivIOSApp/5.8.0"
+        },
+        fit: BoxFit.fitWidth,
+      );
+    }
     return placeHolder != null
         ? CachedNetworkImage(
             placeholder: (BuildContext context, String url) {
