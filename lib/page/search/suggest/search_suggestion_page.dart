@@ -15,15 +15,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_page.dart';
-import 'package:pixez/page/picture/picture_page.dart';
-import 'package:pixez/page/search/bloc/suggestion_bloc.dart';
-import 'package:pixez/page/search/bloc/suggestion_event.dart';
-import 'package:pixez/page/search/bloc/suggestion_state.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
@@ -38,10 +34,11 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
     with SingleTickerProviderStateMixin {
   TextEditingController _filter;
   TabController _tabController;
-
+  SuggestionStore _suggestionStore;
   @override
   void initState() {
-    _filter = TextEditingController(text: widget.preword??'');
+    _suggestionStore = SuggestionStore();
+    _filter = TextEditingController(text: widget.preword ?? '');
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
@@ -55,15 +52,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SuggestionBloc>(
-      create: (BuildContext context) => SuggestionBloc(apiClient),
-      child: BlocBuilder<SuggestionBloc, SuggestionState>(
-          builder: (context, snapshot) {
-        return Scaffold(
-          appBar: _buildAppBar(context),
-          body: Container(child: Suggestions()),
-        );
-      }),
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: Container(
+          child: Suggestions(
+        suggestionStore: _suggestionStore,
+      )),
     );
   }
 
@@ -115,9 +109,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
             }
             var word = query.trim();
             if (word.isEmpty) return;
-
-            BlocProvider.of<SuggestionBloc>(context)
-                .add(FetchSuggestionsEvent(word));
+            _suggestionStore.fetch(word);
           },
           onSubmitted: (s) {
             var word = s.trim();
@@ -189,7 +181,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
 }
 
 class Suggestions extends StatefulWidget {
-  const Suggestions({Key key}) : super(key: key);
+  final SuggestionStore suggestionStore;
+  const Suggestions({Key key, this.suggestionStore}) : super(key: key);
 
   @override
   _SuggestionsState createState() => _SuggestionsState();
@@ -198,32 +191,34 @@ class Suggestions extends StatefulWidget {
 class _SuggestionsState extends State<Suggestions> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SuggestionBloc, SuggestionState>(
-      builder: (context, state) {
-        if (state is DataState) {
-          final tags = state.autoWords.tags;
-          return ListView.separated(
-            itemBuilder: (context, index) {
-              return ListTile(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ResultPage(
-                      word: tags[index].name,
-                      translatedName: tags[index].translated_name ?? '',
+    return Observer(
+      builder: (context) {
+        if (widget.suggestionStore.autoWords != null) {
+          final tags = widget.suggestionStore.autoWords.tags;
+          return tags.isNotEmpty
+              ? ListView.separated(
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        Navigator.of(context, rootNavigator: true)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ResultPage(
+                            word: tags[index].name,
+                            translatedName: tags[index].translated_name ?? '',
+                          );
+                        }));
+                      },
+                      title: Text(tags[index].name),
+                      subtitle: Text(tags[index].translated_name ?? ""),
                     );
-                  }));
-                },
-                title: Text(tags[index].name),
-                subtitle: Text(tags[index].translated_name ?? ""),
-              );
-            },
-            itemCount: tags.length,
-            separatorBuilder: (BuildContext context, int index) {
-              return Divider();
-            },
-          );
+                  },
+                  itemCount: tags.length,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
+                )
+              : Container();
         }
         return Container();
       },

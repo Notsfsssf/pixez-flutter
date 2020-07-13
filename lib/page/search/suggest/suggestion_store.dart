@@ -14,14 +14,21 @@
  *
  */
 
-import 'package:equatable/equatable.dart';
+import 'package:mobx/mobx.dart';
+import 'package:pixez/models/tags.dart';
+import 'package:pixez/network/api_client.dart';
+part 'suggestion_store.g.dart';
 
-abstract class TrendTagsEvent extends Equatable {
-  const TrendTagsEvent();
-}
-class FetchEvent extends TrendTagsEvent{
-  
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
+class SuggestionStore = _SuggestionStoreBase with _$SuggestionStore;
+
+abstract class _SuggestionStoreBase with Store {
+  @observable
+  AutoWords autoWords;
+  fetch(String query) async {
+    try {
+      AutoWords autoWords =
+          await apiClient.getSearchAutoCompleteKeywords(query);
+      this.autoWords = autoWords;
+    } catch (e) {}
+  }
 }

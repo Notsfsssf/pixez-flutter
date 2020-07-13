@@ -18,20 +18,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/trend_tags.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
-import 'package:pixez/page/search/bloc/bloc.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
+import 'package:pixez/page/search/trend_tags_store.dart';
 
 class SearchPage extends StatefulWidget {
-
   const SearchPage({Key key}) : super(key: key);
 
   @override
@@ -41,9 +38,10 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   String editString = "";
-
+  TrendTagsStore _trendTagsStore;
   @override
   void initState() {
+    _trendTagsStore = TrendTagsStore()..fetch();
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     tagHistoryStore.fetch();
@@ -59,33 +57,26 @@ class _SearchPageState extends State<SearchPage>
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (accountStore.now != null)
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<TrendTagsBloc>(
-              create: (context) => TrendTagsBloc(apiClient)..add(FetchEvent()),
-            )
-          ],
-          child: Column(children: <Widget>[
-            AppBar(
-              automaticallyImplyLeading: false,
-              title: Text(
-                I18n.of(context).Search,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(
-                            builder: (context) => SearchSuggestionPage()));
-                  },
-                )
-              ],
+        return Column(children: <Widget>[
+          AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              I18n.of(context).Search,
+              style: Theme.of(context).textTheme.headline6,
             ),
-            Expanded(child: _buildBlocBuilder())
-          ]),
-        );
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (context) => SearchSuggestionPage()));
+                },
+              )
+            ],
+          ),
+          Expanded(child: _buildBlocBuilder())
+        ]);
       return Column(children: <Widget>[
         AppBar(
           automaticallyImplyLeading: false,
@@ -106,15 +97,12 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Widget _buildBlocBuilder() {
-    return BlocBuilder<TrendTagsBloc, TrendTagsState>(
-        builder: (context, state) {
-      return _buildListView(state);
-    });
+     return _buildListView();
   }
 
   TabController _tabController;
 
-  ListView _buildListView(TrendTagsState state) {
+  ListView _buildListView() {
     return ListView.builder(
       itemCount: 4,
       itemBuilder: (BuildContext context, int index) {
@@ -165,8 +153,8 @@ class _SearchPageState extends State<SearchPage>
             },
           );
         } else {
-          if (state is TrendTagDataState)
-            return _buildGrid(context, state.trendingTag.trend_tags);
+          if (_trendTagsStore.trendTags.isNotEmpty)
+            return _buildGrid(context, _trendTagsStore.trendTags);
           else
             return Container();
         }
@@ -194,7 +182,7 @@ class _SearchPageState extends State<SearchPage>
               onLongPress: () {
                 Navigator.of(context, rootNavigator: true)
                     .push(MaterialPageRoute(builder: (_) {
-                  return IllustPage(id:tags[index].illust.id);
+                  return IllustPage(id: tags[index].illust.id);
                 }));
               },
               child: ClipRRect(

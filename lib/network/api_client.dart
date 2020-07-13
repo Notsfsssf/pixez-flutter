@@ -17,7 +17,6 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';

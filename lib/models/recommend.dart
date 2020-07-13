@@ -71,7 +71,7 @@ class Recommend {
 class PrivacyPolicy {
   PrivacyPolicy();
 
-  PrivacyPolicy.fromJson(Map<String, dynamic> json) {}
+  PrivacyPolicy.fromJson(Map<String, dynamic> json);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

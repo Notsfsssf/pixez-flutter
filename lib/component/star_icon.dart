@@ -16,7 +16,6 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/picture/illust_store.dart';

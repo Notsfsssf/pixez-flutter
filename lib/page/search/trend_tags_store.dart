@@ -14,34 +14,25 @@
  *
  */
 
-import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
+part 'trend_tags_store.g.dart';
 
-import './bloc.dart';
+class TrendTagsStore = _TrendTagsStoreBase with _$TrendTagsStore;
 
-class TrendTagsBloc extends Bloc<TrendTagsEvent, TrendTagsState> {
-  final ApiClient client;
-
-  TrendTagsBloc(this.client);
-  @override
-  TrendTagsState get initialState => InitialTrendTagsState();
-
-  @override
-  Stream<TrendTagsState> mapEventToState(
-    TrendTagsEvent event,
-  ) async* {
-    if (event is FetchEvent) {
-      try {
-        Response response = await client.getIllustTrendTags();
-        TrendingTag trendingTag = TrendingTag.fromJson(response.data);
-        yield TrendTagDataState(trendingTag);
-      } catch (e) {
-        print(e);
-      }
+abstract class _TrendTagsStoreBase with Store {
+  ObservableList<Trend_tags> trendTags = ObservableList();
+  @action
+  fetch() async {
+    try {
+      Response response = await apiClient.getIllustTrendTags();
+      TrendingTag trendingTag = TrendingTag.fromJson(response.data);
+      trendTags.clear();
+      trendTags.addAll(trendingTag.trend_tags);
+    } catch (e) {
+      print(e);
     }
   }
 }
