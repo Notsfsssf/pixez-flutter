@@ -37,7 +37,7 @@ class _PainterListState extends State<PainterList> {
   void initState() {
     _easyRefreshController = EasyRefreshController();
     _painterListStore =
-        PainterListStore(_easyRefreshController, widget.futureGet);
+        PainterListStore(_easyRefreshController, widget.futureGet)..fetch();
     super.initState();
   }
 
@@ -68,7 +68,7 @@ class _PainterListState extends State<PainterList> {
                 return PainterCard(
                   user: _painterListStore.users[index],
                 );
-              })
+              },itemCount: _painterListStore.users.length,)
             : Container(),
       );
     });

@@ -23,6 +23,7 @@ part 'trend_tags_store.g.dart';
 class TrendTagsStore = _TrendTagsStoreBase with _$TrendTagsStore;
 
 abstract class _TrendTagsStoreBase with Store {
+  @observable
   ObservableList<Trend_tags> trendTags = ObservableList();
   @action
   fetch() async {

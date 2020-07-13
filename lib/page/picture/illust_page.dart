@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,9 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
+import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_about_grid.dart';
 import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
@@ -43,8 +46,7 @@ class IllustPage extends StatefulWidget {
   final int id;
   final String heroString;
   final IllustStore store;
-  const IllustPage(
-      {Key key, @required this.id, this.store,this.heroString})
+  const IllustPage({Key key, @required this.id, this.store, this.heroString})
       : super(key: key);
   @override
   _IllustPageState createState() => _IllustPageState();
@@ -57,7 +59,7 @@ class _IllustPageState extends State<IllustPage> {
       ItemPositionsListener.create();
   @override
   void initState() {
-    _illustStore = widget.store ?? IllustStore(widget.id,null);
+    _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
     super.initState();
   }
@@ -65,6 +67,131 @@ class _IllustPageState extends State<IllustPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _showBookMarkTag() async {
+    Response response = await apiClient.getIllustBookmarkDetail(widget.id);
+    BookMarkDetailResponse bookMarkDetailResponse =
+        BookMarkDetailResponse.fromJson(response.data);
+    showDialog(
+        context: context,
+        child: StatefulBuilder(
+          builder: (_, setBookState) {
+            final TextEditingController textEditingController =
+                TextEditingController();
+            final List<TagsR> tags = bookMarkDetailResponse.bookmarkDetail.tags;
+            final detail = bookMarkDetailResponse.bookmarkDetail;
+            return AlertDialog(
+              contentPadding: EdgeInsets.all(2.0),
+              content: Container(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    TextField(
+                      controller: textEditingController,
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          final value = textEditingController.value.text.trim();
+                          if (value.isNotEmpty)
+                            setBookState(() {
+                              tags.insert(
+                                  0,
+                                  TagsR()
+                                    ..name = value
+                                    ..isRegistered = true);
+                              textEditingController.clear();
+                            });
+                        },
+                      )),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(0.0),
+                        itemCount: tags.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Flex(
+                            direction: Axis.horizontal,
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  bookMarkDetailResponse
+                                      .bookmarkDetail.tags[index].name,
+                                  softWrap: true,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.left,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Checkbox(
+                                onChanged: (bool value) {
+                                  setBookState(() {
+                                    bookMarkDetailResponse.bookmarkDetail
+                                        .tags[index].isRegistered = value;
+                                  });
+                                },
+                                value: bookMarkDetailResponse
+                                    .bookmarkDetail.tags[index].isRegistered,
+                              )
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                          );
+                        },
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text((detail.restrict == "public"
+                                ? I18n.of(context).Public
+                                : I18n.of(context).Private) +
+                            I18n.of(context).BookMark),
+                        Switch(
+                          onChanged: (bool value) {
+                            setBookState(() {
+                              detail.restrict = value ? "public" : "private";
+                            });
+                          },
+                          value: detail.restrict == "public",
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(I18n.of(context).OK),
+                  onPressed: () async {
+                    final tags = bookMarkDetailResponse.bookmarkDetail.tags;
+                    List<String> tempTags = [];
+                    for (int i = 0; i < tags.length; i++) {
+                      if (tags[i].isRegistered) {
+                        tempTags.add(tags[i].name);
+                      }
+                    }
+                    if (tempTags.length == 0) tempTags = null;
+                    Navigator.of(context).pop();
+                    await _illustStore.star(
+                        restrict:
+                            bookMarkDetailResponse.bookmarkDetail.restrict,
+                        tags: tempTags);
+
+                    setState(() {});//star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
+                  },
+                ),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(I18n.of(context).Cancel))
+              ],
+            );
+          },
+        ));
   }
 
   String toShortTime(String dateString) {
@@ -334,7 +461,7 @@ class _IllustPageState extends State<IllustPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-            for (var i in muteStore.banillusts) {
+      for (var i in muteStore.banillusts) {
         if (i.illustId == widget.id.toString()) {
           return BanPage(
             name: I18n.of(context).Illust,
@@ -382,11 +509,18 @@ class _IllustPageState extends State<IllustPage> {
             ),
             extendBodyBehindAppBar: true,
             extendBody: true,
-            floatingActionButton: FloatingActionButton(
-              heroTag: widget.id,
-              backgroundColor: Colors.white,
-              onPressed: () => _illustStore.star(),
-              child: StarIcon(illustStore: _illustStore,),
+            floatingActionButton: GestureDetector(
+              onLongPress: () {
+                _showBookMarkTag();
+              },
+              child: FloatingActionButton(
+                heroTag: widget.id,
+                backgroundColor: Colors.white,
+                onPressed: () => _illustStore.star(),
+                child: StarIcon(
+                  illustStore: _illustStore,
+                ),
+              ),
             ),
             body: _buildBody(context, data));
       } else {
@@ -660,7 +794,10 @@ class _IllustPageState extends State<IllustPage> {
           illust.metaPages[index].imageUrls.large,
           placeWidget: Container(
             height: 150,
-            child: Center(child: Text('${(index+1)}', style: Theme.of(context).textTheme.headline4),),
+            child: Center(
+              child: Text('${(index + 1)}',
+                  style: Theme.of(context).textTheme.headline4),
+            ),
           ),
         );
 }

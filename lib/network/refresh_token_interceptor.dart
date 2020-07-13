@@ -28,6 +28,7 @@ class RefreshTokenInterceptor extends Interceptor {
     AccountProvider accountProvider = new AccountProvider();
     await accountProvider.open();
     final allAccount = await accountProvider.getAllAccount();
+    if(allAccount==null||allAccount.isEmpty) return options;
     AccountPersist accountPersist = allAccount[0];
     options.headers[OAuthClient.AUTHORIZATION] =
         "Bearer " + accountPersist.accessToken;

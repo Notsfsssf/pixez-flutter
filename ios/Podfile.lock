@@ -23,6 +23,8 @@ PODS:
     - Flutter
   - permission_handler (5.0.1):
     - Flutter
+  - receive_sharing_intent (0.0.1):
+    - Flutter
   - save_in_gallery (0.0.1):
     - Flutter
   - screen (0.0.1):
@@ -67,6 +69,7 @@ DEPENDENCIES:
   - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
   - save_in_gallery (from `.symlinks/plugins/save_in_gallery/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - share (from `.symlinks/plugins/share/ios`)
@@ -110,6 +113,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_macos/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
+  receive_sharing_intent:
+    :path: ".symlinks/plugins/receive_sharing_intent/ios"
   save_in_gallery:
     :path: ".symlinks/plugins/save_in_gallery/ios"
   screen:
@@ -154,6 +159,7 @@ SPEC CHECKSUMS:
   path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission_handler: 7022f8972d2d85ce95c1040db945f28bdbfa45d1
+  receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
   save_in_gallery: 75c1d76566ed1af3a266f25b38c6c19a1d019a66
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410

@@ -75,7 +75,7 @@ class _SearchPageState extends State<SearchPage>
               )
             ],
           ),
-          Expanded(child: _buildBlocBuilder())
+          Expanded(child: _buildListView())
         ]);
       return Column(children: <Widget>[
         AppBar(
@@ -96,116 +96,106 @@ class _SearchPageState extends State<SearchPage>
     });
   }
 
-  Widget _buildBlocBuilder() {
-     return _buildListView();
-  }
-
   TabController _tabController;
 
-  ListView _buildListView() {
-    return ListView.builder(
-      itemCount: 4,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(I18n.of(context).History),
-          );
-        }
-        if (index == 2) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(I18n.of(context).Recommand_Tag),
-          );
-        }
-        if (index == 1) {
-          return Observer(
-            builder: (BuildContext context) {
-              if (tagHistoryStore.tags.isNotEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Wrap(
-                    children: tagHistoryStore.tags
-                        .map((f) => ActionChip(
-                              label: Text(f.name),
-                              onPressed: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(
-                                        builder: (context) => ResultPage(
-                                              word: f.name,
-                                              translatedName:
-                                                  f.translatedName ?? '',
-                                            )));
-                              },
-                            ))
-                        .toList()
-                          ..add(ActionChip(
-                              label: Text(I18n.of(context).Clear),
-                              onPressed: () {
-                                tagHistoryStore.deleteAll();
-                              })),
-                    runSpacing: 0.0,
-                    spacing: 3.0,
-                  ),
-                );
-              }
-              return Container();
-            },
-          );
-        } else {
-          if (_trendTagsStore.trendTags.isNotEmpty)
-            return _buildGrid(context, _trendTagsStore.trendTags);
-          else
-            return Container();
-        }
-      },
-    );
+  Widget _buildListView() {
+    return ListView(children: [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(I18n.of(context).History),
+      ),
+            Observer(
+        builder: (BuildContext context) {
+          if (tagHistoryStore.tags.isNotEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Wrap(
+                children: tagHistoryStore.tags
+                    .map((f) => ActionChip(
+                          label: Text(f.name),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    builder: (context) => ResultPage(
+                                          word: f.name,
+                                          translatedName:
+                                              f.translatedName ?? '',
+                                        )));
+                          },
+                        ))
+                    .toList()
+                      ..add(ActionChip(
+                          label: Text(I18n.of(context).Clear),
+                          onPressed: () {
+                            tagHistoryStore.deleteAll();
+                          })),
+                runSpacing: 0.0,
+                spacing: 3.0,
+              ),
+            );
+          }
+          return Container();
+        },
+      ),
+    
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(I18n.of(context).Recommand_Tag),
+      ),
+  _trendTagsStore.trendTags.isNotEmpty
+          ? _buildGrid(context, _trendTagsStore.trendTags)
+          : Container()
+    ]);
   }
 
   Widget _buildGrid(BuildContext context, List<Trend_tags> tags) =>
-      GridView.count(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        crossAxisCount: 3,
-        children: List.generate(tags.length, (index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .push(MaterialPageRoute(builder: (_) {
-                  return ResultPage(
-                    word: tags[index].tag,
-                  );
-                }));
-              },
-              onLongPress: () {
-                Navigator.of(context, rootNavigator: true)
-                    .push(MaterialPageRoute(builder: (_) {
-                  return IllustPage(id: tags[index].illust.id);
-                }));
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(3.0),
-                child: Stack(
-                  children: <Widget>[
-                    CachedNetworkImage(
-                      imageUrl: tags[index].illust.imageUrls.squareMedium,
-                      httpHeaders: {
-                        "referer": "https://app-api.pixiv.net/",
-                        "User-Agent": "PixivIOSApp/5.8.0"
-                      },
-                      fit: BoxFit.fitWidth,
-                    ),
-                    Align(
-                      child: Text(tags[index].tag),
-                      alignment: Alignment.bottomCenter,
-                    ),
-                  ],
+      Observer(builder: (_) {
+        return GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: _trendTagsStore.trendTags.length,
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true)
+                      .push(MaterialPageRoute(builder: (_) {
+                    return ResultPage(
+                      word: tags[index].tag,
+                    );
+                  }));
+                },
+                onLongPress: () {
+                  Navigator.of(context, rootNavigator: true)
+                      .push(MaterialPageRoute(builder: (_) {
+                    return IllustPage(id: tags[index].illust.id);
+                  }));
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3.0),
+                  child: Stack(
+                    children: <Widget>[
+                      CachedNetworkImage(
+                        imageUrl: tags[index].illust.imageUrls.squareMedium,
+                        httpHeaders: {
+                          "referer": "https://app-api.pixiv.net/",
+                          "User-Agent": "PixivIOSApp/5.8.0"
+                        },
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Align(
+                        child: Text(tags[index].tag),
+                        alignment: Alignment.bottomCenter,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }),
-      );
+            );
+          },
+        );
+      });
 }

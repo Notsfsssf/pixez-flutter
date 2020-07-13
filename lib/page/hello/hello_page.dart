@@ -145,6 +145,7 @@ class _HelloPageState extends State<HelloPage> {
       body: Observer(builder: (_) {
         return accountStore.now != null
             ? PageView.builder(
+              itemCount: 4,
                 controller: _pageController,
                 onPageChanged: (index) {
                   setState(() {
@@ -162,6 +163,7 @@ class _HelloPageState extends State<HelloPage> {
                   return lists[index];
                 })
             : PageView.builder(
+              itemCount: 4,
                 controller: _pageController,
                 itemBuilder: (context, index) {
                   var lists = [
