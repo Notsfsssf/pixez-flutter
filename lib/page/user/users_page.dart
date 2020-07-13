@@ -16,13 +16,12 @@
 
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
@@ -219,6 +218,11 @@ class _UsersPageState extends State<UsersPage>
                             }
                           }
                           break;
+                        case 2:
+                          {
+                            Clipboard.setData(ClipboardData(text: 'user:${userStore.userDetail?.user?.name??''}\npid:${widget.id}'));
+                            break;
+                          }
                         default:
                       }
                     },
@@ -231,6 +235,10 @@ class _UsersPageState extends State<UsersPage>
                         PopupMenuItem<int>(
                           value: 1,
                           child: Text(I18n.of(context).Block_User),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 2,
+                          child: Text(I18n.of(context).CopyMessage),
                         ),
                       ];
                     },
