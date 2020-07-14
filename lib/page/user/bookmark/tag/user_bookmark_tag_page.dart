@@ -15,12 +15,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/user/bookmark/tag/bloc.dart';
+import 'package:pixez/page/user/bookmark/tag/bookmark_tag_store.dart';
 
 class UserBookmarkTagPage extends StatefulWidget {
   @override
@@ -30,10 +29,10 @@ class UserBookmarkTagPage extends StatefulWidget {
 class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
-
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+
     super.initState();
   }
 
@@ -45,32 +44,29 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<UserBookmarkTagBloc>(
-      create: (context) => UserBookmarkTagBloc(apiClient),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Tag'),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: <Widget>[
-              Tab(
-                text: I18n.of(context).Public,
-              ),
-              Tab(
-                text: I18n.of(context).Private,
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Tag'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: <Widget>[
+            Tab(
+              text: I18n.of(context).Public,
+            ),
+            Tab(
+              text: I18n.of(context).Private,
+            ),
+          ],
         ),
-        body: TabBarView(controller: _tabController, children: [
-          NewWidget(
-            restrict: "public",
-          ),
-          NewWidget(
-            restrict: "private",
-          ),
-        ]),
       ),
+      body: TabBarView(controller: _tabController, children: [
+        NewWidget(
+          restrict: "public",
+        ),
+        NewWidget(
+          restrict: "private",
+        ),
+      ]),
     );
   }
 }
@@ -84,81 +80,45 @@ class NewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final EasyRefreshController _easyRefreshController =
         EasyRefreshController();
-
-    return BlocListener<UserBookmarkTagBloc, UserBookmarkTagState>(
-      listener: (BuildContext context, UserBookmarkTagState state) {
-        if (state is RefreshFail) {
-          _easyRefreshController.finishRefresh(success: false);
-        }
-        if (state is RefreshSuccess) {
-          _easyRefreshController.finishRefresh(success: true);
-        }
-        if (state is LoadMoreFail) {
-          _easyRefreshController.finishLoad(
-            success: false,
-          );
-        }
-        if (state is LoadMoreSuccess) {
-          _easyRefreshController.finishLoad(
-            success: true,
-          );
-        }
-        if (state is LoadMoreEnd) {
-          _easyRefreshController.finishLoad(success: true, noMore: true);
-        }
-      },
-      child: BlocBuilder<UserBookmarkTagBloc, UserBookmarkTagState>(
-          condition: (pre, now) => now is DataUserBookmarkTagState,
-          builder: (context, snapshot) {
-            return EasyRefresh(
-              firstRefresh: true,
-              controller: _easyRefreshController,
-              child: snapshot is DataUserBookmarkTagState
-                  ? ListView.builder(
-                      itemBuilder: (context, index) {
-                        if (index == 0)
-                          return ListTile(
-                            title: Text("All"),
-                            onTap: () {
-                              Navigator.pop(
-                                  context, {"tag": null, "restrict": restrict});
-                            },
-                          );
-                        var bookmarkTag = snapshot.bookmarkTags[index - 1];
-                        return ListTile(
-                          title: Text(bookmarkTag.name),
-                          trailing: Text(bookmarkTag.count.toString()),
-                          onTap: () {
-                            Navigator.pop(context, {
-                              "tag": bookmarkTag.name,
-                              "restrict": restrict
-                            });
-                          },
-                        );
+    BookMarkTagStore _bookMarkTagStore = BookMarkTagStore(
+        int.parse(accountStore.now.userId), _easyRefreshController);
+    return Observer(builder: (_) {
+      return EasyRefresh(
+        firstRefresh: true,
+        controller: _easyRefreshController,
+        child: _bookMarkTagStore.bookmarkTags.isNotEmpty
+            ? ListView.builder(
+                itemBuilder: (context, index) {
+                  if (index == 0)
+                    return ListTile(
+                      title: Text("All"),
+                      onTap: () {
+                        Navigator.pop(
+                            context, {"tag": null, "restrict": restrict});
                       },
-                      itemCount: snapshot.bookmarkTags.length + 1,
-                    )
-                  : Container(),
-              onRefresh: () async {
-                if (accountStore.now != null) {
-                  BlocProvider.of<UserBookmarkTagBloc>(context).add(
-                      FetchUserBookmarkTagEvent(
-                          int.parse(accountStore.now.userId), restrict));
-                }
-                return;
-              },
-              enableControlFinishRefresh: true,
-              enableControlFinishLoad: true,
-              onLoad: () async {
-                if (snapshot is DataUserBookmarkTagState) {
-                  BlocProvider.of<UserBookmarkTagBloc>(context).add(
-                      LoadMoreUserBookmarkTagEvent(
-                          snapshot.bookmarkTags, snapshot.nextUrl));
-                }
-                return;
-              },
-            );
-          }),
-    );
+                    );
+                  var bookmarkTag = _bookMarkTagStore.bookmarkTags[index - 1];
+                  return ListTile(
+                    title: Text(bookmarkTag.name),
+                    trailing: Text(bookmarkTag.count.toString()),
+                    onTap: () {
+                      Navigator.pop(context,
+                          {"tag": bookmarkTag.name, "restrict": restrict});
+                    },
+                  );
+                },
+                itemCount: _bookMarkTagStore.bookmarkTags.length + 1,
+              )
+            : Container(),
+        onRefresh: () {
+          return _bookMarkTagStore.fetch(restrict);
+        },
+        enableControlFinishRefresh: true,
+        enableControlFinishLoad: true,
+        onLoad: () {
+          return _bookMarkTagStore.next();
+        },
+      );
+    });
   }
 }

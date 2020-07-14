@@ -14,16 +14,14 @@
  *
  */
 
-import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/comment/bloc/bloc.dart';
+import 'package:pixez/page/comment/comment_store.dart';
 
 class CommentPage extends StatefulWidget {
   final int id;
@@ -36,60 +34,56 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   TextEditingController _editController;
-  int parent_comment_id = null;
-  String parentCommentName = null;
+  int parentCommentId;
+  String parentCommentName;
   EasyRefreshController easyRefreshController;
-  Completer<void> _refreshCompleter, _loadCompleter = Completer();
-
+  CommentStore _store;
   @override
   void initState() {
-    super.initState();
     _editController = TextEditingController();
     easyRefreshController = EasyRefreshController();
+    _store = CommentStore(easyRefreshController,widget.id);
+    super.initState();
   }
 
   @override
   void dispose() {
+        _editController?.dispose();
+    easyRefreshController?.dispose();
     super.dispose();
-    _editController.dispose();
-    easyRefreshController.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CommentBloc>(
-      child: BlocListener<CommentBloc, CommentState>(
-        child: BlocBuilder<CommentBloc, CommentState>(
-          builder: (BuildContext context, CommentState state) {
-            if (state is DataCommentState) {
-              var comments = state.commentResponse.comments;
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(I18n.of(context).View_Comment),
-                ),
-                body: SafeArea(
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: EasyRefresh(
-                          controller: easyRefreshController,
-                          onLoad: () {
-                            BlocProvider.of<CommentBloc>(context).add(
-                                LoadMoreCommentEvent(state.commentResponse));
-                            return _loadCompleter.future;
-                          },
-                          child: ListView.builder(
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(I18n.of(context).View_Comment),
+            ),
+            body: SafeArea(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: EasyRefresh(
+                      controller: easyRefreshController,
+                      enableControlFinishLoad: true,
+                      enableControlFinishRefresh: true,
+                      firstRefresh: true,
+                      onRefresh: () => _store.fetch(),
+                      onLoad: () => _store.next(),
+                      child: _store.comments.isNotEmpty
+                          ? ListView.builder(
                               shrinkWrap: true,
-                              itemCount: comments.length,
+                              itemCount: _store.comments.length,
                               itemBuilder: (context, index) {
-                                var comment = comments[index];
+                                var comment = _store.comments[index];
                                 return ListTile(
                                   leading: PainterAvatar(
-                                    url: comments[index]
+                                    url: _store.comments[index]
                                         .user
                                         .profileImageUrls
                                         .medium,
-                                    id: comments[index].user.id,
+                                    id: _store.comments[index].user.id,
                                   ),
                                   title: Column(
                                     crossAxisAlignment:
@@ -106,7 +100,7 @@ class _CommentPageState extends State<CommentPage> {
                                           ),
                                           FlatButton(
                                               onPressed: () {
-                                                parent_comment_id = comment.id;
+                                                parentCommentId = comment.id;
                                                 setState(() {
                                                   parentCommentName =
                                                       comment.user.name;
@@ -130,79 +124,60 @@ class _CommentPageState extends State<CommentPage> {
                                   ),
                                   subtitle: SelectableText(comment.comment),
                                 );
-                              }),
-                        ),
-                      ),
-                      Container(
-                        color: Theme.of(context).dialogBackgroundColor,
-                        child: Row(
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.book),
-                              onPressed: () {
-                                setState(() {
-                                  parentCommentName = null;
-                                  parent_comment_id = null;
-                                });
-                              },
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 2.0, right: 8.0),
-                                child: TextField(
-                                  controller: _editController,
-                                  decoration: InputDecoration(
-                                      labelText:
-                                          "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
-                                      suffixIcon: IconButton(
-                                          icon: Icon(Icons.reply),
-                                          onPressed: () async {
-                                            final client = apiClient;
-                                            String txt =
-                                                _editController.text.trim();
-                                            try {
-                                              if (txt.isNotEmpty)
-                                                Response reponse = await client
-                                                    .postIllustComment(
-                                                        widget.id, txt,
-                                                        parent_comment_id:
-                                                            parent_comment_id);
-                                              _editController.clear();
-                                              BlocProvider.of<CommentBloc>(
-                                                      context)
-                                                  .add(FetchCommentEvent(
-                                                      widget.id));
-                                            } catch (e) {
-                                              print(e);
-                                            }
-                                          })),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                              })
+                          : Container(),
+                    ),
                   ),
-                ),
-              );
-            }
-            return Scaffold(appBar: AppBar(), body: Container());
-          },
-        ),
-        listener: (BuildContext context, CommentState state) {
-          if (state is DataCommentState) {
-            _loadCompleter?.complete();
-            _loadCompleter = Completer();
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
-        },
-      ),
-      create: (BuildContext context) => CommentBloc(
-          apiClient, easyRefreshController)
-        ..add(FetchCommentEvent(widget.id)),
-    );
+                  Container(
+                    color: Theme.of(context).dialogBackgroundColor,
+                    child: Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.book),
+                          onPressed: () {
+                            setState(() {
+                              parentCommentName = null;
+                              parentCommentId = null;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 2.0, right: 8.0),
+                            child: TextField(
+                              controller: _editController,
+                              decoration: InputDecoration(
+                                  labelText:
+                                      "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                  suffixIcon: IconButton(
+                                      icon: Icon(Icons.reply),
+                                      onPressed: () async {
+                                        final client = apiClient;
+                                        String txt =
+                                            _editController.text.trim();
+                                        try {
+                                          if (txt.isNotEmpty)
+                                            Response reponse =
+                                                await client.postIllustComment(
+                                                    widget.id, txt,
+                                                    parent_comment_id:
+                                                        parentCommentId);
+                                          _editController.clear();
+                                          _store.fetch();
+                                        } catch (e) {
+                                          print(e);
+                                        }
+                                      })),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
   }
 }

@@ -16,13 +16,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/novel_recom_response.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
-import 'package:pixez/page/novel/viewer/bloc.dart';
+import 'package:pixez/page/novel/viewer/novel_store.dart';
 
 class NovelViewerPage extends StatefulWidget {
   final int id;
@@ -36,65 +34,63 @@ class NovelViewerPage extends StatefulWidget {
 }
 
 class _NovelViewerPageState extends State<NovelViewerPage> {
+  NovelStore _novelStore;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _novelStore = NovelStore(widget.id);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NovelTextBloc>(
-      child:
-          BlocBuilder<NovelTextBloc, NovelTextState>(builder: (context, state) {
-        if (state is DataNovelState) {
-          var seriesNext = state.novelTextResponse.seriesNext;
-          var seriesPrev = state.novelTextResponse.seriesPrev;
-          return Scaffold(
-            appBar: AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.transparent,
-              actions: <Widget>[
-                NovelBookmarkButton(
-                  novel: widget.novel,
-                )
-              ],
+    var seriesNext = _novelStore.novelTextResponse.seriesNext;
+    var seriesPrev = _novelStore.novelTextResponse.seriesPrev;
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        actions: <Widget>[
+          NovelBookmarkButton(
+            novel: widget.novel,
+          )
+        ],
+      ),
+      extendBodyBehindAppBar: true,
+      body: ListView(
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).padding.top,
+          ),
+          Center(
+              child: Container(
+                  height: 160,
+                  child: PixivImage(widget.novel.imageUrls.medium))),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SelectableText(
+              _novelStore.novelTextResponse.novelText,
+              scrollPhysics: NeverScrollableScrollPhysics(),
             ),
-            extendBodyBehindAppBar: true,
-            body: ListView(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).padding.top,
-                ),
-                Center(
-                    child: Container(
-                        height: 160,
-                        child: PixivImage(widget.novel.imageUrls.medium))),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(
-                    state.novelTextResponse.novelText,
-                    scrollPhysics: NeverScrollableScrollPhysics(),
-                  ),
-                ),
-                Container(
-                  child: ListTile(
-                    subtitle: Text(widget.novel.user.name),
-                    title: Text(widget.novel.title ?? ""),
-                    leading: PainterAvatar(
-                      url: widget.novel.user.profileImageUrls.medium,
-                      id: widget.novel.user.id,
-                      onTap: () {},
-                    ),
-                  ),
-                ),
-                buildListTile(seriesPrev),
-                buildListTile(seriesNext),
-                Container(
-                  height: MediaQuery.of(context).padding.bottom,
-                )
-              ],
+          ),
+          Container(
+            child: ListTile(
+              subtitle: Text(widget.novel.user.name),
+              title: Text(widget.novel.title ?? ""),
+              leading: PainterAvatar(
+                url: widget.novel.user.profileImageUrls.medium,
+                id: widget.novel.user.id,
+                onTap: () {},
+              ),
             ),
-          );
-        }
-        return Scaffold();
-      }),
-      create: (BuildContext context) =>
-          NovelTextBloc(apiClient, id: widget.id)..add(FetchEvent()),
+          ),
+          buildListTile(seriesPrev),
+          buildListTile(seriesNext),
+          Container(
+            height: MediaQuery.of(context).padding.bottom,
+          )
+        ],
+      ),
     );
   }
 

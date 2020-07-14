@@ -21,11 +21,8 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:pixez/generated/l10n.dart';
-import 'package:pixez/page/about/bloc/about_bloc.dart';
-import 'package:pixez/page/about/bloc/bloc.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share/share.dart';
@@ -146,15 +143,12 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AboutBloc>(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(I18n.of(context).About),
-          actions: <Widget>[],
-        ),
-        body: _buildInfo(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(I18n.of(context).About),
+        actions: <Widget>[],
       ),
-      create: (BuildContext context) => AboutBloc(),
+      body: _buildInfo(context),
     );
   }
 

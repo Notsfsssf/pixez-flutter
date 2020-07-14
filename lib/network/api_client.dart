@@ -404,9 +404,9 @@ class ApiClient {
 
   //  @GET("v1/walkthrough/illusts")
 //  fun walkthroughIllusts(): Observable<IllustNext>
-  Future<Recommend> walkthroughIllusts() async {
+  Future<Response> walkthroughIllusts() async {
     final result = await httpClient.get('/v1/walkthrough/illusts');
-    return Recommend.fromJson(result.data);
+    return result;
   }
 
 //  https://app-api.pixiv.net/v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&word={keyword}&search_target=partial_match_for_tags

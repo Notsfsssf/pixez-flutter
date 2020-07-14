@@ -15,13 +15,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_page.dart';
-import 'package:pixez/page/picture/picture_page.dart';
-import 'package:pixez/page/soup/bloc.dart';
+import 'package:pixez/page/soup/soup_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SoupPage extends StatefulWidget {
@@ -35,92 +34,82 @@ class SoupPage extends StatefulWidget {
 }
 
 class _SoupPageState extends State<SoupPage> {
+  final SoupStore _soupStore = SoupStore();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SoupBloc>(
-      create: (BuildContext context) =>
-          SoupBloc()..add(FetchSoupEvent(widget.url)),
-      child: BlocBuilder<SoupBloc, SoupState>(builder: (context, snapshot) {
-        return Scaffold(
-          body: NestedScrollView(
-            body: buildBlocProvider(snapshot),
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  pinned: true,
-                  expandedHeight: 200.0,
-                  flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      title: Text(widget.spotlight.pureTitle),
-                      background: PixivImage(widget.spotlight.thumbnail)),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () async {
-                        var url = widget.spotlight.articleUrl;
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {}
-                      },
-                    )
-                  ],
+    return Scaffold(
+      body: NestedScrollView(
+        body: buildBlocProvider(),
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              pinned: true,
+              expandedHeight: 200.0,
+              flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: Text(widget.spotlight.pureTitle),
+                  background: PixivImage(widget.spotlight.thumbnail)),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () async {
+                    var url = widget.spotlight.articleUrl;
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {}
+                  },
                 )
-              ];
-            },
-          ),
-        );
-      }),
+              ],
+            )
+          ];
+        },
+      ),
     );
   }
 
-  Widget buildBlocProvider(snapshot) {
-    if (snapshot is DataSoupState) {
-      print(snapshot.description);
-      return ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          if (index == 0)
-            return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(snapshot.description),
-              ),
-            );
-          AmWork amWork = snapshot.amWorks[index - 1];
-          return InkWell(
-            onTap: () {
-              Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return IllustPage(
-                    id: int.parse(amWork.arworkLink
-                        .replaceAll('https://www.pixiv.net/artworks/', '')));
-              }));
-            },
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: PainterAvatar(
-                      url: amWork.userImage,
-                      id: int.parse(amWork.userLink
-                          .replaceAll('https://www.pixiv.net/users/', '')),
-                    ),
-                    title: Text(amWork.title),
-                    subtitle: Text(amWork.user),
-                  ),
-                  PixivImage(amWork.showImage),
-                ],
-              ),
+  Widget buildBlocProvider() {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 0)
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(_soupStore.description??''),
             ),
           );
-        },
-        itemCount: snapshot.amWorks.length + 1,
-      );
-    }
-    return Container();
+        AmWork amWork = _soupStore.amWorks[index - 1];
+        return InkWell(
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (BuildContext context) {
+              return IllustPage(
+                  id: int.parse(amWork.arworkLink
+                      .replaceAll('https://www.pixiv.net/artworks/', '')));
+            }));
+          },
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  leading: PainterAvatar(
+                    url: amWork.userImage,
+                    id: int.parse(amWork.userLink
+                        .replaceAll('https://www.pixiv.net/users/', '')),
+                  ),
+                  title: Text(amWork.title),
+                  subtitle: Text(amWork.user),
+                ),
+                PixivImage(amWork.showImage),
+              ],
+            ),
+          ),
+        );
+      },
+      itemCount: _soupStore.amWorks.length + 1,
+    );
   }
 }

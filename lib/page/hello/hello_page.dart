@@ -27,7 +27,6 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
-import 'package:pixez/page/picture/picture_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/users_page.dart';

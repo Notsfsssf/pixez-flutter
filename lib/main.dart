@@ -14,11 +14,9 @@
  *
  */
 
-import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/history/history_store.dart';
@@ -36,29 +34,7 @@ final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
 
-class SimpleBlocDelegate extends BlocDelegate {
-  @override
-  void onEvent(Bloc bloc, Object event) {
-    super.onEvent(bloc, event);
-    print(event);
-  }
-
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    print(transition);
-  }
-
-  @override
-  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
-    super.onError(bloc, error, stacktrace);
-    print(error);
-  }
-}
-
 main() {
-  // BlocSupervisor.delegate = SimpleBlocDelegate();
-
   runApp(MyApp());
 }
 
@@ -83,8 +59,6 @@ class _MyAppState extends State<MyApp> {
 
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

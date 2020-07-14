@@ -53,6 +53,7 @@ class _IllustCardState extends State<IllustCard> {
         style: TextStyle(color: Colors.white),
       );
     }
+    return Text('');
   }
 
   @override

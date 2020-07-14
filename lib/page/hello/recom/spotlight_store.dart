@@ -24,11 +24,11 @@ part 'spotlight_store.g.dart';
 class SpotlightStore = _SpotlightStoreBase with _$SpotlightStore;
 
 abstract class _SpotlightStoreBase with Store {
-  final ApiClient client;
+  final ApiClient client=apiClient;
   ObservableList<SpotlightArticle> articles = ObservableList();
   String nextUrl;
 
-  _SpotlightStoreBase(this.client);
+  _SpotlightStoreBase();
 
   @action
   Future<void> fetch() async {
@@ -39,5 +39,17 @@ abstract class _SpotlightStoreBase with Store {
       articles.addAll(result.spotlightArticles);
       nextUrl = result.nextUrl;
     } catch (e) {}
+  }
+
+  @action
+  next() async {
+    if (nextUrl != null && nextUrl.isNotEmpty) {
+      try {
+        Response response = await client.getNext(nextUrl);
+        final results = SpotlightResponse.fromJson(response.data);
+        nextUrl = results.nextUrl;
+        articles.addAll(results.spotlightArticles);
+      } catch (e) {}
+    }
   }
 }

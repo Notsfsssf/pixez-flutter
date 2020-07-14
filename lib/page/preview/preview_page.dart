@@ -14,20 +14,18 @@
  *
  */
 
-import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/preview/bloc.dart';
 
 class GoToLoginPage extends StatelessWidget {
   final Illusts illust;
@@ -117,67 +115,55 @@ class PreviewPage extends StatefulWidget {
 }
 
 class _PreviewPageState extends State<PreviewPage> {
+  LightingStore _lightingStore;
   EasyRefreshController _easyRefreshController = EasyRefreshController();
-  Completer<void> _refreshCompleter = Completer(), _loadCompleter = Completer();
+  @override
+  void initState() {
+    _lightingStore = LightingStore(
+        () => apiClient.walkthroughIllusts(), _easyRefreshController);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _easyRefreshController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<WalkThroughBloc>(
-      child: BlocListener<WalkThroughBloc, WalkThroughState>(
-        child: BlocBuilder<WalkThroughBloc, WalkThroughState>(
-            builder: (context, state) {
-          return SafeArea(
-            child: EasyRefresh(
-              onLoad: () async {
-                if (state is DataWalkThroughState) {
-                  BlocProvider.of<WalkThroughBloc>(context)
-                      .add(LoadMoreWalkThroughEvent(
-                    state.nextUrl,
-                    state.illusts,
-                  ));
-                  return _loadCompleter.future;
-                }
-                return;
-              },
-              controller: _easyRefreshController,
-              child: (state is DataWalkThroughState)
-                  ? StaggeredGridView.countBuilder(
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      itemBuilder: (BuildContext context, int index) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    GoToLoginPage(
-                                        illust: state.illusts[index])));
-                          },
-                          child: Card(
-                            child: Container(
-                              child: PixivImage(
-                                  state.illusts[index].imageUrls.squareMedium),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: state.illusts.length,
-                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                    )
-                  : Container(),
-            ),
-          );
-        }),
-        listener: (BuildContext context, WalkThroughState state) {
-          if (state is DataWalkThroughState) {
-            _loadCompleter?.complete();
-            _loadCompleter = Completer();
-            _refreshCompleter?.complete();
-            _refreshCompleter = Completer();
-          }
-        },
+    return SafeArea(
+      child: EasyRefresh(
+        onLoad: () => _lightingStore.fetchNext(),
+        controller: _easyRefreshController,
+        onRefresh: () => _lightingStore.fetch(),
+        firstRefresh: true,
+        enableControlFinishLoad: true,
+        enableControlFinishRefresh: true,
+        child: _lightingStore.iStores.isNotEmpty
+            ? StaggeredGridView.countBuilder(
+                shrinkWrap: true,
+                crossAxisCount: 2,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => GoToLoginPage(
+                              illust: _lightingStore.iStores[index].illusts)));
+                    },
+                    child: Card(
+                      child: Container(
+                        child: PixivImage(_lightingStore
+                            .iStores[index].illusts.imageUrls.squareMedium),
+                      ),
+                    ),
+                  );
+                },
+                itemCount: _lightingStore.iStores.length,
+                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+              )
+            : Container(),
       ),
-      create: (context) =>
-          WalkThroughBloc(apiClient)..add(FetchWalkThroughEvent()),
     );
   }
 }

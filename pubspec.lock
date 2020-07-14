@@ -43,13 +43,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.1"
-  bloc:
-    dependency: transitive
-    description:
-      name: bloc
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -232,13 +225,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.9"
-  equatable:
-    dependency: "direct main"
-    description:
-      name: equatable
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.2.0"
   extended_nested_scroll_view:
     dependency: "direct main"
     description:
@@ -265,13 +251,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_bloc:
-    dependency: "direct main"
-    description:
-      name: flutter_bloc
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.0.1"
   flutter_cache_manager:
     dependency: "direct main"
     description:

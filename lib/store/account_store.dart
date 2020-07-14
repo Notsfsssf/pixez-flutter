@@ -16,7 +16,6 @@
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/account.dart';
-import 'package:pixez/page/account/select/account_select_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'account_store.g.dart';
@@ -27,6 +26,14 @@ abstract class _AccountStoreBase with Store {
   AccountProvider accountProvider = new AccountProvider();
   @observable
   AccountPersist now;
+
+  ObservableList<AccountPersist> accounts = ObservableList();
+  @action
+  select(int index) async {
+    var pre = await SharedPreferences.getInstance();
+    await pre.setInt('account_select_num', index);
+    now = accounts[index];
+  }
 
   @action
   deleteAll() async {
@@ -42,11 +49,19 @@ abstract class _AccountStoreBase with Store {
   }
 
   @action
+  deleteSingle(int id) async {
+    await accountProvider.open();
+    await accountProvider.delete(id);
+  }
+
+  @action
   fetch() async {
     await accountProvider.open();
     List<AccountPersist> list = await accountProvider.getAllAccount();
+    accounts.clear();
+    accounts.addAll(list);
     var pre = await SharedPreferences.getInstance();
-    var i = pre.getInt(AccountSelectBloc.ACCOUNT_SELECT_NUM);
+    var i = pre.getInt('account_select_num');
     if (list != null && list.isNotEmpty) {
       now = list[i ?? 0];
     }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'spotlight_store.dart';
+part of 'comment_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,15 +8,15 @@ part of 'spotlight_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$SpotlightStore on _SpotlightStoreBase, Store {
-  final _$fetchAsyncAction = AsyncAction('_SpotlightStoreBase.fetch');
+mixin _$CommentStore on _CommentStoreBase, Store {
+  final _$fetchAsyncAction = AsyncAction('_CommentStoreBase.fetch');
 
   @override
-  Future<void> fetch() {
+  Future fetch() {
     return _$fetchAsyncAction.run(() => super.fetch());
   }
 
-  final _$nextAsyncAction = AsyncAction('_SpotlightStoreBase.next');
+  final _$nextAsyncAction = AsyncAction('_CommentStoreBase.next');
 
   @override
   Future next() {

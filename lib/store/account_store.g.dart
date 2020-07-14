@@ -24,6 +24,13 @@ mixin _$AccountStore on _AccountStoreBase, Store {
     });
   }
 
+  final _$selectAsyncAction = AsyncAction('_AccountStoreBase.select');
+
+  @override
+  Future select(int index) {
+    return _$selectAsyncAction.run(() => super.select(index));
+  }
+
   final _$deleteAllAsyncAction = AsyncAction('_AccountStoreBase.deleteAll');
 
   @override
@@ -38,6 +45,14 @@ mixin _$AccountStore on _AccountStoreBase, Store {
   Future updateSingle(AccountPersist accountPersist) {
     return _$updateSingleAsyncAction
         .run(() => super.updateSingle(accountPersist));
+  }
+
+  final _$deleteSingleAsyncAction =
+      AsyncAction('_AccountStoreBase.deleteSingle');
+
+  @override
+  Future deleteSingle(int id) {
+    return _$deleteSingleAsyncAction.run(() => super.deleteSingle(id));
   }
 
   final _$fetchAsyncAction = AsyncAction('_AccountStoreBase.fetch');
