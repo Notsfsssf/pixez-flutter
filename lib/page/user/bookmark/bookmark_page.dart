@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -52,23 +53,72 @@ class _BookmarkPageState extends State<BookmarkPage> {
         return LightingList(
           source: futureGet,
           header: Container(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                  icon: Icon(Icons.toys),
-                  onPressed: () async {
-                    final result = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => UserBookmarkTagPage()));
-                    if (result != null) {
-                      String tag = result['tag'];
-                      String restrict = result['restrict'];
-                      setState(() {
-                        futureGet = () => apiClient.getBookmarksIllust(
-                            widget.id, restrict, tag);
-                      });
-                    }
-                  }),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.toys),
+                    onPressed: () async {
+                      final result = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => UserBookmarkTagPage()));
+                      if (result != null) {
+                        String tag = result['tag'];
+                        String restrict = result['restrict'];
+                        setState(() {
+                          futureGet = () => apiClient.getBookmarksIllust(
+                              widget.id, restrict, tag);
+                        });
+                      }
+                    }),
+                IconButton(icon: Icon(Icons.list), onPressed: (){
+                          showModalBottomSheet(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
+                context: context,
+                builder: (context) => SafeArea(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            title: Text(I18n.of(context).All),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet =
+                                    () => apiClient.getFollowIllusts('all');
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: Text(I18n.of(context).public),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet = () =>
+                                    apiClient.getFollowIllusts('public');
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: Text(I18n.of(context).private),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet = () =>
+                                    apiClient.getFollowIllusts('private');
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ));
+        
+                }),
+              ],
             ),
           ),
         );

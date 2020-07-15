@@ -15,12 +15,14 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:share_extend/share_extend.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -59,30 +61,42 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
 
   Widget _buildMuti() => InkWell(
         onLongPress: () async {
-          String result = await showDialog(
+          final url = userSetting.zoomQuality == 0
+              ? widget.illusts.metaPages[index].imageUrls.large
+              : widget.illusts.metaPages[index].imageUrls.original;
+          FileInfo fileInfo = await DefaultCacheManager().getFileFromCache(url);
+          showModalBottomSheet(
               context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(I18n.of(context).Save),
-                  actions: <Widget>[
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop('OK');
+              shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(16.0))),
+              builder: (_) {
+                return SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        title: Text(I18n.of(context).Save),
+                        onTap: () {
+                          saveStore.saveImage(widget.illusts, index: index);
                         },
-                        child: Text('OK')),
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop('CANCEL');
-                        },
-                        child: Text('CANCEL')),
-                  ],
+                      ),
+                      fileInfo != null
+                          ? ListTile(
+                              title: Text(I18n.of(context).Share),
+                              onTap: () async {
+                                if (fileInfo != null)
+                                  ShareExtend.share(
+                                      fileInfo.file.path, "image");
+                              },
+                            )
+                          : Container(
+                              height: 0,
+                            ),
+                    ],
+                  ),
                 );
               });
-          if (result != null) {
-            if (result == 'OK') {
-              saveStore.saveImage(widget.illusts, index: index);
-            }
-          }
         },
         child: PhotoViewGallery.builder(
             onPageChanged: (i) {
@@ -93,12 +107,13 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
             pageController: PageController(initialPage: widget.index),
             itemCount: widget.illusts.metaPages.length,
             builder: (context, index) {
+              final url = userSetting.zoomQuality == 0
+                  ? widget.illusts.metaPages[index].imageUrls.large
+                  : widget.illusts.metaPages[index].imageUrls.original;
               return PhotoViewGalleryPageOptions(
-                imageProvider: PixivProvider.url(
-                    widget.illusts.metaPages[index].imageUrls.large),
+                imageProvider: PixivProvider.url(url),
                 initialScale: PhotoViewComputedScale.contained * 1,
-                heroAttributes: PhotoViewHeroAttributes(
-                    tag: widget.illusts.metaPages[index].imageUrls.large),
+                heroAttributes: PhotoViewHeroAttributes(tag: url),
               );
             }),
       );
@@ -129,30 +144,42 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         body: widget.illusts.pageCount == 1
             ? InkWell(
                 onLongPress: () async {
-                  String result = await showDialog(
+                  final url = userSetting.zoomQuality == 0
+                      ? widget.illusts.imageUrls.large
+                      : widget.illusts.metaSinglePage.originalImageUrl;
+                  FileInfo fileInfo =
+                      await DefaultCacheManager().getFileFromCache(url);
+                  showModalBottomSheet(
                       context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(I18n.of(context).Save),
-                          actions: <Widget>[
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop('OK');
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16.0))),
+                      builder: (_) {
+                        return SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(I18n.of(context).Save),
+                                onTap: () {
+                                  saveStore.saveImage(widget.illusts);
                                 },
-                                child: Text('OK')),
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop('CANCEL');
-                                },
-                                child: Text('CANCEL')),
-                          ],
+                              ),
+                              fileInfo != null
+                                  ? ListTile(
+                                      title: Text(I18n.of(context).Share),
+                                      onTap: () async {
+                                        ShareExtend.share(
+                                            fileInfo.file.path, "image");
+                                      },
+                                    )
+                                  : Container(
+                                      height: 0,
+                                    ),
+                            ],
+                          ),
                         );
                       });
-                  if (result != null) {
-                    if (result == 'OK') {
-                      saveStore.saveImage(widget.illusts);
-                    }
-                  }
                 },
                 child: PhotoView(
                   imageProvider: PixivProvider.url(userSetting.zoomQuality == 0

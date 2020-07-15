@@ -37,7 +37,7 @@ class _PainterListState extends State<PainterList> {
   void initState() {
     _easyRefreshController = EasyRefreshController();
     _painterListStore =
-        PainterListStore(_easyRefreshController, widget.futureGet)..fetch();
+        PainterListStore(_easyRefreshController, widget.futureGet);
     super.initState();
   }
 
@@ -45,6 +45,7 @@ class _PainterListState extends State<PainterList> {
   void didUpdateWidget(PainterList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.futureGet != widget.futureGet) {
+      _painterListStore.source = widget.futureGet;
       _painterListStore.fetch();
     }
   }
@@ -63,12 +64,16 @@ class _PainterListState extends State<PainterList> {
         enableControlFinishRefresh: true,
         controller: _easyRefreshController,
         header: MaterialHeader(),
+        firstRefresh: true,
         child: _painterListStore.users.isNotEmpty
-            ? ListView.builder(itemBuilder: (context, index) {
-                return PainterCard(
-                  user: _painterListStore.users[index],
-                );
-              },itemCount: _painterListStore.users.length,)
+            ? ListView.builder(
+                itemBuilder: (context, index) {
+                  return PainterCard(
+                    user: _painterListStore.users[index],
+                  );
+                },
+                itemCount: _painterListStore.users.length,
+              )
             : Container(),
       );
     });

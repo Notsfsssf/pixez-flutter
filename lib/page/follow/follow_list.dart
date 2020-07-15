@@ -39,7 +39,7 @@ class _FollowListState extends State<FollowList> {
 
   @override
   void initState() {
-    futureGet = ()=>apiClient.getFollowUser(restrict);
+    futureGet = () => apiClient.getFollowUser(restrict);
     super.initState();
   }
 
@@ -48,7 +48,7 @@ class _FollowListState extends State<FollowList> {
   Widget buildHeader() {
     return Observer(builder: (_) {
       return Visibility(
-        visible: int.parse(accountStore.now.userId) != widget.id,
+        visible: int.parse(accountStore.now.userId) == widget.id,
         child: Align(
           alignment: Alignment.centerRight,
           child: IconButton(
@@ -61,31 +61,33 @@ class _FollowListState extends State<FollowList> {
                       ),
                     ),
                     context: context,
-                    builder: (context1) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(I18n.of(context).public),
-                              onTap: () {
-                                setState(() {
-                                  futureGet = () => apiClient.getUserFollowing(
-                                      widget.id, 'public');
-                                });
-                                Navigator.of(context1).pop();
-                              },
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).private),
-                              onTap: () {
-                                setState(() {
-                                  futureGet = () => apiClient.getUserFollowing(
-                                      widget.id, 'private');
-                                });
-                                Navigator.of(context1).pop();
-                              },
-                            ),
-                          ],
-                        ));
+                    builder: (context1) => SafeArea(
+                      child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(I18n.of(context).public),
+                                onTap: () {
+                                  setState(() {
+                                    futureGet = () => apiClient.getUserFollowing(
+                                        widget.id, 'public');
+                                  });
+                                  Navigator.of(context1).pop();
+                                },
+                              ),
+                              ListTile(
+                                title: Text(I18n.of(context).private),
+                                onTap: () {
+                                  setState(() {
+                                    futureGet = () => apiClient.getUserFollowing(
+                                        widget.id, 'private');
+                                  });
+                                  Navigator.of(context1).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                    ));
               }),
         ),
       );
@@ -97,8 +99,10 @@ class _FollowListState extends State<FollowList> {
     return Column(
       children: <Widget>[
         buildHeader(),
-        PainterList(
-          futureGet: futureGet,
+        Expanded(
+          child: PainterList(
+            futureGet: futureGet,
+          ),
         ),
       ],
     );

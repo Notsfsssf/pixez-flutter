@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -24,7 +25,7 @@ import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class HistoryPage extends StatelessWidget {
-  final HistoryStore _store = historyStore;
+  final HistoryStore _store = historyStore..fetch();
   Widget buildAppBarUI(context) => Container(
         child: Padding(
           child: Text(
@@ -47,8 +48,9 @@ class HistoryPage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-
-                        return IllustPage(id:reIllust[index].illustId,store: IllustStore(reIllust[index].illustId,null));
+                        return IllustPage(
+                            id: reIllust[index].illustId,
+                            store: IllustStore(reIllust[index].illustId, null));
                       }));
                     },
                     onLongPress: () async {
@@ -88,7 +90,6 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _store.fetch();
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.of(context).History),
@@ -100,7 +101,8 @@ class HistoryPage extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text("${I18n.of(context).Delete} ${I18n.of(context).All}?"),
+                      title: Text(
+                          "${I18n.of(context).Delete} ${I18n.of(context).All}?"),
                       actions: <Widget>[
                         FlatButton(
                           child: Text(I18n.of(context).OK),

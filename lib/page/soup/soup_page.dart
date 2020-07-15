@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/amwork.dart';
@@ -36,35 +37,43 @@ class SoupPage extends StatefulWidget {
 class _SoupPageState extends State<SoupPage> {
   final SoupStore _soupStore = SoupStore();
   @override
+  void initState() {
+    _soupStore.fetch(widget.url);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-        body: buildBlocProvider(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 200.0,
-              flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
-                  title: Text(widget.spotlight.pureTitle),
-                  background: PixivImage(widget.spotlight.thumbnail)),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.share),
-                  onPressed: () async {
-                    var url = widget.spotlight.articleUrl;
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {}
-                  },
-                )
-              ],
-            )
-          ];
-        },
-      ),
-    );
+    return Observer(builder: (_) {
+      return Scaffold(
+        body: NestedScrollView(
+          body: buildBlocProvider(),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                pinned: true,
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: Text(widget.spotlight.pureTitle),
+                    background: PixivImage(widget.spotlight.thumbnail)),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.share),
+                    onPressed: () async {
+                      var url = widget.spotlight.articleUrl;
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {}
+                    },
+                  )
+                ],
+              )
+            ];
+          },
+        ),
+      );
+    });
   }
 
   Widget buildBlocProvider() {
@@ -74,7 +83,7 @@ class _SoupPageState extends State<SoupPage> {
           return Card(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(_soupStore.description??''),
+              child: Text(_soupStore.description ?? ''),
             ),
           );
         AmWork amWork = _soupStore.amWorks[index - 1];

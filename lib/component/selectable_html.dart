@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,7 +35,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () async {
-        final result = await showDialog(
+        await showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
@@ -42,7 +43,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                 content: SelectableText(widget.data ?? ""),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text("OK"),
+                    child: Text(I18n.of(context).OK),
                     onPressed: () {
                       Navigator.of(context).pop("OK");
                     },

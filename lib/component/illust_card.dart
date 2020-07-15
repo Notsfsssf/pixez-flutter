@@ -27,7 +27,7 @@ import 'package:pixez/page/picture/picture_list_page.dart';
 class IllustCard extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
-  bool needToBan;
+  final bool needToBan;
   IllustCard({
     @required this.store,
     this.iStores,

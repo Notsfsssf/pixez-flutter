@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';

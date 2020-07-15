@@ -94,6 +94,7 @@ class _StarIconState extends State<StarIcon> {
       }
       return result;
     } else {}
+    return false;
   }
 
   @override
@@ -101,28 +102,27 @@ class _StarIconState extends State<StarIcon> {
     return Container(
       width: 36,
       child: LikeButton(
-          size: 24,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          circleColor:
-              CircleColor(start: Colors.transparent, end: Colors.red),
-          bubblesColor: BubblesColor(
-            dotPrimaryColor: Colors.red,
-            dotSecondaryColor: Colors.redAccent,
-          ),
-          isLiked: widget.illustStore.isBookmark,
-          likeBuilder: (context) {
-            return Icon(
-              widget.illustStore.isBookmark
-                  ? Icons.favorite
-                  : Icons.favorite_border,
-              color: widget.illustStore.isBookmark ? Colors.red : Colors.grey,
-            );
-          },
-          onTap: (v) {
-            return widget.illustStore.star();
-          },
+        size: 24,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        circleColor: CircleColor(start: Colors.transparent, end: Colors.red),
+        bubblesColor: BubblesColor(
+          dotPrimaryColor: Colors.red,
+          dotSecondaryColor: Colors.redAccent,
         ),
+        isLiked: widget.illustStore.isBookmark,
+        likeBuilder: (context) {
+          return Icon(
+            widget.illustStore.isBookmark
+                ? Icons.favorite
+                : Icons.favorite_border,
+            color: widget.illustStore.isBookmark ? Colors.red : Colors.grey,
+          );
+        },
+        onTap: (v) {
+          return widget.illustStore.star();
+        },
+      ),
     );
   }
 }

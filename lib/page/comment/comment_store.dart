@@ -22,9 +22,9 @@ abstract class _CommentStoreBase with Store {
       nextUrl = commentResponse.nextUrl;
       comments.clear();
       comments.addAll(commentResponse.comments);
-      _controller.finishLoad(success: true);
+      _controller.finishRefresh(success: true);
     } catch (e) {
-      _controller.finishLoad(success: false);
+      _controller.finishRefresh(success: false);
     }
   }
 

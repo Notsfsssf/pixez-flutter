@@ -220,7 +220,7 @@ class _UsersPageState extends State<UsersPage>
                           break;
                         case 2:
                           {
-                            Clipboard.setData(ClipboardData(text: 'user:${userStore.userDetail?.user?.name??''}\npid:${widget.id}'));
+                            Clipboard.setData(ClipboardData(text: 'painter:${userStore.userDetail?.user?.name??''}\npid:${widget.id}'));
                             break;
                           }
                         default:

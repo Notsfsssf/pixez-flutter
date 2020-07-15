@@ -14,10 +14,10 @@
  *
  */
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_easyrefresh/material_header.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -28,33 +28,36 @@ class SpotLightPage extends StatelessWidget {
   final ScrollController _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(I18n.of(context).Spotlight),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.arrow_upward),
-            onPressed: () {
-              _controller.animateTo(0,
-                  duration: Duration(seconds: 1), curve: Curves.ease);
-            },
-          )
-        ],
-      ),
-      body: EasyRefresh(
-          onLoad: () => _spotlightStore.next(),
-          onRefresh: () => _spotlightStore.fetch(),
-          firstRefresh: true,
-          header: MaterialHeader(),
-          child: StaggeredGridView.countBuilder(
-            crossAxisCount: 3,
-            controller: _controller,
-            itemBuilder: (BuildContext context, int index) {
-              return SpotlightCard(spotlight: _spotlightStore.articles[index]);
-            },
-            staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-            itemCount: _spotlightStore.articles.length,
-          )),
-    );
+    return Observer(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(I18n.of(context).Spotlight),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.arrow_upward),
+              onPressed: () {
+                _controller.animateTo(0,
+                    duration: Duration(seconds: 1), curve: Curves.ease);
+              },
+            )
+          ],
+        ),
+        body: EasyRefresh(
+            onLoad: () => _spotlightStore.next(),
+            onRefresh: () => _spotlightStore.fetch(),
+            firstRefresh: true,
+            header: MaterialHeader(),
+            child: StaggeredGridView.countBuilder(
+              crossAxisCount: 3,
+              controller: _controller,
+              itemBuilder: (BuildContext context, int index) {
+                return SpotlightCard(
+                    spotlight: _spotlightStore.articles[index]);
+              },
+              staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+              itemCount: _spotlightStore.articles.length,
+            )),
+      );
+    });
   }
 }

@@ -25,7 +25,7 @@ abstract class _SoupStoreBase with Store {
     var workInfo = document.getElementsByClassName("am__body");
     var nodes = workInfo.first.nodes;
     var amWorkGtmDocument = parse(workInfo.first.innerHtml);
- description = document
+    description = document
         .getElementsByClassName('am__description _medium-editor-text')
         .first
         .innerHtml
@@ -33,6 +33,7 @@ abstract class _SoupStoreBase with Store {
         .replaceAll('</p>', '')
         .replaceAll('</br>', '')
         .replaceAll('<br>', '');
+    amWorks.clear();
     for (int i = 1; i <= nodes.length; i++) {
       try {
         AmWork amWork = AmWork();
@@ -62,7 +63,7 @@ abstract class _SoupStoreBase with Store {
             mainDoc.first.getElementsByTagName('a').first.attributes['href'];
         amWork.showImage =
             mainDoc.first.getElementsByTagName('img').first.attributes['src'];
-        amWorks.clear();
+
         amWorks.add(amWork);
       } catch (e) {
         print(e);

@@ -30,8 +30,6 @@ class SpotlightCard extends StatelessWidget {
       padding: EdgeInsets.all(4.0),
       child: GestureDetector(
         onTap: () async {
-          print(spotlight.articleUrl);
-//         final int result = await platform.invokeMethod('getBatteryLevel');
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (BuildContext context) {
             return SoupPage(url: spotlight.articleUrl, spotlight: spotlight);
