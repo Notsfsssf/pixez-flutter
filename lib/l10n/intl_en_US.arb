@@ -136,5 +136,10 @@
   "Filter":"Filter",
   "Attempting_To_Log_In":"Attempting to log in",
   "Bookmarked":"Bookmarked",
-  "Not_Bookmarked":"Not_Bookmarked"
+  "Not_Bookmarked":"Not_Bookmarked",
+  "Total_Follow_Users":"Total follow users",
+  "Total_Mypixiv_Users":"Total mypixiv users",
+  "Twitter_Account":"Twitter account",
+  "Gender":"Gender",
+  "Job":"Job"
 }

@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
@@ -220,7 +221,11 @@ class _UsersPageState extends State<UsersPage>
                           break;
                         case 2:
                           {
-                            Clipboard.setData(ClipboardData(text: 'painter:${userStore.userDetail?.user?.name??''}\npid:${widget.id}'));
+                            Clipboard.setData(ClipboardData(
+                                text:
+                                    'painter:${userStore.userDetail?.user?.name ?? ''}\npid:${widget.id}'));
+                            BotToast.showText(
+                                text: I18n.of(context).Copied_To_Clipboard);
                             break;
                           }
                         default:

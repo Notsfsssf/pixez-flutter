@@ -136,5 +136,10 @@
   "Filter":"筛选",
   "Attempting_To_Log_In":"尝试登录",
   "Bookmarked":"已收藏",
-  "Not_Bookmarked":"未收藏"
+  "Not_Bookmarked":"未收藏",
+  "Total_Follow_Users":"关注用户量",
+  "Total_Mypixiv_Users":"好P友",
+  "Twitter_Account":"Twitter账号",
+  "Gender":"性别",
+  "Job":"工作"
 }

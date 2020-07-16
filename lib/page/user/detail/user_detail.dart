@@ -33,11 +33,6 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
-  Widget _dataText(String string) => Text(
-        string,
-        style: TextStyle(color: Theme.of(context).primaryColor),
-      );
-
   @override
   Widget build(BuildContext context) {
     if (widget.userDetail == null) {
@@ -65,24 +60,24 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: DataTable(
                     columns: <DataColumn>[
-                      DataColumn(label: Text("Name")),
+                      DataColumn(label: Text(I18n.of(context).Nickname)),
                       DataColumn(
                           label: Expanded(
                               child: SelectableText(detail.user.name))),
                     ],
                     rows: <DataRow>[
                       DataRow(cells: [
-                        DataCell(Text('User Id')),
+                        DataCell(Text(I18n.of(context).Painter_id)),
                         DataCell(SelectableText(detail.user.id.toString()),
                             onTap: () {
-                              try {
-                                Clipboard.setData(ClipboardData(text: detail.user.id.toString()));
-                              } catch (e) {
-                              }
-                            }),
+                          try {
+                            Clipboard.setData(
+                                ClipboardData(text: detail.user.id.toString()));
+                          } catch (e) {}
+                        }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Total follow users')),
+                        DataCell(Text(I18n.of(context).Total_Follow_Users)),
                         DataCell(
                             Text(detail.profile.total_follow_users.toString()),
                             onTap: () {
@@ -90,7 +85,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               builder: (BuildContext context) {
                             return Scaffold(
                               appBar: AppBar(
-                                title: Text(I18n.of(context).Search),
+                                title: Text(I18n.of(context).Followed),
                               ),
                               body: FollowList(id: widget.userDetail.user.id),
                             );
@@ -98,12 +93,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Total mypixiv users')),
+                        DataCell(Text(I18n.of(context).Total_Mypixiv_Users)),
                         DataCell(Text(
                             detail.profile.total_mypixiv_users.toString())),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Twitter account')),
+                        DataCell(Text(I18n.of(context).Twitter_Account)),
                         DataCell(Text(profile.twitter_account),
                             onTap: () async {
                           final url = profile.twitter_url;
@@ -113,11 +108,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         }),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Gender')),
+                        DataCell(Text(I18n.of(context).Gender)),
                         DataCell(Text(detail.profile.gender)),
                       ]),
                       DataRow(cells: [
-                        DataCell(Text('Job')),
+                        DataCell(Text(I18n.of(context).Job)),
                         DataCell(Text(detail.profile.job)),
                       ]),
                       DataRow(cells: [

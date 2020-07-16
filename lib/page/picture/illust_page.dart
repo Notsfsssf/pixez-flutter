@@ -70,6 +70,13 @@ class _IllustPageState extends State<IllustPage> {
   }
 
   _showBookMarkTag() async {
+    if (_illustStore.isBookmark) {
+     await _illustStore.star();
+     setState(() {
+       
+     });
+      return;
+    }
     Response response = await apiClient.getIllustBookmarkDetail(widget.id);
     BookMarkDetailResponse bookMarkDetailResponse =
         BookMarkDetailResponse.fromJson(response.data);
@@ -83,6 +90,8 @@ class _IllustPageState extends State<IllustPage> {
             final detail = bookMarkDetailResponse.bookmarkDetail;
             return AlertDialog(
               contentPadding: EdgeInsets.all(2.0),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
               content: Container(
                 width: double.maxFinite,
                 child: Column(
@@ -145,10 +154,13 @@ class _IllustPageState extends State<IllustPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text((detail.restrict == "public"
-                                ? I18n.of(context).Public
-                                : I18n.of(context).Private) +
-                            I18n.of(context).BookMark),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text((detail.restrict == "public"
+                                  ? I18n.of(context).Public
+                                  : I18n.of(context).Private) +
+                              I18n.of(context).BookMark),
+                        ),
                         Switch(
                           onChanged: (bool value) {
                             setBookState(() {
@@ -180,7 +192,7 @@ class _IllustPageState extends State<IllustPage> {
                             bookMarkDetailResponse.bookmarkDetail.restrict,
                         tags: tempTags);
 
-                    setState(() {});//star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
+                    setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                   },
                 ),
                 FlatButton(

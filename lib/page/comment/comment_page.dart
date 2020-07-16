@@ -17,6 +17,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
@@ -71,6 +72,7 @@ class _CommentPageState extends State<CommentPage> {
                     enableControlFinishRefresh: true,
                     firstRefresh: true,
                     onRefresh: () => _store.fetch(),
+                    header: MaterialHeader(),
                     onLoad: () => _store.next(),
                     child: _store.comments.isNotEmpty
                         ? ListView.builder(

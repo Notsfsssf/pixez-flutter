@@ -64,6 +64,8 @@ class _PainterListState extends State<PainterList> {
         enableControlFinishRefresh: true,
         controller: _easyRefreshController,
         header: MaterialHeader(),
+        onLoad: ()=>_painterListStore.next(),
+        onRefresh: ()=>_painterListStore.fetch(),
         firstRefresh: true,
         child: _painterListStore.users.isNotEmpty
             ? ListView.builder(

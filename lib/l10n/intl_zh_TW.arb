@@ -132,9 +132,14 @@
   "Go_To_Project_Address":"前往項目地址",
   "Welcome_Page":"歡迎頁",
   "Encode":"合成",
-  "Encode_Message":"這將會消耗壹些時間，並可能會失敗",
+  "Encode_Message":"這將會消耗一些時間，並可能會失敗",
   "Filter":"篩選",
   "Attempting_To_Log_In":"嘗試登入",
   "Bookmarked":"已收藏",
-  "Not_Bookmarked":"未收藏"
+  "Not_Bookmarked":"未收藏",
+  "Total_Follow_Users":"关注用户量",
+  "Total_Mypixiv_Users":"好P友",
+  "Twitter_Account":"Twitter账号",
+  "Gender":"性别",
+  "Job":"工作"
 }

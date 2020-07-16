@@ -71,53 +71,44 @@ class _BookmarkPageState extends State<BookmarkPage> {
                         });
                       }
                     }),
-                IconButton(icon: Icon(Icons.list), onPressed: (){
-                          showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                ),
-                context: context,
-                builder: (context) => SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(I18n.of(context).All),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet =
-                                    () => apiClient.getFollowIllusts('all');
-                              });
-                            },
+                IconButton(
+                    icon: Icon(Icons.list),
+                    onPressed: () {
+                      showModalBottomSheet(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
                           ),
-                          ListTile(
-                            title: Text(I18n.of(context).public),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = () =>
-                                    apiClient.getFollowIllusts('public');
-                              });
-                            },
-                          ),
-                          ListTile(
-                            title: Text(I18n.of(context).private),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = () =>
-                                    apiClient.getFollowIllusts('private');
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ));
-        
-                }),
+                          context: context,
+                          builder: (context) => SafeArea(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      title: Text(I18n.of(context).public),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          futureGet = () => apiClient
+                                              .getFollowIllusts('public');
+                                        });
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text(I18n.of(context).private),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          futureGet = () => apiClient
+                                              .getFollowIllusts('private');
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ));
+                    }),
               ],
             ),
           ),

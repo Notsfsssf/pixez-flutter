@@ -1402,6 +1402,56 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Total follow users`
+  String get Total_Follow_Users {
+    return Intl.message(
+      'Total follow users',
+      name: 'Total_Follow_Users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total mypixiv users`
+  String get Total_Mypixiv_Users {
+    return Intl.message(
+      'Total mypixiv users',
+      name: 'Total_Mypixiv_Users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Twitter account`
+  String get Twitter_Account {
+    return Intl.message(
+      'Twitter account',
+      name: 'Twitter_Account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gender`
+  String get Gender {
+    return Intl.message(
+      'Gender',
+      name: 'Gender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job`
+  String get Job {
+    return Intl.message(
+      'Job',
+      name: 'Job',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

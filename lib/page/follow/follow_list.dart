@@ -39,7 +39,7 @@ class _FollowListState extends State<FollowList> {
 
   @override
   void initState() {
-    futureGet = () => apiClient.getFollowUser(restrict);
+    futureGet = () => apiClient.getUserFollowing(widget.id,restrict);
     super.initState();
   }
 

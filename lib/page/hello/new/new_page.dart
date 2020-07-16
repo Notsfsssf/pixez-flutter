@@ -40,8 +40,6 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 
-enum WhyFarther { public, private }
-enum WhyFartherAll { all, public, private }
 
 class _NewPageState extends State<NewPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
