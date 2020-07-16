@@ -91,7 +91,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                         Navigator.of(context).pop();
                                         setState(() {
                                           futureGet = () => apiClient
-                                              .getFollowIllusts('public');
+                                              .getBookmarksIllust(widget.id,'public',null);
                                         });
                                       },
                                     ),
@@ -101,7 +101,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                         Navigator.of(context).pop();
                                         setState(() {
                                           futureGet = () => apiClient
-                                              .getFollowIllusts('private');
+                                              .getBookmarksIllust(widget.id,'private',null);
                                         });
                                       },
                                     ),
