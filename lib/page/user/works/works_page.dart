@@ -23,8 +23,7 @@ import 'package:pixez/network/api_client.dart';
 
 class WorksPage extends StatefulWidget {
   final int id;
-  final ScrollController scrollController;
-  const WorksPage({Key key, @required this.id, this.scrollController})
+  const WorksPage({Key key, @required this.id})
       : super(key: key);
 
   @override
@@ -51,7 +50,7 @@ class _WorksPageState extends State<WorksPage> {
         Expanded(
           child: LightingList(
             source: futureGet,
-            // scrollController: widget.scrollController,
+           isNested: true,
           ),
         )
       ],

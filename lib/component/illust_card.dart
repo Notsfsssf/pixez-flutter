@@ -181,8 +181,8 @@ class _IllustCardState extends State<IllustCard> {
                             "referer": "https://app-api.pixiv.net/",
                             "User-Agent": "PixivIOSApp/5.8.0"
                           },
-                          // width: illustStore.illusts.width.toDouble(),
-                          // fit: BoxFit.fitWidth,
+                          width: illustStore.illusts.width.toDouble(),
+                          fit: BoxFit.fitWidth,
                         ),
                       )
                     : Hero(
@@ -197,7 +197,8 @@ class _IllustCardState extends State<IllustCard> {
                             "referer": "https://app-api.pixiv.net/",
                             "User-Agent": "PixivIOSApp/5.8.0"
                           },
-                          // fit: BoxFit.fitWidth,
+                          width: illustStore.illusts.width.toDouble(),
+                          fit: BoxFit.fitWidth,
                         ),
                       ),
               ),

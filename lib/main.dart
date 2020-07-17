@@ -14,9 +14,13 @@
  *
  */
 
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/history/history_store.dart';
@@ -34,7 +38,9 @@ final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
 
-main() {
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(debug: true);
   runApp(MyApp());
 }
 
@@ -44,8 +50,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  ReceivePort _port = ReceivePort();
   @override
   void dispose() {
+    // IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
 
@@ -56,8 +64,60 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
-
+    initMethod();
     super.initState();
+  }
+
+  initMethod() async {
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) async {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      if (status == DownloadTaskStatus.complete) {
+        String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
+        debugPrint(queryString);
+        final tasks = await FlutterDownloader.loadTasksWithRawQuery(
+            query: queryString); //迷惑行为
+        if (tasks != null && tasks.isNotEmpty) {
+          saveStore.urls.remove(tasks.first.url);
+          String fullPath =
+              '${tasks.first.savedDir}${Platform.pathSeparator}${tasks.first.filename}';
+          File file = File(fullPath);
+          final uint8list = await file.readAsBytes();
+          final data = saveStore.maps[id];
+          await saveStore.saveToGallery(uint8list, data.illusts, data.fileName);
+          saveStore.streamController
+              .add(SaveStream(SaveState.SUCCESS, saveStore.maps[id].illusts));
+        }
+        if (status == DownloadTaskStatus.canceled) {
+          await removeUrl(id);
+        }
+        if (status == DownloadTaskStatus.failed) {
+          await removeUrl(id);
+        }
+      }
+    });
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+
+  removeUrl(String id) async {
+    String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
+    debugPrint(queryString);
+    final tasks =
+        await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
+    if (tasks != null && tasks.isNotEmpty) {
+      saveStore.urls.remove(tasks.first.url);
+    }
+  }
+
+  static Future<void> downloadCallback(
+      String id, DownloadTaskStatus status, int progress) async {
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port');
+    if (send != null) send.send([id, status, progress]);
+    final SendPort send1 = IsolateNameServer.lookupPortByName('downloader_pro');
+    if (send1 != null) send1.send([id, status, progress]);
   }
 
   @override

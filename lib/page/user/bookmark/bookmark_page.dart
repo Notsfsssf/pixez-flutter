@@ -27,10 +27,13 @@ class BookmarkPage extends StatefulWidget {
   final int id;
   final String restrict;
   final String tag;
-
-  const BookmarkPage(
-      {Key key, @required this.id, this.restrict = "public", this.tag})
-      : super(key: key);
+  final bool isNested;
+  const BookmarkPage({
+    Key key,
+    @required this.id,
+    this.restrict = "public",
+    this.tag, this.isNested=false,
+  }) : super(key: key);
 
   @override
   _BookmarkPageState createState() => _BookmarkPageState();
@@ -52,6 +55,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       if (int.parse(accountStore.now.userId) == widget.id) {
         return LightingList(
           source: futureGet,
+          isNested: widget.isNested,
           header: Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -90,8 +94,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                       onTap: () {
                                         Navigator.of(context).pop();
                                         setState(() {
-                                          futureGet = () => apiClient
-                                              .getBookmarksIllust(widget.id,'public',null);
+                                          futureGet = () =>
+                                              apiClient.getBookmarksIllust(
+                                                  widget.id, 'public', null);
                                         });
                                       },
                                     ),
@@ -100,8 +105,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
                                       onTap: () {
                                         Navigator.of(context).pop();
                                         setState(() {
-                                          futureGet = () => apiClient
-                                              .getBookmarksIllust(widget.id,'private',null);
+                                          futureGet = () =>
+                                              apiClient.getBookmarksIllust(
+                                                  widget.id, 'private', null);
                                         });
                                       },
                                     ),

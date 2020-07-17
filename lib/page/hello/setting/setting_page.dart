@@ -31,9 +31,9 @@ import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
-import 'package:pixez/page/progress/progress_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
+import 'package:pixez/page/task/task_page.dart';
 
 class SettingPage extends StatefulWidget {
   final bool hasNewVersion;
@@ -148,7 +148,7 @@ class _SettingPageState extends State<SettingPage> {
                       leading: Icon(Icons.description),
                       title: Text(I18n.of(context).Task_progress),
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ProgressPage())),
+                          builder: (BuildContext context) => TaskPage())),
                     ),
                     ListTile(
                       onTap: () async {

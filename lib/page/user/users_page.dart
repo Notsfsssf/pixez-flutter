@@ -163,6 +163,7 @@ class _UsersPageState extends State<UsersPage>
             NestedScrollViewInnerScrollPositionKeyWidget(
                 Key('Tab1'),
                 BookmarkPage(
+                  isNested:true,
                   id: widget.id,
                 )),
             NestedScrollViewInnerScrollPositionKeyWidget(

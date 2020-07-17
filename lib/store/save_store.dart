@@ -15,32 +15,33 @@
  */
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/page/progress/progress_page.dart';
+import 'package:pixez/page/task/task_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 
 part 'save_store.g.dart';
 
 enum SaveState { JOIN, SUCCESS, ALREADY, INQUEUE }
 
-class ProgressNum {
-  int min, max;
+class SaveData {
   Illusts illusts;
-
-  ProgressNum(this.min, this.max, this.illusts);
+  String fileName;
 }
 
 class SaveStream {
@@ -55,13 +56,13 @@ class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
-    _streamController = StreamController();
-    saveStream = ObservableStream(_streamController.stream.asBroadcastStream());
+    streamController = StreamController();
+    saveStream = ObservableStream(streamController.stream.asBroadcastStream());
   }
 
   @override
   void dispose() async {
-    await _streamController?.close();
+    await streamController?.close();
   }
 
   void listenBehavior(SaveStream stream) {
@@ -106,7 +107,7 @@ abstract class _SaveStoreBase with Store {
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return ProgressPage();
+                                return TaskPage();
                               }));
                             }),
                         Padding(
@@ -168,57 +169,73 @@ abstract class _SaveStoreBase with Store {
 
   BuildContext context;
 
-  @observable
-  ObservableMap<String, ProgressNum> progressMaps = ObservableMap();
-  StreamController<SaveStream> _streamController;
+  Map<String, SaveData> maps = HashMap();
+  StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
-  final Dio _dio = Dio(BaseOptions(headers: {
-    "referer": "https://app-api.pixiv.net/",
-    "User-Agent": "PixivIOSApp/5.8.0"
-  }));
+  List<String> urls = [];
+
+  _joinQueue(String url, Illusts illusts, String fileName) async {
+    if (urls.contains(url)) {
+      streamController.add(SaveStream(SaveState.INQUEUE, illusts));
+      return;
+    }
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    final taskId = await FlutterDownloader.enqueue(
+      url: url,
+      savedDir: tempPath,
+      headers: {
+        "referer": "https://app-api.pixiv.net/",
+        "User-Agent": "PixivIOSApp/5.8.0"
+      },
+      showNotification:
+          true, // show download progress in status bar (for Android)
+      openFileFromNotification:
+          false, // click on notification to open downloaded file (for Android)
+    );
+    maps[taskId] = SaveData()
+      ..illusts = illusts
+      ..fileName = fileName;
+    urls.add(url);
+    if (maps.values.length > 50) {
+      final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
+          query: 'SELECT * FROM task WHERE status=3');
+      if (maybeRemoveTask.length > 10) {
+        for (int i = 0; i < maybeRemoveTask.length >> 1; i++) {
+          maps[maybeRemoveTask[i].taskId] = null;
+          urls.remove(maybeRemoveTask[i].url);
+          await FlutterDownloader.remove(
+              taskId: taskId, shouldDeleteContent: true);
+        }
+      }
+    }
+  }
 
   _saveInternal(String url, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        final fullPath = "${userSetting.path}/${fileName}";
+        final fullPath =
+            "${userSetting.path}${Platform.pathSeparator}$fileName";
         if (File(fullPath).existsSync()) {
-          _streamController.add(SaveStream(SaveState.ALREADY, illusts));
+          streamController.add(SaveStream(SaveState.ALREADY, illusts));
           return;
         }
       } catch (e) {}
     }
-    _streamController.add(SaveStream(SaveState.JOIN, illusts));
+    streamController.add(SaveStream(SaveState.JOIN, illusts));
     FileInfo fileInfo = await DefaultCacheManager().getFileFromCache(url);
     Uint8List uint8list;
     if (fileInfo == null) {
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
-      String fullPath =
-          "$tempPath/${DateTime.now().toIso8601String()}.${url.contains("png") ? "png" : "jpg"}"; //???
-      try {
-        await _dio.download(url, fullPath, deleteOnError: true,
-            onReceiveProgress: (a, b) async {
-          // print('$a/$b');
-          progressMaps[url] = ProgressNum(a, b, illusts);
-        });
-        File file = File(fullPath);
-        uint8list = await file.readAsBytes();
-        await _saveToGallery(uint8list, illusts, fileName);
-        progressMaps.remove(url);
-        _streamController.add(SaveStream(SaveState.SUCCESS, illusts));
-      } catch (e) {
-        debugPrint("${e}");
-        progressMaps.remove(url);
-      }
+      _joinQueue(url, illusts, fileName);
     } else {
       uint8list = await fileInfo.file.readAsBytes();
-      _saveToGallery(uint8list, illusts, fileName);
+      saveToGallery(uint8list, illusts, fileName);
     }
   }
 
   static const platform = const MethodChannel('com.perol.dev/save');
 
-  Future<void> _saveToGallery(
+  Future<void> saveToGallery(
       Uint8List uint8list, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
@@ -291,7 +308,8 @@ abstract class _SaveStoreBase with Store {
         .replaceAll("<", "");
   }
 
-  toFullPath(String name) => '${userSetting.path}/${name}';
+  String toFullPath(String name) => '${userSetting.path}/${name}';
+
   DateTime isIllustPartExist(Illusts illusts, {int index}) {
     if (Platform.isIOS) return null;
     String memType;
@@ -332,10 +350,10 @@ abstract class _SaveStoreBase with Store {
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls.original;
-        if (progressMaps.keys.contains(url)) {
-          _streamController.add(SaveStream(SaveState.INQUEUE, illusts));
-          return;
-        }
+        // if (maps.keys.contains(url)) {
+        //   streamController.add(SaveStream(SaveState.INQUEUE, illusts));
+        //   return;
+        // }
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
         if (redo) {
