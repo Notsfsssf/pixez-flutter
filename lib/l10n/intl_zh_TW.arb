@@ -141,5 +141,6 @@
   "Total_Mypixiv_Users":"好P友",
   "Twitter_Account":"Twitter賬號",
   "Gender":"性別",
-  "Job":"工作"
+  "Job":"工作",
+  "Clear_All_Cache":"清除緩存"
 }

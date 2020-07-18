@@ -32,7 +32,8 @@ class BookmarkPage extends StatefulWidget {
     Key key,
     @required this.id,
     this.restrict = "public",
-    this.tag, this.isNested=false,
+    this.tag,
+    this.isNested = false,
   }) : super(key: key);
 
   @override

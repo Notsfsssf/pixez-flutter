@@ -1452,6 +1452,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Clear all cache`
+  String get Clear_All_Cache {
+    return Intl.message(
+      'Clear all cache',
+      name: 'Clear_All_Cache',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

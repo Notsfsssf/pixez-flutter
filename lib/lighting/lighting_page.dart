@@ -48,19 +48,21 @@ class _LightingListState extends State<LightingList> {
   LightingStore _store;
   EasyRefreshController _easyRefreshController;
   ScrollController _scrollController;
+  bool isNested=false;
   @override
   void didUpdateWidget(LightingList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
       _store.fetch();
-      _scrollController.jumpTo(0.0);
+      if (!isNested) _scrollController.jumpTo(0.0);
       // _easyRefreshController.callRefresh();
     }
   }
 
   @override
   void initState() {
+    isNested = widget.isNested ?? false;
     _easyRefreshController = widget.controller ?? EasyRefreshController();
     _store = LightingStore(widget.source, _easyRefreshController);
     _scrollController = widget.scrollController ?? ScrollController();
@@ -179,8 +181,8 @@ class _LightingListState extends State<LightingList> {
     );
   }
 
-  _buildBody() {
-    return widget.isNested
+  Widget _buildBody() {
+    return isNested
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
             itemBuilder: (context, index) {

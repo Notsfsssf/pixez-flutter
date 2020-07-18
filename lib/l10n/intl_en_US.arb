@@ -141,5 +141,6 @@
   "Total_Mypixiv_Users":"Total mypixiv users",
   "Twitter_Account":"Twitter account",
   "Gender":"Gender",
-  "Job":"Job"
+  "Job":"Job",
+  "Clear_All_Cache":"Clear all cache"
 }

@@ -46,12 +46,13 @@ abstract class _LightingStoreBase with Store {
   fetch() async {
     nextUrl = null;
     errorMessage = null;
+    _controller.resetLoadState();
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
       nextUrl = recommend.nextUrl;
       iStores.clear();
-      iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id,e)));
+      iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
       _controller.finishRefresh(success: true);
     } catch (e) {
       errorMessage = e.toString();
@@ -67,7 +68,7 @@ abstract class _LightingStoreBase with Store {
         Response result = await apiClient.getNext(nextUrl);
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
-        iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id,e)));
+        iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
         _controller.finishLoad(success: true, noMore: false);
       } else {
         _controller.finishLoad(success: true, noMore: true);

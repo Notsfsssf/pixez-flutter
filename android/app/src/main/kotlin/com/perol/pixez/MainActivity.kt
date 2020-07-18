@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import android.widget.Toast

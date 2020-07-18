@@ -104,15 +104,30 @@ class _TaskPageState extends State<TaskPage> {
                     onLongPress: () => _buildOptions(context, data),
                     child: ListTile(
                       title: Text(data.illusts.title ?? ''),
-                      subtitle: Text(data.progress.toString() ?? ''),
-                      trailing: data.progress == 100
-                          ? Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            )
-                          : CircularProgressIndicator(
-                              value: data.progress / 100,
-                            ),
+                      subtitle: Text(data.status.toString() ?? ''),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              FlutterDownloader.remove(
+                                shouldDeleteContent: true,
+                                taskId: data.taskId,
+                              );
+                              initMethod();
+                            },
+                          ),
+                          data.progress == 100
+                              ? Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                )
+                              : CircularProgressIndicator(
+                                  value: data.progress / 100,
+                                )
+                        ],
+                      ),
                     ),
                   );
                 })
@@ -129,6 +144,7 @@ class _TaskPageState extends State<TaskPage> {
         builder: (context) {
           return SafeArea(
               child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
                 title: Text('Retry'),

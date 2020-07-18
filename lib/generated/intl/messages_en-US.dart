@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Choice_you_like" : MessageLookupByLibrary.simpleMessage("Tags will be showing"),
     "Choose_directory" : MessageLookupByLibrary.simpleMessage("Select folder"),
     "Clear" : MessageLookupByLibrary.simpleMessage("Clear"),
+    "Clear_All_Cache" : MessageLookupByLibrary.simpleMessage("Clear all cache"),
     "Clearn_cache" : MessageLookupByLibrary.simpleMessage("Clear cache"),
     "Clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("Try this when you have problems while playing gifs"),
     "Copied_To_Clipboard" : MessageLookupByLibrary.simpleMessage("Copied to clipboard"),

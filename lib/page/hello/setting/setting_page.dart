@@ -155,17 +155,16 @@ class _SettingPageState extends State<SettingPage> {
                         final result = await showDialog(
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text("Warning"),
-                                content: Text("Clear all tempFile?"),
+                                title: Text(I18n.of(context).Clear_All_Cache),
                                 actions: <Widget>[
                                   FlatButton(
-                                    child: Text("OK"),
+                                    child: Text(I18n.of(context).OK),
                                     onPressed: () {
                                       Navigator.of(context).pop("OK");
                                     },
                                   ),
                                   FlatButton(
-                                    child: Text("CANCEL"),
+                                    child: Text(I18n.of(context).Cancel),
                                     onPressed: () {
                                       Navigator.of(context).pop("CANCEL");
                                     },

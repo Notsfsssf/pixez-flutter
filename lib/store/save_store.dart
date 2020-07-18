@@ -189,7 +189,7 @@ abstract class _SaveStoreBase with Store {
         "User-Agent": "PixivIOSApp/5.8.0"
       },
       showNotification:
-          true, // show download progress in status bar (for Android)
+          false, // show download progress in status bar (for Android)
       openFileFromNotification:
           false, // click on notification to open downloaded file (for Android)
     );

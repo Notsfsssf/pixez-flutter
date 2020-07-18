@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Choice_you_like" : MessageLookupByLibrary.simpleMessage("选择你喜欢的标签"),
     "Choose_directory" : MessageLookupByLibrary.simpleMessage("选择目录"),
     "Clear" : MessageLookupByLibrary.simpleMessage("清空"),
+    "Clear_All_Cache" : MessageLookupByLibrary.simpleMessage("清除缓存"),
     "Clearn_cache" : MessageLookupByLibrary.simpleMessage("清除缓存"),
     "Clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("如果播放动图反复出现问题可以尝试"),
     "Copied_To_Clipboard" : MessageLookupByLibrary.simpleMessage("已复制到剪切板"),

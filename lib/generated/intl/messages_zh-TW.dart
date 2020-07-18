@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Choice_you_like" : MessageLookupByLibrary.simpleMessage("選擇你喜歡的標簽"),
     "Choose_directory" : MessageLookupByLibrary.simpleMessage("選擇目錄"),
     "Clear" : MessageLookupByLibrary.simpleMessage("清空"),
+    "Clear_All_Cache" : MessageLookupByLibrary.simpleMessage("清除緩存"),
     "Clearn_cache" : MessageLookupByLibrary.simpleMessage("清除暫存"),
     "Clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("如果播放動態圖反覆出現問題可以嘗試"),
     "Copied_To_Clipboard" : MessageLookupByLibrary.simpleMessage("已複製到剪貼簿"),
