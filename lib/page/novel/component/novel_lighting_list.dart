@@ -17,10 +17,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
@@ -39,15 +39,22 @@ class _NovelLightingListState extends State<NovelLightingList> {
   @override
   void initState() {
     _easyRefreshController = EasyRefreshController();
-    _store =
-        NovelLightingStore(widget.futureGet, apiClient, _easyRefreshController);
+    _store = NovelLightingStore(widget.futureGet, _easyRefreshController);
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(NovelLightingList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.futureGet != widget.futureGet) {
+      _store.source = widget.futureGet;
+      _store.fetch();
+    }
   }
 
   @override
   void dispose() {
     _easyRefreshController?.dispose();
-
     super.dispose();
   }
 
@@ -82,6 +89,10 @@ class _NovelLightingListState extends State<NovelLightingList> {
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       return EasyRefresh(
+        firstRefresh: true,
+        onLoad:()=>_store.next(),
+        onRefresh: ()=>_store.fetch(),
+        header: MaterialHeader(),
         enableControlFinishLoad: true,
         enableControlFinishRefresh: true,
         controller: _easyRefreshController,

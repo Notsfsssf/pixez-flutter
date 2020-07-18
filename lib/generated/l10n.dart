@@ -1462,6 +1462,76 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Undefined`
+  String get Undefined {
+    return Intl.message(
+      'Undefined',
+      name: 'Undefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enqueued`
+  String get Enqueued {
+    return Intl.message(
+      'Enqueued',
+      name: 'Enqueued',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Running`
+  String get Running {
+    return Intl.message(
+      'Running',
+      name: 'Running',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete`
+  String get Complete {
+    return Intl.message(
+      'Complete',
+      name: 'Complete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed`
+  String get Failed {
+    return Intl.message(
+      'Failed',
+      name: 'Failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Canceled`
+  String get Canceled {
+    return Intl.message(
+      'Canceled',
+      name: 'Canceled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paused`
+  String get Paused {
+    return Intl.message(
+      'Paused',
+      name: 'Paused',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

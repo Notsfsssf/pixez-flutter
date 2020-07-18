@@ -1,10 +1,23 @@
-import 'dart:collection';
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 import 'dart:isolate';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -86,6 +99,31 @@ class _TaskPageState extends State<TaskPage> {
     super.dispose();
   }
 
+  String toStatusString(DownloadTaskStatus status) {
+    if (status == DownloadTaskStatus.complete) {
+      return I18n.of(context).Complete;
+    }
+    if (status == DownloadTaskStatus.enqueued) {
+      return I18n.of(context).Enqueued;
+    }
+    if (status == DownloadTaskStatus.running) {
+      return I18n.of(context).Running;
+    }
+    if (status == DownloadTaskStatus.failed) {
+      return I18n.of(context).Failed;
+    }
+    if (status == DownloadTaskStatus.complete) {
+      return I18n.of(context).Complete;
+    }
+    if (status == DownloadTaskStatus.paused) {
+      return I18n.of(context).Paused;
+    }
+    if (status == DownloadTaskStatus.canceled) {
+      return I18n.of(context).Canceled;
+    }
+    return I18n.of(context).Undefined;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,13 +139,25 @@ class _TaskPageState extends State<TaskPage> {
                   return InkWell(
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => IllustPage(id: data.illusts.id))),
-                    onLongPress: () => _buildOptions(context, data),
+                    // onLongPress: () => _buildOptions(context, data),
                     child: ListTile(
                       title: Text(data.illusts.title ?? ''),
-                      subtitle: Text(data.status.toString() ?? ''),
+                      subtitle: Text(
+                          '${toStatusString(data.status)} ${data.filename}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          data.status.value > 3
+                              ? IconButton(
+                                  icon: Icon(Icons.new_releases),
+                                  onPressed: () {
+                                    FlutterDownloader.retry(
+                                      taskId: data.taskId,
+                                    );
+                                    initMethod();
+                                  },
+                                )
+                              : [],
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
@@ -115,6 +165,8 @@ class _TaskPageState extends State<TaskPage> {
                                 shouldDeleteContent: true,
                                 taskId: data.taskId,
                               );
+                              saveStore.maps[data.taskId]=null;
+                              saveStore.urls.remove(data.url);
                               initMethod();
                             },
                           ),

@@ -23,7 +23,6 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
-import 'package:pixez/models/recommend.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
@@ -203,6 +202,11 @@ class ApiClient {
   Future<Response> getUserIllusts(int user_id, String type) async {
     return httpClient.get("/v1/user/illusts?filter=for_android",
         queryParameters: {"user_id": user_id, "type": type});
+  }
+
+  Future<Response> getUserNovels(int user_id) async {
+    return httpClient.get("/v1/user/illusts?filter=for_android",
+        queryParameters: {"user_id": user_id});
   }
 
 //  @GET("/v1/user/bookmarks/illust")

@@ -16,6 +16,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/novel_recom_response.dart';
@@ -34,64 +35,124 @@ class NovelViewerPage extends StatefulWidget {
 }
 
 class _NovelViewerPageState extends State<NovelViewerPage> {
+  ScrollController _controller;
   NovelStore _novelStore;
   @override
   void initState() {
-    // TODO: implement initState
-    _novelStore = NovelStore(widget.id);
+    _novelStore = NovelStore(widget.id)..fetch();
+    _controller = ScrollController();
+    _controller.addListener(() {
+      if (_controller.position.pixels >= _controller.position.maxScrollExtent) {
+        print('滑动到了底部');
+        _showMessage(context);
+      }
+    });
+
     super.initState();
   }
 
   @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var seriesNext = _novelStore.novelTextResponse.seriesNext;
-    var seriesPrev = _novelStore.novelTextResponse.seriesPrev;
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        actions: <Widget>[
-          NovelBookmarkButton(
-            novel: widget.novel,
-          )
-        ],
-      ),
-      extendBodyBehindAppBar: true,
-      body: ListView(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).padding.top,
+    return Observer(
+      builder: (context) {
+        if (_novelStore.novelTextResponse != null) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
+              actions: <Widget>[
+                NovelBookmarkButton(
+                  novel: widget.novel,
+                ),
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {
+                    _showMessage(context);
+                  },
+                )
+              ],
+            ),
+            extendBodyBehindAppBar: true,
+            body: ListView(
+              padding: EdgeInsets.all(0.0),
+              controller: _controller,
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).padding.top + 100,
+                ),
+                Center(
+                    child: Container(
+                        height: 160,
+                        child: PixivImage(widget.novel.imageUrls.medium))),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableText(
+                    _novelStore.novelTextResponse.novelText,
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).padding.bottom + 500,
+                )
+              ],
+            ),
+          );
+        }
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
           ),
-          Center(
-              child: Container(
-                  height: 160,
-                  child: PixivImage(widget.novel.imageUrls.medium))),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SelectableText(
-              _novelStore.novelTextResponse.novelText,
-              scrollPhysics: NeverScrollableScrollPhysics(),
+          body: Container(
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
           ),
-          Container(
-            child: ListTile(
-              subtitle: Text(widget.novel.user.name),
-              title: Text(widget.novel.title ?? ""),
-              leading: PainterAvatar(
-                url: widget.novel.user.profileImageUrls.medium,
-                id: widget.novel.user.id,
-                onTap: () {},
-              ),
-            ),
-          ),
-          buildListTile(seriesPrev),
-          buildListTile(seriesNext),
-          Container(
-            height: MediaQuery.of(context).padding.bottom,
-          )
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  Future _showMessage(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))),
+        builder: (context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ListTile(
+                  subtitle: Text(widget.novel.user.name),
+                  title: Text(widget.novel.title ?? ""),
+                  leading: PainterAvatar(
+                    url: widget.novel.user.profileImageUrls.medium,
+                    id: widget.novel.user.id,
+                    onTap: () {},
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text('Pre'),
+                ),
+                buildListTile(_novelStore.novelTextResponse.seriesPrev),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text('Next'),
+                ),
+                buildListTile(_novelStore.novelTextResponse.seriesNext),
+              ],
+            ),
+          );
+        });
   }
 
   Widget buildListTile(Novel series) {

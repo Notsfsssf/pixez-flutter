@@ -17,10 +17,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:typed_data';
-import 'dart:ui';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -344,7 +341,10 @@ abstract class _SaveStoreBase with Store {
       if (redo) {
         final fullPath = "${userSetting.path}/${fileName}";
         var file = File(fullPath);
-        if (file.existsSync()) file.deleteSync();
+        if (file.existsSync()) {
+          file.deleteSync();
+        }
+        urls.remove(url);
       }
       _saveInternal(url, illusts, fileName);
     } else {

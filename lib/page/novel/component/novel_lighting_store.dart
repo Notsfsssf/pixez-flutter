@@ -28,22 +28,22 @@ part 'novel_lighting_store.g.dart';
 class NovelLightingStore = _NovelLightingStoreBase with _$NovelLightingStore;
 
 abstract class _NovelLightingStoreBase with Store {
-  final FutureGet _source;
-  final ApiClient _client;
+  FutureGet source;
+  final ApiClient _client = apiClient;
   final EasyRefreshController _controller;
-  _NovelLightingStoreBase(this._source, this._client, this._controller);
+  _NovelLightingStoreBase(this.source, this._controller);
   String nextUrl;
   ObservableList<Novel> novels = ObservableList();
   @action
   Future<Void> fetch() async {
     try {
-      Response response = await _source();
+      Response response = await source();
       NovelRecomResponse novelRecomResponse =
           NovelRecomResponse.fromJson(response.data);
       nextUrl = novelRecomResponse.nextUrl;
       final novels = novelRecomResponse.novels;
-      novels.clear();
-      novels.addAll(novels);
+      this.novels.clear();
+      this.novels.addAll(novels);
       _controller.finishRefresh(success: true);
     } catch (e) {
       _controller.finishRefresh(success: false);
