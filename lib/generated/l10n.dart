@@ -1532,6 +1532,46 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Pull up to load more`
+  String get Pull_Up_To_Load_More {
+    return Intl.message(
+      'Pull up to load more',
+      name: 'Pull_Up_To_Load_More',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load. Click to try again`
+  String get Loading_Failed_Retry_Message {
+    return Intl.message(
+      'Failed to load. Click to try again',
+      name: 'Loading_Failed_Retry_Message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Let go and load more`
+  String get Let_Go_And_Load_More {
+    return Intl.message(
+      'Let go and load more',
+      name: 'Let_Go_And_Load_More',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There is no more data`
+  String get No_More_Data {
+    return Intl.message(
+      'There is no more data',
+      name: 'No_More_Data',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

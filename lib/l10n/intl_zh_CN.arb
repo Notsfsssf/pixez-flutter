@@ -149,5 +149,9 @@
   "Complete": "完成",
   "Failed": "失败",
   "Canceled":"已取消",
-  "Paused":"已暂停"
+  "Paused":"已暂停",
+  "Pull_Up_To_Load_More": "上拉加载",
+  "Loading_Failed_Retry_Message": "加载失败,点击重试",
+  "Let_Go_And_Load_More": "松手开加载更多",
+  "No_More_Data": "没有更多数据了"
 }

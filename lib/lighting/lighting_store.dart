@@ -20,48 +20,53 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'lighting_store.g.dart';
 
 class LightingStore = _LightingStoreBase with _$LightingStore;
+
 typedef Future<Response> FutureGet();
 
 abstract class _LightingStoreBase with Store {
-  final EasyRefreshController _controller;
   FutureGet source;
-
   String nextUrl;
+  RefreshController _controller;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
   //?是否需要一个顶层store来装每个item的状态
 
   @observable
   String errorMessage;
-  _LightingStoreBase(
-    this.source,
-    this._controller,
-  );
+  _LightingStoreBase(this.source, this._controller);
 
   @action
-  fetch() async {
+  Future<bool> fetch() async {
     nextUrl = null;
     errorMessage = null;
-    _controller.resetLoadState();
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-      _controller.finishRefresh(success: true);
+      _controller.refreshCompleted();
+      return true;
     } catch (e) {
       errorMessage = e.toString();
-      _controller.finishRefresh(success: false);
+      _controller.refreshFailed();
+      return false;
     }
   }
 
   @action
-  fetchNext() async {
+  update(FutureGet futureGet) async {
+    source = futureGet;
+    await fetch();
+  }
+
+  @action
+  Future<bool> fetchNext() async {
     errorMessage = null;
     try {
       if (nextUrl != null && nextUrl.isNotEmpty) {
@@ -69,12 +74,14 @@ abstract class _LightingStoreBase with Store {
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
         iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-        _controller.finishLoad(success: true, noMore: false);
+        _controller.loadComplete();
       } else {
-        _controller.finishLoad(success: true, noMore: true);
+        _controller.loadNoData();
       }
+      return true;
     } catch (e) {
-      _controller.finishLoad(success: false);
+      _controller.loadFailed();
+      return false;
     }
   }
 }

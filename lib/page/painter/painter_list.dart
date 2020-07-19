@@ -15,12 +15,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PainterList extends StatefulWidget {
   final FutureGet futureGet;
@@ -31,11 +31,13 @@ class PainterList extends StatefulWidget {
 }
 
 class _PainterListState extends State<PainterList> {
-  EasyRefreshController _easyRefreshController;
+  RefreshController _easyRefreshController;
   PainterListStore _painterListStore;
+  ScrollController _scrollController;
   @override
   void initState() {
-    _easyRefreshController = EasyRefreshController();
+    _scrollController = ScrollController();
+    _easyRefreshController = RefreshController(initialRefresh: true);
     _painterListStore =
         PainterListStore(_easyRefreshController, widget.futureGet);
     super.initState();
@@ -46,12 +48,15 @@ class _PainterListState extends State<PainterList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.futureGet != widget.futureGet) {
       _painterListStore.source = widget.futureGet;
+      _easyRefreshController.footerMode?.value = LoadStatus.idle;
       _painterListStore.fetch();
+      if(_painterListStore.users.isNotEmpty) _scrollController?.jumpTo(0.0);
     }
   }
 
   @override
   void dispose() {
+    _scrollController?.dispose();
     _easyRefreshController?.dispose();
     super.dispose();
   }
@@ -59,16 +64,35 @@ class _PainterListState extends State<PainterList> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return EasyRefresh(
-        enableControlFinishLoad: true,
-        enableControlFinishRefresh: true,
+      return SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus mode) {
+            Widget body;
+            if (mode == LoadStatus.idle) {
+              body = Text(I18n.of(context).Pull_Up_To_Load_More);
+            } else if (mode == LoadStatus.loading) {
+              body = CircularProgressIndicator();
+            } else if (mode == LoadStatus.failed) {
+              body = Text(I18n.of(context).Loading_Failed_Retry_Message);
+            } else if (mode == LoadStatus.canLoading) {
+              body = Text(I18n.of(context).Let_Go_And_Load_More);
+            } else {
+              body = Text(I18n.of(context).No_More_Data);
+            }
+            return Container(
+              height: 55.0,
+              child: Center(child: body),
+            );
+          },
+        ),
         controller: _easyRefreshController,
-        header: MaterialHeader(),
-        onLoad: ()=>_painterListStore.next(),
+        onLoading: ()=>_painterListStore.next(),
         onRefresh: ()=>_painterListStore.fetch(),
-        firstRefresh: true,
         child: _painterListStore.users.isNotEmpty
             ? ListView.builder(
+          controller: _scrollController,
                 itemBuilder: (context, index) {
                   return PainterCard(
                     user: _painterListStore.users[index],

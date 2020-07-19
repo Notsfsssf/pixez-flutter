@@ -15,8 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyrefresh/bezier_circle_header.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
@@ -29,6 +27,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecomSpolightPage extends StatefulWidget {
   @override
@@ -42,15 +41,15 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void initState() {
-    _easyRefreshController = EasyRefreshController();
+    _easyRefreshController = RefreshController(initialRefresh: true);
     spotlightStore = SpotlightStore();
-    _lightingStore = LightingStore(
-        () => apiClient.getRecommend(), _easyRefreshController);
+    _lightingStore =
+        LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
 
     super.initState();
   }
 
-  EasyRefreshController _easyRefreshController;
+  RefreshController _easyRefreshController;
 
   Future<void> fetchT() async {
     await spotlightStore.fetch();
@@ -87,17 +86,34 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget buildEasyRefresh(BuildContext context) {
-    return EasyRefresh(
+    return SmartRefresher(
       controller: _easyRefreshController,
-      enableControlFinishLoad: true,
-      enableControlFinishRefresh: true,
-      header:
-          BezierCircleHeader(backgroundColor: Theme.of(context).accentColor),
-      firstRefresh: true,
+      enablePullDown: true,
+      enablePullUp: true,
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text(I18n.of(context).Pull_Up_To_Load_More);
+          } else if (mode == LoadStatus.loading) {
+            body = CircularProgressIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text(I18n.of(context).Loading_Failed_Retry_Message);
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text(I18n.of(context).Let_Go_And_Load_More);
+          } else {
+            body = Text(I18n.of(context).No_More_Data);
+          }
+          return Container(
+            height: 55.0,
+            child: Center(child: body),
+          );
+        },
+      ),
       onRefresh: () {
         return fetchT();
       },
-      onLoad: () {
+      onLoading: () {
         return _lightingStore.fetchNext();
       },
       child: _buildBody(),
@@ -113,8 +129,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
         double screanWidth = MediaQuery.of(context).size.width;
         double itemWidth = (screanWidth / 2.0) - 32.0;
-        double radio = _lightingStore.iStores[index - 3].illusts.height.toDouble() /
-            _lightingStore.iStores[index - 3].illusts.width.toDouble();
+        double radio =
+            _lightingStore.iStores[index - 3].illusts.height.toDouble() /
+                _lightingStore.iStores[index - 3].illusts.width.toDouble();
         double mainAxisExtent;
         if (radio > 2)
           mainAxisExtent = itemWidth;
@@ -136,7 +153,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         if (index == 2) return _buildSecondRow(context);
         if (_lightingStore.iStores.isNotEmpty)
           return IllustCard(
-            store:_lightingStore.iStores[index - 3],
+            store: _lightingStore.iStores[index - 3],
             iStores: _lightingStore.iStores,
           );
         return Container();

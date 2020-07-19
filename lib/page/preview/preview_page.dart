@@ -14,10 +14,8 @@
  *
  */
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -26,6 +24,7 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GoToLoginPage extends StatelessWidget {
   final Illusts illust;
@@ -116,7 +115,7 @@ class PreviewPage extends StatefulWidget {
 
 class _PreviewPageState extends State<PreviewPage> {
   LightingStore _lightingStore;
-  EasyRefreshController _easyRefreshController = EasyRefreshController();
+  RefreshController _easyRefreshController = RefreshController();
   @override
   void initState() {
     _lightingStore = LightingStore(
@@ -133,13 +132,10 @@ class _PreviewPageState extends State<PreviewPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: EasyRefresh(
-        onLoad: () => _lightingStore.fetchNext(),
+      child: SmartRefresher(
         controller: _easyRefreshController,
         onRefresh: () => _lightingStore.fetch(),
-        firstRefresh: true,
-        enableControlFinishLoad: true,
-        enableControlFinishRefresh: true,
+        onLoading: () => _lightingStore.fetchNext(),
         child: _lightingStore.iStores.isNotEmpty
             ? StaggeredGridView.countBuilder(
                 shrinkWrap: true,

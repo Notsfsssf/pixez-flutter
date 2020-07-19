@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 part 'painter_list_store.g.dart';
 
 class PainterListStore = _PainterListStoreBase with _$PainterListStore;
@@ -12,7 +12,7 @@ abstract class _PainterListStoreBase with Store {
   ObservableList<UserPreviews> users = ObservableList();
   FutureGet source;
   String nextUrl;
-  final EasyRefreshController _controller;
+  final RefreshController _controller;
   _PainterListStoreBase(this._controller,this.source);
 
   
@@ -27,9 +27,9 @@ abstract class _PainterListStoreBase with Store {
       final results = userPreviewsResponse.user_previews;
       users.clear();
       users.addAll(results);
-      _controller.finishRefresh(success: true);
+      _controller.refreshCompleted();
     } catch (e) {
-      _controller.finishRefresh(success: false);
+      _controller.refreshFailed();
     }
   }
 
@@ -43,12 +43,12 @@ abstract class _PainterListStoreBase with Store {
         nextUrl = userPreviewsResponse.next_url;
         final results = userPreviewsResponse.user_previews;
         users.addAll(results);
-        _controller.finishLoad(success: true);
+        _controller.loadComplete();
       } catch (e) {
-        _controller.finishLoad(success: false);
+        _controller.loadFailed();
       }
     } else {
-      _controller.finishLoad(success: true,noMore: true);
+      _controller.loadNoData();
     }
   }
 }

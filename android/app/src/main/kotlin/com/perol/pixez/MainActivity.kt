@@ -34,10 +34,8 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-
         storePath = pref.getString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez")!!
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data") as ByteArray
                 val type = call.argument<String>("name") as String
@@ -56,7 +54,6 @@ class MainActivity : FlutterActivity() {
                 ) { _, _ ->
                 }
                 result.success(true);
-
             }
             if (call.method == "select_path") {
                 result.success("")

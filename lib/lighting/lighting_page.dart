@@ -16,17 +16,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class LightingList extends StatefulWidget {
-  final EasyRefreshController controller;
   final FutureGet source;
   final Widget header;
   final ScrollController scrollController;
@@ -34,7 +33,6 @@ class LightingList extends StatefulWidget {
   const LightingList(
       {Key key,
       @required this.source,
-      this.controller,
       this.header,
       this.scrollController,
       this.isNested})
@@ -46,25 +44,24 @@ class LightingList extends StatefulWidget {
 
 class _LightingListState extends State<LightingList> {
   LightingStore _store;
-  EasyRefreshController _easyRefreshController;
   ScrollController _scrollController;
-  bool isNested=false;
+  bool isNested = false;
+
   @override
   void didUpdateWidget(LightingList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
+      _refreshController.footerMode?.value = LoadStatus.idle;
       _store.fetch();
-      if (!isNested) _scrollController.jumpTo(0.0);
-      // _easyRefreshController.callRefresh();
+      if (!isNested&&_store.iStores.isNotEmpty) _scrollController.jumpTo(0.0);
     }
   }
 
   @override
   void initState() {
     isNested = widget.isNested ?? false;
-    _easyRefreshController = widget.controller ?? EasyRefreshController();
-    _store = LightingStore(widget.source, _easyRefreshController);
+    _store = LightingStore(widget.source, _refreshController);
     _scrollController = widget.scrollController ?? ScrollController();
     // _scrollController.addListener(() {
     //   bool temp;
@@ -87,7 +84,6 @@ class _LightingListState extends State<LightingList> {
 
   @override
   void dispose() {
-    _easyRefreshController?.dispose();
     _scrollController?.dispose();
     super.dispose();
   }
@@ -101,7 +97,7 @@ class _LightingListState extends State<LightingList> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: widget.header == null ? 0 : 36.0),
-              child: _buildWithHeader(context),
+              child: _buildNewRefresh(context),
             ),
             Align(
               alignment: Alignment.topCenter,
@@ -132,6 +128,42 @@ class _LightingListState extends State<LightingList> {
     });
   }
 
+  RefreshController _refreshController = RefreshController();
+  Widget _buildNewRefresh(context) {
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text(I18n.of(context).Pull_Up_To_Load_More);
+          } else if (mode == LoadStatus.loading) {
+            body = CircularProgressIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text(I18n.of(context).Loading_Failed_Retry_Message);
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text(I18n.of(context).Let_Go_And_Load_More);
+          } else {
+            body = Text(I18n.of(context).No_More_Data);
+          }
+          return Container(
+            height: 55.0,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      onRefresh: () {
+        _store.fetch();
+      },
+      onLoading: () {
+        _store.fetchNext();
+      },
+      child: _buildWithHeader(context),
+    );
+  }
+
   bool needToBan(Illusts illust) {
     for (var i in muteStore.banillusts) {
       if (i.illustId == illust.id.toString()) return true;
@@ -148,37 +180,25 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildWithHeader(BuildContext context) {
-    return EasyRefresh(
-      header: MaterialHeader(),
-      controller: _easyRefreshController,
-      enableControlFinishLoad: true,
-      enableControlFinishRefresh: true,
-      onRefresh: () {
-        return _store.fetch();
-      },
-      onLoad: () {
-        return _store.fetchNext();
-      },
-      child: _store.errorMessage != null
-          ? Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 90,
-                  ),
-                  Text(':(', style: Theme.of(context).textTheme.headline4),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text('${_store.errorMessage}'),
-                  )
-                ],
-              ),
-            )
-          : _buildNoHeader(context),
-    );
+    return _store.errorMessage != null
+        ? Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: 90,
+                ),
+                Text(':(', style: Theme.of(context).textTheme.headline4),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text('${_store.errorMessage}'),
+                )
+              ],
+            ),
+          )
+        : _store.iStores.isNotEmpty ? _buildBody() : Container();
   }
 
   Widget _buildBody() {
@@ -234,9 +254,5 @@ class _LightingListState extends State<LightingList> {
             itemCount: _store.iStores.length,
             crossAxisCount: 2,
           );
-  }
-
-  Widget _buildNoHeader(BuildContext context) {
-    return _store.iStores.isNotEmpty ? _buildBody() : Container();
   }
 }

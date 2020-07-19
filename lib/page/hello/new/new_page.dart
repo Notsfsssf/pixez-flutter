@@ -104,6 +104,7 @@ class _NewPageState extends State<NewPage>
                   children: <Widget>[
                     NewIllustPage(),
                     BookmarkPage(
+                      isNested: false,
                       id: int.parse(accountStore.now.userId),
                     ),
                     FollowList(

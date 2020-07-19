@@ -42,14 +42,21 @@ mixin _$LightingStore on _LightingStoreBase, Store {
   final _$fetchAsyncAction = AsyncAction('_LightingStoreBase.fetch');
 
   @override
-  Future fetch() {
+  Future<bool> fetch() {
     return _$fetchAsyncAction.run(() => super.fetch());
+  }
+
+  final _$updateAsyncAction = AsyncAction('_LightingStoreBase.update');
+
+  @override
+  Future update(FutureGet futureGet) {
+    return _$updateAsyncAction.run(() => super.update(futureGet));
   }
 
   final _$fetchNextAsyncAction = AsyncAction('_LightingStoreBase.fetchNext');
 
   @override
-  Future fetchNext() {
+  Future<bool> fetchNext() {
     return _$fetchNextAsyncAction.run(() => super.fetchNext());
   }
 

@@ -33,6 +33,7 @@ class TaskEntity {
   String filename;
   String savedDir;
   int timeCreated;
+
   TaskEntity(
     DownloadTask downloadTask,
     this.illusts,
@@ -81,6 +82,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   List<TaskEntity> _list;
+
   initMethod() async {
     _list = [];
     final tasks = await FlutterDownloader.loadTasks();
@@ -137,8 +139,11 @@ class _TaskPageState extends State<TaskPage> {
                 itemBuilder: (context, index) {
                   final data = _list[index];
                   return InkWell(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => IllustPage(id: data.illusts.id))),
+                    onTap: () async {
+                      await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => IllustPage(id: data.illusts.id)));
+                      initMethod(); //可能会有新增任务
+                    },
                     // onLongPress: () => _buildOptions(context, data),
                     child: ListTile(
                       title: Text(data.illusts.title ?? ''),
@@ -157,7 +162,9 @@ class _TaskPageState extends State<TaskPage> {
                                     initMethod();
                                   },
                                 )
-                              : [],
+                              : Container(
+                                  width: 0.0,
+                                ),
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
@@ -165,7 +172,7 @@ class _TaskPageState extends State<TaskPage> {
                                 shouldDeleteContent: true,
                                 taskId: data.taskId,
                               );
-                              saveStore.maps[data.taskId]=null;
+                              saveStore.maps[data.taskId] = null;
                               saveStore.urls.remove(data.url);
                               initMethod();
                             },

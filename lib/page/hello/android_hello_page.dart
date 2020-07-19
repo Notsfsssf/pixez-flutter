@@ -273,7 +273,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: userSetting.welcomePageNum);
     _widgetOptions = <Widget>[
-      NovelRecomPage(),
+      RecomSpolightPage(),
       RankPage(),
       NewPage(),
       SearchPage(),
