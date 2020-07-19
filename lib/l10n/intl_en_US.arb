@@ -153,5 +153,7 @@
   "Pull_Up_To_Load_More": "Pull up to load more",
   "Loading_Failed_Retry_Message": "Failed to load. Click to try again",
   "Let_Go_And_Load_More": "Let go and load more",
-  "No_More_Data": "There is no more data"
+  "No_More_Data": "There is no more data",
+  "Retry_Failed_Tasks": "Retry failed tasks",
+  "Clear_Completed_Tasks": "Clear completed tasks"
 }

@@ -153,5 +153,7 @@
   "Pull_Up_To_Load_More": "上拉加載",
   "Loading_Failed_Retry_Message": "加載失敗,點擊重試",
   "Let_Go_And_Load_More": "松手開加載更多",
-  "No_More_Data": "沒有更多數據了"
+  "No_More_Data": "沒有更多數據了",
+  "Retry_Failed_Tasks": "重試失敗任務",
+  "Clear_Completed_Tasks": "清空已完成任務"
 }

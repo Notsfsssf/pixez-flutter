@@ -131,6 +131,58 @@ class _TaskPageState extends State<TaskPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.of(context).Task_progress),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(16.0))),
+                    builder: (_) {
+                      return SafeArea(
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(I18n.of(context).Retry_Failed_Tasks),
+                              onTap: () async {
+                                final tasks =
+                                    await FlutterDownloader.loadTasks();
+                                final targets = tasks.where((element) =>
+                                    element.status ==
+                                    DownloadTaskStatus.failed);
+                                targets.forEach((element) async {
+                                  await FlutterDownloader.retry(
+                                      taskId: element.taskId);
+                                });
+                                initMethod();
+                              },
+                            ),
+                            ListTile(
+                              title: Text(I18n.of(context).Clear_Completed_Tasks),
+                              onTap: () async {
+                                final tasks =
+                                    await FlutterDownloader.loadTasks();
+                                final targets = tasks.where((element) =>
+                                    element.status ==
+                                    DownloadTaskStatus.complete);
+                                targets.forEach((element) async {
+                                  await FlutterDownloader.remove(
+                                      taskId: element.taskId);
+                                  saveStore.maps[element.taskId] = null;
+                                  saveStore.urls.remove(element.url);
+                                });
+                                initMethod();
+                              },
+                            )
+                          ],
+                          mainAxisSize: MainAxisSize.min,
+                        ),
+                      );
+                    });
+              })
+        ],
       ),
       body: Container(
         child: _list != null
@@ -154,7 +206,7 @@ class _TaskPageState extends State<TaskPage> {
                         children: <Widget>[
                           data.status.value > 3
                               ? IconButton(
-                                  icon: Icon(Icons.new_releases),
+                                  icon: Icon(Icons.autorenew),
                                   onPressed: () {
                                     FlutterDownloader.retry(
                                       taskId: data.taskId,

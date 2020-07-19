@@ -1572,6 +1572,26 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Retry failed tasks`
+  String get Retry_Failed_Tasks {
+    return Intl.message(
+      'Retry failed tasks',
+      name: 'Retry_Failed_Tasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear completed tasks`
+  String get Clear_Completed_Tasks {
+    return Intl.message(
+      'Clear completed tasks',
+      name: 'Clear_Completed_Tasks',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {
