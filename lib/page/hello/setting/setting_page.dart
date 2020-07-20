@@ -176,8 +176,17 @@ class _SettingPageState extends State<SettingPage> {
                         switch (result) {
                           case "OK":
                             {
-                              Directory tempDir = await getTemporaryDirectory();
-                              tempDir.deleteSync(recursive: true);
+                              try {
+                                Directory tempDir =
+                                    await getTemporaryDirectory();
+                                tempDir.deleteSync(recursive: true);
+                                Directory directory = Directory(
+                                    (await getApplicationDocumentsDirectory())
+                                            .path +
+                                        '/pixez');
+                                if (directory.existsSync())
+                                  directory.deleteSync(recursive: true);
+                              } catch (e) {}
                             }
                             break;
                         }

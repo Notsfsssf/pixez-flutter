@@ -170,14 +170,22 @@ abstract class _SaveStoreBase with Store {
   StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
   List<String> urls = [];
-
+Future<String> _findLocalPath() async {
+    final directory = Platform.isAndroid
+        ? (await getTemporaryDirectory()).path
+        : (await getApplicationDocumentsDirectory()).path+'/pixez';
+    return directory;
+  }
   _joinQueue(String url, Illusts illusts, String fileName) async {
     if (urls.contains(url)) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
     }
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
+
+    String tempPath = await _findLocalPath();
+    if(!Directory(tempPath).existsSync()){
+      Directory(tempPath).createSync();
+    }
     final taskId = await FlutterDownloader.enqueue(
       url: url,
       savedDir: tempPath,

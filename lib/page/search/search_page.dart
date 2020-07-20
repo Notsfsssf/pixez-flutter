@@ -27,6 +27,7 @@ import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key key}) : super(key: key);
@@ -41,7 +42,8 @@ class _SearchPageState extends State<SearchPage>
   TrendTagsStore _trendTagsStore;
   @override
   void initState() {
-    _trendTagsStore = TrendTagsStore()..fetch();
+    _controller = RefreshController(initialRefresh: true);
+    _trendTagsStore = TrendTagsStore(_controller);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     tagHistoryStore.fetch();
@@ -53,6 +55,7 @@ class _SearchPageState extends State<SearchPage>
     super.dispose();
   }
 
+  RefreshController _controller;
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -75,7 +78,13 @@ class _SearchPageState extends State<SearchPage>
               )
             ],
           ),
-          Expanded(child: _buildListView())
+          Expanded(
+            child: SmartRefresher(
+                controller: _controller,
+                enablePullDown: true,
+                onRefresh: () => _trendTagsStore.fetch(),
+                child: _buildListView()),
+          )
         ]);
       return Column(children: <Widget>[
         AppBar(
@@ -104,7 +113,7 @@ class _SearchPageState extends State<SearchPage>
         padding: const EdgeInsets.all(8.0),
         child: Text(I18n.of(context).History),
       ),
-            Observer(
+      Observer(
         builder: (BuildContext context) {
           if (tagHistoryStore.tags.isNotEmpty) {
             return Padding(
@@ -137,12 +146,11 @@ class _SearchPageState extends State<SearchPage>
           return Container();
         },
       ),
-    
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(I18n.of(context).Recommand_Tag),
       ),
-  _trendTagsStore.trendTags.isNotEmpty
+      _trendTagsStore.trendTags.isNotEmpty
           ? _buildGrid(context, _trendTagsStore.trendTags)
           : Container()
     ]);

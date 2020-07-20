@@ -16,6 +16,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -115,7 +116,7 @@ class PreviewPage extends StatefulWidget {
 
 class _PreviewPageState extends State<PreviewPage> {
   LightingStore _lightingStore;
-  RefreshController _easyRefreshController = RefreshController();
+  RefreshController _easyRefreshController = RefreshController(initialRefresh: true);
   @override
   void initState() {
     _lightingStore = LightingStore(
@@ -131,7 +132,8 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Observer(builder: (_){
+        return SafeArea(
       child: SmartRefresher(
         controller: _easyRefreshController,
         onRefresh: () => _lightingStore.fetch(),
@@ -161,5 +163,7 @@ class _PreviewPageState extends State<PreviewPage> {
             : Container(),
       ),
     );
+  
+    });
   }
 }

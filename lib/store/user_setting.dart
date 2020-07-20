@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
@@ -35,13 +34,15 @@ abstract class _UserSettingBase with Store {
   static const String SINGLE_FOLDER_KEY = "single_folder";
   static const String SAVE_FORMAT_KEY = "save_format";
   static const String LANGUAGE_NUM_KEY = "language_num";
+    static const String CROSS_COUNT_KEY = "cross_count";
   @observable
   int zoomQuality = 0;
   @observable
   int languageNum = 0;
   @observable
   int welcomePageNum = 0;
-
+@observable
+int crossCount=2;
   @observable
   int displayMode;
   @observable
@@ -66,6 +67,7 @@ abstract class _UserSettingBase with Store {
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
+    crossCount = prefs.getInt(CROSS_COUNT_KEY)??2;
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -80,7 +82,11 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
   }
-
+@action
+setCrossCount(int value) async {
+  await prefs.setInt(CROSS_COUNT_KEY, value);
+crossCount = value;
+}
   @action
   setWelcomePageNum(int value) async {
     await prefs.setInt('welcome_page_num', value);
