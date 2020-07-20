@@ -26,7 +26,7 @@ class RankPage extends StatefulWidget {
   _RankPageState createState() => _RankPageState();
 }
 
-class _RankPageState extends State<RankPage> {
+class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin {
   RankStore rankStore;
   final modeList = [
     "day",
@@ -164,4 +164,7 @@ class _RankPageState extends State<RankPage> {
       }
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -157,10 +157,12 @@ class _TaskPageState extends State<TaskPage> {
                                       taskId: element.taskId);
                                 });
                                 initMethod();
+                                Navigator.of(context).pop();
                               },
                             ),
                             ListTile(
-                              title: Text(I18n.of(context).Clear_Completed_Tasks),
+                              title:
+                                  Text(I18n.of(context).Clear_Completed_Tasks),
                               onTap: () async {
                                 final tasks =
                                     await FlutterDownloader.loadTasks();
@@ -174,6 +176,7 @@ class _TaskPageState extends State<TaskPage> {
                                   saveStore.urls.remove(element.url);
                                 });
                                 initMethod();
+                                Navigator.of(context).pop();
                               },
                             )
                           ],

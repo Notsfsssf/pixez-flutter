@@ -27,8 +27,7 @@ class RankModePage extends StatefulWidget {
   _RankModePageState createState() => _RankModePageState();
 }
 
-class _RankModePageState extends State<RankModePage>
-    with AutomaticKeepAliveClientMixin {
+class _RankModePageState extends State<RankModePage> {
   @override
   void initState() {
     super.initState();
@@ -36,7 +35,6 @@ class _RankModePageState extends State<RankModePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return LightingList(
       source: () => apiClient.getIllustRanking(
         widget.mode,
@@ -45,6 +43,4 @@ class _RankModePageState extends State<RankModePage>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }
