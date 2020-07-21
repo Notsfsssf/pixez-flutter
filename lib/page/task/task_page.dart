@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -203,7 +204,7 @@ class _TaskPageState extends State<TaskPage> {
                     child: ListTile(
                       title: Text(data.illusts.title ?? ''),
                       subtitle: Text(
-                          '${toStatusString(data.status)} ${data.filename}'),
+                          '${toStatusString(data.status)} ${Platform.isIOS?'':data.filename}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[

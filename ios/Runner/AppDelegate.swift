@@ -2,7 +2,7 @@ import UIKit
 import Flutter
 import MobileCoreServices
 import Photos
-
+import flutter_downloader
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -28,10 +28,19 @@ import Photos
             
         })
         GeneratedPluginRegistrant.register(with: self)
+        FlutterDownloaderPlugin.setPluginRegistrantCallback { registry in
+                if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
+                   FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin"))
+                }
+        }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
-    
+    func registerPlugins(registry: FlutterPluginRegistry) {
+        if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
+           FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin"))
+        }
+    }
     
     @objc private func saveImage(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: AnyObject) {
         
@@ -135,7 +144,8 @@ import Photos
     private func receiveBatteryLevel(result: FlutterResult,path:String,delay:Int) {
         let docs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let gifPath =  docs[0] as String + "/"+String(Int(Date.init().timeIntervalSince1970)) + ".gif"
-        let paths = getAllFilePath(path)
+        var paths = getAllFilePath(path)
+      paths =  paths?.sorted{$0.localizedStandardCompare($1) == .orderedAscending}  
         let imageArray: NSMutableArray = NSMutableArray()
         for i in paths! {
             print(i)
