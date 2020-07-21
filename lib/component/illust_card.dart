@@ -126,8 +126,54 @@ class _IllustCardState extends State<IllustCard> {
             );
         }
       }
-      return buildInkWell(context);
+      return _buildColumnCard(context);
     });
+  }
+
+  Widget _buildColumnCard(BuildContext context) {
+    return Card(
+      elevation: 8.0,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+      child: _buildPic(),
+    );
+  }
+
+  Widget _buildPic() {
+    return (illustStore.illusts.height.toDouble() /
+                illustStore.illusts.width.toDouble()) >
+            3
+        ? Hero(
+            tag: '${illustStore.illusts.imageUrls.medium}${heroString}',
+            child: CachedNetworkImage(
+              imageUrl: illustStore.illusts.imageUrls.squareMedium,
+              placeholder: (context, url) => Container(
+                height: 150,
+              ),
+              httpHeaders: {
+                "referer": "https://app-api.pixiv.net/",
+                "User-Agent": "PixivIOSApp/5.8.0"
+              },
+              width: illustStore.illusts.width.toDouble(),
+              fit: BoxFit.fitWidth,
+            ),
+          )
+        : Hero(
+            tag: '${illustStore.illusts.imageUrls.medium}${heroString}',
+            child: CachedNetworkImage(
+              imageUrl: illustStore.illusts.imageUrls.medium,
+              placeholder: (context, url) => Container(
+                height: 150,
+              ),
+              httpHeaders: {
+                "referer": "https://app-api.pixiv.net/",
+                "User-Agent": "PixivIOSApp/5.8.0"
+              },
+              width: illustStore.illusts.width.toDouble(),
+              fit: BoxFit.fitWidth,
+            ),
+          );
   }
 
   String heroString = DateTime.now()
@@ -166,41 +212,7 @@ class _IllustCardState extends State<IllustCard> {
             children: <Widget>[
               Align(
                 alignment: Alignment.topCenter,
-                child: (illustStore.illusts.height.toDouble() /
-                            illustStore.illusts.width.toDouble()) >
-                        3
-                    ? Hero(
-                        tag:
-                            '${illustStore.illusts.imageUrls.medium}${heroString}',
-                        child: CachedNetworkImage(
-                          imageUrl: illustStore.illusts.imageUrls.squareMedium,
-                          placeholder: (context, url) => Container(
-                            height: 150,
-                          ),
-                          httpHeaders: {
-                            "referer": "https://app-api.pixiv.net/",
-                            "User-Agent": "PixivIOSApp/5.8.0"
-                          },
-                          width: illustStore.illusts.width.toDouble(),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      )
-                    : Hero(
-                        tag:
-                            '${illustStore.illusts.imageUrls.medium}${heroString}',
-                        child: CachedNetworkImage(
-                          imageUrl: illustStore.illusts.imageUrls.medium,
-                          placeholder: (context, url) => Container(
-                            height: 150,
-                          ),
-                          httpHeaders: {
-                            "referer": "https://app-api.pixiv.net/",
-                            "User-Agent": "PixivIOSApp/5.8.0"
-                          },
-                          width: illustStore.illusts.width.toDouble(),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
+                child: _buildPic(),
               ),
               Align(
                 alignment: Alignment.bottomCenter,

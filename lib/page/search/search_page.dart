@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +106,7 @@ class _SearchPageState extends State<SearchPage>
         padding: const EdgeInsets.all(8.0),
         child: Text(I18n.of(context).History),
       ),
-            Observer(
+      Observer(
         builder: (BuildContext context) {
           if (tagHistoryStore.tags.isNotEmpty) {
             return Padding(
@@ -137,12 +139,11 @@ class _SearchPageState extends State<SearchPage>
           return Container();
         },
       ),
-    
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(I18n.of(context).Recommand_Tag),
       ),
-  _trendTagsStore.trendTags.isNotEmpty
+      _trendTagsStore.trendTags.isNotEmpty
           ? _buildGrid(context, _trendTagsStore.trendTags)
           : Container()
     ]);
@@ -187,7 +188,12 @@ class _SearchPageState extends State<SearchPage>
                         fit: BoxFit.fitWidth,
                       ),
                       Align(
-                        child: Text(tags[index].tag),
+                        child: Container(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                            child: Container(child: Text(tags[index].tag)),
+                          ),
+                        ),
                         alignment: Alignment.bottomCenter,
                       ),
                     ],

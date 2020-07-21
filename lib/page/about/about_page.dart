@@ -222,6 +222,7 @@ class _AboutPageState extends State<AboutPage> {
                   subtitle:
                       SelectableText('github.com/Notsfsssf/pixez-flutter'),
                   onTap: () {
+                    if(!Constrains.isGooglePlay)
                     showModalBottomSheet(
                         context: context,
                         shape: RoundedRectangleBorder(
@@ -318,7 +319,7 @@ class _AboutPageState extends State<AboutPage> {
             }
           },
         ),
-        ...Platform.isAndroid?[
+        ...Platform.isAndroid&&!Constrains.isGooglePlay?[
           ListTile(
             title: Text('如果你觉得这个应用还不错'),
             subtitle: Text('支持一下开发者吧!'),
