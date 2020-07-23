@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
+import 'package:pixez/page/webview/webview_spotlight_page.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
@@ -32,7 +33,7 @@ class SpotlightCard extends StatelessWidget {
         onTap: () async {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (BuildContext context) {
-            return SoupPage(url: spotlight.articleUrl, spotlight: spotlight);
+            return WebViewSpotlightPage(url: spotlight.articleUrl, spotlight: spotlight);
           }));
         },
         child: Container(

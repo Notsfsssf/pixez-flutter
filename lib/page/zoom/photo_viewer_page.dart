@@ -79,6 +79,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                         title: Text(I18n.of(context).Save),
                         onTap: () {
                           saveStore.saveImage(widget.illusts, index: index);
+                          Navigator.of(context).pop();
                         },
                       ),
                       fileInfo != null
@@ -88,6 +89,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                                 if (fileInfo != null)
                                   ShareExtend.share(
                                       fileInfo.file.path, "image");
+                                Navigator.of(context).pop();
                               },
                             )
                           : Container(
@@ -163,6 +165,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                                 title: Text(I18n.of(context).Save),
                                 onTap: () {
                                   saveStore.saveImage(widget.illusts);
+                                  Navigator.of(context).pop();
                                 },
                               ),
                               fileInfo != null
@@ -171,6 +174,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                                       onTap: () async {
                                         ShareExtend.share(
                                             fileInfo.file.path, "image");
+                                        Navigator.of(context).pop();
                                       },
                                     )
                                   : Container(

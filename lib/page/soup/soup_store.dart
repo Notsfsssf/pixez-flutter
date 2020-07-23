@@ -4,13 +4,16 @@ import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:pixez/models/amwork.dart';
+import 'package:pixez/network/api_client.dart';
+
 part 'soup_store.g.dart';
 
 class SoupStore = _SoupStoreBase with _$SoupStore;
 
 abstract class _SoupStoreBase with Store {
   final dio = Dio(BaseOptions(headers: {
-    // HttpHeaders.acceptLanguageHeader: ApiClient.Accept_Language,//不同语言dom元素居然不一样
+    HttpHeaders.acceptLanguageHeader: ApiClient.Accept_Language,
+    //不同语言dom元素居然不一样
     HttpHeaders.userAgentHeader:
         'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/85.0.4183.15',
     HttpHeaders.refererHeader: 'https://www.pixivision.net/zh/',
@@ -18,8 +21,19 @@ abstract class _SoupStoreBase with Store {
   ObservableList<AmWork> amWorks = ObservableList();
   @observable
   String description;
+
   @action
   fetch(String url) async {
+    try {
+      Response response = await dio.request(url);
+      var document = parse(response.data);
+      var aTags = document.getElementsByTagName('a');
+      var ids = aTags
+          .where((element) => element.attributes['href'].contains('https://www.pixiv.net/artworks'));
+      for(var i in ids){
+
+      }
+    } catch (e) {}
     // Response response = await dio.request(url);
     // print(response.data);
     // var document = parse(response.data);

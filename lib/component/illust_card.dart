@@ -126,7 +126,7 @@ class _IllustCardState extends State<IllustCard> {
             );
         }
       }
-      return _buildColumnCard(context);
+      return buildInkWell(context);
     });
   }
 

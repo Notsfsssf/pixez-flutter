@@ -197,12 +197,11 @@ class _SearchPageState extends State<SearchPage>
                         fit: BoxFit.fitWidth,
                       ),
                       Align(
-                        child: Container(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                            child: Container(child: Text(tags[index].tag)),
-                          ),
-                        ),
+                        child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 0.8, sigmaY: 0.8),
+                            child: Text(
+                              tags[index].tag,
+                            )),
                         alignment: Alignment.bottomCenter,
                       ),
                     ],

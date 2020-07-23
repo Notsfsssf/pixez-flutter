@@ -23,6 +23,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/store/save_store.dart';
 
 class TaskEntity {
   final Illusts illusts;
@@ -76,7 +77,7 @@ class _TaskPageState extends State<TaskPage> {
           }
         }
       } catch (e) {
-        debugPrint(e);
+        debugPrint(e.toString());
       }
     });
     initMethod();
@@ -204,17 +205,22 @@ class _TaskPageState extends State<TaskPage> {
                     child: ListTile(
                       title: Text(data.illusts.title ?? ''),
                       subtitle: Text(
-                          '${toStatusString(data.status)} ${Platform.isIOS?'':data.filename}'),
+                          '${toStatusString(data.status)} ${Platform.isIOS ? '' : data.filename}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           data.status.value > 3
                               ? IconButton(
                                   icon: Icon(Icons.autorenew),
-                                  onPressed: () {
-                                    FlutterDownloader.retry(
+                                  onPressed: () async {
+                                    final taskId =
+                                        await FlutterDownloader.retry(
                                       taskId: data.taskId,
-                                    );
+                                    ); //bug
+                                    saveStore.maps[taskId] = SaveData()
+                                      ..illusts = data.illusts
+                                      ..fileName = data.filename;
+                                    saveStore.urls.add(data.url);
                                     initMethod();
                                   },
                                 )
@@ -223,8 +229,8 @@ class _TaskPageState extends State<TaskPage> {
                                 ),
                           IconButton(
                             icon: Icon(Icons.delete),
-                            onPressed: () {
-                              FlutterDownloader.remove(
+                            onPressed: () async {
+                              await FlutterDownloader.remove(
                                 shouldDeleteContent: true,
                                 taskId: data.taskId,
                               );
@@ -233,14 +239,16 @@ class _TaskPageState extends State<TaskPage> {
                               initMethod();
                             },
                           ),
-                          data.progress == 100
-                              ? Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                )
-                              : CircularProgressIndicator(
-                                  value: data.progress / 100,
-                                )
+                          data.status.value > 3
+                              ? []
+                              : data.progress == 100
+                                  ? Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                    )
+                                  : CircularProgressIndicator(
+                                      value: data.progress / 100,
+                                    )
                         ],
                       ),
                     ),

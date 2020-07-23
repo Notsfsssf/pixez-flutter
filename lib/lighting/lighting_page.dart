@@ -24,7 +24,6 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
@@ -163,31 +162,6 @@ class _LightingListState extends State<LightingList> {
       },
       child: _buildWithHeader(context),
     );
-  }
-
-  Widget _buildWaterfall() {
-    return isNested
-        ? WaterfallFlow.builder(
-            itemCount: _store.iStores.length,
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2),
-            itemBuilder: (context, index) {
-              return IllustCard(
-                store: _store.iStores[index],
-                iStores: _store.iStores,
-              );
-            })
-        : WaterfallFlow.builder(
-            itemCount: _store.iStores.length,
-            controller: _scrollController,
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2),
-            itemBuilder: (context, index) {
-              return IllustCard(
-                store: _store.iStores[index],
-                iStores: _store.iStores,
-              );
-            });
   }
 
   bool needToBan(Illusts illust) {
