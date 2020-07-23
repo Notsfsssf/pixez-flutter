@@ -34,15 +34,15 @@ abstract class _UserSettingBase with Store {
   static const String SINGLE_FOLDER_KEY = "single_folder";
   static const String SAVE_FORMAT_KEY = "save_format";
   static const String LANGUAGE_NUM_KEY = "language_num";
-    static const String CROSS_COUNT_KEY = "cross_count";
+  static const String CROSS_COUNT_KEY = "cross_count";
   @observable
   int zoomQuality = 0;
   @observable
   int languageNum = 0;
   @observable
   int welcomePageNum = 0;
-@observable
-int crossCount=2;
+  @observable
+  int crossCount = 2;
   @observable
   int displayMode;
   @observable
@@ -67,7 +67,7 @@ int crossCount=2;
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
-    crossCount = prefs.getInt(CROSS_COUNT_KEY)??2;
+    crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -80,13 +80,16 @@ int crossCount=2;
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     format = prefs.getString(SAVE_FORMAT_KEY) ?? intialFormat;
     ApiClient.Accept_Language = languageList[languageNum];
+    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
   }
-@action
-setCrossCount(int value) async {
-  await prefs.setInt(CROSS_COUNT_KEY, value);
-crossCount = value;
-}
+
+  @action
+  setCrossCount(int value) async {
+    await prefs.setInt(CROSS_COUNT_KEY, value);
+    crossCount = value;
+  }
+
   @action
   setWelcomePageNum(int value) async {
     await prefs.setInt('welcome_page_num', value);
@@ -135,6 +138,7 @@ crossCount = value;
     await prefs.setInt(LANGUAGE_NUM_KEY, value);
     languageNum = value;
     ApiClient.Accept_Language = languageList[languageNum];
+    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
     final local = I18n.delegate.supportedLocales[languageNum];
     I18n.load(local);
   }

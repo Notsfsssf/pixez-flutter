@@ -155,5 +155,7 @@
   "Let_Go_And_Load_More": "Let go and load more",
   "No_More_Data": "There is no more data",
   "Retry_Failed_Tasks": "Retry failed tasks",
-  "Clear_Completed_Tasks": "Clear completed tasks"
+  "Clear_Completed_Tasks": "Clear completed tasks",
+  "Crosscount": "Crosscount",
+  "Need_To_Restart_App": "Need to restart app"
 }

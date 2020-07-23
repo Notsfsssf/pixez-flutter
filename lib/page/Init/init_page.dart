@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,10 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
           onPressed: () async {
             var prefs = await SharedPreferences.getInstance();
             await prefs.setInt('language_num', userSetting.languageNum);
+            //有可能用户啥都没选
+            final languageList = ['en-US', 'zh-CN', 'zh-TW'];
+            ApiClient.Accept_Language = languageList[userSetting.languageNum];
+            apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) =>Platform.isIOS?HelloPage(): AndroidHelloPage()));
           },

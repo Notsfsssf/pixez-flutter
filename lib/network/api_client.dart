@@ -60,7 +60,7 @@ class ApiClient {
         "X-Client-Time": time,
         "X-Client-Hash": getHash(time + hashSalt),
         "User-Agent": "PixivAndroidApp/5.0.155 (Android 6.0; Pixel C)",
-        "Accept-Language": Accept_Language,
+        HttpHeaders.acceptLanguageHeader: Accept_Language,
         "App-OS": "Android",
         "App-OS-Version": "Android 6.0",
         "App-Version": "5.0.166",

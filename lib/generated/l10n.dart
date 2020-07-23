@@ -1592,6 +1592,26 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Crosscount`
+  String get Crosscount {
+    return Intl.message(
+      'Crosscount',
+      name: 'Crosscount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Need to restart app`
+  String get Need_To_Restart_App {
+    return Intl.message(
+      'Need to restart app',
+      name: 'Need_To_Restart_App',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

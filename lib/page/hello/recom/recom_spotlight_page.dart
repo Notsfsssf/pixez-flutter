@@ -122,13 +122,13 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   Widget _buildBody() {
     return StaggeredGridView.countBuilder(
-      crossAxisCount: 2,
+      crossAxisCount: userSetting.crossCount,
       staggeredTileBuilder: (int index) {
-        if (index < 3) return StaggeredTile.fit(2);
+        if (index < 3) return StaggeredTile.fit(userSetting.crossCount);
         var illust = _lightingStore.iStores[index - 3].illusts;
         if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
         double screanWidth = MediaQuery.of(context).size.width;
-        double itemWidth = (screanWidth / 2.0) - 32.0;
+        double itemWidth = (screanWidth /userSetting.crossCount.toDouble()) - 32.0;
         double radio =
             _lightingStore.iStores[index - 3].illusts.height.toDouble() /
                 _lightingStore.iStores[index - 3].illusts.width.toDouble();

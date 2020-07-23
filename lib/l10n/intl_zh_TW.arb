@@ -155,5 +155,7 @@
   "Let_Go_And_Load_More": "鬆開手以載入更多",
   "No_More_Data": "沒有更多資料了",
   "Retry_Failed_Tasks": "重試失敗工作",
-  "Clear_Completed_Tasks": "清空已完成工作"
+  "Clear_Completed_Tasks": "清空已完成工作",
+  "Crosscount": "列數",
+  "Need_To_Restart_App": "需要重啟app"
 }

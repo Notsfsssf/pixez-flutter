@@ -217,6 +217,8 @@ class _TaskPageState extends State<TaskPage> {
                                         await FlutterDownloader.retry(
                                       taskId: data.taskId,
                                     ); //bug
+                                    saveStore.maps[data.taskId]=null;
+                                    saveStore.urls.remove(data.url);
                                     saveStore.maps[taskId] = SaveData()
                                       ..illusts = data.illusts
                                       ..fileName = data.filename;

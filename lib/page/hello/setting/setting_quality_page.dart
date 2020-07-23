@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constraint.dart';
@@ -111,6 +112,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       ],
                       onTap: (index) {
                         userSetting.change(index);
+                        BotToast.showText(text: I18n.of(context).Need_To_Restart_App);
                       },
                       controller: TabController(
                           length: 2,
@@ -232,6 +234,40 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 })
               ],
             )),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    child: Text(I18n.of(context).Crosscount),
+                    padding: EdgeInsets.all(16),
+                  ),
+                  Observer(builder: (_) {
+                    return TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Tab(
+                          text: '2',
+                        ),
+                        Tab(
+                          text: '4',
+                        )
+                      ],
+                      onTap: (index) {
+                        userSetting.setCrossCount(index==0?2:4);
+                      },
+                      controller: TabController(
+                          length: 2,
+                          vsync: this,
+                          initialIndex: userSetting.crossCount==2?0:1),
+                    );
+                  }),
+                ],
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

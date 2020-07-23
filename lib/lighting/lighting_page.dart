@@ -215,7 +215,7 @@ class _LightingListState extends State<LightingList> {
               if (needToBan(_store.iStores[index].illusts))
                 return StaggeredTile.extent(1, 0.0);
               double screanWidth = MediaQuery.of(context).size.width;
-              double itemWidth = (screanWidth / 2.0) - 32.0;
+              double itemWidth = (screanWidth /userSetting.crossCount.toDouble()) - 32.0;
               double radio = _store.iStores[index].illusts.height.toDouble() /
                   _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;
@@ -226,7 +226,7 @@ class _LightingListState extends State<LightingList> {
               return StaggeredTile.extent(1, mainAxisExtent + 80.0);
             },
             itemCount: _store.iStores.length,
-            crossAxisCount: 2,
+            crossAxisCount: userSetting.crossCount,
           )
         : StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
@@ -241,7 +241,7 @@ class _LightingListState extends State<LightingList> {
               if (needToBan(_store.iStores[index].illusts))
                 return StaggeredTile.extent(1, 0.0);
               double screanWidth = MediaQuery.of(context).size.width;
-              double itemWidth = (screanWidth / 2.0) - 32.0;
+              double itemWidth = (screanWidth /userSetting.crossCount.toDouble()) - 32.0;
               double radio = _store.iStores[index].illusts.height.toDouble() /
                   _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;
@@ -252,7 +252,7 @@ class _LightingListState extends State<LightingList> {
               return StaggeredTile.extent(1, mainAxisExtent + 80.0);
             },
             itemCount: _store.iStores.length,
-            crossAxisCount: 2,
+            crossAxisCount: userSetting.crossCount,
           );
   }
 }
