@@ -60,7 +60,7 @@ dependencies:
   flutter_hooks: ^0.12.0
   flutter_downloader: ^1.4.4
   pull_to_refresh: ^1.6.0
-  flutter_inappwebview: ^4.0.0+4
+  # flutter_inappwebview: ^4.0.0+4
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

@@ -314,13 +314,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.0"
-  flutter_inappwebview:
-    dependency: "direct main"
-    description:
-      name: flutter_inappwebview
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.0.0+4"
   flutter_localizations:
     dependency: "direct main"
     description: flutter

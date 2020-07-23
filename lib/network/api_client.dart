@@ -59,10 +59,10 @@ class ApiClient {
       ..options.headers = {
         "X-Client-Time": time,
         "X-Client-Hash": getHash(time + hashSalt),
-        "User-Agent": "PixivAndroidApp/5.0.155 (Android 6.0; Pixel C)",
+        "User-Agent": "PixivAndroidApp/5.0.155 (Android 10.0; Pixel C)",
         HttpHeaders.acceptLanguageHeader: Accept_Language,
         "App-OS": "Android",
-        "App-OS-Version": "Android 6.0",
+        "App-OS-Version": "Android 10.0",
         "App-Version": "5.0.166",
         "Host": BASE_API_URL_HOST
       }

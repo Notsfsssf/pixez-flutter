@@ -119,7 +119,7 @@ class _CommentPageState extends State<CommentPage> {
                                               "Reply",
                                               style: TextStyle(
                                                   color: Theme.of(context)
-                                                      .primaryColor),
+                                                      .accentColor),
                                             ))
                                       ],
                                     ),

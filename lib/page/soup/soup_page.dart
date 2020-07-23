@@ -77,6 +77,7 @@ class _SoupPageState extends State<SoupPage> {
   }
 
   Widget buildBlocProvider() {
+    if(_soupStore.amWorks.isEmpty) return Container();
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
         if (index == 0)
