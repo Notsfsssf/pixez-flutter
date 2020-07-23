@@ -112,7 +112,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       ],
                       onTap: (index) {
                         userSetting.change(index);
-                        BotToast.showText(text: I18n.of(context).Need_To_Restart_App);
                       },
                       controller: TabController(
                           length: 2,
@@ -258,6 +257,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       ],
                       onTap: (index) {
                         userSetting.setCrossCount(index==0?2:4);
+                          BotToast.showText(text: I18n.of(context).Need_To_Restart_App);
                       },
                       controller: TabController(
                           length: 2,

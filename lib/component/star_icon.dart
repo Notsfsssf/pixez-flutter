@@ -103,8 +103,10 @@ class _StarIconState extends State<StarIcon> {
       width: 36,
       child: LikeButton(
         size: 24,
+        countPostion: CountPostion.bottom,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
+        padding: EdgeInsets.all(0.0),
         circleColor: CircleColor(start: Colors.transparent, end: Colors.red),
         bubblesColor: BubblesColor(
           dotPrimaryColor: Colors.red,
