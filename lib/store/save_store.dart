@@ -26,6 +26,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -170,12 +171,14 @@ abstract class _SaveStoreBase with Store {
   StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
   List<String> urls = [];
-Future<String> _findLocalPath() async {
+  Future<String> _findLocalPath() async {
     final directory = Platform.isAndroid
         ? (await getTemporaryDirectory()).path
-        : (await getApplicationDocumentsDirectory()).path+'/pixez';
+        : (await getApplicationDocumentsDirectory()).path + '/pixez';
     return directory;
   }
+
+
   _joinQueue(String url, Illusts illusts, String fileName) async {
     if (urls.contains(url)) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
@@ -183,7 +186,7 @@ Future<String> _findLocalPath() async {
     }
 
     String tempPath = await _findLocalPath();
-    if(!Directory(tempPath).existsSync()){
+    if (!Directory(tempPath).existsSync()) {
       Directory(tempPath).createSync();
     }
     final taskId = await FlutterDownloader.enqueue(
@@ -193,6 +196,7 @@ Future<String> _findLocalPath() async {
         "referer": "https://app-api.pixiv.net/",
         "User-Agent": "PixivIOSApp/5.8.0"
       },
+      fileName: fileName,
       showNotification:
           false, // show download progress in status bar (for Android)
       openFileFromNotification:

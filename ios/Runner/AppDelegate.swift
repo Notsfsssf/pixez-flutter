@@ -28,41 +28,25 @@ import flutter_downloader
             
         })
         GeneratedPluginRegistrant.register(with: self)
-        FlutterDownloaderPlugin.setPluginRegistrantCallback { registry in
+        FlutterDownloaderPlugin.setPluginRegistrantCallback { (registry:FlutterPluginRegistry) in
                 if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
                    FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin"))
                 }
         }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-    
-    func registerPlugins(registry: FlutterPluginRegistry) {
-        if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
-           FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin"))
-        }
-    }
+
     
     @objc private func saveImage(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: AnyObject) {
-        
         var showMessage = ""
-        
         if error != nil{
-            
             showMessage = "保存失败"
-            
         }else{
-            
             showMessage = "保存成功"
-            
         }
-        
         print("encode result: \(showMessage)")
-        
-        
-        
-        
-        
     }
+    
     func getAllFilePath(_ dirPath: String) -> [String]? {
         var filePaths = [String]()
         
@@ -87,6 +71,7 @@ import flutter_downloader
         
         return filePaths;
     }
+    
     func saveImageInAlbum(albumName: String = "",gifPath:String) {
            var assetAlbum: PHAssetCollection?
            if albumName.isEmpty {
@@ -115,7 +100,7 @@ import flutter_downloader
                }
            }
            PHPhotoLibrary.shared().performChanges({
-     let url = URL(fileURLWithPath: gifPath)
+            let url = URL(fileURLWithPath: gifPath)
             let result =   PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: url)
 
             
@@ -145,7 +130,7 @@ import flutter_downloader
         let docs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let gifPath =  docs[0] as String + "/"+String(Int(Date.init().timeIntervalSince1970)) + ".gif"
         var paths = getAllFilePath(path)
-      paths =  paths?.sorted{$0.localizedStandardCompare($1) == .orderedAscending}  
+        paths =  paths?.sorted{$0.localizedStandardCompare($1) == .orderedAscending}
         let imageArray: NSMutableArray = NSMutableArray()
         for i in paths! {
             print(i)
@@ -180,9 +165,5 @@ import flutter_downloader
             print("kkkkkkkk\(images.count)")
         }
         return CGImageDestinationFinalize(destion!)
-        
-        
-        
-        
     }
 }

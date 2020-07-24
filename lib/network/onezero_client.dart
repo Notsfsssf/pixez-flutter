@@ -25,10 +25,7 @@ class OnezeroClient {
   static const String URL_DNS_RESOLVER = "https://1.0.0.1";
   OnezeroClient() {
     this.httpClient =
-        Dio(BaseOptions(baseUrl: URL_DNS_RESOLVER, connectTimeout: 5000))
-          ..interceptors
-              .add(LogInterceptor(requestBody: true, requestHeader: true));
-
+        Dio(BaseOptions(baseUrl: URL_DNS_RESOLVER, connectTimeout: 5000));
     (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
       HttpClient httpClient = new HttpClient();
@@ -56,7 +53,6 @@ class OnezeroClient {
           'name': name,
           'type': 'A',
         });
-
     return onezeroResponseFromJson(response.data);
   }
 }
