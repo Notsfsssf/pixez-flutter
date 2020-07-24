@@ -67,7 +67,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
+//      ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {

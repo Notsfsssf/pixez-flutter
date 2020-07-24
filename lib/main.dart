@@ -40,7 +40,7 @@ final HistoryStore historyStore = HistoryStore();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(debug: true);
+  await FlutterDownloader.initialize(debug: false);
   runApp(MyApp());
 }
 

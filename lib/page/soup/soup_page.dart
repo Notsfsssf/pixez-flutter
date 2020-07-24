@@ -93,8 +93,7 @@ class _SoupPageState extends State<SoupPage> {
             Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(builder: (BuildContext context) {
               return IllustPage(
-                  id: int.parse(amWork.arworkLink
-                      .replaceAll('https://www.pixiv.net/artworks/', '')));
+                  id: int.parse(Uri.parse(amWork.arworkLink).pathSegments[Uri.parse(amWork.arworkLink).pathSegments.length-1]));
             }));
           },
           child: Card(
@@ -107,8 +106,7 @@ class _SoupPageState extends State<SoupPage> {
                 ListTile(
                   leading: PainterAvatar(
                     url: amWork.userImage,
-                    id: int.parse(amWork.userLink
-                        .replaceAll('https://www.pixiv.net/users/', '')),
+                    id: int.parse(Uri.parse(amWork.userLink).pathSegments[Uri.parse(amWork.userLink).pathSegments.length-1]),
                   ),
                   title: Text(amWork.title),
                   subtitle: Text(amWork.user),
