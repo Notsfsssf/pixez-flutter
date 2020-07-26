@@ -12,7 +12,7 @@
 
 |系统|来源|
 |:---:|:---:|
-|Android|[Goolge play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
+|Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
 |iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|
 
 # 预览
