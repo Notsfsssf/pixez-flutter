@@ -179,7 +179,6 @@ abstract class _SaveStoreBase with Store {
   }
 
   _joinQueue(String url, Illusts illusts, String fileName) async {
-    print('save hash${saveStore.urls.hashCode}');
     if (saveStore.urls.contains(url)) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
@@ -198,7 +197,7 @@ abstract class _SaveStoreBase with Store {
       },
       fileName: fileName,
       showNotification:
-          true, // show download progress in status bar (for Android)
+          false, // show download progress in status bar (for Android)
       openFileFromNotification:
           false, // click on notification to open downloaded file (for Android)
     );

@@ -190,7 +190,13 @@ class _LightingListState extends State<LightingList> {
                 Container(
                   height: 90,
                 ),
-                Text(':(', style: Theme.of(context).textTheme.headline4),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(':(', style: Theme.of(context).textTheme.headline4),
+                ),
+                FlatButton(onPressed: (){
+                  _store.fetch();
+                }, child: Text(I18n.of(context).Retry)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text('${_store.errorMessage}'),

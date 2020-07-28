@@ -72,25 +72,15 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
     time = _port.hashCode;
-    debugPrint('time${time}');
     initMethod();
     super.initState();
   }
 
   initMethod() async {
-    int portInt = 0;
-    bool success = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader${portInt}');
-    while (!success && portInt <= 1) {
-      portInt++;
-      success = IsolateNameServer.registerPortWithName(
-          _port.sendPort, 'downloader${portInt}');
-      if(success) break;
-    }
-    print('final regitser :downloader${portInt}');
+    bool success =
+        IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader');
     if (!success) return;
     _port.listen((dynamic data) async {
-      print('listen hash${saveStore.urls.hashCode}');
       String id = data[0];
       DownloadTaskStatus status = data[1];
       if (status == DownloadTaskStatus.complete) {
@@ -122,25 +112,16 @@ class _MyAppState extends State<MyApp> {
   removeUrl(String id) async {
     saveStore.maps[id] = null;
     String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
-    debugPrint(queryString);
     final tasks =
         await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
     if (tasks != null && tasks.isNotEmpty) {
-      print('remove hash${saveStore.urls.hashCode}');
-      print(saveStore.urls.remove(tasks.first.url));
+      saveStore.urls.remove(tasks.first.url);
     }
   }
 
   static void downloadCallback(
       String id, DownloadTaskStatus status, int progress) {
-    int portInt = 0;
-    SendPort send = IsolateNameServer.lookupPortByName('downloader${portInt}');
-    while (send == null && portInt <= 1) {
-      portInt++;
-      send = IsolateNameServer.lookupPortByName('downloader${portInt}'); //无奈之举
-    }
-
-    print('final regitsr :downloader${portInt}');
+    SendPort send = IsolateNameServer.lookupPortByName('downloader');
     if (send != null) send.send([id, status, progress]);
     final SendPort send1 = IsolateNameServer.lookupPortByName('downloader_pro');
     if (send1 != null) send1.send([id, status, progress]);

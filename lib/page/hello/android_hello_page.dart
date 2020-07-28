@@ -128,7 +128,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       try {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
+            .pushReplacement(MaterialPageRoute(builder: (context) {
           saveStore.context = context;
           return IllustPage(
             id: id,
@@ -142,7 +142,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       try {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
+            .pushReplacement(MaterialPageRoute(builder: (context) {
           saveStore.context = context;
           return UsersPage(
             id: id,
@@ -159,7 +159,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
               return IllustPage(id: id);
             }));
@@ -174,7 +174,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
               return UsersPage(
                 id: id,
@@ -189,7 +189,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         try {
           var id = link.queryParameters['illust_id'];
           Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
+              .pushReplacement(MaterialPageRoute(builder: (context) {
             saveStore.context = context;
             return IllustPage(id: int.parse(id));
           }));
@@ -201,7 +201,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         try {
           var id = link.queryParameters['id'];
           Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
+              .pushReplacement(MaterialPageRoute(builder: (context) {
             saveStore.context = context;
             return UsersPage(
               id: int.parse(id),
@@ -217,7 +217,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
               return IllustPage(id: id);
             }));
@@ -229,7 +229,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .pushReplacement(MaterialPageRoute(builder: (context) {
               saveStore.context = context;
               return UsersPage(
                 id: id,

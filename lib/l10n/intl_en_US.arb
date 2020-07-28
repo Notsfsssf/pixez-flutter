@@ -157,5 +157,7 @@
   "Retry_Failed_Tasks": "Retry failed tasks",
   "Clear_Completed_Tasks": "Clear completed tasks",
   "Crosscount": "Crosscount",
-  "Need_To_Restart_App": "Need to restart app"
+  "Need_To_Restart_App": "Need to restart app",
+  "refresh": "Refresh",
+  "Retry": "Retry"
 }

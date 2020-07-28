@@ -157,5 +157,7 @@
   "Retry_Failed_Tasks": "重試失敗工作",
   "Clear_Completed_Tasks": "清空已完成工作",
   "Crosscount": "列數",
-  "Need_To_Restart_App": "需要重啟app"
+  "Need_To_Restart_App": "需要重啟app",
+  "refresh": "刷新",
+  "Retry": "重試"
 }
