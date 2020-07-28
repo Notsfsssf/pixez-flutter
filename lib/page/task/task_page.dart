@@ -242,7 +242,7 @@ class _TaskPageState extends State<TaskPage> {
                             },
                           ),
                           data.status.value > 3
-                              ? []
+                              ? Container(height: 0,)
                               : data.progress == 100
                                   ? Icon(
                                       Icons.check_circle,

@@ -22,6 +22,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/error_message.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+
 part 'illust_store.g.dart';
 
 class IllustStore = _IllustStoreBase with _$IllustStore;
@@ -35,9 +36,11 @@ abstract class _IllustStoreBase with Store {
   bool isBookmark;
   @observable
   String errorMessage;
+
   _IllustStoreBase(this.id, this.illusts) {
     isBookmark = illusts?.isBookmarked ?? false;
   }
+
   @action
   fetch() async {
     errorMessage = null;
@@ -49,10 +52,10 @@ abstract class _IllustStoreBase with Store {
 
         illusts = result;
       } on DioError catch (e) {
-        if (e.response.statusCode == HttpStatus.notFound) {
-          errorMessage = '404 Not Found';
-        }
         if (e.response != null) {
+          if (e.response.statusCode == HttpStatus.notFound) {
+            errorMessage = '404 Not Found';
+          }
           errorMessage = ErrorMessage.fromJson(e.response.data).error.message;
         } else {
           errorMessage = e.toString();

@@ -14,14 +14,17 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pixez/constraint.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
@@ -30,6 +33,7 @@ import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:provider/provider.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -51,11 +55,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ReceivePort _port = ReceivePort();
+
   @override
   void dispose() {
-    // IsolateNameServer.removePortNameMapping('downloader_send_port');
+    IsolateNameServer.removePortNameMapping('downloader');
     super.dispose();
   }
+
+  static int time;
 
   @override
   void initState() {
@@ -64,19 +71,30 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
+    time = _port.hashCode;
+    debugPrint('time${time}');
     initMethod();
     super.initState();
   }
 
   initMethod() async {
-    IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+    int portInt = 0;
+    bool success = IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader${portInt}');
+    while (!success && portInt <= 1) {
+      portInt++;
+      success = IsolateNameServer.registerPortWithName(
+          _port.sendPort, 'downloader${portInt}');
+      if(success) break;
+    }
+    print('final regitser :downloader${portInt}');
+    if (!success) return;
     _port.listen((dynamic data) async {
+      print('listen hash${saveStore.urls.hashCode}');
       String id = data[0];
       DownloadTaskStatus status = data[1];
       if (status == DownloadTaskStatus.complete) {
         String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
-        debugPrint(queryString);
         final tasks = await FlutterDownloader.loadTasksWithRawQuery(
             query: queryString); //迷惑行为
         if (tasks != null && tasks.isNotEmpty) {
@@ -90,31 +108,39 @@ class _MyAppState extends State<MyApp> {
           saveStore.streamController
               .add(SaveStream(SaveState.SUCCESS, saveStore.maps[id].illusts));
         }
-        if (status == DownloadTaskStatus.canceled) {
-          await removeUrl(id);
-        }
-        if (status == DownloadTaskStatus.failed) {
-          await removeUrl(id);
-        }
+      }
+      if (status == DownloadTaskStatus.canceled) {
+        await removeUrl(id);
+      }
+      if (status == DownloadTaskStatus.failed) {
+        await removeUrl(id);
       }
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
 
   removeUrl(String id) async {
+    saveStore.maps[id] = null;
     String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
     debugPrint(queryString);
     final tasks =
         await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
     if (tasks != null && tasks.isNotEmpty) {
-      saveStore.urls.remove(tasks.first.url);
+      print('remove hash${saveStore.urls.hashCode}');
+      print(saveStore.urls.remove(tasks.first.url));
     }
   }
 
-  static Future<void> downloadCallback(
-      String id, DownloadTaskStatus status, int progress) async {
-    final SendPort send =
-        IsolateNameServer.lookupPortByName('downloader_send_port');
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    int portInt = 0;
+    SendPort send = IsolateNameServer.lookupPortByName('downloader${portInt}');
+    while (send == null && portInt <= 1) {
+      portInt++;
+      send = IsolateNameServer.lookupPortByName('downloader${portInt}'); //无奈之举
+    }
+
+    print('final regitsr :downloader${portInt}');
     if (send != null) send.send([id, status, progress]);
     final SendPort send1 = IsolateNameServer.lookupPortByName('downloader_pro');
     if (send1 != null) send1.send([id, status, progress]);
@@ -122,30 +148,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorObservers: [BotToastNavigatorObserver()],
-      home: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-          child: SplashPage()),
-      title: 'PixEz',
-      builder: BotToastInit(),
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.cyan[500],
-        accentColor: Colors.cyan[400],
-        indicatorColor: Colors.cyan[500],
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        accentColor: Colors.cyan[500],
-      ),
-      supportedLocales: I18n.delegate.supportedLocales,
-      localizationsDelegates: [
-        I18n.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
+    return MultiProvider(
+      providers: [
+        Provider(
+          create: (BuildContext context) => saveStore,
+        ),
       ],
+      child: MaterialApp(
+        navigatorObservers: [BotToastNavigatorObserver()],
+        home: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+            child: SplashPage()),
+        title: 'PixEz',
+        builder: BotToastInit(),
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.cyan[500],
+          accentColor: Colors.cyan[400],
+          indicatorColor: Colors.cyan[500],
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Colors.cyan[500],
+        ),
+        supportedLocales: I18n.delegate.supportedLocales,
+        localizationsDelegates: [
+          I18n.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
+      ),
     );
   }
 }

@@ -20,6 +20,7 @@ abstract class _SoupStoreBase with Store {
     HttpHeaders.refererHeader: 'https://www.pixivision.net/zh/',
   }));
   ObservableList<AmWork> amWorks = ObservableList();
+
   @observable
   String description;
 

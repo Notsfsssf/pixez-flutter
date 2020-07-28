@@ -14,63 +14,101 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class PixivImage extends StatelessWidget {
+class PixivImage extends HookWidget {
   final String url;
   final String placeHolder;
   final Widget placeWidget;
   PixivImage(this.url, {this.placeHolder, this.placeWidget});
-
   @override
   Widget build(BuildContext context) {
-    if (placeWidget != null) {
-      return CachedNetworkImage(
-        placeholder: (BuildContext context, String url) {
-          return placeWidget;
-        },
-        imageUrl: url,
-        httpHeaders: {
-          "referer": "https://app-api.pixiv.net/",
-          "User-Agent": "PixivIOSApp/5.8.0"
-        },
-        fit: BoxFit.fitWidth,
-      );
-    }
-    return placeHolder != null
-        ? CachedNetworkImage(
+    final _streamController = useStreamController<bool>();
+    return StreamBuilder<bool>(
+      builder: (context, snapshot) {
+        if (placeWidget != null) {
+          return CachedNetworkImage(
             placeholder: (BuildContext context, String url) {
-              return CachedNetworkImage(
-                imageUrl: placeHolder,
+              return placeWidget;
+            },
+            imageUrl: url,
+            httpHeaders: {
+              "referer": "https://app-api.pixiv.net/",
+              "User-Agent": "PixivIOSApp/5.8.0"
+            },
+            errorWidget: (context, url, error) => Container(
+              height: 200,
+              child: Center(
+                child: IconButton(
+                    icon: Icon(Icons.error),
+                    onPressed: () {
+                      _streamController.add(true);
+                    }),
+              ),
+            ),
+            fit: BoxFit.fitWidth,
+          );
+        }
+        return placeHolder != null
+            ? CachedNetworkImage(
+                placeholder: (BuildContext context, String url) {
+                  return CachedNetworkImage(
+                    imageUrl: placeHolder,
+                    httpHeaders: {
+                      "referer": "https://app-api.pixiv.net/",
+                      "User-Agent": "PixivIOSApp/5.8.0"
+                    },
+                    fit: BoxFit.fitWidth,
+                  );
+                },
+                imageUrl: url,
                 httpHeaders: {
                   "referer": "https://app-api.pixiv.net/",
                   "User-Agent": "PixivIOSApp/5.8.0"
                 },
+                errorWidget: (context, url, error) => Container(
+                  height: 200,
+                  child: Center(
+                    child: IconButton(
+                        icon: Icon(Icons.error),
+                        onPressed: () {
+                          _streamController.add(true);
+                        }),
+                  ),
+                ),
+                fit: BoxFit.fitWidth,
+              )
+            : CachedNetworkImage(
+                imageUrl: url,
+                httpHeaders: {
+                  "referer": "https://app-api.pixiv.net/",
+                  "User-Agent": "PixivIOSApp/5.8.0"
+                },
+                placeholder: (context, url) {
+                  return Container(
+                    height: 100,
+                  );
+                },
+                errorWidget: (context, url, error) => Container(
+                  height: 200,
+                  child: Center(
+                    child: IconButton(
+                        icon: Icon(Icons.error),
+                        onPressed: () {
+                          _streamController.add(true);
+                        }),
+                  ),
+                ),
                 fit: BoxFit.fitWidth,
               );
-            },
-            imageUrl: url,
-            httpHeaders: {
-              "referer": "https://app-api.pixiv.net/",
-              "User-Agent": "PixivIOSApp/5.8.0"
-            },
-            fit: BoxFit.fitWidth,
-          )
-        : CachedNetworkImage(
-            imageUrl: url,
-            httpHeaders: {
-              "referer": "https://app-api.pixiv.net/",
-              "User-Agent": "PixivIOSApp/5.8.0"
-            },
-            placeholder: (context, url) {
-              return Container(
-                height: 100,
-              );
-            },
-            fit: BoxFit.fitWidth,
-          );
+      },
+      stream: _streamController.stream,
+    );
   }
 }
 

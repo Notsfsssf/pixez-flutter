@@ -38,6 +38,8 @@ import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
+import 'package:pixez/store/save_store.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
@@ -788,6 +790,7 @@ class _IllustPageState extends State<IllustPage> {
             child: PixivImage(
               data.imageUrls.large,
               placeHolder: data.imageUrls.medium,
+              
             ),
             tag: '${data.imageUrls.medium}${widget.heroString}',
           )

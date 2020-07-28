@@ -170,7 +170,7 @@ abstract class _SaveStoreBase with Store {
   Map<String, SaveData> maps = HashMap();
   StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
-  List<String> urls = [];
+  Set<String> urls = Set();
   Future<String> _findLocalPath() async {
     final directory = Platform.isAndroid
         ? (await getTemporaryDirectory()).path
@@ -178,9 +178,9 @@ abstract class _SaveStoreBase with Store {
     return directory;
   }
 
-
   _joinQueue(String url, Illusts illusts, String fileName) async {
-    if (urls.contains(url)) {
+    print('save hash${saveStore.urls.hashCode}');
+    if (saveStore.urls.contains(url)) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
     }
@@ -198,14 +198,14 @@ abstract class _SaveStoreBase with Store {
       },
       fileName: fileName,
       showNotification:
-          false, // show download progress in status bar (for Android)
+          true, // show download progress in status bar (for Android)
       openFileFromNotification:
           false, // click on notification to open downloaded file (for Android)
     );
     maps[taskId] = SaveData()
       ..illusts = illusts
       ..fileName = fileName;
-    urls.add(url);
+    urls.add(url.trim());
     if (maps.values.length > 50) {
       final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
           query: 'SELECT * FROM task WHERE status=3');
