@@ -16,11 +16,11 @@
 
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/trend_tags.dart';
@@ -42,6 +42,7 @@ class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin {
   String editString = "";
   TrendTagsStore _trendTagsStore;
+
   @override
   void initState() {
     _controller = RefreshController(initialRefresh: true);
@@ -58,6 +59,7 @@ class _SearchPageState extends State<SearchPage>
   }
 
   RefreshController _controller;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -188,13 +190,8 @@ class _SearchPageState extends State<SearchPage>
                   borderRadius: BorderRadius.circular(3.0),
                   child: Stack(
                     children: <Widget>[
-                      CachedNetworkImage(
-                        imageUrl: tags[index].illust.imageUrls.squareMedium,
-                        httpHeaders: {
-                          "referer": "https://app-api.pixiv.net/",
-                          "User-Agent": "PixivIOSApp/5.8.0"
-                        },
-                        fit: BoxFit.fitWidth,
+                      PixivImage(
+                        tags[index].illust.imageUrls.squareMedium,
                       ),
                       Align(
                         child: BackdropFilter(

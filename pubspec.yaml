@@ -28,8 +28,6 @@ dependencies:
   shared_preferences: ^0.5.8
   flutter_staggered_grid_view:
     path: plugins/flutter_staggered_grid_view
-  cached_network_image: ^2.2.0+1
-  flutter_cache_manager: ^1.4.1
   flutter_easyrefresh: ^2.1.1
   share: ^0.6.4+3
   share_extend: ^1.1.9
@@ -59,8 +57,9 @@ dependencies:
   badges: ^1.1.1
   flutter_hooks: ^0.12.0
   flutter_downloader: ^1.4.4
-  pull_to_refresh: ^1.6.0
-  # flutter_inappwebview: ^4.0.0+4
+  pull_to_refresh: ^1.6.1
+  extended_image: ^0.9.0
+  waterfall_flow: any
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

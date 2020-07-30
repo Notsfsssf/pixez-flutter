@@ -41,60 +41,66 @@ class _NewIllustPageState extends State<NewIllustPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LightingList(
-      header: Container(
-          child: Align(
-        alignment: Alignment.centerRight,
-        child: IconButton(
-            icon: Icon(Icons.list),
-            onPressed: () {
-              showModalBottomSheet(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16),
+    return Column(
+      children: <Widget>[
+        Container(
+            child: Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+              icon: Icon(Icons.list),
+              onPressed: () {
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
                     ),
-                  ),
-                  context: context,
-                  builder: (context) => SafeArea(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(I18n.of(context).All),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  futureGet =
-                                      () => apiClient.getFollowIllusts('all');
-                                });
-                              },
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).public),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  futureGet = () =>
-                                      apiClient.getFollowIllusts('public');
-                                });
-                              },
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).private),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  futureGet = () =>
-                                      apiClient.getFollowIllusts('private');
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ));
-            }),
-      )),
-      source: futureGet,
+                    context: context,
+                    builder: (context) => SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(I18n.of(context).All),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    futureGet =
+                                        () => apiClient.getFollowIllusts('all');
+                                  });
+                                },
+                              ),
+                              ListTile(
+                                title: Text(I18n.of(context).public),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    futureGet = () =>
+                                        apiClient.getFollowIllusts('public');
+                                  });
+                                },
+                              ),
+                              ListTile(
+                                title: Text(I18n.of(context).private),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    futureGet = () =>
+                                        apiClient.getFollowIllusts('private');
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ));
+              }),
+        )),
+        Expanded(
+          child: LightingList(
+            source: futureGet,
+          ),
+        ),
+      ],
     );
   }
 }

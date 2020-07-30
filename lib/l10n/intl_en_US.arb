@@ -159,5 +159,8 @@
   "Crosscount": "Crosscount",
   "Need_To_Restart_App": "Need to restart app",
   "refresh": "Refresh",
-  "Retry": "Retry"
+  "Retry": "Retry",
+  "LoadImageFailedClickToReload": "load image failed, click to reload",
+  "medium": "中等",
+  "Illustration_detail_page_quality": "Illust detail page quality"
 }

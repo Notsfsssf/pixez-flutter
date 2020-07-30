@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,12 +25,14 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
   final ScrollController scrollController;
   final bool isNested;
+
   const LightingList(
       {Key key,
       @required this.source,
@@ -52,7 +55,6 @@ class _LightingListState extends State<LightingList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
-      _refreshController.footerMode?.value = LoadStatus.idle;
       _store.fetch();
       if (!isNested && _store.iStores.isNotEmpty) _scrollController.jumpTo(0.0);
     }
@@ -89,6 +91,7 @@ class _LightingListState extends State<LightingList> {
   }
 
   bool backToTopEnable = false;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -129,6 +132,7 @@ class _LightingListState extends State<LightingList> {
   }
 
   RefreshController _refreshController = RefreshController();
+
   Widget _buildNewRefresh(context) {
     return SmartRefresher(
       enablePullDown: true,
@@ -192,11 +196,14 @@ class _LightingListState extends State<LightingList> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(':(', style: Theme.of(context).textTheme.headline4),
+                  child:
+                      Text(':(', style: Theme.of(context).textTheme.headline4),
                 ),
-                FlatButton(onPressed: (){
-                  _store.fetch();
-                }, child: Text(I18n.of(context).Retry)),
+                FlatButton(
+                    onPressed: () {
+                      _store.fetch();
+                    },
+                    child: Text(I18n.of(context).Retry)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text('${_store.errorMessage}'),
@@ -205,6 +212,29 @@ class _LightingListState extends State<LightingList> {
             ),
           )
         : _store.iStores.isNotEmpty ? _buildBody() : Container();
+  }
+
+  Widget _buildWater() {
+    return WaterfallFlow.builder(
+      itemCount: _store.iStores.length,
+      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        collectGarbage: (List<int> garbages) {
+          garbages.forEach((index) {
+            final provider = ExtendedNetworkImageProvider(
+              _store.iStores[index].illusts.imageUrls.medium,
+            );
+            provider.evict();
+          });
+        },
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        return IllustCard(
+          store: _store.iStores[index],
+          iStores: _store.iStores,
+        );
+      },
+    );
   }
 
   Widget _buildBody() {
@@ -221,7 +251,8 @@ class _LightingListState extends State<LightingList> {
               if (needToBan(_store.iStores[index].illusts))
                 return StaggeredTile.extent(1, 0.0);
               double screanWidth = MediaQuery.of(context).size.width;
-              double itemWidth = (screanWidth /userSetting.crossCount.toDouble()) - 32.0;
+              double itemWidth =
+                  (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
               double radio = _store.iStores[index].illusts.height.toDouble() /
                   _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;
@@ -247,7 +278,8 @@ class _LightingListState extends State<LightingList> {
               if (needToBan(_store.iStores[index].illusts))
                 return StaggeredTile.extent(1, 0.0);
               double screanWidth = MediaQuery.of(context).size.width;
-              double itemWidth = (screanWidth /userSetting.crossCount.toDouble()) - 32.0;
+              double itemWidth =
+                  (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
               double radio = _store.iStores[index].illusts.height.toDouble() /
                   _store.iStores[index].illusts.width.toDouble();
               double mainAxisExtent;

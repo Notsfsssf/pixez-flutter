@@ -19,14 +19,13 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -183,7 +182,6 @@ abstract class _SaveStoreBase with Store {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
     }
-
     String tempPath = await _findLocalPath();
     if (!Directory(tempPath).existsSync()) {
       Directory(tempPath).createSync();
@@ -231,13 +229,11 @@ abstract class _SaveStoreBase with Store {
       } catch (e) {}
     }
     streamController.add(SaveStream(SaveState.JOIN, illusts));
-    FileInfo fileInfo = await DefaultCacheManager().getFileFromCache(url);
-    Uint8List uint8list;
-    if (fileInfo == null) {
+    File file = await getCachedImageFile(url);
+    if (file == null) {
       _joinQueue(url, illusts, fileName);
     } else {
-      uint8list = await fileInfo.file.readAsBytes();
-      saveToGallery(uint8list, illusts, fileName);
+      saveToGallery(file.readAsBytesSync(), illusts, fileName);
     }
   }
 

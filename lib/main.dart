@@ -14,17 +14,14 @@
  *
  */
 
-import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:math';
 import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:pixez/constraint.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
@@ -110,7 +107,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   removeUrl(String id) async {
-    saveStore.maps[id] = null;
+//    saveStore.maps[id] = null;
     String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
     final tasks =
         await FlutterDownloader.loadTasksWithRawQuery(query: queryString);

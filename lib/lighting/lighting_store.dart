@@ -44,6 +44,8 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetch() async {
     nextUrl = null;
     errorMessage = null;
+    if(_controller?.footerMode!=null)
+    _controller?.footerMode?.value = LoadStatus.idle;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);

@@ -14,7 +14,7 @@
  *
  */
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/models/spotlight_response.dart';
@@ -22,8 +22,10 @@ import 'package:pixez/page/soup/soup_page.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
- static const platform = const MethodChannel('samples.flutter.dev/battery');
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
+
   const SpotlightCard({Key key, this.spotlight}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,9 +72,9 @@ class SpotlightCard extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   child: Container(
-                    child: CachedNetworkImage(
-                      imageUrl: spotlight.thumbnail,
-                      httpHeaders: {
+                    child: ExtendedImage.network(
+                      spotlight.thumbnail,
+                      headers: {
                         "referer": "https://app-api.pixiv.net/",
                         "User-Agent": "PixivIOSApp/5.8.0"
                       },

@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,8 +49,10 @@ class IllustPage extends StatefulWidget {
   final int id;
   final String heroString;
   final IllustStore store;
+
   const IllustPage({Key key, @required this.id, this.store, this.heroString})
       : super(key: key);
+
   @override
   _IllustPageState createState() => _IllustPageState();
 }
@@ -59,6 +62,7 @@ class _IllustPageState extends State<IllustPage> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
+
   @override
   void initState() {
     _illustStore = widget.store ?? IllustStore(widget.id, null);
@@ -73,10 +77,8 @@ class _IllustPageState extends State<IllustPage> {
 
   _showBookMarkTag() async {
     if (_illustStore.isBookmark) {
-     await _illustStore.star();
-     setState(() {
-       
-     });
+      await _illustStore.star();
+      setState(() {});
       return;
     }
     Response response = await apiClient.getIllustBookmarkDetail(widget.id);
@@ -531,9 +533,11 @@ class _IllustPageState extends State<IllustPage> {
                 heroTag: widget.id,
                 backgroundColor: Colors.white,
                 onPressed: () => _illustStore.star(),
-                child: StarIcon(
-                  illustStore: _illustStore,
-                ),
+                child: Observer(builder: (context) {
+                  return StarIcon(
+                    illustStore: _illustStore,
+                  );
+                }),
               ),
             ),
             body: _buildBody(context, data));
@@ -785,34 +789,63 @@ class _IllustPageState extends State<IllustPage> {
   }
 
   Widget buildPictures(BuildContext context, Illusts data, int index) {
+    if (data.pageCount == 1 && userSetting.pictureQuality == 1) {
+      return Hero(
+        child: PixivImage(
+          data.imageUrls.large,
+          fade: false,
+          placeWidget: PixivImage(
+            data.imageUrls.medium,
+            fade: false,
+          ),
+        ),
+        tag: '${data.imageUrls.medium}${widget.heroString}',
+      );
+    }
     return (data.pageCount == 1)
         ? Hero(
             child: PixivImage(
-              data.imageUrls.large,
-              placeHolder: data.imageUrls.medium,
-              
+              data.imageUrls.medium,
+              fade: false,
             ),
             tag: '${data.imageUrls.medium}${widget.heroString}',
           )
         : _buildIllustsItem(index - 1, data);
   }
 
-  Widget _buildIllustsItem(int index, Illusts illust) => index == 0
-      ? Hero(
-          child: PixivImage(
-            illust.metaPages[index].imageUrls.large,
-            placeHolder: illust.metaPages[index].imageUrls.medium,
-          ),
-          tag: '${illust.imageUrls.medium}${widget.heroString}',
-        )
-      : PixivImage(
-          illust.metaPages[index].imageUrls.large,
-          placeWidget: Container(
-            height: 150,
-            child: Center(
-              child: Text('${(index + 1)}',
-                  style: Theme.of(context).textTheme.headline4),
+  Widget _buildIllustsItem(int index, Illusts illust) {
+    return index == 0
+        ? (userSetting.pictureQuality == 1
+            ? Hero(
+                child: PixivImage(
+                  illust.metaPages[index].imageUrls.large,
+                  placeWidget: PixivImage(
+                    illust.metaPages[index].imageUrls.medium,
+                    fade: false,
+                  ),
+                  fade: false,
+                ),
+                tag: '${illust.imageUrls.medium}${widget.heroString}',
+              )
+            : Hero(
+                child: PixivImage(
+                  illust.metaPages[index].imageUrls.medium,
+                  fade: false,
+                ),
+                tag: '${illust.imageUrls.medium}${widget.heroString}',
+              ))
+        : PixivImage(
+            userSetting.pictureQuality == 0
+                ? illust.metaPages[index].imageUrls.medium
+                : illust.metaPages[index].imageUrls.large,
+            fade: false,
+            placeWidget: Container(
+              height: 150,
+              child: Center(
+                child: Text('${(index + 1)}',
+                    style: Theme.of(context).textTheme.headline4),
+              ),
             ),
-          ),
-        );
+          );
+  }
 }

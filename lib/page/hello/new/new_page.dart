@@ -40,114 +40,101 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 
-
-class _NewPageState extends State<NewPage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  TabController _controller;
-
+class _NewPageState extends State<NewPage> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        TabController(initialIndex: _selectIndex, vsync: this, length: 3);
   }
 
   @override
   void dispose() {
-    _controller?.dispose();
     super.dispose();
   }
 
-  int _selectIndex = 0;
-  var routes = ['dymanic', 'bookmark', 'painter'];
-
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Observer(builder: (context) {
       if (accountStore.now != null)
-        return Scaffold(
-          body: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              AppBar(
-                automaticallyImplyLeading: false,
-                title: TabBar(
-                    controller: _controller,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
-                      Tab(
-                        text: I18n.of(context).New,
-                      ),
-                      Tab(
-                        text: I18n.of(context).BookMark,
-                      ),
-                      Tab(
-                        text: I18n.of(context).Followed,
-                      ),
-                    ]),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.supervised_user_circle),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => UsersPage(
-                                id: int.parse(accountStore.now.userId),
-                              )));
-                    },
-                  )
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _controller,
-                  children: <Widget>[
-                    NewIllustPage(),
-                    BookmarkPage(
-                      isNested: false,
-                      id: int.parse(accountStore.now.userId),
+        return DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            body: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                AppBar(
+                  automaticallyImplyLeading: false,
+                  title:
+                      TabBar(indicatorSize: TabBarIndicatorSize.label, tabs: [
+                    Tab(
+                      text: I18n.of(context).New,
                     ),
-                    FollowList(
-                      id: int.parse(accountStore.now.userId),
+                    Tab(
+                      text: I18n.of(context).BookMark,
                     ),
+                    Tab(
+                      text: I18n.of(context).Followed,
+                    ),
+                  ]),
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.supervised_user_circle),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => UsersPage(
+                                  id: int.parse(accountStore.now.userId),
+                                )));
+                      },
+                    )
                   ],
                 ),
-              )
-            ],
+                Expanded(
+                  child: TabBarView(
+                    children: <Widget>[
+                      NewIllustPage(),
+                      BookmarkPage(
+                        isNested: false,
+                        id: int.parse(accountStore.now.userId),
+                      ),
+                      FollowList(
+                        id: int.parse(accountStore.now.userId),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         );
-      return Scaffold(
-        appBar: AppBar(
-          title: TabBar(
-            tabs: [
-              Tab(
-                child:
-                    Text('${I18n.of(context).Follow}${I18n.of(context).New}'),
+
+      return DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            appBar: AppBar(
+              title: TabBar(
+                tabs: [
+                  Tab(
+                    child: Text(
+                        '${I18n.of(context).Follow}${I18n.of(context).New}'),
+                  ),
+                  Tab(
+                    child: Text(
+                        '${I18n.of(context).Personal}${I18n.of(context).BookMark}'),
+                  ),
+                  Tab(
+                    child: Text(
+                        '${I18n.of(context).Follow}${I18n.of(context).Painter}'),
+                  ),
+                ],
               ),
-              Tab(
-                child: Text(
-                    '${I18n.of(context).Personal}${I18n.of(context).BookMark}'),
-              ),
-              Tab(
-                child: Text(
-                    '${I18n.of(context).Follow}${I18n.of(context).Painter}'),
-              ),
-            ],
-            controller: _controller,
-          ),
-        ),
-        body: TabBarView(
-          controller: _controller,
-          children: <Widget>[
-            LoginInFirst(),
-            LoginInFirst(),
-            LoginInFirst(),
-          ],
-        ),
-      );
+            ),
+            body: TabBarView(
+              children: <Widget>[
+                LoginInFirst(),
+                LoginInFirst(),
+                LoginInFirst(),
+              ],
+            ),
+          ));
     });
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -124,6 +124,41 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             ),
           ),
           Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    child: Text(I18n.of(context).Illustration_detail_page_quality),
+                    padding: EdgeInsets.all(16),
+                  ),
+                  Observer(builder: (_) {
+                    return TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Tab(
+                          text: I18n.of(context).medium,
+                        ),
+                        Tab(
+                          text: I18n.of(context).Large,
+                        ),
+                      
+                      ],
+                      onTap: (index) {
+                        userSetting.setPictureQuality(index);
+                      },
+                      controller: TabController(
+                          length: 2,
+                          vsync: this,
+                          initialIndex: userSetting.pictureQuality),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+          Padding(
             padding: EdgeInsets.all(8.0),
             child: Card(
                 child: Column(

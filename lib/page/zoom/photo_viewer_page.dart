@@ -14,8 +14,11 @@
  *
  */
 
+
+import 'dart:io';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -64,7 +67,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
           final url = userSetting.zoomQuality == 0
               ? widget.illusts.metaPages[index].imageUrls.large
               : widget.illusts.metaPages[index].imageUrls.original;
-          FileInfo fileInfo = await DefaultCacheManager().getFileFromCache(url);
+          File fileInfo = await getCachedImageFile(url);
           showModalBottomSheet(
               context: context,
               shape: RoundedRectangleBorder(
@@ -88,7 +91,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                               onTap: () async {
                                 if (fileInfo != null)
                                   ShareExtend.share(
-                                      fileInfo.file.path, "image");
+                                      fileInfo.path, "image");
                                 Navigator.of(context).pop();
                               },
                             )
@@ -149,8 +152,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                   final url = userSetting.zoomQuality == 0
                       ? widget.illusts.imageUrls.large
                       : widget.illusts.metaSinglePage.originalImageUrl;
-                  FileInfo fileInfo =
-                      await DefaultCacheManager().getFileFromCache(url);
+                  File fileInfo =
+                      await getCachedImageFile(url);
                   showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
@@ -173,7 +176,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                                       title: Text(I18n.of(context).Share),
                                       onTap: () async {
                                         ShareExtend.share(
-                                            fileInfo.file.path, "image");
+                                            fileInfo.path, "image");
                                         Navigator.of(context).pop();
                                       },
                                     )

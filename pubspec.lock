@@ -113,13 +113,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.1.0"
-  cached_network_image:
-    dependency: "direct main"
-    description:
-      name: cached_network_image
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.2.0+1"
   charcode:
     dependency: transitive
     description:
@@ -148,13 +141,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0+1"
-  clock:
-    dependency: transitive
-    description:
-      name: clock
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.1"
   code_builder:
     dependency: transitive
     description:
@@ -225,6 +211,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.9"
+  extended_image:
+    dependency: "direct main"
+    description:
+      name: extended_image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.9.0"
+  extended_image_library:
+    dependency: transitive
+    description:
+      name: extended_image_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.3"
+  extended_list_library:
+    dependency: transitive
+    description:
+      name: extended_list_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   extended_nested_scroll_view:
     dependency: "direct main"
     description:
@@ -251,13 +258,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_cache_manager:
-    dependency: "direct main"
-    description:
-      name: flutter_cache_manager
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.4.1"
   flutter_cupertino_date_picker:
     dependency: "direct main"
     description:
@@ -385,6 +385,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.12.1"
+  http_client_helper:
+    dependency: transitive
+    description:
+      name: http_client_helper
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -692,7 +699,7 @@ packages:
       name: pull_to_refresh
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.0"
+    version: "1.6.1"
   quiver:
     dependency: transitive
     description:
@@ -707,13 +714,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.4.0+2"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.24.1"
   save_in_gallery:
     dependency: "direct main"
     description:
@@ -936,13 +936,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.2"
-  uuid:
-    dependency: transitive
-    description:
-      name: uuid
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.2.0"
   vector_math:
     dependency: transitive
     description:
@@ -985,6 +978,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.7+15"
+  waterfall_flow:
+    dependency: "direct main"
+    description:
+      name: waterfall_flow
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
   web_socket_channel:
     dependency: transitive
     description:

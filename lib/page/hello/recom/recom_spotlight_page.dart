@@ -34,8 +34,7 @@ class RecomSpolightPage extends StatefulWidget {
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
 }
 
-class _RecomSpolightPageState extends State<RecomSpolightPage>
-    with AutomaticKeepAliveClientMixin {
+class _RecomSpolightPageState extends State<RecomSpolightPage> {
   SpotlightStore spotlightStore;
   LightingStore _lightingStore;
 
@@ -64,7 +63,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Observer(builder: (_) {
       return buildEasyRefresh(context);
     });
@@ -128,7 +126,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         var illust = _lightingStore.iStores[index - 3].illusts;
         if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
         double screanWidth = MediaQuery.of(context).size.width;
-        double itemWidth = (screanWidth /userSetting.crossCount.toDouble()) - 32.0;
+        double itemWidth =
+            (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
         double radio =
             _lightingStore.iStores[index - 3].illusts.height.toDouble() /
                 _lightingStore.iStores[index - 3].illusts.width.toDouble();
@@ -249,6 +248,4 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

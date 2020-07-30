@@ -24,6 +24,21 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$pictureQualityAtom = Atom(name: '_UserSettingBase.pictureQuality');
+
+  @override
+  int get pictureQuality {
+    _$pictureQualityAtom.reportRead();
+    return super.pictureQuality;
+  }
+
+  @override
+  set pictureQuality(int value) {
+    _$pictureQualityAtom.reportWrite(value, super.pictureQuality, () {
+      super.pictureQuality = value;
+    });
+  }
+
   final _$languageNumAtom = Atom(name: '_UserSettingBase.languageNum');
 
   @override
@@ -51,6 +66,21 @@ mixin _$UserSetting on _UserSettingBase, Store {
   set welcomePageNum(int value) {
     _$welcomePageNumAtom.reportWrite(value, super.welcomePageNum, () {
       super.welcomePageNum = value;
+    });
+  }
+
+  final _$crossCountAtom = Atom(name: '_UserSettingBase.crossCount');
+
+  @override
+  int get crossCount {
+    _$crossCountAtom.reportRead();
+    return super.crossCount;
+  }
+
+  @override
+  set crossCount(int value) {
+    _$crossCountAtom.reportWrite(value, super.crossCount, () {
+      super.crossCount = value;
     });
   }
 
@@ -152,6 +182,23 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
+  final _$setPictureQualityAsyncAction =
+      AsyncAction('_UserSettingBase.setPictureQuality');
+
+  @override
+  Future setPictureQuality(int value) {
+    return _$setPictureQualityAsyncAction
+        .run(() => super.setPictureQuality(value));
+  }
+
+  final _$setCrossCountAsyncAction =
+      AsyncAction('_UserSettingBase.setCrossCount');
+
+  @override
+  Future setCrossCount(int value) {
+    return _$setCrossCountAsyncAction.run(() => super.setCrossCount(value));
+  }
+
   final _$setWelcomePageNumAsyncAction =
       AsyncAction('_UserSettingBase.setWelcomePageNum');
 
@@ -241,8 +288,10 @@ mixin _$UserSetting on _UserSettingBase, Store {
   String toString() {
     return '''
 zoomQuality: ${zoomQuality},
+pictureQuality: ${pictureQuality},
 languageNum: ${languageNum},
 welcomePageNum: ${welcomePageNum},
+crossCount: ${crossCount},
 displayMode: ${displayMode},
 disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},

@@ -1632,6 +1632,36 @@ class I18n {
       args: [],
     );
   }
+
+  /// `load image failed, click to reload`
+  String get LoadImageFailedClickToReload {
+    return Intl.message(
+      'load image failed, click to reload',
+      name: 'LoadImageFailedClickToReload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `中等`
+  String get medium {
+    return Intl.message(
+      '中等',
+      name: 'medium',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Illust detail page quality`
+  String get Illustration_detail_page_quality {
+    return Intl.message(
+      'Illust detail page quality',
+      name: 'Illustration_detail_page_quality',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

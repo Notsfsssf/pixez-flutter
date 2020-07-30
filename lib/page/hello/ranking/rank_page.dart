@@ -26,7 +26,7 @@ class RankPage extends StatefulWidget {
   _RankPageState createState() => _RankPageState();
 }
 
-class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin {
+class _RankPageState extends State<RankPage> {
   RankStore rankStore;
   final modeList = [
     "day",
@@ -42,6 +42,7 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
   ];
   var boolList = Map<int, bool>();
   DateTime nowDate;
+
   @override
   void initState() {
     nowDate = DateTime.now();
@@ -55,6 +56,7 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
   }
 
   String dateTime;
+
   String toRequestDate(DateTime dateTime) {
     if (dateTime == null) {
       return null;
@@ -164,7 +166,4 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
       }
     });
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

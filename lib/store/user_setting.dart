@@ -35,8 +35,11 @@ abstract class _UserSettingBase with Store {
   static const String SAVE_FORMAT_KEY = "save_format";
   static const String LANGUAGE_NUM_KEY = "language_num";
   static const String CROSS_COUNT_KEY = "cross_count";
+  static const String PICTURE_QUALITY_KEY = "picture_quality";
   @observable
   int zoomQuality = 0;
+  @observable
+  int pictureQuality=0;
   @observable
   int languageNum = 0;
   @observable
@@ -68,6 +71,7 @@ abstract class _UserSettingBase with Store {
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
+    pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY)??0;
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -82,6 +86,11 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
+  }
+  @action
+  setPictureQuality(int value) async {
+    await prefs.setInt(PICTURE_QUALITY_KEY, value);
+    pictureQuality=value;
   }
 
   @action

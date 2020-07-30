@@ -159,5 +159,8 @@
   "Crosscount": "列数",
   "Need_To_Restart_App": "需要重启app",
   "refresh": "刷新",
-  "Retry": "重试"
+  "Retry": "重试",
+  "LoadImageFailedClickToReload": "load image failed, click to reload",
+  "medium": "中等",
+  "Illustration_detail_page_quality": "插画详情页画质"
 }
