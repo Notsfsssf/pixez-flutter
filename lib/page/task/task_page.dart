@@ -175,7 +175,6 @@ class _TaskPageState extends State<TaskPage> {
                                   await FlutterDownloader.remove(
                                       taskId: element.taskId);
                                   saveStore.maps[element.taskId] = null;
-                                  saveStore.urls.remove(element.url);
                                 });
                                 initMethod();
                                 Navigator.of(context).pop();
@@ -218,11 +217,9 @@ class _TaskPageState extends State<TaskPage> {
                                       taskId: data.taskId,
                                     ); //bug
                                     saveStore.maps[data.taskId]=null;
-                                    saveStore.urls.remove(data.url);
                                     saveStore.maps[taskId] = SaveData()
                                       ..illusts = data.illusts
                                       ..fileName = data.filename;
-                                    saveStore.urls.add(data.url);
                                     initMethod();
                                   },
                                 )
@@ -237,7 +234,6 @@ class _TaskPageState extends State<TaskPage> {
                                 taskId: data.taskId,
                               );
                               saveStore.maps[data.taskId] = null;
-                              saveStore.urls.remove(data.url);
                               initMethod();
                             },
                           ),

@@ -169,7 +169,7 @@ abstract class _SaveStoreBase with Store {
   Map<String, SaveData> maps = HashMap();
   StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
-  Set<String> urls = Set();
+
   Future<String> _findLocalPath() async {
     final directory = Platform.isAndroid
         ? (await getTemporaryDirectory()).path
@@ -178,7 +178,9 @@ abstract class _SaveStoreBase with Store {
   }
 
   _joinQueue(String url, Illusts illusts, String fileName) async {
-    if (saveStore.urls.contains(url)) {
+    final tasks = await FlutterDownloader.loadTasksWithRawQuery(
+        query: 'SELECT * FROM task WHERE url=\'${url}\'');
+    if(tasks!=null&&tasks.isNotEmpty){
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
     }
@@ -194,22 +196,20 @@ abstract class _SaveStoreBase with Store {
         "User-Agent": "PixivIOSApp/5.8.0"
       },
       fileName: fileName,
-      showNotification:
-          false, // show download progress in status bar (for Android)
+      showNotification: false,
+      // show download progress in status bar (for Android)
       openFileFromNotification:
           false, // click on notification to open downloaded file (for Android)
     );
     maps[taskId] = SaveData()
       ..illusts = illusts
       ..fileName = fileName;
-    urls.add(url.trim());
     if (maps.values.length > 50) {
       final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
           query: 'SELECT * FROM task WHERE status=3');
       if (maybeRemoveTask.length > 10) {
         for (int i = 0; i < maybeRemoveTask.length >> 1; i++) {
           maps[maybeRemoveTask[i].taskId] = null;
-          urls.remove(maybeRemoveTask[i].url);
           await FlutterDownloader.remove(
               taskId: taskId, shouldDeleteContent: true);
         }
@@ -351,16 +351,11 @@ abstract class _SaveStoreBase with Store {
         if (file.existsSync()) {
           file.deleteSync();
         }
-        urls.remove(url);
       }
       _saveInternal(url, illusts, fileName);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls.original;
-        // if (maps.keys.contains(url)) {
-        //   streamController.add(SaveStream(SaveState.INQUEUE, illusts));
-        //   return;
-        // }
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
         if (redo) {

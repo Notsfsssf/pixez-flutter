@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader');
+    FlutterDownloader.cancelAll();
     super.dispose();
   }
 
@@ -82,10 +83,9 @@ class _MyAppState extends State<MyApp> {
       DownloadTaskStatus status = data[1];
       if (status == DownloadTaskStatus.complete) {
         String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
-        final tasks = await FlutterDownloader.loadTasksWithRawQuery(
-            query: queryString); //迷惑行为
+        final tasks =
+            await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
         if (tasks != null && tasks.isNotEmpty) {
-          saveStore.urls.remove(tasks.first.url);
           String fullPath =
               '${tasks.first.savedDir}${Platform.pathSeparator}${tasks.first.filename}';
           File file = File(fullPath);
@@ -96,24 +96,10 @@ class _MyAppState extends State<MyApp> {
               .add(SaveStream(SaveState.SUCCESS, saveStore.maps[id].illusts));
         }
       }
-      if (status == DownloadTaskStatus.canceled) {
-        await removeUrl(id);
-      }
-      if (status == DownloadTaskStatus.failed) {
-        await removeUrl(id);
-      }
+      if (status == DownloadTaskStatus.canceled) {}
+      if (status == DownloadTaskStatus.failed) {}
     });
     FlutterDownloader.registerCallback(downloadCallback);
-  }
-
-  removeUrl(String id) async {
-//    saveStore.maps[id] = null;
-    String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
-    final tasks =
-        await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
-    if (tasks != null && tasks.isNotEmpty) {
-      saveStore.urls.remove(tasks.first.url);
-    }
   }
 
   static void downloadCallback(
