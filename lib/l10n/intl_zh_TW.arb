@@ -157,10 +157,10 @@
   "Retry_Failed_Tasks": "重試失敗工作",
   "Clear_Completed_Tasks": "清空已完成工作",
   "Crosscount": "列數",
-  "Need_To_Restart_App": "需要重啟app",
-  "refresh": "刷新",
+  "Need_To_Restart_App": "需要重新啟動應用程式",
+  "refresh": "重新載入",
   "Retry": "重試",
-  "LoadImageFailedClickToReload": "load image failed, click to reload",
+  "LoadImageFailedClickToReload": "圖像載入失敗，點擊重試",
   "medium": "中等",
-  "Illustration_detail_page_quality": "插画详情页画质"
+  "Illustration_detail_page_quality": "插畫內容頁圖像品質"
 }
