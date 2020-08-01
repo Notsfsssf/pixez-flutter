@@ -52,13 +52,11 @@ class RefreshTokenInterceptor extends Interceptor {
             accountStore.now != null) {
           final client = OAuthClient();
           AccountPersist accountPersist = accountStore.now;
-          print("eeeeeeeeeeeeeeeeeeeeeeee");
           Response response1 = await client.postRefreshAuthToken(
               refreshToken: accountPersist.refreshToken,
               deviceToken: accountPersist.deviceToken);
           AccountResponse accountResponse =
               Account.fromJson(response1.data).response;
-          print("eeeeeeeeeeeeeeeeeeeeeeee11");
           final user = accountResponse.user;
           accountStore.updateSingle(AccountPersist()
             ..id = accountPersist.id

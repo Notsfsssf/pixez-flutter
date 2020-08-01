@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -70,7 +69,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(paths[index + 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id:id);
+            return IllustPage(id: id);
           }));
           return;
         } catch (e) {}
@@ -84,7 +83,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(paths[index + 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id:id);
+            return IllustPage(id: id);
           }));
         } catch (e) {
           print(e);
@@ -98,7 +97,7 @@ class _HelloPageState extends State<HelloPage> {
           int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id:id);
+            return IllustPage(id: id);
           }));
           return;
         } catch (e) {}
@@ -138,31 +137,36 @@ class _HelloPageState extends State<HelloPage> {
     }
   }
 
+  int stackIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Observer(builder: (_) {
         return accountStore.now != null
-            ? PageView.builder(
-              itemCount: 4,
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    this.index = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  var lists = <Widget>[
-                    RecomSpolightPage(),
-                    NewPage(),
-                    SearchPage(),
-                    SettingPage()
-                  ];
-
-                  return lists[index];
-                })
+            ? (IndexedStack(
+                index: stackIndex,
+                children: <Widget>[
+                  PageView.builder(
+                      itemCount: 4,
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                          setState(() {
+                            this.index = index;
+                          });
+                      },
+                      itemBuilder: (context, index) {
+                        var lists = <Widget>[
+                          RecomSpolightPage(),
+                          NewPage(),
+                        ];
+                        return lists[index];
+                      }),
+                  SearchPage(),
+                  SettingPage()
+                ],
+              ))
             : PageView.builder(
-              itemCount: 4,
+                itemCount: 4,
                 controller: _pageController,
                 itemBuilder: (context, index) {
                   var lists = [
@@ -178,10 +182,18 @@ class _HelloPageState extends State<HelloPage> {
           type: BottomNavigationBarType.fixed,
           currentIndex: index,
           onTap: (index) {
-            setState(() {
-              this.index = index;
-            });
-            _pageController.jumpToPage(index);
+            if (index > 1) {
+              setState(() {
+                stackIndex = index - 1;
+                this.index = index;
+              });
+            } else {
+              setState(() {
+                stackIndex = 0;
+                this.index = index;
+              });
+              _pageController.jumpToPage(index);
+            }
           },
           items: [
             BottomNavigationBarItem(

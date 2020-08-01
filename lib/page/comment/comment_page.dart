@@ -52,7 +52,7 @@ class _CommentPageState extends State<CommentPage> {
   void initState() {
     _editController = TextEditingController();
     easyRefreshController = RefreshController();
-    _store = CommentStore(easyRefreshController, widget.id);
+    _store = CommentStore(easyRefreshController, widget.id)..fetch();
     super.initState();
   }
 
