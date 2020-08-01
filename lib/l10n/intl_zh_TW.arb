@@ -162,5 +162,6 @@
   "Retry": "重試",
   "LoadImageFailedClickToReload": "圖像載入失敗，點擊重試",
   "medium": "中等",
-  "Illustration_detail_page_quality": "插畫內容頁圖像品質"
+  "Illustration_detail_page_quality": "插畫內容頁圖像品質",
+  "skin": "Skin"
 }

@@ -39,12 +39,14 @@ class SettingPage extends StatefulWidget {
   final bool hasNewVersion;
 
   const SettingPage({Key key, this.hasNewVersion}) : super(key: key);
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
   bool hasNewVersion;
+
   @override
   void initState() {
     hasNewVersion = widget.hasNewVersion ?? false;
@@ -58,22 +60,31 @@ class _SettingPageState extends State<SettingPage> {
         elevation: 0.0,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
-        actions: (Platform.isAndroid)
-            ? <Widget>[
-                IconButton(
-                    icon: Icon(Icons.youtube_searched_for),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => SauceNaoPage()));
-                    }),
-                IconButton(
-                    icon: Icon(Icons.settings_ethernet),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => PlatformPage()));
-                    })
-              ]
-            : [],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.palette),
+            onPressed: () {
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text('在做了，在做了')));
+            },
+          ),
+          ...(Platform.isAndroid)
+              ? <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SauceNaoPage()));
+                      }),
+                  IconButton(
+                      icon: Icon(Icons.code),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => PlatformPage()));
+                      })
+                ]
+              : []
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

@@ -56,11 +56,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader');
-    FlutterDownloader.cancelAll();
+    saveStore?.cleanTasks();
+    saveStore?.dispose();
     super.dispose();
   }
-
-  static int time;
 
   @override
   void initState() {
@@ -69,7 +68,6 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
-    time = _port.hashCode;
     initMethod();
     super.initState();
   }

@@ -1,4 +1,4 @@
 class Constrains {
-  static String tagName = "0.1.3";
+  static String tagName = "0.1.4";
   static bool isGooglePlay = false;
 }

@@ -1662,6 +1662,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Skin`
+  String get skin {
+    return Intl.message(
+      'Skin',
+      name: 'skin',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

@@ -162,5 +162,6 @@
   "Retry": "重试",
   "LoadImageFailedClickToReload": "load image failed, click to reload",
   "medium": "中等",
-  "Illustration_detail_page_quality": "插画详情页画质"
+  "Illustration_detail_page_quality": "插画详情页画质",
+  "skin": "Skin"
 }

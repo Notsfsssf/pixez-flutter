@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "public" : MessageLookupByLibrary.simpleMessage("Public"),
     "refresh" : MessageLookupByLibrary.simpleMessage("Refresh"),
     "report" : MessageLookupByLibrary.simpleMessage("Report"),
+    "skin" : MessageLookupByLibrary.simpleMessage("Skin"),
     "title_and_caption" : MessageLookupByLibrary.simpleMessage("Title and description"),
     "total_bookmark" : MessageLookupByLibrary.simpleMessage("Total likes"),
     "total_view" : MessageLookupByLibrary.simpleMessage("Total viewers")

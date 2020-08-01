@@ -38,7 +38,7 @@ abstract class _TrendTagsStoreBase with Store {
       trendTags.addAll(trendingTag.trend_tags);
       _controller.refreshCompleted();
     } catch (e) {
-      print(e);
+      _controller.refreshFailed();
     }
   }
 }

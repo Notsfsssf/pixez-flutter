@@ -55,6 +55,15 @@ abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     streamController = StreamController();
     saveStream = ObservableStream(streamController.stream.asBroadcastStream());
+    cleanTasks();
+  }
+
+  cleanTasks() async {
+    final tasks = await FlutterDownloader.loadTasks();
+    tasks.forEach((element) async {
+      await FlutterDownloader.remove(
+          taskId: element.taskId, shouldDeleteContent: true);
+    });
   }
 
   @override
@@ -180,7 +189,7 @@ abstract class _SaveStoreBase with Store {
   _joinQueue(String url, Illusts illusts, String fileName) async {
     final tasks = await FlutterDownloader.loadTasksWithRawQuery(
         query: 'SELECT * FROM task WHERE url=\'${url}\'');
-    if(tasks!=null&&tasks.isNotEmpty){
+    if (tasks != null && tasks.isNotEmpty) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
     }

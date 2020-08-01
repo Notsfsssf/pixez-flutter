@@ -17,13 +17,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CommentPage extends StatefulWidget {
   final int id;
@@ -38,7 +37,7 @@ class _CommentPageState extends State<CommentPage> {
   TextEditingController _editController;
   int parentCommentId;
   String parentCommentName;
-  EasyRefreshController easyRefreshController;
+  RefreshController easyRefreshController;
   CommentStore _store;
   String toShortTime(String dateString) {
     try {
@@ -48,10 +47,11 @@ class _CommentPageState extends State<CommentPage> {
       return dateString;
     }
   }
+
   @override
   void initState() {
     _editController = TextEditingController();
-    easyRefreshController = EasyRefreshController();
+    easyRefreshController = RefreshController();
     _store = CommentStore(easyRefreshController, widget.id);
     super.initState();
   }
@@ -65,87 +65,112 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (context) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(I18n.of(context).View_Comment),
-          ),
-          body: SafeArea(
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: EasyRefresh(
-                    controller: easyRefreshController,
-                    enableControlFinishLoad: true,
-                    enableControlFinishRefresh: true,
-                    firstRefresh: true,
-                    onRefresh: () => _store.fetch(),
-                    header: MaterialHeader(),
-                    onLoad: () => _store.next(),
-                    child: _store.comments.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _store.comments.length,
-                            itemBuilder: (context, index) {
-                              var comment = _store.comments[index];
-                              return ListTile(
-                                leading: PainterAvatar(
-                                  url: _store
-                                      .comments[index].user.profileImageUrls.medium,
-                                  id: _store.comments[index].user.id,
+    return Observer(builder: (context) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(I18n.of(context).View_Comment),
+        ),
+        body: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              SmartRefresher(
+                controller: easyRefreshController,
+                enablePullUp: true,
+                onRefresh: () => _store.fetch(),
+                onLoading: () => _store.next(),
+                child: _store.comments.isNotEmpty
+                    ? ListView.separated(
+                        itemCount: _store.comments.length,
+                        itemBuilder: (context, index) {
+                          var comment = _store.comments[index];
+                          return Container(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: PainterAvatar(
+                                    url: _store.comments[index].user
+                                        .profileImageUrls.medium,
+                                    id: _store.comments[index].user.id,
+                                  ),
                                 ),
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                          comment.user.name,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            comment.user.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor),
+                                          ),
+                                          FlatButton(
+                                              onPressed: () {
+                                                parentCommentId = comment.id;
+                                                setState(() {
+                                                  parentCommentName =
+                                                      comment.user.name;
+                                                });
+                                              },
+                                              child: Text(
+                                                "Reply",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .accentColor),
+                                              ))
+                                        ],
+                                      ),
+                                      ...comment.parentComment.user != null
+                                          ? [
+                                              Text(
+                                                  'To ${comment.parentComment.user.name}')
+                                            ]
+                                          : [],
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 4.0),
+                                        child: SelectableText(
+                                          comment.comment,
                                         ),
-                                        FlatButton(
-                                            onPressed: () {
-                                              parentCommentId = comment.id;
-                                              setState(() {
-                                                parentCommentName =
-                                                    comment.user.name;
-                                              });
-                                            },
-                                            child: Text(
-                                              "Reply",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                            ))
-                                      ],
-                                    ),
-                                    ...comment.parentComment.user != null
-                                        ? [
-                                            Text(
-                                                'To ${comment.parentComment.user.name}')
-                                          ]
-                                        : []
-                                  ],
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                  SelectableText(comment.comment),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top:8.0),
-                                    child: Text(toShortTime(comment.date.toString())),
-                                  )
-                                ],),
-                              );
-                            })
-                        : Container(),
-                  ),
-                ),
-                Container(
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Text(toShortTime(
+                                            comment.date.toString())),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Divider(),
+                          );
+                        },
+                      )
+                    : Container(),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
                   color: Theme.of(context).dialogBackgroundColor,
                   child: Row(
                     children: <Widget>[
@@ -160,7 +185,8 @@ class _CommentPageState extends State<CommentPage> {
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 2.0, right: 8.0),
+                          padding:
+                              const EdgeInsets.only(bottom: 2.0, right: 8.0),
                           child: TextField(
                             controller: _editController,
                             decoration: InputDecoration(
@@ -188,12 +214,12 @@ class _CommentPageState extends State<CommentPage> {
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
-        );
-      }
-    );
+        ),
+      );
+    });
   }
 }

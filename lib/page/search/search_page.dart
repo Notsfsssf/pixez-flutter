@@ -64,32 +64,59 @@ class _SearchPageState extends State<SearchPage>
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (accountStore.now != null)
-        return Column(children: <Widget>[
-          AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(
-              I18n.of(context).Search,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                          builder: (context) => SearchSuggestionPage()));
-                },
-              )
-            ],
-          ),
-          Expanded(
-            child: SmartRefresher(
+        return NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                _trendTagsStore.trendTags.isNotEmpty
+                    ? SliverAppBar(
+                        pinned: true,
+                        title: Text(I18n.of(context).Search),
+                        centerTitle: false,
+                        forceElevated: innerBoxIsScrolled,
+                        expandedHeight:
+                            200 + MediaQuery.of(context).padding.top,
+                        flexibleSpace: FlexibleSpaceBar(
+                          titlePadding: EdgeInsets.all(0.0),
+                          collapseMode: CollapseMode.none,
+                          background: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => IllustPage(
+                                  id: _trendTagsStore.trendTags.last.illust.id,
+                                ),
+                              ));
+                            },
+                            child: PixivImage(
+                              _trendTagsStore
+                                  .trendTags.last.illust.imageUrls.squareMedium,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                        ),
+                        actions: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SearchSuggestionPage()));
+                            },
+                          )
+                        ],
+                      )
+                    : SliverAppBar(
+                        flexibleSpace: FlexibleSpaceBar(),
+                        title: Text(I18n.of(context).Search),
+                      )
+              ];
+            },
+            body: SmartRefresher(
                 controller: _controller,
                 enablePullDown: true,
                 onRefresh: () => _trendTagsStore.fetch(),
-                child: _buildListView()),
-          )
-        ]);
+                child: _buildListView(context)));
       return Column(children: <Widget>[
         AppBar(
           automaticallyImplyLeading: false,
@@ -100,18 +127,28 @@ class _SearchPageState extends State<SearchPage>
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                        builder: (context) => SearchSuggestionPage()));
+              },
             )
           ],
         ),
-        Expanded(child: LoginInFirst())
+        Expanded(
+          child: SmartRefresher(
+              controller: _controller,
+              enablePullDown: true,
+              onRefresh: () => _trendTagsStore.fetch(),
+              child: _buildListView(context)),
+        )
       ]);
     });
   }
 
   TabController _tabController;
 
-  Widget _buildListView() {
+  Widget _buildListView(BuildContext context) {
     return ListView(children: [
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -155,7 +192,10 @@ class _SearchPageState extends State<SearchPage>
         child: Text(I18n.of(context).Recommand_Tag),
       ),
       _trendTagsStore.trendTags.isNotEmpty
-          ? _buildGrid(context, _trendTagsStore.trendTags)
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: _buildGrid(context, _trendTagsStore.trendTags),
+            )
           : Container()
     ]);
   }
@@ -163,14 +203,15 @@ class _SearchPageState extends State<SearchPage>
   Widget _buildGrid(BuildContext context, List<Trend_tags> tags) =>
       Observer(builder: (_) {
         return GridView.builder(
+          padding: EdgeInsets.all(0.0),
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: _trendTagsStore.trendTags.length,
+          itemCount: _trendTagsStore.trendTags.length - 1,
           gridDelegate:
               SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
           itemBuilder: (context, index) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(1.0),
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true)
@@ -186,23 +227,32 @@ class _SearchPageState extends State<SearchPage>
                     return IllustPage(id: tags[index].illust.id);
                   }));
                 },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3.0),
-                  child: Stack(
-                    children: <Widget>[
-                      PixivImage(
-                        tags[index].illust.imageUrls.squareMedium,
-                      ),
-                      Align(
-                        child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 0.8, sigmaY: 0.8),
-                            child: Text(
+                child: Stack(
+                  children: <Widget>[
+                    PixivImage(
+                      tags[index].illust.imageUrls.squareMedium,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(color: Color(0x90000000)),
+                    ),
+                    Align(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
                               tags[index].tag,
-                            )),
-                        alignment: Alignment.bottomCenter,
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                      alignment: Alignment.bottomCenter,
+                    ),
+                  ],
                 ),
               ),
             );

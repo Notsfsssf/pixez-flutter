@@ -15,7 +15,6 @@
  */
 
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -49,13 +48,15 @@ class _LoginPageState extends State<LoginPage> {
 
   initReact() {
     reactionDisposer = reaction((_) => _loginStore.errorMessage, (_) {
-      if (_loginStore.errorMessage != null&&context!=null)
+      if (_loginStore.errorMessage != null && context != null)
         Scaffold.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
             content: Text(_loginStore.errorMessage),
           ),
         );
+    }, equals: (a, b) {
+      return a == b;
     });
   }
 

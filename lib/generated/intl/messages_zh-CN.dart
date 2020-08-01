@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "public" : MessageLookupByLibrary.simpleMessage("公开"),
     "refresh" : MessageLookupByLibrary.simpleMessage("刷新"),
     "report" : MessageLookupByLibrary.simpleMessage("举报"),
+    "skin" : MessageLookupByLibrary.simpleMessage("Skin"),
     "title_and_caption" : MessageLookupByLibrary.simpleMessage("标题和总结"),
     "total_bookmark" : MessageLookupByLibrary.simpleMessage("收藏量"),
     "total_view" : MessageLookupByLibrary.simpleMessage("浏览量")
