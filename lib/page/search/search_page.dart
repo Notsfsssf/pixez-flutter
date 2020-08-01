@@ -135,13 +135,7 @@ class _SearchPageState extends State<SearchPage>
             )
           ],
         ),
-        Expanded(
-          child: SmartRefresher(
-              controller: _controller,
-              enablePullDown: true,
-              onRefresh: () => _trendTagsStore.fetch(),
-              child: _buildListView(context)),
-        )
+    Expanded(child: LoginInFirst())
       ]);
     });
   }

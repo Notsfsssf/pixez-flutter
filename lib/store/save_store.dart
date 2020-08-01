@@ -213,12 +213,13 @@ abstract class _SaveStoreBase with Store {
     maps[taskId] = SaveData()
       ..illusts = illusts
       ..fileName = fileName;
-    if (maps.values.length > 50) {
+    if (maps.values.length > 100) {
+      BotToast.showText(text: '缓存任务超过上限，清理中...');
       final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
           query: 'SELECT * FROM task WHERE status=3');
       if (maybeRemoveTask.length > 10) {
         for (int i = 0; i < maybeRemoveTask.length >> 1; i++) {
-          maps[maybeRemoveTask[i].taskId] = null;
+          maps.remove(maybeRemoveTask[i].taskId);
           await FlutterDownloader.remove(
               taskId: taskId, shouldDeleteContent: true);
         }
