@@ -213,18 +213,18 @@ abstract class _SaveStoreBase with Store {
     maps[taskId] = SaveData()
       ..illusts = illusts
       ..fileName = fileName;
-    if (maps.values.length > 100) {
-      BotToast.showText(text: '缓存任务超过上限，清理中...');
-      final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
-          query: 'SELECT * FROM task WHERE status=3');
-      if (maybeRemoveTask.length > 10) {
-        for (int i = 0; i < maybeRemoveTask.length >> 1; i++) {
-          maps.remove(maybeRemoveTask[i].taskId);
-          await FlutterDownloader.remove(
-              taskId: taskId, shouldDeleteContent: true);
-        }
-      }
-    }
+    // if (maps.values.length > 100) {
+    //   BotToast.showText(text: '缓存任务超过上限，清理中...');
+    //   final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
+    //       query: 'SELECT * FROM task WHERE status=3');
+    //   if (maybeRemoveTask.length > 10) {
+    //     for (int i = 0; i < maybeRemoveTask.length >> 1; i++) {
+    //       maps.remove(maybeRemoveTask[i].taskId);
+    //       await FlutterDownloader.remove(
+    //           taskId: taskId, shouldDeleteContent: true);
+    //     }
+    //   }
+    // }//改天找个LruCache试验一下
   }
 
   _saveInternal(String url, Illusts illusts, String fileName) async {
@@ -254,9 +254,13 @@ abstract class _SaveStoreBase with Store {
     if (Platform.isAndroid) {
       try {
         String path = userSetting.path;
+        Directory directory = Directory(userSetting.path);
+        if (!directory.existsSync()) {
+          directory.createSync(recursive: true);
+        }
         if (userSetting.singleFolder) {
           path = "${path}/${illusts.user.name}_${illusts.user.id}";
-          Directory(userSetting.path).listSync().forEach((element) {
+          directory.listSync().forEach((element) {
             if (element is Directory) {
               bool ok = element.path
                   .split('/')
