@@ -13,7 +13,10 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -49,6 +52,24 @@ class _ThemePageState extends State<ThemePage> {
       accentColor: Colors.brown[400],
       indicatorColor: Colors.brown[600],
     ),
+    ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Colors.purple[500],
+      accentColor: Colors.purple[400],
+      indicatorColor: Colors.purple[600],
+    ),
+    ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Colors.blue[500],
+      accentColor: Colors.blue[400],
+      indicatorColor: Colors.blue[500],
+    ),
+    ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Color(0xFFFB7299),
+      accentColor: Color(0xFFFB7299),
+      indicatorColor: Color(0xFFFB7299),
+    ),
   ];
 
   Color _stringToColor(String colorString) {
@@ -56,6 +77,48 @@ class _ThemePageState extends State<ThemePage> {
     int value = int.parse(valueString, radix: 16);
     Color otherColor = new Color(value);
     return otherColor;
+  }
+
+  Future<Void> _pickColorData(int index, Color pickerColor) async {
+// raise the [showDialog] widget
+    final result = await showDialog(
+      context: context,
+      child: StatefulBuilder(builder: (context, setC) {
+        return AlertDialog(
+          title: const Text('Pick a color!'),
+          content: SingleChildScrollView(
+            padding: EdgeInsets.all(0.0),
+            child: ColorPicker(
+              pickerColor: pickerColor,
+              onColorChanged: (Color color) {
+                setC(() {
+                  pickerColor = color;
+                });
+              },
+              showLabel: true,
+              pickerAreaHeightPercent: 0.8,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('Got it'),
+              onPressed: () {
+                Navigator.of(context).pop(pickerColor.toString());
+              },
+            ),
+          ],
+        );
+      }),
+    );
+    if (result != null) {
+      var data = <String>[
+        userSetting.themeData.accentColor.toString(),
+        userSetting.themeData.primaryColor.toString(),
+        userSetting.themeData.indicatorColor.toString()
+      ];
+      data[index] = result;
+      userSetting.setThemeData(data);
+    }
   }
 
   @override
@@ -81,21 +144,36 @@ class _ThemePageState extends State<ThemePage> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Container(
-                      height: 30,
-                      color: Theme.of(context).primaryColor,
-                      child: Center(child: Text("primaryColor")),
+                    InkWell(
+                      onTap: () {
+                        _pickColorData(0, Theme.of(context).accentColor);
+                      },
+                      child: Container(
+                        height: 30,
+                        color: Theme.of(context).accentColor,
+                        child: Center(child: Text("accentColor")),
+                      ),
                     ),
-                    Container(
-                      height: 30,
-                      color: Theme.of(context).accentColor,
-                      child: Center(child: Text("accentColor")),
+                    InkWell(
+                      onTap: () {
+                        _pickColorData(1, Theme.of(context).primaryColor);
+                      },
+                      child: Container(
+                        height: 30,
+                        color: Theme.of(context).primaryColor,
+                        child: Center(child: Text("primaryColor")),
+                      ),
                     ),
-                    Container(
-                      height: 30,
-                      color: Theme.of(context).indicatorColor,
-                      child: Center(child: Text("indicatorColor")),
-                    ),
+                    InkWell(
+                      onTap: () {
+                        _pickColorData(2, Theme.of(context).indicatorColor);
+                      },
+                      child: Container(
+                        height: 30,
+                        color: Theme.of(context).indicatorColor,
+                        child: Center(child: Text("indicatorColor")),
+                      ),
+                    )
                   ],
                 ),
               ],
@@ -103,6 +181,7 @@ class _ThemePageState extends State<ThemePage> {
             GridView.builder(
                 shrinkWrap: true,
                 itemCount: skinList.length,
+                physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {

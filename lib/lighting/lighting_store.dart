@@ -15,7 +15,6 @@
  */
 
 import 'package:dio/dio.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';

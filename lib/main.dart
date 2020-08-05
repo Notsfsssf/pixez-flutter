@@ -51,19 +51,34 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   ReceivePort _port = ReceivePort();
+  @override
+  void didChangePlatformBrightness() {
+    final Brightness brightness =
+        WidgetsBinding.instance.window.platformBrightness;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarIconBrightness:
+          brightness == Brightness.light ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor:
+          brightness == Brightness.light ? Colors.white : Colors.black,
+      statusBarColor: Colors.transparent,
+    ));
+    super.didChangePlatformBrightness();
+  }
 
   @override
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader');
     saveStore?.cleanTasks();
     saveStore?.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     accountStore.fetch();
     userSetting.init();
     muteStore.fetchBanUserIds();
@@ -114,16 +129,29 @@ class _MyAppState extends State<MyApp> {
     return Observer(builder: (_) {
       return MaterialApp(
         navigatorObservers: [BotToastNavigatorObserver()],
-        home: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,),
-            child: SplashPage()),
+        home: Builder(builder: (context) {
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                systemNavigationBarIconBrightness:
+                    MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light,
+                systemNavigationBarColor:
+                    MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Colors.white
+                        : Colors.black,
+                statusBarColor: Colors.transparent,
+              ),
+              child: SplashPage());
+        }),
         title: 'PixEz',
         builder: BotToastInit(),
         theme: userSetting.themeData,
         darkTheme: ThemeData(
           brightness: Brightness.dark,
-          accentColor: Colors.cyan[500],
+          accentColor: userSetting.themeData.accentColor,
         ),
         supportedLocales: I18n.delegate.supportedLocales,
         localizationsDelegates: [

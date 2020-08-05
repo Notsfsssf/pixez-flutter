@@ -71,11 +71,11 @@ abstract class _UserSettingBase with Store {
 
   @observable
   ThemeData themeData = ThemeData(
-    brightness: Brightness.light,
-    primaryColor: Colors.cyan[500],
-    accentColor: Colors.cyan[400],
-    indicatorColor: Colors.cyan[500],
-  );
+      brightness: Brightness.light,
+      primaryColor: Colors.cyan[500],
+      accentColor: Colors.cyan[400],
+      indicatorColor: Colors.cyan[500],
+      appBarTheme: AppBarTheme(brightness: Brightness.light));
   @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -98,6 +98,7 @@ abstract class _UserSettingBase with Store {
               brightness: Brightness.light,
               accentColor: _stringToColor(colors[0]),
               primaryColor: _stringToColor(colors[1]),
+              appBarTheme: AppBarTheme(brightness: Brightness.light),
               indicatorColor: _stringToColor(colors[2]));
         } catch (e) {
           print(e);
@@ -123,9 +124,13 @@ abstract class _UserSettingBase with Store {
 
   @action
   setThemeData(List<String> data) async {
+    Colors.black.computeLuminance();
     await prefs.setStringList(THEME_DATA_KEY, data);
     themeData = ThemeData(
         brightness: Brightness.light,
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.light,
+        ),
         accentColor: _stringToColor(data[0]),
         primaryColor: _stringToColor(data[1]),
         indicatorColor: _stringToColor(data[2]));

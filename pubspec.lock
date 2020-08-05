@@ -258,13 +258,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_circle_color_picker:
+  flutter_colorpicker:
     dependency: "direct main"
     description:
-      name: flutter_circle_color_picker
+      name: flutter_colorpicker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.0"
+    version: "0.3.4"
   flutter_cupertino_date_picker:
     dependency: "direct main"
     description:
