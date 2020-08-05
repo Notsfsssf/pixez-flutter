@@ -34,6 +34,7 @@ import 'package:pixez/page/platform/platform_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/task_page.dart';
+import 'package:pixez/page/theme/theme_page.dart';
 
 class SettingPage extends StatefulWidget {
   final bool hasNewVersion;
@@ -62,22 +63,31 @@ class _SettingPageState extends State<SettingPage> {
         backgroundColor: Colors.transparent,
         actions: [
           IconButton(
-            icon: Icon(Icons.palette),
+            icon: Icon(
+              Icons.palette,
+              color: Theme.of(context).textTheme.bodyText1.color,
+            ),
             onPressed: () {
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text('在做了，在做了')));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => ThemePage()));
             },
           ),
           ...(Platform.isAndroid)
               ? <Widget>[
                   IconButton(
-                      icon: Icon(Icons.search),
+                      icon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => SauceNaoPage()));
                       }),
                   IconButton(
-                      icon: Icon(Icons.code),
+                      icon: Icon(
+                        Icons.code,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => PlatformPage()));

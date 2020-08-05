@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
@@ -110,25 +111,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider(
-          create: (BuildContext context) => saveStore,
-        ),
-      ],
-      child: MaterialApp(
+    return Observer(builder: (_) {
+      return MaterialApp(
         navigatorObservers: [BotToastNavigatorObserver()],
         home: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+            value: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,),
             child: SplashPage()),
         title: 'PixEz',
         builder: BotToastInit(),
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.cyan[500],
-          accentColor: Colors.cyan[400],
-          indicatorColor: Colors.cyan[500],
-        ),
+        theme: userSetting.themeData,
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           accentColor: Colors.cyan[500],
@@ -140,7 +132,7 @@ class _MyAppState extends State<MyApp> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate
         ],
-      ),
-    );
+      );
+    });
   }
 }

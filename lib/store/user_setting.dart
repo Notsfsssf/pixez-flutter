@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
@@ -36,10 +37,11 @@ abstract class _UserSettingBase with Store {
   static const String LANGUAGE_NUM_KEY = "language_num";
   static const String CROSS_COUNT_KEY = "cross_count";
   static const String PICTURE_QUALITY_KEY = "picture_quality";
+  static const String THEME_DATA_KEY = "theme_data";
   @observable
   int zoomQuality = 0;
   @observable
-  int pictureQuality=0;
+  int pictureQuality = 0;
   @observable
   int languageNum = 0;
   @observable
@@ -59,7 +61,21 @@ abstract class _UserSettingBase with Store {
   @observable
   String format = "";
   static const String intialFormat = "{illust_id}_p{part}";
+  Color _stringToColor(String colorString) {
+    String valueString =
+        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
+    int value = int.parse(valueString, radix: 16);
+    Color otherColor = new Color(value);
+    return otherColor;
+  }
 
+  @observable
+  ThemeData themeData = ThemeData(
+    brightness: Brightness.light,
+    primaryColor: Colors.cyan[500],
+    accentColor: Colors.cyan[400],
+    indicatorColor: Colors.cyan[500],
+  );
   @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -71,7 +87,23 @@ abstract class _UserSettingBase with Store {
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
-    pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY)??0;
+    pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
+    var colors = prefs.getStringList(THEME_DATA_KEY);
+    if (colors != null) {
+      if (colors.length < 3) {
+        prefs.remove(THEME_DATA_KEY);
+      } else {
+        try {
+          themeData = ThemeData(
+              brightness: Brightness.light,
+              accentColor: _stringToColor(colors[0]),
+              primaryColor: _stringToColor(colors[1]),
+              indicatorColor: _stringToColor(colors[2]));
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
     if (Platform.isAndroid) {
       if (path == null)
         path = (await platform.invokeMethod('get_path')) as String;
@@ -84,13 +116,25 @@ abstract class _UserSettingBase with Store {
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     format = prefs.getString(SAVE_FORMAT_KEY) ?? intialFormat;
     ApiClient.Accept_Language = languageList[languageNum];
-    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
+    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
+        ApiClient.Accept_Language;
     I18n.load(I18n.delegate.supportedLocales[languageNum]);
   }
+
+  @action
+  setThemeData(List<String> data) async {
+    await prefs.setStringList(THEME_DATA_KEY, data);
+    themeData = ThemeData(
+        brightness: Brightness.light,
+        accentColor: _stringToColor(data[0]),
+        primaryColor: _stringToColor(data[1]),
+        indicatorColor: _stringToColor(data[2]));
+  }
+
   @action
   setPictureQuality(int value) async {
     await prefs.setInt(PICTURE_QUALITY_KEY, value);
-    pictureQuality=value;
+    pictureQuality = value;
   }
 
   @action
@@ -147,7 +191,8 @@ abstract class _UserSettingBase with Store {
     await prefs.setInt(LANGUAGE_NUM_KEY, value);
     languageNum = value;
     ApiClient.Accept_Language = languageList[languageNum];
-    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
+    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
+        ApiClient.Accept_Language;
     final local = I18n.delegate.supportedLocales[languageNum];
     I18n.load(local);
   }

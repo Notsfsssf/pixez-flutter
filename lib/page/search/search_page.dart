@@ -15,10 +15,8 @@
  */
 
 import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -65,58 +63,57 @@ class _SearchPageState extends State<SearchPage>
     return Observer(builder: (_) {
       if (accountStore.now != null)
         return NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                _trendTagsStore.trendTags.isNotEmpty
-                    ? SliverAppBar(
-                        pinned: true,
-                        title: Text(I18n.of(context).Search),
-                        centerTitle: false,
-                        forceElevated: innerBoxIsScrolled,
-                        expandedHeight:
-                            200 + MediaQuery.of(context).padding.top,
-                        flexibleSpace: FlexibleSpaceBar(
-                          titlePadding: EdgeInsets.all(0.0),
-                          collapseMode: CollapseMode.none,
-                          background: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => IllustPage(
-                                  id: _trendTagsStore.trendTags.last.illust.id,
-                                ),
-                              ));
-                            },
-                            child: PixivImage(
-                              _trendTagsStore
-                                  .trendTags.last.illust.imageUrls.squareMedium,
-                              fit: BoxFit.fitWidth,
+            headerSliverBuilder: (BuildContext context,
+                    bool innerBoxIsScrolled) =>
+                [
+                  _trendTagsStore.trendTags.isNotEmpty
+                      ? SliverAppBar(
+                          pinned: true,
+                          title: Text(I18n.of(context).Search),
+                          centerTitle: false,
+                          forceElevated: innerBoxIsScrolled,
+                          expandedHeight:
+                              200 + MediaQuery.of(context).padding.top,
+                          flexibleSpace: FlexibleSpaceBar(
+                            titlePadding: EdgeInsets.all(0.0),
+                            collapseMode: CollapseMode.none,
+                            background: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => IllustPage(
+                                    id: _trendTagsStore
+                                        .trendTags.last.illust.id,
+                                  ),
+                                ));
+                              },
+                              child: ExtendedImage.network(
+                                _trendTagsStore
+                                    .trendTags.last.illust.imageUrls.medium,
+                                fit: BoxFit.cover,
+                                headers: PixivHeader,
+                                height:
+                                    200 + MediaQuery.of(context).padding.top,
+                              ),
                             ),
                           ),
-                        ),
-                        actions: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              Navigator.of(context, rootNavigator: true).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SearchSuggestionPage()));
-                            },
-                          )
-                        ],
-                      )
-                    : SliverAppBar(
-                        flexibleSpace: FlexibleSpaceBar(),
-                        title: Text(I18n.of(context).Search),
-                      )
-              ];
-            },
-            body: SmartRefresher(
-                controller: _controller,
-                enablePullDown: true,
-                onRefresh: () => _trendTagsStore.fetch(),
-                child: _buildListView(context)));
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.search),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SearchSuggestionPage()));
+                              },
+                            )
+                          ],
+                        )
+                      : SliverAppBar(
+                          flexibleSpace: FlexibleSpaceBar(),
+                          title: Text(I18n.of(context).Search),
+                        )
+                ],
+            body: _buildListView(context));
       return Column(children: <Widget>[
         AppBar(
           automaticallyImplyLeading: false,
@@ -135,7 +132,7 @@ class _SearchPageState extends State<SearchPage>
             )
           ],
         ),
-    Expanded(child: LoginInFirst())
+        Expanded(child: LoginInFirst())
       ]);
     });
   }
@@ -143,55 +140,60 @@ class _SearchPageState extends State<SearchPage>
   TabController _tabController;
 
   Widget _buildListView(BuildContext context) {
-    return ListView(children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(I18n.of(context).History),
-      ),
-      Observer(
-        builder: (BuildContext context) {
-          if (tagHistoryStore.tags.isNotEmpty) {
-            return Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Wrap(
-                children: tagHistoryStore.tags
-                    .map((f) => ActionChip(
-                          label: Text(f.name),
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(
-                                    builder: (context) => ResultPage(
-                                          word: f.name,
-                                          translatedName:
-                                              f.translatedName ?? '',
-                                        )));
-                          },
-                        ))
-                    .toList()
-                      ..add(ActionChip(
-                          label: Text(I18n.of(context).Clear),
-                          onPressed: () {
-                            tagHistoryStore.deleteAll();
-                          })),
-                runSpacing: 0.0,
-                spacing: 3.0,
-              ),
-            );
-          }
-          return Container();
-        },
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(I18n.of(context).Recommand_Tag),
-      ),
-      _trendTagsStore.trendTags.isNotEmpty
-          ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: _buildGrid(context, _trendTagsStore.trendTags),
-            )
-          : Container()
-    ]);
+    return SmartRefresher(
+      controller: _controller,
+      enablePullDown: true,
+      onRefresh: () => _trendTagsStore.fetch(),
+      child: ListView(padding: EdgeInsets.symmetric(horizontal: 8), children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(I18n.of(context).History),
+        ),
+        Observer(
+          builder: (BuildContext context) {
+            if (tagHistoryStore.tags.isNotEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Wrap(
+                  children: tagHistoryStore.tags
+                      .map((f) => ActionChip(
+                            label: Text(f.name),
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .push(MaterialPageRoute(
+                                      builder: (context) => ResultPage(
+                                            word: f.name,
+                                            translatedName:
+                                                f.translatedName ?? '',
+                                          )));
+                            },
+                          ))
+                      .toList()
+                        ..add(ActionChip(
+                            label: Text(I18n.of(context).Clear),
+                            onPressed: () {
+                              tagHistoryStore.deleteAll();
+                            })),
+                  runSpacing: 0.0,
+                  spacing: 3.0,
+                ),
+              );
+            }
+            return Container();
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(I18n.of(context).Recommand_Tag),
+        ),
+        _trendTagsStore.trendTags.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: _buildGrid(context, _trendTagsStore.trendTags),
+              )
+            : Container()
+      ]),
+    );
   }
 
   Widget _buildGrid(BuildContext context, List<Trend_tags> tags) =>

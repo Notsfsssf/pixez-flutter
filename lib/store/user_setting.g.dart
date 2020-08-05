@@ -175,11 +175,34 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$themeDataAtom = Atom(name: '_UserSettingBase.themeData');
+
+  @override
+  ThemeData get themeData {
+    _$themeDataAtom.reportRead();
+    return super.themeData;
+  }
+
+  @override
+  set themeData(ThemeData value) {
+    _$themeDataAtom.reportWrite(value, super.themeData, () {
+      super.themeData = value;
+    });
+  }
+
   final _$initAsyncAction = AsyncAction('_UserSettingBase.init');
 
   @override
   Future<void> init() {
     return _$initAsyncAction.run(() => super.init());
+  }
+
+  final _$setThemeDataAsyncAction =
+      AsyncAction('_UserSettingBase.setThemeData');
+
+  @override
+  Future setThemeData(List<String> data) {
+    return _$setThemeDataAsyncAction.run(() => super.setThemeData(data));
   }
 
   final _$setPictureQualityAsyncAction =
@@ -297,7 +320,8 @@ disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},
 hIsNotAllow: ${hIsNotAllow},
 path: ${path},
-format: ${format}
+format: ${format},
+themeData: ${themeData}
     ''';
   }
 }

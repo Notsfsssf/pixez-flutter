@@ -71,7 +71,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 this.index = index;
               });
             },
-            itemCount: 5,
+            itemCount: 3,
             itemBuilder: (BuildContext context, int index) {
               return _widgetOptions[index];
             },
@@ -141,8 +141,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       try {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          saveStore.context = context;
+            .push(MaterialPageRoute(builder: (context) {
           return IllustPage(
             id: id,
           );
@@ -155,8 +154,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       try {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          saveStore.context = context;
+            .push(MaterialPageRoute(builder: (context) {
           return UsersPage(
             id: id,
           );
@@ -172,8 +170,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
-                .pushReplacement(MaterialPageRoute(builder: (context) {
-              saveStore.context = context;
+                .push(MaterialPageRoute(builder: (context) {
               return IllustPage(id: id);
             }));
             return;
@@ -187,8 +184,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
-                .pushReplacement(MaterialPageRoute(builder: (context) {
-              saveStore.context = context;
+                .push(MaterialPageRoute(builder: (context) {
               return UsersPage(
                 id: id,
               );
@@ -202,8 +198,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         try {
           var id = link.queryParameters['illust_id'];
           Navigator.of(context, rootNavigator: true)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            saveStore.context = context;
+              .push(MaterialPageRoute(builder: (context) {
             return IllustPage(id: int.parse(id));
           }));
 
@@ -214,8 +209,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         try {
           var id = link.queryParameters['id'];
           Navigator.of(context, rootNavigator: true)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            saveStore.context = context;
+              .push(MaterialPageRoute(builder: (context) {
             return UsersPage(
               id: int.parse(id),
             );
@@ -230,8 +224,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
-                .pushReplacement(MaterialPageRoute(builder: (context) {
-              saveStore.context = context;
+                .push(MaterialPageRoute(builder: (context) {
               return IllustPage(id: id);
             }));
             return;
@@ -242,8 +235,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
-                .pushReplacement(MaterialPageRoute(builder: (context) {
-              saveStore.context = context;
+                .push(MaterialPageRoute(builder: (context) {
               return UsersPage(
                 id: id,
               );
@@ -314,7 +306,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
-
     // For sharing images coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
       if (value != null)
@@ -340,7 +331,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => InitPage()));
+          .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
     }
   }
 }
