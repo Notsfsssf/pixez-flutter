@@ -282,7 +282,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     } else {
       _stackIndex = index - 2;
     }
-    _pageController = PageController(initialPage: userSetting.welcomePageNum);
+    _pageController = userSetting.welcomePageNum < 3
+        ? PageController(initialPage: userSetting.welcomePageNum)
+        : PageController();
     _widgetOptions = <Widget>[
       RecomSpolightPage(),
       RankPage(),

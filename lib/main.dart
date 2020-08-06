@@ -24,6 +24,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/models/login_error_response.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/account_store.dart';
@@ -55,16 +56,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   ReceivePort _port = ReceivePort();
   @override
   void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
     final Brightness brightness =
         WidgetsBinding.instance.window.platformBrightness;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarIconBrightness:
           brightness == Brightness.light ? Brightness.dark : Brightness.light,
       systemNavigationBarColor:
-          brightness == Brightness.light ? Colors.white : Colors.black,
+          brightness == Brightness.light ? Color(0xFFFAFAFA) :  Color(0xFF303030),//我的朋友，这边只能写死，我没招了
       statusBarColor: Colors.transparent,
     ));
-    super.didChangePlatformBrightness();
   }
 
   @override
@@ -140,8 +141,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 systemNavigationBarColor:
                     MediaQuery.of(context).platformBrightness ==
                             Brightness.light
-                        ? Colors.white
-                        : Colors.black,
+                        ? Color(0xFFFAFAFA)
+                        : Color(0xFF303030),
                 statusBarColor: Colors.transparent,
               ),
               child: SplashPage());

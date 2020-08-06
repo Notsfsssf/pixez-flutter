@@ -74,7 +74,6 @@ abstract class _UserSettingBase with Store {
       brightness: Brightness.light,
       primaryColor: Colors.cyan[500],
       accentColor: Colors.cyan[400],
-      indicatorColor: Colors.cyan[500],
       appBarTheme: AppBarTheme(brightness: Brightness.light));
   @action
   Future<void> init() async {
@@ -90,7 +89,7 @@ abstract class _UserSettingBase with Store {
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
     var colors = prefs.getStringList(THEME_DATA_KEY);
     if (colors != null) {
-      if (colors.length < 3) {
+      if (colors.length < 2) {
         prefs.remove(THEME_DATA_KEY);
       } else {
         try {
@@ -99,7 +98,7 @@ abstract class _UserSettingBase with Store {
               accentColor: _stringToColor(colors[0]),
               primaryColor: _stringToColor(colors[1]),
               appBarTheme: AppBarTheme(brightness: Brightness.light),
-              indicatorColor: _stringToColor(colors[2]));
+              );
         } catch (e) {
           print(e);
         }
@@ -133,7 +132,7 @@ abstract class _UserSettingBase with Store {
         ),
         accentColor: _stringToColor(data[0]),
         primaryColor: _stringToColor(data[1]),
-        indicatorColor: _stringToColor(data[2]));
+        );
   }
 
   @action

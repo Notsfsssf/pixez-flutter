@@ -52,7 +52,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.youtube_searched_for),
+        child: Icon(Icons.search),
         onPressed: () {
           _store.findImage();
         },

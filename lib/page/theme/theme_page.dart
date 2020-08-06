@@ -13,13 +13,107 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+
+class ColorPickPage extends HookWidget {
+  final Color initialColor;
+
+  ColorPickPage({@required this.initialColor});
+  Color _stringToColor(String colorString) {
+    String valueString =
+        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
+    int value = int.parse(valueString, radix: 16);
+    Color otherColor = new Color(value);
+    return otherColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pickerColor = useState<Color>(initialColor);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pick a color'),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () async {
+                final TextEditingController textEditingController =
+                    TextEditingController(
+                        text: pickerColor.value
+                            .toString()
+                            .toLowerCase()
+                            .replaceAll('color(0xff', '')
+                            .replaceAll(')', ''));
+
+                String result = await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("16 radix RGB"),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        content: TextField(
+                          controller: textEditingController,
+                          maxLength: 6,
+                          decoration: InputDecoration(
+                              prefix: Text("color(0xff"), suffix: Text(")")),
+                        ),
+                        actions: <Widget>[
+                          FlatButton(
+                              onPressed: () {
+                                final result = textEditingController.text
+                                    .trim()
+                                    .toLowerCase();
+                                if (result.length != 6) {
+                                  return;
+                                }
+                                Navigator.of(context)
+                                    .pop("color(0xff${result})");
+                              },
+                              child: Text(I18n.of(context).OK)),
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(I18n.of(context).Cancel)),
+                        ],
+                      );
+                    });
+                if (result != null) {
+                  Color color = _stringToColor(result);//迅速throw出来
+                  pickerColor.value = color;
+                }
+              }),
+          IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                Navigator.of(context).pop(pickerColor.value.toString());
+              })
+        ],
+      ),
+      body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        children: <Widget>[
+          ColorPicker(
+            enableAlpha: false,
+            pickerColor: pickerColor.value,
+            onColorChanged: (Color color) {
+              pickerColor.value = color;
+            },
+            showLabel: true,
+            pickerAreaHeightPercent: 0.8,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class ThemePage extends StatefulWidget {
   @override
@@ -72,49 +166,13 @@ class _ThemePageState extends State<ThemePage> {
     ),
   ];
 
-  Color _stringToColor(String colorString) {
-    String valueString = colorString.split('(0x')[1].split(')')[0];
-    int value = int.parse(valueString, radix: 16);
-    Color otherColor = new Color(value);
-    return otherColor;
-  }
-
-  Future<Void> _pickColorData(int index, Color pickerColor) async {
-// raise the [showDialog] widget
-    final result = await showDialog(
-      context: context,
-      child: StatefulBuilder(builder: (context, setC) {
-        return AlertDialog(
-          title: const Text('Pick a color!'),
-          content: SingleChildScrollView(
-            padding: EdgeInsets.all(0.0),
-            child: ColorPicker(
-              pickerColor: pickerColor,
-              onColorChanged: (Color color) {
-                setC(() {
-                  pickerColor = color;
-                });
-              },
-              showLabel: true,
-              pickerAreaHeightPercent: 0.8,
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: const Text('Got it'),
-              onPressed: () {
-                Navigator.of(context).pop(pickerColor.toString());
-              },
-            ),
-          ],
-        );
-      }),
-    );
+  Future<void> _pickColorData(int index, Color pickerColor) async {
+    final result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ColorPickPage(initialColor: pickerColor)));
     if (result != null) {
       var data = <String>[
         userSetting.themeData.accentColor.toString(),
         userSetting.themeData.primaryColor.toString(),
-        userSetting.themeData.indicatorColor.toString()
       ];
       data[index] = result;
       userSetting.setThemeData(data);
@@ -164,16 +222,6 @@ class _ThemePageState extends State<ThemePage> {
                         child: Center(child: Text("primaryColor")),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        _pickColorData(2, Theme.of(context).indicatorColor);
-                      },
-                      child: Container(
-                        height: 30,
-                        color: Theme.of(context).indicatorColor,
-                        child: Center(child: Text("indicatorColor")),
-                      ),
-                    )
                   ],
                 ),
               ],
@@ -192,7 +240,6 @@ class _ThemePageState extends State<ThemePage> {
                       userSetting.setThemeData(<String>[
                         skin.accentColor.toString(),
                         skin.primaryColor.toString(),
-                        skin.indicatorColor.toString()
                       ]);
                     },
                     child: Column(
@@ -217,11 +264,6 @@ class _ThemePageState extends State<ThemePage> {
                               height: 30,
                               color: skin.accentColor,
                               child: Center(child: Text("accentColor")),
-                            ),
-                            Container(
-                              height: 30,
-                              color: skin.indicatorColor,
-                              child: Center(child: Text("indicatorColor")),
                             ),
                           ],
                         ),
