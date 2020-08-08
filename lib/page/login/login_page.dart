@@ -18,7 +18,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/create_user_response.dart';
@@ -39,30 +39,13 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passWordController = TextEditingController();
   LoginStore _loginStore = LoginStore();
-  ReactionDisposer reactionDisposer;
   @override
   void initState() {
     super.initState();
-    initReact();
-  }
-
-  initReact() {
-    reactionDisposer = reaction((_) => _loginStore.errorMessage, (_) {
-      if (_loginStore.errorMessage != null && context != null)
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(_loginStore.errorMessage),
-          ),
-        );
-    }, equals: (a, b) {
-      return a == b;
-    });
   }
 
   @override
   void dispose() {
-    reactionDisposer();
     userNameController?.dispose();
     passWordController?.dispose();
     context = null;
@@ -120,10 +103,10 @@ class _LoginPageState extends State<LoginPage> {
                 width: 80,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.only(bottom: 20),
                 child: Container(
-                  padding: EdgeInsets.all(20),
-                  child:   AutofillGroup(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: AutofillGroup(
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -153,6 +136,28 @@ class _LoginPageState extends State<LoginPage> {
                         Padding(
                           padding: EdgeInsets.all(10),
                         ),
+                        Observer(builder: (_) {
+                          return Visibility(
+                            visible: _loginStore.errorMessage != null,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0, horizontal: 0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4.0)),
+                                ),
+                                padding: EdgeInsets.all(4.0),
+                                child: Text(
+                                  _loginStore.errorMessage ?? '',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                         RaisedButton(
                             color: Theme.of(context).primaryColor,
                             child: Text(
@@ -183,7 +188,8 @@ class _LoginPageState extends State<LoginPage> {
                                     builder: (BuildContext context) {
                               return CreateUserPage();
                             }));
-                            if (result != null && result is CreateUserResponse) {
+                            if (result != null &&
+                                result is CreateUserResponse) {
                               userNameController.text = result.body.userAccount;
                               passWordController.text = result.body.password;
 
@@ -209,7 +215,8 @@ class _LoginPageState extends State<LoginPage> {
                             I18n.of(context).Terms,
                           ),
                           onPressed: () async {
-                            final url = 'https://www.pixiv.net/terms/?page=term';
+                            final url =
+                                'https://www.pixiv.net/terms/?page=term';
                             if (await canLaunch(url)) {
                               await launch(url);
                             } else {}

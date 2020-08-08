@@ -29,10 +29,6 @@ import 'package:pixez/network/refresh_token_interceptor.dart';
 
 final ApiClient apiClient = ApiClient();
 
-class Restrict {
-  static String PUBLIC = "public", PRIVATE = "private", ALL = "all";
-}
-
 class ApiClient {
   Dio httpClient;
   final String hashSalt =
@@ -67,7 +63,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-//      ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
+      // ..interceptors.add(LogInterceptor(responseBody: true))
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
@@ -205,7 +201,7 @@ class ApiClient {
   }
 
   Future<Response> getUserNovels(int user_id) async {
-    return httpClient.get("/v1/user/illusts?filter=for_android",
+    return httpClient.get("/v1/user/novels?filter=for_android",
         queryParameters: {"user_id": user_id});
   }
 

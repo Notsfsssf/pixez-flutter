@@ -18,12 +18,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
 class NovelUserBookmarkPage extends HookWidget {
   final int id;
-  NovelUserBookmarkPage(this.id);
+  NovelUserBookmarkPage({@required this.id});
   @override
   Widget build(BuildContext context) {
     final restrict = useState<String>('public');
@@ -31,41 +32,53 @@ class NovelUserBookmarkPage extends HookWidget {
         () => apiClient.getUserBookmarkNovel(id, restrict.value));
     return Column(
       children: [
-        IconButton(
-            icon: Icon(Icons.list),
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(I18n.of(context).public),
-                            onTap: () {
-                              futureGet.value = () =>
-                                  apiClient.getUserBookmarkNovel(id, 'public');
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          ListTile(
-                            title: Text(I18n.of(context).private),
-                            onTap: () {
-                              futureGet.value = () =>
-                                  apiClient.getUserBookmarkNovel(id, 'private');
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  });
-            }),
-        NovelLightingList(
-          futureGet: futureGet.value,
+        int.parse(accountStore.now.userId) == id
+            ? IconButton(
+                icon: Icon(Icons.list),
+                onPressed: () {
+                  _buildShowModalBottomSheet(context, futureGet);
+                })
+            : Visibility(
+                child: Container(height: 0),
+                visible: false,
+              ),
+        Expanded(
+          child: NovelLightingList(
+            futureGet: futureGet.value,
+          ),
         ),
       ],
     );
+  }
+
+  Future _buildShowModalBottomSheet(
+      BuildContext context, ValueNotifier<FutureGet> futureGet) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  title: Text(I18n.of(context).public),
+                  onTap: () {
+                    futureGet.value =
+                        () => apiClient.getUserBookmarkNovel(id, 'public');
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: Text(I18n.of(context).private),
+                  onTap: () {
+                    futureGet.value =
+                        () => apiClient.getUserBookmarkNovel(id, 'private');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

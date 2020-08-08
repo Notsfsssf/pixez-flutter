@@ -259,7 +259,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       final result = LastRelease.fromJson(response.data);
       List<int> versionNums =
           result.tagName.split('.').map((e) => int.parse(e));
-      debugPrint(versionNums.toString());
       List<int> newNums =
           Constrains.tagName.split('.').map((e) => int.parse(e));
       for (int i = 0; i < versionNums.length; i++) {
@@ -272,7 +271,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         }
       }
     } catch (e) {
-      debugPrint(e.toString());
     }
   }
 
@@ -288,7 +286,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         ? PageController(initialPage: userSetting.welcomePageNum)
         : PageController();
     _widgetOptions = <Widget>[
-      NovelRecomPage(),
+      RecomSpolightPage(),
       RankPage(),
       NewPage(),
     ];

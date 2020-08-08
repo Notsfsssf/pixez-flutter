@@ -15,9 +15,7 @@
  */
 
 import 'dart:ffi';
-
 import 'package:dio/dio.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
@@ -43,11 +41,12 @@ abstract class _NovelLightingStoreBase with Store {
       NovelRecomResponse novelRecomResponse =
           NovelRecomResponse.fromJson(response.data);
       nextUrl = novelRecomResponse.nextUrl;
-      final novels = novelRecomResponse.novels;
+      final novel = novelRecomResponse.novels;
       this.novels.clear();
-      this.novels.addAll(novels);
+      this.novels.addAll(novel);
       _controller.refreshCompleted();
     } catch (e) {
+      print(e);
       _controller.refreshFailed();
     }
   }

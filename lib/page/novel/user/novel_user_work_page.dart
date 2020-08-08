@@ -23,7 +23,7 @@ import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 class NovelUserWorkPage extends StatefulWidget {
   final int id;
 
-  const NovelUserWorkPage({Key key, this.id}) : super(key: key);
+  const NovelUserWorkPage({Key key, @required this.id}) : super(key: key);
   @override
   _NovelUserWorkPageState createState() => _NovelUserWorkPageState();
 }
@@ -40,8 +40,10 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        NovelLightingList(
-          futureGet: futureGet,
+        Expanded(
+          child: NovelLightingList(
+            futureGet: futureGet,
+          ),
         )
       ],
     );

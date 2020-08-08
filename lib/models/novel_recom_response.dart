@@ -26,24 +26,24 @@ String novelRecomResponseToJson(NovelRecomResponse data) => json.encode(data.toJ
 
 class NovelRecomResponse {
   List<Novel> novels;
-  PrivacyPolicy privacyPolicy;
+  // PrivacyPolicy privacyPolicy;
   String nextUrl;
 
   NovelRecomResponse({
     this.novels,
-    this.privacyPolicy,
+    // this.privacyPolicy,
     this.nextUrl,
   });
 
   factory NovelRecomResponse.fromJson(Map<String, dynamic> json) => NovelRecomResponse(
     novels: List<Novel>.from(json["novels"].map((x) => Novel.fromJson(x))),
-    privacyPolicy: PrivacyPolicy.fromJson(json["privacy_policy"]),
+    // privacyPolicy: PrivacyPolicy.fromJson(json["privacy_policy"]),
     nextUrl: json["next_url"],
   );
 
   Map<String, dynamic> toJson() => {
     "novels": List<dynamic>.from(novels.map((x) => x.toJson())),
-    "privacy_policy": privacyPolicy.toJson(),
+    // "privacy_policy": privacyPolicy.toJson(),
     "next_url": nextUrl,
   };
 }
@@ -260,26 +260,26 @@ class ProfileImageUrls {
   };
 }
 
-class PrivacyPolicy {
-  String version;
-  String message;
-  String url;
+// class PrivacyPolicy {
+//   String version;
+//   String message;
+//   String url;
 
-  PrivacyPolicy({
-    this.version,
-    this.message,
-    this.url,
-  });
+//   PrivacyPolicy({
+//     this.version,
+//     this.message,
+//     this.url,
+//   });
 
-  factory PrivacyPolicy.fromJson(Map<String, dynamic> json) => PrivacyPolicy(
-    version: json["version"],
-    message: json["message"],
-    url: json["url"],
-  );
+//   factory PrivacyPolicy.fromJson(Map<String, dynamic> json) => PrivacyPolicy(
+//     version: json["version"],
+//     message: json["message"],
+//     url: json["url"],
+//   );
 
-  Map<String, dynamic> toJson() => {
-    "version": version,
-    "message": message,
-    "url": url,
-  };
-}
+//   Map<String, dynamic> toJson() => {
+//     "version": version,
+//     "message": message,
+//     "url": url,
+//   };
+// }

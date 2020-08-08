@@ -61,7 +61,6 @@ class _RankPageState extends State<RankPage> {
     if (dateTime == null) {
       return null;
     }
-    debugPrint("${dateTime.year}-${dateTime.month}-${dateTime.day}");
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 

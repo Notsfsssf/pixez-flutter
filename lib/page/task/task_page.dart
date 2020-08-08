@@ -77,7 +77,6 @@ class _TaskPageState extends State<TaskPage> {
           }
         }
       } catch (e) {
-        debugPrint(e.toString());
       }
     });
     initMethod();

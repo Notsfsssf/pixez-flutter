@@ -533,11 +533,9 @@ class _IllustPageState extends State<IllustPage> {
                 heroTag: widget.id,
                 backgroundColor: Colors.white,
                 onPressed: () => _illustStore.star(),
-                child: Observer(builder: (context) {
-                  return StarIcon(
+                child: StarIcon(
                     illustStore: _illustStore,
-                  );
-                }),
+                  ),
               ),
             ),
             body: _buildBody(context, data));

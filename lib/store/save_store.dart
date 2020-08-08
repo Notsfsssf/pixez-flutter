@@ -282,7 +282,6 @@ abstract class _SaveStoreBase with Store {
         await file.writeAsBytes(uint8list);
         await platform.invokeMethod('scan', {"path": fullPath});
       } catch (e) {
-        debugPrint("${e}");
       }
       return;
     } else {
