@@ -47,9 +47,7 @@ abstract class _IllustStoreBase with Store {
     if (illusts == null) {
       try {
         Response response = await client.getIllustDetail(id);
-
         final result = Illusts.fromJson(response.data['illust']);
-
         illusts = result;
       } on DioError catch (e) {
         if (e.response != null) {
@@ -74,14 +72,16 @@ abstract class _IllustStoreBase with Store {
         illusts.isBookmarked = true;
         isBookmark = true;
         return true;
-      } catch (e) {}
+      } catch (e) {
+      }
     } else {
       try {
         Response response = await client.postUnLikeIllust(illusts.id);
         illusts.isBookmarked = false;
         isBookmark = false;
         return false;
-      } catch (e) {}
+      } catch (e) {
+      }
     }
     return null;
   }

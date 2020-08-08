@@ -46,6 +46,7 @@ class _StarIconState extends State<StarIcon> {
           dotPrimaryColor: Colors.red,
           dotSecondaryColor: Colors.redAccent,
         ),
+        animationDuration: Duration(milliseconds: 500),
         isLiked: widget.illustStore.isBookmark,
         likeBuilder: (context) {
           return Icon(
