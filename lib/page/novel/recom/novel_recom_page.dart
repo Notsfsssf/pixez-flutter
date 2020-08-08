@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
 class NovelRecomPage extends StatefulWidget {
@@ -26,6 +27,26 @@ class NovelRecomPage extends StatefulWidget {
 class _NovelRecomPageState extends State<NovelRecomPage> {
   @override
   Widget build(BuildContext context) {
-    return NovelLightingList(futureGet: ()=>apiClient.getNovelRecommended(),);
+    return Column(
+      children: [
+        AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.bookmark),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return NovelBookmarkPage();
+                }));
+              },
+            )
+          ],
+        ),
+        Expanded(
+            child: NovelLightingList(
+          futureGet: () => apiClient.getNovelRecommended(),
+        )),
+      ],
+    );
   }
 }

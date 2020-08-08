@@ -123,98 +123,102 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Container(
                   padding: EdgeInsets.all(20),
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        maxLines: 1,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.supervised_user_circle),
-                          hintText: 'Pixiv id/Email',
-                          labelText: 'Pixiv id/Email',
+                  child:   AutofillGroup(
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          maxLines: 1,
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.supervised_user_circle),
+                            hintText: 'Pixiv id/Email',
+                            labelText: 'Pixiv id/Email',
+                          ),
+                          controller: userNameController,
+                          autofillHints: [AutofillHints.username],
                         ),
-                        controller: userNameController,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        maxLines: 1,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.kitchen),
-                          hintText: 'Password',
-                          labelText: 'Password *',
+                        Padding(
+                          padding: EdgeInsets.all(10),
                         ),
-                        controller: passWordController,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      RaisedButton(
-                          color: Theme.of(context).primaryColor,
+                        TextFormField(
+                          obscureText: true,
+                          maxLines: 1,
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.kitchen),
+                            hintText: 'Password',
+                            labelText: 'Password *',
+                          ),
+                          controller: passWordController,
+                          autofillHints: [AutofillHints.password],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                        ),
+                        RaisedButton(
+                            color: Theme.of(context).primaryColor,
+                            child: Text(
+                              I18n.of(context).Login,
+                            ),
+                            onPressed: () async {
+                              if (userNameController.value.text.isEmpty ||
+                                  userNameController.value.text.isEmpty) return;
+                              BotToast.showText(
+                                  text: I18n.of(context).Attempting_To_Log_In);
+                              bool isAuth = await _loginStore.auth(
+                                  userNameController.value.text.trim(),
+                                  passWordController.value.text.trim());
+                              if (isAuth) {
+                                accountStore.fetch();
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Platform.isIOS
+                                                ? HelloPage()
+                                                : AndroidHelloPage()));
+                              }
+                            }),
+                        RaisedButton(
+                          onPressed: () async {
+                            final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return CreateUserPage();
+                            }));
+                            if (result != null && result is CreateUserResponse) {
+                              userNameController.text = result.body.userAccount;
+                              passWordController.text = result.body.password;
+
+                              bool isAuth = await _loginStore.auth(
+                                  userNameController.value.text.trim(),
+                                  passWordController.value.text.trim(),
+                                  deviceToken: result.body.deviceToken);
+                              if (isAuth) {
+                                accountStore.fetch();
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Platform.isIOS
+                                                ? HelloPage()
+                                                : AndroidHelloPage()));
+                              }
+                            }
+                          },
+                          child: Text(I18n.of(context).Dont_have_account),
+                        ),
+                        FlatButton(
                           child: Text(
-                            I18n.of(context).Login,
+                            I18n.of(context).Terms,
                           ),
                           onPressed: () async {
-                            if (userNameController.value.text.isEmpty ||
-                                userNameController.value.text.isEmpty) return;
-                            BotToast.showText(
-                                text: I18n.of(context).Attempting_To_Log_In);
-                            bool isAuth = await _loginStore.auth(
-                                userNameController.value.text.trim(),
-                                passWordController.value.text.trim());
-                            if (isAuth) {
-                              accountStore.fetch();
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Platform.isIOS
-                                              ? HelloPage()
-                                              : AndroidHelloPage()));
-                            }
-                          }),
-                      RaisedButton(
-                        onPressed: () async {
-                          final result = await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                            return CreateUserPage();
-                          }));
-                          if (result != null && result is CreateUserResponse) {
-                            userNameController.text = result.body.userAccount;
-                            passWordController.text = result.body.password;
-
-                            bool isAuth = await _loginStore.auth(
-                                userNameController.value.text.trim(),
-                                passWordController.value.text.trim(),
-                                deviceToken: result.body.deviceToken);
-                            if (isAuth) {
-                              accountStore.fetch();
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Platform.isIOS
-                                              ? HelloPage()
-                                              : AndroidHelloPage()));
-                            }
-                          }
-                        },
-                        child: Text(I18n.of(context).Dont_have_account),
-                      ),
-                      FlatButton(
-                        child: Text(
-                          I18n.of(context).Terms,
+                            final url = 'https://www.pixiv.net/terms/?page=term';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {}
+                          },
                         ),
-                        onPressed: () async {
-                          final url = 'https://www.pixiv.net/terms/?page=term';
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          } else {}
-                        },
-                      ),
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    ),
                   ),
                 ),
               ),

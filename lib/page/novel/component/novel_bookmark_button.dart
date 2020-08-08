@@ -32,17 +32,16 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () async {
-        ApiClient client = apiClient;
         if (!widget.novel.isBookmarked) {
           try {
-            await client.postNovelBookmarkAdd(widget.novel.id, "private");
+            await apiClient.postNovelBookmarkAdd(widget.novel.id, "private");
             setState(() {
               widget.novel.isBookmarked = true;
             });
           } catch (e) {}
         } else {
           try {
-            await client.postNovelBookmarkDelete(widget.novel.id);
+            await apiClient.postNovelBookmarkDelete(widget.novel.id);
             setState(() {
               widget.novel.isBookmarked = false;
             });
@@ -54,17 +53,16 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
             ? Icon(Icons.bookmark)
             : Icon(Icons.bookmark_border),
         onPressed: () async {
-          ApiClient client = apiClient;
           if (!widget.novel.isBookmarked) {
             try {
-              await client.postNovelBookmarkAdd(widget.novel.id, "public");
+              await apiClient.postNovelBookmarkAdd(widget.novel.id, "public");
               setState(() {
                 widget.novel.isBookmarked = true;
               });
             } catch (e) {}
           } else {
             try {
-              await client.postNovelBookmarkDelete(widget.novel.id);
+              await apiClient.postNovelBookmarkDelete(widget.novel.id);
               setState(() {
                 widget.novel.isBookmarked = false;
               });

@@ -15,9 +15,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
 
@@ -65,6 +65,7 @@ class _RankPageState extends State<RankPage> {
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
+  DateTime nowDateTime = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -90,22 +91,20 @@ class _RankPageState extends State<RankPage> {
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.date_range),
-                    onPressed: () {
-                      var theme = Theme.of(context);
-                      DatePicker.showDatePicker(context,
-                          maxDateTime: DateTime.now(),
-                          initialDateTime: nowDate,
-                          pickerTheme: DateTimePickerTheme(
-                              itemTextStyle: theme.textTheme.subtitle2,
-                              backgroundColor: theme.dialogBackgroundColor,
-                              confirmTextStyle: theme.textTheme.subtitle1,
-                              cancelTextStyle: theme.textTheme.subtitle1),
-                          onConfirm: (DateTime dateTime, List<int> list) {
-                        nowDate = dateTime;
+                    onPressed: () async {
+                      var nowdate = DateTime.now();
+                      var date = await showDatePicker(
+                          context: context,
+                          initialDate: nowDateTime,
+                          locale: I18n.delegate.supportedLocales[userSetting.languageNum],
+                          firstDate: DateTime(2007,8),//pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
+                          lastDate: nowdate);
+                      if (date != null && mounted) {
+                        nowDateTime = date;
                         setState(() {
-                          this.dateTime = toRequestDate(dateTime);
+                          this.dateTime = toRequestDate(date);
                         });
-                      });
+                      }
                     },
                   ),
                   IconButton(

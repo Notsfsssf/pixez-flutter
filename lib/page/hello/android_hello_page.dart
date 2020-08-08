@@ -31,6 +31,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -38,6 +39,7 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+
 
 class AndroidHelloPage extends StatefulWidget {
   @override
@@ -286,7 +288,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         ? PageController(initialPage: userSetting.welcomePageNum)
         : PageController();
     _widgetOptions = <Widget>[
-      RecomSpolightPage(),
+      NovelRecomPage(),
       RankPage(),
       NewPage(),
     ];

@@ -126,7 +126,7 @@ class _UsersPageState extends State<UsersPage>
                       userStore.errorMessage = null;
                       userStore.firstFetch();
                     },
-                    child: Text('Refresh'),
+                    child: Text(I18n.of(context).refresh),
                   ),
                 )
               ],
@@ -175,7 +175,7 @@ class _UsersPageState extends State<UsersPage>
                 pinned: true,
                 elevation: 0.0,
                 forceElevated: innerBoxIsScrolled,
-                expandedHeight: 320,
+                expandedHeight: 280,
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.share),
@@ -361,7 +361,7 @@ class _UsersPageState extends State<UsersPage>
     return Container(
       color: Theme.of(context).cardColor,
       width: MediaQuery.of(context).size.width,
-      height: 80,
+      height: 60,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
         child: SingleChildScrollView(

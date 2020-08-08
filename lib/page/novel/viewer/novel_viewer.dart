@@ -21,6 +21,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
+import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 
 class NovelViewerPage extends StatefulWidget {
@@ -43,7 +44,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     _controller = ScrollController();
     _controller.addListener(() {
       if (_controller.position.pixels >= _controller.position.maxScrollExtent) {
-        print('滑动到了底部');
         _showMessage(context);
       }
     });
@@ -135,7 +135,12 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   leading: PainterAvatar(
                     url: widget.novel.user.profileImageUrls.medium,
                     id: widget.novel.user.id,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return NovelUserPage(id: widget.novel.user.id,);
+                      }));
+                    },
                   ),
                 ),
                 Padding(

@@ -33,7 +33,6 @@ dependencies:
   share_extend: ^1.1.9
   permission_handler: ^5.0.1+1
   save_in_gallery: ^0.1.3
-  flutter_cupertino_date_picker: ^1.0.26+2
   archive: ^2.0.13
   url_launcher: ^5.5.0
   bot_toast: ^3.0.0
@@ -42,24 +41,23 @@ dependencies:
   uni_links: ^0.4.0
   mobx: ^1.2.1+1
   flutter_mobx: ^1.1.0+1
-  flutter_inapp_purchase: ^2.1.2
+  flutter_inapp_purchase: ^2.2.0
   photo_view: ^0.9.2
-  flutter_html: ^1.0.0
+  flutter_widget_from_html_core: ^0.4.3
   image_picker: ^0.6.7+4
   extended_nested_scroll_view: ^1.0.0
   scrollable_positioned_list: ^0.1.6
-  flutter_date_pickers: ^0.1.0
+  flutter_date_pickers: ^0.1.5
   device_info: ^0.4.2+4
   provider: ^4.1.3
   flutter_displaymode: ^0.1.0
   receive_sharing_intent: ^1.4.0+2
   like_button: ^1.0.1
   badges: ^1.1.1
-  flutter_hooks: ^0.12.0
+  flutter_hooks: ^0.13.0
   flutter_downloader: ^1.4.4
   pull_to_refresh: ^1.6.1
-  extended_image: ^0.9.0
-  waterfall_flow: any
+  extended_image: ^1.0.0
   flutter_colorpicker: ^0.3.4
 
 #dependency_overrides:

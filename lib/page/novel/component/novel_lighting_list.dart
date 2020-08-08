@@ -16,14 +16,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NovelLightingList extends StatefulWidget {
   final FutureGet futureGet;
@@ -34,11 +33,11 @@ class NovelLightingList extends StatefulWidget {
 }
 
 class _NovelLightingListState extends State<NovelLightingList> {
-  EasyRefreshController _easyRefreshController;
+  RefreshController _easyRefreshController;
   NovelLightingStore _store;
   @override
   void initState() {
-    _easyRefreshController = EasyRefreshController();
+    _easyRefreshController = RefreshController(initialRefresh: true);
     _store = NovelLightingStore(widget.futureGet, _easyRefreshController);
     super.initState();
   }
@@ -88,13 +87,11 @@ class _NovelLightingListState extends State<NovelLightingList> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return EasyRefresh(
-        firstRefresh: true,
-        onLoad:()=>_store.next(),
-        onRefresh: ()=>_store.fetch(),
-        header: MaterialHeader(),
-        enableControlFinishLoad: true,
-        enableControlFinishRefresh: true,
+      return SmartRefresher(
+        onLoading: () => _store.next(),
+        onRefresh: () => _store.fetch(),
+        enablePullDown: true,
+        enablePullUp: true,
         controller: _easyRefreshController,
         child: _buildBody(context),
       );

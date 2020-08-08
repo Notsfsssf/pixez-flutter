@@ -22,7 +22,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
-
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 part 'novel_lighting_store.g.dart';
 
 class NovelLightingStore = _NovelLightingStoreBase with _$NovelLightingStore;
@@ -30,12 +30,14 @@ class NovelLightingStore = _NovelLightingStoreBase with _$NovelLightingStore;
 abstract class _NovelLightingStoreBase with Store {
   FutureGet source;
   final ApiClient _client = apiClient;
-  final EasyRefreshController _controller;
+  final RefreshController _controller;
   _NovelLightingStoreBase(this.source, this._controller);
   String nextUrl;
   ObservableList<Novel> novels = ObservableList();
   @action
   Future<Void> fetch() async {
+    nextUrl = null;
+    _controller?.headerMode?.value = RefreshStatus.idle;
     try {
       Response response = await source();
       NovelRecomResponse novelRecomResponse =
@@ -44,9 +46,9 @@ abstract class _NovelLightingStoreBase with Store {
       final novels = novelRecomResponse.novels;
       this.novels.clear();
       this.novels.addAll(novels);
-      _controller.finishRefresh(success: true);
+      _controller.refreshCompleted();
     } catch (e) {
-      _controller.finishRefresh(success: false);
+      _controller.refreshFailed();
     }
   }
 
@@ -58,14 +60,14 @@ abstract class _NovelLightingStoreBase with Store {
         NovelRecomResponse novelRecomResponse =
             NovelRecomResponse.fromJson(response.data);
         nextUrl = novelRecomResponse.nextUrl;
-        final novels = novelRecomResponse.novels;
-        novels.addAll(novels);
-        _controller.finishLoad(success: true, noMore: false);
+        final novel = novelRecomResponse.novels;
+        novels.addAll(novel);
+        _controller.loadComplete();
       } catch (e) {
-        _controller.finishLoad(success: false);
+        _controller.loadFailed();
       }
     } else {
-      _controller.finishLoad(success: true, noMore: true);
+      _controller.loadNoData();
     }
   }
 }

@@ -15,18 +15,35 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 
-class NovelUserPage extends StatefulWidget {
+class NovelUserWorkPage extends StatefulWidget {
   final int id;
 
-  const NovelUserPage({Key key,@required this.id}) : super(key: key);
+  const NovelUserWorkPage({Key key, this.id}) : super(key: key);
   @override
-  _NovelUserPageState createState() => _NovelUserPageState();
+  _NovelUserWorkPageState createState() => _NovelUserWorkPageState();
 }
 
-class _NovelUserPageState extends State<NovelUserPage> {
+class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
+  FutureGet futureGet;
+  @override
+  void initState() {
+    futureGet = () => apiClient.getUserNovels(widget.id);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Column(
+      children: [
+        NovelLightingList(
+          futureGet: futureGet,
+        )
+      ],
+    );
   }
 }

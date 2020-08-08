@@ -14,7 +14,6 @@
  *
  */
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -25,7 +24,6 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
@@ -214,30 +212,7 @@ class _LightingListState extends State<LightingList> {
         : _store.iStores.isNotEmpty ? _buildBody() : Container();
   }
 
-  Widget _buildWater() {
-    return WaterfallFlow.builder(
-      itemCount: _store.iStores.length,
-      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        collectGarbage: (List<int> garbages) {
-          garbages.forEach((index) {
-            final provider = ExtendedNetworkImageProvider(
-              _store.iStores[index].illusts.imageUrls.medium,
-            );
-            provider.evict();
-          });
-        },
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return IllustCard(
-          store: _store.iStores[index],
-          iStores: _store.iStores,
-        );
-      },
-    );
-  }
-
-  Widget _buildBody() {
+ Widget _buildBody() {
     return isNested
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
