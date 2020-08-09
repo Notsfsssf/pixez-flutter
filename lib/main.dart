@@ -62,8 +62,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarIconBrightness:
           brightness == Brightness.light ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor:
-          brightness == Brightness.light ? Color(0xFFFAFAFA) :  Color(0xFF303030),//我的朋友，这边只能写死，我没招了
+      systemNavigationBarColor: brightness == Brightness.light
+          ? Color(0xFFFAFAFA)
+          : Color(0xFF303030), //我的朋友，这边只能写死，我没招了
       statusBarColor: Colors.transparent,
     ));
   }
@@ -123,6 +124,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (send != null) send.send([id, status, progress]);
     final SendPort send1 = IsolateNameServer.lookupPortByName('downloader_pro');
     if (send1 != null) send1.send([id, status, progress]);
+  }
+
+  Future<void> clean() async {
+    final path = await saveStore.findLocalPath();
+    Directory directory = Directory(path);
+    List<FileSystemEntity> list = directory.listSync(recursive: true);
+    if (list.length > 180) {
+      directory.deleteSync(recursive: true);
+    }
   }
 
   @override

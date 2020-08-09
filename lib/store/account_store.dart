@@ -46,12 +46,14 @@ abstract class _AccountStoreBase with Store {
   updateSingle(AccountPersist accountPersist) async {
     await accountProvider.open();
     await accountProvider.update(accountPersist);
+    await fetch();
   }
 
   @action
   deleteSingle(int id) async {
     await accountProvider.open();
     await accountProvider.delete(id);
+    await fetch();
   }
 
   @action

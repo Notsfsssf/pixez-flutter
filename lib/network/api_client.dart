@@ -48,8 +48,23 @@ class ApiClient {
     return digest.toString();
   }
 
-  ApiClient() {
+  ApiClient({bool isBookmark = false}) {
     String time = getIsoDate();
+    if (isBookmark) {
+      httpClient = Dio(apiClient.httpClient.options)
+        // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+        ..interceptors.add(RefreshTokenInterceptor());
+      (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        HttpClient httpClient = new HttpClient();
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+        return httpClient;
+      };
+      return;
+    }
     httpClient = Dio()
       ..options.baseUrl = "https://210.140.131.188"
       ..options.headers = {
@@ -63,7 +78,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      ..interceptors.add(LogInterceptor(responseBody: true,requestHeader: true,responseHeader: true))
+      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {

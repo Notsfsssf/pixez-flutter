@@ -179,7 +179,7 @@ abstract class _SaveStoreBase with Store {
   StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
 
-  Future<String> _findLocalPath() async {
+  Future<String> findLocalPath() async {
     final directory = Platform.isAndroid
         ? (await getTemporaryDirectory()).path
         : (await getApplicationDocumentsDirectory()).path + '/pixez';
@@ -193,7 +193,7 @@ abstract class _SaveStoreBase with Store {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
     }
-    String tempPath = await _findLocalPath();
+    String tempPath = await findLocalPath();
     if (!Directory(tempPath).existsSync()) {
       Directory(tempPath).createSync();
     }

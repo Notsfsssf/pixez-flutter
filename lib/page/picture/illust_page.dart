@@ -561,7 +561,7 @@ class _IllustPageState extends State<IllustPage> {
                     onPressed: () {
                       _illustStore.fetch();
                     },
-                    child: Text('Refresh'),
+                    child: Text(I18n.of(context).refresh),
                   )
                 ],
               ),
@@ -794,6 +794,10 @@ class _IllustPageState extends State<IllustPage> {
           fade: false,
           placeWidget: PixivImage(
             data.imageUrls.medium,
+            placeWidget: Container(
+              height: 150,
+              child: CircularProgressIndicator(),
+            ),
             fade: false,
           ),
         ),

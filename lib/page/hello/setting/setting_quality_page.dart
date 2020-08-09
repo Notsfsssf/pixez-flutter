@@ -42,7 +42,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
-          if (Platform.isAndroid&&!Constrains.isGooglePlay) launch('https://github.com/itzXian');
+          if (Platform.isAndroid && !Constrains.isGooglePlay)
+            launch('https://github.com/itzXian');
         } catch (e) {}
       },
       child: Row(
@@ -63,7 +64,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
-          if (Platform.isAndroid&&!Constrains.isGooglePlay) launch('https://github.com/TragicLifeHu');
+          if (Platform.isAndroid && !Constrains.isGooglePlay)
+            launch('https://github.com/TragicLifeHu');
         } catch (e) {}
       },
       child: Row(
@@ -99,24 +101,27 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     padding: EdgeInsets.all(16),
                   ),
                   Observer(builder: (_) {
-                    return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6.color,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      tabs: [
-                        Tab(
-                          text: I18n.of(context).Large,
-                        ),
-                        Tab(
-                          text: I18n.of(context).Source,
-                        )
-                      ],
-                      onTap: (index) {
-                        userSetting.change(index);
-                      },
-                      controller: TabController(
-                          length: 2,
-                          vsync: this,
-                          initialIndex: userSetting.zoomQuality),
+                    return Container(
+                      child: TabBar(
+                        indicatorColor: Theme.of(context).accentColor,
+                        labelColor: Theme.of(context).textTheme.headline6.color,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        tabs: [
+                          Tab(
+                            text: I18n.of(context).Large,
+                          ),
+                          Tab(
+                            text: I18n.of(context).Source,
+                          )
+                        ],
+                        onTap: (index) {
+                          userSetting.change(index);
+                        },
+                        controller: TabController(
+                            length: 2,
+                            vsync: this,
+                            initialIndex: userSetting.zoomQuality),
+                      ),
                     );
                   }),
                 ],
@@ -129,13 +134,15 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Column(
                 children: <Widget>[
                   Padding(
-                    child: Text(I18n.of(context).Illustration_detail_page_quality),
+                    child:
+                        Text(I18n.of(context).Illustration_detail_page_quality),
                     padding: EdgeInsets.all(16),
                   ),
                   Observer(builder: (_) {
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: I18n.of(context).medium,
@@ -143,7 +150,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         Tab(
                           text: I18n.of(context).Large,
                         ),
-                      
                       ],
                       onTap: (index) {
                         userSetting.setPictureQuality(index);
@@ -180,6 +186,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: "en-US",
@@ -255,6 +262,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                       indicatorColor: Theme.of(context).accentColor,
                       tabs: tablist,
                       onTap: (index) {
                         userSetting.setWelcomePageNum(index);
@@ -282,6 +290,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: '2',
@@ -291,13 +300,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         )
                       ],
                       onTap: (index) {
-                        userSetting.setCrossCount(index==0?2:4);
-                          BotToast.showText(text: I18n.of(context).Need_To_Restart_App);
+                        userSetting.setCrossCount(index == 0 ? 2 : 4);
+                        BotToast.showText(
+                            text: I18n.of(context).Need_To_Restart_App);
                       },
                       controller: TabController(
                           length: 2,
                           vsync: this,
-                          initialIndex: userSetting.crossCount==2?0:1),
+                          initialIndex: userSetting.crossCount == 2 ? 0 : 1),
                     );
                   }),
                 ],

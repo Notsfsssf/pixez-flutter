@@ -209,10 +209,12 @@ class _LightingListState extends State<LightingList> {
               ],
             ),
           )
-        : _store.iStores.isNotEmpty ? _buildBody() : Container();
+        : _store.iStores.isNotEmpty
+            ? _buildBody()
+            : Container();
   }
 
- Widget _buildBody() {
+  Widget _buildBody() {
     return isNested
         ? StaggeredGridView.countBuilder(
             padding: EdgeInsets.all(0.0),
