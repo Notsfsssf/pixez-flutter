@@ -51,7 +51,14 @@ class _HelloPageState extends State<HelloPage> {
   @override
   void initState() {
     index = userSetting.welcomePageNum;
-    _pageController = PageController(initialPage: userSetting.welcomePageNum);
+    if (index < 2) {
+      stackIndex = 0;
+    } else {
+      stackIndex = index - 1;
+    }
+    _pageController = index < 2
+        ? PageController(initialPage: userSetting.welcomePageNum)
+        : PageController();
     super.initState();
     saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {
@@ -147,12 +154,12 @@ class _HelloPageState extends State<HelloPage> {
                 index: stackIndex,
                 children: <Widget>[
                   PageView.builder(
-                      itemCount: 4,
+                      itemCount: 2,
                       controller: _pageController,
                       onPageChanged: (index) {
-                          setState(() {
-                            this.index = index;
-                          });
+                        setState(() {
+                          this.index = index;
+                        });
                       },
                       itemBuilder: (context, index) {
                         var lists = <Widget>[
