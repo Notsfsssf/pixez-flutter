@@ -71,7 +71,7 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Save_format),
+        title: Text(I18n.of(context).save_format),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.refresh),
@@ -127,23 +127,23 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
             rows: <DataRow>[
               DataRow(cells: [
                 DataCell(Text('{illust_id}')),
-                DataCell(Text(I18n.of(context).Illust_id)),
+                DataCell(Text(I18n.of(context).illust_id)),
               ]),
               DataRow(cells: [
                 DataCell(Text('{title}')),
-                DataCell(Text(I18n.of(context).Title)),
+                DataCell(Text(I18n.of(context).title)),
               ]),
               DataRow(cells: [
                 DataCell(Text('{user_id}')),
-                DataCell(Text(I18n.of(context).Painter_id)),
+                DataCell(Text(I18n.of(context).painter_id)),
               ]),
               DataRow(cells: [
                 DataCell(Text('{user_name}')),
-                DataCell(Text(I18n.of(context).Painter_Name)),
+                DataCell(Text(I18n.of(context).painter_name)),
               ]),
               DataRow(cells: [
                 DataCell(Text('part')),
-                DataCell(Text(I18n.of(context).Which_part)),
+                DataCell(Text(I18n.of(context).which_part)),
               ]),
             ],
           )

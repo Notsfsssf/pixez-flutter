@@ -69,7 +69,7 @@ class _SearchPageState extends State<SearchPage>
                   _trendTagsStore.trendTags.isNotEmpty
                       ? SliverAppBar(
                           pinned: true,
-                          title: Text(I18n.of(context).Search),
+                          title: Text(I18n.of(context).search),
                           centerTitle: false,
                           forceElevated: innerBoxIsScrolled,
                           expandedHeight:
@@ -110,7 +110,7 @@ class _SearchPageState extends State<SearchPage>
                         )
                       : SliverAppBar(
                           flexibleSpace: FlexibleSpaceBar(),
-                          title: Text(I18n.of(context).Search),
+                          title: Text(I18n.of(context).search),
                         )
                 ],
             body: _buildListView(context));
@@ -118,7 +118,7 @@ class _SearchPageState extends State<SearchPage>
         AppBar(
           automaticallyImplyLeading: false,
           title: Text(
-            I18n.of(context).Search,
+            I18n.of(context).search,
             style: Theme.of(context).textTheme.headline6,
           ),
           actions: <Widget>[
@@ -147,7 +147,7 @@ class _SearchPageState extends State<SearchPage>
       child: ListView(padding: EdgeInsets.symmetric(horizontal: 8), children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(I18n.of(context).History),
+          child: Text(I18n.of(context).history),
         ),
         Observer(
           builder: (BuildContext context) {
@@ -170,7 +170,7 @@ class _SearchPageState extends State<SearchPage>
                           ))
                       .toList()
                         ..add(ActionChip(
-                            label: Text(I18n.of(context).Clear),
+                            label: Text(I18n.of(context).clear),
                             onPressed: () {
                               tagHistoryStore.deleteAll();
                             })),
@@ -184,7 +184,7 @@ class _SearchPageState extends State<SearchPage>
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(I18n.of(context).Recommand_Tag),
+          child: Text(I18n.of(context).recommand_tag),
         ),
         _trendTagsStore.trendTags.isNotEmpty
             ? Padding(

@@ -83,7 +83,7 @@ class _UsersPageState extends State<UsersPage>
                 children: <Widget>[
                   Text('X_X'),
                   RaisedButton(
-                    child: Text(I18n.of(context).Shielding_settings),
+                    child: Text(I18n.of(context).shielding_settings),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => ShieldPage()));
@@ -195,7 +195,7 @@ class _UsersPageState extends State<UsersPage>
                                 builder: (context) {
                                   return AlertDialog(
                                     title:
-                                        Text('${I18n.of(context).Block_User}?'),
+                                        Text('${I18n.of(context).block_user}?'),
                                     actions: <Widget>[
                                       FlatButton(
                                         child: Text("OK"),
@@ -226,7 +226,7 @@ class _UsersPageState extends State<UsersPage>
                                 text:
                                     'painter:${userStore.userDetail?.user?.name ?? ''}\npid:${widget.id}'));
                             BotToast.showText(
-                                text: I18n.of(context).Copied_To_Clipboard);
+                                text: I18n.of(context).copied_to_clipboard);
                             break;
                           }
                         default:
@@ -236,15 +236,15 @@ class _UsersPageState extends State<UsersPage>
                       return [
                         PopupMenuItem<int>(
                           value: 0,
-                          child: Text(I18n.of(context).Quietly_Follow),
+                          child: Text(I18n.of(context).quietly_follow),
                         ),
                         PopupMenuItem<int>(
                           value: 1,
-                          child: Text(I18n.of(context).Block_User),
+                          child: Text(I18n.of(context).block_user),
                         ),
                         PopupMenuItem<int>(
                           value: 2,
-                          child: Text(I18n.of(context).CopyMessage),
+                          child: Text(I18n.of(context).copymessage),
                         ),
                       ];
                     },
@@ -303,13 +303,13 @@ class _UsersPageState extends State<UsersPage>
                   labelColor: Theme.of(context).textTheme.bodyText1.color,
                   tabs: [
                     Tab(
-                      text: I18n.of(context).Works,
+                      text: I18n.of(context).works,
                     ),
                     Tab(
-                      text: I18n.of(context).BookMark,
+                      text: I18n.of(context).bookmark,
                     ),
                     Tab(
-                      text: I18n.of(context).Detail,
+                      text: I18n.of(context).detail,
                     ),
                   ],
                 )),
@@ -341,14 +341,14 @@ class _UsersPageState extends State<UsersPage>
                       .push(MaterialPageRoute(builder: (BuildContext context) {
                     return Scaffold(
                       appBar: AppBar(
-                        title: Text(I18n.of(context).Followed),
+                        title: Text(I18n.of(context).followed),
                       ),
                       body: FollowList(id: widget.id),
                     );
                   }));
                 },
                 child: Text(
-                  '${userStore.userDetail.profile.total_follow_users} ${I18n.of(context).Follow}',
+                  '${userStore.userDetail.profile.total_follow_users} ${I18n.of(context).follow}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               )
@@ -412,8 +412,8 @@ class _UsersPageState extends State<UsersPage>
                   }
                 },
                 child: Text(userStore.isFollow
-                    ? I18n.of(context).Followed
-                    : I18n.of(context).Follow),
+                    ? I18n.of(context).followed
+                    : I18n.of(context).follow),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20))),
               ),

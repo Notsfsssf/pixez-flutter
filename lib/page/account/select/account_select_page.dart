@@ -66,7 +66,7 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
         ),
       ),
       appBar: AppBar(
-        title: Text(I18n.of(context).Account_change),
+        title: Text(I18n.of(context).account_change),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),

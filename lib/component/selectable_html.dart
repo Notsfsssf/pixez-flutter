@@ -43,7 +43,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                 content: SelectableText(widget.data ?? ""),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text(I18n.of(context).OK),
+                    child: Text(I18n.of(context).ok),
                     onPressed: () {
                       Navigator.of(context).pop("OK");
                     },

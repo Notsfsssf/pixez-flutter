@@ -70,7 +70,7 @@ class _WorksPageState extends State<WorksPage> {
                   ? Theme.of(context).accentColor
                   : Colors.transparent,
               label: Text(
-                I18n.of(context).Illust,
+                I18n.of(context).illust,
                 style: TextStyle(
                     color: now == 'illust'
                         ? Colors.white
@@ -86,7 +86,7 @@ class _WorksPageState extends State<WorksPage> {
             ),
             ActionChip(
               label: Text(
-                I18n.of(context).Manga,
+                I18n.of(context).manga,
                 style: TextStyle(
                     color: now == 'manga'
                         ? Colors.white

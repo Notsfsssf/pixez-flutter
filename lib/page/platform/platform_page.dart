@@ -101,7 +101,7 @@ class _PlatformPageState extends State<PlatformPage> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.folder),
-                title: Text(I18n.of(context).Save_path),
+                title: Text(I18n.of(context).save_path),
                 subtitle: Text(userSetting.path ?? ""),
                 onTap: () async {
                   String result =
@@ -113,7 +113,7 @@ class _PlatformPageState extends State<PlatformPage> {
               ),
               ListTile(
                 leading: Icon(Icons.format_align_left),
-                title: Text(I18n.of(context).Save_format),
+                title: Text(I18n.of(context).save_format),
                 subtitle: Text(userSetting.format ?? ""),
                 onTap: () async {
                   String result =
@@ -133,8 +133,8 @@ class _PlatformPageState extends State<PlatformPage> {
                     onChanged: (bool value) async {
                       await userSetting.setSingleFolder(value);
                     },
-                    title: Text(I18n.of(context).Separate_Folder),
-                    subtitle: Text(I18n.of(context).Separate_Folder_Message),
+                    title: Text(I18n.of(context).separate_folder),
+                    subtitle: Text(I18n.of(context).separate_folder_message),
                     value: userSetting.singleFolder,
                   );
                 },
@@ -158,9 +158,9 @@ class _PlatformPageState extends State<PlatformPage> {
                                         if (index == 0)
                                           return ListTile(
                                             title: Text(I18n.of(context)
-                                                .Display_Mode_Message),
+                                                .display_mode_message),
                                             subtitle: Text(I18n.of(context)
-                                                .Display_Mode_Warning),
+                                                .display_mode_warning),
                                             onTap: () async {},
                                           );
                                         return ListTile(
@@ -182,7 +182,7 @@ class _PlatformPageState extends State<PlatformPage> {
                         );
                       });
                 },
-                title: Text(I18n.of(context).Display_Mode),
+                title: Text(I18n.of(context).display_mode),
                 subtitle: Text(selected.toString() ?? ''),
               ),
      

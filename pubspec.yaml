@@ -58,6 +58,7 @@ dependencies:
   pull_to_refresh: ^1.6.1
   extended_image: ^1.0.0
   flutter_colorpicker: ^0.3.4
+  intl_utils: ^1.6.3
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
@@ -122,5 +123,3 @@ flutter_intl:
   enabled: true
   class_name: I18n
   main_locale: en_US
-  localizely:
-    project_id: a588c69e-73a9-44e9-a991-2aa9f1588755

@@ -92,15 +92,15 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(I18n.of(context).Pull_Up_To_Load_More);
+            body = Text(I18n.of(context).pull_up_to_load_more);
           } else if (mode == LoadStatus.loading) {
             body = CircularProgressIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text(I18n.of(context).Loading_Failed_Retry_Message);
+            body = Text(I18n.of(context).loading_failed_retry_message);
           } else if (mode == LoadStatus.canLoading) {
-            body = Text(I18n.of(context).Let_Go_And_Load_More);
+            body = Text(I18n.of(context).let_go_and_load_more);
           } else {
-            body = Text(I18n.of(context).No_More_Data);
+            body = Text(I18n.of(context).no_more_data);
           }
           return Container(
             height: 55.0,
@@ -188,7 +188,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
           Container(
             child: Padding(
               child: Text(
-                I18n.of(context).Spotlight,
+                I18n.of(context).spotlight,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0,
@@ -199,7 +199,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
           ),
           Padding(
             child: FlatButton(
-              child: Text(I18n.of(context).More),
+              child: Text(I18n.of(context).more),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -222,7 +222,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
           child: Padding(
             child: Container(
               child: Text(
-                I18n.of(context).Recommend_for_you,
+                I18n.of(context).recommend_for_you,
                 overflow: TextOverflow.clip,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
               ),
@@ -232,7 +232,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
         ),
         Padding(
           child: FlatButton(
-            child: Text(I18n.of(context).More),
+            child: Text(I18n.of(context).more),
             onPressed: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {

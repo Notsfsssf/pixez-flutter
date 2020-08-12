@@ -61,7 +61,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
-                                title: Text(I18n.of(context).All),
+                                title: Text(I18n.of(context).all),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   setState(() {

@@ -76,12 +76,12 @@ class ColorPickPage extends HookWidget {
                                 Navigator.of(context)
                                     .pop("color(0xff${result})");
                               },
-                              child: Text(I18n.of(context).OK)),
+                              child: Text(I18n.of(context).ok)),
                           FlatButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text(I18n.of(context).Cancel)),
+                              child: Text(I18n.of(context).cancel)),
                         ],
                       );
                     });

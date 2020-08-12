@@ -87,7 +87,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Quality_Setting),
+        title: Text(I18n.of(context).quality_setting),
       ),
       body: Container(
         child: ListView(children: [
@@ -97,7 +97,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Column(
                 children: <Widget>[
                   Padding(
-                    child: Text(I18n.of(context).Large_preview_zoom_quality),
+                    child: Text(I18n.of(context).large_preview_zoom_quality),
                     padding: EdgeInsets.all(16),
                   ),
                   Observer(builder: (_) {
@@ -108,10 +108,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: [
                           Tab(
-                            text: I18n.of(context).Large,
+                            text: I18n.of(context).large,
                           ),
                           Tab(
-                            text: I18n.of(context).Source,
+                            text: I18n.of(context).source,
                           )
                         ],
                         onTap: (index) {
@@ -135,7 +135,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 children: <Widget>[
                   Padding(
                     child:
-                        Text(I18n.of(context).Illustration_detail_page_quality),
+                        Text(I18n.of(context).illustration_detail_page_quality),
                     padding: EdgeInsets.all(16),
                   ),
                   Observer(builder: (_) {
@@ -148,7 +148,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           text: I18n.of(context).medium,
                         ),
                         Tab(
-                          text: I18n.of(context).Large,
+                          text: I18n.of(context).large,
                         ),
                       ],
                       onTap: (index) {
@@ -220,40 +220,40 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 child: Column(
               children: <Widget>[
                 Padding(
-                  child: Text(I18n.of(context).Welcome_Page),
+                  child: Text(I18n.of(context).welcome_page),
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {
                   var tablist = Platform.isAndroid
                       ? [
                           Tab(
-                            text: I18n.of(context).Home,
+                            text: I18n.of(context).home,
                           ),
                           Tab(
-                            text: I18n.of(context).Rank,
+                            text: I18n.of(context).rank,
                           ),
                           Tab(
-                            text: I18n.of(context).Quick_View,
+                            text: I18n.of(context).quick_view,
                           ),
                           Tab(
-                            text: I18n.of(context).Search,
+                            text: I18n.of(context).search,
                           ),
                           Tab(
-                            text: I18n.of(context).Setting,
+                            text: I18n.of(context).setting,
                           ),
                         ]
                       : [
                           Tab(
-                            text: I18n.of(context).Home,
+                            text: I18n.of(context).home,
                           ),
                           Tab(
-                            text: I18n.of(context).Quick_View,
+                            text: I18n.of(context).quick_view,
                           ),
                           Tab(
-                            text: I18n.of(context).Search,
+                            text: I18n.of(context).search,
                           ),
                           Tab(
-                            text: I18n.of(context).Setting,
+                            text: I18n.of(context).setting,
                           ),
                         ];
                   return Theme(
@@ -283,7 +283,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Column(
                 children: <Widget>[
                   Padding(
-                    child: Text(I18n.of(context).Crosscount),
+                    child: Text(I18n.of(context).crosscount),
                     padding: EdgeInsets.all(16),
                   ),
                   Observer(builder: (_) {
@@ -302,7 +302,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       onTap: (index) {
                         userSetting.setCrossCount(index == 0 ? 2 : 4);
                         BotToast.showText(
-                            text: I18n.of(context).Need_To_Restart_App);
+                            text: I18n.of(context).need_to_restart_app);
                       },
                       controller: TabController(
                           length: 2,
@@ -319,28 +319,28 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Observer(builder: (_) {
               return SwitchListTile(
                   value: userSetting.disableBypassSni,
-                  title: Text(I18n.of(context).Disable_Sni_Bypass),
-                  subtitle: Text(I18n.of(context).Disable_Sni_Bypass_Message),
+                  title: Text(I18n.of(context).disable_sni_bypass),
+                  subtitle: Text(I18n.of(context).disable_sni_bypass_message),
                   onChanged: (value) async {
                     if (value) {
                       final result = await showDialog(
                           context: context,
                           builder: (_) {
                             return AlertDialog(
-                              title: Text(I18n.of(context).Please_Note_That),
+                              title: Text(I18n.of(context).please_note_that),
                               content: Text(
-                                  I18n.of(context).Please_Note_That_Content),
+                                  I18n.of(context).please_note_that_content),
                               actions: <Widget>[
                                 FlatButton(
                                     onPressed: () {
                                       Navigator.of(context).pop('OK');
                                     },
-                                    child: Text(I18n.of(context).OK)),
+                                    child: Text(I18n.of(context).ok)),
                                 FlatButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text(I18n.of(context).Cancel))
+                                    child: Text(I18n.of(context).cancel))
                               ],
                             );
                           });

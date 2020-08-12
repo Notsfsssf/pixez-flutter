@@ -406,6 +406,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.16.1"
+  intl_translation:
+    dependency: transitive
+    description:
+      name: intl_translation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.17.10"
+  intl_utils:
+    dependency: "direct main"
+    description:
+      name: intl_utils
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.6.3"
   io:
     dependency: transitive
     description:
@@ -574,6 +588,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.4"
   photo_view:
     dependency: "direct main"
     description:

@@ -43,7 +43,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (_) {
         return Scaffold(
             appBar: AppBar(
-              title: Text(I18n.of(context).Shielding_settings),
+              title: Text(I18n.of(context).shielding_settings),
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -52,7 +52,7 @@ class _ShieldPageState extends State<ShieldPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(I18n.of(context).Tag),
+                    Text(I18n.of(context).tag),
                     Container(
                       child: Wrap(
                         spacing: 2.0,
@@ -69,7 +69,7 @@ class _ShieldPageState extends State<ShieldPage> {
                       ),
                     ),
                     Divider(),
-                    Text(I18n.of(context).Painter),
+                    Text(I18n.of(context).painter),
                     Container(
                       child: Wrap(
                         spacing: 2.0,
@@ -84,7 +84,7 @@ class _ShieldPageState extends State<ShieldPage> {
                       ),
                     ),
                     Divider(),
-                    Text(I18n.of(context).Illust),
+                    Text(I18n.of(context).illust),
                     Container(
                       child: Wrap(
                         spacing: 2.0,
@@ -113,17 +113,17 @@ class _ShieldPageState extends State<ShieldPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(I18n.of(context).Delete),
+          title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
-              child: Text(I18n.of(context).OK),
+              child: Text(I18n.of(context).ok),
             ),
             FlatButton(
-              child: Text(I18n.of(context).Cancel),
+              child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -146,17 +146,17 @@ class _ShieldPageState extends State<ShieldPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(I18n.of(context).Delete),
+          title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
-              child: Text(I18n.of(context).OK),
+              child: Text(I18n.of(context).ok),
             ),
             FlatButton(
-              child: Text(I18n.of(context).Cancel),
+              child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -179,17 +179,17 @@ class _ShieldPageState extends State<ShieldPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(I18n.of(context).Delete),
+          title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
           actions: <Widget>[
             FlatButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
-              child: Text(I18n.of(context).OK),
+              child: Text(I18n.of(context).ok),
             ),
             FlatButton(
-              child: Text(I18n.of(context).Cancel),
+              child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },

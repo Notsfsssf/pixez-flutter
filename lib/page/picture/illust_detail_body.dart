@@ -136,7 +136,7 @@ class IllustDetailBody extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(I18n.of(context).Illust_id),
+                        Text(I18n.of(context).illust_id),
                         Container(
                           width: 10.0,
                         ),
@@ -144,7 +144,7 @@ class IllustDetailBody extends StatelessWidget {
                         Container(
                           width: 20.0,
                         ),
-                        Text(I18n.of(context).Pixel),
+                        Text(I18n.of(context).pixel),
                         Container(
                           width: 10.0,
                         ),
@@ -154,7 +154,7 @@ class IllustDetailBody extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(I18n.of(context).Total_view),
+                        Text(I18n.of(context).total_view),
                         Container(
                           width: 10.0,
                         ),
@@ -162,7 +162,7 @@ class IllustDetailBody extends StatelessWidget {
                         Container(
                           width: 20.0,
                         ),
-                        Text(I18n.of(context).Total_bookmark),
+                        Text(I18n.of(context).total_bookmark),
                         Container(
                           width: 10.0,
                         ),
@@ -197,21 +197,21 @@ class IllustDetailBody extends StatelessWidget {
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
-                                            title: Text(I18n.of(context).Ban +
+                                            title: Text(I18n.of(context).ban +
                                                 "'${f.name}'?"),
                                             actions: <Widget>[
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.pop(context, "OK");
                                                 },
-                                                child: Text(I18n.of(context).OK),
+                                                child: Text(I18n.of(context).ok),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },
                                                 child:
-                                                    Text(I18n.of(context).Cancel),
+                                                    Text(I18n.of(context).cancel),
                                               )
                                             ],
                                           );
@@ -260,7 +260,7 @@ class IllustDetailBody extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
                   child: Text(
-                    I18n.of(context).View_Comment,
+                    I18n.of(context).view_comment,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: Theme.of(context).textTheme.bodyText1.fontSize),

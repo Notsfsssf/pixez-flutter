@@ -24,7 +24,6 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result_illust_store.dart';
-import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class ResultIllustList extends StatefulWidget {
@@ -169,7 +168,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                   children: <Widget>[
                     FlatButton(
                         onPressed: () {},
-                        child: Text(I18n.of(context).Date_duration)),
+                        child: Text(I18n.of(context).date_duration)),
                     FlatButton(
                         onPressed: () {
                           setState(() {
@@ -182,7 +181,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           });
                           Navigator.of(context).pop();
                         },
-                        child: Text(I18n.of(context).Apply))
+                        child: Text(I18n.of(context).apply))
                   ],
                 ),
                 Expanded(
@@ -228,7 +227,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         children: <Widget>[
                           FlatButton(
                               onPressed: () {},
-                              child: Text(I18n.of(context).Filter)),
+                              child: Text(I18n.of(context).filter)),
                           FlatButton(
                               onPressed: () {
                                 setState(() {
@@ -245,7 +244,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              child: Text(I18n.of(context).Apply)),
+                              child: Text(I18n.of(context).apply)),
                         ],
                       ),
                       Padding(
@@ -255,8 +254,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           child: CupertinoSlidingSegmentedControl(
                             groupValue: search_target.indexOf(searchTarget),
                             children: <int, Widget>{
-                              0: Text(I18n.of(context).Partial_Match_for_tag),
-                              1: Text(I18n.of(context).Exact_Match_for_tag),
+                              0: Text(I18n.of(context).partial_match_for_tag),
+                              1: Text(I18n.of(context).exact_match_for_tag),
                               2: Text(I18n.of(context).title_and_caption),
                             },
                             onValueChanged: (int index) {
@@ -301,7 +300,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         child: Container(
                           alignment: Alignment.centerLeft,
                           child: Text(starValue != 0
-                              ? I18n.of(context).More_then_starNum_Bookmark(
+                              ? I18n.of(context).more_then_starnum_bookmark(
                                   starNum[starValue.toInt()])
                               : 'users入り'),
                         ),

@@ -79,7 +79,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        title: Text(I18n.of(context).Save),
+                        title: Text(I18n.of(context).save),
                         onTap: () {
                           saveStore.saveImage(widget.illusts, index: index);
                           Navigator.of(context).pop();
@@ -87,7 +87,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                       ),
                       fileInfo != null
                           ? ListTile(
-                              title: Text(I18n.of(context).Share),
+                              title: Text(I18n.of(context).share),
                               onTap: () async {
                                 if (fileInfo != null)
                                   ShareExtend.share(
@@ -165,7 +165,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
-                                title: Text(I18n.of(context).Save),
+                                title: Text(I18n.of(context).save),
                                 onTap: () {
                                   saveStore.saveImage(widget.illusts);
                                   Navigator.of(context).pop();
@@ -173,7 +173,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                               ),
                               fileInfo != null
                                   ? ListTile(
-                                      title: Text(I18n.of(context).Share),
+                                      title: Text(I18n.of(context).share),
                                       onTap: () async {
                                         ShareExtend.share(
                                             fileInfo.path, "image");

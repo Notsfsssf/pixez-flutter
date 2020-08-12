@@ -163,7 +163,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                           ListTile(
                             leading: Icon(Icons.account_box),
-                            title: Text(I18n.of(context).Account_Message),
+                            title: Text(I18n.of(context).account_message),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
@@ -180,7 +180,7 @@ class _SettingPageState extends State<SettingPage> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.history),
-                      title: Text(I18n.of(context).History_record),
+                      title: Text(I18n.of(context).history_record),
                       onTap: () {
                         Navigator.of(context).push(
                             MaterialPageRoute(builder: (BuildContext context) {
@@ -190,7 +190,7 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     ListTile(
                       leading: Icon(Icons.settings),
-                      title: Text(I18n.of(context).Quality_Setting),
+                      title: Text(I18n.of(context).quality_setting),
                       onTap: () {
                         Navigator.of(context).push(
                             MaterialPageRoute(builder: (BuildContext context) {
@@ -200,13 +200,13 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     ListTile(
                       leading: Icon(Icons.block),
-                      title: Text(I18n.of(context).Shielding_settings),
+                      title: Text(I18n.of(context).shielding_settings),
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => ShieldPage())),
                     ),
                     ListTile(
                       leading: Icon(Icons.description),
-                      title: Text(I18n.of(context).Task_progress),
+                      title: Text(I18n.of(context).task_progress),
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => TaskPage())),
                     ),
@@ -215,16 +215,16 @@ class _SettingPageState extends State<SettingPage> {
                         final result = await showDialog(
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text(I18n.of(context).Clear_All_Cache),
+                                title: Text(I18n.of(context).clear_all_cache),
                                 actions: <Widget>[
                                   FlatButton(
-                                    child: Text(I18n.of(context).OK),
+                                    child: Text(I18n.of(context).ok),
                                     onPressed: () {
                                       Navigator.of(context).pop("OK");
                                     },
                                   ),
                                   FlatButton(
-                                    child: Text(I18n.of(context).Cancel),
+                                    child: Text(I18n.of(context).cancel),
                                     onPressed: () {
                                       Navigator.of(context).pop("CANCEL");
                                     },
@@ -251,7 +251,7 @@ class _SettingPageState extends State<SettingPage> {
                             break;
                         }
                       },
-                      title: Text(I18n.of(context).Clearn_cache),
+                      title: Text(I18n.of(context).clearn_cache),
                       leading: Icon(Icons.clear),
                     ),
                   ],
@@ -264,7 +264,7 @@ class _SettingPageState extends State<SettingPage> {
                       badgeContent: Text('New'),
                       child: ListTile(
                         leading: Icon(Icons.message),
-                        title: Text(I18n.of(context).About),
+                        title: Text(I18n.of(context).about),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => AboutPage()));
@@ -275,7 +275,7 @@ class _SettingPageState extends State<SettingPage> {
                       if (accountStore.now != null)
                         return ListTile(
                           leading: Icon(Icons.arrow_back),
-                          title: Text(I18n.of(context).Logout),
+                          title: Text(I18n.of(context).logout),
                           onTap: () async {
                             /*                            final result = await showCupertinoDialog(
                                 builder: (BuildContext context) {
@@ -306,7 +306,7 @@ class _SettingPageState extends State<SettingPage> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text(I18n.of(context).Logout),
+                                    title: Text(I18n.of(context).logout),
                                     actions: <Widget>[
                                       FlatButton(
                                         child: Text("OK"),
@@ -338,7 +338,7 @@ class _SettingPageState extends State<SettingPage> {
                       else
                         return ListTile(
                           leading: Icon(Icons.arrow_back),
-                          title: Text(I18n.of(context).Login),
+                          title: Text(I18n.of(context).login),
                           onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => LoginPage())),

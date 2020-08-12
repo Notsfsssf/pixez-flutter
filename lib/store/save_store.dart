@@ -91,7 +91,7 @@ abstract class _SaveStoreBase with Store {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
                           child: Text(
-                              "${stream.data.title} ${I18n.of(context).Saved}"),
+                              "${stream.data.title} ${I18n.of(context).saved}"),
                         )
                       ],
                     ),
@@ -118,7 +118,7 @@ abstract class _SaveStoreBase with Store {
                             }),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text("${I18n.of(context).Append_to_query}"),
+                          child: Text("${I18n.of(context).append_to_query}"),
                         )
                       ],
                     ),
@@ -138,7 +138,7 @@ abstract class _SaveStoreBase with Store {
                         IconButton(icon: Icon(Icons.info), onPressed: () {}),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text("${I18n.of(context).Already_in_query}"),
+                          child: Text("${I18n.of(context).already_in_query}"),
                         )
                       ],
                     ),
@@ -162,7 +162,7 @@ abstract class _SaveStoreBase with Store {
                             }),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text("${I18n.of(context).Already_Saved}"),
+                          child: Text("${I18n.of(context).already_saved}"),
                         )
                       ],
                     ),

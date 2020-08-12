@@ -152,19 +152,19 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
             }
           },
           decoration: InputDecoration(
-            hintText: I18n.of(context).Search_word_or_paste_link,
+            hintText: I18n.of(context).search_word_or_paste_link,
           )),
       bottom: TabBar(
         controller: _tabController,
         tabs: <Widget>[
           Tab(
-            child: Text(I18n.of(context).Key_Word),
+            child: Text(I18n.of(context).key_word),
           ),
           Tab(
-            child: Text(I18n.of(context).Illust_id),
+            child: Text(I18n.of(context).illust_id),
           ),
           Tab(
-            child: Text(I18n.of(context).Painter_id),
+            child: Text(I18n.of(context).painter_id),
           ),
         ],
       ),

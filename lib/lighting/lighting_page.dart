@@ -139,15 +139,15 @@ class _LightingListState extends State<LightingList> {
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(I18n.of(context).Pull_Up_To_Load_More);
+            body = Text(I18n.of(context).pull_up_to_load_more);
           } else if (mode == LoadStatus.loading) {
             body = CircularProgressIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text(I18n.of(context).Loading_Failed_Retry_Message);
+            body = Text(I18n.of(context).loading_failed_retry_message);
           } else if (mode == LoadStatus.canLoading) {
-            body = Text(I18n.of(context).Let_Go_And_Load_More);
+            body = Text(I18n.of(context).let_go_and_load_more);
           } else {
-            body = Text(I18n.of(context).No_More_Data);
+            body = Text(I18n.of(context).no_more_data);
           }
           return Container(
             height: 55.0,
@@ -201,7 +201,7 @@ class _LightingListState extends State<LightingList> {
                     onPressed: () {
                       _store.fetch();
                     },
-                    child: Text(I18n.of(context).Retry)),
+                    child: Text(I18n.of(context).retry)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text('${_store.errorMessage}'),

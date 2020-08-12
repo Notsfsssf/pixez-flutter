@@ -145,7 +145,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).About),
+        title: Text(I18n.of(context).about),
         actions: <Widget>[],
       ),
       body: _buildInfo(context),
@@ -160,7 +160,7 @@ class _AboutPageState extends State<AboutPage> {
             backgroundImage: AssetImage('assets/images/me.jpg'),
           ),
           title: Text('Perol_Notsfsssf'),
-          subtitle: Text('使用flutter开发'),
+          subtitle: Text(I18n.of(context).perol_message),
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -185,7 +185,7 @@ class _AboutPageState extends State<AboutPage> {
             backgroundImage: AssetImage('assets/images/right_now.jpg'),
           ),
           title: Text('Right now'),
-          subtitle: Text('完成应用图标的绘制'),
+          subtitle: Text(I18n.of(context).right_now_message),
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -203,8 +203,8 @@ class _AboutPageState extends State<AboutPage> {
         ),
         ListTile(
           leading: Icon(Icons.rate_review),
-          title: Text('如果你觉得PixEz还不错'),
-          subtitle: Text('好评鼓励一下吧！'),
+          title: Text(I18n.of(context).rate_title),
+          subtitle: Text(I18n.of(context).rate_message),
           onTap: () async {
             if (Platform.isIOS) {
               var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
@@ -218,7 +218,7 @@ class _AboutPageState extends State<AboutPage> {
             ? [
                 ListTile(
                   leading: Icon(Icons.device_hub),
-                  title: Text('项目地址'),
+                  title: Text(I18n.of(context).repo_address),
                   subtitle:
                       SelectableText('github.com/Notsfsssf/pixez-flutter'),
                   onTap: () {
@@ -236,7 +236,7 @@ class _AboutPageState extends State<AboutPage> {
                                 ListTile(
                                   title: Text('Version ${Constrains.tagName}'),
                                   subtitle: Text(
-                                      I18n.of(context).Go_To_Project_Address),
+                                      I18n.of(context).go_to_project_address),
                                   onTap: () {
                                     try {
                                       launch(
@@ -254,7 +254,7 @@ class _AboutPageState extends State<AboutPage> {
                                 ),
                                 ListTile(
                                   title:
-                                      Text(I18n.of(context).Check_For_Updates),
+                                      Text(I18n.of(context).check_for_updates),
                                   onTap: () {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -268,7 +268,7 @@ class _AboutPageState extends State<AboutPage> {
                                         'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4'),
                                   ),
                                   title: Text('Skimige'),
-                                  subtitle: Text('完成MarkDown整理'),
+                                  subtitle: Text(I18n.of(context).skimige_message),
                                 ),
                               ],
                             ),
@@ -288,17 +288,17 @@ class _AboutPageState extends State<AboutPage> {
         ),
         ListTile(
           leading: Icon(Icons.email),
-          title: Text(I18n.of(context).FeedBack),
+          title: Text(I18n.of(context).feedback),
           subtitle: SelectableText('PxezFeedBack@outlook.com'),
         ),
         ListTile(
           leading: Icon(Icons.stars),
-          title: Text(I18n.of(context).Support),
-          subtitle: SelectableText('欢迎反馈建议或共同开发:)'),
+          title: Text(I18n.of(context).support),
+          subtitle: SelectableText(I18n.of(context).support_message),
         ),
         ListTile(
           leading: Icon(Icons.favorite),
-          title: Text(I18n.of(context).Thanks),
+          title: Text(I18n.of(context).thanks),
           subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
           onTap: () {
             if(Platform.isAndroid)
@@ -311,8 +311,8 @@ class _AboutPageState extends State<AboutPage> {
         ),
         ListTile(
           leading: Icon(Icons.share),
-          title: Text(I18n.of(context).Share),
-          subtitle: Text(I18n.of(context).Share_this_app_link),
+          title: Text(I18n.of(context).share),
+          subtitle: Text(I18n.of(context).share_this_app_link),
           onTap: () {
             if (Platform.isIOS) {
               Share.share('https://apps.apple.com/cn/app/pixez/id1494435126');
@@ -321,8 +321,8 @@ class _AboutPageState extends State<AboutPage> {
         ),
         ...Platform.isAndroid&&!Constrains.isGooglePlay?[
           ListTile(
-            title: Text('如果你觉得这个应用还不错'),
-            subtitle: Text('支持一下开发者吧!'),
+            title: Text(I18n.of(context).donate_title),
+            subtitle: Text(I18n.of(context).donate_message),
           ),
           Card(
             child: ListTile(

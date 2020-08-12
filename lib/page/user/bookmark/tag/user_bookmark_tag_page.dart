@@ -51,10 +51,10 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
           controller: _tabController,
           tabs: <Widget>[
             Tab(
-              text: I18n.of(context).Public,
+              text: I18n.of(context).public,
             ),
             Tab(
-              text: I18n.of(context).Private,
+              text: I18n.of(context).private,
             ),
           ],
         ),

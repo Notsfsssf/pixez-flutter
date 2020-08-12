@@ -68,7 +68,7 @@ class _CommentPageState extends State<CommentPage> {
     return Observer(builder: (context) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).View_Comment),
+          title: Text(I18n.of(context).view_comment),
         ),
         body: SafeArea(
           child: Stack(

@@ -69,7 +69,7 @@ class _RankPageState extends State<RankPage> {
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (rankStore.modeList.isNotEmpty) {
-        var list = I18n.of(context).Mode_List.split(' ');
+        var list = I18n.of(context).mode_list.split(' ');
         List<String> titles = [];
         for (var i = 0; i < rankStore.modeList.length; i++) {
           int index = modeList.indexOf(rankStore.modeList[i]);
@@ -131,7 +131,7 @@ class _RankPageState extends State<RankPage> {
           child: Column(
             children: <Widget>[
               AppBar(
-                title: Text(I18n.of(context).Choice_you_like),
+                title: Text(I18n.of(context).choice_you_like),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.save),
@@ -148,7 +148,7 @@ class _RankPageState extends State<RankPage> {
                     itemBuilder: (context, index) {
                       return CheckboxListTile(
                         title:
-                            Text(I18n.of(context).Mode_List.split(' ')[index]),
+                            Text(I18n.of(context).mode_list.split(' ')[index]),
                         onChanged: (bool value) {
                           setState(() {
                             boolList[index] = value;

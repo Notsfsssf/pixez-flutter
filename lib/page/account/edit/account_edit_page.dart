@@ -60,7 +60,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Account_Message),
+        title: Text(I18n.of(context).account_message),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
@@ -129,8 +129,8 @@ class _AccountEditPageState extends State<AccountEditPage> {
                 obscureText: _obscureText,
                 controller: _oldPasswordController,
                 decoration: InputDecoration(
-                  hintText: I18n.of(context).Current_Password,
-                  labelText: I18n.of(context).Current_Password,
+                  hintText: I18n.of(context).current_password,
+                  labelText: I18n.of(context).current_password,
                   border: InputBorder.none,
                   suffixIcon: IconButton(
                       icon: Icon(
@@ -142,8 +142,8 @@ class _AccountEditPageState extends State<AccountEditPage> {
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  hintText: I18n.of(context).New_Password,
-                  labelText: I18n.of(context).New_Password,
+                  hintText: I18n.of(context).new_password,
+                  labelText: I18n.of(context).new_password,
                 ),
               ),
               TextFormField(

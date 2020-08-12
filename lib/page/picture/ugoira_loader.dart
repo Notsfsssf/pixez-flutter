@@ -54,8 +54,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text('${I18n.of(context).Encode}?'),
-                    content: Text(I18n.of(context).Encode_Message),
+                    title: Text('${I18n.of(context).encode}?'),
+                    content: Text(I18n.of(context).encode_message),
                     actions: <Widget>[
                       FlatButton(
                         child: Text("OK"),

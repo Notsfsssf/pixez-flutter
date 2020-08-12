@@ -18,8 +18,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -39,8 +37,6 @@ import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
-import 'package:pixez/store/save_store.dart';
-import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
@@ -161,9 +157,9 @@ class _IllustPageState extends State<IllustPage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text((detail.restrict == "public"
-                                  ? I18n.of(context).Public
-                                  : I18n.of(context).Private) +
-                              I18n.of(context).BookMark),
+                                  ? I18n.of(context).public
+                                  : I18n.of(context).private) +
+                              I18n.of(context).bookmark),
                         ),
                         Switch(
                           onChanged: (bool value) {
@@ -180,7 +176,7 @@ class _IllustPageState extends State<IllustPage> {
               ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text(I18n.of(context).OK),
+                  child: Text(I18n.of(context).ok),
                   onPressed: () async {
                     final tags = bookMarkDetailResponse.bookmarkDetail.tags;
                     List<String> tempTags = [];
@@ -203,7 +199,7 @@ class _IllustPageState extends State<IllustPage> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text(I18n.of(context).Cancel))
+                    child: Text(I18n.of(context).cancel))
               ],
             );
           },
@@ -322,7 +318,7 @@ class _IllustPageState extends State<IllustPage> {
                       _buildNameAvatar(context, illusts),
                       illusts.metaPages.isNotEmpty
                           ? ListTile(
-                              title: Text(I18n.of(context).Muti_Choice_save),
+                              title: Text(I18n.of(context).muti_choice_save),
                               leading: Icon(
                                 Icons.save,
                               ),
@@ -346,10 +342,10 @@ class _IllustPageState extends State<IllustPage> {
                                           onPressed: () {
                                             Navigator.pop(context, "OK");
                                           },
-                                          child: Text(I18n.of(context).OK),
+                                          child: Text(I18n.of(context).ok),
                                         ),
                                         FlatButton(
-                                          child: Text(I18n.of(context).Cancel),
+                                          child: Text(I18n.of(context).cancel),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -388,7 +384,7 @@ class _IllustPageState extends State<IllustPage> {
                             )
                           : Container(),
                       ListTile(
-                        title: Text(I18n.of(context).CopyMessage),
+                        title: Text(I18n.of(context).copymessage),
                         leading: Icon(
                           Icons.local_library,
                         ),
@@ -397,12 +393,12 @@ class _IllustPageState extends State<IllustPage> {
                               text:
                                   'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
                           BotToast.showText(
-                              text: I18n.of(context).Copied_To_Clipboard);
+                              text: I18n.of(context).copied_to_clipboard);
                           Navigator.of(context).pop();
                         },
                       ),
                       ListTile(
-                        title: Text(I18n.of(context).Share),
+                        title: Text(I18n.of(context).share),
                         leading: Icon(
                           Icons.share,
                         ),
@@ -414,7 +410,7 @@ class _IllustPageState extends State<IllustPage> {
                         },
                       ),
                       ListTile(
-                        title: Text(I18n.of(context).Ban),
+                        title: Text(I18n.of(context).ban),
                         leading: Icon(Icons.brightness_auto),
                         onTap: () {
                           muteStore.insertBanIllusts(BanIllustIdPersist()
@@ -427,22 +423,21 @@ class _IllustPageState extends State<IllustPage> {
                         title: Text(I18n.of(context).report),
                         leading: Icon(Icons.report),
                         onTap: () async {
-                          await showCupertinoDialog(
+                          await showDialog(
                               context: context,
                               builder: (context) {
-                                return CupertinoAlertDialog(
+                                return AlertDialog(
                                   title: Text(I18n.of(context).report),
                                   content:
-                                      Text(I18n.of(context).Report_Message),
+                                      Text(I18n.of(context).report_message),
                                   actions: <Widget>[
-                                    CupertinoDialogAction(
-                                      isDefaultAction: true,
+                                    FlatButton(
                                       child: Text("OK"),
                                       onPressed: () {
                                         Navigator.of(context).pop("OK");
                                       },
                                     ),
-                                    CupertinoDialogAction(
+                                    FlatButton(
                                       child: Text("CANCEL"),
                                       onPressed: () {
                                         Navigator.of(context).pop("CANCEL");
@@ -459,7 +454,7 @@ class _IllustPageState extends State<IllustPage> {
                     leading: Icon(
                       Icons.cancel,
                     ),
-                    title: Text(I18n.of(context).Cancel),
+                    title: Text(I18n.of(context).cancel),
                     onTap: () {
                       Navigator.of(context).pop();
                     },
@@ -480,7 +475,7 @@ class _IllustPageState extends State<IllustPage> {
       for (var i in muteStore.banillusts) {
         if (i.illustId == widget.id.toString()) {
           return BanPage(
-            name: I18n.of(context).Illust,
+            name: I18n.of(context).illust,
           );
         }
       }
@@ -488,7 +483,7 @@ class _IllustPageState extends State<IllustPage> {
         for (var j in muteStore.banUserIds) {
           if (j.userId == _illustStore.illusts.user.id.toString()) {
             return BanPage(
-              name: I18n.of(context).Painter,
+              name: I18n.of(context).painter,
             );
           }
         }
@@ -496,7 +491,7 @@ class _IllustPageState extends State<IllustPage> {
           for (var t1 in _illustStore.illusts.tags) {
             if (t.name == t1.name)
               return BanPage(
-                name: I18n.of(context).Tag,
+                name: I18n.of(context).tag,
               );
           }
         }
@@ -607,7 +602,7 @@ class _IllustPageState extends State<IllustPage> {
         if (index == data.pageCount + 2) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(I18n.of(context).About_Picture),
+            child: Text(I18n.of(context).about_picture),
           );
         }
         if (index == data.pageCount + 3) {
@@ -642,9 +637,9 @@ class _IllustPageState extends State<IllustPage> {
                         ? ListTile(
                             title: Text(illust.title),
                             subtitle: isFileExist == null
-                                ? Text(I18n.of(context).Unsaved)
+                                ? Text(I18n.of(context).unsaved)
                                 : Text(
-                                    '${I18n.of(context).Already_Saved} ${isFileExist.toString()}'),
+                                    '${I18n.of(context).already_saved} ${isFileExist.toString()}'),
                             trailing: isFileExist == null
                                 ? Icon(Icons.info)
                                 : Icon(
@@ -655,7 +650,7 @@ class _IllustPageState extends State<IllustPage> {
                         : Container(),
                     illust.metaPages.isNotEmpty
                         ? ListTile(
-                            title: Text(I18n.of(context).Muti_Choice_save),
+                            title: Text(I18n.of(context).muti_choice_save),
                             leading: Icon(
                               Icons.save,
                             ),
@@ -674,16 +669,16 @@ class _IllustPageState extends State<IllustPage> {
                                     builder: (context, setDialogState) {
                                   return AlertDialog(
                                     title:
-                                        Text(I18n.of(context).Muti_Choice_save),
+                                        Text(I18n.of(context).muti_choice_save),
                                     actions: <Widget>[
                                       FlatButton(
                                         onPressed: () {
                                           Navigator.pop(context, "OK");
                                         },
-                                        child: Text(I18n.of(context).OK),
+                                        child: Text(I18n.of(context).ok),
                                       ),
                                       FlatButton(
-                                        child: Text(I18n.of(context).Cancel),
+                                        child: Text(I18n.of(context).cancel),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
@@ -697,7 +692,7 @@ class _IllustPageState extends State<IllustPage> {
                                             index == 0
                                                 ? ListTile(
                                                     title: Text(
-                                                        I18n.of(context).All),
+                                                        I18n.of(context).all),
                                                     trailing: Checkbox(
                                                         value: allOn,
                                                         onChanged: (ischeck) {
@@ -759,12 +754,12 @@ class _IllustPageState extends State<IllustPage> {
                         Navigator.of(context).pop();
                         saveStore.saveImage(illust, index: index - 1);
                       },
-                      title: Text(I18n.of(context).Save),
+                      title: Text(I18n.of(context).save),
                     ),
                     ListTile(
                       leading: Icon(Icons.cancel),
                       onTap: () => Navigator.of(context).pop(),
-                      title: Text(I18n.of(context).Cancel),
+                      title: Text(I18n.of(context).cancel),
                     ),
                     Container(
                       height: MediaQuery.of(c1).padding.bottom,

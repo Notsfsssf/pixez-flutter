@@ -92,10 +92,10 @@ class LoginInFirst extends StatelessWidget {
           Center(
               child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(I18n.of(context).Login_message),
+            child: Text(I18n.of(context).login_message),
           )),
           RaisedButton(
-            child: Text(I18n.of(context).Go_to_Login),
+            child: Text(I18n.of(context).go_to_login),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {

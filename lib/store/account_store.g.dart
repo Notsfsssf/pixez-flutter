@@ -24,6 +24,21 @@ mixin _$AccountStore on _AccountStoreBase, Store {
     });
   }
 
+  final _$indexAtom = Atom(name: '_AccountStoreBase.index');
+
+  @override
+  int get index {
+    _$indexAtom.reportRead();
+    return super.index;
+  }
+
+  @override
+  set index(int value) {
+    _$indexAtom.reportWrite(value, super.index, () {
+      super.index = value;
+    });
+  }
+
   final _$selectAsyncAction = AsyncAction('_AccountStoreBase.select');
 
   @override
@@ -65,7 +80,8 @@ mixin _$AccountStore on _AccountStoreBase, Store {
   @override
   String toString() {
     return '''
-now: ${now}
+now: ${now},
+index: ${index}
     ''';
   }
 }

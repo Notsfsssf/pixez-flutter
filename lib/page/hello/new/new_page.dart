@@ -66,13 +66,13 @@ class _NewPageState extends State<NewPage> {
                   title:
                       TabBar(indicatorSize: TabBarIndicatorSize.label, tabs: [
                     Tab(
-                      text: I18n.of(context).New,
+                      text: I18n.of(context).news,
                     ),
                     Tab(
-                      text: I18n.of(context).BookMark,
+                      text: I18n.of(context).bookmark,
                     ),
                     Tab(
-                      text: I18n.of(context).Followed,
+                      text: I18n.of(context).followed,
                     ),
                   ]),
                   actions: <Widget>[
@@ -114,15 +114,15 @@ class _NewPageState extends State<NewPage> {
                 tabs: [
                   Tab(
                     child: Text(
-                        '${I18n.of(context).Follow}${I18n.of(context).New}'),
+                        '${I18n.of(context).follow}${I18n.of(context).news}'),
                   ),
                   Tab(
                     child: Text(
-                        '${I18n.of(context).Personal}${I18n.of(context).BookMark}'),
+                        '${I18n.of(context).personal}${I18n.of(context).bookmark}'),
                   ),
                   Tab(
                     child: Text(
-                        '${I18n.of(context).Follow}${I18n.of(context).Painter}'),
+                        '${I18n.of(context).follow}${I18n.of(context).painter}'),
                   ),
                 ],
               ),

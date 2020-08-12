@@ -47,13 +47,13 @@ class _BanPageState extends State<BanPage> {
                 style: TextStyle(fontSize: 26),
               ),
             ),
-            Text(I18n.of(context).Shield_message(widget.name)),
+            Text(I18n.of(context).shield_message(widget.name)),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: RaisedButton(
                 color: Theme.of(context).accentColor,
                 textColor: Colors.white,
-                child: Text(I18n.of(context).Shielding_settings),
+                child: Text(I18n.of(context).shielding_settings),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => ShieldPage()));

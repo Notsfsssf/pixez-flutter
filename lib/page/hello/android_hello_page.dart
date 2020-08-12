@@ -31,7 +31,6 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -101,17 +100,17 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home), title: Text(I18n.of(context).Home)),
+                icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit), title: Text(I18n.of(context).Rank)),
+                icon: Icon(Icons.ac_unit), title: Text(I18n.of(context).rank)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.bookmark),
-                title: Text(I18n.of(context).Quick_View)),
+                title: Text(I18n.of(context).quick_view)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text(I18n.of(context).Search)),
+                icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
-                title: Text(I18n.of(context).Setting)),
+                title: Text(I18n.of(context).setting)),
           ]),
     );
   }

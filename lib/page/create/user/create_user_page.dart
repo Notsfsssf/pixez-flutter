@@ -44,7 +44,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Input_Nickname),
+        title: Text(I18n.of(context).input_nickname),
       ),
       body: Center(
         child: Padding(
@@ -57,8 +57,8 @@ class _CreateUserPageState extends State<CreateUserPage> {
                 maxLines: 1,
                 decoration: InputDecoration(
                   icon: Icon(Icons.supervised_user_circle),
-                  hintText: I18n.of(context).Nickname,
-                  labelText: '${I18n.of(context).Nickname} *',
+                  hintText: I18n.of(context).nickname,
+                  labelText: '${I18n.of(context).nickname} *',
                 ),
                 controller: _userNameController,
               ),
@@ -98,11 +98,11 @@ class _CreateUserPageState extends State<CreateUserPage> {
                 child: Text("Start"),
               ),
               Center(
-                child: Text(I18n.of(context).Nickname_can_be_change_anytime),
+                child: Text(I18n.of(context).nickname_can_be_change_anytime),
               ),
               FlatButton(
                 child: Text(
-                  I18n.of(context).Terms,
+                  I18n.of(context).terms,
                 ),
                 onPressed: () async {
                   final url = 'https://www.pixiv.net/terms/?page=term';

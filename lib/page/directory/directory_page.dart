@@ -42,7 +42,7 @@ class _DirectoryPageState extends State<DirectoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Choose_directory),
+        title: Text(I18n.of(context).choose_directory),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.undo),

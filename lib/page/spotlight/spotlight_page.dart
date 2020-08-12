@@ -32,7 +32,7 @@ class SpotLightPage extends StatelessWidget {
     return Observer(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).Spotlight),
+          title: Text(I18n.of(context).spotlight),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.arrow_upward),

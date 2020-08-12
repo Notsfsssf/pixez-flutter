@@ -54,7 +54,7 @@ class _UpdatePageState extends State<UpdatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Update),
+        title: Text(I18n.of(context).update),
       ),
       body: lastRelease == null
           ? Builder(builder: (_) {
@@ -73,11 +73,11 @@ class _UpdatePageState extends State<UpdatePage> {
           : ListView(
               children: <Widget>[
                 ListTile(
-                  title: Text(I18n.of(context).Latest_Version),
+                  title: Text(I18n.of(context).latest_version),
                   subtitle: Text(lastRelease.tagName ?? ''),
                 ),
                 ListTile(
-                  title: Text(I18n.of(context).Download_Address),
+                  title: Text(I18n.of(context).download_address),
                   subtitle: SelectableText(
                       lastRelease.assets.first.browserDownloadUrl ?? ''),
                   onTap: () {
@@ -87,7 +87,7 @@ class _UpdatePageState extends State<UpdatePage> {
                   },
                 ),
                 ListTile(
-                  title: Text(I18n.of(context).New_Version_Update_Information),
+                  title: Text(I18n.of(context).new_version_update_information),
                   subtitle: Text(lastRelease.body ?? ''),
                 )
               ],

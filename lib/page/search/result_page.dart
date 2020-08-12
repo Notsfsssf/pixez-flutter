@@ -20,7 +20,6 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
-import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class ResultPage extends StatefulWidget {
   final String word;
@@ -48,10 +47,10 @@ class _ResultPageState extends State<ResultPage> {
         appBar: AppBar(
           title: TabBar(tabs: [
             Tab(
-              text: I18n.of(context).Illust,
+              text: I18n.of(context).illust,
             ),
             Tab(
-              text: I18n.of(context).Painter,
+              text: I18n.of(context).painter,
             ),
           ]),
         ),

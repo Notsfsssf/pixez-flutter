@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -29,7 +28,7 @@ class HistoryPage extends StatelessWidget {
   Widget buildAppBarUI(context) => Container(
         child: Padding(
           child: Text(
-            I18n.of(context).History,
+            I18n.of(context).history,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
           ),
           padding: EdgeInsets.only(left: 20.0, top: 30.0, bottom: 30.0),
@@ -58,16 +57,16 @@ class HistoryPage extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text("${I18n.of(context).Delete}?"),
+                              title: Text("${I18n.of(context).delete}?"),
                               actions: <Widget>[
                                 FlatButton(
-                                  child: Text(I18n.of(context).OK),
+                                  child: Text(I18n.of(context).ok),
                                   onPressed: () {
                                     Navigator.of(context).pop("OK");
                                   },
                                 ),
                                 FlatButton(
-                                  child: Text(I18n.of(context).Cancel),
+                                  child: Text(I18n.of(context).cancel),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
@@ -92,7 +91,7 @@ class HistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).History),
+        title: Text(I18n.of(context).history),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),
@@ -102,16 +101,16 @@ class HistoryPage extends StatelessWidget {
                   builder: (context) {
                     return AlertDialog(
                       title: Text(
-                          "${I18n.of(context).Delete} ${I18n.of(context).All}?"),
+                          "${I18n.of(context).delete} ${I18n.of(context).all}?"),
                       actions: <Widget>[
                         FlatButton(
-                          child: Text(I18n.of(context).OK),
+                          child: Text(I18n.of(context).ok),
                           onPressed: () {
                             Navigator.of(context).pop("OK");
                           },
                         ),
                         FlatButton(
-                          child: Text(I18n.of(context).Cancel),
+                          child: Text(I18n.of(context).cancel),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },

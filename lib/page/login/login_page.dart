@@ -161,13 +161,13 @@ class _LoginPageState extends State<LoginPage> {
                         RaisedButton(
                             color: Theme.of(context).primaryColor,
                             child: Text(
-                              I18n.of(context).Login,
+                              I18n.of(context).login,
                             ),
                             onPressed: () async {
                               if (userNameController.value.text.isEmpty ||
                                   userNameController.value.text.isEmpty) return;
                               BotToast.showText(
-                                  text: I18n.of(context).Attempting_To_Log_In);
+                                  text: I18n.of(context).attempting_to_log_in);
                               bool isAuth = await _loginStore.auth(
                                   userNameController.value.text.trim(),
                                   passWordController.value.text.trim());
@@ -208,11 +208,11 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             }
                           },
-                          child: Text(I18n.of(context).Dont_have_account),
+                          child: Text(I18n.of(context).dont_have_account),
                         ),
                         FlatButton(
                           child: Text(
-                            I18n.of(context).Terms,
+                            I18n.of(context).terms,
                           ),
                           onPressed: () async {
                             final url =

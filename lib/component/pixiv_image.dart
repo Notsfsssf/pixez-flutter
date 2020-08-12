@@ -82,7 +82,7 @@ class PixivImage extends HookWidget {
                     left: 0.0,
                     right: 0.0,
                     child: Text(
-                      I18n.of(context).LoadImageFailedClickToReload,
+                      I18n.of(context).load_image_failed_click_to_reload,
                       textAlign: TextAlign.center,
                     ),
                   )

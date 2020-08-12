@@ -17,7 +17,6 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -121,34 +120,34 @@ class _TaskPageState extends State<TaskPage> {
 
   String toStatusString(DownloadTaskStatus status) {
     if (status == DownloadTaskStatus.complete) {
-      return I18n.of(context).Complete;
+      return I18n.of(context).complete;
     }
     if (status == DownloadTaskStatus.enqueued) {
-      return I18n.of(context).Enqueued;
+      return I18n.of(context).enqueued;
     }
     if (status == DownloadTaskStatus.running) {
-      return I18n.of(context).Running;
+      return I18n.of(context).running;
     }
     if (status == DownloadTaskStatus.failed) {
-      return I18n.of(context).Failed;
+      return I18n.of(context).failed;
     }
     if (status == DownloadTaskStatus.complete) {
-      return I18n.of(context).Complete;
+      return I18n.of(context).complete;
     }
     if (status == DownloadTaskStatus.paused) {
-      return I18n.of(context).Paused;
+      return I18n.of(context).paused;
     }
     if (status == DownloadTaskStatus.canceled) {
-      return I18n.of(context).Canceled;
+      return I18n.of(context).canceled;
     }
-    return I18n.of(context).Undefined;
+    return I18n.of(context).undefined;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).Task_progress),
+        title: Text(I18n.of(context).task_progress),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.more_vert),
@@ -163,7 +162,7 @@ class _TaskPageState extends State<TaskPage> {
                         child: Column(
                           children: <Widget>[
                             ListTile(
-                              title: Text(I18n.of(context).Retry_Failed_Tasks),
+                              title: Text(I18n.of(context).retry_failed_tasks),
                               onTap: () async {
                                 final tasks =
                                     await FlutterDownloader.loadTasks();
@@ -180,7 +179,7 @@ class _TaskPageState extends State<TaskPage> {
                             ),
                             ListTile(
                               title:
-                                  Text(I18n.of(context).Clear_Completed_Tasks),
+                                  Text(I18n.of(context).clear_completed_tasks),
                               onTap: () async {
                                 final tasks =
                                     await FlutterDownloader.loadTasks();
