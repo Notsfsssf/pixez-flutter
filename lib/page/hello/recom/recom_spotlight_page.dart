@@ -41,7 +41,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
   @override
   void initState() {
     _easyRefreshController = RefreshController(initialRefresh: true);
-    spotlightStore = SpotlightStore();
+    spotlightStore = SpotlightStore(null);
     _lightingStore =
         LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
 

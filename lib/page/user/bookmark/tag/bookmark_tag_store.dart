@@ -14,31 +14,34 @@
  *
  */
 
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 part 'bookmark_tag_store.g.dart';
 
 class BookMarkTagStore = _BookMarkTagStoreBase with _$BookMarkTagStore;
 
 abstract class _BookMarkTagStoreBase with Store {
   ObservableList<BookmarkTag> bookmarkTags = ObservableList();
-  final EasyRefreshController _controller;
+  final RefreshController _controller;
   final int id;
   String nextUrl;
   _BookMarkTagStoreBase(this.id, this._controller);
   @action
   fetch(String restrict) async {
+    nextUrl = null;
+    _controller.headerMode.value = RefreshStatus.idle;
+    _controller.footerMode.value = LoadStatus.idle;
     try {
       var result =
           await apiClient.getUserBookmarkTagsIllust(id, restrict: restrict);
       nextUrl = result.nextUrl;
       bookmarkTags.clear();
       bookmarkTags.addAll(result.bookmarkTags);
-      _controller.finishRefresh(success: true);
+      _controller.refreshCompleted();
     } catch (e) {
-      _controller.finishRefresh(success: false);
+      _controller.refreshFailed();
     }
   }
 
@@ -50,12 +53,12 @@ abstract class _BookMarkTagStoreBase with Store {
         var r = IllustBookmarkTagsResponse.fromJson(result.data);
         nextUrl = r.nextUrl;
         bookmarkTags.addAll(r.bookmarkTags);
-        _controller.finishLoad(success: true);
+        _controller.loadComplete();
       } catch (e) {
-        _controller.finishLoad(success: false);
+        _controller.loadFailed();
       }
     } else {
-      _controller.finishLoad(success: true, noMore: true);
+      _controller.loadNoData();
     }
   }
 }

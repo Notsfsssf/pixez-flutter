@@ -15,19 +15,20 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_easyrefresh/material_header.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SpotLightPage extends StatelessWidget {
-  final SpotlightStore _spotlightStore = SpotlightStore();
-  final ScrollController _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
+    final ScrollController _controller = ScrollController();
+    final RefreshController _refreshController =
+        RefreshController(initialRefresh: true);
+    final SpotlightStore _spotlightStore = SpotlightStore(_refreshController);
     return Observer(builder: (_) {
       return Scaffold(
         appBar: AppBar(
@@ -42,11 +43,12 @@ class SpotLightPage extends StatelessWidget {
             )
           ],
         ),
-        body: EasyRefresh(
-            onLoad: () => _spotlightStore.next(),
+        body: SmartRefresher(
+            onLoading: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
-            firstRefresh: true,
-            header: MaterialHeader(),
+            enablePullDown: true,
+            enablePullUp:true,
+            controller: _refreshController,
             child: StaggeredGridView.countBuilder(
               crossAxisCount: 3,
               controller: _controller,

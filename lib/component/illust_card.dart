@@ -115,13 +115,13 @@ class IllustCard extends HookWidget {
     return (store.illusts.height.toDouble() / store.illusts.width.toDouble()) >
             3
         ? Hero(
-            tag: '${store.illusts.imageUrls.medium}${heroString}',
+            tag: '${store.illusts.imageUrls.medium}$heroString',
             child: PixivImage(
               store.illusts.imageUrls.squareMedium,
             ),
           )
         : Hero(
-            tag: '${store.illusts.imageUrls.medium}${heroString}',
+            tag: '${store.illusts.imageUrls.medium}$heroString',
             child: PixivImage(
               store.illusts.imageUrls.medium,
             ),

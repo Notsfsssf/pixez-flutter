@@ -24,7 +24,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
-import 'package:pixez/models/login_error_response.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/account_store.dart';
@@ -32,7 +31,6 @@ import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:provider/provider.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -98,7 +96,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       if (status == DownloadTaskStatus.complete) {
-        String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
+        String queryString = 'SELECT * FROM task WHERE task_id=\'$id\'';
         final tasks =
             await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
         if (tasks != null && tasks.isNotEmpty) {

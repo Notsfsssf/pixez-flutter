@@ -15,11 +15,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/user/bookmark/tag/bookmark_tag_store.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UserBookmarkTagPage extends StatefulWidget {
   @override
@@ -78,13 +78,13 @@ class NewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final EasyRefreshController _easyRefreshController =
-        EasyRefreshController();
+    final RefreshController _easyRefreshController =
+        RefreshController(initialRefresh: true);
     BookMarkTagStore _bookMarkTagStore = BookMarkTagStore(
         int.parse(accountStore.now.userId), _easyRefreshController);
     return Observer(builder: (_) {
-      return EasyRefresh(
-        firstRefresh: true,
+      return SmartRefresher(
+        enablePullUp: true,
         controller: _easyRefreshController,
         child: _bookMarkTagStore.bookmarkTags.isNotEmpty
             ? ListView.builder(
@@ -113,9 +113,7 @@ class NewWidget extends StatelessWidget {
         onRefresh: () {
           return _bookMarkTagStore.fetch(restrict);
         },
-        enableControlFinishRefresh: true,
-        enableControlFinishLoad: true,
-        onLoad: () {
+        onLoading: () {
           return _bookMarkTagStore.next();
         },
       );
