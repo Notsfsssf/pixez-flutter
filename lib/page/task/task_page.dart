@@ -17,6 +17,7 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -76,8 +77,7 @@ class _TaskPageState extends State<TaskPage> {
             });
           }
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     });
     initMethod();
   }
@@ -100,6 +100,23 @@ class _TaskPageState extends State<TaskPage> {
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader_pro');
     super.dispose();
+  }
+
+  _reInsert(TaskEntity taskEntity) async {
+    final id = taskEntity.taskId;
+    String queryString = 'SELECT * FROM task WHERE task_id=\'${id}\'';
+    final tasks =
+        await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
+    if (tasks != null && tasks.isNotEmpty) {
+      String fullPath =
+          '${tasks.first.savedDir}${Platform.pathSeparator}${tasks.first.filename}';
+      File file = File(fullPath);
+      final uint8list = await file.readAsBytes();
+      final data = saveStore.maps[id];
+      await saveStore.saveToGallery(uint8list, data.illusts, data.fileName);
+      saveStore.streamController
+          .add(SaveStream(SaveState.SUCCESS, saveStore.maps[id].illusts));
+    }
   }
 
   String toStatusString(DownloadTaskStatus status) {
@@ -236,16 +253,29 @@ class _TaskPageState extends State<TaskPage> {
                               initMethod();
                             },
                           ),
-                          data.status.value > 3
-                              ? Container(height: 0,)
+                          ...data.status.value > 3
+                              ? [
+                                  Container(
+                                    height: 0,
+                                  )
+                                ]
                               : data.progress == 100
-                                  ? Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                    )
-                                  : CircularProgressIndicator(
-                                      value: data.progress / 100,
-                                    )
+                                  ? [
+                                      IconButton(
+                                          icon: Icon(Icons.refresh),
+                                          onPressed: () {
+                                            _reInsert(data);
+                                          }),
+                                      Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                      )
+                                    ]
+                                  : [
+                                      CircularProgressIndicator(
+                                        value: data.progress / 100,
+                                      )
+                                    ]
                         ],
                       ),
                     ),

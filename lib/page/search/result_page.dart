@@ -46,14 +46,7 @@ class _ResultPageState extends State<ResultPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: InkWell(
-            child: Text(widget.word),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SearchSuggestionPage(preword: widget.word,)));
-            },
-          ),
-          bottom: TabBar(tabs: [
+          title: TabBar(tabs: [
             Tab(
               text: I18n.of(context).Illust,
             ),

@@ -24,6 +24,8 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result_illust_store.dart';
+import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class ResultIllustList extends StatefulWidget {
   final String word;
@@ -104,20 +106,38 @@ class _ResultIllustListState extends State<ResultIllustList> {
       child: Column(
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.date_range),
-                  onPressed: () {
-                    _buildShowDateRange(context);
-                  }),
-              IconButton(
-                  icon: Icon(Icons.sort),
-                  onPressed: () {
-                    _buildShowBottomSheet(context);
-                    // _showMaterialBottom();
-                  }),
+              Row(
+                children: [
+                  FlatButton(
+                    padding: const EdgeInsets.all(8.0),
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return SearchSuggestionPage(preword: widget.word,);
+                      }));
+                    },
+                    child: Text(widget.word),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.date_range),
+                      onPressed: () {
+                        _buildShowDateRange(context);
+                      }),
+                  IconButton(
+                      icon: Icon(Icons.sort),
+                      onPressed: () {
+                        _buildShowBottomSheet(context);
+                        // _showMaterialBottom();
+                      }),
+                ],
+              )
             ],
           ),
           Expanded(child: LightingList(source: futureGet))

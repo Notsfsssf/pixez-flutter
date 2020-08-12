@@ -14,7 +14,6 @@
  *
  */
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
@@ -23,15 +22,24 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 class RefreshTokenInterceptor extends Interceptor {
-  String getToken() {
-    String result = "Bearer " + accountStore.now.accessToken;
+  Future<String> getToken() async {
+    String token = accountStore?.now?.accessToken;//可能读的时候没有错的快，导致now为null
+    String result;
+    if (token != null)
+      result = "Bearer " + token;
+    else {
+      AccountProvider accountProvider = AccountProvider();
+      await accountProvider.open();
+      final all = await accountProvider.getAllAccount();
+      result = "Bearer " + all[accountStore.index].accessToken;
+    }
     return result;
   }
 
   @override
   Future onRequest(RequestOptions options) async {
     if (options.path.contains('v1/walkthrough/illusts')) return options;
-    options.headers[OAuthClient.AUTHORIZATION] = getToken();
+    options.headers[OAuthClient.AUTHORIZATION] = await getToken();
     return options; //continue
   }
 

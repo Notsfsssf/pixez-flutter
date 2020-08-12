@@ -225,8 +225,6 @@ abstract class _SaveStoreBase with Store {
     //     }
     //   }
     // }//改天找个LruCache试验一下
-
-    
   }
 
   _saveInternal(String url, Illusts illusts, String fileName) async {
@@ -282,6 +280,7 @@ abstract class _SaveStoreBase with Store {
         await file.writeAsBytes(uint8list);
         await platform.invokeMethod('scan', {"path": fullPath});
       } catch (e) {
+        print(e);
       }
       return;
     } else {

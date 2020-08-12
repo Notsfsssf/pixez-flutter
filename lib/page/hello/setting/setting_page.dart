@@ -57,45 +57,6 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.palette,
-              color: Theme.of(context).textTheme.bodyText1.color,
-            ),
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ThemePage()));
-            },
-          ),
-          ...(Platform.isAndroid)
-              ? <Widget>[
-                  IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SauceNaoPage()));
-                      }),
-                  IconButton(
-                      icon: Icon(
-                        Icons.code,
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => PlatformPage()));
-                      })
-                ]
-              : []
-        ],
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -103,24 +64,102 @@ class _SettingPageState extends State<SettingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                AppBar(
+                  elevation: 0.0,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  actions: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.palette,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ThemePage()));
+                      },
+                    ),
+                    ...(Platform.isAndroid)
+                        ? <Widget>[
+                            IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => SauceNaoPage()));
+                                }),
+                            IconButton(
+                                icon: Icon(
+                                  Icons.code,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => PlatformPage()));
+                                })
+                          ]
+                        : []
+                  ],
+                ),
                 Observer(builder: (context) {
                   if (accountStore.now != null)
                     return SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
-                          ListTile(
-                            leading: PainterAvatar(
-                              url: accountStore.now.userImage,
-                              id: int.parse(accountStore.now.userId),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return AccountSelectPage();
+                                }));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  PainterAvatar(
+                                    url: accountStore.now.userImage,
+                                    id: int.parse(accountStore.now.userId),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Text(accountStore.now.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1),
+                                        ),
+                                        Text(
+                                          accountStore.now.mailAddress,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                            title: Text(accountStore.now.name),
-                            subtitle: Text(accountStore.now.mailAddress),
-                            onTap: () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .push(MaterialPageRoute(builder: (_) {
-                                return AccountSelectPage();
-                              }));
-                            },
                           ),
                           ListTile(
                             leading: Icon(Icons.account_box),

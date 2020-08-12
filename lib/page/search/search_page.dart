@@ -153,7 +153,7 @@ class _SearchPageState extends State<SearchPage>
           builder: (BuildContext context) {
             if (tagHistoryStore.tags.isNotEmpty) {
               return Padding(
-                padding: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 child: Wrap(
                   children: tagHistoryStore.tags
                       .map((f) => ActionChip(
