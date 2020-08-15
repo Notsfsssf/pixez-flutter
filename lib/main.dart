@@ -50,35 +50,18 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+class _MyAppState extends State<MyApp> {
   ReceivePort _port = ReceivePort();
-  @override
-  void didChangePlatformBrightness() {
-    super.didChangePlatformBrightness();
-    final Brightness brightness =
-        WidgetsBinding.instance.window.platformBrightness;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarIconBrightness:
-          brightness == Brightness.light ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor: brightness == Brightness.light
-          ? Color(0xFFFAFAFA)
-          : Color(0xFF303030), //我的朋友，这边只能写死，我没招了
-      statusBarColor: Colors.transparent,
-    ));
-  }
 
   @override
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader');
-    saveStore?.cleanTasks();
     saveStore?.dispose();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     accountStore.fetch();
     userSetting.init();
     muteStore.fetchBanUserIds();
@@ -141,16 +124,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         home: Builder(builder: (context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
-                systemNavigationBarIconBrightness:
-                    MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
-                        ? Brightness.dark
-                        : Brightness.light,
-                systemNavigationBarColor:
-                    MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
-                        ? Color(0xFFFAFAFA)
-                        : Color(0xFF303030),
                 statusBarColor: Colors.transparent,
               ),
               child: SplashPage());

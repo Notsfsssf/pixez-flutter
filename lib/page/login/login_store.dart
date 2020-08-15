@@ -28,7 +28,6 @@ abstract class _LoginStoreBase with Store {
       User user = accountResponse.user;
       AccountProvider accountProvider = new AccountProvider();
       await accountProvider.open();
-      print(accountResponse.accessToken);
       accountProvider.insert(AccountPersist()
         ..accessToken = accountResponse.accessToken
         ..passWord = password

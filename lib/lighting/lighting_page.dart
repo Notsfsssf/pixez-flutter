@@ -14,16 +14,17 @@
  *
  */
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
@@ -85,6 +86,8 @@ class _LightingListState extends State<LightingList> {
   @override
   void dispose() {
     _scrollController?.dispose();
+    _refreshController?.dispose();
+    _store?.dispose();
     super.dispose();
   }
 
@@ -209,65 +212,41 @@ class _LightingListState extends State<LightingList> {
               ],
             ),
           )
-        : _store.iStores.isNotEmpty
-            ? _buildBody()
-            : Container();
+        : _store.iStores.isNotEmpty ? _buildWaterFall() : Container();
   }
 
-  Widget _buildBody() {
-    return isNested
-        ? StaggeredGridView.countBuilder(
-            padding: EdgeInsets.all(0.0),
-            itemBuilder: (context, index) {
-              return IllustCard(
-                store: _store.iStores[index],
-                iStores: _store.iStores,
-              );
-            },
-            staggeredTileBuilder: (int index) {
-              if (needToBan(_store.iStores[index].illusts))
-                return StaggeredTile.extent(1, 0.0);
-              double screanWidth = MediaQuery.of(context).size.width;
-              double itemWidth =
-                  (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
-              double radio = _store.iStores[index].illusts.height.toDouble() /
-                  _store.iStores[index].illusts.width.toDouble();
-              double mainAxisExtent;
-              if (radio > 3)
-                mainAxisExtent = itemWidth;
-              else
-                mainAxisExtent = itemWidth * radio;
-              return StaggeredTile.extent(1, mainAxisExtent + 80.0);
-            },
-            itemCount: _store.iStores.length,
-            crossAxisCount: userSetting.crossCount,
-          )
-        : StaggeredGridView.countBuilder(
-            padding: EdgeInsets.all(0.0),
-            controller: _scrollController,
-            itemBuilder: (context, index) {
-              return IllustCard(
-                store: _store.iStores[index],
-                iStores: _store.iStores,
-              );
-            },
-            staggeredTileBuilder: (int index) {
-              if (needToBan(_store.iStores[index].illusts))
-                return StaggeredTile.extent(1, 0.0);
-              double screanWidth = MediaQuery.of(context).size.width;
-              double itemWidth =
-                  (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
-              double radio = _store.iStores[index].illusts.height.toDouble() /
-                  _store.iStores[index].illusts.width.toDouble();
-              double mainAxisExtent;
-              if (radio > 3)
-                mainAxisExtent = itemWidth;
-              else
-                mainAxisExtent = itemWidth * radio;
-              return StaggeredTile.extent(1, mainAxisExtent + 80.0);
-            },
-            itemCount: _store.iStores.length,
-            crossAxisCount: userSetting.crossCount,
+  Widget _buildWaterFall() {
+    double screanWidth = MediaQuery.of(context).size.width;
+    double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
+
+    return WaterfallFlow.builder(
+        padding: EdgeInsets.all(5.0),
+        itemCount: _store.iStores.length,
+        itemBuilder: (context, index) {
+          double radio = _store.iStores[index].illusts.height.toDouble() /
+              _store.iStores[index].illusts.width.toDouble();
+          double mainAxisExtent;
+          if (radio > 3)
+            mainAxisExtent = itemWidth;
+          else
+            mainAxisExtent = itemWidth * radio;
+          return Container(
+            child: IllustCard(store: _store.iStores[index]),
+            height: mainAxisExtent + 60.0,
           );
+        },
+        gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          collectGarbage: (List<int> garbages) {
+            garbages.forEach((index) {
+              final provider = ExtendedNetworkImageProvider(
+                _store.iStores[index].illusts.imageUrls.medium,
+              );
+              provider.evict();
+            });
+          },
+        ));
   }
+
+ 
 }

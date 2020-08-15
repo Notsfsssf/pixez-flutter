@@ -218,6 +218,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.3"
+  extended_list_library:
+    dependency: transitive
+    description:
+      name: extended_list_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   extended_nested_scroll_view:
     dependency: "direct main"
     description:
@@ -312,13 +319,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.8"
-  flutter_staggered_grid_view:
-    dependency: "direct main"
-    description:
-      path: "plugins/flutter_staggered_grid_view"
-      relative: true
-    source: path
-    version: "0.3.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -908,6 +908,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.7+15"
+  waterfall_flow:
+    dependency: "direct main"
+    description:
+      name: waterfall_flow
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
   web_socket_channel:
     dependency: transitive
     description:

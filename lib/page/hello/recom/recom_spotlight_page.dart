@@ -14,9 +14,9 @@
  *
  */
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -28,6 +28,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
   @override
@@ -114,51 +115,63 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
       onLoading: () {
         return _lightingStore.fetchNext();
       },
-      child: _buildBody(),
+      child: _buildWaterFall(),
     );
   }
 
-  Widget _buildBody() {
-    return StaggeredGridView.countBuilder(
-      crossAxisCount: userSetting.crossCount,
-      staggeredTileBuilder: (int index) {
-        if (index < 3) return StaggeredTile.fit(userSetting.crossCount);
-        var illust = _lightingStore.iStores[index - 3].illusts;
-        if (needToBan(illust)) return StaggeredTile.extent(1, 0.0);
-        double screanWidth = MediaQuery.of(context).size.width;
-        double itemWidth =
-            (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
-        double radio =
-            _lightingStore.iStores[index - 3].illusts.height.toDouble() /
-                _lightingStore.iStores[index - 3].illusts.width.toDouble();
-        double mainAxisExtent;
-        if (radio > 2)
-          mainAxisExtent = itemWidth;
-        else
-          mainAxisExtent = itemWidth * radio;
-        return StaggeredTile.extent(1, mainAxisExtent + 80.0);
-      },
-      itemCount: _lightingStore.iStores.length + 3,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0)
-          return AppBar(
-            elevation: 0.0,
-            titleSpacing: 0.0,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.transparent,
-            title: _buildFirstRow(context),
-          );
-        if (index == 1) return _buildSpotlightContainer();
-        if (index == 2) return _buildSecondRow(context);
-        if (_lightingStore.iStores.isNotEmpty)
-          return IllustCard(
-            store: _lightingStore.iStores[index - 3],
-            iStores: _lightingStore.iStores,
-          );
-        return Container();
-      },
+  Widget _buildWaterFall() {
+    double screanWidth = MediaQuery.of(context).size.width;
+    double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          elevation: 0.0,
+          titleSpacing: 0.0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          title: _buildFirstRow(context),
+        ),
+        SliverToBoxAdapter(
+          child: _buildSpotlightContainer(),
+        ),
+        SliverToBoxAdapter(
+          child: _buildSecondRow(context),
+        ),
+        _lightingStore.iStores.isNotEmpty
+            ? SliverWaterfallFlow(
+                gridDelegate:
+                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  collectGarbage: (List<int> garbages) {
+                    garbages.forEach((index) {
+                      final provider = ExtendedNetworkImageProvider(
+                        _lightingStore.iStores[index].illusts.imageUrls.medium,
+                      );
+                      provider.evict();
+                    });
+                  },
+                ),
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  double radio = _lightingStore.iStores[index].illusts.height
+                          .toDouble() /
+                      _lightingStore.iStores[index].illusts.width.toDouble();
+                  double mainAxisExtent;
+                  if (radio > 3)
+                    mainAxisExtent = itemWidth;
+                  else
+                    mainAxisExtent = itemWidth * radio;
+                  return Container(
+                    child: IllustCard(store: _lightingStore.iStores[index]),
+                    height: mainAxisExtent + 60.0,
+                  );
+                }),
+              )
+            : []
+      ],
     );
   }
+
 
   Widget _buildSpotlightContainer() {
     return Container(
@@ -247,5 +260,4 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
       ],
     );
   }
-
 }

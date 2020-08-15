@@ -259,7 +259,7 @@ abstract class _SaveStoreBase with Store {
           directory.createSync(recursive: true);
         }
         if (userSetting.singleFolder) {
-          path = "${path}/${illusts.user.name}_${illusts.user.id}";
+          path = "$path/${illusts.user.name}_${illusts.user.id}";
           directory.listSync().forEach((element) {
             if (element is Directory) {
               bool ok = element.path
@@ -271,8 +271,11 @@ abstract class _SaveStoreBase with Store {
               }
             }
           });
+          if (!Directory(path).existsSync()) {
+            Directory(path).createSync(recursive: true);
+          }
         }
-        final fullPath = "${path}/${fileName}";
+        final fullPath = "$path/$fileName";
         final file = File(fullPath);
         if (!file.existsSync()) {
           file.createSync(recursive: true);

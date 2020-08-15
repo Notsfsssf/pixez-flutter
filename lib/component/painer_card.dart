@@ -16,7 +16,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
@@ -39,26 +38,19 @@ class PainterCard extends StatelessWidget {
         }));
       },
       child: Card(
-                shape: const RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         clipBehavior: Clip.antiAlias,
-        child: StaggeredGridView.countBuilder(
-          padding: EdgeInsets.all(0.0),
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          crossAxisCount: 3,
-          itemBuilder: (BuildContext context, int index) {
-            if (index != 3) {
-              if (index < user.illusts.length) {
-                return PixivImage(user.illusts[index].imageUrls.squareMedium);
-              }
-              return Container();
-            }
-            return buildPadding();
-          },
-          itemCount: 4,
-          staggeredTileBuilder: (int index) =>
-              StaggeredTile.fit(index != 3 ? 1 : 3),
+        child: CustomScrollView(
+          slivers: [
+            SliverGrid.count(
+              crossAxisCount: 3,
+              children: user.illusts
+                  .map((e) => PixivImage(e.imageUrls.squareMedium))
+                  .toList(),
+            ),
+            buildPadding()
+          ],
         ),
       ),
     );

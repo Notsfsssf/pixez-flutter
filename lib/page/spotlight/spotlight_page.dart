@@ -16,7 +16,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
@@ -47,16 +46,17 @@ class SpotLightPage extends StatelessWidget {
             onLoading: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
             enablePullDown: true,
-            enablePullUp:true,
+            enablePullUp: true,
             controller: _refreshController,
-            child: StaggeredGridView.countBuilder(
-              crossAxisCount: 3,
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
               controller: _controller,
               itemBuilder: (BuildContext context, int index) {
                 return SpotlightCard(
                     spotlight: _spotlightStore.articles[index]);
               },
-              staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
               itemCount: _spotlightStore.articles.length,
             )),
       );

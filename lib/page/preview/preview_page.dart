@@ -17,7 +17,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -26,6 +25,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class GoToLoginPage extends StatelessWidget {
   final Illusts illust;
@@ -116,7 +116,8 @@ class PreviewPage extends StatefulWidget {
 
 class _PreviewPageState extends State<PreviewPage> {
   LightingStore _lightingStore;
-  RefreshController _easyRefreshController = RefreshController(initialRefresh: true);
+  RefreshController _easyRefreshController =
+      RefreshController(initialRefresh: true);
   @override
   void initState() {
     _lightingStore = LightingStore(
@@ -132,38 +133,40 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_){
-        return SafeArea(
-      child: SmartRefresher(
-        controller: _easyRefreshController,
-        onRefresh: () => _lightingStore.fetch(),
-        onLoading: () => _lightingStore.fetchNext(),
-        child: _lightingStore.iStores.isNotEmpty
-            ? StaggeredGridView.countBuilder(
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => GoToLoginPage(
-                              illust: _lightingStore.iStores[index].illusts)));
-                    },
-                    child: Card(
-                      child: Container(
-                        child: PixivImage(_lightingStore
-                            .iStores[index].illusts.imageUrls.squareMedium),
+    return Observer(builder: (_) {
+      return SafeArea(
+        child: SmartRefresher(
+          controller: _easyRefreshController,
+          onRefresh: () => _lightingStore.fetch(),
+          onLoading: () => _lightingStore.fetchNext(),
+          child: _lightingStore.iStores.isNotEmpty
+              ? WaterfallFlow.builder(
+                  shrinkWrap: true,
+                  gridDelegate:
+                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => GoToLoginPage(
+                                illust:
+                                    _lightingStore.iStores[index].illusts)));
+                      },
+                      child: Card(
+                        child: Container(
+                          child: PixivImage(_lightingStore
+                              .iStores[index].illusts.imageUrls.squareMedium),
+                        ),
                       ),
-                    ),
-                  );
-                },
-                itemCount: _lightingStore.iStores.length,
-                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-              )
-            : Container(),
-      ),
-    );
-  
+                    );
+                  },
+                  itemCount: _lightingStore.iStores.length,
+                )
+              : Container(),
+        ),
+      );
     });
   }
 }

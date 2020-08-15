@@ -15,7 +15,6 @@
  */
 
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -71,139 +70,151 @@ class _IllustPageState extends State<IllustPage> {
     super.dispose();
   }
 
-  _showBookMarkTag() async {
+  Future<void> _showBookMarkTag() async {
     if (_illustStore.isBookmark) {
       await _illustStore.star();
       setState(() {});
       return;
     }
-    Response response = await apiClient.getIllustBookmarkDetail(widget.id);
+    CancelFunc cancelFunc =
+        BotToast.showLoading(clickClose: true, allowClick: true);
+    Response response;
+    try {
+      response = await apiClient.getIllustBookmarkDetail(widget.id);
+      cancelFunc();
+    } catch (e) {
+      cancelFunc();
+      return;
+    }
     BookMarkDetailResponse bookMarkDetailResponse =
         BookMarkDetailResponse.fromJson(response.data);
-    showDialog(
-        context: context,
-        child: StatefulBuilder(
-          builder: (_, setBookState) {
-            final TextEditingController textEditingController =
-                TextEditingController();
-            final List<TagsR> tags = bookMarkDetailResponse.bookmarkDetail.tags;
-            final detail = bookMarkDetailResponse.bookmarkDetail;
-            return AlertDialog(
-              contentPadding: EdgeInsets.all(2.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              content: Container(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    TextField(
-                      controller: textEditingController,
-                      decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          final value = textEditingController.value.text.trim();
-                          if (value.isNotEmpty)
-                            setBookState(() {
-                              tags.insert(
-                                  0,
-                                  TagsR()
-                                    ..name = value
-                                    ..isRegistered = true);
-                              textEditingController.clear();
-                            });
-                        },
-                      )),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.all(0.0),
-                        itemCount: tags.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Flex(
-                            direction: Axis.horizontal,
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  bookMarkDetailResponse
-                                      .bookmarkDetail.tags[index].name,
-                                  softWrap: true,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Checkbox(
-                                onChanged: (bool value) {
-                                  setBookState(() {
-                                    bookMarkDetailResponse.bookmarkDetail
-                                        .tags[index].isRegistered = value;
-                                  });
-                                },
-                                value: bookMarkDetailResponse
-                                    .bookmarkDetail.tags[index].isRegistered,
-                              )
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                          );
-                        },
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text((detail.restrict == "public"
-                                  ? I18n.of(context).public
-                                  : I18n.of(context).private) +
-                              I18n.of(context).bookmark),
-                        ),
-                        Switch(
-                          onChanged: (bool value) {
-                            setBookState(() {
-                              detail.restrict = value ? "public" : "private";
-                            });
+    if (mounted)
+      showDialog(
+          context: context,
+          child: StatefulBuilder(
+            builder: (_, setBookState) {
+              final TextEditingController textEditingController =
+                  TextEditingController();
+              final List<TagsR> tags =
+                  bookMarkDetailResponse.bookmarkDetail.tags;
+              final detail = bookMarkDetailResponse.bookmarkDetail;
+              return AlertDialog(
+                contentPadding: EdgeInsets.all(2.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                content: Container(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      TextField(
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            final value =
+                                textEditingController.value.text.trim();
+                            if (value.isNotEmpty)
+                              setBookState(() {
+                                tags.insert(
+                                    0,
+                                    TagsR()
+                                      ..name = value
+                                      ..isRegistered = true);
+                                textEditingController.clear();
+                              });
                           },
-                          value: detail.restrict == "public",
-                        )
-                      ],
-                    )
-                  ],
+                        )),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          padding: EdgeInsets.all(0.0),
+                          itemCount: tags.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Flex(
+                              direction: Axis.horizontal,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    bookMarkDetailResponse
+                                        .bookmarkDetail.tags[index].name,
+                                    softWrap: true,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Checkbox(
+                                  onChanged: (bool value) {
+                                    setBookState(() {
+                                      bookMarkDetailResponse.bookmarkDetail
+                                          .tags[index].isRegistered = value;
+                                    });
+                                  },
+                                  value: bookMarkDetailResponse
+                                      .bookmarkDetail.tags[index].isRegistered,
+                                )
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                            );
+                          },
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text((detail.restrict == "public"
+                                    ? I18n.of(context).public
+                                    : I18n.of(context).private) +
+                                I18n.of(context).bookmark),
+                          ),
+                          Switch(
+                            onChanged: (bool value) {
+                              setBookState(() {
+                                detail.restrict = value ? "public" : "private";
+                              });
+                            },
+                            value: detail.restrict == "public",
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(I18n.of(context).ok),
-                  onPressed: () async {
-                    final tags = bookMarkDetailResponse.bookmarkDetail.tags;
-                    List<String> tempTags = [];
-                    for (int i = 0; i < tags.length; i++) {
-                      if (tags[i].isRegistered) {
-                        tempTags.add(tags[i].name);
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(I18n.of(context).ok),
+                    onPressed: () async {
+                      final tags = bookMarkDetailResponse.bookmarkDetail.tags;
+                      List<String> tempTags = [];
+                      for (int i = 0; i < tags.length; i++) {
+                        if (tags[i].isRegistered) {
+                          tempTags.add(tags[i].name);
+                        }
                       }
-                    }
-                    if (tempTags.length == 0) tempTags = null;
-                    Navigator.of(context).pop();
-                    await _illustStore.star(
-                        restrict:
-                            bookMarkDetailResponse.bookmarkDetail.restrict,
-                        tags: tempTags);
-
-                    setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
-                  },
-                ),
-                FlatButton(
-                    onPressed: () {
+                      if (tempTags.length == 0) tempTags = null;
                       Navigator.of(context).pop();
+                      await _illustStore.star(
+                          restrict:
+                              bookMarkDetailResponse.bookmarkDetail.restrict,
+                          tags: tempTags);
+
+                      setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                     },
-                    child: Text(I18n.of(context).cancel))
-              ],
-            );
-          },
-        ));
+                  ),
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).cancel))
+                ],
+              );
+            },
+          ));
   }
 
   String toShortTime(String dateString) {
@@ -529,8 +540,8 @@ class _IllustPageState extends State<IllustPage> {
                 backgroundColor: Colors.white,
                 onPressed: () => _illustStore.star(),
                 child: StarIcon(
-                    illustStore: _illustStore,
-                  ),
+                  illustStore: _illustStore,
+                ),
               ),
             ),
             body: _buildBody(context, data));
@@ -828,6 +839,10 @@ class _IllustPageState extends State<IllustPage> {
                 child: PixivImage(
                   illust.metaPages[index].imageUrls.medium,
                   fade: false,
+                  placeWidget: PixivImage(
+                    illust.metaPages[index].imageUrls.medium,
+                    fade: false,
+                  ),
                 ),
                 tag: '${illust.imageUrls.medium}${widget.heroString}',
               ))

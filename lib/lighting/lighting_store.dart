@@ -15,6 +15,7 @@
  */
 
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
@@ -33,7 +34,15 @@ abstract class _LightingStoreBase with Store {
   RefreshController _controller;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
-  //?是否需要一个顶层store来装每个item的状态
+  dispose() {
+    iStores.forEach((element) {
+      final provider = ExtendedNetworkImageProvider(
+        element.illusts.imageUrls.medium,
+      );
+      provider.evict();
+    });
+    iStores.clear();
+  }
 
   @observable
   String errorMessage;
@@ -43,8 +52,8 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetch() async {
     nextUrl = null;
     errorMessage = null;
-    if(_controller?.footerMode!=null)
-    _controller?.footerMode?.value = LoadStatus.idle;
+    if (_controller?.footerMode != null)
+      _controller?.footerMode?.value = LoadStatus.idle;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
