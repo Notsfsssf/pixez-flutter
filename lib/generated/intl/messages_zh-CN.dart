@@ -128,6 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paused" : MessageLookupByLibrary.simpleMessage("已暂停"),
     "perol_message" : MessageLookupByLibrary.simpleMessage("使用flutter开发"),
     "personal" : MessageLookupByLibrary.simpleMessage("个人"),
+    "pick_a_color" : MessageLookupByLibrary.simpleMessage("选择颜色"),
     "pixel" : MessageLookupByLibrary.simpleMessage("分辨率"),
     "please_note_that" : MessageLookupByLibrary.simpleMessage("请注意"),
     "please_note_that_content" : MessageLookupByLibrary.simpleMessage("只有在确保你的代理或是所处地区能够访问到pixiv时，才能够打开这个开关，开关开启后一切网络问题都与应用无关了，不要反馈无法连接的问题"),

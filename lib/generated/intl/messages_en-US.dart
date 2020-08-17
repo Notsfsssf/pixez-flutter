@@ -128,6 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paused" : MessageLookupByLibrary.simpleMessage("Paused"),
     "perol_message" : MessageLookupByLibrary.simpleMessage("使用flutter开发"),
     "personal" : MessageLookupByLibrary.simpleMessage("Personal"),
+    "pick_a_color" : MessageLookupByLibrary.simpleMessage("Pick a color"),
     "pixel" : MessageLookupByLibrary.simpleMessage("Resolution"),
     "please_note_that" : MessageLookupByLibrary.simpleMessage("Please note that"),
     "please_note_that_content" : MessageLookupByLibrary.simpleMessage("Only when you make sure that your agent or area can access pixiv, you can turn on this switch. After the switch is turned on, all network problems have nothing to do with the application. Don\'t feed back the problem that you can\'t connect"),

@@ -1722,6 +1722,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Pick a color`
+  String get pick_a_color {
+    return Intl.message(
+      'Pick a color',
+      name: 'pick_a_color',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

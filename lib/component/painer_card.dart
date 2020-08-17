@@ -41,16 +41,24 @@ class PainterCard extends StatelessWidget {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         clipBehavior: Clip.antiAlias,
-        child: CustomScrollView(
-          slivers: [
-            SliverGrid.count(
-              crossAxisCount: 3,
-              children: user.illusts
-                  .map((e) => PixivImage(e.imageUrls.squareMedium))
-                  .toList(),
-            ),
-            buildPadding()
-          ],
+        child: Container(
+          height: (MediaQuery.of(context).size.width - 4) / 3 + 80,
+          child: CustomScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            slivers: [
+              SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    if (index >= user.illusts.length) return Container();
+                    return PixivImage(
+                      user.illusts[index].imageUrls.squareMedium,
+                      fit: BoxFit.cover,
+                    );
+                  }, childCount: user.illusts.length)),
+              SliverToBoxAdapter(child: buildPadding())
+            ],
+          ),
         ),
       ),
     );

@@ -123,10 +123,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     if (Platform.isAndroid) {
       try {
         Uri initialLink = await getInitialUri();
-        print(initialLink);
         if (initialLink != null) judgePushPage(initialLink);
         _sub = getUriLinksStream().listen((Uri link) {
-          print("link:${link}");
           judgePushPage(link);
         });
       } catch (e) {

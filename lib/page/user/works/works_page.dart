@@ -49,8 +49,8 @@ class _WorksPageState extends State<WorksPage> {
         _buildHeader(),
         Expanded(
           child: LightingList(
+            isNested: true,
             source: futureGet,
-           isNested: true,
           ),
         )
       ],

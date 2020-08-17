@@ -50,7 +50,7 @@ class _PainterListState extends State<PainterList> {
       _painterListStore.source = widget.futureGet;
       _easyRefreshController.footerMode?.value = LoadStatus.idle;
       _painterListStore.fetch();
-      if(_painterListStore.users.isNotEmpty) _scrollController?.jumpTo(0.0);
+      if (_painterListStore.users.isNotEmpty) _scrollController?.jumpTo(0.0);
     }
   }
 
@@ -88,11 +88,11 @@ class _PainterListState extends State<PainterList> {
           },
         ),
         controller: _easyRefreshController,
-        onLoading: ()=>_painterListStore.next(),
-        onRefresh: ()=>_painterListStore.fetch(),
+        onLoading: () => _painterListStore.next(),
+        onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty
             ? ListView.builder(
-          controller: _scrollController,
+                controller: _scrollController,
                 itemBuilder: (context, index) {
                   return PainterCard(
                     user: _painterListStore.users[index],

@@ -128,6 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paused" : MessageLookupByLibrary.simpleMessage("已暫停"),
     "perol_message" : MessageLookupByLibrary.simpleMessage("使用 Flutter 開發"),
     "personal" : MessageLookupByLibrary.simpleMessage("個人"),
+    "pick_a_color" : MessageLookupByLibrary.simpleMessage("選擇顏色"),
     "pixel" : MessageLookupByLibrary.simpleMessage("解析度"),
     "please_note_that" : MessageLookupByLibrary.simpleMessage("請註意"),
     "please_note_that_content" : MessageLookupByLibrary.simpleMessage("只有在確保你的代理或是所處地區能夠訪問 Pixiv 時，才建議啟用此選項，選項開啟後任何網路問題都與本程式無關，請不要回報無法連線的問題"),

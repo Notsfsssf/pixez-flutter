@@ -31,6 +31,7 @@ import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_about_grid.dart';
+import 'package:pixez/page/picture/illust_about_sliver.dart';
 import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -586,6 +587,44 @@ class _IllustPageState extends State<IllustPage> {
     });
   }
 
+  List<Widget> buildPage(BuildContext context, Illusts data) {
+    if (data.pageCount == 1) {
+      return [_inkWellPic(context, data, 0)];
+    } else {
+      List<Widget> result = [];
+      for (var i = 0; i < data.metaPages.length; i++) {
+        result.add(_inkWellPic(context, data, i));
+      }
+      return result;
+    }
+  }
+
+  Widget _buildSliver(BuildContext context, Illusts data) {
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+            delegate: SliverChildListDelegate([
+          ...(data.type == "ugoira")
+              ? [
+                  UgoiraLoader(
+                    id: widget.id,
+                    illusts: data,
+                  )
+                ]
+              : buildPage(context, data)
+        ])),
+        SliverToBoxAdapter(
+          child: IllustDetailBody(
+            illust: data,
+          ),
+        ),
+        IllustAboutSliver(
+          id: data.id,
+        )
+      ],
+    );
+  }
+
   Widget _buildBody(BuildContext context, Illusts data) {
     return ScrollablePositionedList.builder(
       itemCount: data.pageCount + 4,
@@ -802,7 +841,7 @@ class _IllustPageState extends State<IllustPage> {
             data.imageUrls.medium,
             placeWidget: Container(
               height: 150,
-              child: CircularProgressIndicator(),
+              child: Center(child: CircularProgressIndicator()),
             ),
             fade: false,
           ),
@@ -815,6 +854,10 @@ class _IllustPageState extends State<IllustPage> {
             child: PixivImage(
               data.imageUrls.medium,
               fade: false,
+              placeWidget: Container(
+                height: 150,
+                child: Center(child: CircularProgressIndicator()),
+              ),
             ),
             tag: '${data.imageUrls.medium}${widget.heroString}',
           )

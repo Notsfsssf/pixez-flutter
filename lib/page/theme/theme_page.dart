@@ -37,7 +37,7 @@ class ColorPickPage extends HookWidget {
     final pickerColor = useState<Color>(initialColor);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pick a color'),
+        title: Text(I18n.of(context).pick_a_color),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.edit),

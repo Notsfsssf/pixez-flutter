@@ -28,11 +28,12 @@ class IllustCard extends HookWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
   final bool needToBan;
-
+  final double height;
   IllustCard({
     @required this.store,
     this.iStores,
     this.needToBan = false,
+    this.height,
   });
 
   @override
@@ -92,6 +93,11 @@ class IllustCard extends HookWidget {
           );
       }
     }
+    if (height != null)
+      return Container(
+        child: buildInkWell(context),
+        height: height,
+      );
     return buildInkWell(context);
   }
 

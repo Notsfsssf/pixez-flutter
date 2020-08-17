@@ -29,15 +29,9 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
-  final ScrollController scrollController;
   final bool isNested;
-
   const LightingList(
-      {Key key,
-      @required this.source,
-      this.header,
-      this.scrollController,
-      this.isNested})
+      {Key key, @required this.source, this.header, this.isNested})
       : super(key: key);
 
   @override
@@ -47,38 +41,22 @@ class LightingList extends StatefulWidget {
 class _LightingListState extends State<LightingList> {
   LightingStore _store;
   ScrollController _scrollController;
-  bool isNested = false;
-
+  bool _isNested;
   @override
   void didUpdateWidget(LightingList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
       _store.fetch();
-      if (!isNested && _store.iStores.isNotEmpty) _scrollController.jumpTo(0.0);
+      if (!_isNested) _scrollController.jumpTo(0.0);
     }
   }
 
   @override
   void initState() {
-    isNested = widget.isNested ?? false;
+    _isNested = widget.isNested ?? false;
+    if (!_isNested) _scrollController = ScrollController();
     _store = LightingStore(widget.source, _refreshController);
-    _scrollController = widget.scrollController ?? ScrollController();
-    // _scrollController.addListener(() {
-    //   bool temp;
-    //   if (_scrollController.offset > 400) {
-    //     temp = true;
-    //   } else {
-    //     temp = false;
-    //   }
-    //   if (temp != backToTopEnable) {
-    //     setState(() {
-    //       setState(() {
-    //         this.backToTopEnable = temp;
-    //       });
-    //     });
-    //   }
-    // });
     super.initState();
     _store.fetch();
   }
@@ -90,8 +68,6 @@ class _LightingListState extends State<LightingList> {
     _store?.dispose();
     super.dispose();
   }
-
-  bool backToTopEnable = false;
 
   @override
   Widget build(BuildContext context) {
@@ -114,18 +90,6 @@ class _LightingListState extends State<LightingList> {
                     visible: false,
                   ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Visibility(
-                visible: backToTopEnable,
-                child: IconButton(
-                    padding: EdgeInsets.all(0.0),
-                    icon: Icon(Icons.expand_less),
-                    onPressed: () {
-                      _scrollController.jumpTo(0.0);
-                    }),
-              ),
-            )
           ],
         ),
       );
@@ -218,9 +182,39 @@ class _LightingListState extends State<LightingList> {
   Widget _buildWaterFall() {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
-
+    if (_isNested) {
+      return WaterfallFlow.builder(
+          padding: EdgeInsets.all(5.0),
+          itemCount: _store.iStores.length,
+          itemBuilder: (context, index) {
+            double radio = _store.iStores[index].illusts.height.toDouble() /
+                _store.iStores[index].illusts.width.toDouble();
+            double mainAxisExtent;
+            if (radio > 3)
+              mainAxisExtent = itemWidth;
+            else
+              mainAxisExtent = itemWidth * radio;
+            return IllustCard(
+              store: _store.iStores[index],
+              iStores: _store.iStores,
+              height: mainAxisExtent + 60.0,
+            );
+          },
+          gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+            crossAxisCount: userSetting.crossCount,
+            collectGarbage: (List<int> garbages) {
+              garbages.forEach((index) {
+                final provider = ExtendedNetworkImageProvider(
+                  _store.iStores[index].illusts.imageUrls.medium,
+                );
+                provider.evict();
+              });
+            },
+          ));
+    }
     return WaterfallFlow.builder(
         padding: EdgeInsets.all(5.0),
+        controller: _scrollController,
         itemCount: _store.iStores.length,
         itemBuilder: (context, index) {
           double radio = _store.iStores[index].illusts.height.toDouble() /
@@ -230,13 +224,14 @@ class _LightingListState extends State<LightingList> {
             mainAxisExtent = itemWidth;
           else
             mainAxisExtent = itemWidth * radio;
-          return Container(
-            child: IllustCard(store: _store.iStores[index]),
+          return IllustCard(
+            store: _store.iStores[index],
+            iStores: _store.iStores,
             height: mainAxisExtent + 60.0,
           );
         },
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+          crossAxisCount: userSetting.crossCount,
           collectGarbage: (List<int> garbages) {
             garbages.forEach((index) {
               final provider = ExtendedNetworkImageProvider(
@@ -247,6 +242,4 @@ class _LightingListState extends State<LightingList> {
           },
         ));
   }
-
- 
 }

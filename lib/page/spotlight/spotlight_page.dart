@@ -20,6 +20,7 @@ import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class SpotLightPage extends StatelessWidget {
   @override
@@ -48,10 +49,9 @@ class SpotLightPage extends StatelessWidget {
             enablePullDown: true,
             enablePullUp: true,
             controller: _refreshController,
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-              ),
+            child: WaterfallFlow.builder(
+              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
               controller: _controller,
               itemBuilder: (BuildContext context, int index) {
                 return SpotlightCard(

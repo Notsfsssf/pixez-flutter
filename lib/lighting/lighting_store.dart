@@ -35,13 +35,13 @@ abstract class _LightingStoreBase with Store {
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
   dispose() {
-    iStores.forEach((element) {
-      final provider = ExtendedNetworkImageProvider(
-        element.illusts.imageUrls.medium,
-      );
-      provider.evict();
-    });
-    iStores.clear();
+    // iStores.forEach((element) {
+    //   final provider = ExtendedNetworkImageProvider(
+    //     element.illusts.imageUrls.medium,
+    //   );
+    //   provider.evict();
+    // });
+    // iStores.clear();
   }
 
   @observable

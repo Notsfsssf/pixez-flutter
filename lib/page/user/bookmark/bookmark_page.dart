@@ -56,7 +56,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
       if (int.parse(accountStore.now.userId) == widget.id) {
         return LightingList(
           source: futureGet,
-          isNested: widget.isNested ?? false,
           header: Container(
               child: Row(
             mainAxisAlignment: MainAxisAlignment.end,

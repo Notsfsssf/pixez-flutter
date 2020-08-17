@@ -46,7 +46,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tag'),
+        title: Text(I18n.of(context).tag),
         bottom: TabBar(
           controller: _tabController,
           tabs: <Widget>[

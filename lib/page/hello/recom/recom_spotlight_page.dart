@@ -64,9 +64,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return buildEasyRefresh(context);
-    });
+    return buildEasyRefresh(context);
   }
 
   bool needToBan(Illusts illust) {
@@ -85,38 +83,40 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
   }
 
   Widget buildEasyRefresh(BuildContext context) {
-    return SmartRefresher(
-      controller: _easyRefreshController,
-      enablePullDown: true,
-      enablePullUp: true,
-      footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
-          Widget body;
-          if (mode == LoadStatus.idle) {
-            body = Text(I18n.of(context).pull_up_to_load_more);
-          } else if (mode == LoadStatus.loading) {
-            body = CircularProgressIndicator();
-          } else if (mode == LoadStatus.failed) {
-            body = Text(I18n.of(context).loading_failed_retry_message);
-          } else if (mode == LoadStatus.canLoading) {
-            body = Text(I18n.of(context).let_go_and_load_more);
-          } else {
-            body = Text(I18n.of(context).no_more_data);
-          }
-          return Container(
-            height: 55.0,
-            child: Center(child: body),
-          );
+    return Observer(builder: (_) {
+      return SmartRefresher(
+        controller: _easyRefreshController,
+        enablePullDown: true,
+        enablePullUp: true,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus mode) {
+            Widget body;
+            if (mode == LoadStatus.idle) {
+              body = Text(I18n.of(context).pull_up_to_load_more);
+            } else if (mode == LoadStatus.loading) {
+              body = CircularProgressIndicator();
+            } else if (mode == LoadStatus.failed) {
+              body = Text(I18n.of(context).loading_failed_retry_message);
+            } else if (mode == LoadStatus.canLoading) {
+              body = Text(I18n.of(context).let_go_and_load_more);
+            } else {
+              body = Text(I18n.of(context).no_more_data);
+            }
+            return Container(
+              height: 55.0,
+              child: Center(child: body),
+            );
+          },
+        ),
+        onRefresh: () {
+          return fetchT();
         },
-      ),
-      onRefresh: () {
-        return fetchT();
-      },
-      onLoading: () {
-        return _lightingStore.fetchNext();
-      },
-      child: _buildWaterFall(),
-    );
+        onLoading: () {
+          return _lightingStore.fetchNext();
+        },
+        child: _buildWaterFall(),
+      );
+    });
   }
 
   Widget _buildWaterFall() {
@@ -141,7 +141,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
             ? SliverWaterfallFlow(
                 gridDelegate:
                     SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: userSetting.crossCount,
                   collectGarbage: (List<int> garbages) {
                     garbages.forEach((index) {
                       final provider = ExtendedNetworkImageProvider(
@@ -161,21 +161,26 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
                     mainAxisExtent = itemWidth;
                   else
                     mainAxisExtent = itemWidth * radio;
-                  return Container(
-                    child: IllustCard(store: _lightingStore.iStores[index]),
+                  return IllustCard(
+                    store: _lightingStore.iStores[index],
+                    iStores: _lightingStore.iStores,
                     height: mainAxisExtent + 60.0,
                   );
-                }),
+                }, childCount: _lightingStore.iStores.length),
               )
-            : []
+            : SliverToBoxAdapter(
+                child: Container(
+                  height: 30,
+                ),
+              )
       ],
     );
   }
 
-
   Widget _buildSpotlightContainer() {
     return Container(
       height: 230.0,
+      padding: EdgeInsets.only(left: 5.0),
       child: spotlightStore.articles.isNotEmpty
           ? ListView.builder(
               shrinkWrap: true,

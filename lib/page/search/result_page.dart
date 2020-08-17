@@ -45,14 +45,17 @@ class _ResultPageState extends State<ResultPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: TabBar(tabs: [
-            Tab(
-              text: I18n.of(context).illust,
-            ),
-            Tab(
-              text: I18n.of(context).painter,
-            ),
-          ]),
+          title: TabBar(
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorColor: Theme.of(context).cardColor,
+              tabs: [
+                Tab(
+                  text: I18n.of(context).illust,
+                ),
+                Tab(
+                  text: I18n.of(context).painter,
+                ),
+              ]),
         ),
         body: TabBarView(children: [
           ResultIllustList(word: widget.word),
