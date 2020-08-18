@@ -94,27 +94,30 @@ abstract class _UserSettingBase with Store {
       } else {
         try {
           themeData = ThemeData(
-              brightness: Brightness.light,
-              accentColor: _stringToColor(colors[0]),
-              primaryColor: _stringToColor(colors[1]),
-              appBarTheme: AppBarTheme(brightness: Brightness.light),
-              );
+            brightness: Brightness.light,
+            accentColor: _stringToColor(colors[0]),
+            primaryColor: _stringToColor(colors[1]),
+            appBarTheme: AppBarTheme(brightness: Brightness.light),
+          );
         } catch (e) {
           print(e);
         }
       }
     }
     if (Platform.isAndroid) {
-      if (path == null)
-        path = (await platform.invokeMethod('get_path')) as String;
-      await prefs.setString("store_path", path);
-      var modeList = await FlutterDisplayMode.supported;
-      if (displayMode != null && modeList.length > displayMode) {
-        await FlutterDisplayMode.setMode(modeList[displayMode]);
-      }
+      try {
+        if (path == null)
+          path = (await platform.invokeMethod('get_path')) as String;
+        await prefs.setString("store_path", path);
+        var modeList = await FlutterDisplayMode.supported;
+        if (displayMode != null && modeList.length > displayMode) {
+          await FlutterDisplayMode.setMode(modeList[displayMode]);
+        }
+      } catch (e) {}
     }
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
-    format = prefs.getString(SAVE_FORMAT_KEY) ?? intialFormat;
+    format = prefs.getString(SAVE_FORMAT_KEY);
+    if (format == null || format.isEmpty) format = intialFormat;
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
@@ -126,13 +129,13 @@ abstract class _UserSettingBase with Store {
     Colors.black.computeLuminance();
     await prefs.setStringList(THEME_DATA_KEY, data);
     themeData = ThemeData(
+      brightness: Brightness.light,
+      appBarTheme: AppBarTheme(
         brightness: Brightness.light,
-        appBarTheme: AppBarTheme(
-          brightness: Brightness.light,
-        ),
-        accentColor: _stringToColor(data[0]),
-        primaryColor: _stringToColor(data[1]),
-        );
+      ),
+      accentColor: _stringToColor(data[0]),
+      primaryColor: _stringToColor(data[1]),
+    );
   }
 
   @action

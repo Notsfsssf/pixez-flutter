@@ -100,6 +100,20 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+         <provider
+     android:name="androidx.work.impl.WorkManagerInitializer"
+     android:authorities="${applicationId}.workmanager-init"
+     tools:node="remove" />
+
+ <provider
+     android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+     android:authorities="${applicationId}.flutter-downloader-init"
+     android:exported="false">
+     <!-- changes this number to configure the maximum number of concurrent tasks -->
+     <meta-data
+         android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+         android:value="5" />
+ </provider>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
