@@ -1,16 +1,16 @@
 package com.perol.pixez
 
-import android.content.ContentValues
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
-import android.os.Build
+import android.net.Uri
 import android.os.Environment
-import android.os.Handler
-import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
@@ -21,25 +21,70 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
-import java.io.IOException
-import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
-    val pref by lazy {
-        PreferenceManager.getDefaultSharedPreferences(this)
+
+    val OPEN_DOCUMENT_TREE_CODE = 190
+    fun choiceFolder() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
     }
-    var storePath = ""
+
+    fun needChoice() =
+            contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+                    .isEmpty()
+
+
+    fun isFileExist(name: String): Boolean {
+        val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }.first().uri)!!
+        return treeDocument.findFile(name) != null
+    }
+
+    fun writeFileUri(fileName: String): Uri? {
+        val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith("jpeg", ignoreCase = true)) {
+            "image/jpg"
+        } else {
+            if (fileName.endsWith("png")) {
+                "image/png"
+            } else {
+                "image/gif"
+            }
+        }
+        val takeWhile =
+                contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+        if (takeWhile.isEmpty()) {
+            choiceFolder()
+            return null
+        }
+        val parentUri =
+                takeWhile
+                        .first().uri
+        val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
+        var targetFile =
+                treeDocument.findFile(fileName)
+        if (targetFile != null) {
+            if (targetFile.exists()) {
+                targetFile.delete()
+            }
+        }
+        targetFile = treeDocument.createFile(mimeType, fileName)
+        return targetFile?.uri
+    }
+
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        storePath = pref.getString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez")!!
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "save") {
-                val data = call.argument<ByteArray>("data") as ByteArray
-                val type = call.argument<String>("name") as String
-                insertImageOldWay(data, type)
+                val data = call.argument<ByteArray>("data")!!
+                val name = call.argument<String>("name")!!
+                writeFileUri(name)?.run {
+                    contentResolver.openOutputStream(this, "w")?.write(data)
+                }
                 result.success(true)
             }
             if (call.method == "scan") {
@@ -55,20 +100,20 @@ class MainActivity : FlutterActivity() {
                 }
                 result.success(true);
             }
-            if (call.method == "select_path") {
-                result.success("")
-            }
+
             if (call.method == "get_path") {
                 result.success(getPath())
             }
-            if (call.method == "restore_path") {
-                pref.edit().putString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez").apply()
-                result.success("")
-            }
             if (call.method == "exist") {
-                val type = call.argument<String>("name") as String
-                val isFileExist = isOldFileExist(type)
+                val name = call.argument<String>("name")!!
+                val isFileExist = isFileExist(name)
                 result.success(isFileExist)
+            }
+            if (call.method == "need_choice") {
+                result.success(needChoice())
+            }
+            if (call.method == "choice_folder") {
+                result.success(true)
             }
         }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENCODE_CHANNEL).setMethodCallHandler { call, result ->
@@ -82,7 +127,40 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun getPath() = pref.getString("store_path", "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}pixez")
+    override fun onActivityResult(
+            requestCode: Int, resultCode: Int,
+            data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            OPEN_DOCUMENT_TREE_CODE ->
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.data?.also { uri ->
+                        Log.d("path", uri.toString())
+                        val contentResolver = applicationContext.contentResolver
+                        val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission && it.uri != uri }
+                                .forEach {
+                                    contentResolver.releasePersistableUriPermission(it.uri, takeFlags)
+                                }
+
+                        contentResolver.takePersistableUriPermission(uri, takeFlags)
+                    }
+                } else {
+                    /* Edit request not granted; explain to the user. */
+                    Toast.makeText(applicationContext, "未正确取得授权，这可能会导致部分功能失效或闪退", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun getPath(): String? {
+        val list = contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+        if (list.isEmpty()) {
+            return null
+        }
+        return list.first().uri.toString()
+    }
 
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
@@ -90,7 +168,7 @@ class MainActivity : FlutterActivity() {
             val tempFile = File(applicationContext.cacheDir, "${name}.gif")
             Observable.create<File> { ot ->
                 try {
-
+                    val uri = writeFileUri("${name}.gif")
                     if (!tempFile.exists()) {
                         tempFile.createNewFile()
                     }
@@ -117,9 +195,8 @@ class MainActivity : FlutterActivity() {
                     }
 
                     encoder.close()
-                    val targetFile = File(storePath, "${name}.gif")
-                    tempFile.copyTo(targetFile, overwrite = true)
-                    ot.onNext(targetFile)
+                    contentResolver.openOutputStream(uri, "w")?.write(tempFile.inputStream().readBytes())
+                    ot.onNext(tempFile)
                     ot.onComplete()
                 } catch (e: Exception) {
                     Log.d("exception", "${e.localizedMessage}")
@@ -127,145 +204,12 @@ class MainActivity : FlutterActivity() {
                     it.deleteRecursively()
                 }
             }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-                MediaScannerConnection.scanFile(
-                        this@MainActivity,
-                        arrayOf(it.path),
-                        arrayOf(
-                                MimeTypeMap.getSingleton()
-                                        .getMimeTypeFromExtension(it.extension)
-                        )
-                ) { _, _ ->
 
-                }
                 Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show()
             }, {}, {})
 
         }
     }
 
-    private fun insertImageOldWay(data: ByteArray, name: String) {
-        File(storePath, name).run {
-            if (!this.exists()) {
-                this.createNewFile()
-            }
-            outputStream().apply {
-                write(data)
-                flush()
-                close()
-            }
-            MediaScannerConnection.scanFile(
-                    this@MainActivity,
-                    arrayOf(this.path),
-                    arrayOf(
-                            MimeTypeMap.getSingleton()
-                                    .getMimeTypeFromExtension(this.extension)
-                    )
-            ) { _, _ ->
 
-            }
-        }
-
-    }
-
-    private fun isOldFileExist(name: String) = File(storePath, name).exists()
-    private fun isFileExist(name: String): Boolean {
-        /**
-         * A key concept when working with Android [ContentProvider]s is something called
-         * "projections". A projection is the list of columns to request from the provider,
-         * and can be thought of (quite accurately) as the "SELECT ..." clause of a SQL
-         * statement.
-         *
-         * It's not _required_ to provide a projection. In this case, one could pass `null`
-         * in place of `projection` in the call to [ContentResolver.query], but requesting
-         * more data than is required has a performance impact.
-         *
-         * For this sample, we only use a few columns of data, and so we'll request just a
-         * subset of columns.
-         */
-        val projection = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED
-        )
-        val relativeLocation =
-                Environment.DIRECTORY_PICTURES + File.separator + "pixez"
-
-        /**
-         * The `selection` is the "WHERE ..." clause of a SQL statement. It's also possible
-         * to omit this by passing `null` in its place, and then all rows will be returned.
-         * In this case we're using a selection based on the date the image was taken.
-         *
-         * Note that we've included a `?` in our selection. This stands in for a variable
-         * which will be provided by the next variable.
-         */
-        val selection = "${MediaStore.MediaColumns.DISPLAY_NAME} = ? and ${MediaStore.MediaColumns.RELATIVE_PATH} = ?"
-
-        /**
-         * The `selectionArgs` is a list of values that will be filled in for each `?`
-         * in the `selection`.
-         */
-        val selectionArgs = arrayOf<String>(name, relativeLocation)
-
-        /**
-         * Sort order to use. This can also be null, which will use the default sort
-         * order. For [MediaStore.Images], the default sort order is ascending by date taken.
-         */
-        val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
-        Log.d("cursor count", name)
-        applicationContext.contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                sortOrder
-        )?.use { cursor ->
-            Log.d("cursor count", cursor.count.toString())
-            if (cursor.count > 0) {
-                while (cursor.moveToNext()) {
-                    // Use an ID column from the projection to get
-                    // a URI representing the media item itself.
-                    return true
-                }
-            } else return false
-
-        }
-        return false
-    }
-
-    private fun insertImage(data: ByteArray, name: String) {
-        val relativeLocation =
-                Environment.DIRECTORY_PICTURES + File.separator + "pixez"
-        val contentValues = ContentValues().apply {
-            put(
-                    MediaStore.MediaColumns.DISPLAY_NAME, name
-            )
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.MediaColumns.RELATIVE_PATH, relativeLocation)
-                put(MediaStore.MediaColumns.IS_PENDING, 1)
-            }
-        }
-
-        val resolver = this.contentResolver
-        val uri =
-                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-        try {
-            uri?.let {
-                val stream = resolver.openOutputStream(it)
-                stream?.write(data) ?: throw IOException("Failed to get output stream.")
-                stream.flush()
-                stream.close()
-            } ?: throw IOException("Failed to create new MediaStore record")
-
-        } catch (e: IOException) {
-            if (uri != null) {
-                resolver.delete(uri, null, null)
-            }
-            throw IOException(e)
-        } finally {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
-        }
-
-    }
 }

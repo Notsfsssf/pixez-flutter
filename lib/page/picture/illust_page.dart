@@ -670,7 +670,6 @@ class _IllustPageState extends State<IllustPage> {
       child: buildPictures(context, data, index),
       onLongPress: () {
         final illust = data;
-        final isFileExist = saveStore.isIllustPartExist(data, index: index - 1);
         showModalBottomSheet(
             context: context,
             shape: RoundedRectangleBorder(
@@ -683,21 +682,6 @@ class _IllustPageState extends State<IllustPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Platform.isAndroid
-                        ? ListTile(
-                            title: Text(illust.title),
-                            subtitle: isFileExist == null
-                                ? Text(I18n.of(context).unsaved)
-                                : Text(
-                                    '${I18n.of(context).already_saved} ${isFileExist.toString()}'),
-                            trailing: isFileExist == null
-                                ? Icon(Icons.info)
-                                : Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                  ),
-                          )
-                        : Container(),
                     illust.metaPages.isNotEmpty
                         ? ListTile(
                             title: Text(I18n.of(context).muti_choice_save),

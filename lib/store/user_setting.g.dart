@@ -147,18 +147,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
 
   final _$pathAtom = Atom(name: '_UserSettingBase.path');
 
-  @override
-  String get path {
-    _$pathAtom.reportRead();
-    return super.path;
-  }
 
-  @override
-  set path(String value) {
-    _$pathAtom.reportWrite(value, super.path, () {
-      super.path = value;
-    });
-  }
 
   final _$formatAtom = Atom(name: '_UserSettingBase.format');
 
@@ -266,10 +255,6 @@ mixin _$UserSetting on _UserSettingBase, Store {
 
   final _$getPathAsyncAction = AsyncAction('_UserSettingBase.getPath');
 
-  @override
-  Future<String> getPath() {
-    return _$getPathAsyncAction.run(() => super.getPath());
-  }
 
   final _$setLanguageNumAsyncAction =
       AsyncAction('_UserSettingBase.setLanguageNum');
@@ -296,16 +281,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   final _$_UserSettingBaseActionController =
       ActionController(name: '_UserSettingBase');
 
-  @override
-  dynamic setPath(dynamic result) {
-    final _$actionInfo = _$_UserSettingBaseActionController.startAction(
-        name: '_UserSettingBase.setPath');
-    try {
-      return super.setPath(result);
-    } finally {
-      _$_UserSettingBaseActionController.endAction(_$actionInfo);
-    }
-  }
+
 
   @override
   String toString() {
@@ -319,7 +295,6 @@ displayMode: ${displayMode},
 disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},
 hIsNotAllow: ${hIsNotAllow},
-path: ${path},
 format: ${format},
 themeData: ${themeData}
     ''';

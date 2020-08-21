@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/directory/directory_page.dart';
@@ -33,10 +34,10 @@ class _PlatformPageState extends State<PlatformPage> {
   String path = "";
   List<DisplayMode> modes = <DisplayMode>[];
   DisplayMode selected;
+
   @override
   void initState() {
     super.initState();
-    userSetting.getPath();
     initVoid();
   }
 
@@ -78,6 +79,12 @@ class _PlatformPageState extends State<PlatformPage> {
       version = packageInfo.version;
     });
     fetchModes();
+    String path = await DocumentPlugin.getPath();
+    if (mounted) {
+      setState(() {
+        this.path = path;
+      });
+    }
   }
 
   String version = "";
@@ -102,14 +109,8 @@ class _PlatformPageState extends State<PlatformPage> {
               ListTile(
                 leading: Icon(Icons.folder),
                 title: Text(I18n.of(context).save_path),
-                subtitle: Text(userSetting.path ?? ""),
-                onTap: () async {
-                  String result =
-                      await Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                              builder: (context) => DirectoryPage()));
-                  if (result != null) userSetting.setPath(result);
-                },
+                subtitle: Text(path ?? ""),
+                onTap: () async {},
               ),
               ListTile(
                 leading: Icon(Icons.format_align_left),
@@ -185,7 +186,6 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).display_mode),
                 subtitle: Text(selected.toString() ?? ''),
               ),
-     
             ],
           );
         }),

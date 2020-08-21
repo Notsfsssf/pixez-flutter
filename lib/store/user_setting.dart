@@ -29,7 +29,7 @@ part 'user_setting.g.dart';
 class UserSetting = _UserSettingBase with _$UserSetting;
 
 abstract class _UserSettingBase with Store {
-  static const platform = const MethodChannel('com.perol.dev/save');
+
   SharedPreferences prefs;
   static const String ZOOM_QUALITY_KEY = "zoom_quality";
   static const String SINGLE_FOLDER_KEY = "single_folder";
@@ -56,8 +56,7 @@ abstract class _UserSettingBase with Store {
   bool singleFolder = false;
   @observable
   bool hIsNotAllow = false;
-  @observable
-  String path = "";
+
   @observable
   String format = "";
   static const String intialFormat = "{illust_id}_p{part}";
@@ -80,7 +79,6 @@ abstract class _UserSettingBase with Store {
     prefs = await SharedPreferences.getInstance();
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
     singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
-    path = prefs.getString("store_path");
     displayMode = prefs.getInt('display_mode');
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
@@ -106,9 +104,6 @@ abstract class _UserSettingBase with Store {
     }
     if (Platform.isAndroid) {
       try {
-        if (path == null)
-          path = (await platform.invokeMethod('get_path')) as String;
-        await prefs.setString("store_path", path);
         var modeList = await FlutterDisplayMode.supported;
         if (displayMode != null && modeList.length > displayMode) {
           await FlutterDisplayMode.setMode(modeList[displayMode]);
@@ -180,16 +175,7 @@ abstract class _UserSettingBase with Store {
     singleFolder = value;
   }
 
-  @action
-  Future<String> getPath() async {
-    path = prefs.getString("store_path");
-    return path;
-  }
 
-  @action
-  setPath(result) {
-    path = result;
-  }
 
   final languageList = ['en-US', 'zh-CN', 'zh-TW'];
 

@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -230,9 +231,8 @@ abstract class _SaveStoreBase with Store {
   _saveInternal(String url, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        final fullPath =
-            "${userSetting.path}${Platform.pathSeparator}$fileName";
-        if (File(fullPath).existsSync()) {
+        final isExist =await DocumentPlugin.exist(fileName);
+        if (isExist) {
           streamController.add(SaveStream(SaveState.ALREADY, illusts));
           return;
         }
@@ -247,41 +247,13 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
-  static const platform = const MethodChannel('com.perol.dev/save');
 
   Future<void> saveToGallery(
       Uint8List uint8list, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        String path = userSetting.path;
-        Directory directory = Directory(userSetting.path);
-        if (!directory.existsSync()) {
-          directory.createSync(recursive: true);
-        }
-        if (userSetting.singleFolder) {
-          path = "$path/${illusts.user.name}_${illusts.user.id}";
-          directory.listSync().forEach((element) {
-            if (element is Directory) {
-              bool ok = element.path
-                  .split('/')
-                  .last
-                  .contains(illusts.user.id.toString());
-              if (ok) {
-                path = element.path;
-              }
-            }
-          });
-          if (!Directory(path).existsSync()) {
-            Directory(path).createSync(recursive: true);
-          }
-        }
-        final fullPath = "$path/$fileName";
-        final file = File(fullPath);
-        if (!file.existsSync()) {
-          file.createSync(recursive: true);
-        }
-        await file.writeAsBytes(uint8list);
-        await platform.invokeMethod('scan', {"path": fullPath});
+        if (userSetting.singleFolder) {}
+        DocumentPlugin.save(uint8list, fileName);
       } catch (e) {
         print(e);
       }
@@ -329,30 +301,8 @@ abstract class _SaveStoreBase with Store {
         .replaceAll("<", "");
   }
 
-  String toFullPath(String name) => '${userSetting.path}/${name}';
 
-  DateTime isIllustPartExist(Illusts illusts, {int index}) {
-    if (Platform.isIOS) return null;
-    String memType;
-    if (illusts.pageCount == 1) {
-      String url = illusts.metaSinglePage.originalImageUrl;
-      memType = url.contains('.png') ? '.png' : '.jpg';
-      String fileName = toFullPath(_handleFileName(illusts, 0, memType));
-      return File(fileName).existsSync()
-          ? File(fileName).lastModifiedSync()
-          : null;
-    } else {
-      if (index != null) {
-        var url = illusts.metaPages[index].imageUrls.original;
-        memType = url.contains('.png') ? '.png' : '.jpg';
-        String fileName = _handleFileName(illusts, index, memType);
-        final fullPath = "${userSetting.path}/${fileName}";
-        var file = File(fullPath);
-        return file.existsSync() ? file.lastModifiedSync() : null;
-      }
-      return null;
-    }
-  }
+
 
   @action
   Future<void> saveImage(Illusts illusts,
@@ -363,11 +313,7 @@ abstract class _SaveStoreBase with Store {
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
       if (redo) {
-        final fullPath = "${userSetting.path}/${fileName}";
-        var file = File(fullPath);
-        if (file.existsSync()) {
-          file.deleteSync();
-        }
+
       }
       _saveInternal(url, illusts, fileName);
     } else {
@@ -376,9 +322,7 @@ abstract class _SaveStoreBase with Store {
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
         if (redo) {
-          final fullPath = "${userSetting.path}/${fileName}";
-          var file = File(fullPath);
-          if (file.existsSync()) file.deleteSync();
+
         }
         _saveInternal(url, illusts, fileName);
       } else {
@@ -388,9 +332,7 @@ abstract class _SaveStoreBase with Store {
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
           if (redo) {
-            final fullPath = "${userSetting.path}/${fileName}";
-            var file = File(fullPath);
-            if (file.existsSync()) file.deleteSync();
+
           }
           _saveInternal(url, illusts, fileName);
           index++;
