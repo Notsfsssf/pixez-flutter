@@ -1742,6 +1742,26 @@ class I18n {
       args: [length],
     );
   }
+
+  /// `Need to select a folder in SAF mode to save pictures or other files\nAlthough you can continue to use it without authorization, this may cause the app to crash or some functions are unavailable\nIt's highly recommended to choose to save under Picture\Pixez`
+  String get saf_hint {
+    return Intl.message(
+      'Need to select a folder in SAF mode to save pictures or other files\nAlthough you can continue to use it without authorization, this may cause the app to crash or some functions are unavailable\nIt\'s highly recommended to choose to save under Picture\Pixez',
+      name: 'saf_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is SAF?`
+  String get what_is_saf {
+    return Intl.message(
+      'What is SAF?',
+      name: 'what_is_saf',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

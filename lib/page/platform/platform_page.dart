@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pixez/document_plugin.dart';
@@ -24,6 +25,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -111,47 +113,13 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).save_path),
                 subtitle: Text(path ?? ""),
                 onTap: () async {
-                  showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16.0),
-                            topRight: Radius.circular(16.0)),
-                      ),
-                      builder: (context) {
-                        return SafeArea(
-                          child: ListView(
-                            children: [
-                              ListTile(
-                                title: Text("选择目录"),
-                              ),
-                              
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  FlatButton(
-                                      onPressed: () async {
-                                        await DocumentPlugin.choiceFolder();
-                                        String path =
-                                            await DocumentPlugin.getPath();
-                                        if (mounted) {
-                                          setState(() {
-                                            this.path = path;
-                                          });
-                                        }
-                                      },
-                                      child: Text(I18n.of(context).ok)),
-                                  FlatButton(
-                                      onPressed: () {},
-                                      child: Text(I18n.of(context).cancel))
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                  // DocumentPlugin.choiceFolder();
+                  await DocumentPlugin.choiceFolder();
+                  final path = await DocumentPlugin.getPath();
+                  if (mounted) {
+                    setState(() {
+                      this.path = path;
+                    });
+                  }
                 },
               ),
               ListTile(

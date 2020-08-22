@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <string name="title_save_path">save path</string>
-    <string name="choose_a_suitable_image_storage_directory">选择合适的图片保存目录授权</string>
-    <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正确取得授权，可能会导致部分功能失效或闪退</string>
-    <string name="encode_success">encode success</string>
+    <string name="title_save_path">儲存路徑</string>
+    <string name="choose_a_suitable_image_storage_directory">選擇合適的資料夾並授權以儲存圖像</string>
+    <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正確取得授權，可能造成軟體功能異常或崩潰</string>
+    <string name="encode_success">合成成功</string>
 </resources>

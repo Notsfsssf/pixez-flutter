@@ -23,7 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m1(name) => "${name}已被你设为屏蔽";
 
-  static m2(length) => "点击显示 ${length} 个结果";
+  static m2(length) => "點擊顯示 ${length} 個結果";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -156,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("重试失败任务"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("完成应用图标的绘制"),
     "running" : MessageLookupByLibrary.simpleMessage("进行中"),
+    "saf_hint" : MessageLookupByLibrary.simpleMessage("需要以SAF模式选择一个文件夹以保存图片或其他文件\n虽然不授权仍然能够继续使用，但是这可能会导致app闪退或者部分功能不可用\n非常推荐选择保存在Picture\\Pixez下"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "save_format" : MessageLookupByLibrary.simpleMessage("保存格式"),
     "save_path" : MessageLookupByLibrary.simpleMessage("保存路径"),
@@ -196,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "view_comment" : MessageLookupByLibrary.simpleMessage("查看评论"),
     "warning" : MessageLookupByLibrary.simpleMessage("清除全部缓存？"),
     "welcome_page" : MessageLookupByLibrary.simpleMessage("欢迎页"),
+    "what_is_saf" : MessageLookupByLibrary.simpleMessage("什么是SAF?"),
     "which_part" : MessageLookupByLibrary.simpleMessage("第几张"),
     "works" : MessageLookupByLibrary.simpleMessage("作品")
   };
