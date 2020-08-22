@@ -38,6 +38,7 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AndroidHelloPage extends StatefulWidget {
   @override
@@ -128,9 +129,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         });
       } catch (e) {
         print(e);
-      }
-      if (await DocumentPlugin.needChoice()) {
-        await DocumentPlugin.choiceFolder();
       }
     }
   }
@@ -328,6 +326,34 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
+    } else {
+      if (await DocumentPlugin.needChoice()) {
+        await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                content: Text(
+                    I18n.of(context).saf_hint),
+                title: Text(I18n.of(context).choose_directory),
+                actions: [
+                  FlatButton(
+                      onPressed: () async {
+                        launch(
+                            "https://developer.android.google.cn/training/data-storage/shared/documents-files");
+                      },
+                      child: Text(I18n.of(context).what_is_saf)),
+                  FlatButton(
+                      onPressed: () async {
+                        await DocumentPlugin.choiceFolder();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).ok))
+                ],
+              );
+            });
+      }
     }
   }
 }

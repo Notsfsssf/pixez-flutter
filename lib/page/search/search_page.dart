@@ -86,13 +86,17 @@ class _SearchPageState extends State<SearchPage>
                                   ),
                                 ));
                               },
-                              child: ExtendedImage.network(
-                                _trendTagsStore
-                                    .trendTags.last.illust.imageUrls.medium,
-                                fit: BoxFit.cover,
-                                headers: PixivHeader,
-                                height:
-                                    200 + MediaQuery.of(context).padding.top,
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                child: ExtendedImage.network(
+                                  _trendTagsStore
+                                      .trendTags.last.illust.imageUrls.medium,
+                                  fit: BoxFit.cover,
+                                  headers: PixivHeader,
+                                  height:
+                                      200 + MediaQuery.of(context).padding.top,
+                                ),
                               ),
                             ),
                           ),

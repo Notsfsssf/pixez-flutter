@@ -172,7 +172,7 @@ class _AboutPageState extends State<AboutPage> {
               builder: (BuildContext context) {
                 return Container(
                   child: Image.asset(
-                    'assets/images/sustain.png',
+                    'assets/images/liz.png',
                     fit: BoxFit.cover,
                   ),
                 );

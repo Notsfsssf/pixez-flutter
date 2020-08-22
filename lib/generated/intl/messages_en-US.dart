@@ -156,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("Retry failed tasks"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("完成应用图标的绘制"),
     "running" : MessageLookupByLibrary.simpleMessage("Running"),
+    "saf_hint" : MessageLookupByLibrary.simpleMessage("Need to select a folder in SAF mode to save pictures or other files\nAlthough you can continue to use it without authorization, this may cause the app to crash or some functions are unavailable\nIt\'s highly recommended to choose to save under Picture\\Pixez"),
     "save" : MessageLookupByLibrary.simpleMessage("Save"),
     "save_format" : MessageLookupByLibrary.simpleMessage("Naming format"),
     "save_path" : MessageLookupByLibrary.simpleMessage("Save location"),
@@ -196,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "view_comment" : MessageLookupByLibrary.simpleMessage("View comments"),
     "warning" : MessageLookupByLibrary.simpleMessage("Clear all cache?"),
     "welcome_page" : MessageLookupByLibrary.simpleMessage("Welcome Page"),
+    "what_is_saf" : MessageLookupByLibrary.simpleMessage("What is SAF?"),
     "which_part" : MessageLookupByLibrary.simpleMessage("Index"),
     "works" : MessageLookupByLibrary.simpleMessage("Works")
   };

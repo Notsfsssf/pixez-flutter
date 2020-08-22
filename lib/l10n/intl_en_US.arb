@@ -170,5 +170,7 @@
   "which_part": "Index",
   "works": "Works",
   "pick_a_color": "Pick a color",
-  "tap_to_show_results": "tap to show {length} results"
+  "tap_to_show_results": "tap to show {length} results",
+  "saf_hint": "Need to select a folder in SAF mode to save pictures or other files\nAlthough you can continue to use it without authorization, this may cause the app to crash or some functions are unavailable\nIt's highly recommended to choose to save under Picture\\Pixez",
+  "what_is_saf": "What is SAF?"
 }
