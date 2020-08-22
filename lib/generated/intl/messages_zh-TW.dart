@@ -23,8 +23,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m1(name) => "${name}已被你設定屏蔽";
 
-  static m2(length) => "点击显示 ${length} 个结果";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about" : MessageLookupByLibrary.simpleMessage("關於"),
@@ -156,7 +154,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("重試失敗工作"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("完成軟體圖示的繪製"),
     "running" : MessageLookupByLibrary.simpleMessage("進行中"),
-    "saf_hint" : MessageLookupByLibrary.simpleMessage("需要以SAF模式選擇文件夾以保存圖片或其他文件\n雖然不授權仍然能夠繼續使用，但是這可能會導致app閃退或者部分功能不可用\n非常推薦選擇保存在Picture\\Pixez下"),
     "save" : MessageLookupByLibrary.simpleMessage("儲存"),
     "save_format" : MessageLookupByLibrary.simpleMessage("儲存格式"),
     "save_path" : MessageLookupByLibrary.simpleMessage("儲存路徑"),
@@ -178,7 +175,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "support" : MessageLookupByLibrary.simpleMessage("支援"),
     "support_message" : MessageLookupByLibrary.simpleMessage("歡迎回報問題或共同開發:)"),
     "tag" : MessageLookupByLibrary.simpleMessage("標簽"),
-    "tap_to_show_results" : m2,
     "task_progress" : MessageLookupByLibrary.simpleMessage("工作進度"),
     "terms" : MessageLookupByLibrary.simpleMessage("使用條款"),
     "thanks" : MessageLookupByLibrary.simpleMessage("鳴謝"),
@@ -197,7 +193,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "view_comment" : MessageLookupByLibrary.simpleMessage("查看評論"),
     "warning" : MessageLookupByLibrary.simpleMessage("清除全部暫存？"),
     "welcome_page" : MessageLookupByLibrary.simpleMessage("預設頁面"),
-    "what_is_saf" : MessageLookupByLibrary.simpleMessage("什麽是SAF?"),
     "which_part" : MessageLookupByLibrary.simpleMessage("第幾張"),
     "works" : MessageLookupByLibrary.simpleMessage("作品")
   };
