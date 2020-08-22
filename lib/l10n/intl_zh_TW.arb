@@ -169,8 +169,5 @@
   "welcome_page": "預設頁面",
   "which_part": "第幾張",
   "works": "作品",
-  "pick_a_color": "選擇顏色",
-  "tap_to_show_results": "点击显示 {length} 个结果",
-  "saf_hint": "需要以SAF模式選擇文件夾以保存圖片或其他文件\n雖然不授權仍然能夠繼續使用，但是這可能會導致app閃退或者部分功能不可用\n非常推薦選擇保存在Picture\\Pixez下",
-  "what_is_saf": "什麽是SAF?"
+  "pick_a_color": "選擇顏色"
 }
