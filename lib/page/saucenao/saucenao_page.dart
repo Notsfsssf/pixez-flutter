@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 
@@ -23,6 +24,7 @@ class SauceNaoPage extends StatefulWidget {
   final String path;
 
   const SauceNaoPage({Key key, this.path}) : super(key: key);
+
   @override
   _SauceNaoPageState createState() => _SauceNaoPageState();
 }
@@ -38,7 +40,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PageView(
                   children: _store.results
-                      .map((element) => IllustPage(id:element))
+                      .map((element) => IllustPage(id: element))
                       .toList(),
                 )));
       }
@@ -67,28 +69,41 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
                 child: Center(child: Text('SauceNao')),
               ),
             ),
-            Observer(
-                builder: (_) => InkWell(
-                      child: Card(
-                        child: Padding(
+            Observer(builder: (_) {
+              if (_store.notStart) {
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(widget.path??""),
+                  ),
+                );
+              }
+              return InkWell(
+                child: Card(
+                  child: _store.results.isNotEmpty
+                      ? Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(_store.results.isNotEmpty
-                              ? 'tap to show ${_store.results.length} results'
-                              : 'Nobody here but us chicken'),
+                          child: Text(I18n.of(context).tap_to_show_results(
+                              _store.results.length.toString())),
+                        )
+                      : Container(
+                          child: Image.asset(
+                            'assets/images/nine.jpg',
+                          ),
                         ),
-                      ),
-                      onTap: () {
-                        if (_store.results.isNotEmpty) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PageView(
-                                    children: _store.results
-                                        .map((element) =>
-                                            IllustPage(id:element))
-                                        .toList(),
-                                  )));
-                        }
-                      },
-                    )),
+                ),
+                onTap: () {
+                  if (_store.results.isNotEmpty) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PageView(
+                              children: _store.results
+                                  .map((element) => IllustPage(id: element))
+                                  .toList(),
+                            )));
+                  }
+                },
+              );
+            }),
           ],
         ),
       ),

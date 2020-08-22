@@ -169,5 +169,6 @@
   "welcome_page": "預設頁面",
   "which_part": "第幾張",
   "works": "作品",
-  "pick_a_color": "選擇顏色"
+  "pick_a_color": "選擇顏色",
+  "tap_to_show_results": "点击显示 {length} 个结果"
 }

@@ -39,9 +39,8 @@ dependencies:
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
   flutter_inapp_purchase: ^2.2.0
-  photo_view: ^0.9.2
+  photo_view: ^0.10.1
   flutter_widget_from_html_core: ^0.4.3
-  image_picker: ^0.6.7+4
   extended_nested_scroll_view: ^1.0.1
   scrollable_positioned_list: ^0.1.7
   flutter_date_pickers: ^0.1.5
@@ -83,15 +82,16 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/mahou_teriri.jpg
-    - assets/splash.gif
-    - assets/icon.png
-    - assets/no_h.png
-    - assets/me.jpg
-    - assets/right_now.jpg
-    - assets/sustain.png
-    - assets/weixin_qr.png
-    - assets/h.jpg
+    - assets/images/mahou_teriri.jpg
+    - assets/images/splash.gif
+    - assets/images/icon.png
+    - assets/images/no_h.png
+    - assets/images/me.jpg
+    - assets/images/right_now.jpg
+    - assets/images/sustain.png
+    - assets/images/weixin_qr.png
+    - assets/images/h.jpg
+    - assets/images/nine.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

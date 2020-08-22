@@ -1732,6 +1732,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `tap to show {length} results`
+  String tap_to_show_results(Object length) {
+    return Intl.message(
+      'tap to show $length results',
+      name: 'tap_to_show_results',
+      desc: '',
+      args: [length],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

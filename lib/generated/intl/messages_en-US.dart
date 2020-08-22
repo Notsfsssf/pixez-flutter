@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m1(name) => "${name} has been muted by you";
 
+  static m2(length) => "tap to show ${length} results";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about" : MessageLookupByLibrary.simpleMessage("About"),
@@ -175,6 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "support" : MessageLookupByLibrary.simpleMessage("Support"),
     "support_message" : MessageLookupByLibrary.simpleMessage("欢迎反馈建议或共同开发:)"),
     "tag" : MessageLookupByLibrary.simpleMessage("Tag"),
+    "tap_to_show_results" : m2,
     "task_progress" : MessageLookupByLibrary.simpleMessage("Task progress"),
     "terms" : MessageLookupByLibrary.simpleMessage("Terms of use"),
     "thanks" : MessageLookupByLibrary.simpleMessage("Thanks"),

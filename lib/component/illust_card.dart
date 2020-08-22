@@ -66,7 +66,7 @@ class IllustCard extends HookWidget {
               clipBehavior: Clip.antiAlias,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: Image.asset('assets/h.jpg'),
+              child: Image.asset('assets/images/h.jpg'),
             ),
           );
       }

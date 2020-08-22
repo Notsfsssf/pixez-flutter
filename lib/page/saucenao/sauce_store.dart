@@ -15,13 +15,14 @@
  */
 
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:pixez/document_plugin.dart';
 part 'sauce_store.g.dart';
 
 class SauceStore = SauceStoreBase with _$SauceStore;
@@ -29,9 +30,10 @@ class SauceStore = SauceStoreBase with _$SauceStore;
 abstract class SauceStoreBase with Store {
   Dio dio = Dio(BaseOptions(baseUrl: "https://saucenao.com"));
   ObservableList<int> results = ObservableList();
-  final picker = ImagePicker();
   StreamController _streamController;
   ObservableStream observableStream;
+  @observable
+  bool notStart = true;
 
   SauceStoreBase() {
     _streamController = StreamController();
@@ -45,16 +47,23 @@ abstract class SauceStoreBase with Store {
   }
 
   Future findImage({String path}) async {
+    notStart = false;
     results.clear();
-
-    if (path == null)
-      path = (await picker.getImage(source: ImageSource.gallery))?.path;
+    MultipartFile multipartFile;
+    if (path == null) {
+      Uint8List uint8list = await DocumentPlugin.pickFile();
+      if (uint8list != null) {
+        path =
+            "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
+        File(path).writeAsBytesSync(uint8list);
+      }
+    }
     if (path == null) return;
     var formData = FormData();
     formData.files.addAll([
       MapEntry(
         "file",
-        MultipartFile.fromFileSync(path),
+       multipartFile?? MultipartFile.fromFileSync(path),
       ),
     ]);
     Response response = await dio.post('/search.php', data: formData);

@@ -304,7 +304,26 @@ class ThanksList extends StatelessWidget {
     "钢筋混凝土",
     "海山",
     "KRISS",
-    "快，看天！"
+    "快，看天！",
+    "羽墨",
+    "京一",
+    "逍遥游",
+    "相信自己",
+    "MineLCF",
+    "啊八",
+    "YukiGulu",
+    "俊涛",
+    "南门陈",
+    "*佳凯",
+    "*兔",
+    "*g",
+    "*天",
+    "*人",
+    "*楼",
+    "*凡",
+    "*返",
+    "*阳",
+    "i*h"
   ];
   @override
   Widget build(BuildContext context) {

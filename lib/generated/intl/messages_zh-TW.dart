@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m1(name) => "${name}已被你設定屏蔽";
 
+  static m2(length) => "点击显示 ${length} 个结果";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about" : MessageLookupByLibrary.simpleMessage("關於"),
@@ -175,6 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "support" : MessageLookupByLibrary.simpleMessage("支援"),
     "support_message" : MessageLookupByLibrary.simpleMessage("歡迎回報問題或共同開發:)"),
     "tag" : MessageLookupByLibrary.simpleMessage("標簽"),
+    "tap_to_show_results" : m2,
     "task_progress" : MessageLookupByLibrary.simpleMessage("工作進度"),
     "terms" : MessageLookupByLibrary.simpleMessage("使用條款"),
     "thanks" : MessageLookupByLibrary.simpleMessage("鳴謝"),

@@ -6,8 +6,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -24,10 +26,28 @@ class MainActivity : FlutterActivity() {
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
 
     val OPEN_DOCUMENT_TREE_CODE = 190
+    private lateinit var handlerThread: HandlerThread
+    val PICK_IMAGE_FILE = 2
+    var pendingResult: MethodChannel.Result? = null
+    fun pickFile() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+        }
+        startActivityForResult(intent, PICK_IMAGE_FILE)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        handlerThread = HandlerThread("gifthread")
+        handlerThread.start()
+    }
+
     fun choiceFolder() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
+        Toast.makeText(context, getString(R.string.choose_a_suitable_image_storage_directory), Toast.LENGTH_SHORT).show()
         startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
     }
 
@@ -113,7 +133,6 @@ class MainActivity : FlutterActivity() {
                 }
                 result.success(true);
             }
-
             if (call.method == "get_path") {
                 result.success(getPath())
             }
@@ -128,6 +147,10 @@ class MainActivity : FlutterActivity() {
             if (call.method == "choice_folder") {
                 choiceFolder()
                 result.success(true)
+            }
+            if (call.method == "pick_file") {
+                pendingResult = result
+                pickFile()
             }
         }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENCODE_CHANNEL).setMethodCallHandler { call, result ->
@@ -147,6 +170,17 @@ class MainActivity : FlutterActivity() {
     ) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
+            PICK_IMAGE_FILE -> if (resultCode == Activity.RESULT_OK) {
+                data?.data?.also { uri ->
+                    Log.d("path", uri.toString())
+                    val dataR = applicationContext.contentResolver.openInputStream(uri)?.readBytes()
+                    pendingResult?.success(dataR)
+                    pendingResult = null
+                }
+            } else {
+                pendingResult?.success(null)
+                pendingResult = null
+            }
             OPEN_DOCUMENT_TREE_CODE ->
                 if (resultCode == Activity.RESULT_OK) {
                     data?.data?.also { uri ->
@@ -163,7 +197,7 @@ class MainActivity : FlutterActivity() {
                     }
                 } else {
                     /* Edit request not granted; explain to the user. */
-                    Toast.makeText(applicationContext, "未正确取得授权，可能会导致部分功能失效或闪退", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash), Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -176,7 +210,7 @@ class MainActivity : FlutterActivity() {
         return list.first().uri.toString()
     }
 
-    private val handlerThread = HandlerThread("gifthread")
+
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
         file.let {
@@ -214,7 +248,7 @@ class MainActivity : FlutterActivity() {
                     tempFile.delete()
                     it.deleteRecursively()
                 }
-                runOnUiThread { Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.encode_success), Toast.LENGTH_SHORT).show() }
             }
 
 

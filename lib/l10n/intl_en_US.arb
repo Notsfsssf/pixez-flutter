@@ -169,5 +169,6 @@
   "welcome_page": "Welcome Page",
   "which_part": "Index",
   "works": "Works",
-  "pick_a_color": "Pick a color"
+  "pick_a_color": "Pick a color",
+  "tap_to_show_results": "tap to show {length} results"
 }

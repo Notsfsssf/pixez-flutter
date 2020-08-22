@@ -59,11 +59,11 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.perol.play.pixez"
+        applicationId "com.perol.pixez"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 24
-        versionName "0.1.7 sliver"
+        versionCode 25
+        versionName "0.1.8 eleven"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
