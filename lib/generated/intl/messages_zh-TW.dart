@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m1(name) => "${name}已被你設定屏蔽";
 
+  static m2(length) => "點擊顯示 ${length} 個結果";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about" : MessageLookupByLibrary.simpleMessage("關於"),
@@ -54,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "complete" : MessageLookupByLibrary.simpleMessage("完成"),
     "copied_to_clipboard" : MessageLookupByLibrary.simpleMessage("已複製到剪貼簿"),
     "copymessage" : MessageLookupByLibrary.simpleMessage("資訊"),
-    "crosscount" : MessageLookupByLibrary.simpleMessage("列數"),
+    "crosscount" : MessageLookupByLibrary.simpleMessage("圖像列數"),
     "current_password" : MessageLookupByLibrary.simpleMessage("當前密碼"),
     "date_asc" : MessageLookupByLibrary.simpleMessage("日期升序"),
     "date_desc" : MessageLookupByLibrary.simpleMessage("日期降序"),
@@ -72,8 +74,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "dont_have_account" : MessageLookupByLibrary.simpleMessage("沒有帳戶？"),
     "download_address" : MessageLookupByLibrary.simpleMessage("下載地址"),
     "encode" : MessageLookupByLibrary.simpleMessage("合成"),
-    "encode_message" : MessageLookupByLibrary.simpleMessage("這將會消耗一些時間，並存在失敗可能性"),
-    "enqueued" : MessageLookupByLibrary.simpleMessage("佇列中"),
+    "encode_message" : MessageLookupByLibrary.simpleMessage("將會消耗一些時間，並存在失敗可能性"),
+    "enqueued" : MessageLookupByLibrary.simpleMessage("在佇列中"),
     "exact_match_for_tag" : MessageLookupByLibrary.simpleMessage("與標簽完全一致"),
     "failed" : MessageLookupByLibrary.simpleMessage("失敗"),
     "feedback" : MessageLookupByLibrary.simpleMessage("問題回報"),
@@ -93,8 +95,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "input_nickname" : MessageLookupByLibrary.simpleMessage("輸入暱稱"),
     "job" : MessageLookupByLibrary.simpleMessage("工作"),
     "key_word" : MessageLookupByLibrary.simpleMessage("關鍵字"),
-    "large" : MessageLookupByLibrary.simpleMessage("大圖"),
-    "large_preview_zoom_quality" : MessageLookupByLibrary.simpleMessage("大圖預覽縮放"),
+    "large" : MessageLookupByLibrary.simpleMessage("較大"),
+    "large_preview_zoom_quality" : MessageLookupByLibrary.simpleMessage("預覽縮放圖像品質"),
     "latest_version" : MessageLookupByLibrary.simpleMessage("最新版本"),
     "let_go_and_load_more" : MessageLookupByLibrary.simpleMessage("鬆開手以載入更多"),
     "load_image_failed_click_to_reload" : MessageLookupByLibrary.simpleMessage("圖像載入失敗，點擊重試"),
@@ -141,7 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quietly_follow" : MessageLookupByLibrary.simpleMessage("私密關註"),
     "rank" : MessageLookupByLibrary.simpleMessage("排行"),
     "rate_message" : MessageLookupByLibrary.simpleMessage("好評鼓勵一下吧！"),
-    "rate_title" : MessageLookupByLibrary.simpleMessage("如果妳覺得 PixEz 還不錯"),
+    "rate_title" : MessageLookupByLibrary.simpleMessage("如果你覺得 PixEz 還不錯"),
     "recommand_tag" : MessageLookupByLibrary.simpleMessage("推薦標簽"),
     "recommend" : MessageLookupByLibrary.simpleMessage("推薦"),
     "recommend_for_you" : MessageLookupByLibrary.simpleMessage("為你推薦"),
@@ -154,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("重試失敗工作"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("完成軟體圖示的繪製"),
     "running" : MessageLookupByLibrary.simpleMessage("進行中"),
+    "saf_hint" : MessageLookupByLibrary.simpleMessage("需要以SAF模式選擇文件夾以保存圖片或其他文件\n雖然不授權仍然能夠繼續使用，但是這可能會導致app閃退或者部分功能不可用\n非常推薦選擇保存在Picture\\Pixez下"),
     "save" : MessageLookupByLibrary.simpleMessage("儲存"),
     "save_format" : MessageLookupByLibrary.simpleMessage("儲存格式"),
     "save_path" : MessageLookupByLibrary.simpleMessage("儲存路徑"),
@@ -170,11 +173,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "skimige_message" : MessageLookupByLibrary.simpleMessage("完成 MarkDown 整理"),
     "skin" : MessageLookupByLibrary.simpleMessage("主題"),
     "skip" : MessageLookupByLibrary.simpleMessage("跳過"),
-    "source" : MessageLookupByLibrary.simpleMessage("原圖"),
+    "source" : MessageLookupByLibrary.simpleMessage("原始"),
     "spotlight" : MessageLookupByLibrary.simpleMessage("亮點"),
     "support" : MessageLookupByLibrary.simpleMessage("支援"),
     "support_message" : MessageLookupByLibrary.simpleMessage("歡迎回報問題或共同開發:)"),
     "tag" : MessageLookupByLibrary.simpleMessage("標簽"),
+    "tap_to_show_results" : m2,
     "task_progress" : MessageLookupByLibrary.simpleMessage("工作進度"),
     "terms" : MessageLookupByLibrary.simpleMessage("使用條款"),
     "thanks" : MessageLookupByLibrary.simpleMessage("鳴謝"),
@@ -193,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "view_comment" : MessageLookupByLibrary.simpleMessage("查看評論"),
     "warning" : MessageLookupByLibrary.simpleMessage("清除全部暫存？"),
     "welcome_page" : MessageLookupByLibrary.simpleMessage("預設頁面"),
+    "what_is_saf" : MessageLookupByLibrary.simpleMessage("什麽是SAF?"),
     "which_part" : MessageLookupByLibrary.simpleMessage("第幾張"),
     "works" : MessageLookupByLibrary.simpleMessage("作品")
   };
