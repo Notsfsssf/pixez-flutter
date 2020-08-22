@@ -20,8 +20,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constraint.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
@@ -38,7 +38,6 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-
 
 class AndroidHelloPage extends StatefulWidget {
   @override
@@ -130,7 +129,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       } catch (e) {
         print(e);
       }
-      // checkUpdate();
+      if (await DocumentPlugin.needChoice()) {
+        await DocumentPlugin.choiceFolder();
+      }
     }
   }
 
@@ -267,8 +268,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           }
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   @override
@@ -324,9 +324,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   initPlatformState() async {
     initPlatform();
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-    ].request();
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context)

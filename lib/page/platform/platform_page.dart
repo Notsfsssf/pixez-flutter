@@ -110,7 +110,49 @@ class _PlatformPageState extends State<PlatformPage> {
                 leading: Icon(Icons.folder),
                 title: Text(I18n.of(context).save_path),
                 subtitle: Text(path ?? ""),
-                onTap: () async {},
+                onTap: () async {
+                  showModalBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0)),
+                      ),
+                      builder: (context) {
+                        return SafeArea(
+                          child: ListView(
+                            children: [
+                              ListTile(
+                                title: Text("选择目录"),
+                              ),
+                              
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  FlatButton(
+                                      onPressed: () async {
+                                        await DocumentPlugin.choiceFolder();
+                                        String path =
+                                            await DocumentPlugin.getPath();
+                                        if (mounted) {
+                                          setState(() {
+                                            this.path = path;
+                                          });
+                                        }
+                                      },
+                                      child: Text(I18n.of(context).ok)),
+                                  FlatButton(
+                                      onPressed: () {},
+                                      child: Text(I18n.of(context).cancel))
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                  // DocumentPlugin.choiceFolder();
+                },
               ),
               ListTile(
                 leading: Icon(Icons.format_align_left),

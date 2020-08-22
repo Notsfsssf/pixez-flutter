@@ -26,7 +26,7 @@ class DocumentPlugin {
   }
 
   static Future<bool> exist(String fileName) async {
-    return platform.invokeMethod<bool>("exist", fileName);
+    return platform.invokeMethod<bool>("exist", {"name":fileName});
   }
 
   static Future<String> getPath() => platform.invokeMethod<String>("get_path");

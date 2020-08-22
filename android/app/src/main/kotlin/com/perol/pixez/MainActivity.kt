@@ -6,20 +6,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Environment
+import android.os.Handler
+import android.os.HandlerThread
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 
 class MainActivity : FlutterActivity() {
@@ -54,16 +51,32 @@ class MainActivity : FlutterActivity() {
                 "image/gif"
             }
         }
-        val takeWhile =
+        val permissions =
                 contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
-        if (takeWhile.isEmpty()) {
+        if (permissions.isEmpty()) {
             choiceFolder()
             return null
         }
+
         val parentUri =
-                takeWhile
+                permissions
                         .first().uri
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
+
+        if (fileName.contains("/")) {
+            val names = fileName.split("/")
+            if (names.size >= 2) {
+                val folderName = names.first()
+                var fDocumentFile =
+                        treeDocument.listFiles().takeWhile { it.isDirectory && it.name != null && it.name!!.contains(folderName.split("_").last()) }.first()
+                if (fDocumentFile == null) {
+                    fDocumentFile = treeDocument.createDirectory(folderName)
+                }
+                val fName = names.last()
+                return fDocumentFile?.createFile(mimeType, fName)?.uri
+            }
+        }
+
         var targetFile =
                 treeDocument.findFile(fileName)
         if (targetFile != null) {
@@ -113,6 +126,7 @@ class MainActivity : FlutterActivity() {
                 result.success(needChoice())
             }
             if (call.method == "choice_folder") {
+                choiceFolder()
                 result.success(true)
             }
         }
@@ -149,7 +163,7 @@ class MainActivity : FlutterActivity() {
                     }
                 } else {
                     /* Edit request not granted; explain to the user. */
-                    Toast.makeText(applicationContext, "未正确取得授权，这可能会导致部分功能失效或闪退", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "未正确取得授权，可能会导致部分功能失效或闪退", Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -162,11 +176,12 @@ class MainActivity : FlutterActivity() {
         return list.first().uri.toString()
     }
 
+    private val handlerThread = HandlerThread("gifthread")
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
         file.let {
             val tempFile = File(applicationContext.cacheDir, "${name}.gif")
-            Observable.create<File> { ot ->
+            Handler(handlerThread.looper).post {
                 try {
                     val uri = writeFileUri("${name}.gif")
                     if (!tempFile.exists()) {
@@ -183,7 +198,6 @@ class MainActivity : FlutterActivity() {
                             arrayFile.add(i)
                         }
                     }
-
                     arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
                     val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
                     val encoder = GifEncoder()
@@ -193,23 +207,22 @@ class MainActivity : FlutterActivity() {
                             encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
                         } else encoder.encodeFrame(bitmap, delay)
                     }
-
                     encoder.close()
-                    contentResolver.openOutputStream(uri, "w")?.write(tempFile.inputStream().readBytes())
-                    ot.onNext(tempFile)
-                    ot.onComplete()
+                    contentResolver.openOutputStream(uri!!, "w")?.write(tempFile.inputStream().readBytes())
                 } catch (e: Exception) {
-                    Log.d("exception", "${e.localizedMessage}")
+                    e.printStackTrace()
                     tempFile.delete()
                     it.deleteRecursively()
                 }
-            }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+                runOnUiThread { Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show() }
+            }
 
-                Toast.makeText(this, "encode success", Toast.LENGTH_SHORT).show()
-            }, {}, {})
 
         }
     }
 
-
+    override fun onDestroy() {
+        handlerThread.quitSafely()
+        super.onDestroy()
+    }
 }

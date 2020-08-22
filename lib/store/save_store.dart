@@ -22,7 +22,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -231,7 +230,7 @@ abstract class _SaveStoreBase with Store {
   _saveInternal(String url, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        final isExist =await DocumentPlugin.exist(fileName);
+        final isExist = await DocumentPlugin.exist(fileName);
         if (isExist) {
           streamController.add(SaveStream(SaveState.ALREADY, illusts));
           return;
@@ -247,12 +246,23 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
-
   Future<void> saveToGallery(
       Uint8List uint8list, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        if (userSetting.singleFolder) {}
+        if (userSetting.singleFolder) {
+          String name = illusts.user.name
+              .replaceAll("/", "")
+              .replaceAll("\\", "")
+              .replaceAll(":", "")
+              .replaceAll("*", "")
+              .replaceAll("?", "")
+              .replaceAll(">", "")
+              .replaceAll("|", "")
+              .replaceAll("<", "");
+          String id = illusts.user.id.toString();
+          fileName = "${name}_$id/$fileName";
+        }
         DocumentPlugin.save(uint8list, fileName);
       } catch (e) {
         print(e);
@@ -301,9 +311,6 @@ abstract class _SaveStoreBase with Store {
         .replaceAll("<", "");
   }
 
-
-
-
   @action
   Future<void> saveImage(Illusts illusts,
       {int index, bool redo = false}) async {
@@ -312,18 +319,14 @@ abstract class _SaveStoreBase with Store {
       String url = illusts.metaSinglePage.originalImageUrl;
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
-      if (redo) {
-
-      }
+      if (redo) {}
       _saveInternal(url, illusts, fileName);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
-        if (redo) {
-
-        }
+        if (redo) {}
         _saveInternal(url, illusts, fileName);
       } else {
         int index = 0;
@@ -331,9 +334,7 @@ abstract class _SaveStoreBase with Store {
           String url = f.imageUrls.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
-          if (redo) {
-
-          }
+          if (redo) {}
           _saveInternal(url, illusts, fileName);
           index++;
         });
