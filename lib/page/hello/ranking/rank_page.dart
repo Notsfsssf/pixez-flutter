@@ -22,12 +22,15 @@ import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
 
 class RankPage extends StatefulWidget {
-  RankPage({Key key,}):super(key:key);
+  RankPage({
+    Key key,
+  }) : super(key: key);
   @override
   _RankPageState createState() => _RankPageState();
 }
 
-class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin {
+class _RankPageState extends State<RankPage>
+    with AutomaticKeepAliveClientMixin {
   RankStore rankStore;
   final modeList = [
     "day",
@@ -68,6 +71,7 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
   DateTime nowDateTime = DateTime.now();
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (_) {
       if (rankStore.modeList.isNotEmpty) {
         var list = I18n.of(context).mode_list.split(' ');
@@ -82,7 +86,7 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
             children: <Widget>[
               AppBar(
                 title: TabBar(
-                  indicatorSize: TabBarIndicatorSize.label,
+                    indicatorSize: TabBarIndicatorSize.label,
                     isScrollable: true,
                     indicatorColor: Theme.of(context).cardColor,
                     tabs: titles
@@ -172,5 +176,4 @@ class _RankPageState extends State<RankPage> with AutomaticKeepAliveClientMixin 
 
   @override
   bool get wantKeepAlive => true;
-
 }

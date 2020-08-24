@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package com.perol.pixez
 
 import android.app.Activity
@@ -29,7 +45,7 @@ class MainActivity : FlutterActivity() {
     private lateinit var handlerThread: HandlerThread
     val PICK_IMAGE_FILE = 2
     var pendingResult: MethodChannel.Result? = null
-    fun pickFile() {
+    private fun pickFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "image/*"
@@ -43,7 +59,7 @@ class MainActivity : FlutterActivity() {
         handlerThread.start()
     }
 
-    fun choiceFolder() {
+    private fun choiceFolder() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
@@ -51,17 +67,47 @@ class MainActivity : FlutterActivity() {
         startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
     }
 
-    fun needChoice() =
+    private fun needChoice() =
             contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
                     .isEmpty()
 
 
-    fun isFileExist(name: String): Boolean {
+    private fun isFileExist(name: String): Boolean {
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }.first().uri)!!
-        return treeDocument.findFile(name) != null
+        if (name.contains("/")) {
+            val names = name.split("/")
+            if (names.size >= 2) {
+                val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+                val folderName = names.first()
+                val fName = names.last()
+                val dirId = splicingUrl(treeId, folderName)
+                val dirUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
+                val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
+                return if (dirDocument == null || !dirDocument.exists()) {
+                    false
+                } else if (dirDocument.isFile) {
+                    dirDocument.delete()
+                    false
+                } else {
+                    val treeDocument1 = DocumentFile.fromTreeUri(this@MainActivity, dirDocument.uri)!!
+                    val treeId1 = DocumentsContract.getTreeDocumentId(treeDocument1.uri)
+                    val fileId = splicingUrl(treeId1, fName)
+                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument1.uri, fileId)
+                    val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                    targetFile != null && targetFile.exists()
+                }
+            } else {
+                return false
+            }
+        }
+        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+        val fileId = splicingUrl(treeId, name)
+        val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+        val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+        return targetFile != null && targetFile.exists()
     }
 
-    fun writeFileUri(fileName: String): Uri? {
+    private fun writeFileUri(fileName: String): Uri? {
         val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith("jpeg", ignoreCase = true)) {
             "image/jpg"
         } else {
@@ -82,32 +128,54 @@ class MainActivity : FlutterActivity() {
                 permissions
                         .first().uri
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
-
+        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
         if (fileName.contains("/")) {
             val names = fileName.split("/")
             if (names.size >= 2) {
-                val folderName = names.first()
-                var fDocumentFile =
-                        treeDocument.listFiles().takeWhile { it.isDirectory && it.name != null && it.name!!.contains(folderName.split("_").last()) }.first()
-                if (fDocumentFile == null) {
-                    fDocumentFile = treeDocument.createDirectory(folderName)
-                }
                 val fName = names.last()
-                return fDocumentFile?.createFile(mimeType, fName)?.uri
+                val folderName = names.first()
+                val dirId = splicingUrl(treeId, folderName)
+                val dirUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
+                val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
+
+                if (dirDocument == null || !dirDocument.exists()) {
+                    return treeDocument.createDirectory(folderName)?.createFile(mimeType, fName)?.uri
+                } else if (dirDocument.isFile) {
+                    dirDocument.delete()
+                    return treeDocument.createDirectory(folderName)?.createFile(mimeType, fName)?.uri
+                } else {
+                    val treeDocument1 = DocumentFile.fromTreeUri(this@MainActivity, dirDocument.uri)!!
+                    val treeId1 = DocumentsContract.getTreeDocumentId(treeDocument1.uri)
+                    val fileId = splicingUrl(treeId1, fName)
+                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument1.uri, fileId)
+                    val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                    if (targetFile != null) {
+                        if (targetFile.exists()) {
+                            targetFile.delete()
+                        }
+                    }
+                    return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)
+                }
+
             }
         }
 
-        var targetFile =
-                treeDocument.findFile(fileName)
+        val fileId = splicingUrl(treeId, fileName)
+        val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+        val targetFile = DocumentFile.fromSingleUri(this, fileUri)
         if (targetFile != null) {
             if (targetFile.exists()) {
                 targetFile.delete()
             }
         }
-        targetFile = treeDocument.createFile(mimeType, fileName)
-        return targetFile?.uri
+        return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)
     }
 
+    private fun splicingUrl(prentId: String, fileName: String) = if (prentId.endsWith(":")) {
+        prentId + fileName
+    } else {
+        "$prentId/$fileName"
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -121,7 +189,7 @@ class MainActivity : FlutterActivity() {
                 result.success(true)
             }
             if (call.method == "scan") {
-                val path = call.argument<String>("path") as String
+                val path = call.argument<String>("path")
                 MediaScannerConnection.scanFile(
                         this@MainActivity,
                         arrayOf(path),
@@ -188,12 +256,14 @@ class MainActivity : FlutterActivity() {
                         val contentResolver = applicationContext.contentResolver
                         val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                        contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission && it.uri != uri }
-                                .forEach {
-                                    contentResolver.releasePersistableUriPermission(it.uri, takeFlags)
-                                }
-
                         contentResolver.takePersistableUriPermission(uri, takeFlags)
+                        for (i in contentResolver.persistedUriPermissions) {
+                            if (i.isReadPermission && i.isWritePermission && i.uri != uri) {
+                                contentResolver.releasePersistableUriPermission(i.uri, takeFlags)
+                            }
+                        }
+
+
                     }
                 } else {
                     /* Edit request not granted; explain to the user. */

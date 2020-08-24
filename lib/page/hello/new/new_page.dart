@@ -53,6 +53,7 @@ class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin{
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (context) {
       if (accountStore.now != null)
         return DefaultTabController(

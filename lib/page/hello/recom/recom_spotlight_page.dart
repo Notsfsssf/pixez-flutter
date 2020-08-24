@@ -66,6 +66,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return buildEasyRefresh(context);
   }
 

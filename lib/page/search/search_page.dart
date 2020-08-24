@@ -40,8 +40,7 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage>
-    with TickerProviderStateMixin {
+class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   String editString = "";
   TrendTagsStore _trendTagsStore;
   AnimationController _animationController;
@@ -49,8 +48,8 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   void initState() {
-    _animationController =
-        AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    _animationController = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
     animation = Tween(begin: 0.0, end: 0.25).animate(_animationController);
     _controller = RefreshController(initialRefresh: true);
     _trendTagsStore = TrendTagsStore(_controller);
@@ -221,7 +220,8 @@ class _SearchPageState extends State<SearchPage>
                   alignment: Alignment.center,
                   turns: animation,
                   child: IconButton(
-                      icon: Icon(Icons.dashboard),
+                      icon: Icon(Icons.dashboard,
+                          color: Theme.of(context).textTheme.bodyText1.color),
                       onPressed: () async {
                         try {
                           var clipData =
@@ -268,21 +268,11 @@ class _SearchPageState extends State<SearchPage>
                 ),
                 backgroundColor: Colors.transparent,
                 actions: [
-                  OpenContainer(
-                    closedColor: Colors.transparent,
-                    closedElevation: 0.0,
-                    openElevation: 0.0,
-                    openColor: Colors.transparent,
-                    openBuilder: (BuildContext context, VoidCallback _) {
+                  IconButton(
+                    icon: Icon(Icons.search,
+                        color: Theme.of(context).textTheme.bodyText1.color),
+                    onPressed: () {
                       return SearchSuggestionPage();
-                    },
-                    closedBuilder:
-                        (BuildContext context, void Function() action) {
-                      return Container(
-                          child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Icon(Icons.search),
-                      ));
                     },
                   )
                 ],
@@ -440,7 +430,9 @@ class _SearchPageState extends State<SearchPage>
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(
+                Icons.search,
+              ),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(

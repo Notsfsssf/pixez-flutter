@@ -230,7 +230,12 @@ abstract class _SaveStoreBase with Store {
   _saveInternal(String url, Illusts illusts, String fileName) async {
     if (Platform.isAndroid) {
       try {
-        final isExist = await DocumentPlugin.exist(fileName);
+        String targetFileName = fileName;
+        if (userSetting.singleFolder) {
+          targetFileName =
+              "${illusts.user.name.replaceAll("/", "").replaceAll("\\", "").replaceAll(":", "").replaceAll("*", "").replaceAll("?", "").replaceAll(">", "").replaceAll("|", "").replaceAll("<", "")}_${illusts.user.id}/$fileName";
+        }
+        final isExist = await DocumentPlugin.exist(targetFileName);
         if (isExist) {
           streamController.add(SaveStream(SaveState.ALREADY, illusts));
           return;
