@@ -35,6 +35,10 @@ import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class MainActivity : FlutterActivity() {
@@ -42,7 +46,6 @@ class MainActivity : FlutterActivity() {
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
 
     val OPEN_DOCUMENT_TREE_CODE = 190
-    private lateinit var handlerThread: HandlerThread
     val PICK_IMAGE_FILE = 2
     var pendingResult: MethodChannel.Result? = null
     private fun pickFile() {
@@ -53,10 +56,14 @@ class MainActivity : FlutterActivity() {
         startActivityForResult(intent, PICK_IMAGE_FILE)
     }
 
+    private fun splicingUrl(parentUri: String, fileName: String) = if (parentUri.endsWith(":")) {
+        parentUri + fileName
+    } else {
+        "$parentUri/$fileName"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handlerThread = HandlerThread("gifthread")
-        handlerThread.start()
     }
 
     private fun choiceFolder() {
@@ -107,6 +114,7 @@ class MainActivity : FlutterActivity() {
         return targetFile != null && targetFile.exists()
     }
 
+
     private fun writeFileUri(fileName: String): Uri? {
         val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith("jpeg", ignoreCase = true)) {
             "image/jpg"
@@ -144,17 +152,7 @@ class MainActivity : FlutterActivity() {
                     dirDocument.delete()
                     return treeDocument.createDirectory(folderName)?.createFile(mimeType, fName)?.uri
                 } else {
-                    val treeDocument1 = DocumentFile.fromTreeUri(this@MainActivity, dirDocument.uri)!!
-                    val treeId1 = DocumentsContract.getTreeDocumentId(treeDocument1.uri)
-                    val fileId = splicingUrl(treeId1, fName)
-                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument1.uri, fileId)
-                    val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-                    if (targetFile != null) {
-                        if (targetFile.exists()) {
-                            targetFile.delete()
-                        }
-                    }
-                    return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)
+                    return treeDocument.findFile(folderName)?.createFile(mimeType, fName)?.uri//!!!!!!
                 }
 
             }
@@ -171,11 +169,6 @@ class MainActivity : FlutterActivity() {
         return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)
     }
 
-    private fun splicingUrl(prentId: String, fileName: String) = if (prentId.endsWith(":")) {
-        prentId + fileName
-    } else {
-        "$prentId/$fileName"
-    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -183,10 +176,15 @@ class MainActivity : FlutterActivity() {
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
-                writeFileUri(name)?.run {
-                    contentResolver.openOutputStream(this, "w")?.write(data)
+                runBlocking {
+                    withContext(Dispatchers.IO) {
+                        writeFileUri(name)?.run {
+                            contentResolver.openOutputStream(this, "w")?.write(data)
+                        }
+                    }
+                    result.success(true)
                 }
-                result.success(true)
+
             }
             if (call.method == "scan") {
                 val path = call.argument<String>("path")
@@ -202,12 +200,22 @@ class MainActivity : FlutterActivity() {
                 result.success(true);
             }
             if (call.method == "get_path") {
-                result.success(getPath())
+                runBlocking {
+                    val path = withContext(Dispatchers.IO) {
+                        getPath()
+                    }
+                    result.success(path)
+                }
             }
             if (call.method == "exist") {
                 val name = call.argument<String>("name")!!
-                val isFileExist = isFileExist(name)
-                result.success(isFileExist)
+
+                runBlocking {
+                    val isFileExist = withContext(Dispatchers.IO) {
+                        isFileExist(name)
+                    }
+                    result.success(isFileExist)
+                }
             }
             if (call.method == "need_choice") {
                 result.success(needChoice())
@@ -285,48 +293,44 @@ class MainActivity : FlutterActivity() {
         val file = File(path)
         file.let {
             val tempFile = File(applicationContext.cacheDir, "${name}.gif")
-            Handler(handlerThread.looper).post {
-                try {
-                    val uri = writeFileUri("${name}.gif")
-                    if (!tempFile.exists()) {
-                        tempFile.createNewFile()
-                    }
-                    Log.d("tempFile path:", tempFile.path)
-                    val listFiles = it.listFiles()
-                    if (listFiles == null || listFiles.isEmpty()) {
-                        throw RuntimeException("unzip files not found")
-                    }
-                    val arrayFile = mutableListOf<File>()
-                    for (i in listFiles) {
-                        if (i.name.contains("jpg") || i.name.contains("png")) {
-                            arrayFile.add(i)
+            runBlocking {
+                withContext(Dispatchers.IO) {
+                    try {
+                        val uri = writeFileUri("${name}.gif")
+                        if (!tempFile.exists()) {
+                            tempFile.createNewFile()
                         }
+                        Log.d("tempFile path:", tempFile.path)
+                        val listFiles = it.listFiles()
+                        if (listFiles == null || listFiles.isEmpty()) {
+                            throw RuntimeException("unzip files not found")
+                        }
+                        val arrayFile = mutableListOf<File>()
+                        for (i in listFiles) {
+                            if (i.name.contains("jpg") || i.name.contains("png")) {
+                                arrayFile.add(i)
+                            }
+                        }
+                        arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
+                        val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
+                        val encoder = GifEncoder()
+                        encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
+                        for (i in arrayFile.indices) {
+                            if (i != 0) {
+                                encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
+                            } else encoder.encodeFrame(bitmap, delay)
+                        }
+                        encoder.close()
+                        contentResolver.openOutputStream(uri!!, "w")?.write(tempFile.inputStream().readBytes())
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        tempFile.delete()
+                        it.deleteRecursively()
                     }
-                    arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
-                    val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
-                    val encoder = GifEncoder()
-                    encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
-                    for (i in arrayFile.indices) {
-                        if (i != 0) {
-                            encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
-                        } else encoder.encodeFrame(bitmap, delay)
-                    }
-                    encoder.close()
-                    contentResolver.openOutputStream(uri!!, "w")?.write(tempFile.inputStream().readBytes())
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    tempFile.delete()
-                    it.deleteRecursively()
                 }
-                runOnUiThread { Toast.makeText(this, getString(R.string.encode_success), Toast.LENGTH_SHORT).show() }
+                Toast.makeText(this@MainActivity, getString(R.string.encode_success), Toast.LENGTH_SHORT).show()
             }
-
-
         }
     }
 
-    override fun onDestroy() {
-        handlerThread.quitSafely()
-        super.onDestroy()
-    }
 }
