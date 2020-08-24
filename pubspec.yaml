@@ -56,7 +56,7 @@ dependencies:
   extended_image: ^1.1.0
   flutter_colorpicker: ^0.3.4
   waterfall_flow: ^2.0.2
-
+  animations: ^1.1.2
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

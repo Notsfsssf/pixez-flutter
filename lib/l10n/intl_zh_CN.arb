@@ -172,5 +172,6 @@
   "pick_a_color": "选择颜色",
   "tap_to_show_results": "點擊顯示 {length} 個結果",
   "saf_hint": "需要以SAF模式选择一个文件夹以保存图片或其他文件\n虽然不授权仍然能够继续使用，但是这可能会导致app闪退或者部分功能不可用\n非常推荐选择保存在Picture\\Pixez下",
-  "what_is_saf": "什么是SAF?"
+  "what_is_saf": "什么是SAF?",
+  "not_the_correct_link": "不是正确的链接>_<"
 }

@@ -40,7 +40,7 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 
-class _NewPageState extends State<NewPage> {
+class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin{
   @override
   void initState() {
     super.initState();
@@ -139,4 +139,9 @@ class _NewPageState extends State<NewPage> {
           ));
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
+
+
 }

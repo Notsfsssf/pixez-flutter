@@ -15,9 +15,9 @@
  */
 
 import 'dart:async';
-import 'dart:io';
+
+import 'package:animations/animations.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constraint.dart';
@@ -46,7 +46,13 @@ class AndroidHelloPage extends StatefulWidget {
 }
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
-  List<Widget> _widgetOptions;
+  final _pageList = [
+    RecomSpolightPage(),
+    RankPage(),
+    NewPage(),
+    SearchPage(),
+    SettingPage()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,45 +64,28 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     });
   }
 
-  int _stackIndex = 0;
-
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _stackIndex,
-        children: <Widget>[
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                this.index = index;
-              });
-            },
-            itemCount: 3,
-            itemBuilder: (BuildContext context, int index) {
-              return _widgetOptions[index];
-            },
-          ),
-          SearchPage(),
-          SettingPage(hasNewVersion: hasNewVersion),
-        ],
+      body: PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            this.index = index;
+          });
+        },
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return _pageList[index];
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: index,
           onTap: (index) {
-            if (index < 3) {
-              setState(() {
-                this.index = index;
-                _stackIndex = 0;
-              });
-              _pageController.jumpToPage(index);
-            } else {
-              setState(() {
-                this.index = index;
-                _stackIndex = index - 2;
-              });
-            }
+            setState(() {
+              this.index = index;
+            });
+            _pageController.jumpToPage(index);
           },
           items: [
             BottomNavigationBarItem(
@@ -120,16 +109,14 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   StreamSubscription _intentDataStreamSubscription, _sub;
 
   initPlatform() async {
-    if (Platform.isAndroid) {
-      try {
-        Uri initialLink = await getInitialUri();
-        if (initialLink != null) judgePushPage(initialLink);
-        _sub = getUriLinksStream().listen((Uri link) {
-          judgePushPage(link);
-        });
-      } catch (e) {
-        print(e);
-      }
+    try {
+      Uri initialLink = await getInitialUri();
+      if (initialLink != null) judgePushPage(initialLink);
+      _sub = getUriLinksStream().listen((Uri link) {
+        judgePushPage(link);
+      });
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -181,12 +168,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return UsersPage(
-                id: id,
-              );
-            }));
+            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                builder: (context) => UsersPage(
+                      id: id,
+                    )));
           } catch (e) {
             print(e);
           }
@@ -272,26 +257,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void initState() {
     index = userSetting.welcomePageNum;
-    if (index < 3) {
-      _stackIndex = 0;
-    } else {
-      _stackIndex = index - 2;
-    }
-    _pageController = userSetting.welcomePageNum < 3
-        ? PageController(initialPage: userSetting.welcomePageNum)
-        : PageController();
-    _widgetOptions = <Widget>[
-      RecomSpolightPage(),
-      RankPage(),
-      NewPage(),
-    ];
+    _pageController = PageController(initialPage: index);
     super.initState();
     saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
-    // For sharing images coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
         .listen((List<SharedMediaFile> value) {
       if (value != null)
@@ -303,7 +275,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
-    // For sharing images coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
       if (value != null)
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -317,6 +288,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void dispose() {
     _intentDataStreamSubscription?.cancel();
+    _pageController?.dispose();
     super.dispose();
   }
 
@@ -324,8 +296,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     initPlatform();
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => InitPage()),
+        (route) => route == null,
+      );
     } else {
       if (await DocumentPlugin.needChoice()) {
         await showDialog(
@@ -334,8 +308,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                content: Text(
-                    I18n.of(context).saf_hint),
+                content: Text(I18n.of(context).saf_hint),
                 title: Text(I18n.of(context).choose_directory),
                 actions: [
                   FlatButton(

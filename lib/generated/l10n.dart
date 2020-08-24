@@ -1762,6 +1762,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Not a supported link>_<`
+  String get not_the_correct_link {
+    return Intl.message(
+      'Not a supported link>_<',
+      name: 'not_the_correct_link',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

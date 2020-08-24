@@ -31,6 +31,7 @@ import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -38,7 +39,6 @@ final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
-
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: false);

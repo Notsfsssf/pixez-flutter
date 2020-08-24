@@ -156,6 +156,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
           )),
       bottom: TabBar(
         controller: _tabController,
+        indicatorColor: Theme.of(context).cardColor,
         tabs: <Widget>[
           Tab(
             child: Text(I18n.of(context).key_word),

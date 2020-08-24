@@ -197,7 +197,7 @@ class _LightingListState extends State<LightingList> {
             return IllustCard(
               store: _store.iStores[index],
               iStores: _store.iStores,
-              height: mainAxisExtent + 60.0,
+              height: mainAxisExtent + 64.0,
             );
           },
           gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -227,7 +227,7 @@ class _LightingListState extends State<LightingList> {
           return IllustCard(
             store: _store.iStores[index],
             iStores: _store.iStores,
-            height: mainAxisExtent + 60.0,
+            height: mainAxisExtent + 64.0,
           );
         },
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(

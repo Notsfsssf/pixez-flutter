@@ -30,7 +30,10 @@ class PixivImage extends HookWidget {
   final Widget placeWidget;
   final bool fade;
   final BoxFit fit;
-  PixivImage(this.url, {this.placeWidget, this.fade = true, this.fit});
+  final bool enableMemoryCache;
+
+  PixivImage(this.url,
+      {this.placeWidget, this.fade = true, this.fit, this.enableMemoryCache});
 
   bool already = false;
 
@@ -42,8 +45,9 @@ class PixivImage extends HookWidget {
         upperBound: 1.0);
     return ExtendedImage.network(
       url,
-      fit:fit?? BoxFit.fitWidth,
+      fit: fit ?? BoxFit.fitWidth,
       headers: PixivHeader,
+      enableMemoryCache: enableMemoryCache ?? true,
       loadStateChanged: (ExtendedImageState state) {
         if (state.extendedImageLoadState == LoadState.loading) {
           if (!_controller.isCompleted) _controller?.reset();
@@ -57,7 +61,7 @@ class PixivImage extends HookWidget {
           if (!_controller.isCompleted) _controller?.forward();
           if (!fade)
             return ExtendedRawImage(
-              fit:fit?? BoxFit.fitWidth,
+              fit: fit ?? BoxFit.fitWidth,
               image: state.extendedImageInfo?.image,
             );
           return FadeTransition(

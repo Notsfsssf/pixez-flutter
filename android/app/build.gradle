@@ -63,7 +63,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 25
-        versionName "0.1.8 eleven"
+        versionName "0.1.8X eleven"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

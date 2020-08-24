@@ -121,6 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_h" : MessageLookupByLibrary.simpleMessage("H are not allowed!"),
     "no_more_data" : MessageLookupByLibrary.simpleMessage("There is no more data"),
     "not_bookmarked" : MessageLookupByLibrary.simpleMessage("Not_Bookmarked"),
+    "not_the_correct_link" : MessageLookupByLibrary.simpleMessage("Not a supported link>_<"),
     "ok" : MessageLookupByLibrary.simpleMessage("Confirm"),
     "painter" : MessageLookupByLibrary.simpleMessage("User"),
     "painter_id" : MessageLookupByLibrary.simpleMessage("User ID"),

@@ -39,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passWordController = TextEditingController();
   LoginStore _loginStore = LoginStore();
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   BuildContext context;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,19 +168,47 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () async {
                               if (userNameController.value.text.isEmpty ||
                                   userNameController.value.text.isEmpty) return;
-                              BotToast.showText(
-                                  text: I18n.of(context).attempting_to_log_in);
+                              BotToast.showCustomText(
+                                  onlyOne: true,
+                                  duration: Duration(seconds: 1),
+                                  toastBuilder: (textCancel) => Align(
+                                        alignment: Alignment(0, 0.8),
+                                        child: Card(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.scatter_plot,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8.0,
+                                                        vertical: 8.0),
+                                                child: Text(I18n.of(context)
+                                                    .attempting_to_log_in),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ));
                               bool isAuth = await _loginStore.auth(
                                   userNameController.value.text.trim(),
                                   passWordController.value.text.trim());
                               if (isAuth) {
                                 accountStore.fetch();
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Platform.isIOS
-                                                ? HelloPage()
-                                                : AndroidHelloPage()));
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Platform.isIOS
+                                              ? HelloPage()
+                                              : AndroidHelloPage()),
+                                  (route) => route == null,
+                                );
                               }
                             }),
                         RaisedButton(
@@ -199,12 +229,14 @@ class _LoginPageState extends State<LoginPage> {
                                   deviceToken: result.body.deviceToken);
                               if (isAuth) {
                                 accountStore.fetch();
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Platform.isIOS
-                                                ? HelloPage()
-                                                : AndroidHelloPage()));
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Platform.isIOS
+                                              ? HelloPage()
+                                              : AndroidHelloPage()),
+                                  (route) => route == null,
+                                );
                               }
                             }
                           },

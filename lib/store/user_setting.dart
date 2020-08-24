@@ -57,6 +57,7 @@ abstract class _UserSettingBase with Store {
   @observable
   bool hIsNotAllow = false;
 
+
   @observable
   String format = "";
   static const String intialFormat = "{illust_id}_p{part}";

@@ -188,7 +188,7 @@ class IllustCard extends HookWidget {
   Widget _buildBottom(BuildContext context) {
     return Container(
       color: Theme.of(context).cardColor,
-      height: 48,
+      height: 50,
       child: Stack(
         children: <Widget>[
           Align(

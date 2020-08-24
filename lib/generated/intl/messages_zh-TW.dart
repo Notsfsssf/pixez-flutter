@@ -121,6 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_h" : MessageLookupByLibrary.simpleMessage("H是不行的!"),
     "no_more_data" : MessageLookupByLibrary.simpleMessage("沒有更多資料了"),
     "not_bookmarked" : MessageLookupByLibrary.simpleMessage("未收藏"),
+    "not_the_correct_link" : MessageLookupByLibrary.simpleMessage("不是正确的链接>_<"),
     "ok" : MessageLookupByLibrary.simpleMessage("確定"),
     "painter" : MessageLookupByLibrary.simpleMessage("繪師"),
     "painter_id" : MessageLookupByLibrary.simpleMessage("繪師ID"),

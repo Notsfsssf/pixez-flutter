@@ -21,20 +21,23 @@ import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 
 class IllustAboutGrid extends StatefulWidget {
-    final int id;
+  final int id;
 
   const IllustAboutGrid({Key key, this.id}) : super(key: key);
+
   @override
   _IllustAboutGridState createState() => _IllustAboutGridState();
 }
 
 class _IllustAboutGridState extends State<IllustAboutGrid> {
   IllustAboutStore _store;
+
   @override
   void initState() {
-   _store = IllustAboutStore(widget.id)..fetch();
+    _store = IllustAboutStore(widget.id)..fetch();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -79,7 +82,10 @@ class _IllustAboutGridState extends State<IllustAboutGrid> {
                     );
                   }));
                 },
-                child: PixivImage(_store.illusts[index].imageUrls.squareMedium),
+                child: PixivImage(
+                  _store.illusts[index].imageUrls.squareMedium,
+                  enableMemoryCache: false,
+                ),
               );
             });
       return Container(
@@ -89,7 +95,5 @@ class _IllustAboutGridState extends State<IllustAboutGrid> {
         ),
       );
     });
- 
   }
 }
-

@@ -15,6 +15,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.39.14"
+  animations:
+    dependency: "direct main"
+    description:
+      name: animations
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.2"
   archive:
     dependency: "direct main"
     description:

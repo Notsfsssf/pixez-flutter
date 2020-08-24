@@ -15,8 +15,11 @@
  */
 
 import 'dart:ui';
+import 'package:animations/animations.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -27,6 +30,7 @@ import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
+import 'package:pixez/page/user/users_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SearchPage extends StatefulWidget {
@@ -37,87 +41,396 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   String editString = "";
   TrendTagsStore _trendTagsStore;
+  AnimationController _animationController;
+  Animation animation;
 
   @override
   void initState() {
+    _animationController =
+        AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    animation = Tween(begin: 0.0, end: 0.25).animate(_animationController);
     _controller = RefreshController(initialRefresh: true);
     _trendTagsStore = TrendTagsStore(_controller);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     tagHistoryStore.fetch();
+//    _animationController.forward();//下版再做动画吧
   }
 
   @override
   void dispose() {
+    _animationController?.dispose();
     _tabController?.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   RefreshController _controller;
 
+  Widget _buildFirstRow(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            child: Padding(
+              child: Text(
+                I18n.of(context).search,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30.0,
+                    color: Theme.of(context).textTheme.headline6.color),
+              ),
+              padding: EdgeInsets.only(left: 16.0, bottom: 10.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  judgePushPage(Uri link) {
+    if (link.host.contains('illusts')) {
+      var idSource = link.pathSegments.last;
+      try {
+        int id = int.parse(idSource);
+        Navigator.of(context, rootNavigator: true)
+            .push(MaterialPageRoute(builder: (context) {
+          return IllustPage(
+            id: id,
+          );
+        }));
+      } catch (e) {}
+      return;
+    }
+    if (link.host.contains('user')) {
+      var idSource = link.pathSegments.last;
+      try {
+        int id = int.parse(idSource);
+        Navigator.of(context, rootNavigator: true)
+            .push(MaterialPageRoute(builder: (context) {
+          return UsersPage(
+            id: id,
+          );
+        }));
+      } catch (e) {}
+      return;
+    }
+    if (link.host.contains('pixiv')) {
+      if (link.path.contains("artworks")) {
+        List<String> paths = link.pathSegments;
+        int index = paths.indexOf("artworks");
+        if (index != -1) {
+          try {
+            int id = int.parse(paths[index + 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return IllustPage(id: id);
+            }));
+            return;
+          } catch (e) {}
+        }
+      }
+      if (link.path.contains("users")) {
+        List<String> paths = link.pathSegments;
+        int index = paths.indexOf("users");
+        if (index != -1) {
+          try {
+            int id = int.parse(paths[index + 1]);
+            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                builder: (context) => UsersPage(
+                      id: id,
+                    )));
+          } catch (e) {
+            print(e);
+          }
+        }
+      }
+      if (link.queryParameters['illust_id'] != null) {
+        try {
+          var id = link.queryParameters['illust_id'];
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return IllustPage(id: int.parse(id));
+          }));
+
+          return;
+        } catch (e) {}
+      }
+      if (link.queryParameters['id'] != null) {
+        try {
+          var id = link.queryParameters['id'];
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return UsersPage(
+              id: int.parse(id),
+            );
+          }));
+
+          return;
+        } catch (e) {}
+      }
+      if (link.pathSegments.length >= 2) {
+        String i = link.pathSegments[link.pathSegments.length - 2];
+        if (i == "i") {
+          try {
+            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return IllustPage(id: id);
+            }));
+            return;
+          } catch (e) {}
+        }
+
+        if (i == "u") {
+          try {
+            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return UsersPage(
+                id: id,
+              );
+            }));
+            return;
+          } catch (e) {}
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (accountStore.now != null)
-        return NestedScrollView(
-            headerSliverBuilder: (BuildContext context,
-                    bool innerBoxIsScrolled) =>
-                [
-                  _trendTagsStore.trendTags.isNotEmpty
-                      ? SliverAppBar(
-                          pinned: true,
-                          title: Text(I18n.of(context).search),
-                          centerTitle: false,
-                          forceElevated: innerBoxIsScrolled,
-                          expandedHeight:
-                              200 + MediaQuery.of(context).padding.top,
-                          flexibleSpace: FlexibleSpaceBar(
-                            titlePadding: EdgeInsets.all(0.0),
-                            collapseMode: CollapseMode.none,
-                            background: InkWell(
+        return SmartRefresher(
+          controller: _controller,
+          enablePullDown: true,
+          onRefresh: () => _trendTagsStore.fetch(),
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                elevation: 0.0,
+                titleSpacing: 0.0,
+                automaticallyImplyLeading: false,
+                leading: RotationTransition(
+                  alignment: Alignment.center,
+                  turns: animation,
+                  child: IconButton(
+                      icon: Icon(Icons.dashboard),
+                      onPressed: () async {
+                        try {
+                          var clipData =
+                              await Clipboard.getData(Clipboard.kTextPlain);
+                          if (clipData != null) {
+                            print(clipData.text ?? '');
+                            final query = clipData.text ?? '';
+                            if (query.startsWith('http')) {
+                              judgePushPage(Uri.parse(query));
+                            } else {
+                              BotToast.showCustomText(
+                                  onlyOne: true,
+                                  duration: Duration(seconds: 1),
+                                  toastBuilder: (textCancel) => Align(
+                                        alignment: Alignment(0, 0.8),
+                                        child: Card(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.dashboard,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8.0,
+                                                        vertical: 8.0),
+                                                child: Text(I18n.of(context)
+                                                    .not_the_correct_link),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ));
+                            }
+                          }
+                        } catch (e) {}
+                      }),
+                ),
+                backgroundColor: Colors.transparent,
+                actions: [
+                  OpenContainer(
+                    closedColor: Colors.transparent,
+                    closedElevation: 0.0,
+                    openElevation: 0.0,
+                    openColor: Colors.transparent,
+                    openBuilder: (BuildContext context, VoidCallback _) {
+                      return SearchSuggestionPage();
+                    },
+                    closedBuilder:
+                        (BuildContext context, void Function() action) {
+                      return Container(
+                          child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Icon(Icons.search),
+                      ));
+                    },
+                  )
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: _buildFirstRow(context),
+              ),
+              SliverToBoxAdapter(
+                child: Observer(builder: (context) {
+                  if (tagHistoryStore.tags.isNotEmpty)
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        I18n.of(context).history,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                            color: Theme.of(context).textTheme.headline5.color),
+                      ),
+                    );
+                  else
+                    return Container();
+                }),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverToBoxAdapter(
+                  child: Observer(
+                    builder: (BuildContext context) {
+                      if (tagHistoryStore.tags.isNotEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Wrap(
+                            children: tagHistoryStore.tags
+                                .map((f) => ActionChip(
+                                      label: Text(
+                                        f.name,
+                                        style: TextStyle(fontSize: 12.0),
+                                      ),
+                                      padding: EdgeInsets.all(0.0),
+                                      onPressed: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ResultPage(
+                                                      word: f.name,
+                                                      translatedName:
+                                                          f.translatedName ??
+                                                              '',
+                                                    )));
+                                      },
+                                    ))
+                                .toList()
+                                  ..add(ActionChip(
+                                      label: Text(I18n.of(context).clear),
+                                      onPressed: () {
+                                        tagHistoryStore.deleteAll();
+                                      })),
+                            runSpacing: 0.0,
+                            spacing: 3.0,
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    I18n.of(context).recommand_tag,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: Theme.of(context).textTheme.headline6.color),
+                  ),
+                ),
+              ),
+              _trendTagsStore.trendTags.isNotEmpty
+                  ? SliverPadding(
+                      padding: EdgeInsets.all(8.0),
+                      sliver: SliverGrid(
+                          delegate:
+                              SliverChildBuilderDelegate((context, index) {
+                            final tags = _trendTagsStore.trendTags;
+                            return GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => IllustPage(
-                                    id: _trendTagsStore
-                                        .trendTags.last.illust.id,
-                                  ),
-                                ));
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return ResultPage(
+                                    word: tags[index].tag,
+                                  );
+                                }));
                               },
-                              child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                                child: ExtendedImage.network(
-                                  _trendTagsStore
-                                      .trendTags.last.illust.imageUrls.medium,
-                                  fit: BoxFit.cover,
-                                  headers: PixivHeader,
-                                  height:
-                                      200 + MediaQuery.of(context).padding.top,
+                              onLongPress: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return IllustPage(id: tags[index].illust.id);
+                                }));
+                              },
+                              child: Card(
+                                clipBehavior: Clip.antiAlias,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0))),
+                                child: Stack(
+                                  children: <Widget>[
+                                    PixivImage(
+                                      tags[index].illust.imageUrls.squareMedium,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: Color(0x90000000)),
+                                    ),
+                                    Align(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Text(
+                                              tags[index].tag,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      alignment: Alignment.bottomCenter,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ),
-                          actions: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.search),
-                              onPressed: () {
-                                Navigator.of(context, rootNavigator: true).push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SearchSuggestionPage()));
-                              },
-                            )
-                          ],
-                        )
-                      : SliverAppBar(
-                          flexibleSpace: FlexibleSpaceBar(),
-                          title: Text(I18n.of(context).search),
-                        )
-                ],
-            body: _buildListView(context));
+                            );
+                          }, childCount: _trendTagsStore.trendTags.length),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3)),
+                    )
+                  : SliverToBoxAdapter(child: Container())
+            ],
+          ),
+        );
       return Column(children: <Widget>[
         AppBar(
           automaticallyImplyLeading: false,
@@ -142,121 +455,4 @@ class _SearchPageState extends State<SearchPage>
   }
 
   TabController _tabController;
-
-  Widget _buildListView(BuildContext context) {
-    return SmartRefresher(
-      controller: _controller,
-      enablePullDown: true,
-      onRefresh: () => _trendTagsStore.fetch(),
-      child: ListView(padding: EdgeInsets.symmetric(horizontal: 8), children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(I18n.of(context).history),
-        ),
-        Observer(
-          builder: (BuildContext context) {
-            if (tagHistoryStore.tags.isNotEmpty) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Wrap(
-                  children: tagHistoryStore.tags
-                      .map((f) => ActionChip(
-                            label: Text(f.name),
-                            onPressed: () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) => ResultPage(
-                                            word: f.name,
-                                            translatedName:
-                                                f.translatedName ?? '',
-                                          )));
-                            },
-                          ))
-                      .toList()
-                        ..add(ActionChip(
-                            label: Text(I18n.of(context).clear),
-                            onPressed: () {
-                              tagHistoryStore.deleteAll();
-                            })),
-                  runSpacing: 0.0,
-                  spacing: 3.0,
-                ),
-              );
-            }
-            return Container();
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(I18n.of(context).recommand_tag),
-        ),
-        _trendTagsStore.trendTags.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: _buildGrid(context, _trendTagsStore.trendTags),
-              )
-            : Container()
-      ]),
-    );
-  }
-
-  Widget _buildGrid(BuildContext context, List<Trend_tags> tags) =>
-      Observer(builder: (_) {
-        return GridView.builder(
-          padding: EdgeInsets.all(0.0),
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: _trendTagsStore.trendTags.length - 1,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (_) {
-                    return ResultPage(
-                      word: tags[index].tag,
-                    );
-                  }));
-                },
-                onLongPress: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (_) {
-                    return IllustPage(id: tags[index].illust.id);
-                  }));
-                },
-                child: Stack(
-                  children: <Widget>[
-                    PixivImage(
-                      tags[index].illust.imageUrls.squareMedium,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(color: Color(0x90000000)),
-                    ),
-                    Align(
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              tags[index].tag,
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      alignment: Alignment.bottomCenter,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      });
 }

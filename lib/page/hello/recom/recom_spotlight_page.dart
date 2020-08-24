@@ -31,11 +31,15 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
+  RecomSpolightPage({
+    Key key,
+  }) : super(key: key);
+
   @override
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
 }
 
-class _RecomSpolightPageState extends State<RecomSpolightPage> {
+class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKeepAliveClientMixin{
   SpotlightStore spotlightStore;
   LightingStore _lightingStore;
 
@@ -43,9 +47,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
   void initState() {
     _easyRefreshController = RefreshController(initialRefresh: true);
     spotlightStore = SpotlightStore(null);
-    _lightingStore =
-        LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
-
+    _lightingStore = LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
     super.initState();
   }
 
@@ -164,7 +166,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
                   return IllustCard(
                     store: _lightingStore.iStores[index],
                     iStores: _lightingStore.iStores,
-                    height: mainAxisExtent + 60.0,
+                    height: mainAxisExtent + 64.0,
                   );
                 }, childCount: _lightingStore.iStores.length),
               )
@@ -265,4 +267,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
