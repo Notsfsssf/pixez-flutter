@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:mobx/mobx.dart';
@@ -63,26 +64,32 @@ abstract class SauceStoreBase with Store {
     formData.files.addAll([
       MapEntry(
         "file",
-       multipartFile?? MultipartFile.fromFileSync(path),
+        multipartFile ?? MultipartFile.fromFileSync(path),
       ),
     ]);
-    Response response = await dio.post('/search.php', data: formData);
-    var document = parse(response.data);
-    document.querySelectorAll('a').forEach((element) {
-      var link = element.attributes['href'];
-      if (link != null) {
-        bool need = link.startsWith('https://www.pixiv.net') &&
-            link.contains('illust_id');
-        if (need) {
-          var result = Uri.parse(link).queryParameters['illust_id'];
-          if (result != null) {
-            try {
-              results.add(int.parse(result));
-            } catch (e) {}
+    try {
+      BotToast.showText(text: "uploading");
+      Response response = await dio.post('/search.php', data: formData);
+      BotToast.showText(text: "parsing");
+      var document = parse(response.data);
+      document.querySelectorAll('a').forEach((element) {
+        var link = element.attributes['href'];
+        if (link != null) {
+          bool need = link.startsWith('https://www.pixiv.net') &&
+              link.contains('illust_id');
+          if (need) {
+            var result = Uri.parse(link).queryParameters['illust_id'];
+            if (result != null) {
+              try {
+                results.add(int.parse(result));
+              } catch (e) {}
+            }
           }
         }
-      }
-    });
-    _streamController.add(1);
+      });
+      _streamController.add(1);
+    } catch (e) {
+      BotToast.showText(text: "error${e}");
+    }
   }
 }

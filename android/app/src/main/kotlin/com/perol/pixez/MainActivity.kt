@@ -161,8 +161,7 @@ class MainActivity : FlutterActivity() {
                 targetFile.delete()
             }
         }
-        if (mimeType == "image/gif") return treeDocument.createFile(mimeType, fileName)?.uri
-        return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)
+        return treeDocument.createFile(mimeType, fileName)?.uri
     }
 
     fun wr(data: ByteArray, uri: Uri) {

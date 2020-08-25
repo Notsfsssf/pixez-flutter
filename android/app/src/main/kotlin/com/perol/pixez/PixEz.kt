@@ -19,6 +19,7 @@ package com.perol.pixez
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import io.flutter.app.FlutterApplication
 
+
 class PixEz : FlutterApplication() {
     override fun onCreate() {
         if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
@@ -26,6 +27,7 @@ class PixEz : FlutterApplication() {
             return
         }
         super.onCreate()
-        CrashHandler.getInstance().init(applicationContext)
+        CrashHandler.instance?.init(applicationContext)
+
     }
 }

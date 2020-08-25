@@ -138,10 +138,14 @@ class _PlatformPageState extends State<PlatformPage> {
                 },
               ),
               Observer(
-                builder: (_) {
+                builder: (context) {
                   return SwitchListTile(
                     secondary: Icon(Icons.folder_shared),
                     onChanged: (bool value) async {
+                      if (value) {
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text("可能会造成保存等待时间过长")));
+                      }
                       await userSetting.setSingleFolder(value);
                     },
                     title: Text(I18n.of(context).separate_folder),

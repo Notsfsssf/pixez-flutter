@@ -31,6 +31,11 @@ class SauceNaoPage extends StatefulWidget {
 
 class _SauceNaoPageState extends State<SauceNaoPage> {
   SauceStore _store = SauceStore();
+  @override
+  void dispose() {
+    _store.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -74,7 +79,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
                 return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(widget.path??""),
+                    child: Text(widget.path ?? ""),
                   ),
                 );
               }
