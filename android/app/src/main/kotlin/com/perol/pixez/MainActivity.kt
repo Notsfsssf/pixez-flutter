@@ -22,9 +22,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -36,8 +33,8 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -62,10 +59,6 @@ class MainActivity : FlutterActivity() {
         "$parentUri/$fileName"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     private fun choiceFolder() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -77,7 +70,6 @@ class MainActivity : FlutterActivity() {
     private fun needChoice() =
             contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
                     .isEmpty()
-
 
     private fun isFileExist(name: String): Boolean {
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }.first().uri)!!
@@ -96,10 +88,8 @@ class MainActivity : FlutterActivity() {
                     dirDocument.delete()
                     false
                 } else {
-                    val treeDocument1 = DocumentFile.fromTreeUri(this@MainActivity, dirDocument.uri)!!
-                    val treeId1 = DocumentsContract.getTreeDocumentId(treeDocument1.uri)
-                    val fileId = splicingUrl(treeId1, fName)
-                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument1.uri, fileId)
+                    val fileId = splicingUrl(dirId, fName)
+                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
                     val targetFile = DocumentFile.fromSingleUri(this, fileUri)
                     targetFile != null && targetFile.exists()
                 }
@@ -113,7 +103,6 @@ class MainActivity : FlutterActivity() {
         val targetFile = DocumentFile.fromSingleUri(this, fileUri)
         return targetFile != null && targetFile.exists()
     }
-
 
     private fun writeFileUri(fileName: String): Uri? {
         val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith("jpeg", ignoreCase = true)) {
@@ -131,7 +120,6 @@ class MainActivity : FlutterActivity() {
             choiceFolder()
             return null
         }
-
         val parentUri =
                 permissions
                         .first().uri
@@ -152,6 +140,13 @@ class MainActivity : FlutterActivity() {
                     dirDocument.delete()
                     return treeDocument.createDirectory(folderName)?.createFile(mimeType, fName)?.uri
                 } else {
+/*                    val fileId = splicingUrl(dirId, fName)
+                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+                    val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                    if (targetFile != null && targetFile.exists()) {
+                        targetFile.delete()
+                    }
+                    return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)*/
                     return treeDocument.findFile(folderName)?.createFile(mimeType, fName)?.uri//!!!!!!
                 }
 
@@ -166,9 +161,13 @@ class MainActivity : FlutterActivity() {
                 targetFile.delete()
             }
         }
+        if (mimeType == "image/gif") return treeDocument.createFile(mimeType, fileName)?.uri
         return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)
     }
 
+    fun wr(data: ByteArray, uri: Uri) {
+        contentResolver.openOutputStream(uri, "w")?.write(data)
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -176,18 +175,17 @@ class MainActivity : FlutterActivity() {
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
-                runBlocking {
+                GlobalScope.launch(Dispatchers.Main) {
                     withContext(Dispatchers.IO) {
-                        writeFileUri(name)?.run {
-                            contentResolver.openOutputStream(this, "w")?.write(data)
+                        writeFileUri(name)?.let {
+                            wr(data, it)
                         }
                     }
                     result.success(true)
                 }
-
             }
             if (call.method == "scan") {
-                val path = call.argument<String>("path")
+                val path = call.argument<String>("path")!!
                 MediaScannerConnection.scanFile(
                         this@MainActivity,
                         arrayOf(path),
@@ -200,7 +198,7 @@ class MainActivity : FlutterActivity() {
                 result.success(true);
             }
             if (call.method == "get_path") {
-                runBlocking {
+                GlobalScope.launch(Dispatchers.Main) {
                     val path = withContext(Dispatchers.IO) {
                         getPath()
                     }
@@ -209,8 +207,7 @@ class MainActivity : FlutterActivity() {
             }
             if (call.method == "exist") {
                 val name = call.argument<String>("name")!!
-
-                runBlocking {
+                GlobalScope.launch(Dispatchers.Main) {
                     val isFileExist = withContext(Dispatchers.IO) {
                         isFileExist(name)
                     }
@@ -218,7 +215,12 @@ class MainActivity : FlutterActivity() {
                 }
             }
             if (call.method == "need_choice") {
-                result.success(needChoice())
+                GlobalScope.launch(Dispatchers.Main) {
+                    val need = withContext(Dispatchers.IO) {
+                        needChoice()
+                    }
+                    result.success(need)
+                }
             }
             if (call.method == "choice_folder") {
                 choiceFolder()
@@ -234,8 +236,13 @@ class MainActivity : FlutterActivity() {
                 val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!
-                encodeGif(name, path, delay)
-                result.success(true)
+                GlobalScope.launch(Dispatchers.Main) {
+                    withContext(Dispatchers.IO) {
+                        encodeGif(name, path, delay)
+                    }
+                    Toast.makeText(this@MainActivity, getString(R.string.encode_success), Toast.LENGTH_SHORT).show()
+                    result.success(true)
+                }
             }
         }
     }
@@ -270,11 +277,8 @@ class MainActivity : FlutterActivity() {
                                 contentResolver.releasePersistableUriPermission(i.uri, takeFlags)
                             }
                         }
-
-
                     }
                 } else {
-                    /* Edit request not granted; explain to the user. */
                     Toast.makeText(applicationContext, getString(R.string.failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash), Toast.LENGTH_SHORT).show()
                 }
         }
@@ -288,47 +292,41 @@ class MainActivity : FlutterActivity() {
         return list.first().uri.toString()
     }
 
-
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
         file.let {
             val tempFile = File(applicationContext.cacheDir, "${name}.gif")
-            runBlocking {
-                withContext(Dispatchers.IO) {
-                    try {
-                        val uri = writeFileUri("${name}.gif")
-                        if (!tempFile.exists()) {
-                            tempFile.createNewFile()
-                        }
-                        Log.d("tempFile path:", tempFile.path)
-                        val listFiles = it.listFiles()
-                        if (listFiles == null || listFiles.isEmpty()) {
-                            throw RuntimeException("unzip files not found")
-                        }
-                        val arrayFile = mutableListOf<File>()
-                        for (i in listFiles) {
-                            if (i.name.contains("jpg") || i.name.contains("png")) {
-                                arrayFile.add(i)
-                            }
-                        }
-                        arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
-                        val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
-                        val encoder = GifEncoder()
-                        encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
-                        for (i in arrayFile.indices) {
-                            if (i != 0) {
-                                encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
-                            } else encoder.encodeFrame(bitmap, delay)
-                        }
-                        encoder.close()
-                        contentResolver.openOutputStream(uri!!, "w")?.write(tempFile.inputStream().readBytes())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        tempFile.delete()
-                        it.deleteRecursively()
+            try {
+                val uri = writeFileUri("${name}.gif")
+                if (!tempFile.exists()) {
+                    tempFile.createNewFile()
+                }
+                Log.d("tempFile path:", tempFile.path)
+                val listFiles = it.listFiles()
+                if (listFiles == null || listFiles.isEmpty()) {
+                    throw RuntimeException("unzip files not found")
+                }
+                val arrayFile = mutableListOf<File>()
+                for (i in listFiles) {
+                    if (i.name.contains("jpg") || i.name.contains("png")) {
+                        arrayFile.add(i)
                     }
                 }
-                Toast.makeText(this@MainActivity, getString(R.string.encode_success), Toast.LENGTH_SHORT).show()
+                arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
+                val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
+                val encoder = GifEncoder()
+                encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
+                for (i in arrayFile.indices) {
+                    if (i != 0) {
+                        encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
+                    } else encoder.encodeFrame(bitmap, delay)
+                }
+                encoder.close()
+                contentResolver.openOutputStream(uri!!, "w")?.write(tempFile.inputStream().readBytes())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                tempFile.delete()
+                it.deleteRecursively()
             }
         }
     }

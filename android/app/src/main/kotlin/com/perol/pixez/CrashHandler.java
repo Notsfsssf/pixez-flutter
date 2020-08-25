@@ -22,10 +22,11 @@
  * SOFTWARE
  */
 
-package com.perol.asdpl.pixivez.objects;
+package com.perol.pixez;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.os.Looper;
 import android.text.format.Time;
 import android.util.Log;
@@ -131,6 +132,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 Log.e(TAG, "Error : ", e);
+
             }
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(10);
