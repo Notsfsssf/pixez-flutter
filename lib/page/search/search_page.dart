@@ -272,7 +272,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                     icon: Icon(Icons.search,
                         color: Theme.of(context).textTheme.bodyText1.color),
                     onPressed: () {
-                      return SearchSuggestionPage();
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SearchSuggestionPage()));
                     },
                   )
                 ],
