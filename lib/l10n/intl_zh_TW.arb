@@ -171,7 +171,7 @@
   "works": "作品",
   "pick_a_color": "選擇顏色",
   "tap_to_show_results": "點擊顯示 {length} 個結果",
-  "saf_hint": "需要以SAF模式選擇文件夾以保存圖片或其他文件\n雖然不授權仍然能夠繼續使用，但是這可能會導致app閃退或者部分功能不可用\n非常推薦選擇保存在Picture\\Pixez下",
+  "saf_hint": "需要以SAF模式選擇資料夾以儲存圖像或其他檔案\n雖然不授權仍然能夠繼續使用，但是這可能會導致APP閃退或者部分功能不可用\n推薦設定儲存資料夾為 Picture\\Pixez",
   "what_is_saf": "什麽是SAF?",
-  "not_the_correct_link": "不是正确的链接>_<"
+  "not_the_correct_link": "非正常連結 >_<"
 }
