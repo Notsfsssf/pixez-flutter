@@ -313,8 +313,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 actions: [
                   FlatButton(
                       onPressed: () async {
-                        launch(
-                            "https://developer.android.google.cn/training/data-storage/shared/documents-files");
+                        Constrains.isGooglePlay||userSetting.disableBypassSni
+                            ? launch(
+                                "https://developer.android.com/training/data-storage/shared/documents-files")
+                            : launch(
+                                "https://developer.android.google.cn/training/data-storage/shared/documents-files");
                       },
                       child: Text(I18n.of(context).what_is_saf)),
                   FlatButton(
