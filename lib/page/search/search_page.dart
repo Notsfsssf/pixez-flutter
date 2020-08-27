@@ -24,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
@@ -307,32 +308,17 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: Wrap(
-                            children: tagHistoryStore.tags
-                                .map((f) => ActionChip(
-                                      label: Text(
-                                        f.name,
-                                        style: TextStyle(fontSize: 12.0),
-                                      ),
-                                      padding: EdgeInsets.all(0.0),
-                                      onPressed: () {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .push(MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ResultPage(
-                                                      word: f.name,
-                                                      translatedName:
-                                                          f.translatedName ??
-                                                              '',
-                                                    )));
-                                      },
-                                    ))
-                                .toList()
-                                  ..add(ActionChip(
-                                      label: Text(I18n.of(context).clear),
-                                      onPressed: () {
-                                        tagHistoryStore.deleteAll();
-                                      })),
+                            children: tagHistoryStore.tags.map((f) {
+                              return buildActionChip(f, context);
+                            }).toList()
+                              ..add(ActionChip(
+                                  label: Text(
+                                    I18n.of(context).clear,
+                                    style: TextStyle(fontSize: 12.0),
+                                  ),
+                                  onPressed: () {
+                                    tagHistoryStore.deleteAll();
+                                  })),
                             runSpacing: 0.0,
                             spacing: 3.0,
                           ),
@@ -445,6 +431,28 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         Expanded(child: LoginInFirst())
       ]);
     });
+  }
+
+  Widget buildActionChip(TagsPersist f, BuildContext context) {
+    return GestureDetector(
+      onLongPress: () {
+        historyStore.delete(f.id);
+      },
+      child: ActionChip(
+        label: Text(
+          f.name,
+          style: TextStyle(fontSize: 12.0),
+        ),
+        padding: EdgeInsets.all(0.0),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+              builder: (context) => ResultPage(
+                    word: f.name,
+                    translatedName: f.translatedName ?? '',
+                  )));
+        },
+      ),
+    );
   }
 
   TabController _tabController;
