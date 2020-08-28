@@ -10,8 +10,8 @@ Can access pixiv directly from Mainland China.
 
 |OS|Source|
 |:---:|:---:|
-|[Android](https://github.com/Notsfsssf/pixez-flutter/releases)|GitHub Release|
-|[iOS](https://apps.apple.com/cn/app/pixez/id1494435126)|App Store|
+|Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
+|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|
 
 # Preview
 
@@ -40,10 +40,12 @@ Got ideas about UI design? You're also welcome to share your opinions.
 
 # Communicate
 
+We have a [manual and FAQ page here (Chinese only)](./FAQ.md).
+
 Mail Feedback: PxezFeedback@outlook.com
 
 Also, feedback on Telegram: [@PixEzViewer](https://t.me/PixEzViewer)
 
 (Mainly Chinese, English welcomed)
 
-If you have questions about registering or 🔞, please don't ask for a solution, though. (Possibly will be listed in a FAQ page later)
+If you have questions about registering or 🔞, please don't ask for a solution, though.

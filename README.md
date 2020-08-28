@@ -12,7 +12,7 @@
 
 |系统|来源|
 |:---:|:---:|
-|Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
+|Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
 |iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|
 
 # 预览
@@ -38,12 +38,10 @@
 
 # 交流
 
+[使用指南 & 常见问题在这里](.github/FAQ.md)，反馈问题 / 加群询问之前请先看！
+
 邮件反馈：PxezFeedback@outlook.com
 
 也可以在 Telegram 群交流反馈：[@PixEzViewer](https://t.me/PixEzViewer)
 
 你可以进企鹅群交流经验或者反馈：815791942（闲聊为主）
-
-当然，怎么注册，怎么开 🔞 之类的问题，还是算了吧。
-
-（后续可能会撰写 FAQ 页来说明这些问题）
