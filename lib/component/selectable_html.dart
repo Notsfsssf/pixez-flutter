@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -54,6 +55,13 @@ class _SelectableHtmlState extends State<SelectableHtml> {
       },
       child: HtmlWidget(
        widget.data ?? '~',
+//        customStylesBuilder: (e) {
+//          // Override font size?
+//          if (e.attributes.containsKey('href')) {
+//            return ['color', 'red'];
+//          }
+//          return null;
+//        },
         onTapUrl: (String url) async {
           if (await canLaunch(url)) {
             await launch(url);
