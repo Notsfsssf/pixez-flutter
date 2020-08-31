@@ -173,5 +173,6 @@
   "tap_to_show_results": "Tap to show {length} results",
   "saf_hint": "In order to save illusts to your device you have to choose a folder and allow PixEz to access it(e.g. Picture\/Pixez).",
   "what_is_saf": "Why?",
-  "not_the_correct_link": "Not a valid link of a Pixiv illust >_<"
+  "not_the_correct_link": "Not a valid link of a Pixiv illust >_<",
+  "start": "start"
 }

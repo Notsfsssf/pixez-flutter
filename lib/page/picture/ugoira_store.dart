@@ -70,7 +70,6 @@ abstract class _UgoiraStoreBase with Store {
       drawPool = listSync;
       status = UgoiraStatus.play;
     } catch (e) {
-      print(e);
       if (fullPathFile.existsSync()) fullPathFile.deleteSync();
       if (Directory('$tempPath/$id/').existsSync()) {
         Directory('$tempPath/$id/').deleteSync(recursive: true);
@@ -95,7 +94,6 @@ abstract class _UgoiraStoreBase with Store {
           "User-Agent": "PixivIOSApp/5.8.0"
         })).download(zipUrl, fullPath,
             onReceiveProgress: (int count, int total) {
-          print("$count/$total");
           this.count = count;
           this.total = total;
           if (count / total == 1) {
@@ -106,7 +104,6 @@ abstract class _UgoiraStoreBase with Store {
         unZip();
       }
     } catch (e) {
-      print(e);
       if (fullPathFile.existsSync()) fullPathFile.deleteSync();
       if (Directory('$tempPath/$id/').existsSync()) {
         Directory('$tempPath/$id/').deleteSync(recursive: true);

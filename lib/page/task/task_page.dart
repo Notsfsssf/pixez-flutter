@@ -16,6 +16,7 @@
 
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -170,8 +171,14 @@ class _TaskPageState extends State<TaskPage> {
                                     element.status ==
                                     DownloadTaskStatus.failed);
                                 targets.forEach((element) async {
-                                  await FlutterDownloader.retry(
-                                      taskId: element.taskId);
+                                  final taskId = await FlutterDownloader.retry(
+                                    taskId: element.taskId,
+                                  ); //bug
+                                  final data = saveStore.maps[element.taskId];
+                                  saveStore.maps.remove(element.taskId);
+                                  saveStore.maps[taskId] = SaveData()
+                                    ..illusts = data.illusts
+                                    ..fileName = element.filename;
                                 });
                                 initMethod();
                                 Navigator.of(context).pop();

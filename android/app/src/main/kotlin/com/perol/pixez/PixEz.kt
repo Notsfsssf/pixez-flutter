@@ -27,7 +27,8 @@ class PixEz : FlutterApplication() {
             return
         }
         super.onCreate()
-        CrashHandler.instance?.init(applicationContext)
+
+//        CrashHandler.instance?.init(applicationContext)
 
     }
 }

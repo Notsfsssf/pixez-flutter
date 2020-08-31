@@ -88,8 +88,6 @@ class _MyAppState extends State<MyApp> {
           File file = File(fullPath);
           final uint8list = await file.readAsBytes();
           final data = saveStore.maps[id];
-          print(data.fileName);
-          print(data.illusts.id);
           await saveStore.saveToGallery(uint8list, data.illusts, data.fileName);
           saveStore.streamController
               .add(SaveStream(SaveState.SUCCESS, saveStore.maps[id].illusts));

@@ -22,6 +22,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -245,6 +246,7 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
+
 
     override fun onActivityResult(
             requestCode: Int, resultCode: Int,

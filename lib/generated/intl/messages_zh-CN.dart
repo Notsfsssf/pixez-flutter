@@ -176,6 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skip" : MessageLookupByLibrary.simpleMessage("跳过"),
     "source" : MessageLookupByLibrary.simpleMessage("原图"),
     "spotlight" : MessageLookupByLibrary.simpleMessage("亮点"),
+    "start" : MessageLookupByLibrary.simpleMessage("开始"),
     "support" : MessageLookupByLibrary.simpleMessage("支持"),
     "support_message" : MessageLookupByLibrary.simpleMessage("欢迎反馈建议或共同开发 :)"),
     "tag" : MessageLookupByLibrary.simpleMessage("标签"),

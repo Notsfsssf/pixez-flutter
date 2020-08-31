@@ -44,6 +44,12 @@ abstract class _TagHistoryStoreBase with Store {
     await tagsPersistProvider.insert(tagsPersist);
     await fetch();
   }
+  @action
+  delete(int id)async{
+    await tagsPersistProvider.open();
+    await tagsPersistProvider.delete(id);
+    await fetch();
+  }
 
   @action
   deleteAll() async {

@@ -325,7 +325,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                         await DocumentPlugin.choiceFolder();
                         Navigator.of(context).pop();
                       },
-                      child: Text(I18n.of(context).ok))
+                      child: Text(I18n.of(context).start))
                 ],
               );
             });

@@ -145,10 +145,6 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
-  final _$pathAtom = Atom(name: '_UserSettingBase.path');
-
-
-
   final _$formatAtom = Atom(name: '_UserSettingBase.format');
 
   @override
@@ -253,9 +249,6 @@ mixin _$UserSetting on _UserSettingBase, Store {
     return _$setSingleFolderAsyncAction.run(() => super.setSingleFolder(value));
   }
 
-  final _$getPathAsyncAction = AsyncAction('_UserSettingBase.getPath');
-
-
   final _$setLanguageNumAsyncAction =
       AsyncAction('_UserSettingBase.setLanguageNum');
 
@@ -277,11 +270,6 @@ mixin _$UserSetting on _UserSettingBase, Store {
   Future<void> change(int value) {
     return _$changeAsyncAction.run(() => super.change(value));
   }
-
-  final _$_UserSettingBaseActionController =
-      ActionController(name: '_UserSettingBase');
-
-
 
   @override
   String toString() {

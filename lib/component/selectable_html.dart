@@ -54,14 +54,14 @@ class _SelectableHtmlState extends State<SelectableHtml> {
             });
       },
       child: HtmlWidget(
-       widget.data ?? '~',
-//        customStylesBuilder: (e) {
-//          // Override font size?
-//          if (e.attributes.containsKey('href')) {
-//            return ['color', 'red'];
-//          }
-//          return null;
-//        },
+        widget.data ?? '~',
+        customStylesBuilder: (e) {
+          if (e.attributes.containsKey('href')) {
+            final color = userSetting.themeData.accentColor;
+            return ['color',  '#${color.value.toRadixString(16).substring(2, 8)}'];
+          }
+          return null;
+        },
         onTapUrl: (String url) async {
           if (await canLaunch(url)) {
             await launch(url);

@@ -15,9 +15,7 @@
  */
 
 import 'dart:ui';
-import 'package:animations/animations.dart';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -25,7 +23,6 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
-import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/result_page.dart';
@@ -290,7 +287,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       child: Text(
                         I18n.of(context).history,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
                             fontSize: 16.0,
                             color: Theme.of(context).textTheme.headline5.color),
                       ),
@@ -335,7 +331,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   child: Text(
                     I18n.of(context).recommand_tag,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         fontSize: 16.0,
                         color: Theme.of(context).textTheme.headline6.color),
                   ),
@@ -372,10 +367,14 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                   children: <Widget>[
                                     PixivImage(
                                       tags[index].illust.imageUrls.squareMedium,
+                                      fit: BoxFit.cover,
                                     ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color: Color(0x90000000)),
+                                    Opacity(
+                                      opacity: 0.4,
+                                      child: Container(
+                                        decoration:
+                                            BoxDecoration(color: Colors.black),
+                                      ),
                                     ),
                                     Align(
                                       child: Padding(
@@ -434,23 +433,41 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   }
 
   Widget buildActionChip(TagsPersist f, BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onLongPress: () {
-        historyStore.delete(f.id);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(I18n.of(context).delete),
+                actions: [
+                  FlatButton(
+                      onPressed: () {
+                        tagHistoryStore.delete(f.id);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).ok)),
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).cancel)),
+                ],
+              );
+            });
       },
-      child: ActionChip(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+            builder: (context) => ResultPage(
+                  word: f.name,
+                  translatedName: f.translatedName ?? '',
+                )));
+      },
+      child: Chip(
         label: Text(
           f.name,
           style: TextStyle(fontSize: 12.0),
         ),
-        padding: EdgeInsets.all(0.0),
-        onPressed: () {
-          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-              builder: (context) => ResultPage(
-                    word: f.name,
-                    translatedName: f.translatedName ?? '',
-                  )));
-        },
       ),
     );
   }

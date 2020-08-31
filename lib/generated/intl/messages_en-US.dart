@@ -176,6 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skip" : MessageLookupByLibrary.simpleMessage("Skip"),
     "source" : MessageLookupByLibrary.simpleMessage("Source"),
     "spotlight" : MessageLookupByLibrary.simpleMessage("Highlights"),
+    "start" : MessageLookupByLibrary.simpleMessage("start"),
     "support" : MessageLookupByLibrary.simpleMessage("Support"),
     "support_message" : MessageLookupByLibrary.simpleMessage("Feedbacks are welcome :)"),
     "tag" : MessageLookupByLibrary.simpleMessage("Tag"),

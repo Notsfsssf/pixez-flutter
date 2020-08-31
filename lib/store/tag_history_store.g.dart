@@ -23,6 +23,13 @@ mixin _$TagHistoryStore on _TagHistoryStoreBase, Store {
     return _$insertAsyncAction.run(() => super.insert(tagsPersist));
   }
 
+  final _$deleteAsyncAction = AsyncAction('_TagHistoryStoreBase.delete');
+
+  @override
+  Future delete(int id) {
+    return _$deleteAsyncAction.run(() => super.delete(id));
+  }
+
   final _$deleteAllAsyncAction = AsyncAction('_TagHistoryStoreBase.deleteAll');
 
   @override

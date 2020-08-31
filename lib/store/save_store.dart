@@ -103,7 +103,7 @@ abstract class _SaveStoreBase with Store {
             onlyOne: true,
             duration: Duration(seconds: 1),
             toastBuilder: (textCancel) => Align(
-                  alignment: Alignment(0, 0.8),
+                  alignment: Alignment(0,0.8),
                   child: Card(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -117,7 +117,8 @@ abstract class _SaveStoreBase with Store {
                               }));
                             }),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding:  const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(context).append_to_query}"),
                         )
                       ],
@@ -137,7 +138,8 @@ abstract class _SaveStoreBase with Store {
                       children: <Widget>[
                         IconButton(icon: Icon(Icons.info), onPressed: () {}),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding:  const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(context).already_in_query}"),
                         )
                       ],
@@ -161,7 +163,8 @@ abstract class _SaveStoreBase with Store {
                               saveStore.redo(stream.data, stream.index);
                             }),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding:  const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(context).already_saved}"),
                         )
                       ],
