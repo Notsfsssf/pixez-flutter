@@ -301,9 +301,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         (route) => route == null,
       );
     } else {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.storage,
-      ].request();
       if (await DocumentPlugin.needChoice()) {
         await showDialog(
             context: context,

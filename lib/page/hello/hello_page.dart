@@ -51,14 +51,7 @@ class _HelloPageState extends State<HelloPage> {
   @override
   void initState() {
     index = userSetting.welcomePageNum;
-    if (index < 2) {
-      stackIndex = 0;
-    } else {
-      stackIndex = index - 1;
-    }
-    _pageController = index < 2
-        ? PageController(initialPage: userSetting.welcomePageNum)
-        : PageController();
+    _pageController = PageController(initialPage: userSetting.welcomePageNum);
     super.initState();
     saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {
@@ -144,63 +137,40 @@ class _HelloPageState extends State<HelloPage> {
     }
   }
 
-  int stackIndex = 0;
+  var lists = <Widget>[
+    Observer(builder: (context) {
+      if (accountStore.now != null)
+        return RecomSpolightPage();
+      else
+        return PreviewPage();
+    }),
+    NewPage(),
+    SearchPage(),
+    SettingPage()
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Observer(builder: (_) {
-        return accountStore.now != null
-            ? (IndexedStack(
-                index: stackIndex,
-                children: <Widget>[
-                  PageView.builder(
-                      itemCount: 2,
-                      controller: _pageController,
-                      onPageChanged: (index) {
-                        setState(() {
-                          this.index = index;
-                        });
-                      },
-                      itemBuilder: (context, index) {
-                        var lists = <Widget>[
-                          RecomSpolightPage(),
-                          NewPage(),
-                        ];
-                        return lists[index];
-                      }),
-                  SearchPage(),
-                  SettingPage()
-                ],
-              ))
-            : PageView.builder(
-                itemCount: 4,
-                controller: _pageController,
-                itemBuilder: (context, index) {
-                  var lists = [
-                    PreviewPage(),
-                    NewPage(),
-                    SearchPage(),
-                    SettingPage()
-                  ];
-                  return lists[index];
-                });
-      }),
+      body: PageView.builder(
+          itemCount: 4,
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              this.index = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            return lists[index];
+          }),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: index,
           onTap: (index) {
-            if (index > 1) {
-              setState(() {
-                stackIndex = index - 1;
-                this.index = index;
-              });
-            } else {
-              setState(() {
-                stackIndex = 0;
-                this.index = index;
-              });
-              _pageController.jumpToPage(index);
-            }
+            setState(() {
+              this.index = index;
+            });
+            _pageController.jumpToPage(index);
           },
           items: [
             BottomNavigationBarItem(

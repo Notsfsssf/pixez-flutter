@@ -22,7 +22,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -38,6 +37,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.*
+import kotlin.Comparator
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
@@ -60,11 +61,12 @@ class MainActivity : FlutterActivity() {
         "$parentUri/$fileName"
     }
 
-    private fun choiceFolder() {
+    private fun choiceFolder(needHint: Boolean = true) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
-        Toast.makeText(context, getString(R.string.choose_a_suitable_image_storage_directory), Toast.LENGTH_SHORT).show()
+        if (needHint)
+            Toast.makeText(context, getString(R.string.choose_a_suitable_image_storage_directory), Toast.LENGTH_SHORT).show()
         startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
     }
 
@@ -269,6 +271,11 @@ class MainActivity : FlutterActivity() {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.data?.also { uri ->
                         Log.d("path", uri.toString())
+                        if (uri.toString().toLowerCase(Locale.ROOT).contains("download")) {
+                            Toast.makeText(applicationContext, getString(R.string.do_not_choice_download_folder_message), Toast.LENGTH_LONG).show()
+                            choiceFolder(needHint = false)
+                            return
+                        }
                         val contentResolver = applicationContext.contentResolver
                         val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION
