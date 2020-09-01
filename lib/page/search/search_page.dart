@@ -69,7 +69,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   Widget _buildFirstRow(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -284,11 +284,31 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   if (tagHistoryStore.tags.isNotEmpty)
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        I18n.of(context).history,
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            color: Theme.of(context).textTheme.headline5.color),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            I18n.of(context).history,
+                            style: TextStyle(
+                                fontSize: 16.0,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .color),
+                          ),
+                          Visibility(
+                            visible: false,
+                            child: Text(
+                              I18n.of(context).clear,
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      .color),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   else
@@ -304,17 +324,23 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: Wrap(
-                            children: tagHistoryStore.tags.map((f) {
-                              return buildActionChip(f, context);
-                            }).toList()
-                              ..add(ActionChip(
-                                  label: Text(
-                                    I18n.of(context).clear,
-                                    style: TextStyle(fontSize: 12.0),
-                                  ),
-                                  onPressed: () {
-                                    tagHistoryStore.deleteAll();
-                                  })),
+                            children: [
+                              for (var f in tagHistoryStore.tags)
+                                buildActionChip(f, context),
+                              // ActionChip(
+                              //     backgroundColor: Colors.transparent,
+                              //     label: Icon(
+                              //       Icons.delete,
+                              //       color: Theme.of(context)
+                              //           .textTheme
+                              //           .caption
+                              //           .color,
+                              //     ),
+                              //     labelPadding: EdgeInsets.all(0.0),
+                              //     onPressed: () {
+                              //       tagHistoryStore.deleteAll();
+                              //     })
+                            ],
                             runSpacing: 0.0,
                             spacing: 3.0,
                           ),
@@ -322,6 +348,40 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       }
                       return Container();
                     },
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.all(16.0),
+                sliver: SliverToBoxAdapter(
+                  child: InkWell(
+                    onTap: () {
+                      tagHistoryStore.deleteAll();
+                    },
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.delete_outline,
+                            size: 18.0,
+                            color: Theme.of(context).textTheme.caption.color,
+                          ),
+                          Text(
+                            I18n.of(context).clear_search_tag_history,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        .color),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -464,6 +524,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 )));
       },
       child: Chip(
+        padding: EdgeInsets.all(0.0),
         label: Text(
           f.name,
           style: TextStyle(fontSize: 12.0),

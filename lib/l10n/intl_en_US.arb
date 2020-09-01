@@ -174,5 +174,6 @@
   "saf_hint": "In order to save illusts to your device you have to choose a folder and allow PixEz to access it(e.g. Picture\/Pixez).",
   "what_is_saf": "Why?",
   "not_the_correct_link": "Not a valid link of a Pixiv illust >_<",
-  "start": "start"
+  "start": "start",
+  "clear_search_tag_history": "Clear search history"
 }

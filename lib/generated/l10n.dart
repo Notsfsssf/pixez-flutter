@@ -1782,6 +1782,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Clear search history`
+  String get clear_search_tag_history {
+    return Intl.message(
+      'Clear search history',
+      name: 'clear_search_tag_history',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/constraint.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -42,7 +42,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
-          if (Platform.isAndroid && !Constrains.isGooglePlay)
+          if (Platform.isAndroid && !Constants.isGooglePlay)
             launch('https://github.com/itzXian');
         } catch (e) {}
       },
@@ -64,7 +64,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     InkWell(
       onTap: () {
         try {
-          if (Platform.isAndroid && !Constrains.isGooglePlay)
+          if (Platform.isAndroid && !Constants.isGooglePlay)
             launch('https://github.com/TragicLifeHu');
         } catch (e) {}
       },

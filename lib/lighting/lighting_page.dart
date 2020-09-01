@@ -156,9 +156,6 @@ class _LightingListState extends State<LightingList> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  height: 90,
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child:

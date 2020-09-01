@@ -79,34 +79,26 @@ class _SettingPageState extends State<SettingPage> {
                             builder: (context) => ThemePage()));
                       },
                     ),
-                    ...(Platform.isAndroid)
-                        ? <Widget>[
-                            IconButton(
-                                icon: Icon(
-                                  Icons.search,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color,
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => SauceNaoPage()));
-                                }),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.code,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color,
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => PlatformPage()));
-                                })
-                          ]
-                        : []
+                    if (Platform.isAndroid) ...[
+                      IconButton(
+                          icon: Icon(
+                            Icons.search,
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SauceNaoPage()));
+                          }),
+                      IconButton(
+                          icon: Icon(
+                            Icons.code,
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PlatformPage()));
+                          })
+                    ]
                   ],
                 ),
                 Observer(builder: (context) {

@@ -174,5 +174,6 @@
   "saf_hint": "需要以SAF模式選擇資料夾以儲存圖像或其他檔案\n雖然不授權仍然能夠繼續使用，但是這可能會導致APP閃退或者部分功能不可用\n推薦設定儲存資料夾為 Picture\\Pixez",
   "what_is_saf": "什麽是SAF?",
   "not_the_correct_link": "非正常連結 >_<",
-  "start": "开始"
+  "start": "開始",
+  "clear_search_tag_history": "清空搜索歷史"
 }

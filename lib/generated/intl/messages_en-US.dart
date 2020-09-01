@@ -51,6 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "clear" : MessageLookupByLibrary.simpleMessage("Clear"),
     "clear_all_cache" : MessageLookupByLibrary.simpleMessage("Clear all cache"),
     "clear_completed_tasks" : MessageLookupByLibrary.simpleMessage("Clear completed tasks"),
+    "clear_search_tag_history" : MessageLookupByLibrary.simpleMessage("Clear search history"),
     "clearn_cache" : MessageLookupByLibrary.simpleMessage("Clear cache"),
     "clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("Try this when you have problems with playing gifs"),
     "complete" : MessageLookupByLibrary.simpleMessage("Complete"),

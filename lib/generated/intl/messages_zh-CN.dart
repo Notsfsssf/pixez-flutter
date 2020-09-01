@@ -51,6 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "clear" : MessageLookupByLibrary.simpleMessage("清空"),
     "clear_all_cache" : MessageLookupByLibrary.simpleMessage("清除缓存"),
     "clear_completed_tasks" : MessageLookupByLibrary.simpleMessage("清空已完成任务"),
+    "clear_search_tag_history" : MessageLookupByLibrary.simpleMessage("清空搜索历史"),
     "clearn_cache" : MessageLookupByLibrary.simpleMessage("清除缓存"),
     "clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("如果播放动图反复出现问题可以尝试"),
     "complete" : MessageLookupByLibrary.simpleMessage("完成"),

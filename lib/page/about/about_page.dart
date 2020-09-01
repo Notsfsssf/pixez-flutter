@@ -14,7 +14,7 @@
  *
  */
 
-import 'package:pixez/constraint.dart';
+import 'package:pixez/constants.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
@@ -222,7 +222,7 @@ class _AboutPageState extends State<AboutPage> {
                   subtitle:
                       SelectableText('github.com/Notsfsssf/pixez-flutter'),
                   onTap: () {
-                    if(!Constrains.isGooglePlay)
+                    if(!Constants.isGooglePlay)
                     showModalBottomSheet(
                         context: context,
                         shape: RoundedRectangleBorder(
@@ -234,7 +234,7 @@ class _AboutPageState extends State<AboutPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                  title: Text('Version ${Constrains.tagName}'),
+                                  title: Text('Version ${Constants.tagName}'),
                                   subtitle: Text(
                                       I18n.of(context).go_to_project_address),
                                   onTap: () {
@@ -319,7 +319,7 @@ class _AboutPageState extends State<AboutPage> {
             }
           },
         ),
-        ...Platform.isAndroid&&!Constrains.isGooglePlay?[
+        ...Platform.isAndroid&&!Constants.isGooglePlay?[
           ListTile(
             title: Text(I18n.of(context).donate_title),
             subtitle: Text(I18n.of(context).donate_message),
