@@ -327,19 +327,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                             children: [
                               for (var f in tagHistoryStore.tags)
                                 buildActionChip(f, context),
-                              // ActionChip(
-                              //     backgroundColor: Colors.transparent,
-                              //     label: Icon(
-                              //       Icons.delete,
-                              //       color: Theme.of(context)
-                              //           .textTheme
-                              //           .caption
-                              //           .color,
-                              //     ),
-                              //     labelPadding: EdgeInsets.all(0.0),
-                              //     onPressed: () {
-                              //       tagHistoryStore.deleteAll();
-                              //     })
                             ],
                             runSpacing: 0.0,
                             spacing: 3.0,
@@ -351,39 +338,44 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              SliverPadding(
-                padding: EdgeInsets.all(16.0),
-                sliver: SliverToBoxAdapter(
-                  child: InkWell(
-                    onTap: () {
-                      tagHistoryStore.deleteAll();
-                    },
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.delete_outline,
-                            size: 18.0,
-                            color: Theme.of(context).textTheme.caption.color,
+              SliverToBoxAdapter(
+                child: Observer(builder: (context) {
+                  if (tagHistoryStore.tags.isNotEmpty)
+                    return InkWell(
+                      onTap: () {
+                        tagHistoryStore.deleteAll();
+                      },
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.delete_outline,
+                                size: 18.0,
+                                color:
+                                    Theme.of(context).textTheme.caption.color,
+                              ),
+                              Text(
+                                I18n.of(context).clear_search_tag_history,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .caption
+                                            .color),
+                              )
+                            ],
                           ),
-                          Text(
-                            I18n.of(context).clear_search_tag_history,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        .color),
-                          )
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                    );
+                  return Container();
+                }),
               ),
               SliverToBoxAdapter(
                 child: Padding(

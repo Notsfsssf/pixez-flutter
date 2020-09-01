@@ -64,7 +64,6 @@ class _LightingListState extends State<LightingList> {
   @override
   void dispose() {
     _scrollController?.dispose();
-    _refreshController?.dispose();
     _store?.dispose();
     super.dispose();
   }

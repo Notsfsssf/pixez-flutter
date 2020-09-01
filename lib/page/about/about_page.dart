@@ -214,70 +214,65 @@ class _AboutPageState extends State<AboutPage> {
             }
           },
         ),
-        ...Platform.isAndroid
-            ? [
-                ListTile(
-                  leading: Icon(Icons.device_hub),
-                  title: Text(I18n.of(context).repo_address),
-                  subtitle:
-                      SelectableText('github.com/Notsfsssf/pixez-flutter'),
-                  onTap: () {
-                    if(!Constants.isGooglePlay)
-                    showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16.0))),
-                        builder: (_) {
-                          return Container(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  title: Text('Version ${Constants.tagName}'),
-                                  subtitle: Text(
-                                      I18n.of(context).go_to_project_address),
-                                  onTap: () {
+        if (Platform.isAndroid) ...[
+          ListTile(
+            leading: Icon(Icons.device_hub),
+            title: Text(I18n.of(context).repo_address),
+            subtitle: SelectableText('github.com/Notsfsssf/pixez-flutter'),
+            onTap: () {
+              if (!Constants.isGooglePlay)
+                showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(16.0))),
+                    builder: (_) {
+                      return Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              title: Text('Version ${Constants.tagName}'),
+                              subtitle:
+                                  Text(I18n.of(context).go_to_project_address),
+                              onTap: () {
+                                try {
+                                  launch(
+                                      'https://github.com/Notsfsssf/pixez-flutter');
+                                } catch (e) {}
+                              },
+                              trailing: IconButton(
+                                  icon: Icon(Icons.link),
+                                  onPressed: () {
                                     try {
                                       launch(
                                           'https://github.com/Notsfsssf/pixez-flutter');
                                     } catch (e) {}
-                                  },
-                                  trailing: IconButton(
-                                      icon: Icon(Icons.link),
-                                      onPressed: () {
-                                        try {
-                                          launch(
-                                              'https://github.com/Notsfsssf/pixez-flutter');
-                                        } catch (e) {}
-                                      }),
-                                ),
-                                ListTile(
-                                  title:
-                                      Text(I18n.of(context).check_for_updates),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) => UpdatePage()));
-                                  },
-                                  trailing: Icon(Icons.update),
-                                ),
-                                ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4'),
-                                  ),
-                                  title: Text('Skimige'),
-                                  subtitle: Text(I18n.of(context).skimige_message),
-                                ),
-                              ],
+                                  }),
                             ),
-                          );
-                        });
-                  },
-                )
-              ]
-            : [],
+                            ListTile(
+                              title: Text(I18n.of(context).check_for_updates),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => UpdatePage()));
+                              },
+                              trailing: Icon(Icons.update),
+                            ),
+                            ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4'),
+                              ),
+                              title: Text('Skimige'),
+                              subtitle: Text(I18n.of(context).skimige_message),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+            },
+          )
+        ],
         Visibility(
           visible: false,
           child: ListTile(
@@ -301,12 +296,12 @@ class _AboutPageState extends State<AboutPage> {
           title: Text(I18n.of(context).thanks),
           subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
           onTap: () {
-            if(Platform.isAndroid)
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => Scaffold(
-                      appBar: AppBar(),
-                      body: ThanksList(),
-                    )));
+            if (Platform.isAndroid)
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                        appBar: AppBar(),
+                        body: ThanksList(),
+                      )));
           },
         ),
         ListTile(
@@ -319,7 +314,7 @@ class _AboutPageState extends State<AboutPage> {
             }
           },
         ),
-        ...Platform.isAndroid&&!Constants.isGooglePlay?[
+        if (Platform.isAndroid && !Constants.isGooglePlay) ...[
           ListTile(
             title: Text(I18n.of(context).donate_title),
             subtitle: Text(I18n.of(context).donate_message),
@@ -350,50 +345,42 @@ class _AboutPageState extends State<AboutPage> {
               },
             ),
           ),
-        ]:[],
-        ...(Platform.isIOS)
-            ? [
-                Card(
-                  child: ListTile(
-                    subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
-                    title: Text('支持开发者工作'),
-                    trailing: Text('12￥'),
-                    onTap: () async {
-                      BotToast.showText(text: 'try to Purchase');
-                      List<PurchasedItem> items = await FlutterInappPurchase
-                          .instance
-                          .getPendingTransactionsIOS();
-                      for (var i in items) {
-                        await FlutterInappPurchase.instance
-                            .finishTransaction(i);
-                      }
-                      await FlutterInappPurchase.instance
-                          .requestPurchase('support');
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
-                    title: Text('支持开发者工作'),
-                    trailing: Text('25￥'),
-                    onTap: () async {
-                      BotToast.showText(text: 'try to Purchase');
+        ],
+        if (Platform.isIOS) ...[
+          Card(
+            child: ListTile(
+              subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
+              title: Text('支持开发者工作'),
+              trailing: Text('12￥'),
+              onTap: () async {
+                BotToast.showText(text: 'try to Purchase');
+                List<PurchasedItem> items = await FlutterInappPurchase.instance
+                    .getPendingTransactionsIOS();
+                for (var i in items) {
+                  await FlutterInappPurchase.instance.finishTransaction(i);
+                }
+                await FlutterInappPurchase.instance.requestPurchase('support');
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
+              title: Text('支持开发者工作'),
+              trailing: Text('25￥'),
+              onTap: () async {
+                BotToast.showText(text: 'try to Purchase');
 
-                      List<PurchasedItem> items = await FlutterInappPurchase
-                          .instance
-                          .getPendingTransactionsIOS();
-                      for (var i in items) {
-                        await FlutterInappPurchase.instance
-                            .finishTransaction(i);
-                      }
-                      await FlutterInappPurchase.instance
-                          .requestPurchase('support1');
-                    },
-                  ),
-                )
-              ]
-            : [],
+                List<PurchasedItem> items = await FlutterInappPurchase.instance
+                    .getPendingTransactionsIOS();
+                for (var i in items) {
+                  await FlutterInappPurchase.instance.finishTransaction(i);
+                }
+                await FlutterInappPurchase.instance.requestPurchase('support1');
+              },
+            ),
+          )
+        ]
       ],
     );
   }
