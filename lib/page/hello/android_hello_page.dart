@@ -20,6 +20,7 @@ import 'package:animations/animations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -240,8 +241,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       final result = LastRelease.fromJson(response.data);
       List<int> versionNums =
           result.tagName.split('.').map((e) => int.parse(e));
-      List<int> newNums =
-          Constants.tagName.split('.').map((e) => int.parse(e));
+      List<int> newNums = Constants.tagName.split('.').map((e) => int.parse(e));
       for (int i = 0; i < versionNums.length; i++) {
         if (versionNums[i] < newNums[i]) {
           if (mounted) {
@@ -301,6 +301,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         (route) => route == null,
       );
     } else {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage,
+      ].request();
       if (await DocumentPlugin.needChoice()) {
         await showDialog(
             context: context,
@@ -313,7 +316,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 actions: [
                   FlatButton(
                       onPressed: () async {
-                        Constants.isGooglePlay||userSetting.disableBypassSni
+                        Constants.isGooglePlay || userSetting.disableBypassSni
                             ? launch(
                                 "https://developer.android.com/training/data-storage/shared/documents-files")
                             : launch(
