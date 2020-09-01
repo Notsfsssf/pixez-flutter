@@ -439,7 +439,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text(I18n.of(context).delete),
+                title: Text('${I18n.of(context).delete}?'),
                 actions: [
                   FlatButton(
                       onPressed: () {

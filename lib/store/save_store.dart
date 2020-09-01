@@ -31,6 +31,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/task/task_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
+import 'package:pixez/exts.dart';
 
 part 'save_store.g.dart';
 
@@ -103,7 +104,7 @@ abstract class _SaveStoreBase with Store {
             onlyOne: true,
             duration: Duration(seconds: 1),
             toastBuilder: (textCancel) => Align(
-                  alignment: Alignment(0,0.8),
+                  alignment: Alignment(0, 0.8),
                   child: Card(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -117,7 +118,7 @@ abstract class _SaveStoreBase with Store {
                               }));
                             }),
                         Padding(
-                          padding:  const EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(context).append_to_query}"),
                         )
@@ -138,7 +139,7 @@ abstract class _SaveStoreBase with Store {
                       children: <Widget>[
                         IconButton(icon: Icon(Icons.info), onPressed: () {}),
                         Padding(
-                          padding:  const EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(context).already_in_query}"),
                         )
@@ -163,7 +164,7 @@ abstract class _SaveStoreBase with Store {
                               saveStore.redo(stream.data, stream.index);
                             }),
                         Padding(
-                          padding:  const EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(context).already_saved}"),
                         )
@@ -236,7 +237,7 @@ abstract class _SaveStoreBase with Store {
         String targetFileName = fileName;
         if (userSetting.singleFolder) {
           targetFileName =
-              "${illusts.user.name.replaceAll("/", "").replaceAll("\\", "").replaceAll(":", "").replaceAll("*", "").replaceAll("?", "").replaceAll(">", "").replaceAll("|", "").replaceAll("<", "")}_${illusts.user.id}/$fileName";
+              "${illusts.user.name.toLegal()}_${illusts.user.id}/$fileName";
         }
         final isExist = await DocumentPlugin.exist(targetFileName);
         if (isExist) {
@@ -259,15 +260,7 @@ abstract class _SaveStoreBase with Store {
     if (Platform.isAndroid) {
       try {
         if (userSetting.singleFolder) {
-          String name = illusts.user.name
-              .replaceAll("/", "")
-              .replaceAll("\\", "")
-              .replaceAll(":", "")
-              .replaceAll("*", "")
-              .replaceAll("?", "")
-              .replaceAll(">", "")
-              .replaceAll("|", "")
-              .replaceAll("<", "");
+          String name = illusts.user.name.toLegal();
           String id = illusts.user.id.toString();
           fileName = "${name}_$id/$fileName";
         }
@@ -308,15 +301,7 @@ abstract class _SaveStoreBase with Store {
         .replaceAll("{part}", index.toString())
         .replaceAll("{user_name}", illust.user.name.toString())
         .replaceAll("{title}", illust.title);
-    return "$result$memType"
-        .replaceAll("/", "")
-        .replaceAll("\\", "")
-        .replaceAll(":", "")
-        .replaceAll("*", "")
-        .replaceAll("?", "")
-        .replaceAll(">", "")
-        .replaceAll("|", "")
-        .replaceAll("<", "");
+    return "$result$memType".toLegal();
   }
 
   @action

@@ -14,7 +14,6 @@
  *
  */
 
-import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -37,9 +36,10 @@ import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
+import 'package:pixez/exts.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:intl/intl.dart';
 import 'package:share/share.dart';
+
 
 class IllustPage extends StatefulWidget {
   final int id;
@@ -218,14 +218,7 @@ class _IllustPageState extends State<IllustPage> {
           ));
   }
 
-  String toShortTime(String dateString) {
-    try {
-      var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
-      return formatter.format(DateTime.parse(dateString));
-    } catch (e) {
-      return dateString;
-    }
-  }
+
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     IllustDetailStore illustDetailStore = IllustDetailStore(illust);
@@ -290,7 +283,7 @@ class _IllustPageState extends State<IllustPage> {
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                   Text(
-                    toShortTime(illust.createDate),
+                    illust.createDate.toShortTime(),
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],

@@ -25,6 +25,7 @@ class RankPage extends StatefulWidget {
   RankPage({
     Key key,
   }) : super(key: key);
+
   @override
   _RankPageState createState() => _RankPageState();
 }
@@ -69,6 +70,7 @@ class _RankPageState extends State<RankPage>
   }
 
   DateTime nowDateTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -86,14 +88,16 @@ class _RankPageState extends State<RankPage>
             children: <Widget>[
               AppBar(
                 title: TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    isScrollable: true,
-                    indicatorColor: Theme.of(context).cardColor,
-                    tabs: titles
-                        .map((element) => Tab(
-                              text: element,
-                            ))
-                        .toList()),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  isScrollable: true,
+                  indicatorColor: Theme.of(context).cardColor,
+                  tabs: <Widget>[
+                    for (var i in titles)
+                      Tab(
+                        text: i,
+                      )
+                  ],
+                ),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.date_range),
@@ -104,8 +108,8 @@ class _RankPageState extends State<RankPage>
                           initialDate: nowDateTime,
                           locale: I18n.delegate
                               .supportedLocales[userSetting.languageNum],
-                          firstDate: DateTime(
-                              2007, 8), //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
+                          firstDate: DateTime(2007, 8),
+                          //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
                           lastDate: nowdate);
                       if (date != null && mounted) {
                         nowDateTime = date;

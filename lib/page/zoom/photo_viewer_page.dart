@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
@@ -54,12 +53,13 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
           });
         },
         controller: PageController(initialPage: widget.index),
-        children: widget.illusts.metaPages
-            .map((f) => PhotoView(
+        children: [
+          for (var f in widget.illusts.metaPages)
+            PhotoView(
                 imageProvider: PixivProvider.url(userSetting.zoomQuality == 0
                     ? f.imageUrls.large
-                    : f.imageUrls.original)))
-            .toList(),
+                    : f.imageUrls.original))
+        ],
       );
 
   Widget _buildMuti() => InkWell(
@@ -90,8 +90,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                               title: Text(I18n.of(context).share),
                               onTap: () async {
                                 if (fileInfo != null)
-                                  ShareExtend.share(
-                                      fileInfo.path, "image");
+                                  ShareExtend.share(fileInfo.path, "image");
                                 Navigator.of(context).pop();
                               },
                             )
@@ -152,8 +151,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                   final url = userSetting.zoomQuality == 0
                       ? widget.illusts.imageUrls.large
                       : widget.illusts.metaSinglePage.originalImageUrl;
-                  File fileInfo =
-                      await getCachedImageFile(url);
+                  File fileInfo = await getCachedImageFile(url);
                   showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(

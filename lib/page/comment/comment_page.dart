@@ -16,7 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
@@ -39,14 +39,7 @@ class _CommentPageState extends State<CommentPage> {
   String parentCommentName;
   RefreshController easyRefreshController;
   CommentStore _store;
-  String toShortTime(String dateString) {
-    try {
-      var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
-      return formatter.format(DateTime.parse(dateString));
-    } catch (e) {
-      return dateString;
-    }
-  }
+
 
   @override
   void initState() {
@@ -148,8 +141,7 @@ class _CommentPageState extends State<CommentPage> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(top: 8.0),
-                                        child: Text(toShortTime(
-                                            comment.date.toString())),
+                                        child: Text(comment.date.toString().toShortTime()),
                                       )
                                     ],
                                   ),
