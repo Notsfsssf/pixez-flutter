@@ -28,9 +28,9 @@ import flutter_downloader
             
         })
         GeneratedPluginRegistrant.register(with: self)
-        FlutterDownloaderPlugin.setPluginRegistrantCallback { (registry:FlutterPluginRegistry) in
+        FlutterDownloaderPlugin.setPluginRegistrantCallback { registry in
                 if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
-                   FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin"))
+                   FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
                 }
         }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
