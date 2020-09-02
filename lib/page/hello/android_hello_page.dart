@@ -16,11 +16,9 @@
 
 import 'dart:async';
 
-import 'package:animations/animations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -49,7 +47,7 @@ class AndroidHelloPage extends StatefulWidget {
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   final _pageList = [
-    NovelRecomPage(),
+    RecomSpolightPage(),
     RankPage(),
     NewPage(),
     SearchPage(),
