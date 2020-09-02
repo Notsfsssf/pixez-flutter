@@ -14,9 +14,11 @@
  *
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
@@ -28,6 +30,7 @@ class NovelLightingList extends StatefulWidget {
   final FutureGet futureGet;
 
   const NovelLightingList({Key key, this.futureGet}) : super(key: key);
+
   @override
   _NovelLightingListState createState() => _NovelLightingListState();
 }
@@ -35,6 +38,7 @@ class NovelLightingList extends StatefulWidget {
 class _NovelLightingListState extends State<NovelLightingList> {
   RefreshController _easyRefreshController;
   NovelLightingStore _store;
+
   @override
   void initState() {
     _easyRefreshController = RefreshController(initialRefresh: true);
@@ -59,15 +63,13 @@ class _NovelLightingListState extends State<NovelLightingList> {
 
   Widget _buildBody(BuildContext context) {
     if (_store.novels.isNotEmpty) {
-      return ListView.builder(
+      return ListView.separated(
+        separatorBuilder: (context, index) {
+          return Divider();
+        },
         itemBuilder: (context, index) {
           Novel novel = _store.novels[index];
-          return ListTile(
-            title: Text(novel.title),
-            subtitle: Text(
-              novel.user.name,
-              maxLines: 1,
-            ),
+          return InkWell(
             onTap: () {
               Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
                   builder: (BuildContext context) => NovelViewerPage(
@@ -75,7 +77,51 @@ class _NovelLightingListState extends State<NovelLightingList> {
                         novel: novel,
                       )));
             },
-            trailing: NovelBookmarkButton(novel: novel),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PixivImage(
+                        novel.imageUrls.squareMedium,
+                        width: 80,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Text(
+                                novel.title,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.subtitle1,
+                                maxLines: 3,
+                              )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: Text(
+                              novel.user.name,
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                NovelBookmarkButton(novel: novel)
+              ],
+            ),
           );
         },
         itemCount: _store.novels.length,

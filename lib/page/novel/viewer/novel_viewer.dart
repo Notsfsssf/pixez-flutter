@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
@@ -38,6 +39,7 @@ class NovelViewerPage extends StatefulWidget {
 class _NovelViewerPageState extends State<NovelViewerPage> {
   ScrollController _controller;
   NovelStore _novelStore;
+
   @override
   void initState() {
     _novelStore = NovelStore(widget.id)..fetch();
@@ -61,6 +63,38 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
+        if (_novelStore.errorMessage != null) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
+            ),
+            extendBody: true,
+            extendBodyBehindAppBar: true,
+            body: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:
+                      Text(':(', style: Theme.of(context).textTheme.headline4),
+                    ),
+                    FlatButton(
+                        onPressed: () {
+                          _novelStore.fetch();
+                        },
+                        child: Text(I18n.of(context).retry)),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text('${_novelStore.errorMessage}'),
+                    )
+                  ],
+                ),),
+          );
+        }
         if (_novelStore.novelTextResponse != null) {
           return Scaffold(
             appBar: AppBar(
@@ -138,7 +172,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return NovelUserPage(id: widget.novel.user.id,);
+                        return NovelUserPage(
+                          id: widget.novel.user.id,
+                        );
                       }));
                     },
                   ),

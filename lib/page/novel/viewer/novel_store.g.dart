@@ -25,6 +25,21 @@ mixin _$NovelStore on _NovelStoreBase, Store {
     });
   }
 
+  final _$errorMessageAtom = Atom(name: '_NovelStoreBase.errorMessage');
+
+  @override
+  String get errorMessage {
+    _$errorMessageAtom.reportRead();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String value) {
+    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
+      super.errorMessage = value;
+    });
+  }
+
   final _$fetchAsyncAction = AsyncAction('_NovelStoreBase.fetch');
 
   @override
@@ -35,7 +50,8 @@ mixin _$NovelStore on _NovelStoreBase, Store {
   @override
   String toString() {
     return '''
-novelTextResponse: ${novelTextResponse}
+novelTextResponse: ${novelTextResponse},
+errorMessage: ${errorMessage}
     ''';
   }
 }

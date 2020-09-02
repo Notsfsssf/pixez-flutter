@@ -31,9 +31,16 @@ class PixivImage extends HookWidget {
   final bool fade;
   final BoxFit fit;
   final bool enableMemoryCache;
+  final double height;
+  final double width;
 
   PixivImage(this.url,
-      {this.placeWidget, this.fade = true, this.fit, this.enableMemoryCache});
+      {this.placeWidget,
+      this.fade = true,
+      this.fit,
+      this.enableMemoryCache,
+      this.height,
+      this.width});
 
   bool already = false;
 
@@ -45,6 +52,8 @@ class PixivImage extends HookWidget {
         upperBound: 1.0);
     return ExtendedImage.network(
       url,
+      height: height,
+      width: width,
       fit: fit ?? BoxFit.fitWidth,
       headers: PixivHeader,
       enableMemoryCache: enableMemoryCache ?? true,

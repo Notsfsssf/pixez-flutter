@@ -32,6 +32,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -48,7 +49,7 @@ class AndroidHelloPage extends StatefulWidget {
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   final _pageList = [
-    RecomSpolightPage(),
+    NovelRecomPage(),
     RankPage(),
     NewPage(),
     SearchPage(),
@@ -68,17 +69,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            this.index = index;
-          });
-        },
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return _pageList[index];
-        },
-      ),
+          controller: _pageController,
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return _pageList[index];
+          }),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: index,
