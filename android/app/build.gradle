@@ -37,12 +37,33 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def dartEnvironmentVariables = [
+        IS_GOOGLEPLAY: false,
+];
+
+if (project.hasProperty('dart-defines')) {
+    dartEnvironmentVariables = dartEnvironmentVariables + project.property('dart-defines')
+            .split(',')
+            .collectEntries { entry ->
+                def pair = URLDecoder.decode(entry).split('=')
+                [(pair.first()): pair.last()]
+            }
+}
+print("\n" +
+        "______ _______   __ _____ ______\n" +
+        "| ___ \\_   _\\ \\ / /|  ___|___  /\n" +
+        "| |_/ / | |  \\ V / | |__    / / \n" +
+        "|  __/  | |  /   \\ |  __|  / /  \n" +
+        "| |    _| |_/ /^\\ \\| |___./ /___\n" +
+        "\\_|    \\___/\\/   \\/\\____/\\_____/\n" +
+        "                                \n" +
+        "                                \n")
+println("hey,IS_GOOGLEPLAY=${dartEnvironmentVariables.IS_GOOGLEPLAY}")
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -59,7 +80,7 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.perol.play.pixez"
+        applicationId dartEnvironmentVariables.IS_GOOGLEPLAY?'com.perol.play.pixez' :'com.perol.pixez'
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 29
