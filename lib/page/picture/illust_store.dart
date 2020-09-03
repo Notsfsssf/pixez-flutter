@@ -49,6 +49,7 @@ abstract class _IllustStoreBase with Store {
         Response response = await client.getIllustDetail(id);
         final result = Illusts.fromJson(response.data['illust']);
         illusts = result;
+        isBookmark = illusts.isBookmarked;
       } on DioError catch (e) {
         if (e.response != null) {
           if (e.response.statusCode == HttpStatus.notFound) {
@@ -67,21 +68,20 @@ abstract class _IllustStoreBase with Store {
   Future<bool> star({String restrict = 'public', List<String> tags}) async {
     if (!illusts.isBookmarked) {
       try {
-        Response response =
-            await ApiClient(isBookmark: true).postLikeIllust(illusts.id, restrict, tags);
+        Response response = await ApiClient(isBookmark: true)
+            .postLikeIllust(illusts.id, restrict, tags);
         illusts.isBookmarked = true;
         isBookmark = true;
         return true;
-      } catch (e) {
-      }
+      } catch (e) {}
     } else {
       try {
-        Response response = await ApiClient(isBookmark: true).postUnLikeIllust(illusts.id);
+        Response response =
+            await ApiClient(isBookmark: true).postUnLikeIllust(illusts.id);
         illusts.isBookmarked = false;
         isBookmark = false;
         return false;
-      } catch (e) {
-      }
+      } catch (e) {}
     }
     return null;
   }
