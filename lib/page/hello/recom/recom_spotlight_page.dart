@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -39,7 +41,8 @@ class RecomSpolightPage extends StatefulWidget {
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
 }
 
-class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKeepAliveClientMixin{
+class _RecomSpolightPageState extends State<RecomSpolightPage>
+    with AutomaticKeepAliveClientMixin {
   SpotlightStore spotlightStore;
   LightingStore _lightingStore;
 
@@ -47,7 +50,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
   void initState() {
     _easyRefreshController = RefreshController(initialRefresh: true);
     spotlightStore = SpotlightStore(null);
-    _lightingStore = LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
+    _lightingStore =
+        LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
     super.initState();
   }
 
@@ -91,6 +95,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
         controller: _easyRefreshController,
         enablePullDown: true,
         enablePullUp: true,
+        header: (Platform.isAndroid)
+            ? MaterialClassicHeader(
+                color: Theme.of(context).accentColor,
+              )
+            : ClassicHeader(),
         footer: CustomFooter(
           builder: (BuildContext context, LoadStatus mode) {
             Widget body;

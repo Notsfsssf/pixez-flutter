@@ -40,7 +40,7 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 
-class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin{
+class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -64,20 +64,18 @@ class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin{
               children: <Widget>[
                 AppBar(
                   automaticallyImplyLeading: false,
-                  title: TabBar(
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).cardColor,
-                      tabs: [
-                        Tab(
-                          text: I18n.of(context).news,
-                        ),
-                        Tab(
-                          text: I18n.of(context).bookmark,
-                        ),
-                        Tab(
-                          text: I18n.of(context).followed,
-                        ),
-                      ]),
+                  title:
+                      TabBar(indicatorSize: TabBarIndicatorSize.label, tabs: [
+                    Tab(
+                      text: I18n.of(context).news,
+                    ),
+                    Tab(
+                      text: I18n.of(context).bookmark,
+                    ),
+                    Tab(
+                      text: I18n.of(context).followed,
+                    ),
+                  ]),
                   actions: <Widget>[
                     IconButton(
                       icon: Icon(Icons.supervised_user_circle),
@@ -143,6 +141,4 @@ class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin{
 
   @override
   bool get wantKeepAlive => true;
-
-
 }

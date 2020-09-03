@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:io';
 import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -206,6 +207,11 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       if (accountStore.now != null)
         return SmartRefresher(
           controller: _controller,
+          header: (Platform.isAndroid)
+              ? MaterialClassicHeader(
+                  color: Theme.of(context).accentColor,
+                )
+              : ClassicHeader(),
           enablePullDown: true,
           onRefresh: () => _trendTagsStore.fetch(),
           child: CustomScrollView(

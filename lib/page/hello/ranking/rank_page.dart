@@ -87,10 +87,10 @@ class _RankPageState extends State<RankPage>
           child: Column(
             children: <Widget>[
               AppBar(
+        
                 title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
-                  indicatorColor: Theme.of(context).cardColor,
                   tabs: <Widget>[
                     for (var i in titles)
                       Tab(

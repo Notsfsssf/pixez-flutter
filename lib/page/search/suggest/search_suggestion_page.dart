@@ -155,8 +155,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
             hintText: I18n.of(context).search_word_or_paste_link,
           )),
       bottom: TabBar(
+        indicatorSize: TabBarIndicatorSize.label,
         controller: _tabController,
-        indicatorColor: Theme.of(context).cardColor,
         tabs: <Widget>[
           Tab(
             child: Text(I18n.of(context).key_word),

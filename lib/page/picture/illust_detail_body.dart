@@ -121,162 +121,178 @@ class IllustDetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final IllustDetailStore _store = IllustDetailStore(illust);
-    return Observer(
-      builder: (context) {
-        return Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              _buildNameAvatar(context, illust, _store),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(I18n.of(context).illust_id),
-                        Container(
-                          width: 10.0,
-                        ),
-                        colorText(illust.id.toString(), context),
-                        Container(
-                          width: 20.0,
-                        ),
-                        Text(I18n.of(context).pixel),
-                        Container(
-                          width: 10.0,
-                        ),
-                        colorText("${illust.width}x${illust.height}", context)
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(I18n.of(context).total_view),
-                        Container(
-                          width: 10.0,
-                        ),
-                        colorText(illust.totalView.toString(), context),
-                        Container(
-                          width: 20.0,
-                        ),
-                        Text(I18n.of(context).total_bookmark),
-                        Container(
-                          width: 10.0,
-                        ),
-                        colorText("${illust.totalBookmarks}", context)
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Wrap(
-                  spacing: 2, // gap between adjacent chips
-                  runSpacing: 0, // gap between lines
-                  children: illust.tags
-                      .map((f) => Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(builder: (context) {
-                                      return ResultPage(
-                                        word: f.name,
-                                        translatedName: f.translatedName ?? '',
-                                      );
-                                    }));
-                                  },
-                                  onLongPress: () async {
-                                    switch (await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(I18n.of(context).ban +
-                                                "'${f.name}'?"),
-                                            actions: <Widget>[
-                                              FlatButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context, "OK");
-                                                },
-                                                child: Text(I18n.of(context).ok),
-                                              ),
-                                              FlatButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child:
-                                                    Text(I18n.of(context).cancel),
-                                              )
-                                            ],
-                                          );
-                                        })) {
-                                      case "OK":
-                                        {
-                                          muteStore.insertBanTag(BanTagPersist()
-                                            ..name = f.name
-                                            ..translateName =
-                                                f.translatedName ?? '_');
-                                        }
-                                        break;
-                                    }
-                                  },
-                                  child: Text(
-                                    "#${f.name}",
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Theme.of(context).accentColor),
-                                  ),
-                                ),
-                                Container(
-                                  width: 10.0,
-                                ),
-                                Flexible(
-                                    child: Text(
-                                  f.translatedName ?? "~",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: true,
-                                  style: Theme.of(context).textTheme.caption,
-                                ))
-                              ]))
-                      .toList(),
-                ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SelectableHtml(
-                    data: illust.caption.isEmpty ? "~" : illust.caption,
+    return Observer(builder: (context) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            _buildNameAvatar(context, illust, _store),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(I18n.of(context).illust_id),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText(illust.id.toString(), context),
+                      Container(
+                        width: 20.0,
+                      ),
+                      Text(I18n.of(context).pixel),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText("${illust.width}x${illust.height}", context)
+                    ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(I18n.of(context).total_view),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText(illust.totalView.toString(), context),
+                      Container(
+                        width: 20.0,
+                      ),
+                      Text(I18n.of(context).total_bookmark),
+                      Container(
+                        width: 10.0,
+                      ),
+                      colorText("${illust.totalBookmarks}", context)
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Wrap(
+                spacing: 2, // gap between adjacent chips
+                runSpacing: 0, // gap between lines
+                children: [for (var f in illust.tags) buildRow(context, f)],
+              ),
+            ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SelectableHtml(
+                  data: illust.caption.isEmpty ? "~" : illust.caption,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FlatButton(
-                  child: Text(
-                    I18n.of(context).view_comment,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: Theme.of(context).textTheme.bodyText1.fontSize),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => CommentPage(
-                              id: illust.id,
-                            )));
-                  },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FlatButton(
+                child: Text(
+                  I18n.of(context).view_comment,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: Theme.of(context).textTheme.bodyText1.fontSize),
                 ),
-              )
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => CommentPage(
+                            id: illust.id,
+                          )));
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget buildRow(BuildContext context, Tags f) {
+    return RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+            text: "#${f.name}",
+            children: [
+              TextSpan(text: " ", style: Theme.of(context).textTheme.caption),
+              TextSpan(
+                  text: "${f.translatedName ?? "~"}",
+                  style: Theme.of(context).textTheme.caption)
             ],
+            style: Theme.of(context)
+                .textTheme
+                .caption
+                .copyWith(color: Theme.of(context).accentColor)));
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ResultPage(
+                  word: f.name,
+                  translatedName: f.translatedName ?? '',
+                );
+              }));
+            },
+            onLongPress: () async {
+              switch (await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(I18n.of(context).ban + "'${f.name}'?"),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context, "OK");
+                          },
+                          child: Text(I18n.of(context).ok),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(I18n.of(context).cancel),
+                        )
+                      ],
+                    );
+                  })) {
+                case "OK":
+                  {
+                    muteStore.insertBanTag(BanTagPersist()
+                      ..name = f.name
+                      ..translateName = f.translatedName ?? '_');
+                  }
+                  break;
+              }
+            },
+            child: Flexible(
+              child: Text(
+                "#${f.name}",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                softWrap: true,
+                style: TextStyle(
+                    fontSize: Theme.of(context).textTheme.caption.fontSize,
+                    color: Theme.of(context).accentColor),
+              ),
+            ),
           ),
-        );
-      }
-    );
+          Container(
+            width: 10.0,
+          ),
+          Flexible(
+              child: Text(
+            f.translatedName ?? "~",
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            softWrap: true,
+            style: Theme.of(context).textTheme.caption,
+          ))
+        ]);
   }
 }

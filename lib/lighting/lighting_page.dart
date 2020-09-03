@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -101,6 +103,9 @@ class _LightingListState extends State<LightingList> {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
+      header:(Platform.isAndroid)? MaterialClassicHeader(
+        color: Theme.of(context).accentColor,
+      ):ClassicHeader(),
       footer: CustomFooter(
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;

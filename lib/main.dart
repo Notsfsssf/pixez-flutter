@@ -31,6 +31,7 @@ import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final UserSetting userSetting = UserSetting();
