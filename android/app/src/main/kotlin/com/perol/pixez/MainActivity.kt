@@ -47,6 +47,7 @@ class MainActivity : FlutterActivity() {
     val OPEN_DOCUMENT_TREE_CODE = 190
     val PICK_IMAGE_FILE = 2
     var pendingResult: MethodChannel.Result? = null
+    var pendingPickResult: MethodChannel.Result? = null
     private fun pickFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -226,7 +227,7 @@ class MainActivity : FlutterActivity() {
             }
             if (call.method == "choice_folder") {
                 choiceFolder()
-                result.success(true)
+                pendingPickResult = result
             }
             if (call.method == "pick_file") {
                 pendingResult = result
@@ -285,9 +286,13 @@ class MainActivity : FlutterActivity() {
                                 contentResolver.releasePersistableUriPermission(i.uri, takeFlags)
                             }
                         }
+                        pendingPickResult?.success(true)
+                        pendingPickResult = null
                     }
                 } else {
                     Toast.makeText(applicationContext, getString(R.string.failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash), Toast.LENGTH_SHORT).show()
+                    pendingPickResult?.success(false)
+                    pendingPickResult = null
                 }
         }
     }

@@ -17,15 +17,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -113,7 +110,7 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).save_path),
                 subtitle: Text(path ?? ""),
                 onTap: () async {
-                  await DocumentPlugin.choiceFolder();
+                  bool isSuccess = await DocumentPlugin.choiceFolder();
                   final path = await DocumentPlugin.getPath();
                   if (mounted) {
                     setState(() {

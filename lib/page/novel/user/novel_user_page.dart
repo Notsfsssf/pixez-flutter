@@ -267,6 +267,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                 return Key(index);
               },
               body: IndexedStack(
+                index: _tabIndex,
                 children: [
                   NestedScrollViewInnerScrollPositionKeyWidget(
                     Key('Tab0'),

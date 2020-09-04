@@ -35,7 +35,7 @@ class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
   FutureGet futureGet;
   @override
   void initState() {
-    futureGet = () => apiClient.getUserBookmarkNovel(widget.id, restrict);
+    futureGet = () => apiClient.getUserBookmarkNovel(widget.id??int.parse(accountStore.now.userId), restrict);
     super.initState();
   }
 

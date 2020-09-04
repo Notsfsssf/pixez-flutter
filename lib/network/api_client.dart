@@ -105,7 +105,8 @@ class ApiClient {
 
   Future<Response> getUserBookmarkNovel(int user_id, String restrict) async {
     return httpClient.get('/v1/user/bookmarks/novel',
-        queryParameters: {"user_id": user_id, "restrict": restrict});
+        queryParameters:
+            notNullMap({"user_id": user_id, "restrict": restrict}));
   }
 
   Future<Response> postNovelBookmarkAdd(int novel_id, String restrict) async {

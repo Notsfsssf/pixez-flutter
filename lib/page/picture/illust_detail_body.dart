@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -26,6 +27,17 @@ import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:intl/intl.dart';
+
+class GestureMe extends GestureRecognizer {
+  @override
+  void acceptGesture(int pointer) {}
+
+  @override
+  String get debugDescription => throw UnimplementedError();
+
+  @override
+  void rejectGesture(int pointer) {}
+}
 
 class IllustDetailBody extends StatelessWidget {
   final Illusts illust;
@@ -174,6 +186,7 @@ class IllustDetailBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 2, // gap between adjacent chips
                 runSpacing: 0, // gap between lines
                 children: [for (var f in illust.tags) buildRow(context, f)],
@@ -211,88 +224,63 @@ class IllustDetailBody extends StatelessWidget {
   }
 
   Widget buildRow(BuildContext context, Tags f) {
-    return RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-            text: "#${f.name}",
-            children: [
-              TextSpan(text: " ", style: Theme.of(context).textTheme.caption),
-              TextSpan(
-                  text: "${f.translatedName ?? "~"}",
-                  style: Theme.of(context).textTheme.caption)
-            ],
-            style: Theme.of(context)
-                .textTheme
-                .caption
-                .copyWith(color: Theme.of(context).accentColor)));
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ResultPage(
-                  word: f.name,
-                  translatedName: f.translatedName ?? '',
-                );
-              }));
-            },
-            onLongPress: () async {
-              switch (await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text(I18n.of(context).ban + "'${f.name}'?"),
-                      actions: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context, "OK");
-                          },
-                          child: Text(I18n.of(context).ok),
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(I18n.of(context).cancel),
-                        )
-                      ],
-                    );
-                  })) {
-                case "OK":
-                  {
-                    muteStore.insertBanTag(BanTagPersist()
-                      ..name = f.name
-                      ..translateName = f.translatedName ?? '_');
-                  }
-                  break;
-              }
-            },
-            child: Flexible(
-              child: Text(
-                "#${f.name}",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                softWrap: true,
-                style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.caption.fontSize,
-                    color: Theme.of(context).accentColor),
-              ),
-            ),
-          ),
-          Container(
-            width: 10.0,
-          ),
-          Flexible(
-              child: Text(
-            f.translatedName ?? "~",
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            softWrap: true,
-            style: Theme.of(context).textTheme.caption,
-          ))
-        ]);
+    return GestureDetector(
+      onLongPress: () async {
+        switch (await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(I18n.of(context).ban + "'${f.name}'?"),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context, "OK");
+                    },
+                    child: Text(I18n.of(context).ok),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(I18n.of(context).cancel),
+                  )
+                ],
+              );
+            })) {
+          case "OK":
+            {
+              muteStore.insertBanTag(BanTagPersist()
+                ..name = f.name
+                ..translateName = f.translatedName ?? '_');
+            }
+            break;
+        }
+      },
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return ResultPage(
+            word: f.name,
+            translatedName: f.translatedName ?? '',
+          );
+        }));
+      },
+      child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+              text: "#${f.name}",
+              children: [
+                TextSpan(
+                  text: " ",
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                TextSpan(
+                    text: "${f.translatedName ?? "~"}",
+                    style: Theme.of(context).textTheme.caption)
+              ],
+              style: Theme.of(context)
+                  .textTheme
+                  .caption
+                  .copyWith(color: Theme.of(context).accentColor))),
+    );
   }
 }

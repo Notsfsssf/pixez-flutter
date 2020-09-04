@@ -25,9 +25,7 @@ class DocumentPlugin {
         .invokeMethod<bool>('save', {"data": uint8list, "name": fileName});
   }
 
-  static Future<bool> exist(String fileName) async {
-    return platform.invokeMethod<bool>("exist", {"name": fileName});
-  }
+  static Future<bool> exist(String fileName)  => platform.invokeMethod<bool>("exist", {"name": fileName});
 
   static Future<String> getPath() => platform.invokeMethod<String>("get_path");
 

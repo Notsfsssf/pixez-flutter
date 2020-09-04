@@ -70,7 +70,7 @@ abstract class _UserSettingBase with Store {
   @observable
   ThemeData themeData = ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.cyan[500],
+      primaryColor: Colors.white,
       accentColor: Colors.cyan[400],
       appBarTheme: AppBarTheme(
         brightness: Brightness.light,
@@ -97,12 +97,12 @@ abstract class _UserSettingBase with Store {
           themeData = ThemeData(
             brightness: Brightness.light,
             accentColor: _stringToColor(colors[0]),
-            primaryColor: _stringToColor(colors[1]),
+            primaryColor: Colors.white,
             appBarTheme: AppBarTheme(
-                  brightness: Brightness.light,
-                  // color: Colors.transparent,
-                  // elevation: 0.0,
-                ),
+              brightness: Brightness.light,
+              // color: Colors.transparent,
+              // elevation: 0.0,
+            ),
           );
         } catch (e) {
           print(e);
@@ -136,7 +136,7 @@ abstract class _UserSettingBase with Store {
         brightness: Brightness.light,
       ),
       accentColor: _stringToColor(data[0]),
-      primaryColor: _stringToColor(data[1]),
+      primaryColor: Colors.white,
     );
   }
 

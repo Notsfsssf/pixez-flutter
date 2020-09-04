@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,6 +24,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 
 class NovelViewerPage extends StatefulWidget {
@@ -46,7 +48,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     _controller = ScrollController();
     _controller.addListener(() {
       if (_controller.position.pixels >= _controller.position.maxScrollExtent) {
-        _showMessage(context);
+        // _showMessage(context);
       }
     });
 
@@ -72,27 +74,28 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             extendBody: true,
             extendBodyBehindAppBar: true,
             body: SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                      Text(':(', style: Theme.of(context).textTheme.headline4),
-                    ),
-                    FlatButton(
-                        onPressed: () {
-                          _novelStore.fetch();
-                        },
-                        child: Text(I18n.of(context).retry)),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text('${_novelStore.errorMessage}'),
-                    )
-                  ],
-                ),),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(':(',
+                        style: Theme.of(context).textTheme.headline4),
+                  ),
+                  FlatButton(
+                      onPressed: () {
+                        _novelStore.fetch();
+                      },
+                      child: Text(I18n.of(context).retry)),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text('${_novelStore.errorMessage}'),
+                  )
+                ],
+              ),
+            ),
           );
         }
         if (_novelStore.novelTextResponse != null) {
@@ -126,12 +129,44 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         child: PixivImage(widget.novel.imageUrls.medium))),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(
+                  child: ExtendedText(
                     _novelStore.novelTextResponse.novelText,
+                    specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).padding.bottom + 500,
+                  height: 400,
+                ),
+                ListTile(
+                  subtitle: Text(widget.novel.user.name),
+                  title: Text(widget.novel.title ?? ""),
+                  leading: PainterAvatar(
+                    url: widget.novel.user.profileImageUrls.medium,
+                    id: widget.novel.user.id,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return NovelUserPage(
+                          id: widget.novel.user.id,
+                        );
+                      }));
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text('Pre'),
+                ),
+                buildListTile(_novelStore.novelTextResponse.seriesPrev),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text('Next'),
+                ),
+                buildListTile(_novelStore.novelTextResponse.seriesNext),
+                Container(
+                  height: MediaQuery.of(context).padding.bottom + 100,
                 )
               ],
             ),
@@ -156,7 +191,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     return showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
         builder: (context) {
           return SafeArea(
             child: Column(
@@ -197,6 +232,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   }
 
   Widget buildListTile(Novel series) {
+    if (series == null)
+      return ListTile(
+        title: Text("no more"),
+      );
     return ListTile(
       title: Text(series.title ?? ""),
       onTap: () {

@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/network/api_client.dart';
 
 const Map<String, String> PixivHeader = {
   "referer": "https://app-api.pixiv.net/",
