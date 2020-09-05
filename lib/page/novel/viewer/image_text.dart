@@ -76,6 +76,36 @@ class SpecialImageText extends SpecialText {
   }
 }
 
+//[[rb:]]
+class RbText extends SpecialText {
+  RbText(TextStyle textStyle, {this.start})
+      : super(ChapterText.flag, ']', textStyle);
+  static const String flag = '[[rb:';
+  final int start;
+  @override
+  InlineSpan finishText() {
+    final String key = toString();
+    final contentText = key.replaceAll(flag, '').replaceAll(']', '').split('>');
+    final resultText = '${contentText.first}(${contentText.last})';
+    return TextSpan(text: resultText, style: textStyle);
+  }
+}
+
+//[chapter]
+class ChapterText extends SpecialText {
+  ChapterText(TextStyle textStyle, {this.start})
+      : super(ChapterText.flag, ']', textStyle);
+  static const String flag = '[chapter:';
+  final int start;
+  @override
+  InlineSpan finishText() {
+    final String key = toString();
+
+    return TextSpan(
+        text: key.replaceAll(flag, '').replaceAll(']', ''), style: textStyle);
+  }
+}
+
 //[newpage]
 class NextPageSpan extends ExtendedWidgetSpan {
   final String actualText;
@@ -122,9 +152,17 @@ class NovelSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return NextPageText(textStyle,
           start: index - (NextPageText.flag.length - 1));
     }
+    if (isStart(flag, ChapterText.flag)) {
+      return ChapterText(
+          textStyle.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold),
+          start: index - (NextPageText.flag.length - 1));
+    }
     if (isStart(flag, SpecialImageText.flag)) {
       return SpecialImageText(textStyle,
           start: index - (SpecialImageText.flag.length - 1));
+    }
+    if (isStart(flag, RbText.flag)) {
+      return RbText(textStyle, start: index - (RbText.flag.length - 1));
     }
     return null;
   }

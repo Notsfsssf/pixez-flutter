@@ -46,12 +46,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   void initState() {
     _novelStore = NovelStore(widget.id)..fetch();
     _controller = ScrollController();
-    _controller.addListener(() {
-      if (_controller.position.pixels >= _controller.position.maxScrollExtent) {
-        // _showMessage(context);
-      }
-    });
-
     super.initState();
   }
 
@@ -61,6 +55,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     super.dispose();
   }
 
+  final double leading = 0.9;
+  final double textLineHeight = 2;
+  final double fontSize = 16;
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -138,20 +135,44 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 Container(
                   height: 400,
                 ),
-                ListTile(
-                  subtitle: Text(widget.novel.user.name),
-                  title: Text(widget.novel.title ?? ""),
-                  leading: PainterAvatar(
-                    url: widget.novel.user.profileImageUrls.medium,
-                    id: widget.novel.user.id,
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return NovelUserPage(
+                Expanded(
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PainterAvatar(
+                          url: widget.novel.user.profileImageUrls.medium,
                           id: widget.novel.user.id,
-                        );
-                      }));
-                    },
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return NovelUserPage(
+                                id: widget.novel.user.id,
+                              );
+                            }));
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  widget.novel.title ?? "",
+                                  softWrap: true,
+                                ),
+                              ),
+                            ),
+                            Text(widget.novel.user.name),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 Padding(

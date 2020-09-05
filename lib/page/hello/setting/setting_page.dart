@@ -210,17 +210,17 @@ class _SettingPageState extends State<SettingPage> {
                                 title: Text(I18n.of(context).clear_all_cache),
                                 actions: <Widget>[
                                   FlatButton(
+                                    child: Text(I18n.of(context).cancel),
+                                    onPressed: () {
+                                      Navigator.of(context).pop("CANCEL");
+                                    },
+                                  ),
+                                  FlatButton(
                                     child: Text(I18n.of(context).ok),
                                     onPressed: () {
                                       Navigator.of(context).pop("OK");
                                     },
                                   ),
-                                  FlatButton(
-                                    child: Text(I18n.of(context).cancel),
-                                    onPressed: () {
-                                      Navigator.of(context).pop("CANCEL");
-                                    },
-                                  )
                                 ],
                               );
                             },
@@ -301,17 +301,18 @@ class _SettingPageState extends State<SettingPage> {
                                     title: Text(I18n.of(context).logout),
                                     actions: <Widget>[
                                       FlatButton(
+                                        child: Text("CANCEL"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("CANCEL");
+                                        },
+                                      ),
+                                      FlatButton(
                                         child: Text("OK"),
                                         onPressed: () {
                                           Navigator.of(context).pop("OK");
                                         },
                                       ),
-                                      FlatButton(
-                                        child: Text("CANCEL"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop("CANCEL");
-                                        },
-                                      )
+
                                     ],
                                   );
                                 });

@@ -234,16 +234,16 @@ class IllustDetailBody extends StatelessWidget {
                 actions: <Widget>[
                   FlatButton(
                     onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(I18n.of(context).cancel),
+                  ),
+                  FlatButton(
+                    onPressed: () {
                       Navigator.pop(context, "OK");
                     },
                     child: Text(I18n.of(context).ok),
                   ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(I18n.of(context).cancel),
-                  )
                 ],
               );
             })) {

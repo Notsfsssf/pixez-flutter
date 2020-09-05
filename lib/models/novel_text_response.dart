@@ -45,12 +45,8 @@ class NovelTextResponse {
       NovelTextResponse(
         novelMarker: NovelMarker.fromJson(json["novel_marker"]),
         novelText: json["novel_text"],
-        seriesPrev: json["series_prev"] == null
-            ? Novel.fromJson(json["series_prev"])
-            : null,
-        seriesNext: json["series_next"] == null
-            ? Novel.fromJson(json["series_next"])
-            : null,
+        seriesPrev: false ? Novel.fromJson(json["series_prev"]) : null,
+        seriesNext: false ? Novel.fromJson(json["series_next"]) : null,
       );
 
   Map<String, dynamic> toJson() => {

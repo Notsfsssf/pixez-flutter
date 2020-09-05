@@ -123,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_more_data" : MessageLookupByLibrary.simpleMessage("沒有更多資料了"),
     "not_bookmarked" : MessageLookupByLibrary.simpleMessage("未收藏"),
     "not_the_correct_link" : MessageLookupByLibrary.simpleMessage("非正常連結 >_<"),
+    "novel_mode_list" : MessageLookupByLibrary.simpleMessage("每日 男性向 女性向 每週 XVIII XVIII_WEEK XVIII_G"),
     "ok" : MessageLookupByLibrary.simpleMessage("確定"),
     "painter" : MessageLookupByLibrary.simpleMessage("繪師"),
     "painter_id" : MessageLookupByLibrary.simpleMessage("繪師ID"),

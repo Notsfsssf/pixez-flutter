@@ -135,17 +135,18 @@ class _NovelUserPageState extends State<NovelUserPage>
                                             '${I18n.of(context).block_user}?'),
                                         actions: <Widget>[
                                           FlatButton(
+                                            child: Text("CANCEL"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          FlatButton(
                                             child: Text("OK"),
                                             onPressed: () {
                                               Navigator.of(context).pop("OK");
                                             },
                                           ),
-                                          FlatButton(
-                                            child: Text("CANCEL"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          )
+
                                         ],
                                       );
                                     });

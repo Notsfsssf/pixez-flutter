@@ -32,6 +32,7 @@ class SettingQualityPage extends StatefulWidget {
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
   Widget _languageTranlator;
+
   @override
   void initState() {
     _languageTranlator = _group[userSetting.languageNum];
@@ -83,6 +84,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       ),
     ),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,7 +144,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: I18n.of(context).medium,
@@ -186,7 +188,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: "en-US",
@@ -262,7 +264,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: tablist,
                       onTap: (index) {
                         userSetting.setWelcomePageNum(index);
@@ -290,7 +292,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: '2',
@@ -333,14 +335,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                               actions: <Widget>[
                                 FlatButton(
                                     onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(I18n.of(context).cancel)),
+                                FlatButton(
+                                    onPressed: () {
                                       Navigator.of(context).pop('OK');
                                     },
                                     child: Text(I18n.of(context).ok)),
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(I18n.of(context).cancel))
                               ],
                             );
                           });

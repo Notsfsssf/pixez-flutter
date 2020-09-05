@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -29,7 +30,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class NovelLightingList extends StatefulWidget {
   final FutureGet futureGet;
 
-  const NovelLightingList({Key key, this.futureGet}) : super(key: key);
+  const NovelLightingList({Key key, @required this.futureGet})
+      : super(key: key);
 
   @override
   _NovelLightingListState createState() => _NovelLightingListState();
@@ -79,6 +81,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
               },
               child: Card(
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
@@ -148,7 +151,14 @@ class _NovelLightingListState extends State<NovelLightingList> {
                         ),
                       ],
                     ),
-                    NovelBookmarkButton(novel: novel)
+                    Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        NovelBookmarkButton(novel: novel),
+                        Text('${novel.totalBookmarks}',
+                            style: Theme.of(context).textTheme.caption)
+                      ],
+                    )
                   ],
                 ),
               ),

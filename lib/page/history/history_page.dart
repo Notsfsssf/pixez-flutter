@@ -60,17 +60,18 @@ class HistoryPage extends StatelessWidget {
                               title: Text("${I18n.of(context).delete}?"),
                               actions: <Widget>[
                                 FlatButton(
+                                  child: Text(I18n.of(context).cancel),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                FlatButton(
                                   child: Text(I18n.of(context).ok),
                                   onPressed: () {
                                     Navigator.of(context).pop("OK");
                                   },
                                 ),
-                                FlatButton(
-                                  child: Text(I18n.of(context).cancel),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
+
                               ],
                             );
                           });
@@ -104,17 +105,18 @@ class HistoryPage extends StatelessWidget {
                           "${I18n.of(context).delete} ${I18n.of(context).all}?"),
                       actions: <Widget>[
                         FlatButton(
+                          child: Text(I18n.of(context).cancel),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        FlatButton(
                           child: Text(I18n.of(context).ok),
                           onPressed: () {
                             Navigator.of(context).pop("OK");
                           },
                         ),
-                        FlatButton(
-                          child: Text(I18n.of(context).cancel),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
+
                       ],
                     );
                   });

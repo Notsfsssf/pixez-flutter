@@ -843,6 +843,16 @@ class I18n {
     );
   }
 
+  /// `Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G`
+  String get novel_mode_list {
+    return Intl.message(
+      'Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G',
+      name: 'novel_mode_list',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `More`
   String get more {
     return Intl.message(

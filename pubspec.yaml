@@ -58,6 +58,7 @@ dependencies:
   waterfall_flow: ^2.0.2
   animations: ^1.1.2
   extended_text: ^4.0.0
+  font_awesome_flutter: ^8.8.1
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
@@ -93,6 +94,7 @@ flutter:
     - assets/images/h.jpg
     - assets/images/nine.jpg
 
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
@@ -104,12 +106,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+     - family: iconfont
+       fonts:
+         - asset: assets/fonts/iconfont.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

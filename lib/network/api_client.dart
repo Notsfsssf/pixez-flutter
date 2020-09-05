@@ -78,7 +78,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+      ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
@@ -119,6 +119,11 @@ class ApiClient {
     return httpClient.post('/v1/novel/bookmark/delete',
         data: notNullMap({"novel_id": novel_id}),
         options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<Response> getNovelRanking(String mode, date) async {
+    return httpClient.get("/v1/novel/ranking?filter=for_android",
+        queryParameters: notNullMap({"mode": mode, "date": date}));
   }
 
   Future<Response> getNovelText(int novel_id) async {

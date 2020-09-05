@@ -81,6 +81,7 @@
   "manga": "漫画",
   "medium": "中等",
   "mode_list": "每日 男性向 女性向 原创 新人 每周 每月 XVIII XVIII_WEEK XVIII_G",
+  "novel_mode_list":"每日 男性向 女性向 每周 XVIII XVIII_WEEK XVIII_G",
   "more": "更多",
   "more_then_starnum_bookmark": "超过 {starNum} 的收藏",
   "muti_choice_save": "多选保存",

@@ -19,6 +19,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/rank/novel_rank_page.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
 
 class NovelRecomPage extends StatefulWidget {
@@ -38,7 +39,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return NovelUserPage(id: int.parse(accountStore.now.userId));
+                  return NovelRankPage();
                 }));
               },
             )

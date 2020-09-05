@@ -123,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_more_data" : MessageLookupByLibrary.simpleMessage("There is no more data"),
     "not_bookmarked" : MessageLookupByLibrary.simpleMessage("Not_Bookmarked"),
     "not_the_correct_link" : MessageLookupByLibrary.simpleMessage("Not a valid link of a Pixiv illust >_<"),
+    "novel_mode_list" : MessageLookupByLibrary.simpleMessage("Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G"),
     "ok" : MessageLookupByLibrary.simpleMessage("Confirm"),
     "painter" : MessageLookupByLibrary.simpleMessage("User"),
     "painter_id" : MessageLookupByLibrary.simpleMessage("User ID"),

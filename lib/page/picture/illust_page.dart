@@ -40,7 +40,6 @@ import 'package:pixez/exts.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share/share.dart';
 
-
 class IllustPage extends StatefulWidget {
   final int id;
   final String heroString;
@@ -188,6 +187,11 @@ class _IllustPageState extends State<IllustPage> {
                 ),
                 actions: <Widget>[
                   FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).cancel)),
+                  FlatButton(
                     child: Text(I18n.of(context).ok),
                     onPressed: () async {
                       final tags = bookMarkDetailResponse.bookmarkDetail.tags;
@@ -207,18 +211,11 @@ class _IllustPageState extends State<IllustPage> {
                       setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                     },
                   ),
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).cancel))
                 ],
               );
             },
           ));
   }
-
-
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     IllustDetailStore illustDetailStore = IllustDetailStore(illust);
@@ -437,15 +434,15 @@ class _IllustPageState extends State<IllustPage> {
                                       Text(I18n.of(context).report_message),
                                   actions: <Widget>[
                                     FlatButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("OK");
-                                      },
-                                    ),
-                                    FlatButton(
                                       child: Text("CANCEL"),
                                       onPressed: () {
                                         Navigator.of(context).pop("CANCEL");
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("OK");
                                       },
                                     ),
                                   ],

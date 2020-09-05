@@ -81,6 +81,7 @@
   "manga": "Manga",
   "medium": "Lower",
   "mode_list": "Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G",
+  "novel_mode_list":"Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G",
   "more": "More",
   "more_then_starnum_bookmark": "More than {starNum} likes",
   "muti_choice_save": "Save selected ones",

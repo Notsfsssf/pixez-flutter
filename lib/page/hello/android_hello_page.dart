@@ -19,7 +19,9 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -86,9 +88,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit), title: Text(I18n.of(context).rank)),
+                icon: Icon(CustomIcons.leaderboard),
+                title: Text(I18n.of(context).rank)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.bookmark),
+                icon: FaIcon(FontAwesomeIcons.neos),
                 title: Text(I18n.of(context).quick_view)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
