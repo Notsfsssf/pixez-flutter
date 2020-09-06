@@ -46,7 +46,7 @@ if (project.hasProperty('dart-defines')) {
             .split(',')
             .collectEntries { entry ->
                 def pair = URLDecoder.decode(entry).split('=')
-                [(pair.first()): pair.last()]
+                [(pair.first()): pair.last()=="true"]
             }
 }
 print("\n" +
@@ -64,6 +64,8 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+def packageName = dartEnvironmentVariables.IS_GOOGLEPLAY?'com.perol.play.pixez' :'com.perol.pixez'
+println(packageName)
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
