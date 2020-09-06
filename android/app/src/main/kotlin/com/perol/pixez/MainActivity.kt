@@ -134,29 +134,17 @@ class MainActivity : FlutterActivity() {
             if (names.size >= 2) {
                 val fName = names.last()
                 val folderName = names.first()
-                val dirId = splicingUrl(treeId, folderName)
-                val dirUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
-                val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
-
-                if (dirDocument == null || !dirDocument.exists()) {
-                    return treeDocument.createDirectory(folderName)?.createFile(mimeType, fName)?.uri
-                } else if (dirDocument.isFile) {
-                    dirDocument.delete()
-                    return treeDocument.createDirectory(folderName)?.createFile(mimeType, fName)?.uri
-                } else {
-/*                    val fileId = splicingUrl(dirId, fName)
-                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
-                    val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-                    if (targetFile != null && targetFile.exists()) {
-                        targetFile.delete()
-                    }
-                    return DocumentsContract.createDocument(contentResolver, targetFile!!.uri, mimeType, fileName)*/
-                    return treeDocument.findFile(folderName)?.createFile(mimeType, fName)?.uri//!!!!!!
+                var folderDocument = treeDocument.findFile(folderName)
+                if (folderDocument == null) {
+                    folderDocument = treeDocument.createDirectory(folderName);
                 }
-
+                val file = folderDocument?.findFile(fName)
+                if (file != null && file.exists()) {
+                    file.delete()
+                }
+                return folderDocument?.createFile(mimeType, fName)?.uri
             }
         }
-
         val fileId = splicingUrl(treeId, fileName)
         val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
         val targetFile = DocumentFile.fromSingleUri(this, fileUri)
@@ -308,12 +296,19 @@ class MainActivity : FlutterActivity() {
     private fun encodeGif(name: String, path: String, delay: Int) {
         val file = File(path)
         file.let {
-            val tempFile = File(applicationContext.cacheDir, "${name}.gif")
-            try {
-                val uri = writeFileUri("${name}.gif")
-                if (!tempFile.exists()) {
-                    tempFile.createNewFile()
+            val tempFile = File(applicationContext.cacheDir, "${
+                if (name.contains("/")) {
+                    name.split("/").last()
+                } else {
+                    name
                 }
+            }.gif")
+            try {
+                val fileName = "${name}.gif"
+                val uri = writeFileUri(fileName)
+/*                if (!tempFile.exists()) {
+                    tempFile.createNewFile()
+                }*/
                 Log.d("tempFile path:", tempFile.path)
                 val listFiles = it.listFiles()
                 if (listFiles == null || listFiles.isEmpty()) {

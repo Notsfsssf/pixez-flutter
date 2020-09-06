@@ -19,6 +19,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/quick/novel_quick_page.dart';
 import 'package:pixez/page/novel/rank/novel_rank_page.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
 
@@ -34,6 +35,15 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
       children: [
         AppBar(
           actions: [
+            IconButton(
+              icon: Icon(Icons.access_time),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return NovelQuickPage();
+                }));
+              },
+            ),
             IconButton(
               icon: Icon(Icons.bookmark),
               onPressed: () {

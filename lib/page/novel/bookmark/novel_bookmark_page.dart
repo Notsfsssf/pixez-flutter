@@ -33,57 +33,32 @@ class NovelBookmarkPage extends StatefulWidget {
 class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
   String restrict = 'public';
   FutureGet futureGet;
+  int id;
   @override
   void initState() {
-    futureGet = () => apiClient.getUserBookmarkNovel(widget.id??int.parse(accountStore.now.userId), restrict);
+    id = widget.id ?? int.parse(accountStore.now.userId);
+    futureGet = () => apiClient.getUserBookmarkNovel(id, restrict);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      if (int.parse(accountStore.now.userId) == widget.id)
+      if (int.parse(accountStore.now.userId) == id)
         return Column(
           children: <Widget>[
-            IconButton(
-                icon: Icon(Icons.list),
-                onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(I18n.of(context).public),
-                                onTap: () {
-                                  setState(() {
-                                    futureGet = () =>
-                                        apiClient.getUserBookmarkNovel(
-                                            widget.id, 'public');
-                                  });
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              ListTile(
-                                title: Text(I18n.of(context).private),
-                                onTap: () {
-                                  setState(() {
-                                    futureGet = () =>
-                                        apiClient.getUserBookmarkNovel(
-                                            widget.id, 'private');
-                                  });
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                }),
-            NovelLightingList(
-              futureGet: futureGet,
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                  icon: Icon(Icons.list),
+                  onPressed: () {
+                    _buildShowModalBottomSheet(context);
+                  }),
+            ),
+            Expanded(
+              child: NovelLightingList(
+                futureGet: futureGet,
+              ),
             )
           ],
         );
@@ -93,5 +68,41 @@ class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
         );
       }
     });
+  }
+
+  _buildShowModalBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
+        builder: (context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  title: Text(I18n.of(context).public),
+                  onTap: () {
+                    setState(() {
+                      futureGet =
+                          () => apiClient.getUserBookmarkNovel(id, 'public');
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: Text(I18n.of(context).private),
+                  onTap: () {
+                    setState(() {
+                      futureGet =
+                          () => apiClient.getUserBookmarkNovel(id, 'private');
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

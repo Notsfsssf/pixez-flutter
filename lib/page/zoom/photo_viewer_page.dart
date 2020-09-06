@@ -85,18 +85,15 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      fileInfo != null
-                          ? ListTile(
-                              title: Text(I18n.of(context).share),
-                              onTap: () async {
-                                if (fileInfo != null)
-                                  ShareExtend.share(fileInfo.path, "image");
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          : Container(
-                              height: 0,
-                            ),
+                      if (fileInfo != null)
+                        ListTile(
+                          title: Text(I18n.of(context).share),
+                          onTap: () async {
+                            if (fileInfo != null)
+                              ShareExtend.share(fileInfo.path, "image");
+                            Navigator.of(context).pop();
+                          },
+                        ),
                     ],
                   ),
                 );

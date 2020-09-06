@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
@@ -24,8 +25,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PainterList extends StatefulWidget {
   final FutureGet futureGet;
-
-  const PainterList({Key key, this.futureGet}) : super(key: key);
+  final bool isNovel;
+  const PainterList({Key key, this.futureGet, this.isNovel = false})
+      : super(key: key);
   @override
   _PainterListState createState() => _PainterListState();
 }
@@ -94,8 +96,14 @@ class _PainterListState extends State<PainterList> {
             ? ListView.builder(
                 controller: _scrollController,
                 itemBuilder: (context, index) {
+                  final user = _painterListStore.users[index];
+                  if (widget.isNovel)
+                    return PainterCard(
+                      user: user,
+                      isNovel: widget.isNovel,
+                    );
                   return PainterCard(
-                    user: _painterListStore.users[index],
+                    user: user,
                   );
                 },
                 itemCount: _painterListStore.users.length,

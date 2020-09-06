@@ -131,6 +131,15 @@ class ApiClient {
         queryParameters: notNullMap({"novel_id": novel_id}));
   }
 
+    //   @GET("/v2/illust/follow")
+  // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
+  Future<Response> getNovelFollow(String restrict) {
+    return httpClient.get(
+      "/v1/novel/follow",
+      queryParameters: {"restrict": restrict},
+    );
+  }
+
   Future<Response> getNovelRecommended() async {
     return httpClient.get(
         "/v1/novel/recommended?include_privacy_policy=true&filter=for_android&include_ranking_novels=true");

@@ -24,8 +24,8 @@ import 'package:pixez/page/painter/painter_list.dart';
 
 class FollowList extends StatefulWidget {
   final int id;
-
-  const FollowList({Key key, this.id}) : super(key: key);
+  final bool isNovel;
+  FollowList({Key key, this.id, this.isNovel = false}) : super(key: key);
 
   @override
   _FollowListState createState() => _FollowListState();
@@ -39,7 +39,7 @@ class _FollowListState extends State<FollowList> {
 
   @override
   void initState() {
-    futureGet = () => apiClient.getUserFollowing(widget.id,restrict);
+    futureGet = () => apiClient.getUserFollowing(widget.id, restrict);
     super.initState();
   }
 
@@ -62,15 +62,15 @@ class _FollowListState extends State<FollowList> {
                     ),
                     context: context,
                     builder: (context1) => SafeArea(
-                      child: Column(
+                          child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
                                 title: Text(I18n.of(context).public),
                                 onTap: () {
                                   setState(() {
-                                    futureGet = () => apiClient.getUserFollowing(
-                                        widget.id, 'public');
+                                    futureGet = () => apiClient
+                                        .getUserFollowing(widget.id, 'public');
                                   });
                                   Navigator.of(context1).pop();
                                 },
@@ -79,15 +79,15 @@ class _FollowListState extends State<FollowList> {
                                 title: Text(I18n.of(context).private),
                                 onTap: () {
                                   setState(() {
-                                    futureGet = () => apiClient.getUserFollowing(
-                                        widget.id, 'private');
+                                    futureGet = () => apiClient
+                                        .getUserFollowing(widget.id, 'private');
                                   });
                                   Navigator.of(context1).pop();
                                 },
                               ),
                             ],
                           ),
-                    ));
+                        ));
               }),
         ),
       );
@@ -102,6 +102,7 @@ class _FollowListState extends State<FollowList> {
         Expanded(
           child: PainterList(
             futureGet: futureGet,
+            isNovel: widget.isNovel,
           ),
         ),
       ],
