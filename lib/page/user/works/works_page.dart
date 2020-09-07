@@ -23,8 +23,7 @@ import 'package:pixez/network/api_client.dart';
 
 class WorksPage extends StatefulWidget {
   final int id;
-  const WorksPage({Key key, @required this.id})
-      : super(key: key);
+  const WorksPage({Key key, @required this.id}) : super(key: key);
 
   @override
   _WorksPageState createState() => _WorksPageState();
@@ -43,16 +42,18 @@ class _WorksPageState extends State<WorksPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
+    return Stack(
       children: [
-        _buildHeader(),
         Expanded(
           child: LightingList(
             isNested: true,
             source: futureGet,
           ),
-        )
+        ),
+        Align(
+          child: _buildHeader(),
+          alignment: Alignment.topCenter,
+        ),
       ],
     );
   }
@@ -66,6 +67,7 @@ class _WorksPageState extends State<WorksPage> {
           alignment: WrapAlignment.center,
           children: <Widget>[
             ActionChip(
+              elevation: 32.0,
               backgroundColor: now == 'illust'
                   ? Theme.of(context).accentColor
                   : Colors.transparent,
@@ -85,6 +87,7 @@ class _WorksPageState extends State<WorksPage> {
               },
             ),
             ActionChip(
+              elevation: 32.0,
               label: Text(
                 I18n.of(context).manga,
                 style: TextStyle(

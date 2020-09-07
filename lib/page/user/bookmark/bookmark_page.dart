@@ -54,69 +54,90 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Widget build(BuildContext context) {
     if (accountStore.now != null) {
       if (int.parse(accountStore.now.userId) == widget.id) {
-        return LightingList(
-          source: futureGet,
-          header: Container(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.toys),
-                  onPressed: () async {
-                    final result = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => UserBookmarkTagPage()));
-                    if (result != null) {
-                      String tag = result['tag'];
-                      String restrict = result['restrict'];
-                      setState(() {
-                        futureGet = () => apiClient.getBookmarksIllust(
-                            widget.id, restrict, tag);
-                      });
-                    }
-                  }),
-              IconButton(
-                  icon: Icon(Icons.list),
-                  onPressed: () {
-                    showModalBottomSheet(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                        ),
-                        context: context,
-                        builder: (context) => SafeArea(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                    title: Text(I18n.of(context).public),
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        futureGet = () =>
-                                            apiClient.getBookmarksIllust(
-                                                widget.id, 'public', null);
-                                      });
-                                    },
-                                  ),
-                                  ListTile(
-                                    title: Text(I18n.of(context).private),
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        futureGet = () =>
-                                            apiClient.getBookmarksIllust(
-                                                widget.id, 'private', null);
-                                      });
-                                    },
-                                  ),
-                                ],
+        return Column(
+          children: [
+            Container(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      width: 20,
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.toys),
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => UserBookmarkTagPage()));
+                          if (result != null) {
+                            String tag = result['tag'];
+                            String restrict = result['restrict'];
+                            setState(() {
+                              futureGet = () =>
+                                  apiClient.getBookmarksIllust(
+                                      widget.id, restrict, tag);
+                            });
+                          }
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.list),
+                        onPressed: () {
+                          showModalBottomSheet(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16),
+                                ),
                               ),
-                            ));
-                  }),
-            ],
-          )),
+                              context: context,
+                              builder: (context) => SafeArea(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        ListTile(
+                                          title:
+                                              Text(I18n.of(context).public),
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              futureGet = () => apiClient
+                                                  .getBookmarksIllust(
+                                                      widget.id,
+                                                      'public',
+                                                      null);
+                                            });
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                              I18n.of(context).private),
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              futureGet = () => apiClient
+                                                  .getBookmarksIllust(
+                                                      widget.id,
+                                                      'private',
+                                                      null);
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        }),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: LightingList(
+                source: futureGet,
+              ),
+            ),
+          ],
         );
       }
       return LightingList(

@@ -9,6 +9,21 @@ part of 'novel_lighting_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$NovelLightingStore on _NovelLightingStoreBase, Store {
+  final _$errorMessageAtom = Atom(name: '_NovelLightingStoreBase.errorMessage');
+
+  @override
+  String get errorMessage {
+    _$errorMessageAtom.reportRead();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String value) {
+    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
+      super.errorMessage = value;
+    });
+  }
+
   final _$fetchAsyncAction = AsyncAction('_NovelLightingStoreBase.fetch');
 
   @override
@@ -26,7 +41,7 @@ mixin _$NovelLightingStore on _NovelLightingStoreBase, Store {
   @override
   String toString() {
     return '''
-
+errorMessage: ${errorMessage}
     ''';
   }
 }

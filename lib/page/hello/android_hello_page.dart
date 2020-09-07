@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -39,6 +40,18 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+class KeepContent extends StatelessWidget {
+  final Widget item;
+
+  const KeepContent({Key key, this.item}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: item,
+    );
+  }
+}
 
 class AndroidHelloPage extends StatefulWidget {
   @override
@@ -66,37 +79,52 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      body: PageView.builder(
-          controller: _pageController,
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return _pageList[index];
-          }),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).accentColor,
-          currentIndex: index,
-          onTap: (index) {
-            setState(() {
-              this.index = index;
-            });
-            _pageController.jumpToPage(index);
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
-            BottomNavigationBarItem(
-                icon: Icon(CustomIcons.leaderboard),
-                title: Text(I18n.of(context).rank)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                title: Text(I18n.of(context).quick_view)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                title: Text(I18n.of(context).setting)),
-          ]),
+      body: PageTransitionSwitcher(
+        transitionBuilder: (
+          Widget child,
+          Animation<double> primaryAnimation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
+        child: KeepContent(key: UniqueKey(),item: _pageList[index]),
+      ),
+      extendBody: true,
+      bottomNavigationBar: Opacity(
+        opacity: 0.98,
+        child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Theme.of(context).accentColor,
+            currentIndex: index,
+            onTap: (index) {
+              setState(() {
+                this.index = index;
+              });
+              _pageController.jumpToPage(index);
+            },
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    CustomIcons.leaderboard,
+                  ),
+                  title: Text(I18n.of(context).rank)),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite),
+                  title: Text(I18n.of(context).quick_view)),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  title: Text(I18n.of(context).search)),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  title: Text(I18n.of(context).setting)),
+            ]),
+      ),
     );
   }
 

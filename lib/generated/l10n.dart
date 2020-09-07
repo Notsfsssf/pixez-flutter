@@ -1802,6 +1802,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `link`
+  String get link {
+    return Intl.message(
+      'link',
+      name: 'link',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

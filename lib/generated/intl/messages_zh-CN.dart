@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "large_preview_zoom_quality" : MessageLookupByLibrary.simpleMessage("大图预览缩放"),
     "latest_version" : MessageLookupByLibrary.simpleMessage("最新版本"),
     "let_go_and_load_more" : MessageLookupByLibrary.simpleMessage("松手加载更多"),
+    "link" : MessageLookupByLibrary.simpleMessage("链接"),
     "load_image_failed_click_to_reload" : MessageLookupByLibrary.simpleMessage("图片加载失败，点击重试"),
     "loading_failed_retry_message" : MessageLookupByLibrary.simpleMessage("加载失败，点击重试"),
     "login" : MessageLookupByLibrary.simpleMessage("登录"),

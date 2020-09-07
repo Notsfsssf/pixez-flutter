@@ -341,17 +341,18 @@ class _IllustPageState extends State<IllustPage> {
                                       title: Text("Select"),
                                       actions: <Widget>[
                                         FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, "OK");
-                                          },
-                                          child: Text(I18n.of(context).ok),
-                                        ),
-                                        FlatButton(
                                           child: Text(I18n.of(context).cancel),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                        )
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(
+                                                context, I18n.of(context).ok);
+                                          },
+                                          child: Text(I18n.of(context).ok),
+                                        ),
                                       ],
                                       content: Container(
                                         width: double.maxFinite,
@@ -412,6 +413,20 @@ class _IllustPageState extends State<IllustPage> {
                         },
                       ),
                       ListTile(
+                        leading: Icon(
+                          Icons.link,
+                        ),
+                        title: Text(I18n.of(context).link),
+                        onTap: () async {
+                          await Clipboard.setData(ClipboardData(
+                              text:
+                                  "https://www.pixiv.net/artworks/${widget.id}"));
+                          BotToast.showText(
+                              text: I18n.of(context).copied_to_clipboard);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
                         title: Text(I18n.of(context).ban),
                         leading: Icon(Icons.brightness_auto),
                         onTap: () {
@@ -434,13 +449,13 @@ class _IllustPageState extends State<IllustPage> {
                                       Text(I18n.of(context).report_message),
                                   actions: <Widget>[
                                     FlatButton(
-                                      child: Text("CANCEL"),
+                                      child: Text(I18n.of(context).cancel),
                                       onPressed: () {
                                         Navigator.of(context).pop("CANCEL");
                                       },
                                     ),
                                     FlatButton(
-                                      child: Text("OK"),
+                                      child: Text(I18n.of(context).ok),
                                       onPressed: () {
                                         Navigator.of(context).pop("OK");
                                       },
@@ -451,15 +466,6 @@ class _IllustPageState extends State<IllustPage> {
                         },
                       )
                     ],
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.cancel,
-                    ),
-                    title: Text(I18n.of(context).cancel),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
                   ),
                   Container(
                     height: MediaQuery.of(context).padding.bottom,
@@ -871,7 +877,7 @@ class _IllustPageState extends State<IllustPage> {
             placeWidget: Container(
               height: 150,
               child: Center(
-                child: Text('${(index + 1)}',
+                child: Text('$index',
                     style: Theme.of(context).textTheme.headline4),
               ),
             ),

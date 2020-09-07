@@ -32,6 +32,7 @@ class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
   final bool isNested;
+
   const LightingList(
       {Key key, @required this.source, this.header, this.isNested})
       : super(key: key);
@@ -44,6 +45,7 @@ class _LightingListState extends State<LightingList> {
   LightingStore _store;
   ScrollController _scrollController;
   bool _isNested;
+
   @override
   void didUpdateWidget(LightingList oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -80,17 +82,6 @@ class _LightingListState extends State<LightingList> {
               padding: EdgeInsets.only(top: widget.header == null ? 0 : 36.0),
               child: _buildNewRefresh(context),
             ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                    height: 36,
-                    child: widget.header,
-                  ) ??
-                  Visibility(
-                    child: Container(),
-                    visible: false,
-                  ),
-            ),
           ],
         ),
       );
@@ -103,9 +94,11 @@ class _LightingListState extends State<LightingList> {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-      header:(Platform.isAndroid)? MaterialClassicHeader(
-        color: Theme.of(context).accentColor,
-      ):ClassicHeader(),
+      header: (Platform.isAndroid)
+          ? MaterialClassicHeader(
+              color: Theme.of(context).accentColor,
+            )
+          : ClassicHeader(),
       footer: CustomFooter(
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
@@ -133,8 +126,50 @@ class _LightingListState extends State<LightingList> {
       onLoading: () {
         _store.fetchNext();
       },
-      child: _buildWithHeader(context),
+      child: _buildContent(context),
     );
+  }
+
+  Widget _buildWithoutHeader(context) {
+    double screanWidth = MediaQuery.of(context).size.width;
+    double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
+    if (_isNested) {
+      return WaterfallFlow.builder(
+          padding: EdgeInsets.all(5.0),
+          itemCount: _store.iStores.length,
+          itemBuilder: (context, index) {
+            return _buildItem(index, itemWidth);
+          },
+          gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+            crossAxisCount: userSetting.crossCount,
+            collectGarbage: (List<int> garbages) {
+              garbages.forEach((index) {
+                final provider = ExtendedNetworkImageProvider(
+                  _store.iStores[index].illusts.imageUrls.medium,
+                );
+                provider.evict();
+              });
+            },
+          ));
+    }
+    return WaterfallFlow.builder(
+        padding: EdgeInsets.all(5.0),
+        controller: _scrollController,
+        itemCount: _store.iStores.length,
+        itemBuilder: (context, index) {
+          return _buildItem(index, itemWidth);
+        },
+        gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+          crossAxisCount: userSetting.crossCount,
+          collectGarbage: (List<int> garbages) {
+            garbages.forEach((index) {
+              final provider = ExtendedNetworkImageProvider(
+                _store.iStores[index].illusts.imageUrls.medium,
+              );
+              provider.evict();
+            });
+          },
+        ));
   }
 
   bool needToBan(Illusts illust) {
@@ -152,7 +187,7 @@ class _LightingListState extends State<LightingList> {
     return false;
   }
 
-  Widget _buildWithHeader(BuildContext context) {
+  Widget _buildContent(context) {
     return _store.errorMessage != null
         ? Container(
             child: Column(
@@ -177,10 +212,14 @@ class _LightingListState extends State<LightingList> {
               ],
             ),
           )
-        : _store.iStores.isNotEmpty ? _buildWaterFall() : Container();
+        : _store.iStores.isNotEmpty
+            ? (widget.header != null
+                ? _buildWithHeader(context)
+                : _buildWithoutHeader(context))
+            : Container();
   }
 
-  Widget _buildWaterFall() {
+  Widget _buildWithHeader(BuildContext context) {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     if (_isNested) {
@@ -188,18 +227,7 @@ class _LightingListState extends State<LightingList> {
           padding: EdgeInsets.all(5.0),
           itemCount: _store.iStores.length,
           itemBuilder: (context, index) {
-            double radio = _store.iStores[index].illusts.height.toDouble() /
-                _store.iStores[index].illusts.width.toDouble();
-            double mainAxisExtent;
-            if (radio > 3)
-              mainAxisExtent = itemWidth;
-            else
-              mainAxisExtent = itemWidth * radio;
-            return IllustCard(
-              store: _store.iStores[index],
-              iStores: _store.iStores,
-              height: mainAxisExtent + 64.0,
-            );
+            return _buildItem(index, itemWidth);
           },
           gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
             crossAxisCount: userSetting.crossCount,
@@ -216,20 +244,10 @@ class _LightingListState extends State<LightingList> {
     return WaterfallFlow.builder(
         padding: EdgeInsets.all(5.0),
         controller: _scrollController,
-        itemCount: _store.iStores.length,
+        itemCount: _store.iStores.length+1,
         itemBuilder: (context, index) {
-          double radio = _store.iStores[index].illusts.height.toDouble() /
-              _store.iStores[index].illusts.width.toDouble();
-          double mainAxisExtent;
-          if (radio > 3)
-            mainAxisExtent = itemWidth;
-          else
-            mainAxisExtent = itemWidth * radio;
-          return IllustCard(
-            store: _store.iStores[index],
-            iStores: _store.iStores,
-            height: mainAxisExtent + 64.0,
-          );
+          if(index==0) return widget.header;
+          return _buildItem(index-1, itemWidth);
         },
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisCount: userSetting.crossCount,
@@ -242,5 +260,20 @@ class _LightingListState extends State<LightingList> {
             });
           },
         ));
+  }
+
+  Widget _buildItem(int index, double itemWidth) {
+      double radio = _store.iStores[index].illusts.height.toDouble() /
+        _store.iStores[index].illusts.width.toDouble();
+    double mainAxisExtent;
+    if (radio > 3)
+      mainAxisExtent = itemWidth;
+    else
+      mainAxisExtent = itemWidth * radio;
+    return IllustCard(
+      store: _store.iStores[index],
+      iStores: _store.iStores,
+      height: mainAxisExtent + 64.0,
+    );
   }
 }

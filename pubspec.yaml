@@ -58,6 +58,7 @@ dependencies:
   waterfall_flow: ^2.0.2
   animations: ^1.1.2
   extended_text: ^4.0.0
+  backdrop: ^0.4.3
   font_awesome_flutter: ^8.8.1
 
 #dependency_overrides:

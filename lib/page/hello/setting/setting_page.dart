@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -251,17 +252,24 @@ class _SettingPageState extends State<SettingPage> {
                 Divider(),
                 Column(
                   children: <Widget>[
-                    Badge(
-                      showBadge: hasNewVersion,
-                      badgeContent: Text('New'),
-                      child: ListTile(
-                        leading: Icon(Icons.message),
-                        title: Text(I18n.of(context).about),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AboutPage()));
-                        },
-                      ),
+                    OpenContainer<bool>(
+                      transitionType: ContainerTransitionType.fade,
+                      openBuilder: (BuildContext context, VoidCallback _) {
+                        return AboutPage();
+                      },
+                      closedShape: const RoundedRectangleBorder(),
+                      tappable: false,
+                      closedBuilder:
+                          (BuildContext _, VoidCallback openContainer) {
+                        return ListTile(
+                          leading: Icon(Icons.message),
+                          title: Text(I18n.of(context).about),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AboutPage()));
+                          },
+                        );
+                      },
                     ),
                     Observer(builder: (context) {
                       if (accountStore.now != null)
@@ -312,7 +320,6 @@ class _SettingPageState extends State<SettingPage> {
                                           Navigator.of(context).pop("OK");
                                         },
                                       ),
-
                                     ],
                                   );
                                 });

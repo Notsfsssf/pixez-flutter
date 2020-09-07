@@ -82,7 +82,7 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId dartEnvironmentVariables.IS_GOOGLEPLAY?'com.perol.play.pixez' :'com.perol.pixez'
+        applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 29

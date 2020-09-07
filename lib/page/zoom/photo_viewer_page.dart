@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -56,6 +57,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         children: [
           for (var f in widget.illusts.metaPages)
             PhotoView(
+              filterQuality: FilterQuality.high,
                 imageProvider: PixivProvider.url(userSetting.zoomQuality == 0
                     ? f.imageUrls.large
                     : f.imageUrls.original))
@@ -112,6 +114,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                   ? widget.illusts.metaPages[index].imageUrls.large
                   : widget.illusts.metaPages[index].imageUrls.original;
               return PhotoViewGalleryPageOptions(
+                filterQuality: FilterQuality.high,
                 imageProvider: PixivProvider.url(url),
                 initialScale: PhotoViewComputedScale.contained * 1,
                 heroAttributes: PhotoViewHeroAttributes(tag: url),
@@ -184,6 +187,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                       });
                 },
                 child: PhotoView(
+                  filterQuality: FilterQuality.high,
                   imageProvider: PixivProvider.url(userSetting.zoomQuality == 0
                       ? widget.illusts.imageUrls.large
                       : widget.illusts.metaSinglePage.originalImageUrl),

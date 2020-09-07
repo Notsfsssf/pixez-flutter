@@ -43,6 +43,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.2"
+  backdrop:
+    dependency: "direct main"
+    description:
+      name: backdrop
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.3"
   badges:
     dependency: "direct main"
     description:
