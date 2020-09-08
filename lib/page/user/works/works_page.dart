@@ -48,6 +48,7 @@ class _WorksPageState extends State<WorksPage> {
           child: LightingList(
             isNested: true,
             source: futureGet,
+            header: Container(height: 50,),
           ),
         ),
         Align(
@@ -67,7 +68,7 @@ class _WorksPageState extends State<WorksPage> {
           alignment: WrapAlignment.center,
           children: <Widget>[
             ActionChip(
-              elevation: 32.0,
+              elevation: 4.0,
               backgroundColor: now == 'illust'
                   ? Theme.of(context).accentColor
                   : Colors.transparent,
@@ -87,7 +88,7 @@ class _WorksPageState extends State<WorksPage> {
               },
             ),
             ActionChip(
-              elevation: 32.0,
+              elevation: 4.0,
               label: Text(
                 I18n.of(context).manga,
                 style: TextStyle(

@@ -265,8 +265,8 @@ class _SettingPageState extends State<SettingPage> {
                           leading: Icon(Icons.message),
                           title: Text(I18n.of(context).about),
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AboutPage()));
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //     builder: (context) => AboutPage()));
                           },
                         );
                       },

@@ -78,10 +78,7 @@ class _LightingListState extends State<LightingList> {
       return Container(
         child: Stack(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: widget.header == null ? 0 : 36.0),
-              child: _buildNewRefresh(context),
-            ),
+            _buildNewRefresh(context),
           ],
         ),
       );
@@ -223,11 +220,47 @@ class _LightingListState extends State<LightingList> {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     if (_isNested) {
+      return CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: widget.header,),
+          SliverWaterfallFlow(
+            gridDelegate:
+            SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+              crossAxisCount: userSetting.crossCount,
+              collectGarbage: (List<int> garbages) {
+                garbages.forEach((index) {
+                  final provider = ExtendedNetworkImageProvider(
+                    _store.iStores[index].illusts.imageUrls.medium,
+                  );
+                  provider.evict();
+                });
+              },
+            ),
+            delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  double radio = _store.iStores[index].illusts.height
+                      .toDouble() /
+                      _store.iStores[index].illusts.width.toDouble();
+                  double mainAxisExtent;
+                  if (radio > 3)
+                    mainAxisExtent = itemWidth;
+                  else
+                    mainAxisExtent = itemWidth * radio;
+                  return IllustCard(
+                    store: _store.iStores[index],
+                    iStores: _store.iStores,
+                    height: mainAxisExtent + 64.0,
+                  );
+                }, childCount: _store.iStores.length),
+          )
+        ],
+      );
       return WaterfallFlow.builder(
           padding: EdgeInsets.all(5.0),
           itemCount: _store.iStores.length,
           itemBuilder: (context, index) {
-            return _buildItem(index, itemWidth);
+            if(index==0) return widget.header;
+            return _buildItem(index-1, itemWidth);
           },
           gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
             crossAxisCount: userSetting.crossCount,

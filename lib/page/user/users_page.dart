@@ -315,7 +315,6 @@ class _UsersPageState extends State<UsersPage>
                 )),
                 pinned: true,
               ),
-          
             ];
           },
         ),
@@ -395,29 +394,48 @@ class _UsersPageState extends State<UsersPage>
             ),
             Padding(
               padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-              child: FlatButton(
-                textColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                color: userStore.isFollow
-                    ? Theme.of(context).accentColor
-                    : Colors.grey,
-                onPressed: () {
-                  if (accountStore.now != null) {
-                    if (int.parse(accountStore.now.userId) != widget.id) {
-                      userStore.follow(needPrivate: false);
-                    } else {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'Who is the most beautiful person in the world?')));
-                    }
-                  }
-                },
-                child: Text(userStore.isFollow
-                    ? I18n.of(context).followed
-                    : I18n.of(context).follow),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-              ),
+              child: userStore.isFollow
+                  ? FlatButton(
+                      textColor: Colors.white,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+                      color: Theme.of(context).accentColor,
+                      onPressed: () {
+                        if (accountStore.now != null) {
+                          if (int.parse(accountStore.now.userId) != widget.id) {
+                            userStore.follow(needPrivate: false);
+                          } else {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    'Who is the most beautiful person in the world?')));
+                          }
+                        }
+                      },
+                      child: Text(I18n.of(context).followed),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                    )
+                  : OutlineButton(
+                    borderSide:BorderSide(),
+                      // borderSide:
+                      //     BorderSide(color: Theme.of(context).accentColor),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      onPressed: () {
+                        if (accountStore.now != null) {
+                          if (int.parse(accountStore.now.userId) != widget.id) {
+                            userStore.follow(needPrivate: false);
+                          } else {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    'Who is the most beautiful person in the world?')));
+                          }
+                        }
+                      },
+                      child: Text(I18n.of(context).follow),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+                    ),
             )
           ],
         ),

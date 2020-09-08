@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:animations/animations.dart';
+import 'package:backdrop/backdrop.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,6 +33,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -45,6 +47,7 @@ class KeepContent extends StatelessWidget {
   final Widget item;
 
   const KeepContent({Key key, this.item}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,19 +82,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      body: PageTransitionSwitcher(
-        transitionBuilder: (
-          Widget child,
-          Animation<double> primaryAnimation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return FadeThroughTransition(
-            animation: primaryAnimation,
-            secondaryAnimation: secondaryAnimation,
-            child: child,
-          );
+      body: PageView.builder(
+        itemBuilder: (context, index) {
+          return _pageList[index];
         },
-        child: KeepContent(key: UniqueKey(),item: _pageList[index]),
+        controller: _pageController,
+        itemCount: 5,
       ),
       extendBody: true,
       bottomNavigationBar: Opacity(
