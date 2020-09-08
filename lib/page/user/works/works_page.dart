@@ -44,11 +44,11 @@ class _WorksPageState extends State<WorksPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Expanded(
-          child: LightingList(
-            isNested: true,
-            source: futureGet,
-            header: Container(height: 50,),
+        LightingList(
+          isNested: true,
+          source: futureGet,
+          header: Container(
+            height: 50,
           ),
         ),
         Align(
@@ -68,10 +68,9 @@ class _WorksPageState extends State<WorksPage> {
           alignment: WrapAlignment.center,
           children: <Widget>[
             ActionChip(
-              elevation: 4.0,
               backgroundColor: now == 'illust'
                   ? Theme.of(context).accentColor
-                  : Colors.transparent,
+                  : Colors.white,
               label: Text(
                 I18n.of(context).illust,
                 style: TextStyle(
@@ -88,7 +87,6 @@ class _WorksPageState extends State<WorksPage> {
               },
             ),
             ActionChip(
-              elevation: 4.0,
               label: Text(
                 I18n.of(context).manga,
                 style: TextStyle(
