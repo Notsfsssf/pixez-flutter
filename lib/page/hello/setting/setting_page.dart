@@ -34,6 +34,7 @@ import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
+import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/task/task_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
 
@@ -201,7 +202,7 @@ class _SettingPageState extends State<SettingPage> {
                       leading: Icon(Icons.description),
                       title: Text(I18n.of(context).task_progress),
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => TaskPage())),
+                          builder: (BuildContext context) => JobPage())),
                     ),
                     ListTile(
                       onTap: () async {

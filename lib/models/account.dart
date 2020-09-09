@@ -23,13 +23,9 @@ class Account {
   Account({this.response});
 
   Account.fromJson(Map<String, dynamic> json) {
-    this
-      ..id = json['id'] as int
-      ..userName = json['userName'] as String
-      ..title = json['title'] as String
-      ..url = json['url'] as String
-      ..userId = json['userId'] as int
-      ..illustId = json['illustId'] as int;
+    response = json['response'] != null
+        ? new AccountResponse.fromJson(json['response'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -147,11 +143,10 @@ create table $tableAccount (
     return await db
         .delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
   }
-
-  Future<int> deleteAll() async {
-    return await db.delete(tableAccount);
+ Future<int> deleteAll() async {
+    return await db
+        .delete(tableAccount);
   }
-
   Future<int> update(AccountPersist todo) async {
     return await db.update(tableAccount, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
@@ -175,18 +170,7 @@ class AccountPersist {
   int xRestrict;
   int isMailAuthorized;
 
-  AccountPersist(
-      {this.userId,
-      this.userImage,
-      this.accessToken,
-      this.refreshToken,
-      this.deviceToken,
-      this.name,
-      this.account,
-      this.mailAddress,
-      this.isPremium,
-      this.xRestrict,
-      this.isMailAuthorized});
+  AccountPersist({this.userId,this.userImage,this.accessToken, this.refreshToken, this.deviceToken,this.name,this.account,this.mailAddress,this.isPremium,this.xRestrict,this.isMailAuthorized});
 
   AccountPersist.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -200,7 +184,7 @@ class AccountPersist {
     mailAddress = json['mail_address'];
     isPremium = json['is_premium'];
     xRestrict = json['x_restrict'];
-    passWord = json[columnPassWord];
+    passWord=json[columnPassWord];
     isMailAuthorized = json['is_mail_authorized'];
   }
 
@@ -212,7 +196,7 @@ class AccountPersist {
     data[columnRefreshToken] = this.refreshToken;
     data[columnDeviceToken] = this.deviceToken;
     data['name'] = this.name;
-    data[columnPassWord] = this.passWord;
+    data[columnPassWord]=this.passWord;
     data['account'] = this.account;
     data['mail_address'] = this.mailAddress;
     data['is_premium'] = this.isPremium;

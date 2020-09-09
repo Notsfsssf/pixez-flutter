@@ -26,10 +26,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/models/tags.dart';
+import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/task_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:pixez/exts.dart';
@@ -49,6 +52,12 @@ class SaveStream {
   int index;
 
   SaveStream(this.state, this.data, {this.index});
+}
+
+class JobEntity {
+  int max;
+  int min;
+  int status;
 }
 
 class SaveStore = _SaveStoreBase with _$SaveStore;
@@ -192,10 +201,80 @@ abstract class _SaveStoreBase with Store {
   }
 
   final imageDio = Dio();
+  TaskPersistProvider taskPersistProvider = TaskPersistProvider();
+  Map<String, JobEntity> jobMaps = Map();
+
+  removeTask() {}
 
   _joinOnDart(String url, Illusts illusts, String fileName) async {
-    await imageDio.download(url, getExternalCacheDirectories(),
-        onReceiveProgress: (i, m) {});
+    var taskPersist = TaskPersist(
+        userId: illusts.user.id,
+        userName: illusts.user.name,
+        illustId: illusts.id,
+        title: illusts.title,
+        fileName: fileName,
+        status: 0,
+        url: url);
+    try {
+      await taskPersistProvider.open();
+      await taskPersistProvider.insert(taskPersist);
+      var savePath = (await getTemporaryDirectory()).path +
+          Platform.pathSeparator +
+          fileName;
+      await imageDio.download(
+        url,
+        savePath,
+        onReceiveProgress: (received, total) async {
+          if (total != -1) {
+            var job = jobMaps[url];
+            if (job != null) {
+              job
+                ..min = received
+                ..status = 1
+                ..max = total;
+            } else {
+              jobMaps[url] = JobEntity()
+                ..status = 1
+                ..min = received
+                ..max = total;
+            }
+            if (received / total == 1) {
+              await taskPersistProvider.update(taskPersist..status = 2);
+              File file = File(savePath);
+              final uint8list = await file.readAsBytes();
+              await saveStore.saveToGallery(uint8list, illusts, fileName);
+              var job = jobMaps[url];
+              if (job != null) {
+                job.status = 2;
+              } else {
+                jobMaps[url] = JobEntity()
+                  ..status = 2
+                  ..min = 1
+                  ..max = 1;
+              }
+            }
+          }
+        },
+        deleteOnError: true,
+        options: Options(headers: {
+          "referer": "https://app-api.pixiv.net/",
+          "User-Agent": "PixivIOSApp/5.8.0"
+        })
+      );
+    } catch (e) {
+      print(e);
+      await taskPersistProvider.update(taskPersist..status = 3);
+      var job = jobMaps[url];
+      if (job != null) {
+        job.status = 3;
+      } else {
+        jobMaps[url] = JobEntity()
+          ..status = 3
+          ..min = 1
+          ..max = 1;
+      }
+
+    }
   }
 
   _joinQueue(String url, Illusts illusts, String fileName) async {

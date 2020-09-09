@@ -18,10 +18,21 @@ import 'package:sqflite/sqflite.dart';
 class TaskPersist {
   int id;
   String userName;
+  String fileName;
   String title;
   String url;
   int userId;
   int illustId;
+  int status;
+
+  TaskPersist(
+      {this.userName,
+      this.title,
+      this.url,
+      this.userId,
+      this.illustId,
+      this.fileName,
+      this.status});
 
   TaskPersist.fromJson(Map<String, dynamic> json) {
     id = json[columnId];
@@ -30,6 +41,8 @@ class TaskPersist {
     url = json[columnUrl];
     userId = json[columnUserId];
     illustId = json[columnIllustId];
+    status = json[columnStatus];
+    fileName = json[columnFileName];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,24 +53,28 @@ class TaskPersist {
     data[columnUserName] = this.userName;
     data[columnIllustId] = this.illustId;
     data[columnUserId] = this.userId;
+    data[columnStatus] = this.status;
+    data[columnFileName] = this.fileName;
     return data;
   }
 }
 
-final String tableAccount = 'account';
+final String tableAccount = 'task';
 final String columnId = 'id';
 final String columnUrl = 'url';
 final String columnTitle = 'title';
 final String columnUserName = 'user_name';
 final String columnIllustId = 'illust_id';
 final String columnUserId = 'user_id';
+final String columnStatus = 'status';
+final String columnFileName = 'file_name';
 
 class TaskPersistProvider {
   Database db;
 
   Future open() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'account.db');
+    String path = join(databasesPath, 'task.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''
@@ -68,6 +85,8 @@ create table $tableAccount (
   $columnUrl text not null,
   $columnIllustId integer not null,
   $columnUserId integer not null,
+  $columnStatus integer not null,
+  $columnFileName text not null
   )
 ''');
     });
@@ -85,9 +104,11 @@ create table $tableAccount (
           columnId,
           columnUserId,
           columnIllustId,
+          columnFileName,
           columnTitle,
           columnUserName,
-          columnUrl
+          columnUrl,
+          columnStatus
         ],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -95,6 +116,24 @@ create table $tableAccount (
       return TaskPersist.fromJson(maps.first);
     }
     return null;
+  }
+
+  Future<int> remove(int id) async {
+    final result =
+        await db.delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
+
+    return result;
+  }
+
+  Future<int> deleteAll() async {
+    final result = await db.delete(tableAccount);
+
+    return result;
+  }
+
+  Future<int> update(TaskPersist todo) async {
+    return await db.update(tableAccount, todo.toJson(),
+        where: '$columnId = ?', whereArgs: [todo.id]);
   }
 
   Future<List<TaskPersist>> getAllAccount() async {
@@ -105,7 +144,9 @@ create table $tableAccount (
       columnIllustId,
       columnTitle,
       columnUserName,
-      columnUrl
+      columnUrl,
+      columnFileName,
+      columnStatus
     ]);
 
     if (maps.length > 0) {
