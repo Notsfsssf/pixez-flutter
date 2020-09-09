@@ -30,7 +30,6 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key key}) : super(key: key);
@@ -50,11 +49,12 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     _animationController = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
     animation = Tween(begin: 0.0, end: 0.25).animate(_animationController);
-    _controller = RefreshController(initialRefresh: true);
-    _trendTagsStore = TrendTagsStore(_controller);
+
+    _trendTagsStore = TrendTagsStore();
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     tagHistoryStore.fetch();
+    _trendTagsStore.fetch();
 //    _animationController.forward();//下版再做动画吧
   }
 
@@ -62,11 +62,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   void dispose() {
     _animationController?.dispose();
     _tabController?.dispose();
-    _controller?.dispose();
     super.dispose();
   }
-
-  RefreshController _controller;
 
   Widget _buildFirstRow(BuildContext context) {
     return Padding(
@@ -205,15 +202,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       if (accountStore.now != null)
-        return SmartRefresher(
-          controller: _controller,
-          header: (Platform.isAndroid)
-              ? MaterialClassicHeader(
-                  color: Theme.of(context).accentColor,
-                )
-              : ClassicHeader(),
-          enablePullDown: true,
-          onRefresh: () => _trendTagsStore.fetch(),
+        return RefreshIndicator(
+          onRefresh: () {
+            return _trendTagsStore.fetch();
+          },
           child: CustomScrollView(
             slivers: [
               SliverAppBar(

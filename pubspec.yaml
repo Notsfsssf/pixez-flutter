@@ -34,7 +34,7 @@ dependencies:
   url_launcher: ^5.5.2
   bot_toast: ^3.0.4
   package_info: ^0.4.3
-  json_serializable: ^3.4.1
+
   uni_links: ^0.4.0
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
@@ -60,6 +60,7 @@ dependencies:
   extended_text: ^4.0.0
   backdrop: ^0.4.3
   font_awesome_flutter: ^8.8.1
+  json_annotation: ^3.0.1
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
@@ -68,6 +69,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.10.1
   mobx_codegen: ^1.1.0+1
+  json_serializable: ^3.4.1
 
 
 

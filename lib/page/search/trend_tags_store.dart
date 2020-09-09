@@ -18,27 +18,23 @@ import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 part 'trend_tags_store.g.dart';
 
 class TrendTagsStore = _TrendTagsStoreBase with _$TrendTagsStore;
 
 abstract class _TrendTagsStoreBase with Store {
-  final RefreshController _controller;
   @observable
   ObservableList<Trend_tags> trendTags = ObservableList();
 
-  _TrendTagsStoreBase(this._controller);
+  _TrendTagsStoreBase();
+
   @action
   fetch() async {
-    try {
-      Response response = await apiClient.getIllustTrendTags();
-      TrendingTag trendingTag = TrendingTag.fromJson(response.data);
-      trendTags.clear();
-      trendTags.addAll(trendingTag.trend_tags);
-      _controller.refreshCompleted();
-    } catch (e) {
-      _controller.refreshFailed();
-    }
+    throw "1";
+    Response response = await apiClient.getIllustTrendTags();
+    TrendingTag trendingTag = TrendingTag.fromJson(response.data);
+    trendTags.clear();
+    trendTags.addAll(trendingTag.trend_tags);
   }
 }

@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -52,10 +53,29 @@ class _WorksPageState extends State<WorksPage> {
           ),
         ),
         Align(
-          child: _buildHeader(),
+          child: _buildSegment(),
           alignment: Alignment.topCenter,
         ),
       ],
+    );
+  }
+
+  int _currentSelection = 0;
+  Widget _buildSegment() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: CupertinoSlidingSegmentedControl(
+        groupValue: _currentSelection,
+        children: <int, Widget>{
+          0: Text(I18n.of(context).illust),
+          1: Text(I18n.of(context).painter),
+        },
+        onValueChanged: (int index) {
+          setState(() {
+            _currentSelection = index;
+          });
+        },
+      ),
     );
   }
 

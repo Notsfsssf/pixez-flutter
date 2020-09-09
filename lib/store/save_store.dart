@@ -19,6 +19,7 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -190,7 +191,16 @@ abstract class _SaveStoreBase with Store {
     return directory;
   }
 
+  final imageDio = Dio();
+
+  _joinOnDart(String url, Illusts illusts, String fileName) async {
+    await imageDio.download(url, getExternalCacheDirectories(),
+        onReceiveProgress: (i, m) {});
+  }
+
   _joinQueue(String url, Illusts illusts, String fileName) async {
+    _joinOnDart(url, illusts, fileName);
+    return;
     final tasks = await FlutterDownloader.loadTasksWithRawQuery(
         query: 'SELECT * FROM task WHERE url=\'${url}\'');
     if (tasks != null && tasks.isNotEmpty) {
