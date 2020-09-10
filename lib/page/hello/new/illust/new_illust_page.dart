@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -41,66 +42,96 @@ class _NewIllustPageState extends State<NewIllustPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-            child: Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-              icon: Icon(Icons.list),
-              onPressed: () {
-                showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16),
-                      ),
-                    ),
-                    context: context,
-                    builder: (context) => SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(I18n.of(context).all),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    futureGet =
-                                        () => apiClient.getFollowIllusts('all');
-                                  });
-                                },
-                              ),
-                              ListTile(
-                                title: Text(I18n.of(context).public),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    futureGet = () =>
-                                        apiClient.getFollowIllusts('public');
-                                  });
-                                },
-                              ),
-                              ListTile(
-                                title: Text(I18n.of(context).private),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    futureGet = () =>
-                                        apiClient.getFollowIllusts('private');
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ));
-              }),
-        )),
-        Expanded(
-          child: LightingList(
-            source: futureGet,
+    return Stack(
+      children: [
+        LightingList(
+          source: futureGet,
+          header: Container(
+            height: 45.0,
           ),
         ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            child: SortGroup(
+              onChange: (index) {
+                if (index == 0)
+                  setState(() {
+                    futureGet = () => apiClient.getFollowIllusts('all');
+                  });
+                if (index == 1)
+                  setState(() {
+                    futureGet = () => apiClient.getFollowIllusts('public');
+                  });
+                if (index == 2)
+                  setState(() {
+                    futureGet = () => apiClient.getFollowIllusts('private');
+                  });
+              },
+              children: [
+                I18n.of(context).all,
+                I18n.of(context).public,
+                I18n.of(context).private
+              ],
+            ),
+          ),
+        )
       ],
     );
+  }
+
+  Container buildContainer(BuildContext context) {
+    return Container(
+        child: Align(
+      alignment: Alignment.centerRight,
+      child: IconButton(
+          icon: Icon(Icons.list),
+          onPressed: () {
+            showModalBottomSheet(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
+                context: context,
+                builder: (context) => SafeArea(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            title: Text(I18n.of(context).all),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet =
+                                    () => apiClient.getFollowIllusts('all');
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: Text(I18n.of(context).public),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet =
+                                    () => apiClient.getFollowIllusts('public');
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: Text(I18n.of(context).private),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                futureGet =
+                                    () => apiClient.getFollowIllusts('private');
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ));
+          }),
+    ));
   }
 }

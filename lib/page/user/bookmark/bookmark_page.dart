@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -54,9 +55,16 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Widget build(BuildContext context) {
     if (accountStore.now != null) {
       if (int.parse(accountStore.now.userId) == widget.id) {
-        return LightingList(
-          header: buildContainer(context),
-          source: futureGet,
+        return Stack(
+          children: [
+            LightingList(
+              source: futureGet,
+              header: Container(
+                height: 45,
+              ),
+            ),
+            buildTopChip(context)
+          ],
         );
       }
       return LightingList(
@@ -68,10 +76,61 @@ class _BookmarkPageState extends State<BookmarkPage> {
     }
   }
 
+  Widget buildTopChip(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SortGroup(
+            children: [I18n.of(context).public, I18n.of(context).private],
+            onChange: (index) {
+              if (index == 0)
+                setState(() {
+                  futureGet = () =>
+                      apiClient.getBookmarksIllust(widget.id, 'public', null);
+                });
+              if (index == 1)
+                setState(() {
+                  futureGet = () =>
+                      apiClient.getBookmarksIllust(widget.id, 'private', null);
+                });
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: InkWell(
+              onTap: () async {
+                final result = await Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => UserBookmarkTagPage()));
+                if (result != null) {
+                  String tag = result['tag'];
+                  String restrict = result['restrict'];
+                  setState(() {
+                    futureGet = () =>
+                        apiClient.getBookmarksIllust(widget.id, restrict, tag);
+                  });
+                }
+              },
+              child: Chip(
+                label: Icon(Icons.toys),
+                backgroundColor: Theme.of(context).cardColor,
+                elevation: 4.0,
+                padding: EdgeInsets.all(0.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget buildContainer(BuildContext context) {
     return Container(
+      height: 30,
       child: Align(
-        alignment: Alignment.centerRight,
+        alignment: Alignment.topCenter,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,

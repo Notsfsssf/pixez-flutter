@@ -14,16 +14,15 @@
  */
 import 'dart:async';
 import 'dart:io';
-
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/task_persist.dart';
+import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/store/save_store.dart';
 
 class JobPage extends StatefulWidget {
@@ -55,7 +54,7 @@ class _JobPageState extends State<JobPage> {
   initMethod() async {
     await taskPersistProvider.open();
     final results = await taskPersistProvider.getAllAccount();
-    if (results != null && results.isNotEmpty) {
+    if (results != null) {
       if (mounted) {
         setState(() {
           _list = results;
@@ -64,16 +63,35 @@ class _JobPageState extends State<JobPage> {
     }
   }
 
+  String toMessage(int i) {
+    switch (i) {
+      case 0:
+        return "seed";
+        break;
+      case 1:
+        return I18n.of(context).running;
+        break;
+      case 2:
+        return I18n.of(context).complete;
+      case 3:
+        return I18n.of(context).failed;
+      default:
+        return "seed";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: Text(I18n.of(context).task_progress),
         actions: [
           IconButton(
               icon: Icon(Icons.more_vert),
-              onPressed: () {
-                showModalBottomSheet(
+              onPressed: () async {
+                await showModalBottomSheet(
                     context: context,
                     shape: RoundedRectangleBorder(
                         borderRadius:
@@ -92,6 +110,7 @@ class _JobPageState extends State<JobPage> {
                                     _retryJob(element);
                                   }
                                 });
+                                Navigator.of(context).pop();
                               },
                             ),
                             ListTile(
@@ -105,6 +124,7 @@ class _JobPageState extends State<JobPage> {
                                     _deleteJob(element);
                                   }
                                 });
+                                Navigator.of(context).pop();
                               },
                             )
                           ],
@@ -112,15 +132,8 @@ class _JobPageState extends State<JobPage> {
                         ),
                       );
                     });
+                initMethod();
               }),
-          IconButton(
-            onPressed: () async {
-              await taskPersistProvider.deleteAll();
-              saveStore.jobMaps.clear();
-              initMethod();
-            },
-            icon: Icon(Icons.delete),
-          )
         ],
       ),
       body: _list.isNotEmpty
@@ -131,28 +144,101 @@ class _JobPageState extends State<JobPage> {
                 if (job == null) {
                   return ListTile(
                     title: Text(persist.title),
-                    subtitle: Text(persist.status.toString()),
+                    subtitle: Text(toMessage(persist.status)),
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return IllustPage(
+                          id: persist.illustId,
+                        );
+                      }));
+                    },
+                    trailing: Row(
+                      children: [
+                        if (persist.status == 3 ||
+                            persist.status == 0 ||
+                            persist.status == 2)
+                          IconButton(
+                              icon: Icon(Icons.refresh),
+                              onPressed: () async {
+                                await _retryJob(persist);
+                              }),
+                        IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              await _deleteJob(persist);
+                              initMethod();
+                            }),
+                        if (persist.status == 2)
+                          IconButton(
+                            icon: Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            ),
+                            onPressed: () {},
+                          ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                    ),
                   );
                 }
-                return ListTile(
-                  title: Text(persist.title),
-                  subtitle: Text('${job.min}/${job.max}/${job.status}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.refresh),
-                          onPressed: () async {
-                            await _retryJob(persist);
-                          }),
-                      IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            await _deleteJob(persist);
-                            initMethod();
-                          }),
-                    ],
-                  ),
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                        persist.title,
+                        maxLines: 1,
+                      ),
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return IllustPage(
+                            id: persist.illustId,
+                          );
+                        }));
+                      },
+                      subtitle: Text('${toMessage(job.status)}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (persist.status == 3 ||
+                              persist.status == 0 ||
+                              persist.status == 2)
+                            IconButton(
+                                icon: Icon(Icons.refresh),
+                                onPressed: () async {
+                                  await _retryJob(persist);
+                                }),
+                          IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                await _deleteJob(persist);
+                                initMethod();
+                              }),
+                          if (persist.status == 3)
+                            IconButton(
+                              icon: Icon(Icons.error),
+                              onPressed: () {},
+                            ),
+                          if (persist.status == 2)
+                            IconButton(
+                              icon: Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {},
+                            )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: LinearProgressIndicator(
+                        value: job.min / job.max,
+                      ),
+                    ),
+                  ],
                 );
               },
               itemCount: _list.length,
@@ -167,7 +253,7 @@ class _JobPageState extends State<JobPage> {
 
   Future _deleteJob(TaskPersist persist) async {
     await taskPersistProvider.remove(persist.id);
-    saveStore.maps.remove(persist.url);
+    saveStore.jobMaps.remove(persist.url);
   }
 
   Future _retryJob(TaskPersist persist) async {
@@ -203,6 +289,29 @@ class _JobPageState extends State<JobPage> {
                 uint8list,
                 Illusts(user: User(id: persist.userId, name: persist.userName)),
                 persist.fileName);
+            BotToast.showCustomText(
+                onlyOne: true,
+                duration: Duration(seconds: 1),
+                toastBuilder: (textCancel) => Align(
+                      alignment: Alignment(0, 0.8),
+                      child: Card(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 8.0),
+                              child: Text(
+                                  "${persist.title} ${I18n.of(context).saved}"),
+                            )
+                          ],
+                        ),
+                      ),
+                    ));
             var job = jobMaps[persist.url];
             if (job != null) {
               job.status = 2;

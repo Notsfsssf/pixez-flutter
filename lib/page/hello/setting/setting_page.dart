@@ -17,7 +17,6 @@
 import 'dart:io';
 
 import 'package:animations/animations.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -35,7 +34,6 @@ import 'package:pixez/page/platform/platform_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
-import 'package:pixez/page/task/task_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
 
 class SettingPage extends StatefulWidget {
@@ -255,20 +253,16 @@ class _SettingPageState extends State<SettingPage> {
                   children: <Widget>[
                     OpenContainer<bool>(
                       transitionType: ContainerTransitionType.fade,
+                      closedColor: Colors.transparent,
                       openBuilder: (BuildContext context, VoidCallback _) {
                         return AboutPage();
                       },
                       closedShape: const RoundedRectangleBorder(),
-                      tappable: false,
                       closedBuilder:
                           (BuildContext _, VoidCallback openContainer) {
                         return ListTile(
                           leading: Icon(Icons.message),
                           title: Text(I18n.of(context).about),
-                          onTap: () {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (context) => AboutPage()));
-                          },
                         );
                       },
                     ),

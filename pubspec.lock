@@ -314,13 +314,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.0"
-  flutter_downloader:
-    dependency: "direct main"
-    description:
-      name: flutter_downloader
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.5.0"
   flutter_hooks:
     dependency: "direct main"
     description:

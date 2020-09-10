@@ -17,6 +17,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -53,7 +54,7 @@ class _WorksPageState extends State<WorksPage> {
           ),
         ),
         Align(
-          child: _buildSegment(),
+          child: _buildSortChip(),
           alignment: Alignment.topCenter,
         ),
       ],
@@ -61,6 +62,21 @@ class _WorksPageState extends State<WorksPage> {
   }
 
   int _currentSelection = 0;
+  Widget _buildSortChip() {
+    return SortGroup(
+      onChange: (index) {
+        setState(() {
+          futureGet = () => apiClient.getUserIllusts(widget.id, 'manga');
+          now = 'manga';
+        });
+      },
+      children: [
+        I18n.of(context).illust,
+        I18n.of(context).manga,
+      ],
+    );
+  }
+
   Widget _buildSegment() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -84,7 +100,6 @@ class _WorksPageState extends State<WorksPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
         child: Wrap(
-          spacing: 8.0,
           alignment: WrapAlignment.center,
           children: <Widget>[
             ActionChip(

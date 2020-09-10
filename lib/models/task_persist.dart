@@ -98,7 +98,7 @@ create table $tableAccount (
     return todo;
   }
 
-  Future<TaskPersist> getAccount(int id) async {
+  Future<TaskPersist> getAccount(String id) async {
     List<Map> maps = await db.query(tableAccount,
         columns: [
           columnId,
@@ -110,7 +110,7 @@ create table $tableAccount (
           columnUrl,
           columnStatus
         ],
-        where: '$columnId = ?',
+        where: '$columnUrl = ?',
         whereArgs: [id]);
     if (maps.length > 0) {
       return TaskPersist.fromJson(maps.first);

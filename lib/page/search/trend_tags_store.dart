@@ -31,7 +31,6 @@ abstract class _TrendTagsStoreBase with Store {
 
   @action
   fetch() async {
-    throw "1";
     Response response = await apiClient.getIllustTrendTags();
     TrendingTag trendingTag = TrendingTag.fromJson(response.data);
     trendTags.clear();

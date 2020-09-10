@@ -15,7 +15,6 @@
  */
 
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';

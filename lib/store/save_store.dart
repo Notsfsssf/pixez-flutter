@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
@@ -23,19 +22,16 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/task_persist.dart';
-import 'package:pixez/page/task/task_page.dart';
+import 'package:pixez/page/task/job_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
-import 'package:pixez/exts.dart';
 
 part 'save_store.g.dart';
 
@@ -66,15 +62,7 @@ abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     streamController = StreamController();
     saveStream = ObservableStream(streamController.stream.asBroadcastStream());
-    cleanTasks();
-  }
 
-  cleanTasks() async {
-    final tasks = await FlutterDownloader.loadTasks();
-    tasks.forEach((element) async {
-      await FlutterDownloader.remove(
-          taskId: element.taskId, shouldDeleteContent: true);
-    });
   }
 
   @override
@@ -124,7 +112,7 @@ abstract class _SaveStoreBase with Store {
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return TaskPage();
+                                return JobPage();
                               }));
                             }),
                         Padding(
@@ -189,7 +177,6 @@ abstract class _SaveStoreBase with Store {
 
   BuildContext context;
 
-  Map<String, SaveData> maps = HashMap();
   StreamController<SaveStream> streamController;
   ObservableStream<SaveStream> saveStream;
 
@@ -204,9 +191,13 @@ abstract class _SaveStoreBase with Store {
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
   Map<String, JobEntity> jobMaps = Map();
 
-  removeTask() {}
-
   _joinOnDart(String url, Illusts illusts, String fileName) async {
+    await taskPersistProvider.open();
+    final result =await taskPersistProvider.getAccount(url);
+    if (result != null) {
+      streamController.add(SaveStream(SaveState.INQUEUE, illusts));
+      return;
+    }
     var taskPersist = TaskPersist(
         userId: illusts.user.id,
         userName: illusts.user.name,
@@ -216,51 +207,70 @@ abstract class _SaveStoreBase with Store {
         status: 0,
         url: url);
     try {
-      await taskPersistProvider.open();
       await taskPersistProvider.insert(taskPersist);
       var savePath = (await getTemporaryDirectory()).path +
           Platform.pathSeparator +
           fileName;
-      await imageDio.download(
-        url,
-        savePath,
-        onReceiveProgress: (received, total) async {
-          if (total != -1) {
+      await imageDio.download(url, savePath,
+          onReceiveProgress: (received, total) async {
+        if (total != -1) {
+          var job = jobMaps[url];
+          if (job != null) {
+            job
+              ..min = received
+              ..status = 1
+              ..max = total;
+          } else {
+            jobMaps[url] = JobEntity()
+              ..status = 1
+              ..min = received
+              ..max = total;
+          }
+          if (received / total == 1) {
+            await taskPersistProvider.update(taskPersist..status = 2);
+            File file = File(savePath);
+            final uint8list = await file.readAsBytes();
+            await saveStore.saveToGallery(uint8list, illusts, fileName);
+            BotToast.showCustomText(
+                onlyOne: true,
+                duration: Duration(seconds: 1),
+                toastBuilder: (textCancel) => Align(
+                      alignment: Alignment(0, 0.8),
+                      child: Card(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 8.0),
+                              child: Text(
+                                  "${illusts.title} ${I18n.of(context).saved}"),
+                            )
+                          ],
+                        ),
+                      ),
+                    ));
             var job = jobMaps[url];
             if (job != null) {
-              job
-                ..min = received
-                ..status = 1
-                ..max = total;
+              job.status = 2;
             } else {
               jobMaps[url] = JobEntity()
-                ..status = 1
-                ..min = received
-                ..max = total;
-            }
-            if (received / total == 1) {
-              await taskPersistProvider.update(taskPersist..status = 2);
-              File file = File(savePath);
-              final uint8list = await file.readAsBytes();
-              await saveStore.saveToGallery(uint8list, illusts, fileName);
-              var job = jobMaps[url];
-              if (job != null) {
-                job.status = 2;
-              } else {
-                jobMaps[url] = JobEntity()
-                  ..status = 2
-                  ..min = 1
-                  ..max = 1;
-              }
+                ..status = 2
+                ..min = 1
+                ..max = 1;
             }
           }
-        },
-        deleteOnError: true,
-        options: Options(headers: {
-          "referer": "https://app-api.pixiv.net/",
-          "User-Agent": "PixivIOSApp/5.8.0"
-        })
-      );
+        }
+      },
+          deleteOnError: true,
+          options: Options(headers: {
+            "referer": "https://app-api.pixiv.net/",
+            "User-Agent": "PixivIOSApp/5.8.0"
+          }));
     } catch (e) {
       print(e);
       await taskPersistProvider.update(taskPersist..status = 3);
@@ -273,51 +283,12 @@ abstract class _SaveStoreBase with Store {
           ..min = 1
           ..max = 1;
       }
-
     }
   }
 
   _joinQueue(String url, Illusts illusts, String fileName) async {
     _joinOnDart(url, illusts, fileName);
     return;
-    final tasks = await FlutterDownloader.loadTasksWithRawQuery(
-        query: 'SELECT * FROM task WHERE url=\'${url}\'');
-    if (tasks != null && tasks.isNotEmpty) {
-      streamController.add(SaveStream(SaveState.INQUEUE, illusts));
-      return;
-    }
-    String tempPath = await findLocalPath();
-    if (!Directory(tempPath).existsSync()) {
-      Directory(tempPath).createSync();
-    }
-    final taskId = await FlutterDownloader.enqueue(
-      url: url,
-      savedDir: tempPath,
-      headers: {
-        "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0"
-      },
-      fileName: fileName,
-      showNotification: false,
-      // show download progress in status bar (for Android)
-      openFileFromNotification:
-          false, // click on notification to open downloaded file (for Android)
-    );
-    maps[taskId] = SaveData()
-      ..illusts = illusts
-      ..fileName = fileName;
-    // if (maps.values.length > 100) {
-    //   BotToast.showText(text: '缓存任务超过上限，清理中...');
-    //   final maybeRemoveTask = await FlutterDownloader.loadTasksWithRawQuery(
-    //       query: 'SELECT * FROM task WHERE status=3');
-    //   if (maybeRemoveTask.length > 10) {
-    //     for (int i = 0; i < maybeRemoveTask.length >> 1; i++) {
-    //       maps.remove(maybeRemoveTask[i].taskId);
-    //       await FlutterDownloader.remove(
-    //           taskId: taskId, shouldDeleteContent: true);
-    //     }
-    //   }
-    // }//改天找个LruCache试验一下
   }
 
   _saveInternal(String url, Illusts illusts, String fileName) async {

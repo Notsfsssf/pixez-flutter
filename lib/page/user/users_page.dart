@@ -18,6 +18,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -300,7 +301,7 @@ class _UsersPageState extends State<UsersPage>
                       _tabIndex = index;
                     });
                   },
-                  labelColor: Theme.of(context).textTheme.bodyText1.color,
+                  indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
                     Tab(
                       text: I18n.of(context).works,
@@ -416,7 +417,7 @@ class _UsersPageState extends State<UsersPage>
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                     )
                   : OutlineButton(
-                    borderSide:BorderSide(),
+                      borderSide: BorderSide(),
                       // borderSide:
                       //     BorderSide(color: Theme.of(context).accentColor),
                       shape: RoundedRectangleBorder(

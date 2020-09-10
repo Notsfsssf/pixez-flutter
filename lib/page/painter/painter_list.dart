@@ -25,7 +25,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class PainterList extends StatefulWidget {
   final FutureGet futureGet;
   final bool isNovel;
-  const PainterList({Key key, this.futureGet, this.isNovel = false})
+  final Widget header;
+  const PainterList(
+      {Key key, this.futureGet, this.isNovel = false, this.header})
       : super(key: key);
   @override
   _PainterListState createState() => _PainterListState();
@@ -95,20 +97,29 @@ class _PainterListState extends State<PainterList> {
             ? ListView.builder(
                 controller: _scrollController,
                 itemBuilder: (context, index) {
-                  final user = _painterListStore.users[index];
-                  if (widget.isNovel)
-                    return PainterCard(
-                      user: user,
-                      isNovel: widget.isNovel,
-                    );
-                  return PainterCard(
-                    user: user,
-                  );
+                  if (index == 0 && widget.header != null) {
+                    return widget.header;
+                  }
+
+                  if (widget.header != null) return _itemBuilder(index - 1);
+                  return _itemBuilder(index);
                 },
-                itemCount: _painterListStore.users.length,
+                itemCount:widget.header==null? _painterListStore.users.length:_painterListStore.users.length+1,
               )
             : Container(),
       );
     });
+  }
+
+  Widget _itemBuilder(int index) {
+    final user = _painterListStore.users[index];
+    if (widget.isNovel)
+      return PainterCard(
+        user: user,
+        isNovel: widget.isNovel,
+      );
+    return PainterCard(
+      user: user,
+    );
   }
 }
