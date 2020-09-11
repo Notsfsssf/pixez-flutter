@@ -29,6 +29,7 @@ class BookmarkPage extends StatefulWidget {
   final String restrict;
   final String tag;
   final bool isNested;
+
   const BookmarkPage({
     Key key,
     @required this.id,
@@ -43,11 +44,12 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   FutureGet futureGet;
+  String restrict = 'public';
 
   @override
   void initState() {
-    futureGet =
-        () => apiClient.getBookmarksIllust(widget.id, widget.restrict, null);
+    restrict = widget.restrict;
+    futureGet = () => apiClient.getBookmarksIllust(widget.id, restrict, null);
     super.initState();
   }
 
@@ -58,6 +60,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
         return Stack(
           children: [
             LightingList(
+              onChange: () {},
               source: futureGet,
               header: Container(
                 height: 45,
@@ -88,13 +91,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
             onChange: (index) {
               if (index == 0)
                 setState(() {
-                  futureGet = () =>
-                      apiClient.getBookmarksIllust(widget.id, 'public', null);
+                  futureGet = () => apiClient.getBookmarksIllust(
+                      widget.id, restrict = 'public', null);
                 });
               if (index == 1)
                 setState(() {
-                  futureGet = () =>
-                      apiClient.getBookmarksIllust(widget.id, 'private', null);
+                  futureGet = () => apiClient.getBookmarksIllust(
+                      widget.id, restrict = 'private', null);
                 });
             },
           ),
@@ -114,7 +117,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 }
               },
               child: Chip(
-                label: Icon(Icons.toys),
+                label: Icon(Icons.sort),
                 backgroundColor: Theme.of(context).cardColor,
                 elevation: 4.0,
                 padding: EdgeInsets.all(0.0),
@@ -139,7 +142,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
               width: 20,
             ),
             IconButton(
-                icon: Icon(Icons.toys),
+                icon: Icon(Icons.sort),
                 onPressed: () async {
                   final result = await Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => UserBookmarkTagPage()));

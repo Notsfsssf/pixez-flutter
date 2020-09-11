@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/recommend.dart';
@@ -31,8 +32,10 @@ abstract class _LightingStoreBase with Store {
   FutureGet source;
   String nextUrl;
   RefreshController _controller;
+  final Function onChange;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
+
   dispose() {
     // iStores.forEach((element) {
     //   final provider = ExtendedNetworkImageProvider(
@@ -45,7 +48,8 @@ abstract class _LightingStoreBase with Store {
 
   @observable
   String errorMessage;
-  _LightingStoreBase(this.source, this._controller);
+
+  _LightingStoreBase(this.source, this._controller, {this.onChange});
 
   @action
   Future<bool> fetch() async {
@@ -53,6 +57,7 @@ abstract class _LightingStoreBase with Store {
     errorMessage = null;
     if (_controller?.footerMode != null)
       _controller?.footerMode?.value = LoadStatus.idle;
+    _controller?.headerMode?.value =RefreshStatus.refreshing;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
@@ -63,6 +68,7 @@ abstract class _LightingStoreBase with Store {
       return true;
     } catch (e) {
       errorMessage = e.toString();
+      // BotToast.showText(text: '${e.toString()}');
       _controller.refreshFailed();
       return false;
     }

@@ -41,11 +41,15 @@ class _FollowListState extends State<FollowList> {
   @override
   void initState() {
     futureGet = () => apiClient.getUserFollowing(widget.id, restrict);
+
     super.initState();
   }
 
+
+
   FutureGet futureGet;
   String restrict = 'public';
+
   Widget buildHeader() {
     return Observer(builder: (_) {
       return Visibility(
@@ -56,8 +60,9 @@ class _FollowListState extends State<FollowList> {
             children: [I18n.of(context).public, I18n.of(context).private],
             onChange: (index) {
               setState(() {
-                futureGet = () => apiClient.getUserFollowing(
-                    widget.id, index == 0 ? 'public' : 'private');
+                restrict = index == 0 ? 'public' : 'private';
+                futureGet =
+                    () => apiClient.getUserFollowing(widget.id, restrict);
               });
             },
           ),

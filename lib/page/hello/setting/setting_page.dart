@@ -254,6 +254,7 @@ class _SettingPageState extends State<SettingPage> {
                     OpenContainer<bool>(
                       transitionType: ContainerTransitionType.fade,
                       closedColor: Colors.transparent,
+                      closedElevation: 0.0,
                       openBuilder: (BuildContext context, VoidCallback _) {
                         return AboutPage();
                       },

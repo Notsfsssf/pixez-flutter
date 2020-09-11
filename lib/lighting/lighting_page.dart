@@ -32,9 +32,14 @@ class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
   final bool isNested;
+  final Function onChange;
 
   const LightingList(
-      {Key key, @required this.source, this.header, this.isNested})
+      {Key key,
+      @required this.source,
+      this.header,
+      this.isNested,
+      this.onChange})
       : super(key: key);
 
   @override
@@ -52,7 +57,7 @@ class _LightingListState extends State<LightingList> {
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
       _store.fetch();
-      if (!_isNested) _scrollController.jumpTo(0.0);
+      if (!_isNested&&_store?.errorMessage!=null) _scrollController.jumpTo(0.0);
     }
   }
 
@@ -60,7 +65,8 @@ class _LightingListState extends State<LightingList> {
   void initState() {
     _isNested = widget.isNested ?? false;
     if (!_isNested) _scrollController = ScrollController();
-    _store = LightingStore(widget.source, _refreshController);
+    _store = LightingStore(widget.source, _refreshController,
+        onChange: widget.onChange ?? () {});
     super.initState();
     _store.fetch();
   }
@@ -91,6 +97,7 @@ class _LightingListState extends State<LightingList> {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
+
       header: (Platform.isAndroid)
           ? MaterialClassicHeader(
               color: Theme.of(context).accentColor,
@@ -255,46 +262,43 @@ class _LightingListState extends State<LightingList> {
           )
         ],
       );
-
     }
-     return CustomScrollView(
-       controller: _scrollController,
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(child: widget.header),
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(child: widget.header),
+        ),
+        SliverWaterfallFlow(
+          gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+            crossAxisCount: userSetting.crossCount,
+            collectGarbage: (List<int> garbages) {
+              garbages.forEach((index) {
+                final provider = ExtendedNetworkImageProvider(
+                  _store.iStores[index].illusts.imageUrls.medium,
+                );
+                provider.evict();
+              });
+            },
           ),
-          SliverWaterfallFlow(
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: userSetting.crossCount,
-              collectGarbage: (List<int> garbages) {
-                garbages.forEach((index) {
-                  final provider = ExtendedNetworkImageProvider(
-                    _store.iStores[index].illusts.imageUrls.medium,
-                  );
-                  provider.evict();
-                });
-              },
-            ),
-            delegate:
-                SliverChildBuilderDelegate((BuildContext context, int index) {
-              double radio = _store.iStores[index].illusts.height.toDouble() /
-                  _store.iStores[index].illusts.width.toDouble();
-              double mainAxisExtent;
-              if (radio > 3)
-                mainAxisExtent = itemWidth;
-              else
-                mainAxisExtent = itemWidth * radio;
-              return IllustCard(
-                store: _store.iStores[index],
-                iStores: _store.iStores,
-                height: mainAxisExtent + 64.0,
-              );
-            }, childCount: _store.iStores.length),
-          )
-        ],
-      );
- 
-
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+            double radio = _store.iStores[index].illusts.height.toDouble() /
+                _store.iStores[index].illusts.width.toDouble();
+            double mainAxisExtent;
+            if (radio > 3)
+              mainAxisExtent = itemWidth;
+            else
+              mainAxisExtent = itemWidth * radio;
+            return IllustCard(
+              store: _store.iStores[index],
+              iStores: _store.iStores,
+              height: mainAxisExtent + 64.0,
+            );
+          }, childCount: _store.iStores.length),
+        )
+      ],
+    );
   }
 
   Widget _buildItem(int index, double itemWidth) {

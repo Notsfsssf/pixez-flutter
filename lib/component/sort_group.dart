@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 class SortGroup extends StatefulWidget {
   final List<String> children;
   final Function onChange;
-  final int currentIndex;
 
   const SortGroup(
       {Key key,
       @required this.children,
-      @required this.onChange,
-      this.currentIndex})
+      @required this.onChange})
       : super(key: key);
 
   @override
@@ -21,19 +19,9 @@ class _SortGroupState extends State<SortGroup> {
 
   @override
   void initState() {
-    this.index = widget.currentIndex??0;
     super.initState();
   }
 
-  @override
-  void didUpdateWidget(SortGroup oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.currentIndex != index) {
-      setState(() {
-        this.index = widget.currentIndex;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +43,7 @@ class _SortGroupState extends State<SortGroup> {
                 : Colors.transparent,
             onPressed: () {
               int ii = widget.children.indexOf(i);
-              widget.onChange(index);
+              widget.onChange(ii);
               if (mounted)
                 setState(() {
                   this.index = ii;
