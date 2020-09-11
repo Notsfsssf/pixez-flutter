@@ -274,7 +274,7 @@ class _JobPageState extends State<JobPage> {
                 );
               } else {
                 return Visibility(
-                  visible: currentIndex == persist.status,
+                  visible: currentIndex == job.status,
                   child: Builder(builder: (context) {
                     if (job == null) {
                       return ListTile(
@@ -304,14 +304,6 @@ class _JobPageState extends State<JobPage> {
                                   await _deleteJob(persist);
                                   initMethod();
                                 }),
-                            if (persist.status == 2)
-                              IconButton(
-                                icon: Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                ),
-                                onPressed: () {},
-                              ),
                           ],
                           mainAxisAlignment: MainAxisAlignment.end,
                           mainAxisSize: MainAxisSize.min,
@@ -351,19 +343,6 @@ class _JobPageState extends State<JobPage> {
                                     await _deleteJob(persist);
                                     initMethod();
                                   }),
-                              if (persist.status == 3)
-                                IconButton(
-                                  icon: Icon(Icons.error),
-                                  onPressed: () {},
-                                ),
-                              if (persist.status == 2)
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                  ),
-                                  onPressed: () {},
-                                )
                             ],
                           ),
                         ),

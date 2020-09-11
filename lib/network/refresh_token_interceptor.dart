@@ -23,7 +23,7 @@ import 'package:pixez/network/oauth_client.dart';
 
 class RefreshTokenInterceptor extends Interceptor {
   Future<String> getToken() async {
-    String token = accountStore?.now?.accessToken;//可能读的时候没有错的快，导致now为null
+    String token = accountStore?.now?.accessToken; //可能读的时候没有错的快，导致now为null
     String result;
     if (token != null)
       result = "Bearer " + token;
@@ -51,6 +51,14 @@ class RefreshTokenInterceptor extends Interceptor {
   }
 
   int lastRefreshTime = 0;
+  int retryNum = 0;
+
+  @override
+  Future onResponse(Response response) {
+    retryNum = 0;
+    return super.onResponse(response);
+  }
+
   @override
   onError(DioError err) async {
     if (err.response != null && err.response.statusCode == 400) {
@@ -103,6 +111,14 @@ class RefreshTokenInterceptor extends Interceptor {
           return e;
         }
       }
+    }
+    if (err.message != null &&
+        err.message.contains("Connection closed before full header was received") &&
+        retryNum < 2) {
+      print('retry');
+      retryNum++;
+      RequestOptions options = err.request;
+      return apiClient.httpClient.request(options.path, options: options);
     }
     super.onError(err);
   }
