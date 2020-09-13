@@ -1803,10 +1803,10 @@ class I18n {
     );
   }
 
-  /// `link`
+  /// `Link`
   String get link {
     return Intl.message(
-      'link',
+      'Link',
       name: 'link',
       desc: '',
       args: [],

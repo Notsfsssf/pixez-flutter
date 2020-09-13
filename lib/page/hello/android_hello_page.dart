@@ -327,7 +327,29 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                content: Text(I18n.of(context).saf_hint),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      Text(I18n.of(context).saf_hint),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text("Step1"),
+                      ),
+                      Image.asset(
+                        'assets/images/step1.png',
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text("Step2"),
+                      ),
+                      Image.asset(
+                        'assets/images/step2.png',
+                        fit: BoxFit.fitWidth,
+                      )
+                    ],
+                  ),
+                ),
                 title: Text(I18n.of(context).choose_directory),
                 actions: [
                   FlatButton(

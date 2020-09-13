@@ -94,7 +94,8 @@ flutter:
     - assets/images/weixin_qr.png
     - assets/images/h.jpg
     - assets/images/nine.jpg
-
+    - assets/images/step1.png
+    - assets/images/step2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

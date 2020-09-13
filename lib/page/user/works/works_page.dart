@@ -66,8 +66,8 @@ class _WorksPageState extends State<WorksPage> {
     return SortGroup(
       onChange: (index) {
         setState(() {
-          futureGet = () => apiClient.getUserIllusts(widget.id, 'manga');
-          now = 'manga';
+          now = index == 0 ? 'illust' : 'manga';
+          futureGet = () => apiClient.getUserIllusts(widget.id, now);
         });
       },
       children: [

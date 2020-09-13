@@ -100,7 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "large_preview_zoom_quality" : MessageLookupByLibrary.simpleMessage("Illusts loading quality in fullscreen"),
     "latest_version" : MessageLookupByLibrary.simpleMessage("Latest version"),
     "let_go_and_load_more" : MessageLookupByLibrary.simpleMessage("Load more"),
-    "link" : MessageLookupByLibrary.simpleMessage("link"),
+    "link" : MessageLookupByLibrary.simpleMessage("Link"),
     "load_image_failed_click_to_reload" : MessageLookupByLibrary.simpleMessage("Failed on loading, click to retry"),
     "loading_failed_retry_message" : MessageLookupByLibrary.simpleMessage("Failed on loading, click to retry"),
     "login" : MessageLookupByLibrary.simpleMessage("Login"),

@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/generated/l10n.dart';
-
 const Map<String, String> PixivHeader = {
   "referer": "https://app-api.pixiv.net/",
   "User-Agent": "PixivIOSApp/5.8.0"

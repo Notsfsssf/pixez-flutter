@@ -57,7 +57,8 @@ class _LightingListState extends State<LightingList> {
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
       _store.fetch();
-      if (!_isNested&&_store?.errorMessage!=null) _scrollController.jumpTo(0.0);
+      if (!_isNested && _store?.errorMessage != null)
+        _scrollController.jumpTo(0.0);
     }
   }
 
@@ -97,7 +98,6 @@ class _LightingListState extends State<LightingList> {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-
       header: (Platform.isAndroid)
           ? MaterialClassicHeader(
               color: Theme.of(context).accentColor,
@@ -199,6 +199,9 @@ class _LightingListState extends State<LightingList> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                Container(
+                  height: 50,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child:

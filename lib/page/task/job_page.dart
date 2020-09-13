@@ -137,9 +137,11 @@ class _JobPageState extends State<JobPage> {
               }),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_buildTopChip(), Expanded(child: _body())],
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [_buildTopChip(), Expanded(child: _body())],
+        ),
       ),
     );
   }
@@ -148,14 +150,13 @@ class _JobPageState extends State<JobPage> {
 
   Widget _buildTopChip() {
     return Padding(
-      padding: const EdgeInsets.only(left:16.0),
+      padding: const EdgeInsets.only(left: 16.0),
       child: SortGroup(
         children: [
           I18n.of(context).all,
           I18n.of(context).running,
           I18n.of(context).complete,
           I18n.of(context).failed,
-
         ],
         onChange: (index) {
           setState(() {
@@ -170,8 +171,14 @@ class _JobPageState extends State<JobPage> {
     return _list.isNotEmpty
         ? ListView.builder(
             itemBuilder: (context, index) {
+              if (index == _list.length) {
+                return Container(
+                  height: 8.0,
+                );
+              }
               var persist = _list[index];
               var job = saveStore.jobMaps[persist.url];
+
               if (currentIndex == 0) {
                 if (job == null) {
                   return ListTile(
@@ -201,14 +208,6 @@ class _JobPageState extends State<JobPage> {
                               await _deleteJob(persist);
                               initMethod();
                             }),
-                        if (persist.status == 2)
-                          IconButton(
-                            icon: Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            ),
-                            onPressed: () {},
-                          ),
                       ],
                       mainAxisAlignment: MainAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
@@ -248,36 +247,24 @@ class _JobPageState extends State<JobPage> {
                                 await _deleteJob(persist);
                                 initMethod();
                               }),
-                          if (persist.status == 3)
-                            IconButton(
-                              icon: Icon(Icons.error),
-                              onPressed: () {},
-                            ),
-                          if (persist.status == 2)
-                            IconButton(
-                              icon: Icon(
-                                Icons.check_circle,
-                                color: Colors.green,
-                              ),
-                              onPressed: () {},
-                            )
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: LinearProgressIndicator(
-                        value: job.min / job.max,
+                    if (job.max / job.min != 1)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: LinearProgressIndicator(
+                          value: job.min / job.max,
+                        ),
                       ),
-                    ),
                   ],
                 );
               } else {
-                return Visibility(
-                  visible: currentIndex == job.status,
-                  child: Builder(builder: (context) {
-                    if (job == null) {
-                      return ListTile(
+                return Builder(builder: (context) {
+                  if (job == null) {
+                    return Visibility(
+                      visible: persist.status == currentIndex,
+                      child: ListTile(
                         title: Text(persist.title),
                         subtitle: Text(toMessage(persist.status)),
                         onTap: () {
@@ -308,9 +295,12 @@ class _JobPageState extends State<JobPage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           mainAxisSize: MainAxisSize.min,
                         ),
-                      );
-                    }
-                    return Column(
+                      ),
+                    );
+                  }
+                  return Visibility(
+                    visible: currentIndex == job.status,
+                    child: Column(
                       children: [
                         ListTile(
                           title: Text(
@@ -346,23 +336,31 @@ class _JobPageState extends State<JobPage> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: LinearProgressIndicator(
-                            value: job.min / job.max,
+                        if (job.min / job.max == 1)
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: LinearProgressIndicator(
+                              value: job.min / job.max,
+                            ),
                           ),
-                        ),
                       ],
-                    );
-                  }),
-                );
+                    ),
+                  );
+                });
               }
             },
-            itemCount: _list.length,
+            itemCount: _list.length + 1,
           )
         : Container(
             child: Center(
-              child: Text("[]"),
+              child: Text(
+                "[  ]",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4
+                    .copyWith(fontStyle: FontStyle.italic),
+              ),
             ),
           );
   }

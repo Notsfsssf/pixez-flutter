@@ -14,10 +14,12 @@
  *
  */
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
@@ -78,7 +80,7 @@ class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin {
                   ]),
                   actions: <Widget>[
                     IconButton(
-                      icon: Icon(Icons.supervised_user_circle),
+                      icon: Icon(Icons.account_circle),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => UsersPage(
