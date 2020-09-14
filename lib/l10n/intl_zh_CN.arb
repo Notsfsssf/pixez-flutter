@@ -177,5 +177,6 @@
   "not_the_correct_link": "不是正确的链接 >_<",
   "start": "开始",
   "clear_search_tag_history": "清空搜索历史",
-  "link": "链接"
+  "link": "链接",
+  "step": "Step"
 }

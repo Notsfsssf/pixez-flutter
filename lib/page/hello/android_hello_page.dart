@@ -333,7 +333,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                       Text(I18n.of(context).saf_hint),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text("Step1"),
+                        child: Text(I18n.of(context).step + 1.toString()),
                       ),
                       Image.asset(
                         'assets/images/step1.png',
@@ -341,7 +341,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text("Step2"),
+                        child: Text(I18n.of(context).step + 2.toString()),
                       ),
                       Image.asset(
                         'assets/images/step2.png',

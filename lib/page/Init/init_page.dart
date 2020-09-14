@@ -38,7 +38,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
             var prefs = await SharedPreferences.getInstance();
             await prefs.setInt('language_num', userSetting.languageNum);
             //有可能用户啥都没选
-            final languageList = ['en-US', 'zh-CN', 'zh-TW'];
+            final languageList = ['en-US', 'zh-CN', 'zh-TW','ja'];
             ApiClient.Accept_Language = languageList[userSetting.languageNum];
             apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
             Navigator.of(context).pushReplacement(
@@ -68,6 +68,9 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                       ),
                       Tab(
                         text: "zh-TW",
+                      ),
+                      Tab(
+                        text: "ja",
                       )
                     ],
                     onTap: (index) async {
@@ -75,7 +78,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                       setState(() {});
                     },
                     controller: TabController(
-                        length: 3,
+                        length: 4,
                         vsync: this,
                         initialIndex: userSetting.languageNum),
                   );

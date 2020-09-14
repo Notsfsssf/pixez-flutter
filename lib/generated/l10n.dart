@@ -1812,6 +1812,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Step`
+  String get step {
+    return Intl.message(
+      'Step',
+      name: 'step',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {
@@ -1820,6 +1830,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en', countryCode: 'US'),
+      Locale.fromSubtags(languageCode: 'ja'),
       Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
       Locale.fromSubtags(languageCode: 'zh', countryCode: 'TW'),
     ];

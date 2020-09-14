@@ -198,7 +198,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         ),
                         Tab(
                           text: "zh-TW",
-                        )
+                        ),
+                        Tab(
+                          text: "ja",
+                        ),
                       ],
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
@@ -207,7 +210,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         });
                       },
                       controller: TabController(
-                          length: 3,
+                          length: 4,
                           vsync: this,
                           initialIndex: userSetting.languageNum),
                     ),

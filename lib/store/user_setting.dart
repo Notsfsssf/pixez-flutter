@@ -183,7 +183,7 @@ abstract class _UserSettingBase with Store {
     singleFolder = value;
   }
 
-  final languageList = ['en-US', 'zh-CN', 'zh-TW'];
+  final languageList = ['en-US', 'zh-CN', 'zh-TW','ja'];
 
   @action
   setLanguageNum(int value) async {

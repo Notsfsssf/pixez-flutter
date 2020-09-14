@@ -177,5 +177,6 @@
   "not_the_correct_link": "非正常連結 >_<",
   "start": "開始",
   "clear_search_tag_history": "清除搜尋記錄",
-  "link": "連結"
+  "link": "連結",
+  "step": "Step"
 }

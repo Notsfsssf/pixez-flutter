@@ -180,6 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "source" : MessageLookupByLibrary.simpleMessage("原始"),
     "spotlight" : MessageLookupByLibrary.simpleMessage("亮點"),
     "start" : MessageLookupByLibrary.simpleMessage("開始"),
+    "step" : MessageLookupByLibrary.simpleMessage("Step"),
     "support" : MessageLookupByLibrary.simpleMessage("支援"),
     "support_message" : MessageLookupByLibrary.simpleMessage("歡迎回報問題或共同開發:)"),
     "tag" : MessageLookupByLibrary.simpleMessage("標簽"),
