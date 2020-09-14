@@ -59,6 +59,7 @@ abstract class _UserSettingBase with Store {
   @observable
   String format = "";
   static const String intialFormat = "{illust_id}_p{part}";
+
   Color _stringToColor(String colorString) {
     String valueString =
         colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
@@ -77,6 +78,7 @@ abstract class _UserSettingBase with Store {
         // color: Colors.transparent,
         // elevation: 0.0,
       ));
+
   @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -124,7 +126,22 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    I18n.load(I18n.delegate.supportedLocales[languageNum]);
+    I18n.load(I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)]);
+  }
+
+  int toRealLanguageNum(int num) {
+    switch (num) {
+      case 1:
+        return 2;
+        break;
+      case 2:
+        return 3;
+        break;
+      case 3:
+        return 1;
+        break;
+    }
+    return num;
   }
 
   @action
@@ -183,7 +200,7 @@ abstract class _UserSettingBase with Store {
     singleFolder = value;
   }
 
-  final languageList = ['en-US', 'zh-CN', 'zh-TW','ja'];
+  final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
 
   @action
   setLanguageNum(int value) async {
@@ -192,7 +209,9 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    final local = I18n.delegate.supportedLocales[languageNum];
+
+    final local = I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
+
     I18n.load(local);
   }
 

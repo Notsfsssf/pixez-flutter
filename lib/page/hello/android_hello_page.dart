@@ -86,6 +86,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         itemBuilder: (context, index) {
           return _pageList[index];
         },
+        onPageChanged: (index){
+          setState(() {
+            this.index=index;
+          });
+        },
         controller: _pageController,
         itemCount: 5,
       ),

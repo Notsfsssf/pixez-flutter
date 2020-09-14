@@ -53,7 +53,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Select Language语言选择"),
+                  child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください"),
                 ),
                 Observer(builder: (_) {
                   return TabBar(
