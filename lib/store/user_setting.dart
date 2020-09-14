@@ -37,6 +37,9 @@ abstract class _UserSettingBase with Store {
   static const String CROSS_COUNT_KEY = "cross_count";
   static const String PICTURE_QUALITY_KEY = "picture_quality";
   static const String THEME_DATA_KEY = "theme_data";
+  static const String IS_BANGS_KEY = "is_bangs";
+  @observable
+  bool isBangs = false;
   @observable
   int zoomQuality = 0;
   @observable
@@ -78,6 +81,11 @@ abstract class _UserSettingBase with Store {
         // color: Colors.transparent,
         // elevation: 0.0,
       ));
+  @action
+  setIsBangs(bool v) async {
+    await prefs.setBool(IS_BANGS_KEY, v);
+    isBangs = v;
+  }
 
   @action
   Future<void> init() async {
@@ -90,6 +98,7 @@ abstract class _UserSettingBase with Store {
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
+    isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
     var colors = prefs.getStringList(THEME_DATA_KEY);
     if (colors != null) {
       if (colors.length < 2) {
@@ -209,9 +218,8 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-
-    final local = I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
-
+    final local =
+        I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
     I18n.load(local);
   }
 

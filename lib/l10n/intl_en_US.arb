@@ -178,5 +178,6 @@
   "start": "start",
   "clear_search_tag_history": "Clear search history",
   "link": "Link",
-  "step": "Step"
+  "step": "Step",
+  "special_shaped_screen": "Special shaped screen"
 }

@@ -67,10 +67,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
-
-
-
   Future<void> clean() async {
     final path = await saveStore.findLocalPath();
     Directory directory = Directory(path);
@@ -95,10 +91,9 @@ class _MyAppState extends State<MyApp> {
         title: 'PixEz',
         builder: BotToastInit(),
         theme: userSetting.themeData,
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          accentColor: userSetting.themeData.accentColor,
-        ),
+        darkTheme: ThemeData.dark().copyWith(
+            accentColor: userSetting.themeData.accentColor,
+            indicatorColor: userSetting.themeData.accentColor),
         supportedLocales: I18n.delegate.supportedLocales,
         localizationsDelegates: [
           I18n.delegate,

@@ -178,6 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skin" : MessageLookupByLibrary.simpleMessage("主題"),
     "skip" : MessageLookupByLibrary.simpleMessage("跳過"),
     "source" : MessageLookupByLibrary.simpleMessage("原始"),
+    "special_shaped_screen" : MessageLookupByLibrary.simpleMessage("異形屏"),
     "spotlight" : MessageLookupByLibrary.simpleMessage("亮點"),
     "start" : MessageLookupByLibrary.simpleMessage("開始"),
     "step" : MessageLookupByLibrary.simpleMessage("Step"),

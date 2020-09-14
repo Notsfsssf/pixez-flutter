@@ -61,7 +61,27 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
-    Container(),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/Skimige');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars0.githubusercontent.com/u/9017470?s=460&v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Skimige'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
     InkWell(
       onTap: () {
         try {
@@ -344,7 +364,21 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             padding: const EdgeInsets.all(8.0),
             child: Observer(builder: (_) {
               return SwitchListTile(
+                  activeColor: Theme.of(context).accentColor,
+                  value: userSetting.isBangs,
+                  title: Text(I18n.of(context).special_shaped_screen),
+                  subtitle: Text('--v--'),
+                  onChanged: (value) async {
+                    userSetting.setIsBangs(value);
+                  });
+            }),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Observer(builder: (_) {
+              return SwitchListTile(
                   value: userSetting.disableBypassSni,
+                  activeColor: Theme.of(context).accentColor,
                   title: Text(I18n.of(context).disable_sni_bypass),
                   subtitle: Text(I18n.of(context).disable_sni_bypass_message),
                   onChanged: (value) async {
@@ -383,6 +417,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             padding: const EdgeInsets.all(8.0),
             child: Observer(builder: (_) {
               return SwitchListTile(
+                  activeColor: Theme.of(context).accentColor,
                   value: userSetting.hIsNotAllow,
                   title:
                       Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),

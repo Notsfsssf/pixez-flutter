@@ -178,6 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skin" : MessageLookupByLibrary.simpleMessage("Skins"),
     "skip" : MessageLookupByLibrary.simpleMessage("Skip"),
     "source" : MessageLookupByLibrary.simpleMessage("Source"),
+    "special_shaped_screen" : MessageLookupByLibrary.simpleMessage("Special shaped screen"),
     "spotlight" : MessageLookupByLibrary.simpleMessage("Highlights"),
     "start" : MessageLookupByLibrary.simpleMessage("start"),
     "step" : MessageLookupByLibrary.simpleMessage("Step"),

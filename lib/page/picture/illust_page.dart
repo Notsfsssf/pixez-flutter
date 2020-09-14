@@ -629,6 +629,8 @@ class _IllustPageState extends State<IllustPage> {
       itemPositionsListener: itemPositionsListener,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
+          if(!userSetting.isBangs)
+          return Container();
           return Container(height: MediaQuery.of(context).padding.top - 56);
         }
         if (index <= data.pageCount) {

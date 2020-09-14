@@ -87,7 +87,6 @@ class _RankPageState extends State<RankPage>
           child: Column(
             children: <Widget>[
               AppBar(
-        
                 title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
@@ -160,6 +159,7 @@ class _RankPageState extends State<RankPage>
                     itemCount: boolList.length,
                     itemBuilder: (context, index) {
                       return CheckboxListTile(
+                        activeColor: Theme.of(context).accentColor,
                         title:
                             Text(I18n.of(context).mode_list.split(' ')[index]),
                         onChanged: (bool value) {

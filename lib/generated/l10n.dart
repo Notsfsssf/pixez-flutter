@@ -1822,6 +1822,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Special shaped screen`
+  String get special_shaped_screen {
+    return Intl.message(
+      'Special shaped screen',
+      name: 'special_shaped_screen',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {
