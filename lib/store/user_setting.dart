@@ -23,7 +23,6 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 part 'user_setting.g.dart';
 
 class UserSetting = _UserSettingBase with _$UserSetting;

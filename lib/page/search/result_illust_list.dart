@@ -115,7 +115,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return SearchSuggestionPage(preword: widget.word,);
+                        return SearchSuggestionPage(
+                          preword: widget.word,
+                        );
                       }));
                     },
                     child: Text(widget.word),
@@ -151,7 +153,15 @@ class _ResultIllustListState extends State<ResultIllustList> {
       DateTime.fromMillisecondsSinceEpoch(
           DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000)));
 
-  Future _buildShowDateRange(BuildContext context) {
+  Future _buildShowDateRange(BuildContext context) async {
+    // await showDateRangePicker(
+    //     context: context,
+    //     locale: I18n.delegate.supportedLocales[
+    //         userSetting.toRealLanguageNum(userSetting.languageNum)],
+    //     firstDate: DateTime.fromMillisecondsSinceEpoch(
+    //         DateTime.now().millisecondsSinceEpoch -
+    //             (24 * 60 * 60 * 365 * 1000 * 8)),
+    //     lastDate: DateTime.now());
     return showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(

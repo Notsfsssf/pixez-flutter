@@ -37,20 +37,24 @@ class HistoryPage extends StatelessWidget {
 
   Widget buildBody() => Observer(builder: (context) {
         var reIllust = _store.data.reversed.toList();
-        if (reIllust.isNotEmpty)
+        if (reIllust.isNotEmpty){
+          // return Stepper(steps: [
+          //   for(var i in reIllust)
+          //     Step(title: Text(i.time.toString()), content: PixivImage(i.pictureUrl))
+          // ]);
           return GridView.builder(
               itemCount: reIllust.length,
               gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return IllustPage(
-                            id: reIllust[index].illustId,
-                            store: IllustStore(reIllust[index].illustId, null));
-                      }));
+                            return IllustPage(
+                                id: reIllust[index].illustId,
+                                store: IllustStore(reIllust[index].illustId, null));
+                          }));
                     },
                     onLongPress: () async {
                       final result = await showDialog(
@@ -83,6 +87,7 @@ class HistoryPage extends StatelessWidget {
                         margin: EdgeInsets.all(8),
                         child: PixivImage(reIllust[index].pictureUrl)));
               });
+        }
         return Center(
           child: Container(),
         );

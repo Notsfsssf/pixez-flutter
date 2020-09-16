@@ -105,8 +105,8 @@ class _RankPageState extends State<RankPage>
                       var date = await showDatePicker(
                           context: context,
                           initialDate: nowDateTime,
-                          locale: I18n.delegate
-                              .supportedLocales[userSetting.languageNum],
+                          locale: I18n.delegate.supportedLocales[userSetting
+                              .toRealLanguageNum(userSetting.languageNum)],
                           firstDate: DateTime(2007, 8),
                           //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
                           lastDate: nowdate);

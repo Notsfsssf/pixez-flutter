@@ -318,74 +318,69 @@ class _IllustPageState extends State<IllustPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       _buildNameAvatar(context, illusts),
-                      illusts.metaPages.isNotEmpty
-                          ? ListTile(
-                              title: Text(I18n.of(context).muti_choice_save),
-                              leading: Icon(
-                                Icons.save,
-                              ),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                List<bool> indexs =
-                                    List(illusts.metaPages.length);
-                                for (int i = 0;
-                                    i < illusts.metaPages.length;
-                                    i++) {
-                                  indexs[i] = false;
-                                }
-                                final result = await showDialog(
-                                  context: context,
-                                  child: StatefulBuilder(
-                                      builder: (context, setDialogState) {
-                                    return AlertDialog(
-                                      title: Text("Select"),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text(I18n.of(context).cancel),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(
-                                                context, I18n.of(context).ok);
-                                          },
-                                          child: Text(I18n.of(context).ok),
-                                        ),
-                                      ],
-                                      content: Container(
-                                        width: double.maxFinite,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            return ListTile(
-                                              title: Text(index.toString()),
-                                              trailing: Checkbox(
-                                                  value: indexs[index],
-                                                  onChanged: (ischeck) {
-                                                    setDialogState(() {
-                                                      indexs[index] = ischeck;
-                                                    });
-                                                  }),
-                                            );
-                                          },
-                                          itemCount: illusts.metaPages.length,
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                      if (illusts.metaPages.isNotEmpty)
+                        ListTile(
+                          title: Text(I18n.of(context).muti_choice_save),
+                          leading: Icon(
+                            Icons.save,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pop();
+                            List<bool> indexs = List(illusts.metaPages.length);
+                            for (int i = 0; i < illusts.metaPages.length; i++) {
+                              indexs[i] = false;
+                            }
+                            final result = await showDialog(
+                              context: context,
+                              child: StatefulBuilder(
+                                  builder: (context, setDialogState) {
+                                return AlertDialog(
+                                  title: Text("Select"),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text(I18n.of(context).cancel),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(
+                                            context, I18n.of(context).ok);
+                                      },
+                                      child: Text(I18n.of(context).ok),
+                                    ),
+                                  ],
+                                  content: Container(
+                                    width: double.maxFinite,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          title: Text(index.toString()),
+                                          trailing: Checkbox(
+                                              value: indexs[index],
+                                              onChanged: (ischeck) {
+                                                setDialogState(() {
+                                                  indexs[index] = ischeck;
+                                                });
+                                              }),
+                                        );
+                                      },
+                                      itemCount: illusts.metaPages.length,
+                                    ),
+                                  ),
                                 );
-                                switch (result) {
-                                  case "OK":
-                                    {
-                                      saveStore.saveChoiceImage(
-                                          illusts, indexs);
-                                    }
+                              }),
+                            );
+                            switch (result) {
+                              case "OK":
+                                {
+                                  saveStore.saveChoiceImage(illusts, indexs);
                                 }
-                              },
-                            )
-                          : Container(),
+                            }
+                          },
+                        ),
                       ListTile(
                         title: Text(I18n.of(context).copymessage),
                         leading: Icon(
@@ -629,8 +624,7 @@ class _IllustPageState extends State<IllustPage> {
       itemPositionsListener: itemPositionsListener,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
-          if(!userSetting.isBangs)
-          return Container();
+          if (!userSetting.isBangs) return Container();
           return Container(height: MediaQuery.of(context).padding.top - 56);
         }
         if (index <= data.pageCount) {

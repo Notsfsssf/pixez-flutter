@@ -1,44 +1,25 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 class Constants {
   static String tagName = "0.2.0";
   static bool isGooglePlay =
       bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);
 }
 
-class Inw {
-  void a1() {}
-}
 
-class Wo {
-  void a2() {}
-}
 
-class We  implements Inw,Wo {
-  @override
-  void a1() {
-    // TODO: implement a1
-  }
 
-  @override
-  void a2() {
-    // TODO: implement a2
-  }
-
-}
-
-mixin Pe {
-  void a1() {}
-}
-mixin Pe1 {
-  void a1() {}
-}
-class Implements {
-  int a = 1;
-
-  void base() {
-    print('base');
-  }
-
-  void log() {
-    print('extends');
-  }
-}

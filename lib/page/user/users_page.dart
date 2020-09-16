@@ -418,8 +418,6 @@ class _UsersPageState extends State<UsersPage>
                     )
                   : OutlineButton(
                       borderSide: BorderSide(),
-                      // borderSide:
-                      //     BorderSide(color: Theme.of(context).accentColor),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                       onPressed: () {
