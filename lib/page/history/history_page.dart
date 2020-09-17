@@ -75,7 +75,6 @@ class HistoryPage extends StatelessWidget {
                                     Navigator.of(context).pop("OK");
                                   },
                                 ),
-
                               ],
                             );
                           });

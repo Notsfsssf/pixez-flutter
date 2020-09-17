@@ -70,7 +70,6 @@ class _RankPageState extends State<RankPage>
   }
 
   DateTime nowDateTime = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -127,13 +126,13 @@ class _RankPageState extends State<RankPage>
                 ],
               ),
               Expanded(
-                child: TabBarView(
-                    children: rankStore.modeList
-                        .map((element) => RankModePage(
-                              date: dateTime,
-                              mode: element,
-                            ))
-                        .toList()),
+                child: TabBarView(children: [
+                  for (var element in rankStore.modeList)
+                    RankModePage(
+                      date: dateTime,
+                      mode: element,
+                    )
+                ]),
               )
             ],
           ),

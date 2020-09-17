@@ -107,80 +107,79 @@ class _NovelLightingListState extends State<NovelLightingList> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: PixivImage(
-                            novel.imageUrls.medium,
-                            width: 80,
+                    Expanded(
+                      flex: 5,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: PixivImage(
+                              novel.imageUrls.medium,
+                              width: 80,
+                            ),
                           ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 8.0, left: 8.0),
-                              child: Container(
-                                  width: MediaQuery.of(context).size.width / 2,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 8.0, left: 8.0),
                                   child: Text(
                                     novel.title,
                                     overflow: TextOverflow.ellipsis,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context).textTheme.bodyText1,
                                     maxLines: 3,
-                                  )),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  novel.user.name,
-                                  maxLines: 1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption
-                                      .copyWith(
-                                          color: Theme.of(context).accentColor),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    for (var f in novel.tags)
-                                      Text(
-                                        f.name,
-                                        style:
-                                            Theme.of(context).textTheme.caption,
-                                      )
-                                  ],
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Text(
+                                    novel.user.name,
+                                    maxLines: 1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        .copyWith(
+                                            color: Theme.of(context).accentColor),
+                                  ),
                                 ),
-                              ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Wrap(
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    children: [
+                                      for (var f in novel.tags)
+                                        Text(
+                                          f.name,
+                                          style:
+                                              Theme.of(context).textTheme.caption,
+                                        )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 8.0,
+                                )
+                              ],
                             ),
-                            Container(
-                              height: 8.0,
-                            )
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        NovelBookmarkButton(novel: novel),
-                        Text('${novel.totalBookmarks}',
-                            style: Theme.of(context).textTheme.caption)
-                      ],
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          NovelBookmarkButton(novel: novel),
+                          Text('${novel.totalBookmarks}',
+                              style: Theme.of(context).textTheme.caption)
+                        ],
+                      ),
                     )
                   ],
                 ),

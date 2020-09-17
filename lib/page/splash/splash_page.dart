@@ -24,6 +24,7 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/splash/splash_store.dart';
 
 class SplashPage extends StatefulWidget {
@@ -35,6 +36,7 @@ class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   SplashStore splashStore;
+
   @override
   void initState() {
     splashStore = SplashStore(OnezeroClient())..fetch();
@@ -46,6 +48,7 @@ class _SplashPageState extends State<SplashPage>
   }
 
   ReactionDisposer reactionDisposer, userDisposer;
+
   initMethod() {
     userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
       if (userSetting.disableBypassSni) {
@@ -57,7 +60,12 @@ class _SplashPageState extends State<SplashPage>
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+                    Platform.isIOS ? HelloPage() : NovelRail()));
+        // Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) =>
+        //         Platform.isIOS ? HelloPage() : AndroidHelloPage()));
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
@@ -75,6 +83,12 @@ class _SplashPageState extends State<SplashPage>
           print(e);
         }
       }
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+              Platform.isIOS ? HelloPage() : NovelRail()));
+      return;
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

@@ -15,13 +15,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
+import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/quick/novel_quick_page.dart';
 import 'package:pixez/page/novel/rank/novel_rank_page.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/viewer/novel_viewer.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NovelRecomPage extends StatefulWidget {
   @override
@@ -29,37 +37,173 @@ class NovelRecomPage extends StatefulWidget {
 }
 
 class _NovelRecomPageState extends State<NovelRecomPage> {
+  NovelLightingStore _store;
+  RefreshController _easyRefreshController;
+
+  @override
+  void initState() {
+    _easyRefreshController = RefreshController(initialRefresh: true);
+    _store = NovelLightingStore(
+        () => apiClient.getNovelRecommended(), _easyRefreshController);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _easyRefreshController?.dispose();
+    super.dispose();
+  }
+  Widget _buildFirstRow(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            child: Padding(
+              child: Text(
+                I18n.of(context).recommend,
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.headline6.color),
+              ),
+              padding: EdgeInsets.only(left: 8.0, bottom: 10.0),
+            ),
+          ),
+
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(Icons.access_time),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return NovelQuickPage();
-                }));
-              },
+    return Observer(builder: (context) {
+      return SmartRefresher(
+        enablePullDown: true,
+        onRefresh: () => _store.fetch(),
+        onLoading: () => _store.next(),
+        enablePullUp: true,
+        controller: _easyRefreshController,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              elevation: 0.0,
+              titleSpacing: 0.0,
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              title: _buildFirstRow(context),
             ),
-            IconButton(
-              icon: Icon(Icons.bookmark),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return NovelRankPage();
-                }));
-              },
-            )
+            if (_store.novels.isNotEmpty)
+              SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                Novel novel = _store.novels[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  NovelViewerPage(
+                                    id: novel.id,
+                                    novel: novel,
+                                  )));
+                    },
+                    child: Card(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: PixivImage(
+                                  novel.imageUrls.medium,
+                                  width: 80,
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2-40,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, left: 8.0),
+                                      child: Container(
+                                          child: Text(
+                                        novel.title,
+                                        overflow: TextOverflow.ellipsis,
+                                        style:
+                                            Theme.of(context).textTheme.bodyText1,
+                                        maxLines: 3,
+                                      )),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Container(
+                                        child: Text(
+                                          novel.user.name,
+                                          maxLines: 1,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .accentColor),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Container(
+                                        child: Wrap(
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.center,
+                                          children: [
+                                            for (var f in novel.tags)
+                                              Text(
+                                                f.name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption,
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 8.0,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                NovelBookmarkButton(novel: novel),
+                                Text('${novel.totalBookmarks}',
+                                    style: Theme.of(context).textTheme.caption)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }, childCount: _store.novels.length)),
           ],
         ),
-        Expanded(
-            child: NovelLightingList(
-          futureGet: () => apiClient.getNovelRecommended(),
-        )),
-      ],
-    );
+      );
+    });
   }
 }
