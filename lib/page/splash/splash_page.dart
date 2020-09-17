@@ -56,16 +56,16 @@ class _SplashPageState extends State<SplashPage>
             'https://${ApiClient.BASE_API_URL_HOST}';
         oAuthClient.httpClient.options.baseUrl =
             'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    Platform.isIOS ? HelloPage() : NovelRail()));
         // Navigator.pushReplacement(
         //     context,
         //     MaterialPageRoute(
         //         builder: (BuildContext context) =>
-        //         Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+        //             Platform.isIOS ? HelloPage() : NovelRail()));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                Platform.isIOS ? HelloPage() : AndroidHelloPage()));
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
@@ -83,12 +83,12 @@ class _SplashPageState extends State<SplashPage>
           print(e);
         }
       }
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) =>
-              Platform.isIOS ? HelloPage() : NovelRail()));
-      return;
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (BuildContext context) =>
+      //         Platform.isIOS ? HelloPage() : NovelRail()));
+      // return;
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

@@ -86,52 +86,48 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         itemBuilder: (context, index) {
           return _pageList[index];
         },
-        onPageChanged: (index){
+        onPageChanged: (index) {
           setState(() {
-            this.index=index;
+            this.index = index;
           });
         },
         controller: _pageController,
         itemCount: 5,
       ),
-      extendBody: true,
-      bottomNavigationBar: Opacity(
-        opacity: 0.98,
-        child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Theme.of(context).accentColor,
-            currentIndex: index,
-            onTap: (index) {
-              setState(() {
-                this.index = index;
-              });
-              _pageController.jumpToPage(index);
-            },
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    CustomIcons.leaderboard,
-                  ),
-                  title: Text(I18n.of(context).rank)),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite),
-                  title: Text(I18n.of(context).quick_view)),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.search),
-                  title: Text(I18n.of(context).search)),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  title: Text(I18n.of(context).setting)),
-            ]),
-      ),
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).accentColor,
+          currentIndex: index,
+          onTap: (index) {
+            setState(() {
+              this.index = index;
+            });
+            _pageController.jumpToPage(index);
+          },
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  CustomIcons.leaderboard,
+                ),
+                title: Text(I18n.of(context).rank)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                title: Text(I18n.of(context).quick_view)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                title: Text(I18n.of(context).setting)),
+          ]),
     );
   }
 
   int index;
   PageController _pageController;
-  StreamSubscription _intentDataStreamSubscription, _sub;
+  StreamSubscription _intentDataStreamSubscription;
+  StreamSubscription _sub;
 
   initPlatform() async {
     try {
@@ -145,7 +141,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
   }
 
-  judgePushPage(Uri link) {
+  void judgePushPage(Uri link) {
     if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
