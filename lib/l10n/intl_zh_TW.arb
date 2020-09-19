@@ -93,7 +93,7 @@
   "nickname": "暱稱",
   "nickname_can_be_change_anytime": "暱稱可隨時變更",
   "no_h": "H是不行的!",
-  "no_more_data": "沒有更多資料了",
+  "no_more_data": "沒有更多資訊了",
   "not_bookmarked": "未收藏",
   "ok": "確定",
   "painter": "繪師",
@@ -106,7 +106,7 @@
   "personal": "個人",
   "pixel": "解析度",
   "please_note_that": "請註意",
-  "please_note_that_content": "只有在確保你的代理或是所處地區能夠訪問 Pixiv 時，才建議啟用此選項，選項開啟後任何網路問題都與本程式無關，請不要回報無法連線的問題",
+  "please_note_that_content": "只有在確保你的代理或是所處地區能夠訪問 Pixiv 時，才建議啟用此選項，選項開啟後任何網路問題都將與本程式無關，請不要回報無法連線的問題",
   "popular_desc": "熱度降序",
   "private": "非公開",
   "public": "公開",
@@ -124,7 +124,7 @@
   "reply": "回覆",
   "repo_address": "專案地址",
   "report": "檢舉",
-  "report_message": "如果該內容讓你感到不適，可點擊確定以回報審核。我們會盡快處理，該內容將會在問題被核實後立即刪除",
+  "report_message": "如果該內容讓你感到不適，可點擊確定以回報審核。我們(Pixiv)會盡快處理，而該內容將會在問題被核實後立即刪除",
   "retry": "重試",
   "retry_failed_tasks": "重試失敗工作",
   "right_now_message": "完成軟體圖示的繪製",
@@ -179,5 +179,5 @@
   "clear_search_tag_history": "清除搜尋記錄",
   "link": "連結",
   "step": "Step",
-  "special_shaped_screen": "異形屏"
+  "special_shaped_screen": "螢幕凹口"
 }
