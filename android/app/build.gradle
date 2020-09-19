@@ -85,7 +85,7 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 31
+        versionCode 32
         versionName "0.2.1 whiteout"
     }
     compileOptions {
