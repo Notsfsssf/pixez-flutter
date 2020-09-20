@@ -20,6 +20,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -386,74 +387,71 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              _trendTagsStore.trendTags.isNotEmpty
-                  ? SliverPadding(
-                      padding: EdgeInsets.all(8.0),
-                      sliver: SliverGrid(
-                          delegate:
-                              SliverChildBuilderDelegate((context, index) {
-                            final tags = _trendTagsStore.trendTags;
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(builder: (_) {
-                                  return ResultPage(
-                                    word: tags[index].tag,
-                                  );
-                                }));
-                              },
-                              onLongPress: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(builder: (_) {
-                                  return IllustPage(id: tags[index].illust.id);
-                                }));
-                              },
-                              child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8.0))),
-                                child: Stack(
-                                  children: <Widget>[
-                                    PixivImage(
-                                      tags[index].illust.imageUrls.squareMedium,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    Opacity(
-                                      opacity: 0.4,
-                                      child: Container(
-                                        decoration:
-                                            BoxDecoration(color: Colors.black),
-                                      ),
-                                    ),
-                                    Align(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Text(
-                                              tags[index].tag,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      alignment: Alignment.bottomCenter,
-                                    ),
-                                  ],
+              if (_trendTagsStore.trendTags.isNotEmpty)
+                SliverPadding(
+                  padding: EdgeInsets.all(8.0),
+                  sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final tags = _trendTagsStore.trendTags;
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(builder: (_) {
+                              return ResultPage(
+                                word: tags[index].tag,
+                              );
+                            }));
+                          },
+                          onLongPress: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(builder: (_) {
+                              return IllustPage(id: tags[index].illust.id);
+                            }));
+                          },
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0))),
+                            child: Stack(
+                              children: <Widget>[
+                                PixivImage(
+                                  tags[index].illust.imageUrls.squareMedium,
+                                  fit: BoxFit.cover,
                                 ),
-                              ),
-                            );
-                          }, childCount: _trendTagsStore.trendTags.length),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3)),
-                    )
-                  : SliverToBoxAdapter(child: Container())
+                                Opacity(
+                                  opacity: 0.4,
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.black),
+                                  ),
+                                ),
+                                Align(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Text(
+                                          tags[index].tag,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  alignment: Alignment.bottomCenter,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }, childCount: _trendTagsStore.trendTags.length),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3)),
+                )
             ],
           ),
         );

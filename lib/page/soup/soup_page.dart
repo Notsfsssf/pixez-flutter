@@ -16,8 +16,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/screen_box.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_page.dart';
@@ -54,15 +57,18 @@ class _SoupPageState extends State<SoupPage> {
                 pinned: true,
                 expandedHeight: 200.0,
                 flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: true,
-                    title: Text(widget.spotlight.pureTitle),
-                    background: PixivImage(widget.spotlight.thumbnail)),
+                  centerTitle: true,
+                  title: Text(widget.spotlight.pureTitle),
+                  background: PixivImage(
+                    widget.spotlight.thumbnail,
+                  ),
+                ),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.share),
                     onPressed: () async {
                       var url = widget.spotlight.articleUrl;
-                        await launch(url);
+                      await launch(url);
                     },
                   )
                 ],
@@ -75,47 +81,62 @@ class _SoupPageState extends State<SoupPage> {
   }
 
   Widget buildBlocProvider() {
-    if(_soupStore.amWorks.isEmpty) return Container();
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0)
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(_soupStore.description ?? ''),
-            ),
-          );
-        AmWork amWork = _soupStore.amWorks[index - 1];
-        return InkWell(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (BuildContext context) {
-              return IllustPage(
-                  id: int.parse(Uri.parse(amWork.arworkLink).pathSegments[Uri.parse(amWork.arworkLink).pathSegments.length-1]));
-            }));
-          },
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0))),
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  leading: PainterAvatar(
-                    url: amWork.userImage,
-                    id: int.parse(Uri.parse(amWork.userLink).pathSegments[Uri.parse(amWork.userLink).pathSegments.length-1]),
-                  ),
-                  title: Text(amWork.title),
-                  subtitle: Text(amWork.user),
-                ),
-                PixivImage(amWork.showImage),
-              ],
-            ),
-          ),
-        );
-      },
-      itemCount: _soupStore.amWorks.length + 1,
+    if (_soupStore.amWorks.isEmpty) return Container();
+    return AnimationLimiter(
+      child: ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return AnimationConfiguration.staggeredList(
+              position: index,
+              child: SlideAnimation(
+                verticalOffset: 50.0,
+                child: Builder(builder: (context) {
+                  if (index == 0)
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(_soupStore.description ?? ''),
+                      ),
+                    );
+                  AmWork amWork = _soupStore.amWorks[index - 1];
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return IllustPage(
+                            id: int.parse(Uri.parse(amWork.arworkLink)
+                                    .pathSegments[
+                                Uri.parse(amWork.arworkLink).pathSegments.length -
+                                    1]));
+                      }));
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            leading: PainterAvatar(
+                              url: amWork.userImage,
+                              id: int.parse(Uri.parse(amWork.userLink)
+                                      .pathSegments[
+                                  Uri.parse(amWork.userLink).pathSegments.length -
+                                      1]),
+                            ),
+                            title: Text(amWork.title),
+                            subtitle: Text(amWork.user),
+                          ),
+                          PixivImage(amWork.showImage),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ));
+        },
+        itemCount: _soupStore.amWorks.length + 1,
+      ),
     );
   }
 }
