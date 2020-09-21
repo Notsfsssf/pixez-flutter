@@ -33,6 +33,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
@@ -82,6 +83,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) => NovelRail()));
+        },
+        child: Icon(Icons.book),
+      ),
       body: PageView.builder(
         itemBuilder: (context, index) {
           return _pageList[index];

@@ -53,6 +53,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
     _easyRefreshController?.dispose();
     super.dispose();
   }
+
   Widget _buildFirstRow(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
@@ -69,11 +70,11 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               padding: EdgeInsets.only(left: 8.0, bottom: 10.0),
             ),
           ),
-
         ],
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -114,38 +115,39 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: PixivImage(
-                                  novel.imageUrls.medium,
-                                  width: 80,
+                          Expanded(
+                            flex: 5,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: PixivImage(
+                                    novel.imageUrls.medium,
+                                    width: 80,
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2-40,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0, left: 8.0),
-                                      child: Container(
-                                          child: Text(
-                                        novel.title,
-                                        overflow: TextOverflow.ellipsis,
-                                        style:
-                                            Theme.of(context).textTheme.bodyText1,
-                                        maxLines: 3,
-                                      )),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Container(
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, left: 8.0),
+                                        child: Text(
+                                          novel.title,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                          maxLines: 3,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
                                         child: Text(
                                           novel.user.name,
                                           maxLines: 1,
@@ -157,11 +159,9 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                                       .accentColor),
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Container(
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
                                         child: Wrap(
                                           crossAxisAlignment:
                                               WrapCrossAlignment.center,
@@ -176,16 +176,17 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                           ],
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      height: 8.0,
-                                    )
-                                  ],
+                                      Container(
+                                        height: 8.0,
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                           Expanded(
+                            flex: 1,
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
                               children: [

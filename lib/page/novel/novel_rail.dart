@@ -14,9 +14,12 @@
  */
 import 'package:flutter/material.dart';
 import 'package:pixez/custom_icon.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/novel/new/novel_new_page.dart';
 import 'package:pixez/page/novel/rank/novel_rank_page.dart';
 import 'package:pixez/page/novel/recom/novel_recom_page.dart';
+import 'package:pixez/page/novel/search/novel_search_page.dart';
 
 class NovelRail extends StatefulWidget {
   @override
@@ -25,7 +28,12 @@ class NovelRail extends StatefulWidget {
 
 class _NovelRailState extends State<NovelRail> {
   int selectedIndex = 0;
-  final _pageList = [NovelRecomPage(), NovelRankPage(), NovelNewPage()];
+  final _pageList = [
+    NovelRecomPage(),
+    NovelRankPage(),
+    NovelSearchPage(),
+    NovelNewPage()
+  ];
   PageController _pageController;
 
   @override
@@ -43,63 +51,48 @@ class _NovelRailState extends State<NovelRail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                NavigationRail(
-                  leading: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).padding.top),
-                    child: FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(Icons.search),
-                    ),
-                  ),
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (index) {
-                    _pageController.jumpToPage(index);
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite_border),
-                      selectedIcon: Icon(Icons.favorite),
-                      label: Text('First'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.bookmark_border),
-                      selectedIcon: Icon(Icons.book),
-                      label: Text('Second'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.star_border),
-                      selectedIcon: Icon(Icons.star),
-                      label: Text('Third'),
-                    ),
-                  ],
-                ),
-                VerticalDivider(thickness: 1, width: 1),
-                Expanded(
-                    child: PageView.builder(
-                        itemCount: 3,
-                        controller: _pageController,
-                        onPageChanged: (index) {
-                          setState(() {
-                            this.selectedIndex = index;
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          return _pageList[index];
-                        }))
-              ],
-            ),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => AndroidHelloPage()));
+        },
+        child: Icon(Icons.picture_in_picture),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).accentColor,
+        currentIndex: selectedIndex,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+          BottomNavigationBarItem(
+              icon: Icon(CustomIcons.leaderboard),
+              title: Text(I18n.of(context).rank)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text(I18n.of(context).setting)),
+        ],
+        onTap: (index) {
+          _pageController.jumpToPage(index);
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+      ),
+      body: PageView.builder(
+          itemCount: 3,
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              this.selectedIndex = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            return _pageList[index];
+          }),
     );
   }
 }

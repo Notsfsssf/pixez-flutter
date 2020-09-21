@@ -44,6 +44,11 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   TrendTagsStore _trendTagsStore;
   AnimationController _animationController;
   Animation animation;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _animationController.forward();
+  }
 
   @override
   void initState() {
@@ -56,7 +61,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     super.initState();
     tagHistoryStore.fetch();
     _trendTagsStore.fetch();
-//    _animationController.forward();//下版再做动画吧
   }
 
   @override
