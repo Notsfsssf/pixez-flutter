@@ -13,8 +13,9 @@
 |系统|来源|
 |:---:|:---:|
 |Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
-|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|
+|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)| 
 
+[蓝奏云](https://wwa.lanzous.com/b0ded45id)(临时，不推荐)
 # 预览
 
 |![Preview](./.github/preview/2.jpg) | ![Preview](./.github/preview/1.jpg) | 
