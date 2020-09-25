@@ -62,6 +62,8 @@ Pix-Ezviewer已经停止维护了,最好的做法是下载最新版的PixEZ(Flut
 3. 找到 Pictures 目录，如果你还没有 PixEz 目录则从右上角的三个点中选择“新建文件夹”
 进入刚建立的 PixEz 目录，点击下面的“选择”
 
+注意,保存路径不能包含download(下载)目录,你最好选择Pictures/PixEz路径
+
 |![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/1.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/2.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/3.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/4.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/5.jpg) |
 |:---:|:---:|:---:|:---:|:---:|
 
