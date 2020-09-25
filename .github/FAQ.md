@@ -27,6 +27,7 @@ Pix-Ezviewer已经停止维护了,最好的做法是下载最新版的PixEZ(Flut
 |:---:|:---:|
 |Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
 |iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|
+
 你也可以临时使用[蓝奏云](https://wwa.lanzous.com/b0ded45id)来下载,但是极不推荐这么做,请务必学会前往项目地址来更新
 
 ## 登录问题
