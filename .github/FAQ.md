@@ -22,7 +22,7 @@
 本教程并不是Pix-Ezviewer的教程,目前Pix-Ezviewer已经停止维护了.先由[ultranity](https://github.com/ultranity)继续维护,如果你正在使用旧的原生版本，有关任何的错误回报，你都应当联系新的维护者.
 
 ## 如何下载最新版
-Pix-Ezviewer已经停止维护了,最好的做法是下载最新版的PixEZ(Flutter)  
+Pix-Ezviewer已经停止维护了,最好的做法是下载最新版的PixEz(Flutter版)  
 |系统|来源|
 |:---:|:---:|
 |Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
@@ -39,8 +39,8 @@ Pix-Ezviewer已经停止维护了,最好的做法是下载最新版的PixEZ(Flut
 如果你无法登录请检查网络和软件版本.
 
 ## 切换语言
-如果当前界面全是英文&你不会英文,请点击右下角的settings并选择Preferences,再打开的页面中选择zh-CN并重启应用便可.  
-(感觉这条没用)
+如果当前界面全是英文&你不会英语,请点击右下角的settings并选择Preferences,在打开的页面中选择zh-CN并重新打开本应用便可.  
+(但愿不会发生这种情况)
 
 ## 下载图片
 下载按钮不外显，而是通过长按操作来实现。在主界面瀑布流长按对应插画，会自动下载该插画的所有分 p（如有）；而在插画详情界面长按插画，对于多 p 插画则可手动选择想要下载的分 p。
@@ -86,6 +86,7 @@ Pix-Ezviewer已经停止维护了,最好的做法是下载最新版的PixEZ(Flut
 你就那么想GHS么,在 网页端（电脑或手机）登录 pixiv，找到「用户设置」-「浏览限制」，将「限制浏览的作品（R-18）」改为「显示作品」，保存设置 . 最后开启本应用设置-偏好设置中 H是可以的! (‾﹃‾)
 
 ## 其他问题
+大多数选项都在设置中，建议汝仔细去找而不是什么问题都去问咱.
 ### 上架又下架是怎么一回事儿？
 简单的来说，就是 Play 不知道发了什么神经下架了原生版之后，又在 Flutter 版上架之后将 Flutter 版下架。嘛，虽然现在历经波折，Flutter 版还是在 Play 上架了！
 ### 为什么有的图看不了？
