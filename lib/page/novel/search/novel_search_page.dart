@@ -19,11 +19,11 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
               )
             ],
           ),
-          SliverGrid(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-            delegate: SliverChildBuilderDelegate((context,index){},childCount: ),
-          )
+          // SliverGrid(
+          //   gridDelegate:
+          //       SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          //   delegate: SliverChildBuilderDelegate((context,index){},childCount: ),
+          // )
         ],
       ),
     );

@@ -258,8 +258,7 @@ class _SettingPageState extends State<SettingPage> {
                                       tempDir.deleteSync(recursive: true);
                                       Directory directory = Directory(
                                           (await getApplicationDocumentsDirectory())
-                                                  .path +
-                                              '/pixez');
+                                              .path);
                                       if (directory.existsSync())
                                         directory.deleteSync(recursive: true);
                                     } catch (e) {}
