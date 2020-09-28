@@ -20,9 +20,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 part 'user_setting.g.dart';
 
 class UserSetting = _UserSettingBase with _$UserSetting;
@@ -37,6 +39,12 @@ abstract class _UserSettingBase with Store {
   static const String PICTURE_QUALITY_KEY = "picture_quality";
   static const String THEME_DATA_KEY = "theme_data";
   static const String IS_BANGS_KEY = "is_bangs";
+  static const String STORE_PATH_KEY = "save_store";
+  static const String ISHELPLESSWAY_KEY = "is_helplessway";
+  @observable
+  bool isHelplessWay = false;
+  @observable
+  String storePath = null;
   @observable
   bool isBangs = false;
   @observable
@@ -62,6 +70,19 @@ abstract class _UserSettingBase with Store {
   String format = "";
   static const String intialFormat = "{illust_id}_p{part}";
 
+  @action
+  setStorePath(String path) async {
+    await prefs.setString(STORE_PATH_KEY, path);
+    storePath = path;
+  }
+
+  @action
+  setIsHelplessWay(bool value) async {
+    await prefs.setBool(ISHELPLESSWAY_KEY, value);
+    isHelplessWay = value;
+    await DocumentPlugin.isHelplessWay();
+  }
+
   Color _stringToColor(String colorString) {
     String valueString =
         colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
@@ -80,6 +101,7 @@ abstract class _UserSettingBase with Store {
         // color: Colors.transparent,
         // elevation: 0.0,
       ));
+
   @action
   setIsBangs(bool v) async {
     await prefs.setBool(IS_BANGS_KEY, v);
@@ -98,6 +120,7 @@ abstract class _UserSettingBase with Store {
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
+    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY)??false;
     var colors = prefs.getStringList(THEME_DATA_KEY);
     if (colors != null) {
       if (colors.length < 2) {

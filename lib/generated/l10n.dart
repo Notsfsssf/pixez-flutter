@@ -1832,6 +1832,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `平台特殊设置`
+  String get platform_special_setting {
+    return Intl.message(
+      '平台特殊设置',
+      name: 'platform_special_setting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

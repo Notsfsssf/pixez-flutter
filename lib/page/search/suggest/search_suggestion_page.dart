@@ -14,10 +14,12 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/user/users_page.dart';
@@ -35,9 +37,23 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
   TextEditingController _filter;
   TabController _tabController;
   SuggestionStore _suggestionStore;
+  SauceStore _sauceStore;
   @override
   void initState() {
     _suggestionStore = SuggestionStore();
+    _sauceStore = SauceStore();
+    _sauceStore.observableStream.listen((event) {
+      if (event != null && _sauceStore.results.isNotEmpty) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PageView(
+                  children: _sauceStore.results
+                      .map((element) => IllustPage(id: element))
+                      .toList(),
+                )));
+      } else {
+        BotToast.showText(text: "0 result");
+      }
+    });
     _filter = TextEditingController(text: widget.preword ?? '');
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
@@ -58,6 +74,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
           child: Suggestions(
         suggestionStore: _suggestionStore,
       )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _sauceStore.findImage();
+        },
+        child: Icon(Icons.picture_in_picture),
+      ),
     );
   }
 

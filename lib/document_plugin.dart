@@ -25,7 +25,8 @@ class DocumentPlugin {
         .invokeMethod<bool>('save', {"data": uint8list, "name": fileName});
   }
 
-  static Future<bool> exist(String fileName)  => platform.invokeMethod<bool>("exist", {"name": fileName});
+  static Future<bool> exist(String fileName) =>
+      platform.invokeMethod<bool>("exist", {"name": fileName});
 
   static Future<String> getPath() => platform.invokeMethod<String>("get_path");
 
@@ -34,5 +35,8 @@ class DocumentPlugin {
 
   static Future<dynamic> choiceFolder() =>
       platform.invokeMethod("choice_folder");
+
+  static Future<dynamic> isHelplessWay() =>
+      platform.invokeMethod("ishelplessway");
   static Future<Uint8List> pickFile() => platform.invokeMethod("pick_file");
 }

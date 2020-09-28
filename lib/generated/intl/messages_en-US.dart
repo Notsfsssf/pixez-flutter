@@ -136,6 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "personal" : MessageLookupByLibrary.simpleMessage("Personal"),
     "pick_a_color" : MessageLookupByLibrary.simpleMessage("Pick a color"),
     "pixel" : MessageLookupByLibrary.simpleMessage("Resolution"),
+    "platform_special_setting" : MessageLookupByLibrary.simpleMessage("平台特殊设置"),
     "please_note_that" : MessageLookupByLibrary.simpleMessage("Notice"),
     "please_note_that_content" : MessageLookupByLibrary.simpleMessage("It\'s highly recommended keeping this option ON unless you can directly access Pixiv.net with no issues"),
     "popular_desc" : MessageLookupByLibrary.simpleMessage("Popular"),

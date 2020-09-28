@@ -136,6 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "personal" : MessageLookupByLibrary.simpleMessage("个人"),
     "pick_a_color" : MessageLookupByLibrary.simpleMessage("选择颜色"),
     "pixel" : MessageLookupByLibrary.simpleMessage("分辨率"),
+    "platform_special_setting" : MessageLookupByLibrary.simpleMessage("平台特殊设置"),
     "please_note_that" : MessageLookupByLibrary.simpleMessage("请注意"),
     "please_note_that_content" : MessageLookupByLibrary.simpleMessage("只有在确保你的代理或是所处地区能够访问到 pixiv 时，才能够打开这个开关。开关开启后一切网络问题都与应用无关了，不要反馈无法连接的问题"),
     "popular_desc" : MessageLookupByLibrary.simpleMessage("热度降序"),

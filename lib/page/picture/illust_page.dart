@@ -541,7 +541,7 @@ class _IllustPageState extends State<IllustPage> {
         if (_illustStore.errorMessage != null) {
           return Scaffold(
             appBar: AppBar(),
-            body: Container(
+            body: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -551,10 +551,7 @@ class _IllustPageState extends State<IllustPage> {
                     child: Text(':(',
                         style: Theme.of(context).textTheme.headline4),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('${_illustStore.errorMessage}'),
-                  ),
+                  Text('${_illustStore.errorMessage}'),
                   RaisedButton(
                     onPressed: () {
                       _illustStore.fetch();

@@ -22,7 +22,9 @@ import 'package:package_info/package_info.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -110,8 +112,18 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).save_path),
                 subtitle: Text(path ?? ""),
                 onTap: () async {
-                  bool isSuccess = await DocumentPlugin.choiceFolder();
+                  final pref = await SharedPreferences.getInstance();
+                  if (userSetting.isHelplessWay) {
+                    final path = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => DirectoryPage()));
+                    if (path != null) {
+                      await pref.setString('store_path', path);
+                    }
+                  } else
+                    bool isSuccess = await DocumentPlugin.choiceFolder();
                   final path = await DocumentPlugin.getPath();
+                   debugPrint(path);
                   if (mounted) {
                     setState(() {
                       this.path = path;

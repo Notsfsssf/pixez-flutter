@@ -28,6 +28,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/about/last_release.dart';
+import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
@@ -83,13 +84,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) => NovelRail()));
-        },
-        child: Icon(Icons.book),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.of(context)
+      //         .pushReplacement(MaterialPageRoute(builder: (context) => NovelRail()));
+      //   },
+      //   child: Icon(Icons.book),
+      // ),
       body: PageView.builder(
         itemBuilder: (context, index) {
           return _pageList[index];
@@ -363,6 +364,20 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 actions: [
                   FlatButton(
                       onPressed: () async {
+                      await  userSetting.setIsHelplessWay(true);
+                        final path = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => DirectoryPage()));
+                        if (path != null) {
+                          final _preferences =
+                              await SharedPreferences.getInstance();
+                          await _preferences.setString('store_path', path);
+                        }
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('helpless')),
+                  FlatButton(
+                      onPressed: () async {
                         Constants.isGooglePlay || userSetting.disableBypassSni
                             ? launch(
                                 "https://developer.android.com/training/data-storage/shared/documents-files")
@@ -372,6 +387,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                       child: Text(I18n.of(context).what_is_saf)),
                   FlatButton(
                       onPressed: () async {
+                        await  userSetting.setIsHelplessWay(false);
                         await DocumentPlugin.choiceFolder();
                         Navigator.of(context).pop();
                       },

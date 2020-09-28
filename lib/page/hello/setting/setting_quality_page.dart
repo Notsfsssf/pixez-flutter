@@ -22,6 +22,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/platform/platform_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingQualityPage extends StatefulWidget {
@@ -134,6 +135,22 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       ),
       body: Container(
         child: ListView(children: [
+          if (Platform.isAndroid)
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              child: ListTile(
+                trailing: Icon(Icons.keyboard_arrow_right),
+                title: Text(I18n.of(context).platform_special_setting),
+                subtitle: Text(
+                  "For Android",
+                  style: TextStyle(color: Colors.green),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => PlatformPage()));
+                },
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(

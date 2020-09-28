@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'directory_store.g.dart';
@@ -79,7 +80,7 @@ abstract class _DirectoryStoreBase with Store {
   Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
     path = _preferences.getString("store_path") ??
-        (await platform.invokeMethod('get_path')) as String;
+        (await getExternalStorageDirectory()).path;//绝了
     final directory = Directory(path);
     if (!directory.existsSync()) {
       directory.createSync();

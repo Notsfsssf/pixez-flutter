@@ -149,6 +149,13 @@ class ApiClient {
     return httpClient.get(
         "/v1/illust/recommended?filter=for_ios&include_ranking_label=true");
   }
+  //
+  // @GET("/v1/user/recommended?filter=for_android")
+  // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
+  Future<Response> getUserRecommended() async {
+    return httpClient.get(
+        "/v1/user/recommended?filter=for_android");
+  }
 
   Future<Response> getUser(int id) async {
     return httpClient.get("/v1/user/detail?filter=for_android",

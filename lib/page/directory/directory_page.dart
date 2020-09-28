@@ -16,9 +16,11 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/directory/directory_store.dart';
 
@@ -29,13 +31,25 @@ class DirectoryPage extends StatefulWidget {
 
 class _DirectoryPageState extends State<DirectoryPage> {
   DirectoryStore directoryStore = DirectoryStore();
+
   @override
   void initState() {
     super.initState();
+    _initMethod();
     final dispose = reaction((_) => directoryStore.checkSuccess, (value) {
       if (value) Navigator.of(context).pop(directoryStore.path);
     });
     dispose();
+  }
+
+  Future<void> _initMethod() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage
+    ].request();
+    if(statuses[0]==PermissionStatus.denied){
+      BotToast.showText(text: '未取得传统授权，无法获得目录');
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -67,6 +81,7 @@ class _DirectoryPageState extends State<DirectoryPage> {
             );
           }),
           ListTile(
+            leading: Icon(Icons.arrow_upward),
             title: Text("..."),
             onTap: () {
               directoryStore.backFolder();

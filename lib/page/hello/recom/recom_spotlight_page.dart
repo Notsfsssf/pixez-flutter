@@ -27,6 +27,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
+import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -147,7 +148,16 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           child: _buildSpotlightContainer(),
         ),
         SliverToBoxAdapter(
-          child: _buildSecondRow(context),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: RecomUserRoad(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: _buildSecondRow(context),
+          ),
         ),
         _lightingStore.iStores.isNotEmpty
             ? SliverWaterfallFlow(
