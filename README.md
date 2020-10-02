@@ -10,18 +10,19 @@
 
 # 下载
 
-|系统|来源|
-|:---:|:---:|
-|Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
-|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)| 
+推荐渠道顺序为从左到右。
 
-[蓝奏云](https://wwa.lanzous.com/b0ded45id)(临时，不推荐)
+|系统|应用市场|GitHub|云盘|
+|:---:|:---:|:---:|:---:|
+|Android|[Google Play](https://play.google.com/store/apps/details?id=com.perol.play.pixez)|[Release](https://github.com/Notsfsssf/pixez-flutter/releases)|[蓝奏云](https://wwa.lanzous.com/b0ded45id)<br />**临时，不推荐**|
+|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|/|/|
+
 # 预览
 
 |![Preview](./.github/preview/2.jpg) | ![Preview](./.github/preview/1.jpg) | 
 |:-------------------:|:------------------------:|
 
-# Contribute / 贡献
+# 关于项目 / About Repository
 
 如你所见，Flutter 是一个能够帮助开发者快速开发界面的框架。
 
@@ -29,20 +30,35 @@
 
 利用 PlatformChannel，可以为不同平台编写不同的平台特性的独有功能；
 
-应用使用了 `mobx`，`flutter_bloc` (逐步弃用)，`provider` 进行状态管理，`custompainter` 来播放 ugoira
+应用使用了 `mobx`，`flutter_bloc` (逐步弃用)，`provider` 进行状态管理，`custompainter` 来播放 ugoira。
+
+## 贡献 / Contribute
+
+本项目目前的贡献者列表如下：
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Notsfsssf"><img src="https://avatars3.githubusercontent.com/u/16934707?v=4" width="100px;" alt=""/><br /><sub><b>Perol_Notsfsssf</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Notsfsssf" title="Code">💻</a></td>
+    <td align="center"><a href="https://xyx.moe"><img src="https://avatars3.githubusercontent.com/u/9017470?v=4" width="100px;" alt=""/><br /><sub><b>Skimige</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Skimige" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/TragicLifeHu"><img src="https://avatars3.githubusercontent.com/u/16817202?v=4" width="100px;" alt=""/><br /><sub><b>Tragic Life</b></sub></a><br /><a href="#translation-TragicLifeHu" title="Translation">🌍 (zh_TW)</a></td>
+    <td align="center"><a href="http://ivtune.net"><img src="https://avatars0.githubusercontent.com/u/54385201?v=4" width="100px;" alt=""/><br /><sub><b>karin722</b></sub></a><br /><a href="#translation-karin722" title="Translation">🌍 (ja)</a></td>
+    <td align="center"><a href="http://archman.fun"><img src="https://avatars0.githubusercontent.com/u/68731023?v=4" width="100px;" alt=""/><br /><sub><b>Romani-Archman</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Romani-Archman" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/itzXian"><img src="https://avatars1.githubusercontent.com/u/34748039?v=4" width="100px;" alt=""/><br /><sub><b>Xian</b></sub></a><br /><a href="#translation-itzXian" title="Translation">🌍 (en_US)</a></td>
+  </tr>
+</table>
 
 如果你是有能人士，愿意为本项目贡献代码，请不要犹豫提交 Pull Request 吧！
 
-本应用也使用了 `flutter_intl` 进行国际化，欢迎贡献[翻译](./lib/l10n/intl_en_US.arb)！(zh_TW @TragicLifeHu, en_Us @XIAN,ja @karin722)
+本应用也使用了 `flutter_intl` 进行国际化，欢迎贡献[翻译](./lib/l10n/intl_en_US.arb)！
 
 觉得有些地方设计的不妥？同样欢迎分享设计。
 
-# 交流
+## 常见问题及交流反馈
 
-[使用指南 & 常见问题在这里](.github/FAQ.md)，反馈问题 / 加群询问之前请先看！
+[使用指南 & 常见问题在这里](.github/FAQ.md)，反馈问题 / 加群询问之前请先看！（特别是旧原生版用户）
 
 邮件反馈：PxezFeedback@outlook.com
 
 也可以在 Telegram 群交流反馈：[@PixEzViewer](https://t.me/PixEzViewer)
 
-你可以进企鹅群交流经验或者反馈：815791942（闲聊为主）
+也可以进企鹅群交流经验或者反馈：815791942（闲聊为主）
