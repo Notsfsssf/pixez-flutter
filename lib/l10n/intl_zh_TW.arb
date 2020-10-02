@@ -36,7 +36,7 @@
   "date_duration": "日期間隔",
   "delete": "刪除",
   "detail": "資訊",
-  "disable_sni_bypass": "不啟用 Bypass SNI",
+  "disable_sni_bypass": "不啟用繞過 SNI 探測",
   "disable_sni_bypass_message": "可節省冷啟動時 DNS Over HTTPS 的時間",
   "display_mode": "顯示模式",
   "display_mode_message": "選擇支援的顯示模式（實驗性）",
@@ -180,5 +180,5 @@
   "link": "複製連結",
   "step": "Step",
   "special_shaped_screen": "螢幕凹口",
-  "platform_special_setting": "平台特殊设置"
+  "platform_special_setting": "作業系統專有設定"
 }
