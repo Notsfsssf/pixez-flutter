@@ -8,17 +8,17 @@ Can access pixiv directly from Mainland China.
 
 # Download
 
-|OS|Source|
-|:---:|:---:|
-|Android|[Google play](https://play.google.com/store/apps/details?id=com.perol.play.pixez) \| [GitHub Release](https://github.com/Notsfsssf/pixez-flutter/releases)|
-|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|
+|OS|Market|GitHub|Cloud Drive|
+|:---:|:---:|:---:|:---:|
+|Android|[Google Play](https://play.google.com/store/apps/details?id=com.perol.play.pixez)|[Release](https://github.com/Notsfsssf/pixez-flutter/releases)|[Lanzou](https://wwa.lanzous.com/b0ded45id)<br />**For Mainland China Users Only**|
+|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|/|/|
 
 # Preview
 
 |![Preview](../.github/preview/2.jpg) | ![Preview](../.github/preview/1.jpg) | 
 |:-------------------:|:------------------------:|
 
-# Contribute
+# About this repository
 
 As you see, Flutter is a framework that helps developer to design UI fastly.
 
@@ -28,13 +28,24 @@ By using PlatformChannel, you can create specific functionalities for different 
 
 This app uses `mobx`, `flutter_bloc` (will be deprecated), `provider` to manage status, and `custompainter` to play ugoira.
 
-***
+## Contribute
+
+Currently we have those users who contribute to this project. Thanks for their participating!
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Notsfsssf"><img src="https://avatars3.githubusercontent.com/u/16934707?v=4" width="100px;" alt=""/><br /><sub><b>Perol_Notsfsssf</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Notsfsssf" title="Code">💻</a></td>
+    <td align="center"><a href="https://xyx.moe"><img src="https://avatars3.githubusercontent.com/u/9017470?v=4" width="100px;" alt=""/><br /><sub><b>Skimige</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Skimige" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/TragicLifeHu"><img src="https://avatars3.githubusercontent.com/u/16817202?v=4" width="100px;" alt=""/><br /><sub><b>Tragic Life</b></sub></a><br /><a href="#translation-TragicLifeHu" title="Translation">🌍 (zh_TW)</a></td>
+    <td align="center"><a href="http://ivtune.net"><img src="https://avatars0.githubusercontent.com/u/54385201?v=4" width="100px;" alt=""/><br /><sub><b>karin722</b></sub></a><br /><a href="#translation-karin722" title="Translation">🌍 (ja)</a></td>
+    <td align="center"><a href="http://archman.fun"><img src="https://avatars0.githubusercontent.com/u/68731023?v=4" width="100px;" alt=""/><br /><sub><b>Romani-Archman</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Romani-Archman" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/itzXian"><img src="https://avatars1.githubusercontent.com/u/34748039?v=4" width="100px;" alt=""/><br /><sub><b>Xian</b></sub></a><br /><a href="#translation-itzXian" title="Translation">🌍 (en_US)</a></td>
+  </tr>
+</table>
 
 If you are a developer, and you're willing to contribute to this project, please don't hesitate to submit a PR!
 
 This app also uses `flutter_intl` to localize. You're welcome to commit translation too.
-
-(zh_TW by @TragicLifeHu, en_US by @XIAN)
 
 Got ideas about UI design? You're also welcome to share your opinions.
 
