@@ -43,10 +43,9 @@ class _DirectoryPageState extends State<DirectoryPage> {
   }
 
   Future<void> _initMethod() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage
-    ].request();
-    if(statuses[0]==PermissionStatus.denied){
+    Map<Permission, PermissionStatus> statuses =
+        await [Permission.storage].request();
+    if (statuses[0] == PermissionStatus.denied) {
       BotToast.showText(text: '未取得传统授权，无法获得目录');
       Navigator.of(context).pop();
     }
@@ -66,6 +65,7 @@ class _DirectoryPageState extends State<DirectoryPage> {
           IconButton(
               icon: Icon(Icons.check),
               onPressed: () async {
+                if (directoryStore.path == '/storage/emulated/0') return;
                 await directoryStore.check();
                 Navigator.of(context).pop(directoryStore.path);
               })

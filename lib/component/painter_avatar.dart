@@ -60,14 +60,13 @@ class _PainterAvatarState extends State<PainterAvatar> {
                   radius: 100.0,
                 ),
               )
-            : SizedBox(
+            : Container(
                 height: widget.size.height,
                 width: widget.size.width,
-                child: CircleAvatar(
-                  backgroundImage: PixivProvider.url(
-                    widget.url,
-                  ),
-                  radius: 100.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: PixivProvider.url(widget.url), fit: BoxFit.cover),
                 ),
               ));
   }

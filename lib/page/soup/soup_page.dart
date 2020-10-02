@@ -19,8 +19,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/component/screen_box.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_page.dart';

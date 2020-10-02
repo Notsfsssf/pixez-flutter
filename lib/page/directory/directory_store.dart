@@ -48,7 +48,7 @@ abstract class _DirectoryStoreBase with Store {
 
   @action
   Future<void> undo() async {
-    path = (await platform.invokeMethod('get_path')) as String;
+    path ="/storage/emulated/0/pictures";
     list = ObservableList.of(Directory(path).listSync());
   }
 

@@ -180,5 +180,9 @@
   "link": "Link",
   "step": "Step",
   "special_shaped_screen": "Special shaped screen",
-  "platform_special_setting": "平台特殊设置"
+  "platform_special_setting": "平台特殊设置",
+  "system": "system",
+  "light": "light",
+  "dark": "dark",
+  "theme_mode": "theme mode"
 }

@@ -180,5 +180,9 @@
   "link": "複製連結",
   "step": "Step",
   "special_shaped_screen": "螢幕凹口",
-  "platform_special_setting": "作業系統專有設定"
+  "platform_special_setting": "作業系統專有設定",
+  "system": "system",
+  "light": "light",
+  "dark": "dark",
+  "theme_mode": "theme mode"
 }

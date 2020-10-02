@@ -186,9 +186,17 @@ class MainActivity : FlutterActivity() {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
                 GlobalScope.launch(Dispatchers.Main) {
+                    val fullPath = "$helplessPath/$name"
+                    val file = File(fullPath)
                     withContext(Dispatchers.IO) {
                         if (isHelplessWay) {
-                            val file = File("$helplessPath/$name")
+                            if (name.contains("/")) {
+                                val dirPath = file.parent
+                                val dirFile = File(dirPath)
+                                if (!dirFile.exists()) {
+                                    dirFile.mkdirs()
+                                }
+                            }
                             if (!file.exists()) {
                                 file.createNewFile()
                             }
@@ -197,6 +205,17 @@ class MainActivity : FlutterActivity() {
                         }
                         writeFileUri(name)?.let {
                             wr(data, it)
+                        }
+                    }
+                    if (isHelplessWay) {
+                        MediaScannerConnection.scanFile(
+                                this@MainActivity,
+                                arrayOf(file.path),
+                                arrayOf(
+                                        MimeTypeMap.getSingleton()
+                                                .getMimeTypeFromExtension(File(file.path).extension)
+                                )
+                        ) { _, _ ->
                         }
                     }
                     result.success(true)
@@ -240,7 +259,7 @@ class MainActivity : FlutterActivity() {
                 GlobalScope.launch(Dispatchers.Main) {
                     val need = withContext(Dispatchers.IO) {
                         isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
-                        if(isHelplessWay){
+                        if (isHelplessWay) {
                             return@withContext false
                         }
                         needChoice()

@@ -13,10 +13,12 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/section_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 
@@ -24,6 +26,7 @@ class ColorPickPage extends HookWidget {
   final Color initialColor;
 
   ColorPickPage({@required this.initialColor});
+
   Color _stringToColor(String colorString) {
     String valueString =
         colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
@@ -86,7 +89,7 @@ class ColorPickPage extends HookWidget {
                       );
                     });
                 if (result != null) {
-                  Color color = _stringToColor(result);//迅速throw出来
+                  Color color = _stringToColor(result); //迅速throw出来
                   pickerColor.value = color;
                 }
               }),
@@ -179,6 +182,14 @@ class _ThemePageState extends State<ThemePage> {
     }
   }
 
+  int index = 0;
+
+  @override
+  void initState() {
+    index = ThemeMode.values.indexOf(userSetting.themeMode);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -188,6 +199,25 @@ class _ThemePageState extends State<ThemePage> {
         ),
         body: ListView(
           children: <Widget>[
+            Observer(builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CupertinoSlidingSegmentedControl(
+                  groupValue: index,
+                  onValueChanged: (value) {
+                    userSetting.setThemeMode(value);
+                    setState(() {
+                      this.index=value;
+                    });
+                  },
+                  children: <int, Widget>{
+                    0: Text(I18n.of(context).system),
+                    1: Text(I18n.of(context).light),
+                    2: Text(I18n.of(context).dark),
+                  },
+                ),
+              );
+            }),
             Card(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

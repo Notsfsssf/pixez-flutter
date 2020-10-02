@@ -24,8 +24,8 @@ dependencies:
   dio: ^3.0.10
   crypto: any
   sqflite: ^1.3.1
-  path_provider: ^1.6.11
-  shared_preferences: ^0.5.10
+  path_provider: ^1.6.18
+  shared_preferences: ^0.5.12
   share: ^0.6.5
   share_extend: ^1.1.9
   permission_handler: ^5.0.1+1
@@ -39,7 +39,7 @@ dependencies:
   flutter_mobx: ^1.1.0+2
   flutter_inapp_purchase: ^2.2.0
   photo_view: ^0.10.2
-  flutter_widget_from_html_core: ^0.4.3
+  flutter_widget_from_html_core: ^0.5.0+6
   extended_nested_scroll_view: ^1.0.1
   scrollable_positioned_list: ^0.1.7
   flutter_date_pickers: ^0.1.7
@@ -50,10 +50,10 @@ dependencies:
   like_button: ^1.0.1
   badges: ^1.1.1
   flutter_hooks: ^0.13.2
-  pull_to_refresh: ^1.6.1
-  extended_image: ^1.1.1
+  pull_to_refresh: ^1.6.2
+  extended_image: ^1.1.2
   flutter_colorpicker: ^0.3.4
-  waterfall_flow: ^2.0.2
+  waterfall_flow: ^2.0.3
   animations: ^1.1.2
   extended_text: ^4.0.0
   backdrop: ^0.4.3

@@ -14,13 +14,11 @@
  *
  */
 
-import 'dart:io';
 import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -52,8 +50,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    _animationController = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this);
+    _animationController =
+        AnimationController(duration: const Duration(milliseconds: 500),vsync: this);
     animation = Tween(begin: 0.0, end: 0.25).animate(_animationController);
 
     _trendTagsStore = TrendTagsStore();

@@ -19,12 +19,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -112,18 +114,80 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).save_path),
                 subtitle: Text(path ?? ""),
                 onTap: () async {
-                  final pref = await SharedPreferences.getInstance();
-                  if (userSetting.isHelplessWay) {
-                    final path = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => DirectoryPage()));
-                    if (path != null) {
-                      await pref.setString('store_path', path);
-                    }
-                  } else
-                    bool isSuccess = await DocumentPlugin.choiceFolder();
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0))),
+                          content: SingleChildScrollView(
+                            child: ListBody(
+                              children: [
+                                Text(I18n.of(context).saf_hint),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                      I18n.of(context).step + 1.toString()),
+                                ),
+                                Image.asset(
+                                  'assets/images/step1.png',
+                                  fit: BoxFit.fitWidth,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                      I18n.of(context).step + 2.toString()),
+                                ),
+                                Image.asset(
+                                  'assets/images/step2.png',
+                                  fit: BoxFit.fitWidth,
+                                )
+                              ],
+                            ),
+                          ),
+                          title: Text(I18n.of(context).choose_directory),
+                          actions: [
+                            FlatButton(
+                                onPressed: () async {
+                                  await userSetting.setIsHelplessWay(true);
+                                  final path = await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DirectoryPage()));
+                                  if (path != null) {
+                                    final _preferences =
+                                        await SharedPreferences.getInstance();
+                                    await _preferences.setString(
+                                        'store_path', path);
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('helpless')),
+                            FlatButton(
+                                onPressed: () async {
+                                  Constants.isGooglePlay ||
+                                          userSetting.disableBypassSni
+                                      ? launch(
+                                          "https://developer.android.com/training/data-storage/shared/documents-files")
+                                      : launch(
+                                          "https://developer.android.google.cn/training/data-storage/shared/documents-files");
+                                },
+                                child: Text(I18n.of(context).what_is_saf)),
+                            FlatButton(
+                                onPressed: () async {
+                                  await userSetting.setIsHelplessWay(false);
+                                  await DocumentPlugin.choiceFolder();
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(I18n.of(context).start))
+                          ],
+                        );
+                      });
                   final path = await DocumentPlugin.getPath();
-                   debugPrint(path);
+                  debugPrint(path);
                   if (mounted) {
                     setState(() {
                       this.path = path;

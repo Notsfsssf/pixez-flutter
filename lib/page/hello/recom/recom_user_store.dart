@@ -16,6 +16,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 part 'recom_user_store.g.dart';
 
 class RecomUserStore = _RecomUserStoreBase with _$RecomUserStore;
@@ -23,6 +24,10 @@ class RecomUserStore = _RecomUserStoreBase with _$RecomUserStore;
 abstract class _RecomUserStoreBase with Store {
   String nextUrl;
   ObservableList<UserPreviews> users = ObservableList();
+  RefreshController controller;
+
+  _RecomUserStoreBase({this.controller});
+
   @action
   fetch() async {
     nextUrl = null;
@@ -32,7 +37,10 @@ abstract class _RecomUserStoreBase with Store {
       nextUrl = response.next_url;
       users.clear();
       users.addAll(response.user_previews);
-    } catch (e) {}
+      controller?.refreshCompleted();
+    } catch (e) {
+      controller?.refreshFailed();
+    }
   }
 
   @action
@@ -43,12 +51,12 @@ abstract class _RecomUserStoreBase with Store {
         final response = UserPreviewsResponse.fromJson(result.data);
         nextUrl = response.next_url;
         users.addAll(response.user_previews);
-      }else{
-
-
+        controller?.loadComplete();
+      } else {
+        controller?.loadNoData();
       }
     } catch (e) {
-
+      controller?.loadFailed();
     }
   }
 }

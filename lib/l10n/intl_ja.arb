@@ -179,5 +179,9 @@
   "clear_search_tag_history": "検索履歴を消去する",
   "link": "URLをクリップボードにコピーする",
   "special_shaped_screen": "异形屏",
-  "platform_special_setting": "平台特殊设置"
+  "platform_special_setting": "平台特殊设置",
+  "system": "system",
+  "light": "light",
+  "dark": "dark",
+  "theme_mode": "theme mode"
 }

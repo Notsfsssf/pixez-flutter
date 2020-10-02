@@ -20,7 +20,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';

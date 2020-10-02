@@ -41,6 +41,7 @@ abstract class _UserSettingBase with Store {
   static const String IS_BANGS_KEY = "is_bangs";
   static const String STORE_PATH_KEY = "save_store";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
+  static const String THEME_MODE_KEY = "theme_mode";
   @observable
   bool isHelplessWay = false;
   @observable
@@ -85,7 +86,7 @@ abstract class _UserSettingBase with Store {
 
   Color _stringToColor(String colorString) {
     String valueString =
-        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
+    colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
     int value = int.parse(valueString, radix: 16);
     Color otherColor = new Color(value);
     return otherColor;
@@ -101,6 +102,14 @@ abstract class _UserSettingBase with Store {
         // color: Colors.transparent,
         // elevation: 0.0,
       ));
+  @observable
+  ThemeMode themeMode = ThemeMode.system;
+
+  @action
+  setThemeMode(int themeMode) async {
+    await prefs.setInt(THEME_MODE_KEY, themeMode);
+    this.themeMode = ThemeMode.values[themeMode];
+  }
 
   @action
   setIsBangs(bool v) async {
@@ -120,7 +129,14 @@ abstract class _UserSettingBase with Store {
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
-    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY)??false;
+    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY) ?? false;
+    int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
+    for (var i in ThemeMode.values) {
+      if (i.index == themeModeIndex) {
+        this.themeMode = i;
+        break;
+      }
+    }
     var colors = prefs.getStringList(THEME_DATA_KEY);
     if (colors != null) {
       if (colors.length < 2) {
@@ -240,7 +256,7 @@ abstract class _UserSettingBase with Store {
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
     final local =
-        I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
+    I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
     I18n.load(local);
   }
 

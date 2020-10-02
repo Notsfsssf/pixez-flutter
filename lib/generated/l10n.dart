@@ -1842,6 +1842,46 @@ class I18n {
       args: [],
     );
   }
+
+  /// `system`
+  String get system {
+    return Intl.message(
+      'system',
+      name: 'system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `light`
+  String get light {
+    return Intl.message(
+      'light',
+      name: 'light',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `dark`
+  String get dark {
+    return Intl.message(
+      'dark',
+      name: 'dark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `theme mode`
+  String get theme_mode {
+    return Intl.message(
+      'theme mode',
+      name: 'theme_mode',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/section_card.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -137,20 +138,26 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         child: ListView(children: [
           if (Platform.isAndroid)
             Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-              child: ListTile(
-                trailing: Icon(Icons.keyboard_arrow_right),
-                title: Text(I18n.of(context).platform_special_setting),
-                subtitle: Text(
-                  "For Android",
-                  style: TextStyle(color: Colors.green),
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: ListTile(
+                    trailing: Icon(Icons.keyboard_arrow_right),
+                    title: Text(I18n.of(context).platform_special_setting),
+                    subtitle: Text(
+                      "For Android",
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => PlatformPage()));
+                    },
+                  ),
                 ),
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => PlatformPage()));
-                },
               ),
             ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
@@ -379,69 +386,75 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Observer(builder: (_) {
-              return SwitchListTile(
-                  activeColor: Theme.of(context).accentColor,
-                  value: userSetting.isBangs,
-                  title: Text(I18n.of(context).special_shaped_screen),
-                  subtitle: Text('--v--'),
-                  onChanged: (value) async {
-                    userSetting.setIsBangs(value);
-                  });
-            }),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
+                    value: userSetting.isBangs,
+                    title: Text(I18n.of(context).special_shaped_screen),
+                    subtitle: Text('--v--'),
+                    onChanged: (value) async {
+                      userSetting.setIsBangs(value);
+                    });
+              }),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Observer(builder: (_) {
-              return SwitchListTile(
-                  value: userSetting.disableBypassSni,
-                  activeColor: Theme.of(context).accentColor,
-                  title: Text(I18n.of(context).disable_sni_bypass),
-                  subtitle: Text(I18n.of(context).disable_sni_bypass_message),
-                  onChanged: (value) async {
-                    if (value) {
-                      final result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return AlertDialog(
-                              title: Text(I18n.of(context).please_note_that),
-                              content: Text(
-                                  I18n.of(context).please_note_that_content),
-                              actions: <Widget>[
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(I18n.of(context).cancel)),
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop('OK');
-                                    },
-                                    child: Text(I18n.of(context).ok)),
-                              ],
-                            );
-                          });
-                      if (result == 'OK') {
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    value: userSetting.disableBypassSni,
+                    activeColor: Theme.of(context).accentColor,
+                    title: Text(I18n.of(context).disable_sni_bypass),
+                    subtitle: Text(I18n.of(context).disable_sni_bypass_message),
+                    onChanged: (value) async {
+                      if (value) {
+                        final result = await showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Text(I18n.of(context).please_note_that),
+                                content: Text(
+                                    I18n.of(context).please_note_that_content),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(I18n.of(context).cancel)),
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop('OK');
+                                      },
+                                      child: Text(I18n.of(context).ok)),
+                                ],
+                              );
+                            });
+                        if (result == 'OK') {
+                          userSetting.setDisableBypassSni(value);
+                        }
+                      } else {
                         userSetting.setDisableBypassSni(value);
                       }
-                    } else {
-                      userSetting.setDisableBypassSni(value);
-                    }
-                  });
-            }),
+                    });
+              }),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Observer(builder: (_) {
-              return SwitchListTile(
-                  activeColor: Theme.of(context).accentColor,
-                  value: userSetting.hIsNotAllow,
-                  title:
-                      Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
-                  onChanged: (value) async {
-                    userSetting.setHIsNotAllow(value);
-                  });
-            }),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
+                    value: userSetting.hIsNotAllow,
+                    title:
+                        Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
+                    onChanged: (value) async {
+                      userSetting.setHIsNotAllow(value);
+                    });
+              }),
+            ),
           )
         ]),
       ),

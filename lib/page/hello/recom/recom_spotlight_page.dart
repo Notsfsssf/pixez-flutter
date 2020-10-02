@@ -148,16 +148,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           child: _buildSpotlightContainer(),
         ),
         SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: RecomUserRoad(),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: _buildSecondRow(context),
-          ),
+          child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
         ),
         _lightingStore.iStores.isNotEmpty
             ? SliverWaterfallFlow(
@@ -231,7 +222,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 I18n.of(context).spotlight,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 30.0,
+                    fontSize: 24.0,
                     color: Theme.of(context).textTheme.headline6.color),
               ),
               padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
@@ -254,36 +245,22 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  Widget _buildSecondRow(BuildContext context) {
+  Widget _buildSecondRow(BuildContext context, String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Container(
-          child: Padding(
-            child: Container(
-              child: Text(
-                I18n.of(context).recommend_for_you,
-                overflow: TextOverflow.clip,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
-              ),
-            ),
-            padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
-          ),
-        ),
         Padding(
-          child: FlatButton(
-            child: Text(I18n.of(context).more),
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return Scaffold(
-                  body: RankPage(),
-                );
-              }));
-            },
+          child: Center(
+            child: Text(
+              title,
+              overflow: TextOverflow.clip,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
+            ),
           ),
-          padding: EdgeInsets.all(8.0),
-        )
+          padding: EdgeInsets.only(left: 20.0),
+        ),
+        Expanded(child: RecomUserRoad())
       ],
     );
   }

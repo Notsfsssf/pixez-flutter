@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage>
   void initState() {
     splashStore = SplashStore(OnezeroClient())..fetch();
     controller =
-        AnimationController(duration: Duration(seconds: 2), vsync: this);
+        AnimationController(duration: Duration(seconds: 2),vsync: this);
     initMethod();
     super.initState();
     controller.forward();
