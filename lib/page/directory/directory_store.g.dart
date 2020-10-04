@@ -87,8 +87,8 @@ mixin _$DirectoryStore on _DirectoryStoreBase, Store {
   final _$initAsyncAction = AsyncAction('_DirectoryStoreBase.init');
 
   @override
-  Future<void> init() {
-    return _$initAsyncAction.run(() => super.init());
+  Future<void> init(String initPath) {
+    return _$initAsyncAction.run(() => super.init(initPath));
   }
 
   final _$_DirectoryStoreBaseActionController =

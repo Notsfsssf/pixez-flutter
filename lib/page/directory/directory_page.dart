@@ -25,15 +25,19 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/directory/directory_store.dart';
 
 class DirectoryPage extends StatefulWidget {
+  final String initPath;
+
+  const DirectoryPage({Key key, this.initPath}) : super(key: key);
   @override
   _DirectoryPageState createState() => _DirectoryPageState();
 }
 
 class _DirectoryPageState extends State<DirectoryPage> {
-  DirectoryStore directoryStore = DirectoryStore();
+  DirectoryStore directoryStore;
 
   @override
   void initState() {
+    directoryStore = DirectoryStore();
     super.initState();
     _initMethod();
     final dispose = reaction((_) => directoryStore.checkSuccess, (value) {
@@ -46,14 +50,24 @@ class _DirectoryPageState extends State<DirectoryPage> {
     Map<Permission, PermissionStatus> statuses =
         await [Permission.storage].request();
     if (statuses[0] == PermissionStatus.denied) {
-      BotToast.showText(text: '未取得传统授权，无法获得目录');
+      BotToast.showText(text: I18n.of(context).permission_denied);
       Navigator.of(context).pop();
     }
+    directoryStore.init(widget.initPath);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          if (directoryStore.path == '/storage/emulated/0') return;
+          await directoryStore.check();
+          Navigator.of(context).pop(directoryStore.path);
+        },
+        label: Text(I18n.of(context).ok),
+        icon: Icon(Icons.check),
+      ),
       appBar: AppBar(
         title: Text(I18n.of(context).choose_directory),
         actions: <Widget>[
@@ -63,11 +77,55 @@ class _DirectoryPageState extends State<DirectoryPage> {
                 directoryStore.undo();
               }),
           IconButton(
-              icon: Icon(Icons.check),
+              icon: Icon(Icons.create_new_folder_outlined),
               onPressed: () async {
-                if (directoryStore.path == '/storage/emulated/0') return;
-                await directoryStore.check();
-                Navigator.of(context).pop(directoryStore.path);
+                final result = await showDialog(
+                    context: context,
+                    builder: (context) {
+                      final controller = TextEditingController();
+                      return AlertDialog(
+                        title: Text(I18n.of(context).create_folder),
+                        content: TextFormField(
+                          controller: controller,
+                          decoration: InputDecoration(),
+                        ),
+                        actions: [
+                          FlatButton(
+                            child: Text(I18n.of(context).cancel),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          FlatButton(
+                            child: Text(I18n.of(context).ok),
+                            onPressed: () {
+                              Navigator.of(context).pop(controller.text);
+                            },
+                          ),
+                        ],
+                      );
+                    });
+                if (result != null) {
+                  String folderName = result
+                      .replaceAll("/", "")
+                      .replaceAll("\\", "")
+                      .replaceAll(":", "")
+                      .replaceAll("*", "")
+                      .replaceAll("?", "")
+                      .replaceAll(">", "")
+                      .replaceAll("|", "")
+                      .replaceAll(".", "")
+                      .replaceAll("<", "");
+                  if (folderName.isEmpty) {
+                    return;
+                  }
+                  Directory directory =
+                      Directory('${directoryStore.path}/$result');
+                  if (!directory.existsSync()) {
+                    directory.createSync(recursive: true);
+                    directoryStore.enterFolder(directory);
+                  }
+                }
               })
         ],
       ),

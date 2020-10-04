@@ -17,6 +17,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -69,14 +70,21 @@ class _RecomUserPageState extends State<RecomUserPage> {
           onRefresh: () => _recomUserStore.fetch(),
           onLoading: () => _recomUserStore.next(),
           child: _recomUserStore.users.isNotEmpty
-              ? ListView.builder(
-                  itemCount: _recomUserStore.users.length,
-                  itemBuilder: (context, index) {
-                    final data = _recomUserStore.users[index];
-                    return PainterCard(
-                      user: data,
-                    );
-                  })
+              ?AnimationLimiter(
+                child: ListView.builder(
+                    itemCount: _recomUserStore.users.length,
+                    itemBuilder: (context, index) {
+                      final data = _recomUserStore.users[index];
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        child:SlideAnimation(
+                          child: PainterCard(
+                            user: data,
+                          ),
+                        ),
+                      );
+                    }),
+              )
               : Container(),
         ),
       );

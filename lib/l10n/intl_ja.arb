@@ -183,5 +183,9 @@
   "system": "system",
   "light": "light",
   "dark": "dark",
-  "theme_mode": "theme mode"
+  "theme_mode": "theme mode",
+  "create_folder": "Create folder",
+  "old_way": "Old way",
+  "permission_denied": "permission denied",
+  "old_way_message": "To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue"
 }

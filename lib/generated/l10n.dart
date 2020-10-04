@@ -1833,10 +1833,10 @@ class I18n {
     );
   }
 
-  /// `平台特殊设置`
+  /// `platform special setting`
   String get platform_special_setting {
     return Intl.message(
-      '平台特殊设置',
+      'platform special setting',
       name: 'platform_special_setting',
       desc: '',
       args: [],
@@ -1878,6 +1878,46 @@ class I18n {
     return Intl.message(
       'theme mode',
       name: 'theme_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create folder`
+  String get create_folder {
+    return Intl.message(
+      'Create folder',
+      name: 'create_folder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Old way`
+  String get old_way {
+    return Intl.message(
+      'Old way',
+      name: 'old_way',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `permission denied`
+  String get permission_denied {
+    return Intl.message(
+      'permission denied',
+      name: 'permission_denied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue`
+  String get old_way_message {
+    return Intl.message(
+      'To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue',
+      name: 'old_way_message',
       desc: '',
       args: [],
     );

@@ -211,7 +211,7 @@ class _IllustPageState extends State<IllustPage> {
                       setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                     },
                   ),
-                ],
+                ], 
               );
             },
           ));
@@ -326,59 +326,7 @@ class _IllustPageState extends State<IllustPage> {
                           ),
                           onTap: () async {
                             Navigator.of(context).pop();
-                            List<bool> indexs = List(illusts.metaPages.length);
-                            for (int i = 0; i < illusts.metaPages.length; i++) {
-                              indexs[i] = false;
-                            }
-                            final result = await showDialog(
-                              context: context,
-                              child: StatefulBuilder(
-                                  builder: (context, setDialogState) {
-                                return AlertDialog(
-                                  title: Text("Select"),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text(I18n.of(context).cancel),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.pop(
-                                            context, I18n.of(context).ok);
-                                      },
-                                      child: Text(I18n.of(context).ok),
-                                    ),
-                                  ],
-                                  content: Container(
-                                    width: double.maxFinite,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          title: Text(index.toString()),
-                                          trailing: Checkbox(
-                                              value: indexs[index],
-                                              onChanged: (ischeck) {
-                                                setDialogState(() {
-                                                  indexs[index] = ischeck;
-                                                });
-                                              }),
-                                        );
-                                      },
-                                      itemCount: illusts.metaPages.length,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            );
-                            switch (result) {
-                              case "OK":
-                                {
-                                  saveStore.saveChoiceImage(illusts, indexs);
-                                }
-                            }
+                            _showMutiChoiceDialog(illusts, context);
                           },
                         ),
                       ListTile(
@@ -679,95 +627,7 @@ class _IllustPageState extends State<IllustPage> {
                             ),
                             onTap: () async {
                               Navigator.of(context).pop();
-                              List<bool> indexs = List(illust.metaPages.length);
-                              bool allOn = false;
-                              for (int i = 0;
-                                  i < illust.metaPages.length;
-                                  i++) {
-                                indexs[i] = false;
-                              }
-                              final result = await showDialog(
-                                context: context,
-                                child: StatefulBuilder(
-                                    builder: (context, setDialogState) {
-                                  return AlertDialog(
-                                    title:
-                                        Text(I18n.of(context).muti_choice_save),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, "OK");
-                                        },
-                                        child: Text(I18n.of(context).ok),
-                                      ),
-                                      FlatButton(
-                                        child: Text(I18n.of(context).cancel),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ],
-                                    content: Container(
-                                      width: double.maxFinite,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) =>
-                                            index == 0
-                                                ? ListTile(
-                                                    title: Text(
-                                                        I18n.of(context).all),
-                                                    trailing: Checkbox(
-                                                        value: allOn,
-                                                        onChanged: (ischeck) {
-                                                          setDialogState(() {
-                                                            allOn = ischeck;
-                                                            if (ischeck)
-                                                              for (int i = 0;
-                                                                  i <
-                                                                      indexs
-                                                                          .length;
-                                                                  i++) {
-                                                                indexs[i] =
-                                                                    true;
-                                                              } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
-                                                            else {
-                                                              for (int i = 0;
-                                                                  i <
-                                                                      indexs
-                                                                          .length;
-                                                                  i++) {
-                                                                indexs[i] =
-                                                                    false;
-                                                              }
-                                                            }
-                                                          });
-                                                        }),
-                                                  )
-                                                : ListTile(
-                                                    title: Text(
-                                                        (index - 1).toString()),
-                                                    trailing: Checkbox(
-                                                        value:
-                                                            indexs[index - 1],
-                                                        onChanged: (ischeck) {
-                                                          setDialogState(() {
-                                                            indexs[index - 1] =
-                                                                ischeck;
-                                                          });
-                                                        }),
-                                                  ),
-                                        itemCount: illust.metaPages.length + 1,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              );
-                              switch (result) {
-                                case "OK":
-                                  {
-                                    saveStore.saveChoiceImage(illust, indexs);
-                                  }
-                              }
+                              _showMutiChoiceDialog(illust, context);
                             },
                           )
                         : Container(),
@@ -802,6 +662,79 @@ class _IllustPageState extends State<IllustPage> {
         }));
       },
     );
+  }
+
+  Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
+    List<bool> indexs = List(illust.metaPages.length);
+    bool allOn = false;
+    for (int i = 0; i < illust.metaPages.length; i++) {
+      indexs[i] = false;
+    }
+    final result = await showDialog(
+      context: context,
+      child: StatefulBuilder(builder: (context, setDialogState) {
+        return AlertDialog(
+          title: Text(I18n.of(context).muti_choice_save),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context, "OK");
+              },
+              child: Text(I18n.of(context).ok),
+            ),
+            FlatButton(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, index) => index == 0
+                  ? ListTile(
+                      title: Text(I18n.of(context).all),
+                      trailing: Checkbox(
+                          value: allOn,
+                          onChanged: (ischeck) {
+                            setDialogState(() {
+                              allOn = ischeck;
+                              if (ischeck)
+                                for (int i = 0; i < indexs.length; i++) {
+                                  indexs[i] = true;
+                                } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                              else {
+                                for (int i = 0; i < indexs.length; i++) {
+                                  indexs[i] = false;
+                                }
+                              }
+                            });
+                          }),
+                    )
+                  : ListTile(
+                      title: Text((index - 1).toString()),
+                      trailing: Checkbox(
+                          value: indexs[index - 1],
+                          onChanged: (ischeck) {
+                            setDialogState(() {
+                              indexs[index - 1] = ischeck;
+                            });
+                          }),
+                    ),
+              itemCount: illust.metaPages.length + 1,
+            ),
+          ),
+        );
+      }),
+    );
+    switch (result) {
+      case "OK":
+        {
+          saveStore.saveChoiceImage(illust, indexs);
+        }
+    }
   }
 
   Widget buildPictures(BuildContext context, Illusts data, int index) {

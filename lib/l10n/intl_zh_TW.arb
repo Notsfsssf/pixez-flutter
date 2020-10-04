@@ -181,8 +181,12 @@
   "step": "Step",
   "special_shaped_screen": "螢幕凹口",
   "platform_special_setting": "作業系統專有設定",
-  "system": "system",
+  "system": "跟隨系統",
   "light": "light",
   "dark": "dark",
-  "theme_mode": "theme mode"
+  "theme_mode": "主題模式",
+  "create_folder": "創建資料夾",
+  "old_way": "傳統方式",
+  "permission_denied": "未取得授權",
+  "old_way_message": "以傳統方式保存圖片，需要獲得外部儲存空間的讀寫權限，並選擇一個文件夾以繼續"
 }

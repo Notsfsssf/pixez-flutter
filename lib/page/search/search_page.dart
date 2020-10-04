@@ -25,6 +25,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
@@ -50,8 +51,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    _animationController =
-        AnimationController(duration: const Duration(milliseconds: 500),vsync: this);
+    _animationController = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
     animation = Tween(begin: 0.0, end: 0.25).animate(_animationController);
 
     _trendTagsStore = TrendTagsStore();
@@ -91,116 +92,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
-  judgePushPage(Uri link) {
-    if (link.host.contains('illusts')) {
-      var idSource = link.pathSegments.last;
-      try {
-        int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return IllustPage(
-            id: id,
-          );
-        }));
-      } catch (e) {}
-      return;
-    }
-    if (link.host.contains('user')) {
-      var idSource = link.pathSegments.last;
-      try {
-        int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return UsersPage(
-            id: id,
-          );
-        }));
-      } catch (e) {}
-      return;
-    }
-    if (link.host.contains('pixiv')) {
-      if (link.path.contains("artworks")) {
-        List<String> paths = link.pathSegments;
-        int index = paths.indexOf("artworks");
-        if (index != -1) {
-          try {
-            int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
-            }));
-            return;
-          } catch (e) {}
-        }
-      }
-      if (link.path.contains("users")) {
-        List<String> paths = link.pathSegments;
-        int index = paths.indexOf("users");
-        if (index != -1) {
-          try {
-            int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                builder: (context) => UsersPage(
-                      id: id,
-                    )));
-          } catch (e) {
-            print(e);
-          }
-        }
-      }
-      if (link.queryParameters['illust_id'] != null) {
-        try {
-          var id = link.queryParameters['illust_id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id: int.parse(id));
-          }));
-
-          return;
-        } catch (e) {}
-      }
-      if (link.queryParameters['id'] != null) {
-        try {
-          var id = link.queryParameters['id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: int.parse(id),
-            );
-          }));
-
-          return;
-        } catch (e) {}
-      }
-      if (link.pathSegments.length >= 2) {
-        String i = link.pathSegments[link.pathSegments.length - 2];
-        if (i == "i") {
-          try {
-            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
-            }));
-            return;
-          } catch (e) {}
-        }
-
-        if (i == "u") {
-          try {
-            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return UsersPage(
-                id: id,
-              );
-            }));
-            return;
-          } catch (e) {}
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -222,47 +113,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       icon: Icon(Icons.dashboard,
                           color: Theme.of(context).textTheme.bodyText1.color),
                       onPressed: () async {
-                        try {
-                          var clipData =
-                              await Clipboard.getData(Clipboard.kTextPlain);
-                          if (clipData != null) {
-                            print(clipData.text ?? '');
-                            final query = clipData.text ?? '';
-                            if (query.startsWith('http')) {
-                              judgePushPage(Uri.parse(query));
-                            } else {
-                              BotToast.showCustomText(
-                                  onlyOne: true,
-                                  duration: Duration(seconds: 1),
-                                  toastBuilder: (textCancel) => Align(
-                                        alignment: Alignment(0, 0.8),
-                                        child: Card(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Icon(
-                                                  Icons.dashboard,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 8.0,
-                                                        vertical: 8.0),
-                                                child: Text(I18n.of(context)
-                                                    .not_the_correct_link),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ));
-                            }
-                          }
-                        } catch (e) {}
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return SauceNaoPage();
+                        }));
                       }),
                 ),
                 backgroundColor: Colors.transparent,

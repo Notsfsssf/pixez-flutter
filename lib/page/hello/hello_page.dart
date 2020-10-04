@@ -175,15 +175,15 @@ class _HelloPageState extends State<HelloPage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+                icon: Icon(Icons.home), label:I18n.of(context).home),
             BottomNavigationBarItem(
                 icon: Icon(Icons.bookmark),
-                title: Text(I18n.of(context).quick_view)),
+                label:I18n.of(context).quick_view),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
+                icon: Icon(Icons.search), label:I18n.of(context).search),
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
-                title: Text(I18n.of(context).setting)),
+                label:I18n.of(context).setting),
           ]),
     );
   }

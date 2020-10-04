@@ -31,27 +31,21 @@ import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/platform/platform_page.dart';
-import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
 
 class SettingPage extends StatefulWidget {
-  final bool hasNewVersion;
-
-  const SettingPage({Key key, this.hasNewVersion}) : super(key: key);
+  const SettingPage({Key key}) : super(key: key);
 
   @override
   _SettingPageState createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
-  bool hasNewVersion;
 
   @override
   void initState() {
-    hasNewVersion = widget.hasNewVersion ?? false;
     super.initState();
   }
 

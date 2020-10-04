@@ -78,7 +78,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
         onPressed: () {
           _sauceStore.findImage();
         },
-        child: Icon(Icons.picture_in_picture),
+        child: Icon(Icons.add_photo_alternate),
       ),
     );
   }

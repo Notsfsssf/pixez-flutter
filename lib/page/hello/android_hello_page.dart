@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
@@ -27,6 +28,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/about/last_release.dart';
 import 'package:pixez/page/directory/directory_page.dart';
+import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
@@ -80,13 +82,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.of(context)
-      //         .pushReplacement(MaterialPageRoute(builder: (context) => NovelRail()));
-      //   },
-      //   child: Icon(Icons.book),
-      // ),
+
       body: PageView.builder(
         itemBuilder: (context, index) {
           return _pageList[index];
@@ -111,20 +107,18 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+                icon: Icon(Icons.home), label: I18n.of(context).home),
             BottomNavigationBarItem(
                 icon: Icon(
                   CustomIcons.leaderboard,
                 ),
-                title: Text(I18n.of(context).rank)),
+                label: I18n.of(context).rank),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                title: Text(I18n.of(context).quick_view)),
+                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
+                icon: Icon(Icons.search), label: I18n.of(context).search),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                title: Text(I18n.of(context).setting)),
+                icon: Icon(Icons.settings), label: I18n.of(context).setting),
           ]),
     );
   }
@@ -258,27 +252,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   bool hasNewVersion = false;
 
-  checkUpdate() async {
-    try {
-      Response response =
-          await Dio(BaseOptions(baseUrl: 'https://api.github.com'))
-              .get('/repos/Notsfsssf/pixez-flutter/releases/latest');
-      final result = LastRelease.fromJson(response.data);
-      List<int> versionNums =
-          result.tagName.split('.').map((e) => int.parse(e));
-      List<int> newNums = Constants.tagName.split('.').map((e) => int.parse(e));
-      for (int i = 0; i < versionNums.length; i++) {
-        if (versionNums[i] < newNums[i]) {
-          if (mounted) {
-            setState(() {
-              hasNewVersion = true;
-            });
-          }
-        }
-      }
-    } catch (e) {}
-  }
-
   @override
   void initState() {
     index = userSetting.welcomePageNum;
@@ -327,71 +300,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       );
     } else {
       if (await DocumentPlugin.needChoice()) {
-        await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: [
-                      Text(I18n.of(context).saf_hint),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(I18n.of(context).step + 1.toString()),
-                      ),
-                      Image.asset(
-                        'assets/images/step1.png',
-                        fit: BoxFit.fitWidth,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(I18n.of(context).step + 2.toString()),
-                      ),
-                      Image.asset(
-                        'assets/images/step2.png',
-                        fit: BoxFit.fitWidth,
-                      )
-                    ],
-                  ),
-                ),
-                title: Text(I18n.of(context).choose_directory),
-                actions: [
-                  FlatButton(
-                      onPressed: () async {
-                      await  userSetting.setIsHelplessWay(true);
-                        final path = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => DirectoryPage()));
-                        if (path != null) {
-                          final _preferences =
-                              await SharedPreferences.getInstance();
-                          await _preferences.setString('store_path', path);
-                        }
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('helpless')),
-                  FlatButton(
-                      onPressed: () async {
-                        Constants.isGooglePlay || userSetting.disableBypassSni
-                            ? launch(
-                                "https://developer.android.com/training/data-storage/shared/documents-files")
-                            : launch(
-                                "https://developer.android.google.cn/training/data-storage/shared/documents-files");
-                      },
-                      child: Text(I18n.of(context).what_is_saf)),
-                  FlatButton(
-                      onPressed: () async {
-                        await  userSetting.setIsHelplessWay(false);
-                        await DocumentPlugin.choiceFolder();
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).start))
-                ],
-              );
-            });
-     }
+        await showPathDialog(context,isFirst: true);
+      }
     }
   }
 }
+

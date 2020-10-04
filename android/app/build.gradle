@@ -69,6 +69,7 @@ println(packageName)
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -85,8 +86,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 32
-        versionName "0.2.1 whiteout"
+        versionCode 33
+        versionName "0.2.2 X"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

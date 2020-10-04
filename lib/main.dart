@@ -14,9 +14,8 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,8 @@ final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
-main() async {
+
+main() {
   runApp(MyApp());
 }
 
@@ -48,11 +48,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ReceivePort _port = ReceivePort();
-
   @override
   void dispose() {
-    IsolateNameServer.removePortNameMapping('downloader');
     saveStore?.dispose();
     super.dispose();
   }
@@ -64,8 +61,11 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
+    initMethod();
     super.initState();
   }
+
+  initMethod() async {}
 
   Future<void> clean() async {
     final path = await saveStore.findLocalPath();
@@ -90,6 +90,7 @@ class _MyAppState extends State<MyApp> {
         }),
         title: 'PixEz',
         builder: BotToastInit(),
+        themeMode: userSetting.themeMode,
         theme: userSetting.themeData,
         darkTheme: ThemeData.dark().copyWith(
             accentColor: userSetting.themeData.accentColor,

@@ -59,12 +59,14 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
+        child: Icon(Icons.add_photo_alternate),
         onPressed: () {
           _store.findImage();
         },
       ),
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Icon(Icons.dashboard),
+      ),
       body: Container(
         child: ListView(
           children: <Widget>[

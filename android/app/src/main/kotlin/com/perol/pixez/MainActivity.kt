@@ -185,6 +185,9 @@ class MainActivity : FlutterActivity() {
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
+                if(helplessPath==null){
+                    helplessPath = sharedPreferences.getString("flutter.store_path", null)
+                }
                 GlobalScope.launch(Dispatchers.Main) {
                     val fullPath = "$helplessPath/$name"
                     val file = File(fullPath)

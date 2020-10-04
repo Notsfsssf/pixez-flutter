@@ -37,7 +37,6 @@ abstract class _TagHistoryStoreBase with Store {
     for (int i = 0; i < tags.length; i++) {
       if (tags[i].name == tagsPersist.name) {
         return;
-        break;
       }
     }
     await tagsPersistProvider.open();

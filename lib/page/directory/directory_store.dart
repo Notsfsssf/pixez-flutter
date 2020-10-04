@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +25,6 @@ part 'directory_store.g.dart';
 class DirectoryStore = _DirectoryStoreBase with _$DirectoryStore;
 
 abstract class _DirectoryStoreBase with Store {
-  static const platform = const MethodChannel('com.perol.dev/save');
   @observable
   String path;
   @observable
@@ -36,9 +34,6 @@ abstract class _DirectoryStoreBase with Store {
   ObservableList<FileSystemEntity> list = ObservableList();
   SharedPreferences _preferences;
 
-  _DirectoryStoreBase() {
-    init();
-  }
 
   @action
   Future<void> enterFolder(Directory fileSystemEntity) async {
@@ -48,7 +43,7 @@ abstract class _DirectoryStoreBase with Store {
 
   @action
   Future<void> undo() async {
-    path ="/storage/emulated/0/pictures";
+    path ="/storage/emulated/0/Pictures";
     list = ObservableList.of(Directory(path).listSync());
   }
 
@@ -77,9 +72,9 @@ abstract class _DirectoryStoreBase with Store {
   }
 
   @action
-  Future<void> init() async {
+  Future<void> init(String initPath) async {
     _preferences = await SharedPreferences.getInstance();
-    path = _preferences.getString("store_path") ??
+    path =initPath?? _preferences.getString("store_path") ??
         (await getExternalStorageDirectory()).path;//绝了
     final directory = Directory(path);
     if (!directory.existsSync()) {
