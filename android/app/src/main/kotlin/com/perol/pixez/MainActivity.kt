@@ -87,10 +87,6 @@ class MainActivity : FlutterActivity() {
                 .isEmpty()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
     private fun isFileExist(name: String): Boolean {
         if (isHelplessWay) {
             return File("$helplessPath/$name").exists()
