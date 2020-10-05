@@ -181,13 +181,13 @@
   "step": "Step",
   "special_shaped_screen": "螢幕凹口",
   "platform_special_setting": "作業系統專有設定",
-  "system": "跟隨系統",
-  "light": "light",
-  "dark": "dark",
-  "theme_mode": "主題模式",
-  "create_folder": "創建資料夾",
-  "old_way": "傳統方式",
+  "system": "使用系統設定",
+  "light": "淺色",
+  "dark": "深色",
+  "theme_mode": "主題",
+  "create_folder": "建立資料夾",
+  "old_way": "舊版方式",
   "permission_denied": "未取得授權",
-  "old_way_message": "以傳統方式保存圖片，需要獲得外部儲存空間的讀寫權限，並選擇一個文件夾以繼續",
-  "return_again_to_exit": "再一次返回退出"
+  "old_way_message": "以舊版方式儲存圖像，需要取得外部儲存空間的存取權限，並選擇一個資料夾以繼續"
+  "return_again_to_exit": "再次點擊返回鍵以退出"
 }
