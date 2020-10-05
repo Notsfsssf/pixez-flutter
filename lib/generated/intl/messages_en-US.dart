@@ -165,6 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "report_message" : MessageLookupByLibrary.simpleMessage("Report this content if it makes you feel uncomfortable, we will remove it ASAP once we confirmed that it\'s harmful."),
     "retry" : MessageLookupByLibrary.simpleMessage("Retry"),
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("Retry failed tasks"),
+    "return_again_to_exit" : MessageLookupByLibrary.simpleMessage("Return again to exit"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("The designer who drew the lovely icon of PixEz"),
     "running" : MessageLookupByLibrary.simpleMessage("Running"),
     "saf_hint" : MessageLookupByLibrary.simpleMessage("In order to save illusts to your device you have to choose a folder and allow PixEz to access it(e.g. Picture/Pixez)."),

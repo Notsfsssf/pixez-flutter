@@ -113,7 +113,8 @@ class _PlatformPageState extends State<PlatformPage> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.folder),
-                title: Text(I18n.of(context).save_path),
+                title: Text(
+                    '${I18n.of(context).save_path}(${userSetting.isHelplessWay ? I18n.of(context).old_way : 'SAF'})'),
                 subtitle: Text(path ?? ""),
                 onTap: () async {
                   await showPathDialog(context);

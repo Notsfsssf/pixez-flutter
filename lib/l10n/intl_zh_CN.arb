@@ -188,5 +188,6 @@
   "create_folder": "创建文件夹",
   "old_way": "传统方式",
   "permission_denied": "未取得授权",
-  "old_way_message": "以传统方式保存图片，需要获得外部储存空间的读写权限，并选择一个文件夹以继续"
+  "old_way_message": "以传统方式保存图片，需要获得外部储存空间的读写权限，并选择一个文件夹以继续",
+  "return_again_to_exit": "再一次返回退出"
 }

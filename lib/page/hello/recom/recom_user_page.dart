@@ -70,21 +70,21 @@ class _RecomUserPageState extends State<RecomUserPage> {
           onRefresh: () => _recomUserStore.fetch(),
           onLoading: () => _recomUserStore.next(),
           child: _recomUserStore.users.isNotEmpty
-              ?AnimationLimiter(
-                child: ListView.builder(
-                    itemCount: _recomUserStore.users.length,
-                    itemBuilder: (context, index) {
-                      final data = _recomUserStore.users[index];
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        child:SlideAnimation(
-                          child: PainterCard(
-                            user: data,
+              ? AnimationLimiter(
+                  child: ListView.builder(
+                      itemCount: _recomUserStore.users.length,
+                      itemBuilder: (context, index) {
+                        final data = _recomUserStore.users[index];
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          child: SlideAnimation(
+                            child: PainterCard(
+                              user: data,
+                            ),
                           ),
-                        ),
-                      );
-                    }),
-              )
+                        );
+                      }),
+                )
               : Container(),
         ),
       );

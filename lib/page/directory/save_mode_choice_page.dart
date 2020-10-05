@@ -92,33 +92,35 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                   automaticallyImplyLeading: false,
                   elevation: 0.0,
                   backgroundColor: Colors.transparent,
-                  title: Theme(
-                    data: userSetting.themeData.copyWith(
-                        textTheme: Theme.of(context).textTheme.copyWith()),
-                    child: CupertinoSlidingSegmentedControl(
-                        groupValue: groupValue,
-                        children: {
-                          0: Text(
-                            'SAF',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          1: Text(
-                            I18n.of(context).old_way,
-                            style: TextStyle(fontSize: 16),
-                          )
-                        },
-                        onValueChanged: (v) {
-                          setState(() {
-                            this.groupValue = v;
-                          });
-                          if (groupValue == 0) {
-                            _animationController.reverse();
-                          }
-                          if (groupValue == 1) {
-                            _animationController.forward();
-                          }
-                        }),
-                  ),
+                  title: CupertinoSlidingSegmentedControl(
+                      groupValue: groupValue,
+                      children: {
+                        0: Text(
+                          'SAF',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(fontSize: 16.0),
+                        ),
+                        1: Text(
+                          I18n.of(context).old_way,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(fontSize: 16.0),
+                        )
+                      },
+                      onValueChanged: (v) {
+                        setState(() {
+                          this.groupValue = v;
+                        });
+                        if (groupValue == 0) {
+                          _animationController.reverse();
+                        }
+                        if (groupValue == 1) {
+                          _animationController.forward();
+                        }
+                      }),
                   actions: [
                     IconButton(
                         icon: Icon(Icons.question_answer),
@@ -197,7 +199,6 @@ showPathDialog(BuildContext context, {bool isFirst = false}) async {
 Future _saffun(BuildContext context) async {
   await userSetting.setIsHelplessWay(false);
   await DocumentPlugin.choiceFolder();
-  Navigator.of(context).pop();
 }
 
 Future _helplessfun(BuildContext context, {bool isFirst = false}) async {

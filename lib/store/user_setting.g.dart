@@ -9,6 +9,22 @@ part of 'user_setting.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$UserSetting on _UserSettingBase, Store {
+  final _$isReturnAgainToExitAtom =
+      Atom(name: '_UserSettingBase.isReturnAgainToExit');
+
+  @override
+  bool get isReturnAgainToExit {
+    _$isReturnAgainToExitAtom.reportRead();
+    return super.isReturnAgainToExit;
+  }
+
+  @override
+  set isReturnAgainToExit(bool value) {
+    _$isReturnAgainToExitAtom.reportWrite(value, super.isReturnAgainToExit, () {
+      super.isReturnAgainToExit = value;
+    });
+  }
+
   final _$isHelplessWayAtom = Atom(name: '_UserSettingBase.isHelplessWay');
 
   @override
@@ -235,6 +251,15 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$setIsReturnAgainToExitAsyncAction =
+      AsyncAction('_UserSettingBase.setIsReturnAgainToExit');
+
+  @override
+  Future setIsReturnAgainToExit(bool value) {
+    return _$setIsReturnAgainToExitAsyncAction
+        .run(() => super.setIsReturnAgainToExit(value));
+  }
+
   final _$setStorePathAsyncAction =
       AsyncAction('_UserSettingBase.setStorePath');
 
@@ -366,6 +391,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   @override
   String toString() {
     return '''
+isReturnAgainToExit: ${isReturnAgainToExit},
 isHelplessWay: ${isHelplessWay},
 storePath: ${storePath},
 isBangs: ${isBangs},
