@@ -165,6 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "report_message" : MessageLookupByLibrary.simpleMessage("如果该内容让你感到不适，点击确定回报给审核，该内容会在核实后立即删除，我们会尽快处理该内容"),
     "retry" : MessageLookupByLibrary.simpleMessage("重试"),
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("重试失败任务"),
+    "return_again_to_exit" : MessageLookupByLibrary.simpleMessage("再一次返回退出"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("完成应用图标的绘制"),
     "running" : MessageLookupByLibrary.simpleMessage("进行中"),
     "saf_hint" : MessageLookupByLibrary.simpleMessage("需要以 SAF 模式选择一个文件夹以保存图片或其他文件\n虽然不授权仍然能够继续使用，但是这可能会导致 app 闪退或者部分功能不可用\n非常推荐选择保存在\nPictures/PixEz下"),

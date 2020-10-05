@@ -101,6 +101,7 @@ class _LightingListState extends State<LightingList> {
       header: (Platform.isAndroid)
           ? MaterialClassicHeader(
               color: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).cardColor,
             )
           : ClassicHeader(),
       footer: CustomFooter(

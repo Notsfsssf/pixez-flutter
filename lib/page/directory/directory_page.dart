@@ -148,6 +148,7 @@ class _DirectoryPageState extends State<DirectoryPage> {
           Expanded(
             child: Observer(builder: (_) {
               final list = directoryStore.list;
+              list.sort((a, b) => a.path.compareTo(b.path));
               if (list.isNotEmpty)
                 return Container(
                     child: ListView.builder(

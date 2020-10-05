@@ -1922,6 +1922,16 @@ class I18n {
       args: [],
     );
   }
+
+  /// `Return again to exit`
+  String get return_again_to_exit {
+    return Intl.message(
+      'Return again to exit',
+      name: 'return_again_to_exit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I18n> {

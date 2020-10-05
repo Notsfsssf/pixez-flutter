@@ -165,6 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "report_message" : MessageLookupByLibrary.simpleMessage("如果該內容讓你感到不適，可點擊確定以回報審核。我們(Pixiv)會盡快處理，而該內容將會在問題被核實後立即刪除"),
     "retry" : MessageLookupByLibrary.simpleMessage("重試"),
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("重試失敗工作"),
+    "return_again_to_exit" : MessageLookupByLibrary.simpleMessage("再一次返回退出"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("完成軟體圖示的繪製"),
     "running" : MessageLookupByLibrary.simpleMessage("進行中"),
     "saf_hint" : MessageLookupByLibrary.simpleMessage("需要使用SAF模式，請選擇一個資料夾以儲存圖像及其他檔案\n雖然不授權仍然能夠繼續使用本軟體，但是這可能會引起閃退或者損壞部分功能\n推薦設定的儲存資料夾為 Picture\\Pixez"),

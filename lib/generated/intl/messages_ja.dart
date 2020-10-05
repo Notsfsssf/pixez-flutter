@@ -165,6 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "report_message" : MessageLookupByLibrary.simpleMessage("Report this content if it makes you feel uncomfortable, we will remove it ASAP once we confirmed that it\'s harmful."),
     "retry" : MessageLookupByLibrary.simpleMessage("再試行"),
     "retry_failed_tasks" : MessageLookupByLibrary.simpleMessage("失敗した処理を再試行する"),
+    "return_again_to_exit" : MessageLookupByLibrary.simpleMessage("Return again to exit"),
     "right_now_message" : MessageLookupByLibrary.simpleMessage("The designer who drew the lovely icon of PixEz"),
     "running" : MessageLookupByLibrary.simpleMessage("進行中"),
     "saf_hint" : MessageLookupByLibrary.simpleMessage("画像をデバイスに保存するにはPixEzがフォルダにアクセスできるようにする必要があります(例: Picture/Pixez)"),

@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,20 +70,34 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     SearchPage(),
     SettingPage()
   ];
+  DateTime _preTime;
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      if (accountStore.now != null) {
-        return _buildScaffold(context);
-      }
-      return LoginPage();
-    });
+    return WillPopScope(
+      onWillPop: () async {
+        if (!userSetting.isReturnAgainToExit) {
+          return true;
+        }
+        if (_preTime == null ||
+            DateTime.now().difference(_preTime) > Duration(seconds: 2)) {
+          _preTime = DateTime.now();
+          BotToast.showText(text: I18n.of(context).return_again_to_exit);
+          return false;
+        }
+        return true;
+      },
+      child: Observer(builder: (context) {
+        if (accountStore.now != null) {
+          return _buildScaffold(context);
+        }
+        return LoginPage();
+      }),
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-
       body: PageView.builder(
         itemBuilder: (context, index) {
           return _pageList[index];
@@ -300,9 +315,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       );
     } else {
       if (await DocumentPlugin.needChoice()) {
-        await showPathDialog(context,isFirst: true);
+        await showPathDialog(context, isFirst: true);
       }
     }
   }
 }
-
