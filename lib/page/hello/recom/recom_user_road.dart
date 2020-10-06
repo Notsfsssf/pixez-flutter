@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 
 class RecomUserRoad extends StatefulWidget {
+  final RecomUserStore recomUserStore;
+
+  const RecomUserRoad({Key key, @required this.recomUserStore})
+      : super(key: key);
   @override
   _RecomUserRoadState createState() => _RecomUserRoadState();
 }
@@ -13,7 +18,8 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
   RecomUserStore _recomUserStore;
   @override
   void initState() {
-    _recomUserStore = RecomUserStore()..fetch();
+    _recomUserStore = widget.recomUserStore ?? RecomUserStore()
+      ..fetch();
     super.initState();
   }
 
@@ -22,7 +28,9 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return RecomUserPage();
+          return RecomUserPage(
+            recomUserStore: _recomUserStore,
+          );
         }));
       },
       child: Container(
@@ -40,21 +48,18 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
                         topLeft: Radius.circular(16.0)),
                     color: Colors.transparent),
                 child: _recomUserStore.users.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: _recomUserStore.users.length + 1,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Center(
-                                child: Padding(
-                                    padding: EdgeInsets.only(right: 10.0),
-                                    child: Visibility(
-                                        visible: false,
-                                        child:
-                                            Text(I18n.of(context).painter))));
-                          }
-                          return _buildUserList(index - 1);
-                        },
+                    ? AnimationLimiter(
+                        child: ListView.builder(
+                          itemCount: _recomUserStore.users.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return AnimationConfiguration.staggeredList(
+                                position: index,
+                                child: SlideAnimation(
+                                    horizontalOffset: 50.0,
+                                    child: _buildUserList(index)));
+                          },
+                        ),
                       )
                     : Container(),
               ),

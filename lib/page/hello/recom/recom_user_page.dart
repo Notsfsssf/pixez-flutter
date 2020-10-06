@@ -38,15 +38,17 @@ class _RecomUserPageState extends State<RecomUserPage> {
   void initState() {
     _refreshController =
         RefreshController(initialRefresh: widget.recomUserStore == null);
-    _recomUserStore = RecomUserStore(controller: _refreshController);
+    _recomUserStore =
+        widget.recomUserStore ?? RecomUserStore(controller: _refreshController);
     if (widget.recomUserStore != null) {
-      _recomUserStore.users = widget.recomUserStore.users;
+      _recomUserStore.controller = _refreshController;
     }
     super.initState();
   }
 
   @override
   void dispose() {
+    _recomUserStore?.controller = null;
     _refreshController?.dispose();
     super.dispose();
   }
@@ -69,22 +71,35 @@ class _RecomUserPageState extends State<RecomUserPage> {
           enablePullUp: true,
           onRefresh: () => _recomUserStore.fetch(),
           onLoading: () => _recomUserStore.next(),
+          footer: CustomFooter(
+            builder: (BuildContext context, LoadStatus mode) {
+              Widget body;
+              if (mode == LoadStatus.idle) {
+                body = Text(I18n.of(context).pull_up_to_load_more);
+              } else if (mode == LoadStatus.loading) {
+                body = CircularProgressIndicator();
+              } else if (mode == LoadStatus.failed) {
+                body = Text(I18n.of(context).loading_failed_retry_message);
+              } else if (mode == LoadStatus.canLoading) {
+                body = Text(I18n.of(context).let_go_and_load_more);
+              } else {
+                body = Text(I18n.of(context).no_more_data);
+              }
+              return Container(
+                height: 55.0,
+                child: Center(child: body),
+              );
+            },
+          ),
           child: _recomUserStore.users.isNotEmpty
-              ? AnimationLimiter(
-                  child: ListView.builder(
-                      itemCount: _recomUserStore.users.length,
-                      itemBuilder: (context, index) {
-                        final data = _recomUserStore.users[index];
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          child: SlideAnimation(
-                            child: PainterCard(
-                              user: data,
-                            ),
-                          ),
-                        );
-                      }),
-                )
+              ? ListView.builder(
+                  itemCount: _recomUserStore.users.length,
+                  itemBuilder: (context, index) {
+                    final data = _recomUserStore.users[index];
+                    return PainterCard(
+                      user: data,
+                    );
+                  })
               : Container(),
         ),
       );

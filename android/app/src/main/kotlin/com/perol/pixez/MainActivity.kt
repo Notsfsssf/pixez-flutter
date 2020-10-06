@@ -281,7 +281,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENCODE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "getBatteryLevel") {
                 val name = call.argument<String>("name")!!
-                val path = call.argument<String>("flutter.store_path")!!
+                val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!
                 GlobalScope.launch(Dispatchers.Main) {
                     withContext(Dispatchers.IO) {

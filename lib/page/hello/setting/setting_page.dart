@@ -43,7 +43,6 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-
   @override
   void initState() {
     super.initState();
@@ -242,22 +241,14 @@ class _SettingPageState extends State<SettingPage> {
                       Divider(),
                       Column(
                         children: <Widget>[
-                          OpenContainer<bool>(
-                            transitionType: ContainerTransitionType.fade,
-                            closedColor: Colors.transparent,
-                            closedElevation: 0.0,
-                            openElevation: 0.0,
-                            openBuilder:
-                                (BuildContext context, VoidCallback _) {
-                              return AboutPage();
-                            },
-                            closedShape: const RoundedRectangleBorder(),
-                            closedBuilder:
-                                (BuildContext _, VoidCallback openContainer) {
-                              return ListTile(
-                                leading: Icon(Icons.message),
-                                title: Text(I18n.of(context).about),
-                              );
+                          ListTile(
+                            leading: Icon(Icons.message),
+                            title: Text(I18n.of(context).about),
+                            onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return AboutPage();
+                              }));
                             },
                           ),
                           Observer(builder: (context) {

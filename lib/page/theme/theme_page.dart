@@ -123,7 +123,7 @@ class ThemePage extends StatefulWidget {
   _ThemePageState createState() => _ThemePageState();
 }
 
-class _ThemePageState extends State<ThemePage> {
+class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   final skinList = [
     ThemeData(
       brightness: Brightness.light,
@@ -182,11 +182,8 @@ class _ThemePageState extends State<ThemePage> {
     }
   }
 
-  int index = 0;
-
   @override
   void initState() {
-    index = ThemeMode.values.indexOf(userSetting.themeMode);
     super.initState();
   }
 
@@ -200,22 +197,26 @@ class _ThemePageState extends State<ThemePage> {
         body: ListView(
           children: <Widget>[
             Observer(builder: (context) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoSlidingSegmentedControl(
-                  groupValue: index,
-                  onValueChanged: (value) {
-                    userSetting.setThemeMode(value);
-                    setState(() {
-                      this.index=value;
-                    });
-                  },
-                  children: <int, Widget>{
-                    0: Text(I18n.of(context).system),
-                    1: Text(I18n.of(context).light),
-                    2: Text(I18n.of(context).dark),
-                  },
-                ),
+              return Card(
+                child: TabBar(
+                    controller: TabController(
+                      length: 3,
+                      initialIndex:
+                          ThemeMode.values.indexOf(userSetting.themeMode),
+                      vsync: this,
+                    ),
+                    onTap: (i) {
+                      userSetting.setThemeMode(i);
+                    },
+                    tabs: [
+                      Tab(
+                        text: I18n.of(context).system,
+                      ),
+                      Tab(
+                        text: I18n.of(context).light,
+                      ),
+                      Tab(text: I18n.of(context).dark)
+                    ]),
               );
             }),
             Card(

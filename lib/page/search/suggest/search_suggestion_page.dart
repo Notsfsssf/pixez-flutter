@@ -28,16 +28,16 @@ class SearchSuggestionPage extends StatefulWidget {
   final String preword;
 
   const SearchSuggestionPage({Key key, this.preword}) : super(key: key);
+
   @override
   _SearchSuggestionPageState createState() => _SearchSuggestionPageState();
 }
 
-class _SearchSuggestionPageState extends State<SearchSuggestionPage>
-    with SingleTickerProviderStateMixin {
+class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   TextEditingController _filter;
-  TabController _tabController;
   SuggestionStore _suggestionStore;
   SauceStore _sauceStore;
+
   @override
   void initState() {
     _suggestionStore = SuggestionStore();
@@ -55,142 +55,91 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
       }
     });
     _filter = TextEditingController(text: widget.preword ?? '');
-    _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
   @override
   void dispose() {
     _filter?.dispose();
-    _tabController?.dispose();
     super.dispose();
   }
 
+  bool idV = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: Container(
-          child: Suggestions(
-        suggestionStore: _suggestionStore,
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _sauceStore.findImage();
-        },
-        child: Icon(Icons.add_photo_alternate),
-      ),
-    );
+    return Observer(builder: (context) {
+      return Scaffold(
+        appBar: _buildAppBar(context),
+        body: Container(
+            child: CustomScrollView(
+          slivers: [
+            SliverVisibility(
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (index == 0)
+                    return ListTile(
+                      title: Text(_filter.text ?? ''),
+                      subtitle: Text(I18n.of(context).illust_id),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IllustPage(
+                                  id: int.tryParse(_filter.text),
+                                )));
+                      },
+                    );
+                  return ListTile(
+                    title: Text(_filter.text ?? ''),
+                    subtitle: Text(I18n.of(context).painter_id),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => UsersPage(
+                                id: int.tryParse(_filter.text),
+                              )));
+                    },
+                  );
+                }, childCount: 2),
+              ),
+              visible: idV,
+            ),
+            if (_suggestionStore.autoWords != null &&
+                _suggestionStore.autoWords.tags.isNotEmpty)
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final tags = _suggestionStore.autoWords.tags;
+                  return ListTile(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      Navigator.of(context, rootNavigator: true)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return ResultPage(
+                          word: tags[index].name,
+                          translatedName: tags[index].translated_name ?? '',
+                        );
+                      }));
+                    },
+                    title: Text(tags[index].name),
+                    subtitle: Text(tags[index].translated_name ?? ""),
+                  );
+                }, childCount: _suggestionStore.autoWords.tags.length),
+              ),
+          ],
+        )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _sauceStore.findImage();
+          },
+          child: Icon(Icons.add_photo_alternate),
+        ),
+      );
+    });
   }
 
   FocusNode focusNode = FocusNode();
 
   AppBar _buildAppBar(context) {
     return AppBar(
-      title: TextField(
-          controller: _filter,
-          focusNode: focusNode,
-          autofocus: true,
-          onTap: () {
-            FocusScope.of(context).requestFocus(focusNode);
-          },
-          onChanged: (query) {
-            if (query.startsWith('https://')) {
-              Uri uri = Uri.parse(query);
-              if (!uri.host.contains('pixiv')) {
-                return;
-              }
-              final segment = uri.pathSegments;
-              if (segment.length == 1 && query.contains("/member.php?id=")) {
-                final id = uri.queryParameters['id'];
-                Navigator.of(context, rootNavigator: true)
-                    .push(MaterialPageRoute(
-                        builder: (BuildContext context) => UsersPage(
-                              id: int.parse(id),
-                            )));
-                _filter.clear();
-              }
-              if (segment.length == 2) {
-                if (segment[0] == 'artworks') {
-                  Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              IllustPage(id: int.parse(segment[1]))));
-                  _filter.clear();
-                }
-                if (segment[0] == 'users') {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return UsersPage(
-                      id: int.parse(segment[1]),
-                    );
-                  }));
-                  _filter.clear();
-                }
-              }
-            }
-            var word = query.trim();
-            if (word.isEmpty) return;
-            _suggestionStore.fetch(word);
-          },
-          onSubmitted: (s) {
-            var word = s.trim();
-            if (word.isEmpty) return;
-            switch (_tabController.index) {
-              case 0:
-                {
-                  Navigator.of(context, rootNavigator: true)
-                      .push(MaterialPageRoute(
-                          builder: (context) => ResultPage(
-                                word: word,
-                              )));
-                }
-                break;
-              case 1:
-                {
-                  var id = int.tryParse(word);
-                  if (id != null) {
-                    Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(builder: (_) => IllustPage(id: id)));
-                  } else {
-                    _filter.clear();
-                  }
-                }
-                break;
-              case 2:
-                {
-                  var id = int.tryParse(word);
-                  if (id != null) {
-                    Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(
-                            builder: (_) => UsersPage(
-                                  id: id,
-                                )));
-                  } else {
-                    _filter.clear();
-                  }
-                }
-                break;
-            }
-          },
-          decoration: InputDecoration(
-            hintText: I18n.of(context).search_word_or_paste_link,
-          )),
-      bottom: TabBar(
-        indicatorSize: TabBarIndicatorSize.label,
-        controller: _tabController,
-        tabs: <Widget>[
-          Tab(
-            child: Text(I18n.of(context).key_word),
-          ),
-          Tab(
-            child: Text(I18n.of(context).illust_id),
-          ),
-          Tab(
-            child: Text(I18n.of(context).painter_id),
-          ),
-        ],
-      ),
+      title: _textField(context, TextInputType.text, focusNode),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.close),
@@ -201,10 +150,77 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage>
       ],
     );
   }
+
+  TextField _textField(
+      BuildContext context, TextInputType inputType, FocusNode node) {
+    return TextField(
+        controller: _filter,
+        focusNode: node,
+        keyboardType: inputType,
+        autofocus: true,
+        onTap: () {
+          FocusScope.of(context).requestFocus(node);
+        },
+        onChanged: (query) {
+          bool isNum = int.tryParse(query) != null;
+          setState(() {
+            idV = isNum;
+          });
+          if (query.startsWith('https://')) {
+            Uri uri = Uri.parse(query);
+            if (!uri.host.contains('pixiv')) {
+              return;
+            }
+            final segment = uri.pathSegments;
+            if (segment.length == 1 && query.contains("/member.php?id=")) {
+              final id = uri.queryParameters['id'];
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (BuildContext context) => UsersPage(
+                        id: int.parse(id),
+                      )));
+              _filter.clear();
+            }
+            if (segment.length == 2) {
+              if (segment[0] == 'artworks') {
+                Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            IllustPage(id: int.parse(segment[1]))));
+                _filter.clear();
+              }
+              if (segment[0] == 'users') {
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return UsersPage(
+                    id: int.parse(segment[1]),
+                  );
+                }));
+                _filter.clear();
+              }
+            }
+          }
+          var word = query.trim();
+          if (word.isEmpty) return;
+          if (isNum && word.length > 5) return; //超过五个数字应该就不需要给建议了吧
+          _suggestionStore.fetch(word);
+        },
+        onSubmitted: (s) {
+          var word = s.trim();
+          if (word.isEmpty) return;
+          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+              builder: (context) => ResultPage(
+                    word: word,
+                  )));
+        },
+        decoration: InputDecoration(
+          hintText: I18n.of(context).search_word_or_paste_link,
+        ));
+  }
 }
 
 class Suggestions extends StatefulWidget {
   final SuggestionStore suggestionStore;
+
   const Suggestions({Key key, this.suggestionStore}) : super(key: key);
 
   @override

@@ -28,6 +28,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
+import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -46,10 +47,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     with AutomaticKeepAliveClientMixin {
   SpotlightStore spotlightStore;
   LightingStore _lightingStore;
+  RecomUserStore _recomUserStore;
 
   @override
   void initState() {
     _easyRefreshController = RefreshController(initialRefresh: true);
+    _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
     _lightingStore =
         LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
@@ -61,6 +64,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Future<void> fetchT() async {
     await spotlightStore.fetch();
     await _lightingStore.fetch();
+    await _recomUserStore.fetch();
   }
 
   @override
