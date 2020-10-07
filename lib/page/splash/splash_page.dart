@@ -15,6 +15,7 @@
  */
 
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -24,7 +25,6 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
-import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/splash/splash_store.dart';
 
 class SplashPage extends StatefulWidget {
@@ -39,9 +39,9 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   void initState() {
-    splashStore = SplashStore(OnezeroClient())..fetch();
+    splashStore = SplashStore(OnezeroClient());
     controller =
-        AnimationController(duration: Duration(seconds: 2),vsync: this);
+        AnimationController(duration: Duration(seconds: 2), vsync: this);
     initMethod();
     super.initState();
     controller.forward();
@@ -69,31 +69,33 @@ class _SplashPageState extends State<SplashPage>
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
-      if (!userSetting.disableBypassSni) {
+      if (false && !userSetting.disableBypassSni) {
         try {
           if (splashStore.onezeroResponse != null) {
             var address = splashStore.onezeroResponse.answer.first.data;
             print('address:$address');
             if (address != null && address.isNotEmpty) {
               apiClient.httpClient.options.baseUrl = 'https://$address';
+              apiClient.httpClient.options.headers['host'] =
+                  'https://${ApiClient.BASE_API_URL_HOST}';
               oAuthClient.httpClient.options.baseUrl = 'https://$address';
+              oAuthClient.httpClient.options.headers['host'] =
+                  'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
             }
           }
         } catch (e) {
           print(e);
         }
       }
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) =>
-      //         Platform.isIOS ? HelloPage() : NovelRail()));
-      // return;
+
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) =>
-                  Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+              Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+    });
+    Future.delayed(Duration(seconds: 2), () {
+      splashStore.fetch();
     });
   }
 

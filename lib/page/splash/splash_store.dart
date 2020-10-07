@@ -29,17 +29,21 @@ abstract class _SplashStoreBase with Store {
   String helloWord = "= w =";
   @observable
   OnezeroResponse onezeroResponse;
+
   _SplashStoreBase(this.onezeroClient);
+
   @action
   fetch() async {
+    helloWord = '@_@';
+    return;
     try {
       OnezeroResponse onezeroResponse =
           await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
       this.onezeroResponse = onezeroResponse;
-   helloWord = '♪^∀^●)ノ';
+      helloWord = '♪^∀^●)ノ';
     } catch (e) {
       print(e);
-   helloWord = 'T_T';
+      helloWord = 'T_T';
     }
   }
 }

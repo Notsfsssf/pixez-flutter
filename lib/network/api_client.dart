@@ -17,6 +17,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
@@ -33,7 +34,7 @@ class ApiClient {
   Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
-  static const BASE_API_URL_HOST = 'app-api.pixiv.net';
+  static String BASE_API_URL_HOST = 'app-api.pixiv.net';
   static String Accept_Language = "zh-CN";
 
   String getIsoDate() {
