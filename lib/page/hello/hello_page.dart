@@ -19,10 +19,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/custom_icon.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
+import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
@@ -144,6 +146,15 @@ class _HelloPageState extends State<HelloPage> {
       else
         return PreviewPage();
     }),
+      Observer(builder: (context) {
+      if (accountStore.now != null)
+        return RankPage();
+      else
+        return Column(children:[
+          AppBar(title: Text('rank(day)'),),
+          Expanded(child: PreviewPage())
+        ]);
+    }),
     NewPage(),
     SearchPage(),
     SettingPage()
@@ -153,7 +164,7 @@ class _HelloPageState extends State<HelloPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-          itemCount: 4,
+          itemCount: 5,
           controller: _pageController,
           onPageChanged: (index) {
             setState(() {
@@ -175,15 +186,16 @@ class _HelloPageState extends State<HelloPage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home), label:I18n.of(context).home),
+                icon: Icon(Icons.home), label: I18n.of(context).home),
             BottomNavigationBarItem(
-                icon: Icon(Icons.bookmark),
-                label:I18n.of(context).quick_view),
+                icon: Icon(CustomIcons.leaderboard),
+                label: I18n.of(context).rank),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search), label:I18n.of(context).search),
+                icon: Icon(Icons.bookmark), label: I18n.of(context).quick_view),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label:I18n.of(context).setting),
+                icon: Icon(Icons.search), label: I18n.of(context).search),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: I18n.of(context).setting),
           ]),
     );
   }
