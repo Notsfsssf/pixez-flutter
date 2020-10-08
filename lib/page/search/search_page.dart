@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:io';
 import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +114,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       icon: Icon(Icons.dashboard,
                           color: Theme.of(context).textTheme.bodyText1.color),
                       onPressed: () async {
+                        if(Platform.isAndroid)
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
                           return SauceNaoPage();

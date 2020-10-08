@@ -125,12 +125,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
               ),
           ],
         )),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _sauceStore.findImage();
-          },
-          child: Icon(Icons.add_photo_alternate),
-        ),
+
       );
     });
   }
