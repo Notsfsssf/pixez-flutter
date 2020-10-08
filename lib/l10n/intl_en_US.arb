@@ -115,8 +115,8 @@
   "quick_view": "Favorites",
   "quietly_follow": "Follow privately",
   "rank": "Rankings",
-  "rate_message": "好评鼓励一下吧！",
-  "rate_title": "如果你觉得PixEz还不错",
+  "rate_message": "Please rate us!",
+  "rate_title": "If you think PixEz is pretty good",
   "recommand_tag": "Recommend tags",
   "recommend": "Recommended",
   "recommend_for_you": "For you",
@@ -189,5 +189,5 @@
   "old_way": "Old way",
   "permission_denied": "permission denied",
   "old_way_message": "To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue",
-  "return_again_to_exit": "Return again to exit"
+  "return_again_to_exit": "Double-tap the back button to exit"
 }
