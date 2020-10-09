@@ -65,7 +65,7 @@
 
 从即将发布的 Android 11 开始，系统引入了新的存储机制：分区存储。为了更好地适配存储的变化，在 0.1.9 及之后的版本开始，PixEz 开始使用存储访问框架（SAF）来访问文件。这种方式的优点是：存储操作原生化，并且不需要请求敏感的存储权限；当然，缺点也就是需要用户进行手动的目录选择。
 
-（了解更多详情轻点 [国内](https://developer.android.com/training/data-storage/shared/documents-files) 或 [国外](https://developer.android.com/training/data-storage/shared/documents-files)）
+（了解更多详情轻点 [国内](https://developer.android.google.cn/training/data-storage/shared/documents-files) 或 [国外](https://developer.android.com/training/data-storage/shared/documents-files)）
 
 ***
 
