@@ -22,7 +22,7 @@
 
 首先需要说明：这是 PixEz（Flutter 版）的 FAQ。
 
-本教程并不是 Pix-Ezviewer（也就是旧原生版）的教程。目前 Pix-Ezviewer 已经停止维护了。经过协商，现由 [ultranity](https://github.com/ultranity) ([项目地址](https://github.com/ultranity/Pix-EzViewer)) 继续维护。
+本教程并不是 Pix-Ezviewer（也就是旧原生版）的教程。目前 Pix-Ezviewer 已经停止维护。[ultranity](https://github.com/ultranity) ~~继续维护~~也停止维护了，全面转换到flutter版。
 
 如果你正在使用旧的原生版本，并且希望继续使用下去，你应该首先切换到新维护者的版本（需要卸载重装，因为签名变化）。同时，有关任何的错误回报，你都应当联系新维护者。
 
