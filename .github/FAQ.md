@@ -70,23 +70,29 @@
 
 （了解更多详情轻点 [国内](https://developer.android.google.cn/training/data-storage/shared/documents-files) 或 [国外](https://developer.android.com/training/data-storage/shared/documents-files)）
 
-***
+**Update!** 为了适应各种魔改而不能正常使用 SAF 的国产系统，新版已经同时支持使用 SAF 模式或传统模式选择存储目录。
 
-还有一个只有国内环境才有的致命问题：部分魔改过度的系统阉割了这个功能。
+如果你使用的魔改系统在使用 SAF 模式时遇到了困难，请使用传统模式（需要存储权限；请放心，本应用不会产生垃圾文件）；如果你有意挣扎（不建议），请打开下面折叠的文本。
+
+<details>
+<summary>在被阉割的国产系统中尝试 SAF 模式</summary>
+
+有一个只有国内环境才有的致命问题：部分魔改过度的系统阉割了这个功能。
 
 一般来说，只要你的手机没有阉割系统的「文件」应用（包名为 `com.android.documentsui`），你应该都能在点击「确认」之后正常来到这个应用。
 
 如果很不幸，你的系统阉割了这个应用，你或许可以尝试 [安装](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@master/img/DocumentsUI.apk) 一个小工具来曲线救国（仅限 Android 9 以上）。
 
 如果此应用并非被阉割，而只是被停用了，你可以尝试在设置中搜索「文件」应用，在详情中启用应用，或是使用 ADB 来启用（具体步骤请自行百度）。
+</details>
 
-***
+我们推荐选择的路径是 `Pictures/PixEz` ，当然一般来说这个路径不会从一开始就存在，所以往往文件夹需要自己来创建。
 
-回到正题，我们推荐选择的路径是 `Pictures/PixEz` ，当然一般来说这个路径不会从一开始就存在，所以往往文件夹需要自己来创建。
+#### SAF 模式
 
 具体一点的操作方式如下：
 
-1. 点击右上角的三个点，选择「显示内部存储空间 (Show internal storage)」（如果是「隐藏内部存储空间(Hide internal Storage)」则无需再点选
+1. 点击右上角的三个点，选择「显示内部存储空间 (Show internal storage)」（如果是「隐藏内部存储空间 (Hide internal Storage)」则无需再点选
 2. 打开左侧栏，找到你的手机内部存储空间（一般为手机图标 + 手机型号，可用空间 XX GB）
 3. 找到 `Pictures` 目录，如果你还没有 `PixEz` 目录则从右上角的三个点中选择「新建文件夹」
 进入刚建立的 `PixEz` 目录，点击下面的「选择」
@@ -97,6 +103,12 @@
 
 |![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/1.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/2.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/3.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/4.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/5.jpg) |
 |:---:|:---:|:---:|:---:|:---:|
+
+#### 传统模式
+
+我们同样推荐选择保存在 `Pictures/PixEz` （完整路径可能是 `/storage/emulated/0/Pictures/PixEz`）下。
+
+你可以点击右上角的图标来创建文件夹，点击最上面的 `↑ ...` 来返回上一层，最后记得右下角确认。
 
 ### 修改路径
 
