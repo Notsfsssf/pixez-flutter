@@ -172,7 +172,7 @@
   "works": "作品",
   "pick_a_color": "选择颜色",
   "tap_to_show_results": "点击显示 {length} 个结果",
-  "saf_hint": "需要以 SAF 模式选择一个文件夹以保存图片或其他文件\n虽然不授权仍然能够继续使用，但是这可能会导致 app 闪退或者部分功能不可用\n非常推荐选择保存在\nPictures/PixEz下",
+  "saf_hint": "以 SAF 模式保存图片或其他文件，无需存储权限\n虽然不授权仍然能够继续使用，但可能会导致 app 闪退或者部分功能不可用\n注意：如遇到兼容性问题（无法选择等，常见于国产魔改系统），请使用上方的“传统方式”。\n非常推荐选择 Pictures/PixEz 作为保存位置",
   "what_is_saf": "什么是 SAF?",
   "not_the_correct_link": "不是正确的链接 >_<",
   "start": "开始",
@@ -188,6 +188,6 @@
   "create_folder": "创建文件夹",
   "old_way": "传统方式",
   "permission_denied": "未取得授权",
-  "old_way_message": "以传统方式保存图片，需要获得外部储存空间的读写权限，并选择一个文件夹以继续",
+  "old_way_message": "以传统方式保存图片，需要获得外部储存空间的读写权限，并选择一个文件夹用于保存图片和其他文件\n推荐选择 Pictures/PixEz 作为保存位置",
   "return_again_to_exit": "再一次返回退出"
 }
