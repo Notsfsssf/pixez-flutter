@@ -151,7 +151,14 @@ class MainActivity : FlutterActivity() {
                 val folderName = names.first()
                 var folderDocument = treeDocument.findFile(folderName)
                 if (folderDocument == null) {
-                    folderDocument = treeDocument.createDirectory(folderName);
+                    val tempFolderDocument = treeDocument.createDirectory(folderName)
+                    folderDocument = treeDocument.findFile(folderName)
+                    if (tempFolderDocument != null && folderDocument != null) {
+                        if (!tempFolderDocument.getUri().equals(folderDocument.getUri())) {
+                            // 文件夹已经被创建过
+                            tempFolderDocument.delete()
+                        }
+                    }
                 }
                 val file = folderDocument?.findFile(fName)
                 if (file != null && file.exists()) {
