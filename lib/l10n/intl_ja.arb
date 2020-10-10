@@ -10,7 +10,7 @@
   "android_special_setting": "Android special setting",
   "append_to_query": "キューに追加",
   "apply": "適用",
-  "attempting_to_log_in": "ログインしようとしています",
+  "attempting_to_log_in": "ログイン中...",
   "ban": "ミュート",
   "birthday": "誕生日",
   "block_user": "このユーザーをミュートする",
@@ -25,7 +25,7 @@
   "clear_all_cache": "全てのキャッシュを削除",
   "clear_completed_tasks": "完了した処理を削除する",
   "clearn_cache": "キャッシュを削除",
-  "clearn_cache_hint": "GIFの再生に問題がある場合これを試してみてください",
+  "clearn_cache_hint": "GIFの再生に問題がある場合に実行",
   "complete": "完了",
   "copied_to_clipboard": "クリップボードにコピー",
   "copymessage": "イラスト情報をクリップボードにコピーする",
@@ -47,7 +47,7 @@
   "dont_have_account": "まだアカウントを持っていませんか？",
   "download_address": "ダウンロードリンク",
   "encode": "エンコード中",
-  "encode_message": "少々お待ち下さい(失敗する可能性があります)",
+  "encode_message": "実行中(失敗する可能性があります)",
   "enqueued": "キューに追加",
   "exact_match_for_tag": "タグの完全な一致",
   "failed": "失敗",
@@ -186,7 +186,7 @@
   "theme_mode": "theme mode",
   "create_folder": "Create folder",
   "old_way": "Old way",
-  "permission_denied": "permission denied",
-  "old_way_message": "To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue",
-  "return_again_to_exit": "Return again to exit"
+  "permission_denied": "権限がありません",
+  "old_way_message": "画像を保存するには外部ストレージの読み書きの許可が必要です。続行するにはフォルダを選択します",
+  "return_again_to_exit": "もう一度戻って終了する"
 }
