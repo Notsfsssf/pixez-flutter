@@ -189,5 +189,6 @@
   "old_way": "传统方式",
   "permission_denied": "未取得授权",
   "old_way_message": "以传统方式保存图片，需要获得外部储存空间的读写权限，并选择一个文件夹用于保存图片和其他文件\n推荐选择 Pictures/PixEz 作为保存位置",
-  "return_again_to_exit": "再一次返回退出"
+  "return_again_to_exit": "再一次返回退出",
+  "save_format_lose_part_warning": "保存格式必须包含part,否则多p作品会保存出错！"
 }

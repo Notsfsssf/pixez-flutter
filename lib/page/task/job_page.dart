@@ -15,6 +15,7 @@
 
 import 'dart:async';
 import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -256,6 +257,7 @@ class _JobPageState extends State<JobPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: LinearProgressIndicator(
                           value: job.min / job.max,
+                          backgroundColor: Colors.grey,
                         ),
                       ),
                   ],
@@ -343,6 +345,7 @@ class _JobPageState extends State<JobPage> {
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: LinearProgressIndicator(
                               value: job.min / job.max,
+                              backgroundColor: Colors.grey,
                             ),
                           ),
                       ],

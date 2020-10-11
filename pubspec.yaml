@@ -38,7 +38,6 @@ dependencies:
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
   flutter_inapp_purchase: ^2.2.0
-  photo_view: ^0.10.2
   flutter_widget_from_html_core: ^0.5.0+6
   extended_nested_scroll_view: ^1.0.1
   scrollable_positioned_list: ^0.1.7

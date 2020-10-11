@@ -188,5 +188,6 @@
   "old_way": "Old way",
   "permission_denied": "権限がありません",
   "old_way_message": "画像を保存するには外部ストレージの読み書きの許可が必要です。続行するにはフォルダを選択します",
-  "return_again_to_exit": "もう一度戻って終了する"
+  "return_again_to_exit": "もう一度戻って終了する",
+  "save_format_lose_part_warning": "保存格式必须包含part,否则多p作品会保存出错！"
 }

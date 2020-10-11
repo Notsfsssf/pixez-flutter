@@ -14,18 +14,13 @@
  *
  */
 
-import 'dart:io';
+import 'dart:async';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:share_extend/share_extend.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -37,39 +32,146 @@ class PhotoViewerPage extends StatefulWidget {
   _PhotoViewerPageState createState() => _PhotoViewerPageState();
 }
 
-class _PhotoViewerPageState extends State<PhotoViewerPage> {
+typedef DoubleClickAnimationListener = void Function();
+
+class _PhotoViewerPageState extends State<PhotoViewerPage>
+    with TickerProviderStateMixin {
   var index = 0;
+  final StreamController<int> rebuildIndex = StreamController<int>.broadcast();
+  final StreamController<bool> rebuildSwiper =
+      StreamController<bool>.broadcast();
+  final StreamController<double> rebuildDetail =
+      StreamController<double>.broadcast();
+  AnimationController _doubleClickAnimationController;
+  AnimationController _slideEndAnimationController;
+  Animation<double> _slideEndAnimation;
+  Animation<double> _doubleClickAnimation;
+  DoubleClickAnimationListener _doubleClickAnimationListener;
+  List<double> doubleTapScales = <double>[1.0, 2.0];
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey =
+      GlobalKey<ExtendedImageSlidePageState>();
+  int _currentIndex = 0;
+  bool _showSwiper = true;
+  double _imageDetailY = 0;
+  Rect imageDRect;
 
   @override
   void initState() {
+    _doubleClickAnimationController = AnimationController(
+        duration: const Duration(milliseconds: 150), vsync: this);
+
+    _slideEndAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    _slideEndAnimationController.addListener(() {
+      _imageDetailY = _slideEndAnimation.value;
+      if (_imageDetailY == 0) {
+        _showSwiper = true;
+        rebuildSwiper.add(_showSwiper);
+      }
+      rebuildDetail.sink.add(_imageDetailY);
+    });
     super.initState();
     index = widget.index;
   }
 
-  Widget _buildPager() => PageView(
-        pageSnapping: false,
-        onPageChanged: (index) {
-          setState(() {
-            this.index = index;
-          });
+  Widget _buildContent(BuildContext context) {
+    if (widget.illusts.pageCount == 1) {
+      final url = userSetting.zoomQuality == 0
+          ? widget.illusts.imageUrls.large
+          : widget.illusts.metaSinglePage.originalImageUrl;
+      return InkWell(
+        onLongPress: () {
+          showModalBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(16.0))),
+              builder: (_) {
+                return SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        title: Text(I18n.of(context).save),
+                        onTap: () {
+                          saveStore.saveImage(widget.illusts);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              });
         },
-        controller: PageController(initialPage: widget.index),
-        children: [
-          for (var f in widget.illusts.metaPages)
-            PhotoView(
-              filterQuality: FilterQuality.high,
-                imageProvider: PixivProvider.url(userSetting.zoomQuality == 0
-                    ? f.imageUrls.large
-                    : f.imageUrls.original))
-        ],
-      );
+        child: Center(
+          child: ExtendedImage.network(
+            url,
+            headers: {
+              "referer": "https://app-api.pixiv.net/",
+              "User-Agent": "PixivIOSApp/5.8.0"
+            },
+            onDoubleTap: (ExtendedImageGestureState state) {
+              ///you can use define pointerDownPosition as you can,
+              ///default value is double tap pointer down postion.
+              final Offset pointerDownPosition = state.pointerDownPosition;
+              final double begin = state.gestureDetails.totalScale;
+              double end;
 
-  Widget _buildMuti() => InkWell(
-        onLongPress: () async {
-          final url = userSetting.zoomQuality == 0
-              ? widget.illusts.metaPages[index].imageUrls.large
-              : widget.illusts.metaPages[index].imageUrls.original;
-          File fileInfo = await getCachedImageFile(url);
+              //remove old
+              _doubleClickAnimation
+                  ?.removeListener(_doubleClickAnimationListener);
+
+              //stop pre
+              _doubleClickAnimationController.stop();
+
+              //reset to use
+              _doubleClickAnimationController.reset();
+
+              if (begin == doubleTapScales[0]) {
+                end = doubleTapScales[1];
+              } else {
+                end = doubleTapScales[0];
+              }
+
+              _doubleClickAnimationListener = () {
+                //print(_animation.value);
+                state.handleDoubleTap(
+                    scale: _doubleClickAnimation.value,
+                    doubleTapPosition: pointerDownPosition);
+              };
+              _doubleClickAnimation = _doubleClickAnimationController
+                  .drive(Tween<double>(begin: begin, end: end));
+
+              _doubleClickAnimation.addListener(_doubleClickAnimationListener);
+
+              _doubleClickAnimationController.forward();
+            },
+            filterQuality: FilterQuality.high,
+            fit: BoxFit.contain,
+            mode: ExtendedImageMode.gesture,
+            initGestureConfigHandler: (state) {
+              return GestureConfig(
+                minScale: 0.9,
+                animationMinScale: 0.7,
+                maxScale: 3.0,
+                animationMaxScale: 3.5,
+                speed: 1.0,
+                inertialSpeed: 100.0,
+                initialScale: 1.0,
+                inPageView: false,
+                initialAlignment: InitialAlignment.center,
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      final metaPages = widget.illusts.metaPages;
+      int index = widget.index;
+      return InkWell(
+        onLongPress: () {
           showModalBottomSheet(
               context: context,
               shape: RoundedRectangleBorder(
@@ -87,40 +189,84 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      if (fileInfo != null)
-                        ListTile(
-                          title: Text(I18n.of(context).share),
-                          onTap: () async {
-                            if (fileInfo != null)
-                              ShareExtend.share(fileInfo.path, "image");
-                            Navigator.of(context).pop();
-                          },
-                        ),
                     ],
                   ),
                 );
               });
         },
-        child: PhotoViewGallery.builder(
-            onPageChanged: (i) {
-              setState(() {
-                this.index = i;
-              });
-            },
-            pageController: PageController(initialPage: widget.index),
-            itemCount: widget.illusts.metaPages.length,
-            builder: (context, index) {
-              final url = userSetting.zoomQuality == 0
-                  ? widget.illusts.metaPages[index].imageUrls.large
-                  : widget.illusts.metaPages[index].imageUrls.original;
-              return PhotoViewGalleryPageOptions(
-                filterQuality: FilterQuality.high,
-                imageProvider: PixivProvider.url(url),
-                initialScale: PhotoViewComputedScale.contained * 1,
-                heroAttributes: PhotoViewHeroAttributes(tag: url),
-              );
-            }),
+        child: ExtendedImageGesturePageView.builder(
+          controller: PageController(
+            initialPage: index,
+          ),
+          onPageChanged: (i) {
+            index = i;
+          },
+          itemCount: metaPages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ExtendedImage.network(
+              userSetting.zoomQuality == 0
+                  ? metaPages[index].imageUrls.large
+                  : metaPages[index].imageUrls.original,
+              fit: BoxFit.contain,
+              headers: {
+                "referer": "https://app-api.pixiv.net/",
+                "User-Agent": "PixivIOSApp/5.8.0"
+              },
+              onDoubleTap: (ExtendedImageGestureState state) {
+                ///you can use define pointerDownPosition as you can,
+                ///default value is double tap pointer down postion.
+                final Offset pointerDownPosition =
+                    state.pointerDownPosition;
+                final double begin = state.gestureDetails.totalScale;
+                double end;
+
+                //remove old
+                _doubleClickAnimation
+                    ?.removeListener(_doubleClickAnimationListener);
+
+                //stop pre
+                _doubleClickAnimationController.stop();
+
+                //reset to use
+                _doubleClickAnimationController.reset();
+
+                if (begin == doubleTapScales[0]) {
+                  end = doubleTapScales[1];
+                } else {
+                  end = doubleTapScales[0];
+                }
+
+                _doubleClickAnimationListener = () {
+                  //print(_animation.value);
+                  state.handleDoubleTap(
+                      scale: _doubleClickAnimation.value,
+                      doubleTapPosition: pointerDownPosition);
+                };
+                _doubleClickAnimation = _doubleClickAnimationController
+                    .drive(Tween<double>(begin: begin, end: end));
+
+                _doubleClickAnimation
+                    .addListener(_doubleClickAnimationListener);
+
+                _doubleClickAnimationController.forward();
+              },
+              mode: ExtendedImageMode.gesture,
+              filterQuality: FilterQuality.high,
+              initGestureConfigHandler: (ExtendedImageState state) {
+                return GestureConfig(
+                  inPageView: true,
+                  initialScale: 1.0,
+                  maxScale: 5.0,
+                  animationMaxScale: 6.0,
+                  initialAlignment: InitialAlignment.center,
+                );
+              },
+            );
+          },
+        ),
       );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,54 +291,6 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         ),
         extendBodyBehindAppBar: true,
         extendBody: true,
-        body: widget.illusts.pageCount == 1
-            ? InkWell(
-                onLongPress: () async {
-                  final url = userSetting.zoomQuality == 0
-                      ? widget.illusts.imageUrls.large
-                      : widget.illusts.metaSinglePage.originalImageUrl;
-                  File fileInfo = await getCachedImageFile(url);
-                  showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16.0))),
-                      builder: (_) {
-                        return SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(I18n.of(context).save),
-                                onTap: () {
-                                  saveStore.saveImage(widget.illusts);
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              fileInfo != null
-                                  ? ListTile(
-                                      title: Text(I18n.of(context).share),
-                                      onTap: () async {
-                                        ShareExtend.share(
-                                            fileInfo.path, "image");
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  : Container(
-                                      height: 0,
-                                    ),
-                            ],
-                          ),
-                        );
-                      });
-                },
-                child: PhotoView(
-                  filterQuality: FilterQuality.high,
-                  imageProvider: PixivProvider.url(userSetting.zoomQuality == 0
-                      ? widget.illusts.imageUrls.large
-                      : widget.illusts.metaSinglePage.originalImageUrl),
-                ),
-              )
-            : _buildMuti());
+        body: _buildContent(context));
   }
 }

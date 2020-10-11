@@ -211,7 +211,7 @@ class _IllustPageState extends State<IllustPage> {
                       setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                     },
                   ),
-                ], 
+                ],
               );
             },
           ));
@@ -677,17 +677,21 @@ class _IllustPageState extends State<IllustPage> {
           title: Text(I18n.of(context).muti_choice_save),
           actions: <Widget>[
             FlatButton(
-              onPressed: () {
-                Navigator.pop(context, "OK");
-              },
-              child: Text(I18n.of(context).ok),
-            ),
-            FlatButton(
-              child: Text(I18n.of(context).cancel),
+              child: Text(I18n
+                  .of(context)
+                  .cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
-            )
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context, "OK");
+              },
+              child: Text(I18n
+                  .of(context)
+                  .ok),
+            ),
           ],
           content: Container(
             width: double.maxFinite,

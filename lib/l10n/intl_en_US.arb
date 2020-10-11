@@ -158,7 +158,7 @@
   "title_and_caption": "Title and description",
   "total_bookmark": "Likes",
   "total_follow_users": "Followed users",
-  "total_mypixiv_users": "Total "My Pixiv" users",
+  "total_mypixiv_users": "Total My Pixiv users",
   "total_view": "Views",
   "twitter_account": "Twitter",
   "un_follow": "Not following",
@@ -189,5 +189,6 @@
   "old_way": "Traditional",
   "permission_denied": "Permission denied",
   "old_way_message": "In order to use this method, you will need to allow PixEz to access your files and select a folder",
-  "return_again_to_exit": "Return again to exit"
+  "return_again_to_exit": "Return again to exit",
+  "save_format_lose_part_warning": "保存格式必须包含part,否则多p作品会保存出错！"
 }

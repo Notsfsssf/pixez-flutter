@@ -154,7 +154,7 @@ class MainActivity : FlutterActivity() {
                     val tempFolderDocument = treeDocument.createDirectory(folderName)
                     folderDocument = treeDocument.findFile(folderName)
                     if (tempFolderDocument != null && folderDocument != null) {
-                        if (!tempFolderDocument.getUri().equals(folderDocument.getUri())) {
+                        if (tempFolderDocument.uri != folderDocument.uri) {
                             // 文件夹已经被创建过
                             tempFolderDocument.delete()
                         }
@@ -191,7 +191,7 @@ class MainActivity : FlutterActivity() {
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
-                if(helplessPath==null){
+                if (helplessPath == null) {
                     helplessPath = sharedPreferences.getString("flutter.store_path", null)
                 }
                 GlobalScope.launch(Dispatchers.Main) {
