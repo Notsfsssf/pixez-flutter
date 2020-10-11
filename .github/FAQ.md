@@ -16,15 +16,18 @@
   * [我是异形屏](#屏幕问题)
   * [以图搜图](#以图搜图)
   * [我想 GHS](#GHS)
+  * [关于直连](#关于直连和令人迷惑的选项)
   * [其他问题](#其他问题)
 
 ## 声明
 
 首先需要说明：这是 PixEz（Flutter 版）的 FAQ。
 
-本教程并不是 Pix-Ezviewer（也就是旧原生版）的教程。目前 Pix-Ezviewer 已经停止维护。[ultranity](https://github.com/ultranity) ~~继续维护~~也停止维护了，全面转换到flutter版。
+本教程并不是 Pix-Ezviewer（也就是旧原生版）的教程。目前 Pix-Ezviewer 已经停止维护。~~由 [ultranity](https://github.com/ultranity) 继续维护~~也停止维护了，全面转换到 Flutter 版。
 
-如果你正在使用旧的原生版本，并且希望继续使用下去，你应该首先切换到新维护者的版本（需要卸载重装，因为签名变化）。同时，有关任何的错误回报，你都应当联系新维护者。
+如果你正在使用旧的原生版本，并且希望继续使用下去，你应该首先切换到新维护者的版本（需要卸载重装，因为签名变化）。 ~~同时，有关任何的错误回报，你都应当联系新维护者。~~ 如果遇到问题的话，就自求多福吧（
+
+如果你是接手版之前的最后钉子户，由于现在旧版直连早已崩坏，请「不启用直连」之后退出登录，再重新登录。钉子户由于苟延残喘不想迁移新版造成的任何问题，开发者不负责解答哦。
 
 如果你正在使用旧的原生版本，并且希望更换到现在的 Flutter 版，请往下读。
 
@@ -67,23 +70,29 @@
 
 （了解更多详情轻点 [国内](https://developer.android.google.cn/training/data-storage/shared/documents-files) 或 [国外](https://developer.android.com/training/data-storage/shared/documents-files)）
 
-***
+**Update!** 为了适应各种魔改而不能正常使用 SAF 的国产系统，新版已经同时支持使用 SAF 模式或传统模式选择存储目录。
 
-还有一个只有国内环境才有的致命问题：部分魔改过度的系统阉割了这个功能。
+如果你使用的魔改系统在使用 SAF 模式时遇到了困难，请使用传统模式（需要存储权限；请放心，本应用不会产生垃圾文件）；如果你有意挣扎（不建议），请打开下面折叠的文本。
+
+<details>
+<summary>在被阉割的国产系统中尝试 SAF 模式</summary>
+
+有一个只有国内环境才有的致命问题：部分魔改过度的系统阉割了这个功能。
 
 一般来说，只要你的手机没有阉割系统的「文件」应用（包名为 `com.android.documentsui`），你应该都能在点击「确认」之后正常来到这个应用。
 
 如果很不幸，你的系统阉割了这个应用，你或许可以尝试 [安装](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@master/img/DocumentsUI.apk) 一个小工具来曲线救国（仅限 Android 9 以上）。
 
 如果此应用并非被阉割，而只是被停用了，你可以尝试在设置中搜索「文件」应用，在详情中启用应用，或是使用 ADB 来启用（具体步骤请自行百度）。
+</details>
 
-***
+我们推荐选择的路径是 `Pictures/PixEz` ，当然一般来说这个路径不会从一开始就存在，所以往往文件夹需要自己来创建。
 
-回到正题，我们推荐选择的路径是 `Pictures/PixEz` ，当然一般来说这个路径不会从一开始就存在，所以往往文件夹需要自己来创建。
+#### SAF 模式
 
 具体一点的操作方式如下：
 
-1. 点击右上角的三个点，选择「显示内部存储空间 (Show internal storage)」（如果是「隐藏内部存储空间(Hide internal Storage)」则无需再点选
+1. 点击右上角的三个点，选择「显示内部存储空间 (Show internal storage)」（如果是「隐藏内部存储空间 (Hide internal Storage)」则无需再点选
 2. 打开左侧栏，找到你的手机内部存储空间（一般为手机图标 + 手机型号，可用空间 XX GB）
 3. 找到 `Pictures` 目录，如果你还没有 `PixEz` 目录则从右上角的三个点中选择「新建文件夹」
 进入刚建立的 `PixEz` 目录，点击下面的「选择」
@@ -94,6 +103,12 @@
 
 |![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/1.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/2.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/3.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/4.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/5.jpg) |
 |:---:|:---:|:---:|:---:|:---:|
+
+#### 传统模式
+
+我们同样推荐选择保存在 `Pictures/PixEz` （完整路径可能是 `/storage/emulated/0/Pictures/PixEz`）下。
+
+你可以点击右上角的图标来创建文件夹，点击最上面的 `↑ ...` 来返回上一层，最后记得右下角确认。
 
 ### 修改路径
 
@@ -143,6 +158,16 @@ e.g. {illust_id}_p{part} 即「插画ID\_p第几张」
 
 随后开启本应用设置 - 偏好设置中「H是可以的! (‾﹃‾)」（这会移除小图为 R18 时用于替代小图的「H是不行的」表情包），就可以啦。
 
+## 关于直连和令人迷惑的选项
+
+本应用所实现的在墙娘法力范围内直连 pixiv，**并非是使用 / 内置了代理**，而是使用了小技巧瞒天过海躲过了墙娘的 SNI 嗅探。
+
+不过，受限于运营商等因素，直连的速度可能会比较慢，同时也有一部分自备梯子的同学想关闭直连。
+
+关闭直连这样操作即可：请开启本应用设置 - 偏好设置中「不要绕过 SNI 嗅探」，就可以关闭直连啦，同时可以小小加快启动速度。
+
+对于这个选项的解释：字面意思，打开为不绕过（即需要科学上网，关闭内置直连魔法），关闭为绕过（默认状态，启用内置魔法）。
+
 ## 其他问题
 
 大多数选项都在设置中，建议汝仔细去找而不是什么问题都去问咱。
@@ -151,12 +176,8 @@ e.g. {illust_id}_p{part} 即「插画ID\_p第几张」
 
 简单的来说，就是 Play 不知道发了什么神经下架了原生版之后，又在 Flutter 版上架之后将 Flutter 版下架。嘛，虽然现在历经波折，Flutter 版还是在 Play 上架了！
 
-### 「不要绕过 SNI 嗅探」到底是绕过还是不绕过？
-
-字面意思，打开为不绕过（即需要科学上网，关闭内置直连魔法），关闭为绕过（默认状态，启用内置魔法）。
-
 ### 更多别的问题
 
-如果你有什么好的建议，可以提 Issue，或者去 [README](https://github.com/Notsfsssf/pixez-flutter) 中提到的群组里反馈。如果是下载问题，就去企鹅群：1005400557
+如果你有什么好的建议，可以提 Issue，或者去 [README](https://github.com/Notsfsssf/pixez-flutter) 中提到的 Telegram 群组里反馈。如果是下载问题，就去企鹅群：1005400557
 
 提问前最好阅读[《提问的智慧》](http://archman.fun/2020/09/24/%E6%8F%90%E9%97%AE%E7%9A%84%E6%99%BA%E6%85%A7/)，拒绝 TCP 三次握手式提问，以及 DDoS 式轰炸提问。大多数群员都是友好的，希望你也能同样友好，互相理解最好啦。
