@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -103,20 +104,20 @@ class I18n {
     );
   }
 
-  /// `Android special setting`
+  /// `Android-specific Settings`
   String get android_special_setting {
     return Intl.message(
-      'Android special setting',
+      'Android-specific Settings',
       name: 'android_special_setting',
       desc: '',
       args: [],
     );
   }
 
-  /// `Appended to queue`
+  /// `Added to queue`
   String get append_to_query {
     return Intl.message(
-      'Appended to queue',
+      'Added to queue',
       name: 'append_to_query',
       desc: '',
       args: [],
@@ -133,10 +134,10 @@ class I18n {
     );
   }
 
-  /// `Attempting to log in`
+  /// `Logging in`
   String get attempting_to_log_in {
     return Intl.message(
-      'Attempting to log in',
+      'Logging in',
       name: 'attempting_to_log_in',
       desc: '',
       args: [],
@@ -223,10 +224,10 @@ class I18n {
     );
   }
 
-  /// `Tags that will be showing`
+  /// `Visible tags`
   String get choice_you_like {
     return Intl.message(
-      'Tags that will be showing',
+      'Visible tags',
       name: 'choice_you_like',
       desc: '',
       args: [],
@@ -283,10 +284,10 @@ class I18n {
     );
   }
 
-  /// `Try this when you have problems with playing gifs`
+  /// `Try this when you have problems with playing GIFs`
   String get clearn_cache_hint {
     return Intl.message(
-      'Try this when you have problems with playing gifs',
+      'Try this when you have problems with playing GIFs',
       name: 'clearn_cache_hint',
       desc: '',
       args: [],
@@ -323,10 +324,10 @@ class I18n {
     );
   }
 
-  /// `Number of columns of illusts per page`
+  /// `Number of illusts per page`
   String get crosscount {
     return Intl.message(
-      'Number of columns of illusts per page',
+      'Number of illusts per page',
       name: 'crosscount',
       desc: '',
       args: [],
@@ -403,50 +404,50 @@ class I18n {
     );
   }
 
-  /// `Decreasing the time of progressing DNS over HTTPS at a cold start`
+  /// `Decreases DoH time on startup`
   String get disable_sni_bypass_message {
     return Intl.message(
-      'Decreasing the time of progressing DNS over HTTPS at a cold start',
+      'Decreases DoH time on startup',
       name: 'disable_sni_bypass_message',
       desc: '',
       args: [],
     );
   }
 
-  /// `Display rate`
+  /// `Display refresh rate`
   String get display_mode {
     return Intl.message(
-      'Display rate',
+      'Display refresh rate',
       name: 'display_mode',
       desc: '',
       args: [],
     );
   }
 
-  /// `Select display rate (experimental)`
+  /// `Select refresh rate (experimental)`
   String get display_mode_message {
     return Intl.message(
-      'Select display rate (experimental)',
+      'Select refresh rate (experimental)',
       name: 'display_mode_message',
       desc: '',
       args: [],
     );
   }
 
-  /// `Just let it be unless you have a device that supports High Refresh Rate`
+  /// `Do not change it unless your device supports it.`
   String get display_mode_warning {
     return Intl.message(
-      'Just let it be unless you have a device that supports High Refresh Rate',
+      'Do not change it unless your device supports it.',
       name: 'display_mode_warning',
       desc: '',
       args: [],
     );
   }
 
-  /// `Xie Xie`
+  /// `Thank you!`
   String get donate_message {
     return Intl.message(
-      'Xie Xie',
+      'Thank you!',
       name: 'donate_message',
       desc: '',
       args: [],
@@ -503,10 +504,10 @@ class I18n {
     );
   }
 
-  /// `Wait a minute(may be failed)`
+  /// `This may take some time and might fail`
   String get encode_message {
     return Intl.message(
-      'Wait a minute(may be failed)',
+      'This may take some time and might fail',
       name: 'encode_message',
       desc: '',
       args: [],
@@ -523,10 +524,10 @@ class I18n {
     );
   }
 
-  /// `Tag perfect match`
+  /// `Tag exact matches`
   String get exact_match_for_tag {
     return Intl.message(
-      'Tag perfect match',
+      'Tag exact matches',
       name: 'exact_match_for_tag',
       desc: '',
       args: [],
@@ -613,10 +614,10 @@ class I18n {
     );
   }
 
-  /// `Go to the GitHub repo`
+  /// `Go to GitHub repo`
   String get go_to_project_address {
     return Intl.message(
-      'Go to the GitHub repo',
+      'Go to GitHub repo',
       name: 'go_to_project_address',
       desc: '',
       args: [],
@@ -673,10 +674,10 @@ class I18n {
     );
   }
 
-  /// `Illusts loading quality in detail page`
+  /// `Image quality (Details page)`
   String get illustration_detail_page_quality {
     return Intl.message(
-      'Illusts loading quality in detail page',
+      'Image quality (Details page)',
       name: 'illustration_detail_page_quality',
       desc: '',
       args: [],
@@ -723,10 +724,10 @@ class I18n {
     );
   }
 
-  /// `Illusts loading quality in fullscreen`
+  /// `Image quality (Fullscreen)`
   String get large_preview_zoom_quality {
     return Intl.message(
-      'Illusts loading quality in fullscreen',
+      'Image quality (Fullscreen)',
       name: 'large_preview_zoom_quality',
       desc: '',
       args: [],
@@ -743,30 +744,30 @@ class I18n {
     );
   }
 
-  /// `Load more`
+  /// `Release to load more`
   String get let_go_and_load_more {
     return Intl.message(
-      'Load more',
+      'Release to load more',
       name: 'let_go_and_load_more',
       desc: '',
       args: [],
     );
   }
 
-  /// `Failed on loading, click to retry`
+  /// `Failed to load. Click to retry`
   String get load_image_failed_click_to_reload {
     return Intl.message(
-      'Failed on loading, click to retry',
+      'Failed to load. Click to retry',
       name: 'load_image_failed_click_to_reload',
       desc: '',
       args: [],
     );
   }
 
-  /// `Failed on loading, click to retry`
+  /// `Failed to load. Click to retry`
   String get loading_failed_retry_message {
     return Intl.message(
-      'Failed on loading, click to retry',
+      'Failed to load. Click to retry',
       name: 'loading_failed_retry_message',
       desc: '',
       args: [],
@@ -783,10 +784,10 @@ class I18n {
     );
   }
 
-  /// `Enter dark side of the world`
+  /// `Discover a whole new world`
   String get login_message {
     return Intl.message(
-      'Enter dark side of the world',
+      'Discover a whole new world',
       name: 'login_message',
       desc: '',
       args: [],
@@ -803,10 +804,10 @@ class I18n {
     );
   }
 
-  /// `See you~`
+  /// `This will clear account info and return to Login page.`
   String get logout_message {
     return Intl.message(
-      'See you~',
+      'This will clear account info and return to Login page.',
       name: 'logout_message',
       desc: '',
       args: [],
@@ -823,10 +824,10 @@ class I18n {
     );
   }
 
-  /// `Lower`
+  /// `Medium`
   String get medium {
     return Intl.message(
-      'Lower',
+      'Medium',
       name: 'medium',
       desc: '',
       args: [],
@@ -863,20 +864,20 @@ class I18n {
     );
   }
 
-  /// `More than {starNum} likes`
+  /// `More than {starNum} like(s)`
   String more_then_starnum_bookmark(Object starNum) {
     return Intl.message(
-      'More than $starNum likes',
+      'More than $starNum like(s)',
       name: 'more_then_starnum_bookmark',
       desc: '',
       args: [starNum],
     );
   }
 
-  /// `Save selected ones`
+  /// `Save selected`
   String get muti_choice_save {
     return Intl.message(
-      'Save selected ones',
+      'Save selected',
       name: 'muti_choice_save',
       desc: '',
       args: [],
@@ -923,10 +924,10 @@ class I18n {
     );
   }
 
-  /// `Changelogs`
+  /// `Changelog`
   String get new_version_update_information {
     return Intl.message(
-      'Changelogs',
+      'Changelog',
       name: 'new_version_update_information',
       desc: '',
       args: [],
@@ -943,50 +944,50 @@ class I18n {
     );
   }
 
-  /// `Nickname can be changed at any time`
+  /// `Nickname can be changed anytime`
   String get nickname_can_be_change_anytime {
     return Intl.message(
-      'Nickname can be changed at any time',
+      'Nickname can be changed anytime',
       name: 'nickname_can_be_change_anytime',
       desc: '',
       args: [],
     );
   }
 
-  /// `H are not allowed!`
+  /// `H is not allowed!`
   String get no_h {
     return Intl.message(
-      'H are not allowed!',
+      'H is not allowed!',
       name: 'no_h',
       desc: '',
       args: [],
     );
   }
 
-  /// `There is no more data`
+  /// `No more data`
   String get no_more_data {
     return Intl.message(
-      'There is no more data',
+      'No more data',
       name: 'no_more_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `Not_Bookmarked`
+  /// `Not bookmarked`
   String get not_bookmarked {
     return Intl.message(
-      'Not_Bookmarked',
+      'Not bookmarked',
       name: 'not_bookmarked',
       desc: '',
       args: [],
     );
   }
 
-  /// `Confirm`
+  /// `OK`
   String get ok {
     return Intl.message(
-      'Confirm',
+      'OK',
       name: 'ok',
       desc: '',
       args: [],
@@ -1023,10 +1024,10 @@ class I18n {
     );
   }
 
-  /// `Tag partial match`
+  /// `Tag partial matches`
   String get partial_match_for_tag {
     return Intl.message(
-      'Tag partial match',
+      'Tag partial matches',
       name: 'partial_match_for_tag',
       desc: '',
       args: [],
@@ -1053,10 +1054,10 @@ class I18n {
     );
   }
 
-  /// `The author who built PixEz with Flutter`
+  /// `Author of the project. Built with Flutter.`
   String get perol_message {
     return Intl.message(
-      'The author who built PixEz with Flutter',
+      'Author of the project. Built with Flutter.',
       name: 'perol_message',
       desc: '',
       args: [],
@@ -1093,10 +1094,10 @@ class I18n {
     );
   }
 
-  /// `It's highly recommended keeping this option ON unless you can directly access Pixiv.net with no issues`
+  /// `This option should be ON unless you are able to access pixiv.net without any issue.`
   String get please_note_that_content {
     return Intl.message(
-      'It\'s highly recommended keeping this option ON unless you can directly access Pixiv.net with no issues',
+      'This option should be ON unless you are able to access pixiv.net without any issue.',
       name: 'please_note_that_content',
       desc: '',
       args: [],
@@ -1183,30 +1184,30 @@ class I18n {
     );
   }
 
-  /// `好评鼓励一下吧！`
+  /// `Please give us 5 stars!`
   String get rate_message {
     return Intl.message(
-      '好评鼓励一下吧！',
+      'Please give us 5 stars!',
       name: 'rate_message',
       desc: '',
       args: [],
     );
   }
 
-  /// `如果你觉得PixEz还不错`
+  /// `If you think that PixEz is awesome, please give us a 5-star rating!`
   String get rate_title {
     return Intl.message(
-      '如果你觉得PixEz还不错',
+      'If you think that PixEz is awesome, please give us a 5-star rating!',
       name: 'rate_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recommend tags`
+  /// `Recommended tags`
   String get recommand_tag {
     return Intl.message(
-      'Recommend tags',
+      'Recommended tags',
       name: 'recommand_tag',
       desc: '',
       args: [],
@@ -1303,10 +1304,10 @@ class I18n {
     );
   }
 
-  /// `The designer who drew the lovely icon of PixEz`
+  /// `The designer who drew the lovely icon for PixEz`
   String get right_now_message {
     return Intl.message(
-      'The designer who drew the lovely icon of PixEz',
+      'The designer who drew the lovely icon for PixEz',
       name: 'right_now_message',
       desc: '',
       args: [],
@@ -1333,10 +1334,10 @@ class I18n {
     );
   }
 
-  /// `Naming format`
+  /// `Filename format`
   String get save_format {
     return Intl.message(
-      'Naming format',
+      'Filename format',
       name: 'save_format',
       desc: '',
       args: [],
@@ -1423,20 +1424,20 @@ class I18n {
     );
   }
 
-  /// ``
+  /// `Share this app with others`
   String get share_this_app_link {
     return Intl.message(
-      '',
+      'Share this app with others',
       name: 'share_this_app_link',
       desc: '',
       args: [],
     );
   }
 
-  /// `{name} has been muted by you`
+  /// `{name} has been muted`
   String shield_message(Object name) {
     return Intl.message(
-      '$name has been muted by you',
+      '$name has been muted',
       name: 'shield_message',
       desc: '',
       args: [name],
@@ -1453,10 +1454,10 @@ class I18n {
     );
   }
 
-  /// `The contributor who wrote the wonderful README for us`
+  /// `The contributor who wrote the wonderful README`
   String get skimige_message {
     return Intl.message(
-      'The contributor who wrote the wonderful README for us',
+      'The contributor who wrote the wonderful README',
       name: 'skimige_message',
       desc: '',
       args: [],
@@ -1513,10 +1514,10 @@ class I18n {
     );
   }
 
-  /// `Feedbacks are welcome :)`
+  /// `Feedbacks and contributions are welcomed :)`
   String get support_message {
     return Intl.message(
-      'Feedbacks are welcome :)',
+      'Feedbacks and contributions are welcomed :)',
       name: 'support_message',
       desc: '',
       args: [],
@@ -1533,10 +1534,10 @@ class I18n {
     );
   }
 
-  /// `Task progress`
+  /// `Progress`
   String get task_progress {
     return Intl.message(
-      'Task progress',
+      'Progress',
       name: 'task_progress',
       desc: '',
       args: [],
@@ -1553,10 +1554,10 @@ class I18n {
     );
   }
 
-  /// `Thanks`
+  /// `Thank you`
   String get thanks {
     return Intl.message(
-      'Thanks',
+      'Thank you',
       name: 'thanks',
       desc: '',
       args: [],
@@ -1603,40 +1604,40 @@ class I18n {
     );
   }
 
-  /// `Total follow users`
+  /// `Followed users`
   String get total_follow_users {
     return Intl.message(
-      'Total follow users',
+      'Followed users',
       name: 'total_follow_users',
       desc: '',
       args: [],
     );
   }
 
-  /// `Total mypixiv users`
+  /// `Total My Pixiv users`
   String get total_mypixiv_users {
     return Intl.message(
-      'Total mypixiv users',
+      'Total My Pixiv users',
       name: 'total_mypixiv_users',
       desc: '',
       args: [],
     );
   }
 
-  /// `Viewers`
+  /// `Views`
   String get total_view {
     return Intl.message(
-      'Viewers',
+      'Views',
       name: 'total_view',
       desc: '',
       args: [],
     );
   }
 
-  /// `Twitter account`
+  /// `Twitter`
   String get twitter_account {
     return Intl.message(
-      'Twitter account',
+      'Twitter',
       name: 'twitter_account',
       desc: '',
       args: [],
@@ -1703,20 +1704,20 @@ class I18n {
     );
   }
 
-  /// `Startup page`
+  /// `Welcome page`
   String get welcome_page {
     return Intl.message(
-      'Startup page',
+      'Welcome page',
       name: 'welcome_page',
       desc: '',
       args: [],
     );
   }
 
-  /// `Index`
+  /// `Page`
   String get which_part {
     return Intl.message(
-      'Index',
+      'Page',
       name: 'which_part',
       desc: '',
       args: [],
@@ -1753,10 +1754,10 @@ class I18n {
     );
   }
 
-  /// `In order to save illusts to your device you have to choose a folder and allow PixEz to access it(e.g. Picture/Pixez).`
+  /// `In order to use SAF you will need to grant SAF access to Pixiv(e.g. Picture/Pixez). This allows you to store illusts to SD cards in modern devices.`
   String get saf_hint {
     return Intl.message(
-      'In order to save illusts to your device you have to choose a folder and allow PixEz to access it(e.g. Picture/Pixez).',
+      'In order to use SAF you will need to grant SAF access to Pixiv(e.g. Picture/Pixez). This allows you to store illusts to SD cards in modern devices.',
       name: 'saf_hint',
       desc: '',
       args: [],
@@ -1773,20 +1774,20 @@ class I18n {
     );
   }
 
-  /// `Not a valid link of a Pixiv illust >_<`
+  /// `Not a valid Pixiv link >_<`
   String get not_the_correct_link {
     return Intl.message(
-      'Not a valid link of a Pixiv illust >_<',
+      'Not a valid Pixiv link >_<',
       name: 'not_the_correct_link',
       desc: '',
       args: [],
     );
   }
 
-  /// `start`
+  /// `Start`
   String get start {
     return Intl.message(
-      'start',
+      'Start',
       name: 'start',
       desc: '',
       args: [],
@@ -1823,60 +1824,60 @@ class I18n {
     );
   }
 
-  /// `Special shaped screen`
+  /// `Notched screen`
   String get special_shaped_screen {
     return Intl.message(
-      'Special shaped screen',
+      'Notched screen',
       name: 'special_shaped_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `platform special setting`
+  /// `Platform-specific settings`
   String get platform_special_setting {
     return Intl.message(
-      'platform special setting',
+      'Platform-specific settings',
       name: 'platform_special_setting',
       desc: '',
       args: [],
     );
   }
 
-  /// `system`
+  /// `System`
   String get system {
     return Intl.message(
-      'system',
+      'System',
       name: 'system',
       desc: '',
       args: [],
     );
   }
 
-  /// `light`
+  /// `Light`
   String get light {
     return Intl.message(
-      'light',
+      'Light',
       name: 'light',
       desc: '',
       args: [],
     );
   }
 
-  /// `dark`
+  /// `Dark`
   String get dark {
     return Intl.message(
-      'dark',
+      'Dark',
       name: 'dark',
       desc: '',
       args: [],
     );
   }
 
-  /// `theme mode`
+  /// `Theme`
   String get theme_mode {
     return Intl.message(
-      'theme mode',
+      'Theme',
       name: 'theme_mode',
       desc: '',
       args: [],
@@ -1893,30 +1894,30 @@ class I18n {
     );
   }
 
-  /// `Old way`
+  /// `Traditional`
   String get old_way {
     return Intl.message(
-      'Old way',
+      'Traditional',
       name: 'old_way',
       desc: '',
       args: [],
     );
   }
 
-  /// `permission denied`
+  /// `Permission denied`
   String get permission_denied {
     return Intl.message(
-      'permission denied',
+      'Permission denied',
       name: 'permission_denied',
       desc: '',
       args: [],
     );
   }
 
-  /// `To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue`
+  /// `In order to use this method, you will need to allow PixEz to access your files and select a folder`
   String get old_way_message {
     return Intl.message(
-      'To save the picture in the traditional way,app need to obtain the read and write permission of the external storage space, and select a folder to continue',
+      'In order to use this method, you will need to allow PixEz to access your files and select a folder',
       name: 'old_way_message',
       desc: '',
       args: [],
@@ -1928,6 +1929,16 @@ class I18n {
     return Intl.message(
       'Return again to exit',
       name: 'return_again_to_exit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保存格式必须包含part,否则多p作品会保存出错！`
+  String get save_format_lose_part_warning {
+    return Intl.message(
+      '保存格式必须包含part,否则多p作品会保存出错！',
+      name: 'save_format_lose_part_warning',
       desc: '',
       args: [],
     );

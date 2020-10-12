@@ -26,7 +26,6 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
@@ -65,12 +64,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     await spotlightStore.fetch();
     await _lightingStore.fetch();
     await _recomUserStore.fetch();
-  }
-
-  @override
-  void dispose() {
-    _easyRefreshController?.dispose();
-    super.dispose();
+    setState(() {});
   }
 
   @override
@@ -94,50 +88,103 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     return false;
   }
 
+  bool backToTopVisible = false;
+
   Widget buildEasyRefresh(BuildContext context) {
     return Observer(builder: (_) {
-      return SmartRefresher(
-        controller: _easyRefreshController,
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-                color: Theme.of(context).accentColor,
+      return Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification notification) {
+              ScrollMetrics metrics = notification.metrics;
+              if (backToTopVisible == metrics.atEdge && mounted) {
+                setState(() {
+                  backToTopVisible = !backToTopVisible;
+                });
+              }
+              return true;
+            },
+            child: SmartRefresher(
+              controller: _easyRefreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              header: (Platform.isAndroid)
+                  ? MaterialClassicHeader(
+                color: Theme
+                    .of(context)
+                    .accentColor,
               )
-            : ClassicHeader(),
-        footer: CustomFooter(
-          builder: (BuildContext context, LoadStatus mode) {
-            Widget body;
-            if (mode == LoadStatus.idle) {
-              body = Text(I18n.of(context).pull_up_to_load_more);
-            } else if (mode == LoadStatus.loading) {
-              body = CircularProgressIndicator();
-            } else if (mode == LoadStatus.failed) {
-              body = Text(I18n.of(context).loading_failed_retry_message);
-            } else if (mode == LoadStatus.canLoading) {
-              body = Text(I18n.of(context).let_go_and_load_more);
-            } else {
-              body = Text(I18n.of(context).no_more_data);
-            }
-            return Container(
-              height: 55.0,
-              child: Center(child: body),
-            );
-          },
-        ),
-        onRefresh: () {
-          return fetchT();
-        },
-        onLoading: () {
-          return _lightingStore.fetchNext();
-        },
-        child: _buildWaterFall(),
+                  : ClassicHeader(),
+              footer: _buildCustomFooter(),
+              onRefresh: () {
+                return fetchT();
+              },
+              onLoading: () {
+                return _lightingStore.fetchNext();
+              },
+              child: _buildWaterFall(),
+            ),
+          ),
+          Align(
+            child: Visibility(
+              visible: backToTopVisible,
+              child: Opacity(
+                opacity: 0.5,
+                child: Container(
+                  height: 24.0,
+                  margin: EdgeInsets.only(bottom: 8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_drop_up_outlined, size: 24,),
+                    onPressed: () {
+                      _easyRefreshController.position.jumpTo(0);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            alignment: Alignment.bottomCenter,
+          )
+        ],
       );
     });
   }
 
+  CustomFooter _buildCustomFooter() {
+    return CustomFooter(
+      builder: (BuildContext context, LoadStatus mode) {
+        Widget body;
+        if (mode == LoadStatus.idle) {
+          body = Text(I18n
+              .of(context)
+              .pull_up_to_load_more);
+        } else if (mode == LoadStatus.loading) {
+          body = CircularProgressIndicator();
+        } else if (mode == LoadStatus.failed) {
+          body = Text(I18n
+              .of(context)
+              .loading_failed_retry_message);
+        } else if (mode == LoadStatus.canLoading) {
+          body = Text(I18n
+              .of(context)
+              .let_go_and_load_more);
+        } else {
+          body = Text(I18n
+              .of(context)
+              .no_more_data);
+        }
+        return Container(
+          height: 55.0,
+          child: Center(child: body),
+        );
+      },
+    );
+  }
+
   Widget _buildWaterFall() {
-    double screanWidth = MediaQuery.of(context).size.width;
+    double screanWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     return CustomScrollView(
       slivers: [

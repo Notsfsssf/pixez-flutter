@@ -47,7 +47,6 @@ class _RankPageState extends State<RankPage>
   ];
   var boolList = Map<int, bool>();
   DateTime nowDate;
-
   @override
   void initState() {
     nowDate = DateTime.now();
@@ -70,6 +69,8 @@ class _RankPageState extends State<RankPage>
   }
 
   DateTime nowDateTime = DateTime.now();
+  int index = 0;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -87,6 +88,9 @@ class _RankPageState extends State<RankPage>
             children: <Widget>[
               AppBar(
                 title: TabBar(
+                  onTap: (i) {
+                    this.index = i;
+                  },
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
                   tabs: <Widget>[
@@ -126,13 +130,14 @@ class _RankPageState extends State<RankPage>
                 ],
               ),
               Expanded(
-                child: TabBarView(children: [
-                  for (var element in rankStore.modeList)
-                    RankModePage(
-                      date: dateTime,
-                      mode: element,
-                    )
-                ]),
+                child: TabBarView(
+                    children: [
+                      for (var element in rankStore.modeList)
+                        RankModePage(
+                          date: dateTime,
+                          mode: element,
+                        )
+                    ]),
               )
             ],
           ),

@@ -602,13 +602,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
-  photo_view:
-    dependency: "direct main"
-    description:
-      name: photo_view
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.10.2"
   platform:
     dependency: transitive
     description:

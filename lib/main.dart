@@ -29,6 +29,7 @@ import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
+import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 
 final UserSetting userSetting = UserSetting();
@@ -37,6 +38,7 @@ final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
+final TopStore topStore = TopStore();
 
 main() {
   runApp(MyApp());

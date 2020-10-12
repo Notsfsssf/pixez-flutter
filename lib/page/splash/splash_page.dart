@@ -95,7 +95,7 @@ class _SplashPageState extends State<SplashPage>
               Platform.isIOS ? HelloPage() : AndroidHelloPage()));
     });
     Future.delayed(Duration(seconds: 2), () {
-      splashStore.fetch();
+      if (mounted) splashStore.fetch();
     });
   }
 

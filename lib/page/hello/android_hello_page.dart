@@ -17,18 +17,14 @@
 import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
-import 'package:pixez/page/about/last_release.dart';
-import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
@@ -42,7 +38,6 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class KeepContent extends StatelessWidget {
   final Widget item;
@@ -115,6 +110,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           selectedItemColor: Theme.of(context).accentColor,
           currentIndex: index,
           onTap: (index) {
+            if (this.index == index) {}
             setState(() {
               this.index = index;
             });
