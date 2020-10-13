@@ -450,25 +450,25 @@ class _IllustPageState extends State<IllustPage> {
       if (_illustStore.illusts != null) {
         final data = _illustStore.illusts;
         return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.expand_less),
-                    onPressed: () {
-                      itemScrollController.scrollTo(
-                          index: _illustStore.illusts.pageCount + 1,
-                          duration: Duration(seconds: 1),
-                          curve: Curves.easeInOutCubic);
-                    }),
-                IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: () {
-                      buildShowModalBottomSheet(context, _illustStore.illusts);
-                    })
-              ],
-            ),
+            // appBar: AppBar(
+            //   backgroundColor: Colors.transparent,
+            //   elevation: 0.0,
+            //   actions: <Widget>[
+            //     IconButton(
+            //         icon: Icon(Icons.expand_less),
+            //         onPressed: () {
+            //           itemScrollController.scrollTo(
+            //               index: _illustStore.illusts.pageCount + 1,
+            //               duration: Duration(seconds: 1),
+            //               curve: Curves.easeInOutCubic);
+            //         }),
+            //     IconButton(
+            //         icon: Icon(Icons.more_vert),
+            //         onPressed: () {
+            //           buildShowModalBottomSheet(context, _illustStore.illusts);
+            //         })
+            //   ],
+            // ),
             extendBodyBehindAppBar: true,
             extendBody: true,
             floatingActionButton: GestureDetector(
@@ -484,7 +484,52 @@ class _IllustPageState extends State<IllustPage> {
                 ),
               ),
             ),
-            body: _buildBody(context, data));
+            body: Stack(
+              children: [
+                _buildBody(context, data),
+                Column(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).padding.top,
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  icon: Icon(Icons.expand_less),
+                                  onPressed: () {
+                                    itemScrollController.scrollTo(
+                                        index:
+                                            _illustStore.illusts.pageCount + 1,
+                                        duration: Duration(seconds: 1),
+                                        curve: Curves.easeInOutCubic);
+                                  }),
+                              IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    buildShowModalBottomSheet(
+                                        context, _illustStore.illusts);
+                                  })
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ));
       } else {
         if (_illustStore.errorMessage != null) {
           return Scaffold(
