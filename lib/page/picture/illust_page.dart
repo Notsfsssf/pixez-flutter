@@ -23,6 +23,7 @@ import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
@@ -36,7 +37,6 @@ import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
-import 'package:pixez/exts.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share/share.dart';
 
@@ -615,7 +615,7 @@ class _IllustPageState extends State<IllustPage> {
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
           if (!userSetting.isBangs) return Container();
-          return Container(height: MediaQuery.of(context).padding.top - 56);
+          return Container(height: MediaQuery.of(context).padding.top);
         }
         if (index <= data.pageCount) {
           if (data.type != "ugoira")

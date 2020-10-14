@@ -58,6 +58,7 @@ dependencies:
   font_awesome_flutter: ^8.8.1
   json_annotation: ^3.0.1
   flutter_staggered_animations: ^0.1.2
+  flutter_statusbar_manager: ^2.0.0
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

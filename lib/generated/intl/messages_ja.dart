@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static m2(length) => "Tap to show ${length} results";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
+
   static _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("このアプリについて"),
         "about_picture": MessageLookupByLibrary.simpleMessage("関連イラスト"),
@@ -42,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ログイン中..."),
         "ban": MessageLookupByLibrary.simpleMessage("ミュート"),
         "birthday": MessageLookupByLibrary.simpleMessage("誕生日"),
-        "block_user": MessageLookupByLibrary.simpleMessage("このユーザーをミュートする"),
+        "block_user": MessageLookupByLibrary.simpleMessage("このユーザーをミュート"),
         "bookmark": MessageLookupByLibrary.simpleMessage("コレクション"),
         "bookmarked": MessageLookupByLibrary.simpleMessage("ブックマーク済"),
         "cancel": MessageLookupByLibrary.simpleMessage("キャンセル"),
@@ -53,7 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear": MessageLookupByLibrary.simpleMessage("クリア"),
         "clear_all_cache": MessageLookupByLibrary.simpleMessage("全てのキャッシュを削除"),
         "clear_completed_tasks":
-            MessageLookupByLibrary.simpleMessage("完了した処理を削除する"),
+            MessageLookupByLibrary.simpleMessage("完了した処理を削除"),
         "clear_search_tag_history":
             MessageLookupByLibrary.simpleMessage("検索履歴を消去する"),
         "clearn_cache": MessageLookupByLibrary.simpleMessage("キャッシュを削除"),
@@ -63,7 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copied_to_clipboard":
             MessageLookupByLibrary.simpleMessage("クリップボードにコピー"),
         "copymessage":
-            MessageLookupByLibrary.simpleMessage("イラスト情報をクリップボードにコピーする"),
+            MessageLookupByLibrary.simpleMessage("イラスト情報をクリップボードにコピー"),
         "create_folder": MessageLookupByLibrary.simpleMessage("Create folder"),
         "crosscount": MessageLookupByLibrary.simpleMessage("イラスト一覧時のカラム数"),
         "current_password": MessageLookupByLibrary.simpleMessage("現在のパスワード"),
@@ -74,12 +75,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("削除"),
         "detail": MessageLookupByLibrary.simpleMessage("ユーザー情報"),
         "disable_sni_bypass":
-            MessageLookupByLibrary.simpleMessage("SNIバイパスを無効化する"),
+            MessageLookupByLibrary.simpleMessage("SNIバイパスを無効化"),
         "disable_sni_bypass_message": MessageLookupByLibrary.simpleMessage(
             "Decreasing the time of progressing DNS over HTTPS at a cold start"),
         "display_mode": MessageLookupByLibrary.simpleMessage("リフレッシュレート"),
         "display_mode_message":
-            MessageLookupByLibrary.simpleMessage("リフレッシュレートを選択する (実験的)"),
+            MessageLookupByLibrary.simpleMessage("リフレッシュレートを選択 (実験的)"),
         "display_mode_warning": MessageLookupByLibrary.simpleMessage(
             "Just let it be unless you have a device that supports High Refresh Rate"),
         "donate_message": MessageLookupByLibrary.simpleMessage("Xie Xie"),
@@ -110,131 +111,144 @@ class MessageLookup extends MessageLookupByLibrary {
         "illust_id": MessageLookupByLibrary.simpleMessage("イラストID"),
         "illustration_detail_page_quality":
             MessageLookupByLibrary.simpleMessage("詳細ページ時の画質"),
-        "input_nickname": MessageLookupByLibrary.simpleMessage("ニックネームを入力する"),
+        "input_nickname": MessageLookupByLibrary.simpleMessage("ニックネームを入力"),
         "job": MessageLookupByLibrary.simpleMessage("職業"),
         "key_word": MessageLookupByLibrary.simpleMessage("キーワード"),
-        "large" : MessageLookupByLibrary.simpleMessage("高画質"),
-    "large_preview_zoom_quality" : MessageLookupByLibrary.simpleMessage("全画面表示時の画質"),
-    "latest_version" : MessageLookupByLibrary.simpleMessage("最新バージョン"),
-    "let_go_and_load_more" : MessageLookupByLibrary.simpleMessage("もっと見る"),
-    "light" : MessageLookupByLibrary.simpleMessage("light"),
-    "link" : MessageLookupByLibrary.simpleMessage("URLをクリップボードにコピーする"),
-    "load_image_failed_click_to_reload" : MessageLookupByLibrary.simpleMessage("読み込みに失敗しました。ここをタップしてもう一度試してみてください"),
-    "loading_failed_retry_message" : MessageLookupByLibrary.simpleMessage("読み込みに失敗しました。ここをタップしてもう一度試してみてください"),
-    "login" : MessageLookupByLibrary.simpleMessage("ログイン"),
-    "login_message" : MessageLookupByLibrary.simpleMessage("Enter dark side of the world"),
-    "logout" : MessageLookupByLibrary.simpleMessage("ログアウト"),
-    "logout_message" : MessageLookupByLibrary.simpleMessage("See you~"),
-    "manga": MessageLookupByLibrary.simpleMessage("漫画"),
-    "medium": MessageLookupByLibrary.simpleMessage("低画質"),
-    "mode_list": MessageLookupByLibrary.simpleMessage(
-        "デイリー 男性に人気 女性に人気 オリジナル ルーキー ウィークリー マンスリー XVIII XVIII_W XVIII_G"),
-    "more": MessageLookupByLibrary.simpleMessage("もっと見る"),
-    "more_then_starnum_bookmark": m0,
-    "muti_choice_save": MessageLookupByLibrary.simpleMessage("選択したイラストを保存する"),
-    "my": MessageLookupByLibrary.simpleMessage("Mine"),
-    "need_to_restart_app": MessageLookupByLibrary.simpleMessage("アプリの再起動が必要です"),
-    "new_password": MessageLookupByLibrary.simpleMessage("新しいパスワード"),
-    "new_version_update_information": MessageLookupByLibrary.simpleMessage(
-        "アップデート履歴"),
-    "news": MessageLookupByLibrary.simpleMessage("アクティビティ"),
-    "nickname": MessageLookupByLibrary.simpleMessage("ニックネーム"),
-    "nickname_can_be_change_anytime": MessageLookupByLibrary.simpleMessage(
-        "ニックネームはいつでも変更可能です"),
-    "no_h": MessageLookupByLibrary.simpleMessage("XVIIIを表示しない"),
-    "no_more_data": MessageLookupByLibrary.simpleMessage("これ以上の投稿はありません"),
-    "not_bookmarked": MessageLookupByLibrary.simpleMessage("Not_Bookmarked"),
-    "not_the_correct_link": MessageLookupByLibrary.simpleMessage("無効なリンク"),
-    "novel_mode_list": MessageLookupByLibrary.simpleMessage(
-        "デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G"),
-    "ok": MessageLookupByLibrary.simpleMessage("はい"),
-    "old_way": MessageLookupByLibrary.simpleMessage("Old way"),
-    "old_way_message": MessageLookupByLibrary.simpleMessage(
-        "画像を保存するには外部ストレージの読み書きの許可が必要です。続行するにはフォルダを選択します"),
-    "painter": MessageLookupByLibrary.simpleMessage("ユーザー"),
-    "painter_id": MessageLookupByLibrary.simpleMessage("ユーザーID"),
-    "painter_name": MessageLookupByLibrary.simpleMessage("ユーザーネーム"),
-    "partial_match_for_tag": MessageLookupByLibrary.simpleMessage("タグの部分一致"),
-    "path": MessageLookupByLibrary.simpleMessage("Path"),
-    "paused": MessageLookupByLibrary.simpleMessage("Paused"),
-    "permission_denied": MessageLookupByLibrary.simpleMessage("権限がありません"),
-    "perol_message": MessageLookupByLibrary.simpleMessage(
-        "The author who built PixEz with Flutter"),
-    "personal": MessageLookupByLibrary.simpleMessage("Personal"),
-    "pick_a_color": MessageLookupByLibrary.simpleMessage("Pick a color"),
-    "pixel": MessageLookupByLibrary.simpleMessage("解像度"),
-    "platform_special_setting": MessageLookupByLibrary.simpleMessage("平台特殊设置"),
-    "please_note_that": MessageLookupByLibrary.simpleMessage("Notice"),
-    "please_note_that_content": MessageLookupByLibrary.simpleMessage(
-        "It\'s highly recommended keeping this option ON unless you can directly access Pixiv.net with no issues"),
-    "popular_desc": MessageLookupByLibrary.simpleMessage("Popular"),
-    "private": MessageLookupByLibrary.simpleMessage("非公開"),
-    "public": MessageLookupByLibrary.simpleMessage("公開"),
-    "pull_up_to_load_more": MessageLookupByLibrary.simpleMessage(
-        "Swipe up to load more"),
-    "quality_setting": MessageLookupByLibrary.simpleMessage("設定"),
-    "quick_view": MessageLookupByLibrary.simpleMessage("ブクマ"),
-    "quietly_follow": MessageLookupByLibrary.simpleMessage("非公開でフォローする"),
-    "rank": MessageLookupByLibrary.simpleMessage("ランキング"),
-    "rate_message": MessageLookupByLibrary.simpleMessage(
-        "もしよろしければレビューを書いてください。励みになります！"),
-    "rate_title": MessageLookupByLibrary.simpleMessage("PixEzを気に入ってくれたら"),
-    "recommand_tag": MessageLookupByLibrary.simpleMessage("おすすめのタグ"),
-    "recommend": MessageLookupByLibrary.simpleMessage("おすすめ"),
-    "recommend_for_you": MessageLookupByLibrary.simpleMessage("あなたにおすすめ"),
-    "refresh": MessageLookupByLibrary.simpleMessage("更新"),
-    "reply": MessageLookupByLibrary.simpleMessage("返信"),
-    "repo_address": MessageLookupByLibrary.simpleMessage("GitHub"),
-    "report": MessageLookupByLibrary.simpleMessage("報告"),
-    "report_message": MessageLookupByLibrary.simpleMessage(
-        "Report this content if it makes you feel uncomfortable, we will remove it ASAP once we confirmed that it\'s harmful."),
-    "retry": MessageLookupByLibrary.simpleMessage("再試行"),
-    "retry_failed_tasks": MessageLookupByLibrary.simpleMessage("失敗した処理を再試行する"),
-    "return_again_to_exit": MessageLookupByLibrary.simpleMessage("もう一度戻って終了する"),
-    "right_now_message": MessageLookupByLibrary.simpleMessage(
-        "The designer who drew the lovely icon of PixEz"),
-    "running": MessageLookupByLibrary.simpleMessage("進行中"),
-    "saf_hint": MessageLookupByLibrary.simpleMessage(
-        "画像をデバイスに保存するにはPixEzがフォルダにアクセスできるようにする必要があります(例: Picture/Pixez)"),
-    "save": MessageLookupByLibrary.simpleMessage("保存する"),
-    "save_format": MessageLookupByLibrary.simpleMessage("保存形式"),
-    "save_format_lose_part_warning": MessageLookupByLibrary.simpleMessage(
-        "保存格式必须包含part,否则多p作品会保存出错！"),
-    "save_path": MessageLookupByLibrary.simpleMessage("保存場所"),
-    "saved": MessageLookupByLibrary.simpleMessage("Saved"),
-    "search": MessageLookupByLibrary.simpleMessage("検索"),
-    "search_word_or_paste_link": MessageLookupByLibrary.simpleMessage(
-        "Enter keywords or paste links"),
-    "separate_folder": MessageLookupByLibrary.simpleMessage("Separate folders"),
-    "separate_folder_message": MessageLookupByLibrary.simpleMessage(
-        "Create separate folders for each user"),
-    "setting": MessageLookupByLibrary.simpleMessage("設定"),
-    "share": MessageLookupByLibrary.simpleMessage("共有"),
-    "share_this_app_link": MessageLookupByLibrary.simpleMessage(""),
-    "shield_message": m1,
-    "shielding_settings": MessageLookupByLibrary.simpleMessage("ミュート設定"),
-    "skimige_message": MessageLookupByLibrary.simpleMessage(
-        "The contributor who wrote the wonderful README for us"),
-    "skin": MessageLookupByLibrary.simpleMessage("テーマ"),
-    "skip": MessageLookupByLibrary.simpleMessage("スキップ"),
-    "source": MessageLookupByLibrary.simpleMessage("原寸大"),
-    "special_shaped_screen": MessageLookupByLibrary.simpleMessage("异形屏"),
-    "spotlight": MessageLookupByLibrary.simpleMessage("ハイライト"),
-    "start": MessageLookupByLibrary.simpleMessage("始める"),
-    "support": MessageLookupByLibrary.simpleMessage("サポート"),
-    "support_message": MessageLookupByLibrary.simpleMessage(
-        "フィードバックしてくれてありがとうございます :)"),
-    "system" : MessageLookupByLibrary.simpleMessage("system"),
-    "tag" : MessageLookupByLibrary.simpleMessage("タグ"),
-    "tap_to_show_results" : m2,
-    "task_progress" : MessageLookupByLibrary.simpleMessage("進行中の処理"),
-    "terms" : MessageLookupByLibrary.simpleMessage("Terms of use"),
-    "thanks" : MessageLookupByLibrary.simpleMessage("Thanks"),
-    "theme" : MessageLookupByLibrary.simpleMessage("テーマ"),
-    "theme_mode" : MessageLookupByLibrary.simpleMessage("theme mode"),
-    "title" : MessageLookupByLibrary.simpleMessage("タイトル"),
-    "title_and_caption" : MessageLookupByLibrary.simpleMessage("Title and description"),
-    "total_bookmark" : MessageLookupByLibrary.simpleMessage("すき"),
+        "large": MessageLookupByLibrary.simpleMessage("高画質"),
+        "large_preview_zoom_quality":
+            MessageLookupByLibrary.simpleMessage("全画面表示時の画質"),
+        "latest_version": MessageLookupByLibrary.simpleMessage("最新バージョン"),
+        "let_go_and_load_more": MessageLookupByLibrary.simpleMessage("もっと見る"),
+        "light": MessageLookupByLibrary.simpleMessage("light"),
+        "link": MessageLookupByLibrary.simpleMessage("URLをクリップボードにコピーする"),
+        "load_image_failed_click_to_reload":
+            MessageLookupByLibrary.simpleMessage(
+                "読み込みに失敗しました。ここをタップしてもう一度試してみてください"),
+        "loading_failed_retry_message": MessageLookupByLibrary.simpleMessage(
+            "読み込みに失敗しました。ここをタップしてもう一度試してみてください"),
+        "login": MessageLookupByLibrary.simpleMessage("ログイン"),
+        "login_message": MessageLookupByLibrary.simpleMessage(
+            "Enter dark side of the world"),
+        "logout": MessageLookupByLibrary.simpleMessage("ログアウト"),
+        "logout_message": MessageLookupByLibrary.simpleMessage("See you~"),
+        "manga": MessageLookupByLibrary.simpleMessage("漫画"),
+        "medium": MessageLookupByLibrary.simpleMessage("低画質"),
+        "mode_list": MessageLookupByLibrary.simpleMessage(
+            "デイリー 男性に人気 女性に人気 オリジナル ルーキー ウィークリー マンスリー XVIII XVIII_W XVIII_G"),
+        "more": MessageLookupByLibrary.simpleMessage("もっと見る"),
+        "more_then_starnum_bookmark": m0,
+        "muti_choice_save": MessageLookupByLibrary.simpleMessage("選択したイラストを保存"),
+        "my": MessageLookupByLibrary.simpleMessage("Mine"),
+        "need_to_restart_app":
+            MessageLookupByLibrary.simpleMessage("アプリの再起動が必要です"),
+        "new_password": MessageLookupByLibrary.simpleMessage("新しいパスワード"),
+        "new_version_update_information":
+            MessageLookupByLibrary.simpleMessage("アップデート履歴"),
+        "news": MessageLookupByLibrary.simpleMessage("アクティビティ"),
+        "nickname": MessageLookupByLibrary.simpleMessage("ニックネーム"),
+        "nickname_can_be_change_anytime":
+            MessageLookupByLibrary.simpleMessage("ニックネームはいつでも変更可能です"),
+        "no_h": MessageLookupByLibrary.simpleMessage("XVIIIを表示しない"),
+        "no_more_data": MessageLookupByLibrary.simpleMessage("これ以上の投稿はありません"),
+        "not_bookmarked":
+            MessageLookupByLibrary.simpleMessage("Not_Bookmarked"),
+        "not_the_correct_link": MessageLookupByLibrary.simpleMessage("無効なリンク"),
+        "novel_mode_list": MessageLookupByLibrary.simpleMessage(
+            "デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G"),
+        "ok": MessageLookupByLibrary.simpleMessage("はい"),
+        "old_way": MessageLookupByLibrary.simpleMessage("Old way"),
+        "old_way_message": MessageLookupByLibrary.simpleMessage(
+            "画像を保存するには外部ストレージの読み書きの許可が必要です。続行するにはフォルダを選択します"),
+        "painter": MessageLookupByLibrary.simpleMessage("ユーザー"),
+        "painter_id": MessageLookupByLibrary.simpleMessage("ユーザーID"),
+        "painter_name": MessageLookupByLibrary.simpleMessage("ユーザーネーム"),
+        "partial_match_for_tag":
+            MessageLookupByLibrary.simpleMessage("タグの部分一致"),
+        "path": MessageLookupByLibrary.simpleMessage("Path"),
+        "paused": MessageLookupByLibrary.simpleMessage("Paused"),
+        "permission_denied": MessageLookupByLibrary.simpleMessage("権限がありません"),
+        "perol_message": MessageLookupByLibrary.simpleMessage(
+            "The author who built PixEz with Flutter"),
+        "personal": MessageLookupByLibrary.simpleMessage("Personal"),
+        "pick_a_color": MessageLookupByLibrary.simpleMessage("色を選択"),
+        "pixel": MessageLookupByLibrary.simpleMessage("解像度"),
+        "platform_special_setting":
+            MessageLookupByLibrary.simpleMessage("平台特殊设置"),
+        "please_note_that": MessageLookupByLibrary.simpleMessage("Notice"),
+        "please_note_that_content": MessageLookupByLibrary.simpleMessage(
+            "It\'s highly recommended keeping this option ON unless you can directly access Pixiv.net with no issues"),
+        "popular_desc": MessageLookupByLibrary.simpleMessage("Popular"),
+        "private": MessageLookupByLibrary.simpleMessage("非公開"),
+        "public": MessageLookupByLibrary.simpleMessage("公開"),
+        "pull_up_to_load_more":
+            MessageLookupByLibrary.simpleMessage("Swipe up to load more"),
+        "quality_setting": MessageLookupByLibrary.simpleMessage("設定"),
+        "quick_view": MessageLookupByLibrary.simpleMessage("ブクマ"),
+        "quietly_follow": MessageLookupByLibrary.simpleMessage("非公開でフォロー"),
+        "rank": MessageLookupByLibrary.simpleMessage("ランキング"),
+        "rate_message": MessageLookupByLibrary.simpleMessage(
+            "もしよろしければレビューを書いてください。励みになります！"),
+        "rate_title": MessageLookupByLibrary.simpleMessage("PixEzを気に入ってくれたら"),
+        "recommand_tag": MessageLookupByLibrary.simpleMessage("おすすめのタグ"),
+        "recommend": MessageLookupByLibrary.simpleMessage("おすすめ"),
+        "recommend_for_you": MessageLookupByLibrary.simpleMessage("おすすめ"),
+        "refresh": MessageLookupByLibrary.simpleMessage("更新"),
+        "reply": MessageLookupByLibrary.simpleMessage("返信"),
+        "repo_address": MessageLookupByLibrary.simpleMessage("GitHub"),
+        "report": MessageLookupByLibrary.simpleMessage("報告"),
+        "report_message": MessageLookupByLibrary.simpleMessage(
+            "Report this content if it makes you feel uncomfortable, we will remove it ASAP once we confirmed that it\'s harmful."),
+        "retry": MessageLookupByLibrary.simpleMessage("再試行"),
+        "retry_failed_tasks":
+            MessageLookupByLibrary.simpleMessage("失敗した処理を再試行"),
+        "return_again_to_exit":
+            MessageLookupByLibrary.simpleMessage("もう一度戻って終了"),
+        "right_now_message": MessageLookupByLibrary.simpleMessage(
+            "The designer who drew the lovely icon of PixEz"),
+        "running": MessageLookupByLibrary.simpleMessage("進行中"),
+        "saf_hint": MessageLookupByLibrary.simpleMessage(
+            "画像をデバイスに保存するにはPixEzがフォルダにアクセスできるようにする必要があります(例: Picture/Pixez)"),
+        "save": MessageLookupByLibrary.simpleMessage("保存する"),
+        "save_format": MessageLookupByLibrary.simpleMessage("保存形式"),
+        "save_format_lose_part_warning":
+            MessageLookupByLibrary.simpleMessage("保存格式必须包含part,否则多p作品会保存出错！"),
+        "save_path": MessageLookupByLibrary.simpleMessage("保存場所"),
+        "saved": MessageLookupByLibrary.simpleMessage("Saved"),
+        "search": MessageLookupByLibrary.simpleMessage("検索"),
+        "search_word_or_paste_link": MessageLookupByLibrary.simpleMessage(
+            "Enter keywords or paste links"),
+        "separate_folder":
+            MessageLookupByLibrary.simpleMessage("Separate folders"),
+        "separate_folder_message": MessageLookupByLibrary.simpleMessage(
+            "Create separate folders for each user"),
+        "setting": MessageLookupByLibrary.simpleMessage("設定"),
+        "share": MessageLookupByLibrary.simpleMessage("共有"),
+        "share_this_app_link": MessageLookupByLibrary.simpleMessage(""),
+        "shield_message": m1,
+        "shielding_settings": MessageLookupByLibrary.simpleMessage("ミュート設定"),
+        "skimige_message": MessageLookupByLibrary.simpleMessage(
+            "The contributor who wrote the wonderful README for us"),
+        "skin": MessageLookupByLibrary.simpleMessage("テーマ"),
+        "skip": MessageLookupByLibrary.simpleMessage("スキップ"),
+        "source": MessageLookupByLibrary.simpleMessage("原寸大"),
+        "special_shaped_screen": MessageLookupByLibrary.simpleMessage("异形屏"),
+        "spotlight": MessageLookupByLibrary.simpleMessage("ハイライト"),
+        "start": MessageLookupByLibrary.simpleMessage("始める"),
+        "support": MessageLookupByLibrary.simpleMessage("サポート"),
+        "support_message":
+            MessageLookupByLibrary.simpleMessage("フィードバックしてくれてありがとうございます :)"),
+        "system": MessageLookupByLibrary.simpleMessage("system"),
+        "tag": MessageLookupByLibrary.simpleMessage("タグ"),
+        "tap_to_show_results": m2,
+        "task_progress": MessageLookupByLibrary.simpleMessage("進行中の処理"),
+        "terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
+        "thanks": MessageLookupByLibrary.simpleMessage("Thanks"),
+        "theme": MessageLookupByLibrary.simpleMessage("テーマ"),
+        "theme_mode": MessageLookupByLibrary.simpleMessage("theme mode"),
+        "title": MessageLookupByLibrary.simpleMessage("タイトル"),
+        "title_and_caption":
+            MessageLookupByLibrary.simpleMessage("Title and description"),
+        "total_bookmark" : MessageLookupByLibrary.simpleMessage("すき"),
     "total_follow_users" : MessageLookupByLibrary.simpleMessage("フォロー"),
     "total_mypixiv_users" : MessageLookupByLibrary.simpleMessage("マイピク"),
     "total_view" : MessageLookupByLibrary.simpleMessage("閲覧"),
