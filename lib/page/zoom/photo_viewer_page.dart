@@ -36,7 +36,7 @@ typedef DoubleClickAnimationListener = void Function();
 
 class _PhotoViewerPageState extends State<PhotoViewerPage>
     with TickerProviderStateMixin {
-  var index = 0;
+  int index = 0;
   final StreamController<int> rebuildIndex = StreamController<int>.broadcast();
   final StreamController<bool> rebuildSwiper =
       StreamController<bool>.broadcast();
@@ -54,6 +54,15 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   bool _showSwiper = true;
   double _imageDetailY = 0;
   Rect imageDRect;
+
+  @override
+  void dispose() {
+    _doubleClickAnimationController.dispose();
+    rebuildIndex.close();
+    rebuildSwiper.close();
+    rebuildDetail.close();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -105,51 +114,25 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                 );
               });
         },
-        child: Center(
+        child: Container(
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: ExtendedImage.network(
             url,
             headers: {
               "referer": "https://app-api.pixiv.net/",
               "User-Agent": "PixivIOSApp/5.8.0"
             },
+            enableLoadState: true,
+            loadStateChanged: (ExtendedImageState state) {
+              return _loadStateWidget(state);
+            },
             onDoubleTap: (ExtendedImageGestureState state) {
-              ///you can use define pointerDownPosition as you can,
-              ///default value is double tap pointer down postion.
-              final Offset pointerDownPosition = state.pointerDownPosition;
-              final double begin = state.gestureDetails.totalScale;
-              double end;
-
-              //remove old
-              _doubleClickAnimation
-                  ?.removeListener(_doubleClickAnimationListener);
-
-              //stop pre
-              _doubleClickAnimationController.stop();
-
-              //reset to use
-              _doubleClickAnimationController.reset();
-
-              if (begin == doubleTapScales[0]) {
-                end = doubleTapScales[1];
-              } else {
-                end = doubleTapScales[0];
-              }
-
-              _doubleClickAnimationListener = () {
-                //print(_animation.value);
-                state.handleDoubleTap(
-                    scale: _doubleClickAnimation.value,
-                    doubleTapPosition: pointerDownPosition);
-              };
-              _doubleClickAnimation = _doubleClickAnimationController
-                  .drive(Tween<double>(begin: begin, end: end));
-
-              _doubleClickAnimation.addListener(_doubleClickAnimationListener);
-
-              _doubleClickAnimationController.forward();
+              _doubleTap(state);
             },
             filterQuality: FilterQuality.high,
-            fit: BoxFit.contain,
             mode: ExtendedImageMode.gesture,
             initGestureConfigHandler: (state) {
               return GestureConfig(
@@ -161,6 +144,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                 inertialSpeed: 100.0,
                 initialScale: 1.0,
                 inPageView: false,
+                gestureDetailsIsChanged: (GestureDetails ge) {
+                  _showOrHideAppbar(ge); //肯定可以优化，先放着，想不动了
+                },
                 initialAlignment: InitialAlignment.center,
               );
             },
@@ -194,99 +180,152 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                 );
               });
         },
-        child: ExtendedImageGesturePageView.builder(
-          controller: PageController(
-            initialPage: index,
+        child: Container(
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          child: ExtendedImageGesturePageView.builder(
+            controller: PageController(
+              initialPage: index,
+            ),
+            onPageChanged: (i) {
+              setState(() {
+                index = i;
+              });
+            },
+            itemCount: metaPages.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ExtendedImage.network(
+                userSetting.zoomQuality == 0
+                    ? metaPages[index].imageUrls.large
+                    : metaPages[index].imageUrls.original,
+                headers: {
+                  "referer": "https://app-api.pixiv.net/",
+                  "User-Agent": "PixivIOSApp/5.8.0"
+                },
+                enableLoadState: true,
+                loadStateChanged: (ExtendedImageState state) {
+                  return _loadStateWidget(state);
+                },
+                onDoubleTap: (ExtendedImageGestureState state) {
+                  ///you can use define pointerDownPosition as you can,
+                  ///default value is double tap pointer down postion.
+                  _doubleTap(state);
+                },
+                mode: ExtendedImageMode.gesture,
+                filterQuality: FilterQuality.high,
+                initGestureConfigHandler: (ExtendedImageState state) {
+                  return GestureConfig(
+                    inPageView: true,
+                    initialScale: 1.0,
+                    gestureDetailsIsChanged: (GestureDetails ge) {
+                      _showOrHideAppbar(ge);
+                    },
+                    maxScale: 5.0,
+                    animationMaxScale: 6.0,
+                    initialAlignment: InitialAlignment.center,
+                  );
+                },
+              );
+            },
           ),
-          onPageChanged: (i) {
-            index = i;
-          },
-          itemCount: metaPages.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ExtendedImage.network(
-              userSetting.zoomQuality == 0
-                  ? metaPages[index].imageUrls.large
-                  : metaPages[index].imageUrls.original,
-              fit: BoxFit.contain,
-              headers: {
-                "referer": "https://app-api.pixiv.net/",
-                "User-Agent": "PixivIOSApp/5.8.0"
-              },
-              onDoubleTap: (ExtendedImageGestureState state) {
-                ///you can use define pointerDownPosition as you can,
-                ///default value is double tap pointer down postion.
-                final Offset pointerDownPosition =
-                    state.pointerDownPosition;
-                final double begin = state.gestureDetails.totalScale;
-                double end;
-
-                //remove old
-                _doubleClickAnimation
-                    ?.removeListener(_doubleClickAnimationListener);
-
-                //stop pre
-                _doubleClickAnimationController.stop();
-
-                //reset to use
-                _doubleClickAnimationController.reset();
-
-                if (begin == doubleTapScales[0]) {
-                  end = doubleTapScales[1];
-                } else {
-                  end = doubleTapScales[0];
-                }
-
-                _doubleClickAnimationListener = () {
-                  //print(_animation.value);
-                  state.handleDoubleTap(
-                      scale: _doubleClickAnimation.value,
-                      doubleTapPosition: pointerDownPosition);
-                };
-                _doubleClickAnimation = _doubleClickAnimationController
-                    .drive(Tween<double>(begin: begin, end: end));
-
-                _doubleClickAnimation
-                    .addListener(_doubleClickAnimationListener);
-
-                _doubleClickAnimationController.forward();
-              },
-              mode: ExtendedImageMode.gesture,
-              filterQuality: FilterQuality.high,
-              initGestureConfigHandler: (ExtendedImageState state) {
-                return GestureConfig(
-                  inPageView: true,
-                  initialScale: 1.0,
-                  maxScale: 5.0,
-                  animationMaxScale: 6.0,
-                  initialAlignment: InitialAlignment.center,
-                );
-              },
-            );
-          },
         ),
       );
     }
   }
+
+  Widget _loadStateWidget(ExtendedImageState state) {
+    if (state.extendedImageLoadState == LoadState.loading) {
+      // return CircularProgressIndicator(
+      //   value: state.loadingProgress.cumulativeBytesLoaded.toDouble() /
+      //       state.loadingProgress.expectedTotalBytes,
+      // );
+    }
+    return null;
+  }
+
+  void _doubleTap(ExtendedImageGestureState state) {
+    ///you can use define pointerDownPosition as you can,
+    ///default value is double tap pointer down postion.
+    final Offset pointerDownPosition = state.pointerDownPosition;
+    final double begin = state.gestureDetails.totalScale;
+    double end;
+
+    //remove old
+    _doubleClickAnimation?.removeListener(_doubleClickAnimationListener);
+
+    //stop pre
+    _doubleClickAnimationController.stop();
+
+    //reset to use
+    _doubleClickAnimationController.reset();
+
+    if (begin == doubleTapScales[0]) {
+      end = doubleTapScales[1];
+    } else {
+      end = doubleTapScales[0];
+    }
+
+    _doubleClickAnimationListener = () {
+      //print(_animation.value);
+      state.handleDoubleTap(
+          scale: _doubleClickAnimation.value,
+          doubleTapPosition: pointerDownPosition);
+    };
+    _doubleClickAnimation = _doubleClickAnimationController
+        .drive(Tween<double>(begin: begin, end: end));
+
+    _doubleClickAnimation.addListener(_doubleClickAnimationListener);
+
+    _doubleClickAnimationController.forward();
+  }
+
+  void _showOrHideAppbar(GestureDetails ge) {
+    if (ge.totalScale > 1.2) {
+      if (show == true) {
+        if (mounted)
+          setState(() {
+            show = false;
+          });
+      }
+    } else {
+      if (show == false) {
+        if (mounted)
+          setState(() {
+            show = true;
+          });
+      }
+    } //肯定可以优化，先放着，想不动了
+  }
+
+  bool show = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
+          leading: Visibility(
+            visible: show,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
           ),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          title: Text(
-            "${index + 1}/${widget.illusts.pageCount}",
-            style: TextStyle(color: Colors.white),
+          title: Visibility(
+            visible: show,
+            child: Text(
+              "${index + 1}/${widget.illusts.pageCount}",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ),
         extendBodyBehindAppBar: true,

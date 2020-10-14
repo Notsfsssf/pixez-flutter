@@ -26,8 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static m2(length) => "Tap to show ${length} results";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) =>
-      <String, Function>{
+
+  static _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("About"),
         "about_picture":
             MessageLookupByLibrary.simpleMessage("Related illusts"),
