@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,7 +26,8 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/hello/ranking/rank_page.dart';
+import 'package:pixez/page/hello/recom/recom_user_road.dart';
+import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -39,15 +42,19 @@ class RecomSpolightPage extends StatefulWidget {
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
 }
 
-class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKeepAliveClientMixin{
+class _RecomSpolightPageState extends State<RecomSpolightPage>
+    with AutomaticKeepAliveClientMixin {
   SpotlightStore spotlightStore;
   LightingStore _lightingStore;
+  RecomUserStore _recomUserStore;
 
   @override
   void initState() {
     _easyRefreshController = RefreshController(initialRefresh: true);
+    _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
-    _lightingStore = LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
+    _lightingStore =
+        LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
     super.initState();
   }
 
@@ -56,12 +63,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
   Future<void> fetchT() async {
     await spotlightStore.fetch();
     await _lightingStore.fetch();
-  }
-
-  @override
-  void dispose() {
-    _easyRefreshController?.dispose();
-    super.dispose();
+    await _recomUserStore.fetch();
+    setState(() {});
   }
 
   @override
@@ -85,45 +88,103 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
     return false;
   }
 
+  bool backToTopVisible = false;
+
   Widget buildEasyRefresh(BuildContext context) {
     return Observer(builder: (_) {
-      return SmartRefresher(
-        controller: _easyRefreshController,
-        enablePullDown: true,
-        enablePullUp: true,
-        footer: CustomFooter(
-          builder: (BuildContext context, LoadStatus mode) {
-            Widget body;
-            if (mode == LoadStatus.idle) {
-              body = Text(I18n.of(context).pull_up_to_load_more);
-            } else if (mode == LoadStatus.loading) {
-              body = CircularProgressIndicator();
-            } else if (mode == LoadStatus.failed) {
-              body = Text(I18n.of(context).loading_failed_retry_message);
-            } else if (mode == LoadStatus.canLoading) {
-              body = Text(I18n.of(context).let_go_and_load_more);
-            } else {
-              body = Text(I18n.of(context).no_more_data);
-            }
-            return Container(
-              height: 55.0,
-              child: Center(child: body),
-            );
-          },
-        ),
-        onRefresh: () {
-          return fetchT();
-        },
-        onLoading: () {
-          return _lightingStore.fetchNext();
-        },
-        child: _buildWaterFall(),
+      return Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification notification) {
+              ScrollMetrics metrics = notification.metrics;
+              if (backToTopVisible == metrics.atEdge && mounted) {
+                setState(() {
+                  backToTopVisible = !backToTopVisible;
+                });
+              }
+              return true;
+            },
+            child: SmartRefresher(
+              controller: _easyRefreshController,
+              enablePullDown: true,
+              enablePullUp: true,
+              header: (Platform.isAndroid)
+                  ? MaterialClassicHeader(
+                color: Theme
+                    .of(context)
+                    .accentColor,
+              )
+                  : ClassicHeader(),
+              footer: _buildCustomFooter(),
+              onRefresh: () {
+                return fetchT();
+              },
+              onLoading: () {
+                return _lightingStore.fetchNext();
+              },
+              child: _buildWaterFall(),
+            ),
+          ),
+          Align(
+            child: Visibility(
+              visible: backToTopVisible,
+              child: Opacity(
+                opacity: 0.5,
+                child: Container(
+                  height: 24.0,
+                  margin: EdgeInsets.only(bottom: 8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_drop_up_outlined, size: 24,),
+                    onPressed: () {
+                      _easyRefreshController.position.jumpTo(0);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            alignment: Alignment.bottomCenter,
+          )
+        ],
       );
     });
   }
 
+  CustomFooter _buildCustomFooter() {
+    return CustomFooter(
+      builder: (BuildContext context, LoadStatus mode) {
+        Widget body;
+        if (mode == LoadStatus.idle) {
+          body = Text(I18n
+              .of(context)
+              .pull_up_to_load_more);
+        } else if (mode == LoadStatus.loading) {
+          body = CircularProgressIndicator();
+        } else if (mode == LoadStatus.failed) {
+          body = Text(I18n
+              .of(context)
+              .loading_failed_retry_message);
+        } else if (mode == LoadStatus.canLoading) {
+          body = Text(I18n
+              .of(context)
+              .let_go_and_load_more);
+        } else {
+          body = Text(I18n
+              .of(context)
+              .no_more_data);
+        }
+        return Container(
+          height: 55.0,
+          child: Center(child: body),
+        );
+      },
+    );
+  }
+
   Widget _buildWaterFall() {
-    double screanWidth = MediaQuery.of(context).size.width;
+    double screanWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     return CustomScrollView(
       slivers: [
@@ -138,7 +199,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
           child: _buildSpotlightContainer(),
         ),
         SliverToBoxAdapter(
-          child: _buildSecondRow(context),
+          child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
         ),
         _lightingStore.iStores.isNotEmpty
             ? SliverWaterfallFlow(
@@ -212,7 +273,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
                 I18n.of(context).spotlight,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 30.0,
+                    fontSize: 24.0,
                     color: Theme.of(context).textTheme.headline6.color),
               ),
               padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
@@ -235,36 +296,22 @@ class _RecomSpolightPageState extends State<RecomSpolightPage> with AutomaticKee
     );
   }
 
-  Widget _buildSecondRow(BuildContext context) {
+  Widget _buildSecondRow(BuildContext context, String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Container(
-          child: Padding(
-            child: Container(
-              child: Text(
-                I18n.of(context).recommend_for_you,
-                overflow: TextOverflow.clip,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
-              ),
-            ),
-            padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
-          ),
-        ),
         Padding(
-          child: FlatButton(
-            child: Text(I18n.of(context).more),
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return Scaffold(
-                  body: RankPage(),
-                );
-              }));
-            },
+          child: Center(
+            child: Text(
+              title,
+              overflow: TextOverflow.clip,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
+            ),
           ),
-          padding: EdgeInsets.all(8.0),
-        )
+          padding: EdgeInsets.only(left: 20.0),
+        ),
+        Expanded(child: RecomUserRoad())
       ],
     );
   }

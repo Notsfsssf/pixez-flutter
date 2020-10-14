@@ -47,7 +47,6 @@ class _ResultPageState extends State<ResultPage> {
         appBar: AppBar(
           title: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
-              indicatorColor: Theme.of(context).cardColor,
               tabs: [
                 Tab(
                   text: I18n.of(context).illust,

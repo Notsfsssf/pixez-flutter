@@ -106,36 +106,45 @@ class _ResultIllustListState extends State<ResultIllustList> {
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Row(
-                children: [
-                  FlatButton(
-                    padding: const EdgeInsets.all(8.0),
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return SearchSuggestionPage(preword: widget.word,);
-                      }));
-                    },
-                    child: Text(widget.word),
-                  )
-                ],
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SearchSuggestionPage(
+                            preword: widget.word,
+                          )));
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 2 / 3,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        widget.word,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              Row(
-                children: [
-                  IconButton(
-                      icon: Icon(Icons.date_range),
-                      onPressed: () {
-                        _buildShowDateRange(context);
-                      }),
-                  IconButton(
-                      icon: Icon(Icons.sort),
-                      onPressed: () {
-                        _buildShowBottomSheet(context);
-                        // _showMaterialBottom();
-                      }),
-                ],
+              Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.date_range),
+                        onPressed: () {
+                          _buildShowDateRange(context);
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.sort),
+                        onPressed: () {
+                          _buildShowBottomSheet(context);
+                          // _showMaterialBottom();
+                        }),
+                  ],
+                ),
               )
             ],
           ),
@@ -151,7 +160,15 @@ class _ResultIllustListState extends State<ResultIllustList> {
       DateTime.fromMillisecondsSinceEpoch(
           DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000)));
 
-  Future _buildShowDateRange(BuildContext context) {
+  Future _buildShowDateRange(BuildContext context) async {
+    // await showDateRangePicker(
+    //     context: context,
+    //     locale: I18n.delegate.supportedLocales[
+    //         userSetting.toRealLanguageNum(userSetting.languageNum)],
+    //     firstDate: DateTime.fromMillisecondsSinceEpoch(
+    //         DateTime.now().millisecondsSinceEpoch -
+    //             (24 * 60 * 60 * 365 * 1000 * 8)),
+    //     lastDate: DateTime.now());
     return showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(

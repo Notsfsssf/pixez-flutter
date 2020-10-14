@@ -47,7 +47,6 @@ class _RankPageState extends State<RankPage>
   ];
   var boolList = Map<int, bool>();
   DateTime nowDate;
-
   @override
   void initState() {
     nowDate = DateTime.now();
@@ -70,6 +69,7 @@ class _RankPageState extends State<RankPage>
   }
 
   DateTime nowDateTime = DateTime.now();
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +88,11 @@ class _RankPageState extends State<RankPage>
             children: <Widget>[
               AppBar(
                 title: TabBar(
+                  onTap: (i) {
+                    this.index = i;
+                  },
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
-                  indicatorColor: Theme.of(context).cardColor,
                   tabs: <Widget>[
                     for (var i in titles)
                       Tab(
@@ -106,8 +108,8 @@ class _RankPageState extends State<RankPage>
                       var date = await showDatePicker(
                           context: context,
                           initialDate: nowDateTime,
-                          locale: I18n.delegate
-                              .supportedLocales[userSetting.languageNum],
+                          locale: I18n.delegate.supportedLocales[userSetting
+                              .toRealLanguageNum(userSetting.languageNum)],
                           firstDate: DateTime(2007, 8),
                           //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
                           lastDate: nowdate);
@@ -129,12 +131,13 @@ class _RankPageState extends State<RankPage>
               ),
               Expanded(
                 child: TabBarView(
-                    children: rankStore.modeList
-                        .map((element) => RankModePage(
-                              date: dateTime,
-                              mode: element,
-                            ))
-                        .toList()),
+                    children: [
+                      for (var element in rankStore.modeList)
+                        RankModePage(
+                          date: dateTime,
+                          mode: element,
+                        )
+                    ]),
               )
             ],
           ),
@@ -160,6 +163,7 @@ class _RankPageState extends State<RankPage>
                     itemCount: boolList.length,
                     itemBuilder: (context, index) {
                       return CheckboxListTile(
+                        activeColor: Theme.of(context).accentColor,
                         title:
                             Text(I18n.of(context).mode_list.split(' ')[index]),
                         onChanged: (bool value) {

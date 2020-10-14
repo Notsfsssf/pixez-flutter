@@ -19,12 +19,14 @@ import 'package:flutter/material.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
+import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class PainterCard extends StatelessWidget {
   final UserPreviews user;
-
-  const PainterCard({Key key, this.user}) : super(key: key);
+  final bool isNovel;
+  const PainterCard({Key key, this.user, this.isNovel = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,11 @@ class PainterCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (BuildContext context) {
+          if (isNovel) {
+            return NovelUserPage(
+              id: user.user.id,
+            );
+          }
           return UsersPage(
             id: user.user.id,
           );

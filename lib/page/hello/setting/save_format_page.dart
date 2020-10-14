@@ -27,6 +27,7 @@ class SaveFormatPage extends StatefulWidget {
 class _SaveFormatPageState extends State<SaveFormatPage> {
   TextEditingController _textEditingController;
   final badText = ['/', '\\', ':', ' '];
+
   @override
   void initState() {
     _textEditingController = TextEditingController(text: userSetting.format);
@@ -67,6 +68,7 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
             extentOffset: textSelection.start + insertText.length);
       });
   String intialFormat = "{illust_id}_p{part}";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +90,11 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
                     needBack = true;
                   }
                 });
+                if (!_textEditingController.text.contains('{part}')) {
+                  BotToast.showText(
+                      text: I18n.of(context).save_format_lose_part_warning);
+                  return;
+                }
                 if (_textEditingController.text.isNotEmpty && !needBack)
                   Navigator.of(context).pop(_textEditingController.text);
               }),

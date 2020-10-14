@@ -73,7 +73,6 @@ create table $tableIllustPersist (
   }
 
   Future<IllustPersist> insert(IllustPersist todo) async {
-    print(todo.toJson());
     final result = await getAccount(todo.illustId);
     if (result != null) {
       todo.id = result.id;

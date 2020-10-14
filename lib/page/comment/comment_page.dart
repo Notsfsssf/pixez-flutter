@@ -40,7 +40,6 @@ class _CommentPageState extends State<CommentPage> {
   RefreshController easyRefreshController;
   CommentStore _store;
 
-
   @override
   void initState() {
     _editController = TextEditingController();
@@ -141,7 +140,9 @@ class _CommentPageState extends State<CommentPage> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(top: 8.0),
-                                        child: Text(comment.date.toString().toShortTime()),
+                                        child: Text(comment.date
+                                            .toString()
+                                            .toShortTime()),
                                       )
                                     ],
                                   ),
@@ -179,28 +180,36 @@ class _CommentPageState extends State<CommentPage> {
                         child: Padding(
                           padding:
                               const EdgeInsets.only(bottom: 2.0, right: 8.0),
-                          child: TextField(
-                            controller: _editController,
-                            decoration: InputDecoration(
-                                labelText:
-                                    "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
-                                suffixIcon: IconButton(
-                                    icon: Icon(Icons.reply),
-                                    onPressed: () async {
-                                      final client = apiClient;
-                                      String txt = _editController.text.trim();
-                                      try {
-                                        if (txt.isNotEmpty)
-                                          Response reponse = await client
-                                              .postIllustComment(widget.id, txt,
-                                                  parent_comment_id:
-                                                      parentCommentId);
-                                        _editController.clear();
-                                        _store.fetch();
-                                      } catch (e) {
-                                        print(e);
-                                      }
-                                    })),
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                                primaryColor: Theme.of(context).accentColor),
+                            child: TextField(
+                              controller: _editController,
+                              decoration: InputDecoration(
+                                  labelText:
+                                      "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                  suffixIcon: IconButton(
+                                      icon: Icon(
+                                        Icons.reply,
+                                      ),
+                                      onPressed: () async {
+                                        final client = apiClient;
+                                        String txt =
+                                            _editController.text.trim();
+                                        try {
+                                          if (txt.isNotEmpty)
+                                            Response reponse =
+                                                await client.postIllustComment(
+                                                    widget.id, txt,
+                                                    parent_comment_id:
+                                                        parentCommentId);
+                                          _editController.clear();
+                                          _store.fetch();
+                                        } catch (e) {
+                                          print(e);
+                                        }
+                                      })),
+                            ),
                           ),
                         ),
                       ),

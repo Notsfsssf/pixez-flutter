@@ -54,6 +54,7 @@ abstract class _IllustStoreBase with Store {
         if (e.response != null) {
           if (e.response.statusCode == HttpStatus.notFound) {
             errorMessage = '404 Not Found';
+            return;
           }
           errorMessage = ErrorMessage.fromJson(e.response.data).error.message;
         } else {

@@ -49,11 +49,14 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    child: widget.userDetail.user.comment.isNotEmpty
-                        ? SelectableHtml(data: widget.userDetail.user.comment)
-                        : SelectableHtml(
-                            data: '~',
-                          ),
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: widget.userDetail.user.comment.isNotEmpty
+                            ? SelectableHtml(
+                                data: widget.userDetail.user.comment)
+                            : SelectableHtml(
+                                data: '~',
+                              )),
                   ),
                 ),
                 Padding(

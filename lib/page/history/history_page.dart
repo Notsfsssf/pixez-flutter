@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -37,51 +38,64 @@ class HistoryPage extends StatelessWidget {
 
   Widget buildBody() => Observer(builder: (context) {
         var reIllust = _store.data.reversed.toList();
-        if (reIllust.isNotEmpty)
-          return GridView.builder(
-              itemCount: reIllust.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return IllustPage(
-                            id: reIllust[index].illustId,
-                            store: IllustStore(reIllust[index].illustId, null));
-                      }));
-                    },
-                    onLongPress: () async {
-                      final result = await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("${I18n.of(context).delete}?"),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text(I18n.of(context).ok),
-                                  onPressed: () {
-                                    Navigator.of(context).pop("OK");
-                                  },
-                                ),
-                                FlatButton(
-                                  child: Text(I18n.of(context).cancel),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ],
-                            );
-                          });
-                      if (result == "OK") {
-                        _store.delete(reIllust[index].illustId);
-                      }
-                    },
-                    child: Card(
-                        margin: EdgeInsets.all(8),
-                        child: PixivImage(reIllust[index].pictureUrl)));
-              });
+        if (reIllust.isNotEmpty){
+          // return Stepper(steps: [
+          //   for(var i in reIllust)
+          //     Step(title: Text(i.time.toString()), content: PixivImage(i.pictureUrl))
+          // ]);
+          return AnimationLimiter(
+            child: GridView.builder(
+                itemCount: reIllust.length,
+                gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                itemBuilder: (context, index) {
+                  return AnimationConfiguration.staggeredGrid(
+                    position: index,
+                    columnCount: 2,
+                    child: ScaleAnimation(
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(builder: (BuildContext context) {
+                                  return IllustPage(
+                                      id: reIllust[index].illustId,
+                                      store: IllustStore(reIllust[index].illustId, null));
+                                }));
+                          },
+                          onLongPress: () async {
+                            final result = await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("${I18n.of(context).delete}?"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text(I18n.of(context).cancel),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      FlatButton(
+                                        child: Text(I18n.of(context).ok),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("OK");
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                            if (result == "OK") {
+                              _store.delete(reIllust[index].illustId);
+                            }
+                          },
+                          child: Card(
+                              margin: EdgeInsets.all(8),
+                              child: PixivImage(reIllust[index].pictureUrl))),
+                    ),
+                  );
+                }),
+          );
+        }
         return Center(
           child: Container(),
         );
@@ -104,17 +118,18 @@ class HistoryPage extends StatelessWidget {
                           "${I18n.of(context).delete} ${I18n.of(context).all}?"),
                       actions: <Widget>[
                         FlatButton(
+                          child: Text(I18n.of(context).cancel),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        FlatButton(
                           child: Text(I18n.of(context).ok),
                           onPressed: () {
                             Navigator.of(context).pop("OK");
                           },
                         ),
-                        FlatButton(
-                          child: Text(I18n.of(context).cancel),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
+
                       ],
                     );
                   });

@@ -32,16 +32,19 @@ class NovelUserBookmarkPage extends HookWidget {
         () => apiClient.getUserBookmarkNovel(id, restrict.value));
     return Column(
       children: [
-        int.parse(accountStore.now.userId) == id
-            ? IconButton(
-                icon: Icon(Icons.list),
-                onPressed: () {
-                  _buildShowModalBottomSheet(context, futureGet);
-                })
-            : Visibility(
-                child: Container(height: 0),
-                visible: false,
-              ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: int.parse(accountStore.now.userId) == id
+              ? IconButton(
+                  icon: Icon(Icons.list),
+                  onPressed: () {
+                    _buildShowModalBottomSheet(context, futureGet);
+                  })
+              : Visibility(
+                  child: Container(height: 0),
+                  visible: false,
+                ),
+        ),
         Expanded(
           child: NovelLightingList(
             futureGet: futureGet.value,
@@ -55,6 +58,8 @@ class NovelUserBookmarkPage extends HookWidget {
       BuildContext context, ValueNotifier<FutureGet> futureGet) {
     return showModalBottomSheet(
         context: context,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
         builder: (context) {
           return SafeArea(
             child: Column(

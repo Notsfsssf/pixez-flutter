@@ -15,6 +15,7 @@
  */
 
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -35,9 +36,10 @@ class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   SplashStore splashStore;
+
   @override
   void initState() {
-    splashStore = SplashStore(OnezeroClient())..fetch();
+    splashStore = SplashStore(OnezeroClient());
     controller =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
     initMethod();
@@ -46,6 +48,7 @@ class _SplashPageState extends State<SplashPage>
   }
 
   ReactionDisposer reactionDisposer, userDisposer;
+
   initMethod() {
     userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
       if (userSetting.disableBypassSni) {
@@ -53,33 +56,46 @@ class _SplashPageState extends State<SplashPage>
             'https://${ApiClient.BASE_API_URL_HOST}';
         oAuthClient.httpClient.options.baseUrl =
             'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
+        // Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) =>
+        //             Platform.isIOS ? HelloPage() : NovelRail()));
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+                Platform.isIOS ? HelloPage() : AndroidHelloPage()));
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
-      if (!userSetting.disableBypassSni) {
+      if (false && !userSetting.disableBypassSni) {
         try {
           if (splashStore.onezeroResponse != null) {
             var address = splashStore.onezeroResponse.answer.first.data;
             print('address:$address');
             if (address != null && address.isNotEmpty) {
               apiClient.httpClient.options.baseUrl = 'https://$address';
+              apiClient.httpClient.options.headers['host'] =
+                  'https://${ApiClient.BASE_API_URL_HOST}';
               oAuthClient.httpClient.options.baseUrl = 'https://$address';
+              oAuthClient.httpClient.options.headers['host'] =
+                  'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
             }
           }
         } catch (e) {
           print(e);
         }
       }
+
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) =>
-                  Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+              Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+    });
+    Future.delayed(Duration(seconds: 2), () {
+      if (mounted) splashStore.fetch();
     });
   }
 

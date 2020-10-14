@@ -13,10 +13,12 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/section_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 
@@ -24,6 +26,7 @@ class ColorPickPage extends HookWidget {
   final Color initialColor;
 
   ColorPickPage({@required this.initialColor});
+
   Color _stringToColor(String colorString) {
     String valueString =
         colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
@@ -86,7 +89,7 @@ class ColorPickPage extends HookWidget {
                       );
                     });
                 if (result != null) {
-                  Color color = _stringToColor(result);//迅速throw出来
+                  Color color = _stringToColor(result); //迅速throw出来
                   pickerColor.value = color;
                 }
               }),
@@ -120,7 +123,7 @@ class ThemePage extends StatefulWidget {
   _ThemePageState createState() => _ThemePageState();
 }
 
-class _ThemePageState extends State<ThemePage> {
+class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   final skinList = [
     ThemeData(
       brightness: Brightness.light,
@@ -180,6 +183,11 @@ class _ThemePageState extends State<ThemePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       return Scaffold(
@@ -188,6 +196,29 @@ class _ThemePageState extends State<ThemePage> {
         ),
         body: ListView(
           children: <Widget>[
+            Observer(builder: (context) {
+              return Card(
+                child: TabBar(
+                    controller: TabController(
+                      length: 3,
+                      initialIndex:
+                          ThemeMode.values.indexOf(userSetting.themeMode),
+                      vsync: this,
+                    ),
+                    onTap: (i) {
+                      userSetting.setThemeMode(i);
+                    },
+                    tabs: [
+                      Tab(
+                        text: I18n.of(context).system,
+                      ),
+                      Tab(
+                        text: I18n.of(context).light,
+                      ),
+                      Tab(text: I18n.of(context).dark)
+                    ]),
+              );
+            }),
             Card(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

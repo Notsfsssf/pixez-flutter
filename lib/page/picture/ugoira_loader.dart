@@ -21,6 +21,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 
@@ -42,7 +43,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
   }
 
   bool isEncoding = false;
-   static const platform = const MethodChannel('samples.flutter.dev/battery');
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -58,17 +59,17 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     content: Text(I18n.of(context).encode_message),
                     actions: <Widget>[
                       FlatButton(
-                        child: Text("OK"),
+                        child: Text(I18n.of(context).cancel),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text(I18n.of(context).ok),
                         onPressed: () {
                           Navigator.of(context).pop("OK");
                         },
                       ),
-                      FlatButton(
-                        child: Text("CANCEL"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
                     ],
                   );
                 });
@@ -76,10 +77,12 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
               try {
                 isEncoding = true;
                 platform.invokeMethod('getBatteryLevel', {
-                  "path":_store.drawPool.first.parent.path,
-                  "delay":  _store
-                  .ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay,
-                  "name": widget.id.toString()
+                  "path": _store.drawPool.first.parent.path,
+                  "delay": _store
+                      .ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay,
+                  "name": userSetting.singleFolder
+                      ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
+                      : "${widget.id}",
                 });
                 BotToast.showCustomText(
                     toastBuilder: (_) => Text("encoding..."));

@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -28,6 +29,7 @@ class BookmarkPage extends StatefulWidget {
   final String restrict;
   final String tag;
   final bool isNested;
+
   const BookmarkPage({
     Key key,
     @required this.id,
@@ -42,11 +44,12 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   FutureGet futureGet;
+  String restrict = 'public';
 
   @override
   void initState() {
-    futureGet =
-        () => apiClient.getBookmarksIllust(widget.id, widget.restrict, null);
+    restrict = widget.restrict;
+    futureGet = () => apiClient.getBookmarksIllust(widget.id, restrict, null);
     super.initState();
   }
 
@@ -54,69 +57,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Widget build(BuildContext context) {
     if (accountStore.now != null) {
       if (int.parse(accountStore.now.userId) == widget.id) {
-        return LightingList(
-          source: futureGet,
-          header: Container(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.toys),
-                  onPressed: () async {
-                    final result = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => UserBookmarkTagPage()));
-                    if (result != null) {
-                      String tag = result['tag'];
-                      String restrict = result['restrict'];
-                      setState(() {
-                        futureGet = () => apiClient.getBookmarksIllust(
-                            widget.id, restrict, tag);
-                      });
-                    }
-                  }),
-              IconButton(
-                  icon: Icon(Icons.list),
-                  onPressed: () {
-                    showModalBottomSheet(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                        ),
-                        context: context,
-                        builder: (context) => SafeArea(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                    title: Text(I18n.of(context).public),
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        futureGet = () =>
-                                            apiClient.getBookmarksIllust(
-                                                widget.id, 'public', null);
-                                      });
-                                    },
-                                  ),
-                                  ListTile(
-                                    title: Text(I18n.of(context).private),
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        futureGet = () =>
-                                            apiClient.getBookmarksIllust(
-                                                widget.id, 'private', null);
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ));
-                  }),
-            ],
-          )),
+        return Stack(
+          children: [
+            LightingList(
+              onChange: () {},
+              source: futureGet,
+              header: Container(
+                height: 45,
+              ),
+            ),
+            buildTopChip(context)
+          ],
         );
       }
       return LightingList(
@@ -126,5 +77,55 @@ class _BookmarkPageState extends State<BookmarkPage> {
     } else {
       return Container();
     }
+  }
+
+  Widget buildTopChip(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SortGroup(
+            children: [I18n.of(context).public, I18n.of(context).private],
+            onChange: (index) {
+              if (index == 0)
+                setState(() {
+                  futureGet = () => apiClient.getBookmarksIllust(
+                      widget.id, restrict = 'public', null);
+                });
+              if (index == 1)
+                setState(() {
+                  futureGet = () => apiClient.getBookmarksIllust(
+                      widget.id, restrict = 'private', null);
+                });
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: InkWell(
+              onTap: () async {
+                final result = await Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => UserBookmarkTagPage()));
+                if (result != null) {
+                  String tag = result['tag'];
+                  String restrict = result['restrict'];
+                  setState(() {
+                    futureGet = () =>
+                        apiClient.getBookmarksIllust(widget.id, restrict, tag);
+                  });
+                }
+              },
+              child: Chip(
+                label: Icon(Icons.sort),
+                backgroundColor: Theme.of(context).cardColor,
+                elevation: 4.0,
+                padding: EdgeInsets.all(0.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

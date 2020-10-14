@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.9+46
+version: 1.2.1+51
 
 environment:
   sdk: ">=2.9.1 <3.0.0"
@@ -24,8 +24,8 @@ dependencies:
   dio: ^3.0.10
   crypto: any
   sqflite: ^1.3.1
-  path_provider: ^1.6.11
-  shared_preferences: ^0.5.10
+  path_provider: ^1.6.18
+  shared_preferences: ^0.5.12
   share: ^0.6.5
   share_extend: ^1.1.9
   permission_handler: ^5.0.1+1
@@ -34,13 +34,11 @@ dependencies:
   url_launcher: ^5.5.2
   bot_toast: ^3.0.4
   package_info: ^0.4.3
-  json_serializable: ^3.4.1
   uni_links: ^0.4.0
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
   flutter_inapp_purchase: ^2.2.0
-  photo_view: ^0.10.2
-  flutter_widget_from_html_core: ^0.4.3
+  flutter_widget_from_html_core: ^0.5.0+6
   extended_nested_scroll_view: ^1.0.1
   scrollable_positioned_list: ^0.1.7
   flutter_date_pickers: ^0.1.7
@@ -49,14 +47,17 @@ dependencies:
   flutter_displaymode: ^0.1.0
   receive_sharing_intent: ^1.4.1
   like_button: ^1.0.1
-  badges: ^1.1.1
   flutter_hooks: ^0.13.2
-  flutter_downloader: ^1.5.0
-  pull_to_refresh: ^1.6.1
-  extended_image: ^1.1.1
+  pull_to_refresh: ^1.6.2
+  extended_image: ^1.1.2
   flutter_colorpicker: ^0.3.4
-  waterfall_flow: ^2.0.2
+  waterfall_flow: ^2.0.3
   animations: ^1.1.2
+  extended_text: ^4.0.0
+  backdrop: ^0.4.3
+  font_awesome_flutter: ^8.8.1
+  json_annotation: ^3.0.1
+  flutter_staggered_animations: ^0.1.2
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
@@ -65,6 +66,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.10.1
   mobx_codegen: ^1.1.0+1
+  json_serializable: ^3.4.1
 
 
 
@@ -91,6 +93,8 @@ flutter:
     - assets/images/weixin_qr.png
     - assets/images/h.jpg
     - assets/images/nine.jpg
+    - assets/images/step1.png
+    - assets/images/step2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -103,12 +107,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+     - family: iconfont
+       fonts:
+         - asset: assets/fonts/iconfont.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

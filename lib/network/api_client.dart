@@ -17,6 +17,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
@@ -33,7 +34,7 @@ class ApiClient {
   Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
-  static const BASE_API_URL_HOST = 'app-api.pixiv.net';
+  static String BASE_API_URL_HOST = 'app-api.pixiv.net';
   static String Accept_Language = "zh-CN";
 
   String getIsoDate() {
@@ -105,7 +106,8 @@ class ApiClient {
 
   Future<Response> getUserBookmarkNovel(int user_id, String restrict) async {
     return httpClient.get('/v1/user/bookmarks/novel',
-        queryParameters: {"user_id": user_id, "restrict": restrict});
+        queryParameters:
+            notNullMap({"user_id": user_id, "restrict": restrict}));
   }
 
   Future<Response> postNovelBookmarkAdd(int novel_id, String restrict) async {
@@ -120,9 +122,23 @@ class ApiClient {
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
+  Future<Response> getNovelRanking(String mode, date) async {
+    return httpClient.get("/v1/novel/ranking?filter=for_android",
+        queryParameters: notNullMap({"mode": mode, "date": date}));
+  }
+
   Future<Response> getNovelText(int novel_id) async {
     return httpClient.get("/v1/novel/text",
         queryParameters: notNullMap({"novel_id": novel_id}));
+  }
+
+    //   @GET("/v2/illust/follow")
+  // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
+  Future<Response> getNovelFollow(String restrict) {
+    return httpClient.get(
+      "/v1/novel/follow",
+      queryParameters: {"restrict": restrict},
+    );
   }
 
   Future<Response> getNovelRecommended() async {
@@ -133,6 +149,13 @@ class ApiClient {
   Future<Response> getRecommend() async {
     return httpClient.get(
         "/v1/illust/recommended?filter=for_ios&include_ranking_label=true");
+  }
+  //
+  // @GET("/v1/user/recommended?filter=for_android")
+  // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
+  Future<Response> getUserRecommended() async {
+    return httpClient.get(
+        "/v1/user/recommended?filter=for_android");
   }
 
   Future<Response> getUser(int id) async {

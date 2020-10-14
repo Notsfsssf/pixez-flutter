@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +30,6 @@ part 'user_setting.g.dart';
 class UserSetting = _UserSettingBase with _$UserSetting;
 
 abstract class _UserSettingBase with Store {
-
   SharedPreferences prefs;
   static const String ZOOM_QUALITY_KEY = "zoom_quality";
   static const String SINGLE_FOLDER_KEY = "single_folder";
@@ -38,6 +38,19 @@ abstract class _UserSettingBase with Store {
   static const String CROSS_COUNT_KEY = "cross_count";
   static const String PICTURE_QUALITY_KEY = "picture_quality";
   static const String THEME_DATA_KEY = "theme_data";
+  static const String IS_BANGS_KEY = "is_bangs";
+  static const String STORE_PATH_KEY = "save_store";
+  static const String ISHELPLESSWAY_KEY = "is_helplessway";
+  static const String THEME_MODE_KEY = "theme_mode";
+  static const String IS_RETURN_AGAIN_TO_EXIT_KEY="is_return_again_to_exit";
+  @observable
+  bool isReturnAgainToExit=true;
+  @observable
+  bool isHelplessWay = false;
+  @observable
+  String storePath = null;
+  @observable
+  bool isBangs = false;
   @observable
   int zoomQuality = 0;
   @observable
@@ -57,13 +70,32 @@ abstract class _UserSettingBase with Store {
   @observable
   bool hIsNotAllow = false;
 
-
   @observable
   String format = "";
   static const String intialFormat = "{illust_id}_p{part}";
+
+  @action
+  setIsReturnAgainToExit(bool value) async {
+    await prefs.setBool(IS_RETURN_AGAIN_TO_EXIT_KEY, value);
+    this.isReturnAgainToExit = value;
+  }
+
+  @action
+  setStorePath(String path) async {
+    await prefs.setString(STORE_PATH_KEY, path);
+    storePath = path;
+  }
+
+  @action
+  setIsHelplessWay(bool value) async {
+    await prefs.setBool(ISHELPLESSWAY_KEY, value);
+    isHelplessWay = value;
+    await DocumentPlugin.isHelplessWay();
+  }
+
   Color _stringToColor(String colorString) {
     String valueString =
-        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
+    colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
     int value = int.parse(valueString, radix: 16);
     Color otherColor = new Color(value);
     return otherColor;
@@ -72,9 +104,28 @@ abstract class _UserSettingBase with Store {
   @observable
   ThemeData themeData = ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.cyan[500],
       accentColor: Colors.cyan[400],
-      appBarTheme: AppBarTheme(brightness: Brightness.light));
+      primaryColor: Colors.white,
+      appBarTheme: AppBarTheme(
+        brightness: Brightness.light,
+        // color: Colors.transparent,
+        // elevation: 0.0,
+      ));
+  @observable
+  ThemeMode themeMode = ThemeMode.system;
+
+  @action
+  setThemeMode(int themeMode) async {
+    await prefs.setInt(THEME_MODE_KEY, themeMode);
+    this.themeMode = ThemeMode.values[themeMode];
+  }
+
+  @action
+  setIsBangs(bool v) async {
+    await prefs.setBool(IS_BANGS_KEY, v);
+    isBangs = v;
+  }
+
   @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -86,6 +137,16 @@ abstract class _UserSettingBase with Store {
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
+    isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
+    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY) ?? false;
+    int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
+    isReturnAgainToExit= prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY)??true;
+    for (var i in ThemeMode.values) {
+      if (i.index == themeModeIndex) {
+        this.themeMode = i;
+        break;
+      }
+    }
     var colors = prefs.getStringList(THEME_DATA_KEY);
     if (colors != null) {
       if (colors.length < 2) {
@@ -95,8 +156,12 @@ abstract class _UserSettingBase with Store {
           themeData = ThemeData(
             brightness: Brightness.light,
             accentColor: _stringToColor(colors[0]),
-            primaryColor: _stringToColor(colors[1]),
-            appBarTheme: AppBarTheme(brightness: Brightness.light),
+            primaryColor: Colors.white,
+            appBarTheme: AppBarTheme(
+              brightness: Brightness.light,
+              // color: Colors.transparent,
+              // elevation: 0.0,
+            ),
           );
         } catch (e) {
           print(e);
@@ -117,7 +182,22 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    I18n.load(I18n.delegate.supportedLocales[languageNum]);
+    I18n.load(I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)]);
+  }
+
+  int toRealLanguageNum(int num) {
+    switch (num) {
+      case 1:
+        return 2;
+        break;
+      case 2:
+        return 3;
+        break;
+      case 3:
+        return 1;
+        break;
+    }
+    return num;
   }
 
   @action
@@ -129,8 +209,8 @@ abstract class _UserSettingBase with Store {
       appBarTheme: AppBarTheme(
         brightness: Brightness.light,
       ),
+      primaryColor: Colors.white,
       accentColor: _stringToColor(data[0]),
-      primaryColor: _stringToColor(data[1]),
     );
   }
 
@@ -176,9 +256,7 @@ abstract class _UserSettingBase with Store {
     singleFolder = value;
   }
 
-
-
-  final languageList = ['en-US', 'zh-CN', 'zh-TW'];
+  final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
 
   @action
   setLanguageNum(int value) async {
@@ -187,7 +265,8 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    final local = I18n.delegate.supportedLocales[languageNum];
+    final local =
+    I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
     I18n.load(local);
   }
 

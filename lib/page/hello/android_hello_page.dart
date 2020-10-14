@@ -16,15 +16,16 @@
 
 import 'dart:async';
 
-import 'package:dio/dio.dart';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/constants.dart';
+import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
-import 'package:pixez/page/about/last_release.dart';
+import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
@@ -37,7 +38,19 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+class KeepContent extends StatelessWidget {
+  final Widget item;
+
+  const KeepContent({Key key, this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: item,
+    );
+  }
+}
 
 class AndroidHelloPage extends StatefulWidget {
   @override
@@ -52,29 +65,52 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     SearchPage(),
     SettingPage()
   ];
+  DateTime _preTime;
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      if (accountStore.now != null) {
-        return _buildScaffold(context);
-      }
-      return LoginPage();
-    });
+    return WillPopScope(
+      onWillPop: () async {
+        if (!userSetting.isReturnAgainToExit) {
+          return true;
+        }
+        if (_preTime == null ||
+            DateTime.now().difference(_preTime) > Duration(seconds: 2)) {
+          _preTime = DateTime.now();
+          BotToast.showText(text: I18n.of(context).return_again_to_exit);
+          return false;
+        }
+        return true;
+      },
+      child: Observer(builder: (context) {
+        if (accountStore.now != null) {
+          return _buildScaffold(context);
+        }
+        return LoginPage();
+      }),
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-          controller: _pageController,
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return _pageList[index];
-          }),
+        itemBuilder: (context, index) {
+          return _pageList[index];
+        },
+        onPageChanged: (index) {
+          setState(() {
+            this.index = index;
+          });
+        },
+        controller: _pageController,
+        itemCount: 5,
+      ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).accentColor,
           currentIndex: index,
           onTap: (index) {
+            if (this.index == index) {}
             setState(() {
               this.index = index;
             });
@@ -82,24 +118,26 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+                icon: Icon(Icons.home), label: I18n.of(context).home),
             BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit), title: Text(I18n.of(context).rank)),
+                icon: Icon(
+                  CustomIcons.leaderboard,
+                ),
+                label: I18n.of(context).rank),
             BottomNavigationBarItem(
-                icon: Icon(Icons.bookmark),
-                title: Text(I18n.of(context).quick_view)),
+                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
+                icon: Icon(Icons.search), label: I18n.of(context).search),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                title: Text(I18n.of(context).setting)),
+                icon: Icon(Icons.settings), label: I18n.of(context).setting),
           ]),
     );
   }
 
   int index;
   PageController _pageController;
-  StreamSubscription _intentDataStreamSubscription, _sub;
+  StreamSubscription _intentDataStreamSubscription;
+  StreamSubscription _sub;
 
   initPlatform() async {
     try {
@@ -113,7 +151,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
   }
 
-  judgePushPage(Uri link) {
+  void judgePushPage(Uri link) {
     if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
@@ -225,27 +263,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   bool hasNewVersion = false;
 
-  checkUpdate() async {
-    try {
-      Response response =
-          await Dio(BaseOptions(baseUrl: 'https://api.github.com'))
-              .get('/repos/Notsfsssf/pixez-flutter/releases/latest');
-      final result = LastRelease.fromJson(response.data);
-      List<int> versionNums =
-          result.tagName.split('.').map((e) => int.parse(e));
-      List<int> newNums = Constants.tagName.split('.').map((e) => int.parse(e));
-      for (int i = 0; i < versionNums.length; i++) {
-        if (versionNums[i] < newNums[i]) {
-          if (mounted) {
-            setState(() {
-              hasNewVersion = true;
-            });
-          }
-        }
-      }
-    } catch (e) {}
-  }
-
   @override
   void initState() {
     index = userSetting.welcomePageNum;
@@ -294,33 +311,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       );
     } else {
       if (await DocumentPlugin.needChoice()) {
-        await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                content: Text(I18n.of(context).saf_hint),
-                title: Text(I18n.of(context).choose_directory),
-                actions: [
-                  FlatButton(
-                      onPressed: () async {
-                        Constants.isGooglePlay || userSetting.disableBypassSni
-                            ? launch(
-                                "https://developer.android.com/training/data-storage/shared/documents-files")
-                            : launch(
-                                "https://developer.android.google.cn/training/data-storage/shared/documents-files");
-                      },
-                      child: Text(I18n.of(context).what_is_saf)),
-                  FlatButton(
-                      onPressed: () async {
-                        await DocumentPlugin.choiceFolder();
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).start))
-                ],
-              );
-            });
+        await showPathDialog(context, isFirst: true);
       }
     }
   }

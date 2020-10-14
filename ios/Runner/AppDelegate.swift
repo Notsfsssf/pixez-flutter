@@ -2,7 +2,6 @@ import UIKit
 import Flutter
 import MobileCoreServices
 import Photos
-import flutter_downloader
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -28,11 +27,6 @@ import flutter_downloader
             
         })
         GeneratedPluginRegistrant.register(with: self)
-        FlutterDownloaderPlugin.setPluginRegistrantCallback { registry in
-                if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
-                   FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
-                }
-        }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 

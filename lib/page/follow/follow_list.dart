@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -24,8 +25,8 @@ import 'package:pixez/page/painter/painter_list.dart';
 
 class FollowList extends StatefulWidget {
   final int id;
-
-  const FollowList({Key key, this.id}) : super(key: key);
+  final bool isNovel;
+  FollowList({Key key, this.id, this.isNovel = false}) : super(key: key);
 
   @override
   _FollowListState createState() => _FollowListState();
@@ -39,56 +40,32 @@ class _FollowListState extends State<FollowList> {
 
   @override
   void initState() {
-    futureGet = () => apiClient.getUserFollowing(widget.id,restrict);
+    futureGet = () => apiClient.getUserFollowing(widget.id, restrict);
+
     super.initState();
   }
 
+
+
   FutureGet futureGet;
   String restrict = 'public';
+
   Widget buildHeader() {
     return Observer(builder: (_) {
       return Visibility(
         visible: int.parse(accountStore.now.userId) == widget.id,
         child: Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-              icon: Icon(Icons.list),
-              onPressed: () {
-                showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16),
-                      ),
-                    ),
-                    context: context,
-                    builder: (context1) => SafeArea(
-                      child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(I18n.of(context).public),
-                                onTap: () {
-                                  setState(() {
-                                    futureGet = () => apiClient.getUserFollowing(
-                                        widget.id, 'public');
-                                  });
-                                  Navigator.of(context1).pop();
-                                },
-                              ),
-                              ListTile(
-                                title: Text(I18n.of(context).private),
-                                onTap: () {
-                                  setState(() {
-                                    futureGet = () => apiClient.getUserFollowing(
-                                        widget.id, 'private');
-                                  });
-                                  Navigator.of(context1).pop();
-                                },
-                              ),
-                            ],
-                          ),
-                    ));
-              }),
+          alignment: Alignment.topCenter,
+          child: SortGroup(
+            children: [I18n.of(context).public, I18n.of(context).private],
+            onChange: (index) {
+              setState(() {
+                restrict = index == 0 ? 'public' : 'private';
+                futureGet =
+                    () => apiClient.getUserFollowing(widget.id, restrict);
+              });
+            },
+          ),
         ),
       );
     });
@@ -96,14 +73,16 @@ class _FollowListState extends State<FollowList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: <Widget>[
-        buildHeader(),
-        Expanded(
-          child: PainterList(
-            futureGet: futureGet,
+        PainterList(
+          futureGet: futureGet,
+          isNovel: widget.isNovel,
+          header: Container(
+            height: 45,
           ),
         ),
+        buildHeader(),
       ],
     );
   }

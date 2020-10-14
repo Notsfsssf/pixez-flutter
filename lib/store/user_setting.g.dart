@@ -9,6 +9,67 @@ part of 'user_setting.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$UserSetting on _UserSettingBase, Store {
+  final _$isReturnAgainToExitAtom =
+      Atom(name: '_UserSettingBase.isReturnAgainToExit');
+
+  @override
+  bool get isReturnAgainToExit {
+    _$isReturnAgainToExitAtom.reportRead();
+    return super.isReturnAgainToExit;
+  }
+
+  @override
+  set isReturnAgainToExit(bool value) {
+    _$isReturnAgainToExitAtom.reportWrite(value, super.isReturnAgainToExit, () {
+      super.isReturnAgainToExit = value;
+    });
+  }
+
+  final _$isHelplessWayAtom = Atom(name: '_UserSettingBase.isHelplessWay');
+
+  @override
+  bool get isHelplessWay {
+    _$isHelplessWayAtom.reportRead();
+    return super.isHelplessWay;
+  }
+
+  @override
+  set isHelplessWay(bool value) {
+    _$isHelplessWayAtom.reportWrite(value, super.isHelplessWay, () {
+      super.isHelplessWay = value;
+    });
+  }
+
+  final _$storePathAtom = Atom(name: '_UserSettingBase.storePath');
+
+  @override
+  String get storePath {
+    _$storePathAtom.reportRead();
+    return super.storePath;
+  }
+
+  @override
+  set storePath(String value) {
+    _$storePathAtom.reportWrite(value, super.storePath, () {
+      super.storePath = value;
+    });
+  }
+
+  final _$isBangsAtom = Atom(name: '_UserSettingBase.isBangs');
+
+  @override
+  bool get isBangs {
+    _$isBangsAtom.reportRead();
+    return super.isBangs;
+  }
+
+  @override
+  set isBangs(bool value) {
+    _$isBangsAtom.reportWrite(value, super.isBangs, () {
+      super.isBangs = value;
+    });
+  }
+
   final _$zoomQualityAtom = Atom(name: '_UserSettingBase.zoomQuality');
 
   @override
@@ -175,6 +236,62 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$themeModeAtom = Atom(name: '_UserSettingBase.themeMode');
+
+  @override
+  ThemeMode get themeMode {
+    _$themeModeAtom.reportRead();
+    return super.themeMode;
+  }
+
+  @override
+  set themeMode(ThemeMode value) {
+    _$themeModeAtom.reportWrite(value, super.themeMode, () {
+      super.themeMode = value;
+    });
+  }
+
+  final _$setIsReturnAgainToExitAsyncAction =
+      AsyncAction('_UserSettingBase.setIsReturnAgainToExit');
+
+  @override
+  Future setIsReturnAgainToExit(bool value) {
+    return _$setIsReturnAgainToExitAsyncAction
+        .run(() => super.setIsReturnAgainToExit(value));
+  }
+
+  final _$setStorePathAsyncAction =
+      AsyncAction('_UserSettingBase.setStorePath');
+
+  @override
+  Future setStorePath(String path) {
+    return _$setStorePathAsyncAction.run(() => super.setStorePath(path));
+  }
+
+  final _$setIsHelplessWayAsyncAction =
+      AsyncAction('_UserSettingBase.setIsHelplessWay');
+
+  @override
+  Future setIsHelplessWay(bool value) {
+    return _$setIsHelplessWayAsyncAction
+        .run(() => super.setIsHelplessWay(value));
+  }
+
+  final _$setThemeModeAsyncAction =
+      AsyncAction('_UserSettingBase.setThemeMode');
+
+  @override
+  Future setThemeMode(int themeMode) {
+    return _$setThemeModeAsyncAction.run(() => super.setThemeMode(themeMode));
+  }
+
+  final _$setIsBangsAsyncAction = AsyncAction('_UserSettingBase.setIsBangs');
+
+  @override
+  Future setIsBangs(bool v) {
+    return _$setIsBangsAsyncAction.run(() => super.setIsBangs(v));
+  }
+
   final _$initAsyncAction = AsyncAction('_UserSettingBase.init');
 
   @override
@@ -274,6 +391,10 @@ mixin _$UserSetting on _UserSettingBase, Store {
   @override
   String toString() {
     return '''
+isReturnAgainToExit: ${isReturnAgainToExit},
+isHelplessWay: ${isHelplessWay},
+storePath: ${storePath},
+isBangs: ${isBangs},
 zoomQuality: ${zoomQuality},
 pictureQuality: ${pictureQuality},
 languageNum: ${languageNum},
@@ -284,7 +405,8 @@ disableBypassSni: ${disableBypassSni},
 singleFolder: ${singleFolder},
 hIsNotAllow: ${hIsNotAllow},
 format: ${format},
-themeData: ${themeData}
+themeData: ${themeData},
+themeMode: ${themeMode}
     ''';
   }
 }

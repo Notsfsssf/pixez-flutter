@@ -17,14 +17,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/directory/directory_page.dart';
+import 'package:pixez/page/directory/save_mode_choice_page.dart';
+import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PlatformPage extends StatefulWidget {
@@ -110,11 +113,13 @@ class _PlatformPageState extends State<PlatformPage> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.folder),
-                title: Text(I18n.of(context).save_path),
+                title: Text(
+                    '${I18n.of(context).save_path}(${userSetting.isHelplessWay ? I18n.of(context).old_way : 'SAF'})'),
                 subtitle: Text(path ?? ""),
                 onTap: () async {
-                  await DocumentPlugin.choiceFolder();
+                  await showPathDialog(context);
                   final path = await DocumentPlugin.getPath();
+                  debugPrint(path);
                   if (mounted) {
                     setState(() {
                       this.path = path;

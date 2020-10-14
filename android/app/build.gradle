@@ -46,7 +46,7 @@ if (project.hasProperty('dart-defines')) {
             .split(',')
             .collectEntries { entry ->
                 def pair = URLDecoder.decode(entry).split('=')
-                [(pair.first()): pair.last()]
+                [(pair.first()): pair.last()=="true"]
             }
 }
 print("\n" +
@@ -64,9 +64,12 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+def packageName = dartEnvironmentVariables.IS_GOOGLEPLAY?'com.perol.play.pixez' :'com.perol.pixez'
+println(packageName)
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -80,11 +83,11 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId dartEnvironmentVariables.IS_GOOGLEPLAY?'com.perol.play.pixez' :'com.perol.pixez'
+        applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 29
-        versionName "0.2.0 luigis"
+        versionCode 37
+        versionName "0.2.3X"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

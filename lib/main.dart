@@ -14,13 +14,12 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:ui';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -30,8 +29,8 @@ import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
+import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -39,9 +38,9 @@ final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
-main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(debug: false);
+final TopStore topStore = TopStore();
+
+main() {
   runApp(MyApp());
 }
 
@@ -51,11 +50,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ReceivePort _port = ReceivePort();
-
   @override
   void dispose() {
-    IsolateNameServer.removePortNameMapping('downloader');
     saveStore?.dispose();
     super.dispose();
   }
@@ -71,41 +67,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  initMethod() async {
-    bool success =
-        IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader');
-    if (!success) return;
-    _port.listen((dynamic data) async {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      if (status == DownloadTaskStatus.complete) {
-        String queryString = 'SELECT * FROM task WHERE task_id=\'$id\'';
-        final tasks =
-            await FlutterDownloader.loadTasksWithRawQuery(query: queryString);
-        if (tasks != null && tasks.isNotEmpty) {
-          String fullPath =
-              '${tasks.first.savedDir}${Platform.pathSeparator}${tasks.first.filename}';
-          File file = File(fullPath);
-          final uint8list = await file.readAsBytes();
-          final data = saveStore.maps[id];
-          await saveStore.saveToGallery(uint8list, data.illusts, data.fileName);
-          saveStore.streamController
-              .add(SaveStream(SaveState.SUCCESS, saveStore.maps[id].illusts));
-        }
-      }
-      if (status == DownloadTaskStatus.canceled) {}
-      if (status == DownloadTaskStatus.failed) {}
-    });
-    FlutterDownloader.registerCallback(downloadCallback);
-  }
-
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    SendPort send = IsolateNameServer.lookupPortByName('downloader');
-    if (send != null) send.send([id, status, progress]);
-    final SendPort send1 = IsolateNameServer.lookupPortByName('downloader_pro');
-    if (send1 != null) send1.send([id, status, progress]);
-  }
+  initMethod() async {}
 
   Future<void> clean() async {
     final path = await saveStore.findLocalPath();
@@ -130,11 +92,11 @@ class _MyAppState extends State<MyApp> {
         }),
         title: 'PixEz',
         builder: BotToastInit(),
+        themeMode: userSetting.themeMode,
         theme: userSetting.themeData,
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          accentColor: userSetting.themeData.accentColor,
-        ),
+        darkTheme: ThemeData.dark().copyWith(
+            accentColor: userSetting.themeData.accentColor,
+            indicatorColor: userSetting.themeData.accentColor),
         supportedLocales: I18n.delegate.supportedLocales,
         localizationsDelegates: [
           I18n.delegate,

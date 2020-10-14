@@ -21,6 +21,7 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 part 'novel_lighting_store.g.dart';
 
 class NovelLightingStore = _NovelLightingStoreBase with _$NovelLightingStore;
@@ -29,13 +30,19 @@ abstract class _NovelLightingStoreBase with Store {
   FutureGet source;
   final ApiClient _client = apiClient;
   final RefreshController _controller;
+
   _NovelLightingStoreBase(this.source, this._controller);
+
   String nextUrl;
   ObservableList<Novel> novels = ObservableList();
+  @observable
+  String errorMessage;
+
   @action
   Future<Void> fetch() async {
     nextUrl = null;
     _controller?.headerMode?.value = RefreshStatus.idle;
+    errorMessage = null;
     try {
       Response response = await source();
       NovelRecomResponse novelRecomResponse =
@@ -47,6 +54,7 @@ abstract class _NovelLightingStoreBase with Store {
       _controller.refreshCompleted();
     } catch (e) {
       print(e);
+      errorMessage = e.toString();
       _controller.refreshFailed();
     }
   }

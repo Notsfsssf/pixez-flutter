@@ -42,5 +42,4 @@ class _RankModePageState extends State<RankModePage> {
       ),
     );
   }
-
 }

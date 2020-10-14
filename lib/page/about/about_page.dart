@@ -192,7 +192,6 @@ class _AboutPageState extends State<AboutPage> {
               builder: (BuildContext context) {
                 return Container(
                   height: 200.0,
-                  color: Color(0xfff1f1f1),
                   child: Center(
                     child: Text("这里空空的，这个设计师显然没有什么话要说"),
                   ),

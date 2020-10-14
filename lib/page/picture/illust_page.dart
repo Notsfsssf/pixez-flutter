@@ -40,7 +40,6 @@ import 'package:pixez/exts.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share/share.dart';
 
-
 class IllustPage extends StatefulWidget {
   final int id;
   final String heroString;
@@ -188,6 +187,11 @@ class _IllustPageState extends State<IllustPage> {
                 ),
                 actions: <Widget>[
                   FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).cancel)),
+                  FlatButton(
                     child: Text(I18n.of(context).ok),
                     onPressed: () async {
                       final tags = bookMarkDetailResponse.bookmarkDetail.tags;
@@ -207,18 +211,11 @@ class _IllustPageState extends State<IllustPage> {
                       setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                     },
                   ),
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).cancel))
                 ],
               );
             },
           ));
   }
-
-
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     IllustDetailStore illustDetailStore = IllustDetailStore(illust);
@@ -321,73 +318,17 @@ class _IllustPageState extends State<IllustPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       _buildNameAvatar(context, illusts),
-                      illusts.metaPages.isNotEmpty
-                          ? ListTile(
-                              title: Text(I18n.of(context).muti_choice_save),
-                              leading: Icon(
-                                Icons.save,
-                              ),
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                List<bool> indexs =
-                                    List(illusts.metaPages.length);
-                                for (int i = 0;
-                                    i < illusts.metaPages.length;
-                                    i++) {
-                                  indexs[i] = false;
-                                }
-                                final result = await showDialog(
-                                  context: context,
-                                  child: StatefulBuilder(
-                                      builder: (context, setDialogState) {
-                                    return AlertDialog(
-                                      title: Text("Select"),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, "OK");
-                                          },
-                                          child: Text(I18n.of(context).ok),
-                                        ),
-                                        FlatButton(
-                                          child: Text(I18n.of(context).cancel),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        )
-                                      ],
-                                      content: Container(
-                                        width: double.maxFinite,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            return ListTile(
-                                              title: Text(index.toString()),
-                                              trailing: Checkbox(
-                                                  value: indexs[index],
-                                                  onChanged: (ischeck) {
-                                                    setDialogState(() {
-                                                      indexs[index] = ischeck;
-                                                    });
-                                                  }),
-                                            );
-                                          },
-                                          itemCount: illusts.metaPages.length,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                );
-                                switch (result) {
-                                  case "OK":
-                                    {
-                                      saveStore.saveChoiceImage(
-                                          illusts, indexs);
-                                    }
-                                }
-                              },
-                            )
-                          : Container(),
+                      if (illusts.metaPages.isNotEmpty)
+                        ListTile(
+                          title: Text(I18n.of(context).muti_choice_save),
+                          leading: Icon(
+                            Icons.save,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pop();
+                            _showMutiChoiceDialog(illusts, context);
+                          },
+                        ),
                       ListTile(
                         title: Text(I18n.of(context).copymessage),
                         leading: Icon(
@@ -415,6 +356,20 @@ class _IllustPageState extends State<IllustPage> {
                         },
                       ),
                       ListTile(
+                        leading: Icon(
+                          Icons.link,
+                        ),
+                        title: Text(I18n.of(context).link),
+                        onTap: () async {
+                          await Clipboard.setData(ClipboardData(
+                              text:
+                                  "https://www.pixiv.net/artworks/${widget.id}"));
+                          BotToast.showText(
+                              text: I18n.of(context).copied_to_clipboard);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
                         title: Text(I18n.of(context).ban),
                         leading: Icon(Icons.brightness_auto),
                         onTap: () {
@@ -437,15 +392,15 @@ class _IllustPageState extends State<IllustPage> {
                                       Text(I18n.of(context).report_message),
                                   actions: <Widget>[
                                     FlatButton(
-                                      child: Text("OK"),
+                                      child: Text(I18n.of(context).cancel),
                                       onPressed: () {
-                                        Navigator.of(context).pop("OK");
+                                        Navigator.of(context).pop("CANCEL");
                                       },
                                     ),
                                     FlatButton(
-                                      child: Text("CANCEL"),
+                                      child: Text(I18n.of(context).ok),
                                       onPressed: () {
-                                        Navigator.of(context).pop("CANCEL");
+                                        Navigator.of(context).pop("OK");
                                       },
                                     ),
                                   ],
@@ -454,15 +409,6 @@ class _IllustPageState extends State<IllustPage> {
                         },
                       )
                     ],
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.cancel,
-                    ),
-                    title: Text(I18n.of(context).cancel),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
                   ),
                   Container(
                     height: MediaQuery.of(context).padding.bottom,
@@ -504,25 +450,25 @@ class _IllustPageState extends State<IllustPage> {
       if (_illustStore.illusts != null) {
         final data = _illustStore.illusts;
         return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.expand_less),
-                    onPressed: () {
-                      itemScrollController.scrollTo(
-                          index: _illustStore.illusts.pageCount + 1,
-                          duration: Duration(seconds: 1),
-                          curve: Curves.easeInOutCubic);
-                    }),
-                IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: () {
-                      buildShowModalBottomSheet(context, _illustStore.illusts);
-                    })
-              ],
-            ),
+            // appBar: AppBar(
+            //   backgroundColor: Colors.transparent,
+            //   elevation: 0.0,
+            //   actions: <Widget>[
+            //     IconButton(
+            //         icon: Icon(Icons.expand_less),
+            //         onPressed: () {
+            //           itemScrollController.scrollTo(
+            //               index: _illustStore.illusts.pageCount + 1,
+            //               duration: Duration(seconds: 1),
+            //               curve: Curves.easeInOutCubic);
+            //         }),
+            //     IconButton(
+            //         icon: Icon(Icons.more_vert),
+            //         onPressed: () {
+            //           buildShowModalBottomSheet(context, _illustStore.illusts);
+            //         })
+            //   ],
+            // ),
             extendBodyBehindAppBar: true,
             extendBody: true,
             floatingActionButton: GestureDetector(
@@ -538,12 +484,57 @@ class _IllustPageState extends State<IllustPage> {
                 ),
               ),
             ),
-            body: _buildBody(context, data));
+            body: Stack(
+              children: [
+                _buildBody(context, data),
+                Column(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).padding.top,
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  icon: Icon(Icons.expand_less),
+                                  onPressed: () {
+                                    itemScrollController.scrollTo(
+                                        index:
+                                            _illustStore.illusts.pageCount + 1,
+                                        duration: Duration(seconds: 1),
+                                        curve: Curves.easeInOutCubic);
+                                  }),
+                              IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    buildShowModalBottomSheet(
+                                        context, _illustStore.illusts);
+                                  })
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ));
       } else {
         if (_illustStore.errorMessage != null) {
           return Scaffold(
             appBar: AppBar(),
-            body: Container(
+            body: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -553,10 +544,7 @@ class _IllustPageState extends State<IllustPage> {
                     child: Text(':(',
                         style: Theme.of(context).textTheme.headline4),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('${_illustStore.errorMessage}'),
-                  ),
+                  Text('${_illustStore.errorMessage}'),
                   RaisedButton(
                     onPressed: () {
                       _illustStore.fetch();
@@ -626,6 +614,7 @@ class _IllustPageState extends State<IllustPage> {
       itemPositionsListener: itemPositionsListener,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
+          if (!userSetting.isBangs) return Container();
           return Container(height: MediaQuery.of(context).padding.top - 56);
         }
         if (index <= data.pageCount) {
@@ -683,95 +672,7 @@ class _IllustPageState extends State<IllustPage> {
                             ),
                             onTap: () async {
                               Navigator.of(context).pop();
-                              List<bool> indexs = List(illust.metaPages.length);
-                              bool allOn = false;
-                              for (int i = 0;
-                                  i < illust.metaPages.length;
-                                  i++) {
-                                indexs[i] = false;
-                              }
-                              final result = await showDialog(
-                                context: context,
-                                child: StatefulBuilder(
-                                    builder: (context, setDialogState) {
-                                  return AlertDialog(
-                                    title:
-                                        Text(I18n.of(context).muti_choice_save),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, "OK");
-                                        },
-                                        child: Text(I18n.of(context).ok),
-                                      ),
-                                      FlatButton(
-                                        child: Text(I18n.of(context).cancel),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ],
-                                    content: Container(
-                                      width: double.maxFinite,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) =>
-                                            index == 0
-                                                ? ListTile(
-                                                    title: Text(
-                                                        I18n.of(context).all),
-                                                    trailing: Checkbox(
-                                                        value: allOn,
-                                                        onChanged: (ischeck) {
-                                                          setDialogState(() {
-                                                            allOn = ischeck;
-                                                            if (ischeck)
-                                                              for (int i = 0;
-                                                                  i <
-                                                                      indexs
-                                                                          .length;
-                                                                  i++) {
-                                                                indexs[i] =
-                                                                    true;
-                                                              } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
-                                                            else {
-                                                              for (int i = 0;
-                                                                  i <
-                                                                      indexs
-                                                                          .length;
-                                                                  i++) {
-                                                                indexs[i] =
-                                                                    false;
-                                                              }
-                                                            }
-                                                          });
-                                                        }),
-                                                  )
-                                                : ListTile(
-                                                    title: Text(
-                                                        (index - 1).toString()),
-                                                    trailing: Checkbox(
-                                                        value:
-                                                            indexs[index - 1],
-                                                        onChanged: (ischeck) {
-                                                          setDialogState(() {
-                                                            indexs[index - 1] =
-                                                                ischeck;
-                                                          });
-                                                        }),
-                                                  ),
-                                        itemCount: illust.metaPages.length + 1,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              );
-                              switch (result) {
-                                case "OK":
-                                  {
-                                    saveStore.saveChoiceImage(illust, indexs);
-                                  }
-                              }
+                              _showMutiChoiceDialog(illust, context);
                             },
                           )
                         : Container(),
@@ -806,6 +707,83 @@ class _IllustPageState extends State<IllustPage> {
         }));
       },
     );
+  }
+
+  Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
+    List<bool> indexs = List(illust.metaPages.length);
+    bool allOn = false;
+    for (int i = 0; i < illust.metaPages.length; i++) {
+      indexs[i] = false;
+    }
+    final result = await showDialog(
+      context: context,
+      child: StatefulBuilder(builder: (context, setDialogState) {
+        return AlertDialog(
+          title: Text(I18n.of(context).muti_choice_save),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(I18n
+                  .of(context)
+                  .cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context, "OK");
+              },
+              child: Text(I18n
+                  .of(context)
+                  .ok),
+            ),
+          ],
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, index) => index == 0
+                  ? ListTile(
+                      title: Text(I18n.of(context).all),
+                      trailing: Checkbox(
+                          value: allOn,
+                          onChanged: (ischeck) {
+                            setDialogState(() {
+                              allOn = ischeck;
+                              if (ischeck)
+                                for (int i = 0; i < indexs.length; i++) {
+                                  indexs[i] = true;
+                                } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                              else {
+                                for (int i = 0; i < indexs.length; i++) {
+                                  indexs[i] = false;
+                                }
+                              }
+                            });
+                          }),
+                    )
+                  : ListTile(
+                      title: Text((index - 1).toString()),
+                      trailing: Checkbox(
+                          value: indexs[index - 1],
+                          onChanged: (ischeck) {
+                            setDialogState(() {
+                              indexs[index - 1] = ischeck;
+                            });
+                          }),
+                    ),
+              itemCount: illust.metaPages.length + 1,
+            ),
+          ),
+        );
+      }),
+    );
+    switch (result) {
+      case "OK":
+        {
+          saveStore.saveChoiceImage(illust, indexs);
+        }
+    }
   }
 
   Widget buildPictures(BuildContext context, Illusts data, int index) {
@@ -874,7 +852,7 @@ class _IllustPageState extends State<IllustPage> {
             placeWidget: Container(
               height: 150,
               child: Center(
-                child: Text('${(index + 1)}',
+                child: Text('$index',
                     style: Theme.of(context).textTheme.headline4),
               ),
             ),

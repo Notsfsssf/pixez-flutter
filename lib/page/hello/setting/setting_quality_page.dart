@@ -19,9 +19,11 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/section_card.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/platform/platform_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingQualityPage extends StatefulWidget {
@@ -32,6 +34,7 @@ class SettingQualityPage extends StatefulWidget {
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
   Widget _languageTranlator;
+
   @override
   void initState() {
     _languageTranlator = _group[userSetting.languageNum];
@@ -60,7 +63,27 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
-    Container(),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/Skimige');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars0.githubusercontent.com/u/9017470?s=460&v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Skimige'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
     InkWell(
       onTap: () {
         try {
@@ -82,7 +105,29 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/karin722');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars3.githubusercontent.com/u/54385201?s=460&v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('karin722'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,6 +136,28 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       ),
       body: Container(
         child: ListView(children: [
+          if (Platform.isAndroid)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: ListTile(
+                    trailing: Icon(Icons.keyboard_arrow_right),
+                    title: Text(I18n.of(context).platform_special_setting),
+                    subtitle: Text(
+                      "For Android",
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => PlatformPage()));
+                    },
+                  ),
+                ),
+              ),
+            ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
@@ -142,7 +209,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: I18n.of(context).medium,
@@ -186,7 +253,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: "en-US",
@@ -196,7 +263,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         ),
                         Tab(
                           text: "zh-TW",
-                        )
+                        ),
+                        Tab(
+                          text: "ja",
+                        ),
                       ],
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
@@ -205,7 +275,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         });
                       },
                       controller: TabController(
-                          length: 3,
+                          length: 4,
                           vsync: this,
                           initialIndex: userSetting.languageNum),
                     ),
@@ -262,7 +332,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: tablist,
                       onTap: (index) {
                         userSetting.setWelcomePageNum(index);
@@ -290,7 +360,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                       indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
                           text: '2',
@@ -316,54 +386,90 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Observer(builder: (_) {
-              return SwitchListTile(
-                  value: userSetting.disableBypassSni,
-                  title: Text(I18n.of(context).disable_sni_bypass),
-                  subtitle: Text(I18n.of(context).disable_sni_bypass_message),
-                  onChanged: (value) async {
-                    if (value) {
-                      final result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return AlertDialog(
-                              title: Text(I18n.of(context).please_note_that),
-                              content: Text(
-                                  I18n.of(context).please_note_that_content),
-                              actions: <Widget>[
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop('OK');
-                                    },
-                                    child: Text(I18n.of(context).ok)),
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(I18n.of(context).cancel))
-                              ],
-                            );
-                          });
-                      if (result == 'OK') {
-                        userSetting.setDisableBypassSni(value);
-                      }
-                    } else {
-                      userSetting.setDisableBypassSni(value);
-                    }
-                  });
-            }),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
+                    value: userSetting.isBangs,
+                    title: Text(I18n.of(context).special_shaped_screen),
+                    subtitle: Text('--v--'),
+                    onChanged: (value) async {
+                      userSetting.setIsBangs(value);
+                    });
+              }),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Observer(builder: (_) {
-              return SwitchListTile(
-                  value: userSetting.hIsNotAllow,
-                  title:
-                      Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
-                  onChanged: (value) async {
-                    userSetting.setHIsNotAllow(value);
-                  });
-            }),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    value: userSetting.disableBypassSni,
+                    activeColor: Theme.of(context).accentColor,
+                    title: Text(I18n.of(context).disable_sni_bypass),
+                    subtitle: Text(I18n.of(context).disable_sni_bypass_message),
+                    onChanged: (value) async {
+                      if (value) {
+                        final result = await showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Text(I18n.of(context).please_note_that),
+                                content: Text(
+                                    I18n.of(context).please_note_that_content),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(I18n.of(context).cancel)),
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop('OK');
+                                      },
+                                      child: Text(I18n.of(context).ok)),
+                                ],
+                              );
+                            });
+                        if (result == 'OK') {
+                          userSetting.setDisableBypassSni(value);
+                        }
+                      } else {
+                        userSetting.setDisableBypassSni(value);
+                      }
+                    });
+              }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
+                    value: userSetting.hIsNotAllow,
+                    title:
+                        Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
+                    onChanged: (value) async {
+                      userSetting.setHIsNotAllow(value);
+                    });
+              }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
+                    value: userSetting.isReturnAgainToExit,
+                    title:
+                    Text(I18n.of(context).return_again_to_exit),
+                    onChanged: (value) async {
+                      userSetting.setIsReturnAgainToExit(value);
+                    });
+              }),
+            ),
           )
         ]),
       ),
