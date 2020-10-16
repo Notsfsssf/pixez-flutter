@@ -14,15 +14,20 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
@@ -45,6 +50,7 @@ class _UsersPageState extends State<UsersPage>
   UserStore userStore;
   TabController _tabController;
   ScrollController _scrollController;
+
   @override
   void initState() {
     userStore = UserStore(widget.id);
@@ -63,6 +69,7 @@ class _UsersPageState extends State<UsersPage>
   }
 
   int _tabIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -389,7 +396,28 @@ class _UsersPageState extends State<UsersPage>
               child: PainterAvatar(
                 url: userStore.userDetail.user.profile_image_urls.medium,
                 size: Size(80, 80),
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(I18n.of(context).save_painter_avatar),
+                          actions: [
+                            FlatButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(I18n.of(context).cancel)),
+                            FlatButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  await _saveUserC();
+                                },
+                                child: Text(I18n.of(context).ok)),
+                          ],
+                        );
+                      });
+                },
               ),
             ),
             Padding(
@@ -457,6 +485,47 @@ class _UsersPageState extends State<UsersPage>
         )
       ],
     );
+  }
+
+  Future _saveUserC() async {
+    var url = userStore.userDetail.user.profile_image_urls.medium;
+    String meme = url
+        .split(".")
+        .last;
+    if (meme == null || meme.isEmpty) meme = "jpg";
+    var replaceAll = userStore.userDetail.user.name
+        .replaceAll("/", "")
+        .replaceAll("\\", "")
+        .replaceAll(":", "")
+        .replaceAll("*", "")
+        .replaceAll("?", "")
+        .replaceAll(">", "")
+        .replaceAll("|", "")
+        .replaceAll("<", "");
+    String fileName = "${replaceAll}_${userStore.userDetail.user.id}.${meme}";
+    try {
+      String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
+      await Dio(BaseOptions(headers: {
+        "referer": "https://app-api.pixiv.net/",
+        "User-Agent": "PixivIOSApp/5.8.0"
+      })).download(url, tempFile, deleteOnError: true);
+      File file = File(tempFile);
+      if (file != null && file.existsSync()) {
+        await saveStore.saveToGallery(
+            file.readAsBytesSync(),
+            Illusts(
+                user: User(id: userStore.userDetail.user.id, name: replaceAll)),
+            fileName);
+        BotToast.showText(text: I18n
+            .of(context)
+            .complete);
+      } else
+        BotToast.showText(text: I18n
+            .of(context)
+            .failed);
+    } catch (e) {
+      print(e);
+    }
   }
 }
 

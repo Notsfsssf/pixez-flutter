@@ -21,9 +21,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(starNum) => "More than ${starNum} likes";
 
-  static m1(name) => "${name} has been muted by you";
+  static m1(part) => "保存格式必须包含${part},否则多p作品会保存出错！";
 
-  static m2(length) => "Tap to show ${length} results";
+  static m2(name) => "${name} has been muted by you";
+
+  static m3(length) => "Tap to show ${length} results";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -210,8 +212,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "画像をデバイスに保存するにはPixEzがフォルダにアクセスできるようにする必要があります(例: Picture/Pixez)"),
         "save": MessageLookupByLibrary.simpleMessage("保存する"),
         "save_format": MessageLookupByLibrary.simpleMessage("保存形式"),
-        "save_format_lose_part_warning":
-            MessageLookupByLibrary.simpleMessage("保存格式必须包含part,否则多p作品会保存出错！"),
+        "save_format_lose_part_warning": m1,
+        "save_painter_avatar":
+            MessageLookupByLibrary.simpleMessage("save painter avatar"),
         "save_path": MessageLookupByLibrary.simpleMessage("保存場所"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "search": MessageLookupByLibrary.simpleMessage("検索"),
@@ -224,7 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting": MessageLookupByLibrary.simpleMessage("設定"),
         "share": MessageLookupByLibrary.simpleMessage("共有"),
         "share_this_app_link": MessageLookupByLibrary.simpleMessage(""),
-        "shield_message": m1,
+        "shield_message": m2,
         "shielding_settings": MessageLookupByLibrary.simpleMessage("ミュート設定"),
         "skimige_message": MessageLookupByLibrary.simpleMessage(
             "The contributor who wrote the wonderful README for us"),
@@ -239,7 +242,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("フィードバックしてくれてありがとうございます :)"),
         "system": MessageLookupByLibrary.simpleMessage("system"),
         "tag": MessageLookupByLibrary.simpleMessage("タグ"),
-        "tap_to_show_results": m2,
+        "tap_to_show_results": m3,
         "task_progress": MessageLookupByLibrary.simpleMessage("進行中の処理"),
         "terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
         "thanks": MessageLookupByLibrary.simpleMessage("Thanks"),
@@ -248,18 +251,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "title": MessageLookupByLibrary.simpleMessage("タイトル"),
         "title_and_caption":
             MessageLookupByLibrary.simpleMessage("Title and description"),
-        "total_bookmark" : MessageLookupByLibrary.simpleMessage("すき"),
-    "total_follow_users" : MessageLookupByLibrary.simpleMessage("フォロー"),
-    "total_mypixiv_users" : MessageLookupByLibrary.simpleMessage("マイピク"),
-    "total_view" : MessageLookupByLibrary.simpleMessage("閲覧"),
-    "twitter_account" : MessageLookupByLibrary.simpleMessage("Twitterアカウント"),
-    "un_follow" : MessageLookupByLibrary.simpleMessage("Not following"),
-    "undefined" : MessageLookupByLibrary.simpleMessage("Undefined"),
-    "unsaved" : MessageLookupByLibrary.simpleMessage("Unsaved"),
-    "update" : MessageLookupByLibrary.simpleMessage("更新"),
-    "view_comment" : MessageLookupByLibrary.simpleMessage("コメントを表示"),
-    "warning" : MessageLookupByLibrary.simpleMessage("全てのキャッシュを削除しますか？"),
-    "welcome_page" : MessageLookupByLibrary.simpleMessage("初期画面"),
+        "total_bookmark": MessageLookupByLibrary.simpleMessage("すき"),
+        "total_follow_users": MessageLookupByLibrary.simpleMessage("フォロー"),
+        "total_mypixiv_users": MessageLookupByLibrary.simpleMessage("マイピク"),
+        "total_view": MessageLookupByLibrary.simpleMessage("閲覧"),
+        "twitter_account": MessageLookupByLibrary.simpleMessage("Twitterアカウント"),
+        "un_follow": MessageLookupByLibrary.simpleMessage("Not following"),
+        "undefined": MessageLookupByLibrary.simpleMessage("Undefined"),
+        "unsaved": MessageLookupByLibrary.simpleMessage("Unsaved"),
+        "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "view_comment": MessageLookupByLibrary.simpleMessage("コメントを表示"),
+        "warning": MessageLookupByLibrary.simpleMessage("全てのキャッシュを削除しますか？"),
+        "welcome_page" : MessageLookupByLibrary.simpleMessage("初期画面"),
     "what_is_saf" : MessageLookupByLibrary.simpleMessage("詳しく"),
     "which_part" : MessageLookupByLibrary.simpleMessage("Index"),
     "works" : MessageLookupByLibrary.simpleMessage("投稿")

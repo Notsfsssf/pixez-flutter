@@ -21,20 +21,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(starNum) => "收藏數超過${starNum}";
 
-  static m1(name) => "${name}已被你屏蔽";
+  static m1(part) => "保存格式必须包含${part},否则多p作品会保存出错！";
 
-  static m2(length) => "點擊顯示 ${length} 個結果";
+  static m2(name) => "${name}已被你屏蔽";
+
+  static m3(length) => "點擊顯示 ${length} 個結果";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "about" : MessageLookupByLibrary.simpleMessage("關於"),
-    "about_picture" : MessageLookupByLibrary.simpleMessage("相關圖像"),
-    "account_change" : MessageLookupByLibrary.simpleMessage("變更帳戶"),
-    "account_message" : MessageLookupByLibrary.simpleMessage("賬戶資訊"),
-    "all" : MessageLookupByLibrary.simpleMessage("全部"),
-    "already_in_query" : MessageLookupByLibrary.simpleMessage("已位於佇列中"),
-    "already_saved" : MessageLookupByLibrary.simpleMessage("已存在"),
-    "android_special_setting" : MessageLookupByLibrary.simpleMessage("Android 設定"),
+
+  static _notInlinedMessages(_) => <String, Function>{
+        "about": MessageLookupByLibrary.simpleMessage("關於"),
+        "about_picture": MessageLookupByLibrary.simpleMessage("相關圖像"),
+        "account_change": MessageLookupByLibrary.simpleMessage("變更帳戶"),
+        "account_message": MessageLookupByLibrary.simpleMessage("賬戶資訊"),
+        "all": MessageLookupByLibrary.simpleMessage("全部"),
+        "already_in_query": MessageLookupByLibrary.simpleMessage("已位於佇列中"),
+        "already_saved": MessageLookupByLibrary.simpleMessage("已存在"),
+        "android_special_setting" : MessageLookupByLibrary.simpleMessage("Android 設定"),
     "append_to_query" : MessageLookupByLibrary.simpleMessage("加入佇列"),
     "apply" : MessageLookupByLibrary.simpleMessage("套用"),
     "attempting_to_log_in" : MessageLookupByLibrary.simpleMessage("嘗試登入中"),
@@ -131,27 +134,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "ok" : MessageLookupByLibrary.simpleMessage("確定"),
     "old_way" : MessageLookupByLibrary.simpleMessage("舊版方式"),
     "old_way_message" : MessageLookupByLibrary.simpleMessage("以舊版方式儲存圖像，需要取得外部儲存空間的存取權限，並選擇一個資料夾以繼續"),
-    "painter" : MessageLookupByLibrary.simpleMessage("繪師"),
-    "painter_id" : MessageLookupByLibrary.simpleMessage("繪師ID"),
-    "painter_name" : MessageLookupByLibrary.simpleMessage("繪師名"),
-    "partial_match_for_tag" : MessageLookupByLibrary.simpleMessage("與標簽部分一致"),
-    "path" : MessageLookupByLibrary.simpleMessage("路徑"),
-    "paused" : MessageLookupByLibrary.simpleMessage("已暫停"),
-    "permission_denied" : MessageLookupByLibrary.simpleMessage("未取得授權"),
-    "perol_message" : MessageLookupByLibrary.simpleMessage("使用 Flutter 開發"),
-    "personal" : MessageLookupByLibrary.simpleMessage("個人"),
-    "pick_a_color" : MessageLookupByLibrary.simpleMessage("選取顏色"),
+        "painter": MessageLookupByLibrary.simpleMessage("繪師"),
+        "painter_id": MessageLookupByLibrary.simpleMessage("繪師ID"),
+        "painter_name": MessageLookupByLibrary.simpleMessage("繪師名"),
+        "partial_match_for_tag": MessageLookupByLibrary.simpleMessage(
+            "與標簽部分一致"),
+        "path": MessageLookupByLibrary.simpleMessage("路徑"),
+        "paused": MessageLookupByLibrary.simpleMessage("已暫停"),
+        "permission_denied": MessageLookupByLibrary.simpleMessage("未取得授權"),
+        "perol_message": MessageLookupByLibrary.simpleMessage("使用 Flutter 開發"),
+        "personal": MessageLookupByLibrary.simpleMessage("個人"),
+        "pick_a_color": MessageLookupByLibrary.simpleMessage("選取顏色"),
         "pixel": MessageLookupByLibrary.simpleMessage("解析度"),
-        "platform_special_setting":
-            MessageLookupByLibrary.simpleMessage("作業系統專有設定"),
+        "platform_special_setting": MessageLookupByLibrary.simpleMessage(
+            "作業系統專有設定"),
         "please_note_that": MessageLookupByLibrary.simpleMessage("請註意"),
         "please_note_that_content": MessageLookupByLibrary.simpleMessage(
             "只有在確保你的代理或是所處地區能夠訪問 Pixiv 時，才建議啟用此選項，選項開啟後任何網路問題都將與本程式無關，請不要回報無法連線的問題"),
         "popular_desc": MessageLookupByLibrary.simpleMessage("熱度降序"),
         "private": MessageLookupByLibrary.simpleMessage("非公開"),
         "public": MessageLookupByLibrary.simpleMessage("公開"),
-        "pull_up_to_load_more":
-            MessageLookupByLibrary.simpleMessage("上拉以載入更多內容"),
+        "pull_up_to_load_more": MessageLookupByLibrary.simpleMessage(
+            "上拉以載入更多內容"),
         "quality_setting": MessageLookupByLibrary.simpleMessage("偏好選項"),
         "quick_view": MessageLookupByLibrary.simpleMessage("速覽"),
         "quietly_follow": MessageLookupByLibrary.simpleMessage("私密關註"),
@@ -169,31 +173,31 @@ class MessageLookup extends MessageLookupByLibrary {
             "如果該內容讓你感到不適，可點擊確定以回報審核。我們(Pixiv)會盡快處理，而該內容將會在問題被核實後立即刪除"),
         "retry": MessageLookupByLibrary.simpleMessage("重試"),
         "retry_failed_tasks": MessageLookupByLibrary.simpleMessage("重試失敗工作"),
-        "return_again_to_exit":
-            MessageLookupByLibrary.simpleMessage("再次點擊返回鍵以退出"),
+        "return_again_to_exit": MessageLookupByLibrary.simpleMessage(
+            "再次點擊返回鍵以退出"),
         "right_now_message": MessageLookupByLibrary.simpleMessage("完成軟體圖示的繪製"),
         "running": MessageLookupByLibrary.simpleMessage("進行中"),
         "saf_hint": MessageLookupByLibrary.simpleMessage(
             "需要使用SAF模式，請選擇一個資料夾以儲存圖像及其他檔案\n雖然不授權仍然能夠繼續使用本軟體，但是這可能會引起閃退或者損壞部分功能\n推薦設定的儲存資料夾為 Picture\\Pixez"),
         "save": MessageLookupByLibrary.simpleMessage("儲存"),
         "save_format": MessageLookupByLibrary.simpleMessage("儲存格式"),
-        "save_format_lose_part_warning":
-            MessageLookupByLibrary.simpleMessage("保存格式必须包含part,否则多p作品会保存出错！"),
+        "save_format_lose_part_warning": m1,
+        "save_painter_avatar": MessageLookupByLibrary.simpleMessage("儲存繪師头像"),
         "save_path": MessageLookupByLibrary.simpleMessage("儲存路徑"),
         "saved": MessageLookupByLibrary.simpleMessage("已儲存"),
         "search": MessageLookupByLibrary.simpleMessage("搜尋"),
-        "search_word_or_paste_link":
-            MessageLookupByLibrary.simpleMessage("搜尋關鍵字/ID或貼上連結"),
+        "search_word_or_paste_link": MessageLookupByLibrary.simpleMessage(
+            "搜尋關鍵字/ID或貼上連結"),
         "separate_folder": MessageLookupByLibrary.simpleMessage("獨立資料夾"),
-        "separate_folder_message":
-            MessageLookupByLibrary.simpleMessage("為每個繪師建立獨立資料夾"),
+        "separate_folder_message": MessageLookupByLibrary.simpleMessage(
+            "為每個繪師建立獨立資料夾"),
         "setting": MessageLookupByLibrary.simpleMessage("設定"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
         "share_this_app_link": MessageLookupByLibrary.simpleMessage("推薦這個APP"),
-        "shield_message": m1,
+        "shield_message": m2,
         "shielding_settings": MessageLookupByLibrary.simpleMessage("屏蔽設定"),
-        "skimige_message":
-            MessageLookupByLibrary.simpleMessage("完成 MarkDown 整理"),
+        "skimige_message": MessageLookupByLibrary.simpleMessage(
+            "完成 MarkDown 整理"),
         "skin": MessageLookupByLibrary.simpleMessage("主題"),
         "skip": MessageLookupByLibrary.simpleMessage("跳過"),
         "source": MessageLookupByLibrary.simpleMessage("原始"),
@@ -202,11 +206,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "start": MessageLookupByLibrary.simpleMessage("開始"),
         "step": MessageLookupByLibrary.simpleMessage("Step"),
         "support": MessageLookupByLibrary.simpleMessage("支援"),
-        "support_message":
-            MessageLookupByLibrary.simpleMessage("歡迎回報問題或共同開發:)"),
+        "support_message": MessageLookupByLibrary.simpleMessage(
+            "歡迎回報問題或共同開發:)"),
         "system": MessageLookupByLibrary.simpleMessage("使用系統設定"),
         "tag": MessageLookupByLibrary.simpleMessage("標簽"),
-        "tap_to_show_results": m2,
+        "tap_to_show_results": m3,
         "task_progress": MessageLookupByLibrary.simpleMessage("工作進度"),
         "terms": MessageLookupByLibrary.simpleMessage("使用條款"),
         "thanks": MessageLookupByLibrary.simpleMessage("鳴謝"),
@@ -215,17 +219,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "title": MessageLookupByLibrary.simpleMessage("標題"),
         "title_and_caption": MessageLookupByLibrary.simpleMessage("與正副標題一致"),
         "total_bookmark": MessageLookupByLibrary.simpleMessage("總收藏"),
-        "total_follow_users" : MessageLookupByLibrary.simpleMessage("關註用戶量"),
-    "total_mypixiv_users" : MessageLookupByLibrary.simpleMessage("好P友"),
-    "total_view" : MessageLookupByLibrary.simpleMessage("總查看"),
-    "twitter_account" : MessageLookupByLibrary.simpleMessage("Twitter 帳戶"),
-    "un_follow" : MessageLookupByLibrary.simpleMessage("未關註"),
-    "undefined" : MessageLookupByLibrary.simpleMessage("未知"),
-    "unsaved" : MessageLookupByLibrary.simpleMessage("未儲存"),
-    "update" : MessageLookupByLibrary.simpleMessage("更新"),
-    "view_comment" : MessageLookupByLibrary.simpleMessage("查看評論"),
-    "warning" : MessageLookupByLibrary.simpleMessage("清除全部暫存？"),
-    "welcome_page" : MessageLookupByLibrary.simpleMessage("預設頁面"),
+        "total_follow_users": MessageLookupByLibrary.simpleMessage("關註用戶量"),
+        "total_mypixiv_users": MessageLookupByLibrary.simpleMessage("好P友"),
+        "total_view": MessageLookupByLibrary.simpleMessage("總查看"),
+        "twitter_account": MessageLookupByLibrary.simpleMessage("Twitter 帳戶"),
+        "un_follow": MessageLookupByLibrary.simpleMessage("未關註"),
+        "undefined": MessageLookupByLibrary.simpleMessage("未知"),
+        "unsaved": MessageLookupByLibrary.simpleMessage("未儲存"),
+        "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "view_comment": MessageLookupByLibrary.simpleMessage("查看評論"),
+        "warning": MessageLookupByLibrary.simpleMessage("清除全部暫存？"),
+        "welcome_page": MessageLookupByLibrary.simpleMessage("預設頁面"),
     "what_is_saf" : MessageLookupByLibrary.simpleMessage("什麽是SAF?"),
     "which_part" : MessageLookupByLibrary.simpleMessage("第幾張"),
     "works" : MessageLookupByLibrary.simpleMessage("作品")

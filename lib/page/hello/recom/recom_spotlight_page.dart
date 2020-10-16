@@ -50,12 +50,21 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void initState() {
-    _easyRefreshController = RefreshController(initialRefresh: true);
+    _easyRefreshController = RefreshController();
     _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
     _lightingStore =
         LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
     super.initState();
+    initMethod();
+  }
+
+  initMethod() async {
+    _easyRefreshController.headerMode.value = RefreshStatus.refreshing;
+    await spotlightStore.fetch();
+    await _lightingStore.fetch();
+    await _recomUserStore.fetch();
+    _easyRefreshController.headerMode.value = RefreshStatus.completed;
   }
 
   RefreshController _easyRefreshController;
@@ -64,7 +73,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     await spotlightStore.fetch();
     await _lightingStore.fetch();
     await _recomUserStore.fetch();
-    setState(() {});
   }
 
   @override
@@ -110,10 +118,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               enablePullUp: true,
               header: (Platform.isAndroid)
                   ? MaterialClassicHeader(
-                color: Theme
-                    .of(context)
-                    .accentColor,
-              )
+                      color: Theme.of(context).accentColor,
+                    )
                   : ClassicHeader(),
               footer: _buildCustomFooter(),
               onRefresh: () {
@@ -134,7 +140,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                   height: 24.0,
                   margin: EdgeInsets.only(bottom: 8.0),
                   child: IconButton(
-                    icon: Icon(Icons.arrow_drop_up_outlined, size: 24,),
+                    icon: Icon(
+                      Icons.arrow_drop_up_outlined,
+                      size: 24,
+                    ),
                     onPressed: () {
                       _easyRefreshController.position.jumpTo(0);
                     },
@@ -229,6 +238,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                     store: _lightingStore.iStores[index],
                     iStores: _lightingStore.iStores,
                     height: mainAxisExtent + 64.0,
+                    heroString: widget.hashCode.toString(),
                   );
                 }, childCount: _lightingStore.iStores.length),
               )

@@ -21,9 +21,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(starNum) => "More than ${starNum} like(s)";
 
-  static m1(name) => "${name} has been muted";
+  static m1(part) => "保存格式必须包含${part},否则多p作品会保存出错！";
 
-  static m2(length) => "Tap to show ${length} results";
+  static m2(name) => "${name} has been muted";
+
+  static m3(length) => "Tap to show ${length} results";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -233,8 +235,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "In order to use SAF you will need to grant SAF access to Pixiv(e.g. Picture/Pixez). This allows you to store illusts to SD cards in modern devices."),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_format": MessageLookupByLibrary.simpleMessage("Filename format"),
-        "save_format_lose_part_warning":
-            MessageLookupByLibrary.simpleMessage("保存格式必须包含part,否则多p作品会保存出错！"),
+        "save_format_lose_part_warning": m1,
+        "save_painter_avatar":
+            MessageLookupByLibrary.simpleMessage("save painter avatar"),
         "save_path": MessageLookupByLibrary.simpleMessage("Save location"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
@@ -248,7 +251,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "share_this_app_link":
             MessageLookupByLibrary.simpleMessage("Share this app with others"),
-        "shield_message": m1,
+        "shield_message": m2,
         "shielding_settings":
             MessageLookupByLibrary.simpleMessage("Mute settings"),
         "skimige_message": MessageLookupByLibrary.simpleMessage(
@@ -266,7 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Feedbacks and contributions are welcomed :)"),
         "system": MessageLookupByLibrary.simpleMessage("System"),
         "tag": MessageLookupByLibrary.simpleMessage("Tag"),
-        "tap_to_show_results": m2,
+        "tap_to_show_results": m3,
         "task_progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
         "thanks": MessageLookupByLibrary.simpleMessage("Thank you"),

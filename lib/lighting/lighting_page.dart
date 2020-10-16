@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -101,7 +100,10 @@ class _LightingListState extends State<LightingList> {
                     height: 24.0,
                     margin: EdgeInsets.only(bottom: 8.0),
                     child: IconButton(
-                      icon: Icon(Icons.arrow_drop_up_outlined, size: 24,),
+                      icon: Icon(
+                        Icons.arrow_drop_up_outlined,
+                        size: 24,
+                      ),
                       onPressed: () {
                         _refreshController.position.jumpTo(0);
                       },
@@ -124,9 +126,7 @@ class _LightingListState extends State<LightingList> {
       builder: (BuildContext context, LoadStatus mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
-          body = Text(I18n
-              .of(context)
-              .pull_up_to_load_more);
+          body = Text(I18n.of(context).pull_up_to_load_more);
         } else if (mode == LoadStatus.loading) {
           body = CircularProgressIndicator();
         } else if (mode == LoadStatus.failed) {
@@ -195,14 +195,14 @@ class _LightingListState extends State<LightingList> {
             },
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
               crossAxisCount: userSetting.crossCount,
-              collectGarbage: (List<int> garbages) {
-                garbages.forEach((index) {
-                  final provider = ExtendedNetworkImageProvider(
-                    _store.iStores[index].illusts.imageUrls.medium,
-                  );
-                  provider.evict();
-                });
-              },
+              // collectGarbage: (List<int> garbages) {
+              //   garbages.forEach((index) {
+              //     final provider = ExtendedNetworkImageProvider(
+              //       _store.iStores[index].illusts.imageUrls.medium,
+              //     );
+              //     provider.evict();
+              //   });
+              // },
             )),
       ),
     );
@@ -303,14 +303,14 @@ class _LightingListState extends State<LightingList> {
             SliverWaterfallFlow(
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                 crossAxisCount: userSetting.crossCount,
-                collectGarbage: (List<int> garbages) {
-                  garbages.forEach((index) {
-                    final provider = ExtendedNetworkImageProvider(
-                      _store.iStores[index].illusts.imageUrls.medium,
-                    );
-                    provider.evict();
-                  });
-                },
+                // collectGarbage: (List<int> garbages) {
+                //   garbages.forEach((index) {
+                //     final provider = ExtendedNetworkImageProvider(
+                //       _store.iStores[index].illusts.imageUrls.medium,
+                //     );
+                //     provider.evict();
+                //   });
+                // },
               ),
               delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
@@ -325,6 +325,7 @@ class _LightingListState extends State<LightingList> {
                   store: _store.iStores[index],
                   iStores: _store.iStores,
                   height: mainAxisExtent + 64.0,
+                  heroString: widget.hashCode.toString(),
                 );
               }, childCount: _store.iStores.length),
             )
@@ -346,6 +347,7 @@ class _LightingListState extends State<LightingList> {
       store: _store.iStores[index],
       iStores: _store.iStores,
       height: mainAxisExtent + 64.0,
+      heroString: widget.hashCode.toString(),
     );
   }
 }

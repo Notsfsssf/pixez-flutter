@@ -24,16 +24,19 @@ import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
-class IllustCard extends HookWidget {
+class IllustCard extends StatelessWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
   final bool needToBan;
   final double height;
+  final String heroString;
+
   IllustCard({
     @required this.store,
     this.iStores,
     this.needToBan = false,
     this.height,
+    this.heroString,
   });
 
   @override
@@ -70,29 +73,6 @@ class IllustCard extends HookWidget {
             ),
           );
       }
-    for (var i in muteStore.banillusts) {
-      if (i.illustId == store.illusts.id.toString())
-        return Visibility(
-          visible: false,
-          child: Container(),
-        );
-    }
-    for (var j in muteStore.banUserIds) {
-      if (j.userId == store.illusts.user.id.toString())
-        return Visibility(
-          visible: false,
-          child: Container(),
-        );
-    }
-    for (var t in muteStore.banTags) {
-      for (var f in store.illusts.tags) {
-        if (f.name == t.name)
-          return Visibility(
-            visible: false,
-            child: Container(),
-          );
-      }
-    }
     if (height != null)
       return Container(
         child: buildInkWell(context),
@@ -135,7 +115,8 @@ class IllustCard extends HookWidget {
   }
 
   Widget buildInkWell(BuildContext context) {
-    String heroString = DateTime.now().millisecondsSinceEpoch.toString();
+    String heroString =
+        this.heroString ?? DateTime.now().millisecondsSinceEpoch.toString();
     return InkWell(
       onTap: () => {
         Navigator.of(context, rootNavigator: true)
@@ -189,10 +170,10 @@ class IllustCard extends HookWidget {
     return Container(
       color: Theme.of(context).cardColor,
       height: 50,
-      child: Stack(
+      child: Row(
         children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
+          Expanded(
+            flex: 5,
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 8.0, right: 34.0, top: 4, bottom: 4),
@@ -209,13 +190,16 @@ class IllustCard extends HookWidget {
                       store.illusts.user.name,
                       maxLines: 1,
                       overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .caption,
                     )
                   ]),
             ),
           ),
-          Align(
-            alignment: Alignment.centerRight,
+          Expanded(
+            flex: 1,
             child: StarIcon(
               illustStore: store,
             ),

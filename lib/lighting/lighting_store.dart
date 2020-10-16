@@ -17,6 +17,8 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -51,24 +53,46 @@ abstract class _LightingStoreBase with Store {
 
   _LightingStoreBase(this.source, this._controller, {this.onChange});
 
+  bool okForUser(Illusts illust) {
+    // if (userSetting.hIsNotAllow)
+    //   for (int i = 0; i < illust.tags.length; i++)
+    //     if (illust.tags[i].name.startsWith('R-18')) return false;
+    for (var t in muteStore.banTags) {
+      for (var f in illust.tags) {
+        if (f.name == t.name) return false;
+      }
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == illust.user.id.toString()) {
+        return false;
+      }
+    }
+    for (var i in muteStore.banillusts)
+      if (illust.id == i.id) {
+        return false;
+      }
+    return true;
+  }
+
   @action
   Future<bool> fetch() async {
     nextUrl = null;
     errorMessage = null;
     if (_controller?.footerMode != null)
       _controller?.footerMode?.value = LoadStatus.idle;
-    _controller?.headerMode?.value =RefreshStatus.refreshing;
+    _controller?.headerMode?.value = RefreshStatus.refreshing;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
       nextUrl = recommend.nextUrl;
       iStores.clear();
-      iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
+      iStores.addAll(recommend.illusts
+          .where((element) => okForUser(element))
+          .map((e) => IllustStore(e.id, e)));
       _controller.refreshCompleted();
       return true;
     } catch (e) {
       errorMessage = e.toString();
-      // BotToast.showText(text: '${e.toString()}');
       _controller.refreshFailed();
       return false;
     }
@@ -88,7 +112,9 @@ abstract class _LightingStoreBase with Store {
         Response result = await apiClient.getNext(nextUrl);
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
-        iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
+        iStores.addAll(recommend.illusts
+            .where((element) => okForUser(element))
+            .map((e) => IllustStore(e.id, e)));
         _controller.loadComplete();
       } else {
         _controller.loadNoData();

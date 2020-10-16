@@ -1933,11 +1933,21 @@ class I18n {
     );
   }
 
-  /// `保存格式必须包含part,否则多p作品会保存出错！`
-  String get save_format_lose_part_warning {
+  /// `保存格式必须包含{part},否则多p作品会保存出错！`
+  String save_format_lose_part_warning(Object part) {
     return Intl.message(
-      '保存格式必须包含part,否则多p作品会保存出错！',
+      '保存格式必须包含$part,否则多p作品会保存出错！',
       name: 'save_format_lose_part_warning',
+      desc: '',
+      args: [part],
+    );
+  }
+
+  /// `save painter avatar`
+  String get save_painter_avatar {
+    return Intl.message(
+      'save painter avatar',
+      name: 'save_painter_avatar',
       desc: '',
       args: [],
     );

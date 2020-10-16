@@ -190,5 +190,6 @@
   "permission_denied": "未取得授權",
   "old_way_message": "以舊版方式儲存圖像，需要取得外部儲存空間的存取權限，並選擇一個資料夾以繼續",
   "return_again_to_exit": "再次點擊返回鍵以退出",
-  "save_format_lose_part_warning": "保存格式必须包含part,否则多p作品会保存出错！"
+  "save_format_lose_part_warning": "保存格式必须包含{part},否则多p作品会保存出错！",
+  "save_painter_avatar": "儲存繪師头像"
 }

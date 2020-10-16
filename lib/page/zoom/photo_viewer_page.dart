@@ -181,10 +181,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               });
         },
         child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
           child: ExtendedImageGesturePageView.builder(
             controller: PageController(
               initialPage: index,
@@ -314,11 +311,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             },
             label: Text(
               "${index + 1}/${widget.illusts.pageCount}",
-              style: TextStyle(color: Colors.white),
             ),
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
             ),
           ),
         ),

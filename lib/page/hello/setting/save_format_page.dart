@@ -92,7 +92,8 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
                 });
                 if (!_textEditingController.text.contains('{part}')) {
                   BotToast.showText(
-                      text: I18n.of(context).save_format_lose_part_warning);
+                      text: I18n.of(context)
+                          .save_format_lose_part_warning('{part}'));
                   return;
                 }
                 if (_textEditingController.text.isNotEmpty && !needBack)
