@@ -23,6 +23,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/updater.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -55,7 +56,15 @@ class _SettingPageState extends State<SettingPage> {
   bool hasNewVersion = false;
 
   initMethod() async {
-    if (Updater.result != Result.timeout) return;
+    if (Constants.isGooglePlay) return;
+    if (Updater.result != Result.timeout) {
+      bool hasNew = Updater.result == Result.yes;
+      if (mounted)
+        setState(() {
+          hasNewVersion = hasNew;
+        });
+      return;
+    }
     Result result = await Updater.check();
     switch (result) {
       case Result.yes:
@@ -220,9 +229,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                           ListTile(
                             onTap: () => _showClearCacheDialog(context),
-                            title: Text(I18n
-                                .of(context)
-                                .clearn_cache),
+                            title: Text(I18n.of(context).clearn_cache),
                             leading: Icon(Icons.clear),
                           ),
                         ],
@@ -232,13 +239,9 @@ class _SettingPageState extends State<SettingPage> {
                         children: <Widget>[
                           ListTile(
                             leading: Icon(Icons.message),
-                            title: Text(I18n
-                                .of(context)
-                                .about),
-                            onTap: () =>
-                                Leader.push(
-                                    context,
-                                    AboutPage(newVersion: hasNewVersion)),
+                            title: Text(I18n.of(context).about),
+                            onTap: () => Leader.push(
+                                context, AboutPage(newVersion: hasNewVersion)),
                             trailing: Visibility(
                               child: NewVersionChip(),
                               visible: hasNewVersion,
@@ -248,17 +251,13 @@ class _SettingPageState extends State<SettingPage> {
                             if (accountStore.now != null)
                               return ListTile(
                                 leading: Icon(Icons.arrow_back),
-                                title: Text(I18n
-                                    .of(context)
-                                    .logout),
+                                title: Text(I18n.of(context).logout),
                                 onTap: () => _showLogoutDialog(context),
                               );
                             else
                               return ListTile(
                                 leading: Icon(Icons.arrow_back),
-                                title: Text(I18n
-                                    .of(context)
-                                    .login),
+                                title: Text(I18n.of(context).login),
                                 onTap: () => Leader.push(context, LoginPage()),
                               );
                           })
@@ -278,9 +277,7 @@ class _SettingPageState extends State<SettingPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(I18n
-                .of(context)
-                .logout),
+            title: Text(I18n.of(context).logout),
             actions: <Widget>[
               FlatButton(
                 child: Text("CANCEL"),
@@ -313,22 +310,16 @@ class _SettingPageState extends State<SettingPage> {
     final result = await showDialog(
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(I18n
-                .of(context)
-                .clear_all_cache),
+            title: Text(I18n.of(context).clear_all_cache),
             actions: <Widget>[
               FlatButton(
-                child: Text(I18n
-                    .of(context)
-                    .cancel),
+                child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
               FlatButton(
-                child: Text(I18n
-                    .of(context)
-                    .ok),
+                child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
                 },
@@ -344,7 +335,7 @@ class _SettingPageState extends State<SettingPage> {
             Directory tempDir = await getTemporaryDirectory();
             tempDir.deleteSync(recursive: true);
             Directory directory =
-            Directory((await getApplicationDocumentsDirectory()).path);
+                Directory((await getApplicationDocumentsDirectory()).path);
             if (directory.existsSync()) directory.deleteSync(recursive: true);
           } catch (e) {}
         }

@@ -64,7 +64,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   initMethod() async {
     _easyRefreshController.headerMode.value = RefreshStatus.refreshing;
     await spotlightStore.fetch();
-    await _lightingStore.fetch();
+    if (!_lightingStore.iStores.isNotEmpty) await _lightingStore.fetch();
     await _recomUserStore.fetch();
     _easyRefreshController.headerMode.value = RefreshStatus.completed;
   }
@@ -154,17 +154,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         } else if (mode == LoadStatus.loading) {
           body = CircularProgressIndicator();
         } else if (mode == LoadStatus.failed) {
-          body = Text(I18n
-              .of(context)
-              .loading_failed_retry_message);
+          body = Text(I18n.of(context).loading_failed_retry_message);
         } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n
-              .of(context)
-              .let_go_and_load_more);
+          body = Text(I18n.of(context).let_go_and_load_more);
         } else {
-          body = Text(I18n
-              .of(context)
-              .no_more_data);
+          body = Text(I18n.of(context).no_more_data);
         }
         return Container(
           height: 55.0,
@@ -175,10 +169,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget _buildWaterFall() {
-    double screanWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     return CustomScrollView(
       slivers: [

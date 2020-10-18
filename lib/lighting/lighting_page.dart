@@ -26,6 +26,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -129,13 +130,9 @@ class _LightingListState extends State<LightingList> {
         } else if (mode == LoadStatus.failed) {
           body = Text(I18n.of(context).loading_failed_retry_message);
         } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n
-              .of(context)
-              .let_go_and_load_more);
+          body = Text(I18n.of(context).let_go_and_load_more);
         } else {
-          body = Text(I18n
-              .of(context)
-              .no_more_data);
+          body = Text(I18n.of(context).no_more_data);
         }
         return Container(
           height: 55.0,
@@ -145,12 +142,28 @@ class _LightingListState extends State<LightingList> {
     );
   }
 
+  bool okForUser(Illusts illust) {
+    for (var t in muteStore.banTags) {
+      for (var f in illust.tags) {
+        if (f.name == t.name) return false;
+      }
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == illust.user.id.toString()) {
+        return false;
+      }
+    }
+    for (var i in muteStore.banillusts)
+      if (illust.id == i.id) {
+        return false;
+      }
+    return true;
+  }
+
   Widget _buildWithoutHeader(context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
+    _store.iStores.removeWhere((element) => okForUser(element.illusts));
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           ScrollMetrics metrics = notification.metrics;
@@ -166,13 +179,9 @@ class _LightingListState extends State<LightingList> {
           enablePullUp: true,
           header: (Platform.isAndroid)
               ? MaterialClassicHeader(
-            color: Theme
-                .of(context)
-                .accentColor,
-            backgroundColor: Theme
-                .of(context)
-                .cardColor,
-          )
+                  color: Theme.of(context).accentColor,
+                  backgroundColor: Theme.of(context).cardColor,
+                )
               : ClassicHeader(),
           footer: _buildCustomFooter(),
           controller: _refreshController,
@@ -259,13 +268,9 @@ class _LightingListState extends State<LightingList> {
         enablePullUp: true,
         header: (Platform.isAndroid)
             ? MaterialClassicHeader(
-          color: Theme
-              .of(context)
-              .accentColor,
-          backgroundColor: Theme
-              .of(context)
-              .cardColor,
-        )
+                color: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).cardColor,
+              )
             : ClassicHeader(),
         footer: _buildCustomFooter(),
         controller: _refreshController,
@@ -292,11 +297,9 @@ class _LightingListState extends State<LightingList> {
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
+    _store.iStores.removeWhere((element) => okForUser(element.illusts));
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       double radio = _store.iStores[index].illusts.height.toDouble() /
           _store.iStores[index].illusts.width.toDouble();
