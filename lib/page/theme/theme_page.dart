@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/section_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 

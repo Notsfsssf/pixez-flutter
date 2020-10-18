@@ -14,14 +14,16 @@
  *
  */
 
-import 'package:pixez/constants.dart';
 import 'dart:async';
 import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:pixez/component/new_version_chip.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
@@ -29,6 +31,10 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
+  final bool newVersion;
+
+  const AboutPage({Key key, this.newVersion}) : super(key: key);
+
   @override
   _AboutPageState createState() => _AboutPageState();
 }
@@ -91,8 +97,11 @@ class _AboutPageState extends State<AboutPage> {
     });
   }
 
+  bool hasNewVersion;
+
   @override
   void initState() {
+    hasNewVersion = widget.newVersion ?? false;
     super.initState();
     if (Platform.isIOS) initPlatformState();
     // if (Platform.isAndroid) initAndroidIap();
@@ -216,15 +225,21 @@ class _AboutPageState extends State<AboutPage> {
         if (Platform.isAndroid) ...[
           ListTile(
             leading: Icon(Icons.device_hub),
-            title: Text(I18n.of(context).repo_address),
+            title: Text(I18n
+                .of(context)
+                .repo_address),
             subtitle: SelectableText('github.com/Notsfsssf/pixez-flutter'),
+            trailing: Visibility(
+              child: NewVersionChip(),
+              visible: hasNewVersion,
+            ),
             onTap: () {
               if (!Constants.isGooglePlay)
                 showModalBottomSheet(
                     context: context,
                     shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(16.0))),
+                        BorderRadius.vertical(top: Radius.circular(16.0))),
                     builder: (_) {
                       return Container(
                         child: Column(

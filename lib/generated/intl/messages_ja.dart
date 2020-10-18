@@ -97,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enqueued": MessageLookupByLibrary.simpleMessage("キューに追加"),
         "exact_match_for_tag": MessageLookupByLibrary.simpleMessage("タグの完全な一致"),
         "failed": MessageLookupByLibrary.simpleMessage("失敗"),
+        "favorited_tag": MessageLookupByLibrary.simpleMessage("favorited tag"),
         "feedback": MessageLookupByLibrary.simpleMessage("フィードバック"),
         "filter": MessageLookupByLibrary.simpleMessage("フィルター"),
         "follow": MessageLookupByLibrary.simpleMessage("フォロー"),
@@ -262,9 +263,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "view_comment": MessageLookupByLibrary.simpleMessage("コメントを表示"),
         "warning": MessageLookupByLibrary.simpleMessage("全てのキャッシュを削除しますか？"),
-        "welcome_page" : MessageLookupByLibrary.simpleMessage("初期画面"),
-    "what_is_saf" : MessageLookupByLibrary.simpleMessage("詳しく"),
-    "which_part" : MessageLookupByLibrary.simpleMessage("Index"),
-    "works" : MessageLookupByLibrary.simpleMessage("投稿")
-  };
+        "welcome_page": MessageLookupByLibrary.simpleMessage("初期画面"),
+        "what_is_saf": MessageLookupByLibrary.simpleMessage("詳しく"),
+        "which_part": MessageLookupByLibrary.simpleMessage("Index"),
+        "works": MessageLookupByLibrary.simpleMessage("投稿")
+      };
 }

@@ -24,7 +24,6 @@ import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -34,9 +33,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
-  RecomSpolightPage({
-    Key key,
-  }) : super(key: key);
+  final LightingStore lightingStore;
+
+  RecomSpolightPage({Key key, this.lightingStore}) : super(key: key);
 
   @override
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
@@ -53,8 +52,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     _easyRefreshController = RefreshController();
     _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
-    _lightingStore =
+    _lightingStore = widget.lightingStore ??
         LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
+    if (widget.lightingStore != null) {
+      _lightingStore.controller = _easyRefreshController;
+    }
     super.initState();
     initMethod();
   }
@@ -79,21 +81,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget build(BuildContext context) {
     super.build(context);
     return buildEasyRefresh(context);
-  }
-
-  bool needToBan(Illusts illust) {
-    for (var i in muteStore.banillusts) {
-      if (i.illustId == illust.id.toString()) return true;
-    }
-    for (var j in muteStore.banUserIds) {
-      if (j.userId == illust.user.id.toString()) return true;
-    }
-    for (var t in muteStore.banTags) {
-      for (var f in illust.tags) {
-        if (f.name == t.name) return true;
-      }
-    }
-    return false;
   }
 
   bool backToTopVisible = false;
@@ -163,9 +150,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       builder: (BuildContext context, LoadStatus mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
-          body = Text(I18n
-              .of(context)
-              .pull_up_to_load_more);
+          body = Text(I18n.of(context).pull_up_to_load_more);
         } else if (mode == LoadStatus.loading) {
           body = CircularProgressIndicator();
         } else if (mode == LoadStatus.failed) {

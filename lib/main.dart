@@ -26,6 +26,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/account_store.dart';
+import 'package:pixez/store/book_tag_store.dart';
 import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
@@ -39,6 +40,7 @@ final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
 final TopStore topStore = TopStore();
+final BookTagStore bookTagStore = BookTagStore();
 
 main() {
   runApp(MyApp());
@@ -60,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     accountStore.fetch();
     userSetting.init();
+    bookTagStore.init();
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();

@@ -108,6 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exact_match_for_tag":
             MessageLookupByLibrary.simpleMessage("Tag exact matches"),
         "failed": MessageLookupByLibrary.simpleMessage("Failed"),
+        "favorited_tag": MessageLookupByLibrary.simpleMessage("favorited tag"),
         "feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
         "filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "follow": MessageLookupByLibrary.simpleMessage("Follow"),

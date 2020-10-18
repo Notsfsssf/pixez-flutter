@@ -14,7 +14,6 @@
  *
  */
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
@@ -33,7 +32,7 @@ typedef Future<Response> FutureGet();
 abstract class _LightingStoreBase with Store {
   FutureGet source;
   String nextUrl;
-  RefreshController _controller;
+  RefreshController controller;
   final Function onChange;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
@@ -51,7 +50,7 @@ abstract class _LightingStoreBase with Store {
   @observable
   String errorMessage;
 
-  _LightingStoreBase(this.source, this._controller, {this.onChange});
+  _LightingStoreBase(this.source, this.controller, {this.onChange});
 
   bool okForUser(Illusts illust) {
     // if (userSetting.hIsNotAllow)
@@ -78,9 +77,9 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetch() async {
     nextUrl = null;
     errorMessage = null;
-    if (_controller?.footerMode != null)
-      _controller?.footerMode?.value = LoadStatus.idle;
-    _controller?.headerMode?.value = RefreshStatus.refreshing;
+    if (controller?.footerMode != null)
+      controller?.footerMode?.value = LoadStatus.idle;
+    controller?.headerMode?.value = RefreshStatus.refreshing;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
@@ -89,11 +88,11 @@ abstract class _LightingStoreBase with Store {
       iStores.addAll(recommend.illusts
           .where((element) => okForUser(element))
           .map((e) => IllustStore(e.id, e)));
-      _controller.refreshCompleted();
+      controller.refreshCompleted();
       return true;
     } catch (e) {
       errorMessage = e.toString();
-      _controller.refreshFailed();
+      controller.refreshFailed();
       return false;
     }
   }
@@ -115,13 +114,13 @@ abstract class _LightingStoreBase with Store {
         iStores.addAll(recommend.illusts
             .where((element) => okForUser(element))
             .map((e) => IllustStore(e.id, e)));
-        _controller.loadComplete();
+        controller.loadComplete();
       } else {
-        _controller.loadNoData();
+        controller.loadNoData();
       }
       return true;
     } catch (e) {
-      _controller.loadFailed();
+      controller.loadFailed();
       return false;
     }
   }

@@ -59,6 +59,7 @@ dependencies:
   json_annotation: ^3.0.1
   flutter_staggered_animations: ^0.1.2
   flutter_statusbar_manager: ^2.0.0
+  badges: ^1.1.3
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

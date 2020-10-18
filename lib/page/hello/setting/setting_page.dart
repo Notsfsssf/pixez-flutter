@@ -16,18 +16,21 @@
 
 import 'dart:io';
 
-import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/updater.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
+import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -46,6 +49,29 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
+    initMethod();
+  }
+
+  bool hasNewVersion = false;
+
+  initMethod() async {
+    if (Updater.result != Result.timeout) return;
+    Result result = await Updater.check();
+    switch (result) {
+      case Result.yes:
+        if (mounted) {
+          setState(() {
+            hasNewVersion = true;
+          });
+        }
+        break;
+      default:
+        if (mounted) {
+          setState(() {
+            hasNewVersion = false;
+          });
+        }
+    }
   }
 
   @override
@@ -177,63 +203,26 @@ class _SettingPageState extends State<SettingPage> {
                             },
                           ),
                           ListTile(
+                            leading: Icon(Icons.bookmark),
+                            title: Text(I18n.of(context).favorited_tag),
+                            onTap: () =>
+                                Leader.pushWithScaffold(context, BookTagPage()),
+                          ),
+                          ListTile(
                             leading: Icon(Icons.block),
                             title: Text(I18n.of(context).shielding_settings),
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        ShieldPage())),
+                            onTap: () => Leader.push(context, ShieldPage()),
                           ),
                           ListTile(
                             leading: Icon(Icons.description),
                             title: Text(I18n.of(context).task_progress),
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        JobPage())),
+                            onTap: () => Leader.push(context, JobPage()),
                           ),
                           ListTile(
-                            onTap: () async {
-                              final result = await showDialog(
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          I18n.of(context).clear_all_cache),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text(I18n.of(context).cancel),
-                                          onPressed: () {
-                                            Navigator.of(context).pop("CANCEL");
-                                          },
-                                        ),
-                                        FlatButton(
-                                          child: Text(I18n.of(context).ok),
-                                          onPressed: () {
-                                            Navigator.of(context).pop("OK");
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                  context: context);
-                              switch (result) {
-                                case "OK":
-                                  {
-                                    try {
-                                      Directory tempDir =
-                                          await getTemporaryDirectory();
-                                      tempDir.deleteSync(recursive: true);
-                                      Directory directory = Directory(
-                                          (await getApplicationDocumentsDirectory())
-                                              .path);
-                                      if (directory.existsSync())
-                                        directory.deleteSync(recursive: true);
-                                    } catch (e) {}
-                                  }
-                                  break;
-                              }
-                            },
-                            title: Text(I18n.of(context).clearn_cache),
+                            onTap: () => _showClearCacheDialog(context),
+                            title: Text(I18n
+                                .of(context)
+                                .clearn_cache),
                             leading: Icon(Icons.clear),
                           ),
                         ],
@@ -243,86 +232,34 @@ class _SettingPageState extends State<SettingPage> {
                         children: <Widget>[
                           ListTile(
                             leading: Icon(Icons.message),
-                            title: Text(I18n.of(context).about),
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return AboutPage();
-                              }));
-                            },
+                            title: Text(I18n
+                                .of(context)
+                                .about),
+                            onTap: () =>
+                                Leader.push(
+                                    context,
+                                    AboutPage(newVersion: hasNewVersion)),
+                            trailing: Visibility(
+                              child: NewVersionChip(),
+                              visible: hasNewVersion,
+                            ),
                           ),
                           Observer(builder: (context) {
                             if (accountStore.now != null)
                               return ListTile(
                                 leading: Icon(Icons.arrow_back),
-                                title: Text(I18n.of(context).logout),
-                                onTap: () async {
-                                  /*                            final result = await showCupertinoDialog(
-                                  builder: (BuildContext context) {
-                                    return CupertinoAlertDialog(
-                                      title: Text(I18n.of(context).Logout),
-                                      content: Text(
-                                          I18n.of(context).Logout_message),
-                                      actions: <Widget>[
-                                        CupertinoDialogAction(
-                                          child: Text("OK"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop("OK");
-                                          },
-                                        ),
-                                        CupertinoDialogAction(
-                                          child: Text("CANCEL"),
-                                          onPressed: () {
-                                            Navigator.of(context)
-                                                .pop("CANCEL");
-                                          },
-                                          isDestructiveAction: true,
-                                        )
-                                      ],
-                                    );
-                                  },
-                                  context: context);*/
-                                  final result = await showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text(I18n.of(context).logout),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text("CANCEL"),
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop("CANCEL");
-                                              },
-                                            ),
-                                            FlatButton(
-                                              child: Text("OK"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop("OK");
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                  switch (result) {
-                                    case "OK":
-                                      {
-                                        accountStore.deleteAll();
-                                      }
-                                      break;
-                                    case "CANCEL":
-                                      {}
-                                      break;
-                                  }
-                                },
+                                title: Text(I18n
+                                    .of(context)
+                                    .logout),
+                                onTap: () => _showLogoutDialog(context),
                               );
                             else
                               return ListTile(
                                 leading: Icon(Icons.arrow_back),
-                                title: Text(I18n.of(context).login),
-                                onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginPage())),
+                                title: Text(I18n
+                                    .of(context)
+                                    .login),
+                                onTap: () => Leader.push(context, LoginPage()),
                               );
                           })
                         ],
@@ -334,5 +271,84 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
     );
+  }
+
+  Future _showLogoutDialog(BuildContext context) async {
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(I18n
+                .of(context)
+                .logout),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("CANCEL"),
+                onPressed: () {
+                  Navigator.of(context).pop("CANCEL");
+                },
+              ),
+              FlatButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop("OK");
+                },
+              ),
+            ],
+          );
+        });
+    switch (result) {
+      case "OK":
+        {
+          accountStore.deleteAll();
+        }
+        break;
+      case "CANCEL":
+        {}
+        break;
+    }
+  }
+
+  Future _showClearCacheDialog(BuildContext context) async {
+    final result = await showDialog(
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(I18n
+                .of(context)
+                .clear_all_cache),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(I18n
+                    .of(context)
+                    .cancel),
+                onPressed: () {
+                  Navigator.of(context).pop("CANCEL");
+                },
+              ),
+              FlatButton(
+                child: Text(I18n
+                    .of(context)
+                    .ok),
+                onPressed: () {
+                  Navigator.of(context).pop("OK");
+                },
+              ),
+            ],
+          );
+        },
+        context: context);
+    switch (result) {
+      case "OK":
+        {
+          try {
+            Directory tempDir = await getTemporaryDirectory();
+            tempDir.deleteSync(recursive: true);
+            Directory directory =
+            Directory((await getApplicationDocumentsDirectory()).path);
+            if (directory.existsSync()) directory.deleteSync(recursive: true);
+          } catch (e) {}
+        }
+        break;
+    }
   }
 }

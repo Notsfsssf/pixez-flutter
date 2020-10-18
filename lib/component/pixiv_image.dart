@@ -117,3 +117,17 @@ class PixivProvider {
     return ExtendedNetworkImageProvider(url, headers: PixivHeader);
   }
 }
+
+// class RubyProvider extends ImageProvider{
+//   @override
+//   ImageStreamCompleter load(Object key, Future<Codec> Function(Uint8List bytes, {bool allowUpscaling, int cacheHeight, int cacheWidth}) decode) {
+//     // TODO: implement load
+//     throw UnimplementedError();
+//   }
+//
+//   @override
+//   Future<Object> obtainKey(ImageConfiguration configuration) {
+//     // TODO: implement obtainKey
+//     throw UnimplementedError();
+//   }
+// }

@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,16 +33,12 @@ class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
   final bool isNested;
-  final Function onChange;
-  final ValueChanged<RefreshController> controllerReady;
 
   const LightingList({
     Key key,
     @required this.source,
     this.header,
     this.isNested,
-    this.onChange,
-    this.controllerReady,
   }) : super(key: key);
 
   @override
@@ -59,7 +56,7 @@ class _LightingListState extends State<LightingList> {
       _store.source = widget.source;
       _store.fetch();
       if (!_isNested && _store?.errorMessage == null)
-        _refreshController.position.jumpTo(0.0);
+        _refreshController?.position?.jumpTo(0.0);
     }
   }
 
@@ -68,10 +65,10 @@ class _LightingListState extends State<LightingList> {
   @override
   void initState() {
     _isNested = widget.isNested ?? false;
-    _store = LightingStore(widget.source, _refreshController,
-        onChange: widget.onChange ?? () {});
-    if (widget.controllerReady != null)
-      widget.controllerReady(_refreshController);
+    _store = LightingStore(
+      widget.source,
+      _refreshController,
+    );
     super.initState();
     _store.fetch();
   }
@@ -130,9 +127,7 @@ class _LightingListState extends State<LightingList> {
         } else if (mode == LoadStatus.loading) {
           body = CircularProgressIndicator();
         } else if (mode == LoadStatus.failed) {
-          body = Text(I18n
-              .of(context)
-              .loading_failed_retry_message);
+          body = Text(I18n.of(context).loading_failed_retry_message);
         } else if (mode == LoadStatus.canLoading) {
           body = Text(I18n
               .of(context)
@@ -157,55 +152,45 @@ class _LightingListState extends State<LightingList> {
         .width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
     return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notification) {
-        ScrollMetrics metrics = notification.metrics;
-        if (backToTopVisible == metrics.atEdge && mounted) {
-          setState(() {
-            backToTopVisible = !backToTopVisible;
-          });
-        }
-        return true;
-      },
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-          color: Theme
-              .of(context)
-              .accentColor,
-          backgroundColor: Theme
-              .of(context)
-              .cardColor,
-        )
-            : ClassicHeader(),
-        footer: _buildCustomFooter(),
-        controller: _refreshController,
-        onRefresh: () {
-          _store.fetch();
+        onNotification: (ScrollNotification notification) {
+          ScrollMetrics metrics = notification.metrics;
+          if (backToTopVisible == metrics.atEdge && mounted) {
+            setState(() {
+              backToTopVisible = !backToTopVisible;
+            });
+          }
+          return true;
         },
-        onLoading: () {
-          _store.fetchNext();
-        },
-        child: WaterfallFlow.builder(
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: (Platform.isAndroid)
+              ? MaterialClassicHeader(
+            color: Theme
+                .of(context)
+                .accentColor,
+            backgroundColor: Theme
+                .of(context)
+                .cardColor,
+          )
+              : ClassicHeader(),
+          footer: _buildCustomFooter(),
+          controller: _refreshController,
+          onRefresh: () {
+            _store.fetch();
+          },
+          onLoading: () {
+            _store.fetchNext();
+          },
+          child: WaterfallFlow.builder(
             padding: EdgeInsets.all(5.0),
             itemCount: _store.iStores.length,
             itemBuilder: (context, index) {
               return _buildItem(index, itemWidth);
             },
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: userSetting.crossCount,
-              // collectGarbage: (List<int> garbages) {
-              //   garbages.forEach((index) {
-              //     final provider = ExtendedNetworkImageProvider(
-              //       _store.iStores[index].illusts.imageUrls.medium,
-              //     );
-              //     provider.evict();
-              //   });
-              // },
-            )),
-      ),
-    );
+            gridDelegate: _buildGridDelegate(),
+          ),
+        ));
   }
 
   bool needToBan(Illusts illust) {
@@ -259,11 +244,6 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildWithHeader(BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification notification) {
         ScrollMetrics metrics = notification.metrics;
@@ -301,37 +281,50 @@ class _LightingListState extends State<LightingList> {
               child: Container(child: widget.header),
             ),
             SliverWaterfallFlow(
-              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                crossAxisCount: userSetting.crossCount,
-                // collectGarbage: (List<int> garbages) {
-                //   garbages.forEach((index) {
-                //     final provider = ExtendedNetworkImageProvider(
-                //       _store.iStores[index].illusts.imageUrls.medium,
-                //     );
-                //     provider.evict();
-                //   });
-                // },
-              ),
-              delegate:
-              SliverChildBuilderDelegate((BuildContext context, int index) {
-                double radio = _store.iStores[index].illusts.height.toDouble() /
-                    _store.iStores[index].illusts.width.toDouble();
-                double mainAxisExtent;
-                if (radio > 3)
-                  mainAxisExtent = itemWidth;
-                else
-                  mainAxisExtent = itemWidth * radio;
-                return IllustCard(
-                  store: _store.iStores[index],
-                  iStores: _store.iStores,
-                  height: mainAxisExtent + 64.0,
-                  heroString: widget.hashCode.toString(),
-                );
-              }, childCount: _store.iStores.length),
+              gridDelegate: _buildGridDelegate(),
+              delegate: _buildSliverChildBuilderDelegate(context),
             )
           ],
         ),
       ),
+    );
+  }
+
+  SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
+      BuildContext context) {
+    double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
+    return SliverChildBuilderDelegate((BuildContext context, int index) {
+      double radio = _store.iStores[index].illusts.height.toDouble() /
+          _store.iStores[index].illusts.width.toDouble();
+      double mainAxisExtent;
+      if (radio > 3)
+        mainAxisExtent = itemWidth;
+      else
+        mainAxisExtent = itemWidth * radio;
+      return IllustCard(
+        store: _store.iStores[index],
+        iStores: _store.iStores,
+        height: mainAxisExtent + 64.0,
+        heroString: widget.hashCode.toString(),
+      );
+    }, childCount: _store.iStores.length);
+  }
+
+  SliverWaterfallFlowDelegateWithFixedCrossAxisCount _buildGridDelegate() {
+    return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+      crossAxisCount: userSetting.crossCount,
+      collectGarbage: (List<int> garbages) {
+        garbages.forEach((index) {
+          final provider = ExtendedNetworkImageProvider(
+            _store.iStores[index].illusts.imageUrls.medium,
+          );
+          provider.evict();
+        });
+      },
     );
   }
 

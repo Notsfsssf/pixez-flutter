@@ -190,5 +190,6 @@
   "old_way_message": "画像を保存するには外部ストレージの読み書きの許可が必要です。続行するにはフォルダを選択します",
   "return_again_to_exit": "もう一度戻って終了",
   "save_format_lose_part_warning": "保存格式必须包含{part},否则多p作品会保存出错！",
-  "save_painter_avatar": "save painter avatar"
+  "save_painter_avatar": "save painter avatar",
+  "favorited_tag": "favorited tag"
 }

@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1948,6 +1949,16 @@ class I18n {
     return Intl.message(
       'save painter avatar',
       name: 'save_painter_avatar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `favorited tag`
+  String get favorited_tag {
+    return Intl.message(
+      'favorited tag',
+      name: 'favorited_tag',
       desc: '',
       args: [],
     );
