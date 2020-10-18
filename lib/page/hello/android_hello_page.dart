@@ -129,7 +129,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.search), label: I18n.of(context).search),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: I18n.of(context).setting),
+                icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
           ]),
     );
   }

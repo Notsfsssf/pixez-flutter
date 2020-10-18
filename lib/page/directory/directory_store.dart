@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,16 +35,24 @@ abstract class _DirectoryStoreBase with Store {
   ObservableList<FileSystemEntity> list = ObservableList();
   SharedPreferences _preferences;
 
-
   @action
   Future<void> enterFolder(Directory fileSystemEntity) async {
-    path = fileSystemEntity.path;
-    list = ObservableList.of(fileSystemEntity.listSync());
+    try {
+      path = fileSystemEntity.path;
+      list = ObservableList.of(fileSystemEntity.listSync());
+    } on Exception catch (e) {
+      print('Exception details:\n $e');
+      BotToast.showText(text: e.toString());
+    } catch (e, s) {
+      print('Exception details:\n $e');
+      print('Stack trace:\n $s');
+      BotToast.showText(text: s.toString());
+    }
   }
 
   @action
   Future<void> undo() async {
-    path ="/storage/emulated/0/Pictures";
+    path = "/storage/emulated/0/Pictures";
     list = ObservableList.of(Directory(path).listSync());
   }
 
@@ -58,12 +67,21 @@ abstract class _DirectoryStoreBase with Store {
 
   @action
   Future<void> backFolder() async {
-    final fileSystemEntity = Directory(path).parent;
-    if (!fileSystemEntity.path.contains("/storage/emulated/0")) {
-      return;
+    try {
+      final fileSystemEntity = Directory(path).parent;
+      if (!fileSystemEntity.path.contains("/storage/emulated/0")) {
+        return;
+      }
+      path = fileSystemEntity.path;
+      list = ObservableList.of(fileSystemEntity.listSync());
+    } on Exception catch (e) {
+      print('Exception details:\n $e');
+      BotToast.showText(text: e.toString());
+    } catch (e, s) {
+      print('Exception details:\n $e');
+      print('Stack trace:\n $s');
+      BotToast.showText(text: s.toString());
     }
-    path = fileSystemEntity.path;
-    list = ObservableList.of(fileSystemEntity.listSync());
   }
 
   @action
@@ -74,12 +92,22 @@ abstract class _DirectoryStoreBase with Store {
   @action
   Future<void> init(String initPath) async {
     _preferences = await SharedPreferences.getInstance();
-    path =initPath?? _preferences.getString("store_path") ??
-        (await getExternalStorageDirectory()).path;//绝了
-    final directory = Directory(path);
-    if (!directory.existsSync()) {
-      directory.createSync();
+    try {
+      path = initPath ??
+          _preferences.getString("store_path") ??
+          (await getExternalStorageDirectory()).path; //绝了
+      final directory = Directory(path);
+      if (!directory.existsSync()) {
+        directory.createSync();
+      }
+      list = ObservableList.of(Directory(path).listSync());
+    } on Exception catch (e) {
+      print('Exception details:\n $e');
+      BotToast.showText(text: e.toString());
+    } catch (e, s) {
+      print('Exception details:\n $e');
+      print('Stack trace:\n $s');
+      BotToast.showText(text: s.toString());
     }
-    list = ObservableList.of(Directory(path).listSync());
   }
 }

@@ -335,6 +335,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.0"
+  flutter_launcher_icons:
+    dependency: "direct main"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.8.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -434,6 +441,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.4"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.18"
   intl:
     dependency: transitive
     description:
@@ -616,6 +630,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0"
   platform:
     dependency: transitive
     description:
@@ -957,6 +978,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.2"
+  xml:
+    dependency: transitive
+    description:
+      name: xml
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.5.1"
   yaml:
     dependency: transitive
     description:

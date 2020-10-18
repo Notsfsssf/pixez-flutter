@@ -14,6 +14,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
@@ -23,36 +24,105 @@ class BookTagPage extends StatefulWidget {
   _BookTagPageState createState() => _BookTagPageState();
 }
 
-class _BookTagPageState extends State<BookTagPage> {
+class _BookTagPageState extends State<BookTagPage>
+    with TickerProviderStateMixin {
+  bool edit = false;
+
+  TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController =
+        TabController(length: bookTagStore.bookTagList.length, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: bookTagStore.bookTagList.length,
+    if (edit)
+      return Container(
         child: Column(
           children: [
             AppBar(
-              title: Text(I18n.of(context).favorited_tag),
-              bottom: TabBar(tabs: [
-                for (var i in bookTagStore.bookTagList)
-                  Tab(
-                    text: i,
-                  )
-              ]),
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
+              title: Text(I18n.of(context).choice_you_like),
+              actions: [
+                IconButton(
+                    icon: Icon(Icons.save),
+                    onPressed: () {
+                      setState(() {
+                        edit = false;
+                      });
+                    })
+              ],
             ),
-            Expanded(
-                child: TabBarView(children: [
-              for (var j in bookTagStore.bookTagList)
-                ResultIllustList(
-                  word: j,
-                )
-            ]))
+            Expanded(child: _buildTagChip())
           ],
-        ));
+        ),
+      );
+    return Observer(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          title: TabBar(
+            isScrollable: true,
+            controller: _tabController,
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: [
+              for (var i in bookTagStore.bookTagList)
+                Tab(
+                  text: i,
+                )
+            ],
+          ),
+          actions: [
+            IconButton(
+                icon: Icon(
+                  Icons.undo,
+                ),
+                onPressed: () {
+                  setState(() {
+                    edit = true;
+                  });
+                }),
+          ],
+        ),
+        body: TabBarView(controller: _tabController, children: [
+          for (var j in bookTagStore.bookTagList)
+            ResultIllustList(
+              word: j,
+            )
+        ]),
+        endDrawer: Drawer(
+          child: ListView(
+            children: [
+              for (var j in bookTagStore.bookTagList)
+                ListTile(
+                  title: Text(j),
+                  onTap: () {
+                    _tabController
+                        .animateTo(bookTagStore.bookTagList.indexOf(j));
+                  },
+                )
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildTagChip() {
     return Container(
       child: Wrap(
+        spacing: 2.0,
         children: [
           for (var i in bookTagStore.bookTagList)
             FilterChip(

@@ -60,6 +60,7 @@ dependencies:
   flutter_staggered_animations: ^0.1.2
   flutter_statusbar_manager: ^2.0.0
   badges: ^1.1.3
+  flutter_launcher_icons: ^0.8.1
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
@@ -97,6 +98,7 @@ flutter:
     - assets/images/nine.jpg
     - assets/images/step1.png
     - assets/images/step2.png
+    - assets/images/ic_front.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

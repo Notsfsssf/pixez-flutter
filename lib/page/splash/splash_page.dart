@@ -43,7 +43,8 @@ class _SplashPageState extends State<SplashPage>
   void initState() {
     splashStore = SplashStore(OnezeroClient());
     if (accountStore.now != null)
-      lightingStore = LightingStore(() => apiClient.getRecommend(), null);
+      lightingStore = LightingStore(() => apiClient.getRecommend(), null)
+        ..fetch();
     controller =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
     initMethod();
