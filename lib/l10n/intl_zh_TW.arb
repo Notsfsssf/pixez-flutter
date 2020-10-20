@@ -192,5 +192,6 @@
   "return_again_to_exit": "再次點擊返回鍵以退出",
   "save_format_lose_part_warning": "儲存格式必須包含{part},否則多P作品會儲存出錯！",
   "save_painter_avatar": "儲存繪師頭貼",
-  "favorited_tag": "已收藏標籤"
+  "favorited_tag": "已收藏標籤",
+  "legacy_mode_warning": "legacy mode is not available since Android9"
 }

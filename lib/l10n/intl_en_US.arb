@@ -192,5 +192,6 @@
   "return_again_to_exit": "Return again to exit",
   "save_format_lose_part_warning": "保存格式必须包含{part},否则多p作品会保存出错！",
   "save_painter_avatar": "save painter avatar",
-  "favorited_tag": "favorited tag"
+  "favorited_tag": "favorited tag",
+  "legacy_mode_warning": "legacy mode is not available since Android9"
 }

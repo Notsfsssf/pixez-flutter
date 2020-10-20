@@ -94,27 +94,40 @@ class MessageLookup extends MessageLookupByLibrary {
     "go_to_project_address" : MessageLookupByLibrary.simpleMessage("Go to GitHub repo"),
     "history" : MessageLookupByLibrary.simpleMessage("History"),
     "history_record" : MessageLookupByLibrary.simpleMessage("Browsing history"),
-    "home" : MessageLookupByLibrary.simpleMessage("Home"),
-    "illust" : MessageLookupByLibrary.simpleMessage("Illust"),
-    "illust_id" : MessageLookupByLibrary.simpleMessage("Illust ID"),
-    "illustration_detail_page_quality" : MessageLookupByLibrary.simpleMessage("Image quality (Details page)"),
-    "input_nickname" : MessageLookupByLibrary.simpleMessage("Enter nickname"),
-    "job" : MessageLookupByLibrary.simpleMessage("Job"),
-    "key_word" : MessageLookupByLibrary.simpleMessage("Keywords"),
-    "large" : MessageLookupByLibrary.simpleMessage("High"),
-    "large_preview_zoom_quality" : MessageLookupByLibrary.simpleMessage("Image quality (Fullscreen)"),
-    "latest_version" : MessageLookupByLibrary.simpleMessage("Latest version"),
-    "let_go_and_load_more" : MessageLookupByLibrary.simpleMessage("Release to load more"),
-    "light" : MessageLookupByLibrary.simpleMessage("Light"),
-    "link" : MessageLookupByLibrary.simpleMessage("Link"),
-    "load_image_failed_click_to_reload" : MessageLookupByLibrary.simpleMessage("Failed to load. Click to retry"),
-    "loading_failed_retry_message" : MessageLookupByLibrary.simpleMessage("Failed to load. Click to retry"),
-    "login" : MessageLookupByLibrary.simpleMessage("Login"),
-    "login_message" : MessageLookupByLibrary.simpleMessage("Discover a whole new world"),
-    "logout" : MessageLookupByLibrary.simpleMessage("Logout"),
-    "logout_message" : MessageLookupByLibrary.simpleMessage("This will clear account info and return to Login page."),
-    "manga" : MessageLookupByLibrary.simpleMessage("Manga"),
-    "medium" : MessageLookupByLibrary.simpleMessage("Medium"),
+        "home": MessageLookupByLibrary.simpleMessage("Home"),
+        "illust": MessageLookupByLibrary.simpleMessage("Illust"),
+        "illust_id": MessageLookupByLibrary.simpleMessage("Illust ID"),
+        "illustration_detail_page_quality":
+            MessageLookupByLibrary.simpleMessage(
+                "Image quality (Details page)"),
+        "input_nickname":
+            MessageLookupByLibrary.simpleMessage("Enter nickname"),
+        "job": MessageLookupByLibrary.simpleMessage("Job"),
+        "key_word": MessageLookupByLibrary.simpleMessage("Keywords"),
+        "large": MessageLookupByLibrary.simpleMessage("High"),
+        "large_preview_zoom_quality":
+            MessageLookupByLibrary.simpleMessage("Image quality (Fullscreen)"),
+        "latest_version":
+            MessageLookupByLibrary.simpleMessage("Latest version"),
+        "legacy_mode_warning": MessageLookupByLibrary.simpleMessage(
+            "legacy mode is not available since Android9"),
+        "let_go_and_load_more":
+            MessageLookupByLibrary.simpleMessage("Release to load more"),
+        "light": MessageLookupByLibrary.simpleMessage("Light"),
+        "link": MessageLookupByLibrary.simpleMessage("Link"),
+        "load_image_failed_click_to_reload":
+            MessageLookupByLibrary.simpleMessage(
+                "Failed to load. Click to retry"),
+        "loading_failed_retry_message": MessageLookupByLibrary.simpleMessage(
+            "Failed to load. Click to retry"),
+        "login": MessageLookupByLibrary.simpleMessage("Login"),
+        "login_message":
+            MessageLookupByLibrary.simpleMessage("Discover a whole new world"),
+        "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "logout_message": MessageLookupByLibrary.simpleMessage(
+            "This will clear account info and return to Login page."),
+        "manga": MessageLookupByLibrary.simpleMessage("Manga"),
+        "medium" : MessageLookupByLibrary.simpleMessage("Medium"),
     "mode_list" : MessageLookupByLibrary.simpleMessage("Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G"),
     "more" : MessageLookupByLibrary.simpleMessage("More"),
     "more_then_starnum_bookmark" : m0,

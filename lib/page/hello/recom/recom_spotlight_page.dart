@@ -24,6 +24,7 @@ import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -168,9 +169,29 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
+  bool okForUser(Illusts illust) {
+    for (var t in muteStore.banTags) {
+      for (var f in illust.tags) {
+        if (f.name == t.name) return false;
+      }
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == illust.user.id.toString()) {
+        return false;
+      }
+    }
+    for (var i in muteStore.banillusts)
+      if (illust.id == i.id) {
+        return false;
+      }
+    return true;
+  }
+
   Widget _buildWaterFall() {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
+    _lightingStore.iStores
+        .removeWhere((element) => !okForUser(element.illusts));
     return CustomScrollView(
       slivers: [
         SliverAppBar(

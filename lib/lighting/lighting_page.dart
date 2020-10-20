@@ -26,7 +26,6 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -163,7 +162,7 @@ class _LightingListState extends State<LightingList> {
   Widget _buildWithoutHeader(context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _store.iStores.removeWhere((element) => okForUser(element.illusts));
+    _store.iStores.removeWhere((element) => !okForUser(element.illusts));
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           ScrollMetrics metrics = notification.metrics;
@@ -297,9 +296,12 @@ class _LightingListState extends State<LightingList> {
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _store.iStores.removeWhere((element) => okForUser(element.illusts));
+    _store.iStores.removeWhere((element) => !okForUser(element.illusts));
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       double radio = _store.iStores[index].illusts.height.toDouble() /
           _store.iStores[index].illusts.width.toDouble();

@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1958,6 +1959,16 @@ class I18n {
     return Intl.message(
       'favorited tag',
       name: 'favorited_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `legacy mode is not available since Android9`
+  String get legacy_mode_warning {
+    return Intl.message(
+      'legacy mode is not available since Android9',
+      name: 'legacy_mode_warning',
       desc: '',
       args: [],
     );
