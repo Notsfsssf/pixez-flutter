@@ -193,5 +193,5 @@
   "save_format_lose_part_warning": "儲存格式必須包含{part},否則多P作品會儲存出錯！",
   "save_painter_avatar": "儲存繪師頭貼",
   "favorited_tag": "已收藏標籤",
-  "legacy_mode_warning": "legacy mode is not available since Android9"
+  "legacy_mode_warning": "從 Android 9 開始舊版方式已不可用"
 }
