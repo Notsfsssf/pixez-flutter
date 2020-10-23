@@ -21,12 +21,14 @@ class I18n {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<I18n> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       I18n.current = I18n();
-      
+
       return I18n.current;
     });
   } 
