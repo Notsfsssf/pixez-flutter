@@ -10,14 +10,15 @@ import 'intl/messages_all.dart';
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values
 
 class I18n {
   I18n();
-  
+
   static I18n current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<I18n> load(Locale locale) {
     final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
@@ -1969,6 +1970,26 @@ class I18n {
     return Intl.message(
       'legacy mode is not available since Android9',
       name: 'legacy_mode_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear old format file`
+  String get clear_old_format_file {
+    return Intl.message(
+      'Clear old format file',
+      name: 'clear_old_format_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在保存时删除旧版不带p0格式的图片`
+  String get clear_old_format_file_message {
+    return Intl.message(
+      '在保存时删除旧版不带p0格式的图片',
+      name: 'clear_old_format_file_message',
       desc: '',
       args: [],
     );

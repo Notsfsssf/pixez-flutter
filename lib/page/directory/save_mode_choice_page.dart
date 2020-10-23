@@ -67,9 +67,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       floatingActionButton: FloatingActionButton.extended(
           heroTag: null,
           icon: Icon(Icons.next_plan, color: Colors.white),
-          onPressed: () async {
-            await _onPress(context);
-          },
+          onPressed: () async => _onPress(context),
           backgroundColor: _animation.value,
           label: Text(
             I18n.of(context).start,
@@ -173,7 +171,16 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(I18n.of(context).old_way_message),
+                        child: Column(
+                          children: [
+                            Text(I18n
+                                .of(context)
+                                .old_way_message),
+                            Text(I18n
+                                .of(context)
+                                .legacy_mode_warning)
+                          ],
+                        ),
                       )
                     ],
                   ))
@@ -194,15 +201,13 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       print('Running on ${androidInfo.version.sdkInt}');
-      if (androidInfo.version.sdkInt < 29) {
-        await _helplessfun(context, isFirst: widget.isFirst);
-        Navigator.of(context).pop();
-        return;
+      if (androidInfo.version.sdkInt > 29) {
+        BotToast.showText(text: I18n
+            .of(context)
+            .legacy_mode_warning);
       }
-      BotToast.showText(text: I18n.of(context).legacy_mode_warning);
-      setState(() {
-        this.groupValue = 0;
-      });
+      await _helplessfun(context, isFirst: widget.isFirst);
+      Navigator.of(context).pop();
     }
     if (groupValue == 0) {
       _animationController.reverse();

@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -322,14 +321,14 @@ class _LightingListState extends State<LightingList> {
   SliverWaterfallFlowDelegateWithFixedCrossAxisCount _buildGridDelegate() {
     return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
       crossAxisCount: userSetting.crossCount,
-      collectGarbage: (List<int> garbages) {
-        garbages.forEach((index) {
-          final provider = ExtendedNetworkImageProvider(
-            _store.iStores[index].illusts.imageUrls.medium,
-          );
-          provider.evict();
-        });
-      },
+      // collectGarbage: (List<int> garbages) {
+      //   garbages.forEach((index) {
+      //     final provider = ExtendedNetworkImageProvider(
+      //       _store.iStores[index].illusts.imageUrls.medium,
+      //     );
+      //     provider.evict();
+      //   });
+      // },
     );
   }
 

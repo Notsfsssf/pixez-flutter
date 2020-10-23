@@ -193,5 +193,7 @@
   "save_format_lose_part_warning": "保存格式必须包含part,否则多p作品会保存出错！",
   "save_painter_avatar": "保存画师头像",
   "favorited_tag": "收藏标签",
-  "legacy_mode_warning": "传统模式从Android9开始被废弃"
+  "legacy_mode_warning": "传统模式从Android9开始被废弃",
+  "clear_old_format_file": "Clear old format file",
+  "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片"
 }

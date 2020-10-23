@@ -11,12 +11,13 @@
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
             android:name=".PixEz"
             android:icon="@mipmap/ic_launcher"
-            android:label="PixEz">
+            android:label="PixEz"
+            android:requestLegacyExternalStorage="true">
         <!--        <receiver android:name=".CardAppWidget">-->
         <!--            <intent-filter>-->
         <!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
@@ -42,8 +43,8 @@
                  to determine the Window background behind the Flutter UI.
             -->
             <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme" />
+                    android:name="io.flutter.embedding.android.NormalTheme"
+                    android:resource="@style/NormalTheme"/>
             <!--
                  Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash

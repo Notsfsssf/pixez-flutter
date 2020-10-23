@@ -43,27 +43,40 @@ class MessageLookup extends MessageLookupByLibrary {
     "ban" : MessageLookupByLibrary.simpleMessage("Mute"),
     "birthday" : MessageLookupByLibrary.simpleMessage("Birthday"),
     "block_user" : MessageLookupByLibrary.simpleMessage("Mute this user"),
-    "bookmark" : MessageLookupByLibrary.simpleMessage("Collections"),
-    "bookmarked" : MessageLookupByLibrary.simpleMessage("Bookmarked"),
-    "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
-    "canceled" : MessageLookupByLibrary.simpleMessage("Cancelled"),
-    "check_for_updates" : MessageLookupByLibrary.simpleMessage("Check for updates"),
-    "choice_you_like" : MessageLookupByLibrary.simpleMessage("Visible tags"),
-    "choose_directory" : MessageLookupByLibrary.simpleMessage("Select folder"),
-    "clear" : MessageLookupByLibrary.simpleMessage("Clear"),
-    "clear_all_cache" : MessageLookupByLibrary.simpleMessage("Clear all cache"),
-    "clear_completed_tasks" : MessageLookupByLibrary.simpleMessage("Clear completed tasks"),
-    "clear_search_tag_history" : MessageLookupByLibrary.simpleMessage("Clear search history"),
-    "clearn_cache" : MessageLookupByLibrary.simpleMessage("Clear cache"),
-    "clearn_cache_hint" : MessageLookupByLibrary.simpleMessage("Try this when you have problems with playing GIFs"),
-    "complete" : MessageLookupByLibrary.simpleMessage("Complete"),
-    "copied_to_clipboard" : MessageLookupByLibrary.simpleMessage("Copied to clipboard"),
-    "copymessage" : MessageLookupByLibrary.simpleMessage("Copy illust info"),
-    "create_folder" : MessageLookupByLibrary.simpleMessage("Create folder"),
-    "crosscount" : MessageLookupByLibrary.simpleMessage("Number of illusts per page"),
-    "current_password" : MessageLookupByLibrary.simpleMessage("Current password"),
-    "dark" : MessageLookupByLibrary.simpleMessage("Dark"),
-    "date_asc" : MessageLookupByLibrary.simpleMessage("Older"),
+        "bookmark": MessageLookupByLibrary.simpleMessage("Collections"),
+        "bookmarked": MessageLookupByLibrary.simpleMessage("Bookmarked"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "canceled": MessageLookupByLibrary.simpleMessage("Cancelled"),
+        "check_for_updates":
+            MessageLookupByLibrary.simpleMessage("Check for updates"),
+        "choice_you_like": MessageLookupByLibrary.simpleMessage("Visible tags"),
+        "choose_directory":
+            MessageLookupByLibrary.simpleMessage("Select folder"),
+        "clear": MessageLookupByLibrary.simpleMessage("Clear"),
+        "clear_all_cache":
+            MessageLookupByLibrary.simpleMessage("Clear all cache"),
+        "clear_completed_tasks":
+            MessageLookupByLibrary.simpleMessage("Clear completed tasks"),
+        "clear_old_format_file":
+            MessageLookupByLibrary.simpleMessage("Clear old format file"),
+        "clear_old_format_file_message":
+            MessageLookupByLibrary.simpleMessage("在保存时删除旧版不带p0格式的图片"),
+        "clear_search_tag_history":
+            MessageLookupByLibrary.simpleMessage("Clear search history"),
+        "clearn_cache": MessageLookupByLibrary.simpleMessage("Clear cache"),
+        "clearn_cache_hint": MessageLookupByLibrary.simpleMessage(
+            "Try this when you have problems with playing GIFs"),
+        "complete": MessageLookupByLibrary.simpleMessage("Complete"),
+        "copied_to_clipboard":
+            MessageLookupByLibrary.simpleMessage("Copied to clipboard"),
+        "copymessage": MessageLookupByLibrary.simpleMessage("Copy illust info"),
+        "create_folder": MessageLookupByLibrary.simpleMessage("Create folder"),
+        "crosscount":
+            MessageLookupByLibrary.simpleMessage("Number of illusts per page"),
+        "current_password":
+            MessageLookupByLibrary.simpleMessage("Current password"),
+        "dark": MessageLookupByLibrary.simpleMessage("Dark"),
+        "date_asc" : MessageLookupByLibrary.simpleMessage("Older"),
     "date_desc" : MessageLookupByLibrary.simpleMessage("Newer"),
     "date_duration" : MessageLookupByLibrary.simpleMessage("Date range"),
     "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
@@ -84,60 +97,60 @@ class MessageLookup extends MessageLookupByLibrary {
     "exact_match_for_tag" : MessageLookupByLibrary.simpleMessage("Tag exact matches"),
     "failed" : MessageLookupByLibrary.simpleMessage("Failed"),
     "favorited_tag" : MessageLookupByLibrary.simpleMessage("favorited tag"),
-    "feedback" : MessageLookupByLibrary.simpleMessage("Feedback"),
-    "filter" : MessageLookupByLibrary.simpleMessage("Filter"),
-    "follow" : MessageLookupByLibrary.simpleMessage("Follow"),
-    "followed" : MessageLookupByLibrary.simpleMessage("Following"),
-    "format" : MessageLookupByLibrary.simpleMessage("Format"),
-    "gender" : MessageLookupByLibrary.simpleMessage("Gender"),
-    "go_to_login" : MessageLookupByLibrary.simpleMessage("Login"),
-    "go_to_project_address" : MessageLookupByLibrary.simpleMessage("Go to GitHub repo"),
-    "history" : MessageLookupByLibrary.simpleMessage("History"),
-    "history_record" : MessageLookupByLibrary.simpleMessage("Browsing history"),
-        "home": MessageLookupByLibrary.simpleMessage("Home"),
-        "illust": MessageLookupByLibrary.simpleMessage("Illust"),
-        "illust_id": MessageLookupByLibrary.simpleMessage("Illust ID"),
-        "illustration_detail_page_quality":
-            MessageLookupByLibrary.simpleMessage(
-                "Image quality (Details page)"),
-        "input_nickname":
-            MessageLookupByLibrary.simpleMessage("Enter nickname"),
-        "job": MessageLookupByLibrary.simpleMessage("Job"),
-        "key_word": MessageLookupByLibrary.simpleMessage("Keywords"),
-        "large": MessageLookupByLibrary.simpleMessage("High"),
-        "large_preview_zoom_quality":
-            MessageLookupByLibrary.simpleMessage("Image quality (Fullscreen)"),
-        "latest_version":
-            MessageLookupByLibrary.simpleMessage("Latest version"),
-        "legacy_mode_warning": MessageLookupByLibrary.simpleMessage(
-            "legacy mode is not available since Android9"),
-        "let_go_and_load_more":
-            MessageLookupByLibrary.simpleMessage("Release to load more"),
-        "light": MessageLookupByLibrary.simpleMessage("Light"),
-        "link": MessageLookupByLibrary.simpleMessage("Link"),
-        "load_image_failed_click_to_reload":
-            MessageLookupByLibrary.simpleMessage(
-                "Failed to load. Click to retry"),
-        "loading_failed_retry_message": MessageLookupByLibrary.simpleMessage(
-            "Failed to load. Click to retry"),
-        "login": MessageLookupByLibrary.simpleMessage("Login"),
-        "login_message":
-            MessageLookupByLibrary.simpleMessage("Discover a whole new world"),
-        "logout": MessageLookupByLibrary.simpleMessage("Logout"),
-        "logout_message": MessageLookupByLibrary.simpleMessage(
-            "This will clear account info and return to Login page."),
-        "manga": MessageLookupByLibrary.simpleMessage("Manga"),
-        "medium" : MessageLookupByLibrary.simpleMessage("Medium"),
-    "mode_list" : MessageLookupByLibrary.simpleMessage("Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G"),
-    "more" : MessageLookupByLibrary.simpleMessage("More"),
-    "more_then_starnum_bookmark" : m0,
-    "muti_choice_save" : MessageLookupByLibrary.simpleMessage("Save selected"),
-    "my" : MessageLookupByLibrary.simpleMessage("Mine"),
-    "need_to_restart_app" : MessageLookupByLibrary.simpleMessage("Restart required"),
-    "new_password" : MessageLookupByLibrary.simpleMessage("New password"),
-    "new_version_update_information" : MessageLookupByLibrary.simpleMessage("Changelog"),
-    "news" : MessageLookupByLibrary.simpleMessage("Activities"),
-    "nickname" : MessageLookupByLibrary.simpleMessage("Nickname"),
+    "feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+    "filter": MessageLookupByLibrary.simpleMessage("Filter"),
+    "follow": MessageLookupByLibrary.simpleMessage("Follow"),
+    "followed": MessageLookupByLibrary.simpleMessage("Following"),
+    "format": MessageLookupByLibrary.simpleMessage("Format"),
+    "gender": MessageLookupByLibrary.simpleMessage("Gender"),
+    "go_to_login": MessageLookupByLibrary.simpleMessage("Login"),
+    "go_to_project_address": MessageLookupByLibrary.simpleMessage(
+        "Go to GitHub repo"),
+    "history": MessageLookupByLibrary.simpleMessage("History"),
+    "history_record": MessageLookupByLibrary.simpleMessage("Browsing history"),
+    "home": MessageLookupByLibrary.simpleMessage("Home"),
+    "illust": MessageLookupByLibrary.simpleMessage("Illust"),
+    "illust_id": MessageLookupByLibrary.simpleMessage("Illust ID"),
+    "illustration_detail_page_quality": MessageLookupByLibrary.simpleMessage(
+        "Image quality (Details page)"),
+    "input_nickname": MessageLookupByLibrary.simpleMessage("Enter nickname"),
+    "job": MessageLookupByLibrary.simpleMessage("Job"),
+    "key_word": MessageLookupByLibrary.simpleMessage("Keywords"),
+    "large": MessageLookupByLibrary.simpleMessage("High"),
+    "large_preview_zoom_quality": MessageLookupByLibrary.simpleMessage(
+        "Image quality (Fullscreen)"),
+    "latest_version": MessageLookupByLibrary.simpleMessage("Latest version"),
+    "legacy_mode_warning": MessageLookupByLibrary.simpleMessage(
+        "legacy mode is not available since Android9"),
+    "let_go_and_load_more": MessageLookupByLibrary.simpleMessage(
+        "Release to load more"),
+    "light": MessageLookupByLibrary.simpleMessage("Light"),
+    "link": MessageLookupByLibrary.simpleMessage("Link"),
+    "load_image_failed_click_to_reload": MessageLookupByLibrary.simpleMessage(
+        "Failed to load. Click to retry"),
+    "loading_failed_retry_message": MessageLookupByLibrary.simpleMessage(
+        "Failed to load. Click to retry"),
+    "login": MessageLookupByLibrary.simpleMessage("Login"),
+    "login_message": MessageLookupByLibrary.simpleMessage(
+        "Discover a whole new world"),
+    "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+    "logout_message": MessageLookupByLibrary.simpleMessage(
+        "This will clear account info and return to Login page."),
+    "manga": MessageLookupByLibrary.simpleMessage("Manga"),
+    "medium": MessageLookupByLibrary.simpleMessage("Medium"),
+    "mode_list": MessageLookupByLibrary.simpleMessage(
+        "Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G"),
+    "more": MessageLookupByLibrary.simpleMessage("More"),
+    "more_then_starnum_bookmark": m0,
+    "muti_choice_save": MessageLookupByLibrary.simpleMessage("Save selected"),
+    "my": MessageLookupByLibrary.simpleMessage("Mine"),
+    "need_to_restart_app": MessageLookupByLibrary.simpleMessage(
+        "Restart required"),
+    "new_password": MessageLookupByLibrary.simpleMessage("New password"),
+    "new_version_update_information": MessageLookupByLibrary.simpleMessage(
+        "Changelog"),
+    "news": MessageLookupByLibrary.simpleMessage("Activities"),
+    "nickname": MessageLookupByLibrary.simpleMessage("Nickname"),
     "nickname_can_be_change_anytime" : MessageLookupByLibrary.simpleMessage("Nickname can be changed anytime"),
     "no_h" : MessageLookupByLibrary.simpleMessage("H is not allowed!"),
     "no_more_data" : MessageLookupByLibrary.simpleMessage("No more data"),

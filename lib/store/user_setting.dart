@@ -42,9 +42,12 @@ abstract class _UserSettingBase with Store {
   static const String STORE_PATH_KEY = "save_store";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
-  static const String IS_RETURN_AGAIN_TO_EXIT_KEY="is_return_again_to_exit";
+  static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
+  static const String IS_CLEAR_OLD_FORMAT_FILE_KEY = "is_clear_old_format_file";
   @observable
-  bool isReturnAgainToExit=true;
+  bool isClearOldFormatFile = false;
+  @observable
+  bool isReturnAgainToExit = true;
   @observable
   bool isHelplessWay = false;
   @observable
@@ -75,6 +78,12 @@ abstract class _UserSettingBase with Store {
   static const String intialFormat = "{illust_id}_p{part}";
 
   @action
+  setIsClearnOldFormatFile(bool v) async {
+    await prefs.setBool(IS_CLEAR_OLD_FORMAT_FILE_KEY, v);
+    isClearOldFormatFile = v;
+  }
+
+  @action
   setIsReturnAgainToExit(bool value) async {
     await prefs.setBool(IS_RETURN_AGAIN_TO_EXIT_KEY, value);
     this.isReturnAgainToExit = value;
@@ -95,7 +104,7 @@ abstract class _UserSettingBase with Store {
 
   Color _stringToColor(String colorString) {
     String valueString =
-    colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
+        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
     int value = int.parse(valueString, radix: 16);
     Color otherColor = new Color(value);
     return otherColor;
@@ -140,7 +149,7 @@ abstract class _UserSettingBase with Store {
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
     isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY) ?? false;
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
-    isReturnAgainToExit= prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY)??true;
+    isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
         this.themeMode = i;
