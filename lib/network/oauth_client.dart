@@ -54,7 +54,7 @@ class OAuthClient {
   OAuthClient() {
     String time = getIsoDate();
     this.httpClient = httpClient ?? Dio()
-      ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..options.baseUrl = "https://210.140.131.188"
       ..options.headers = {
         "X-Client-Time": time,

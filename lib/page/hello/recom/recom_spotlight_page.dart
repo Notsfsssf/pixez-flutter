@@ -19,8 +19,10 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -190,62 +192,68 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget _buildWaterFall() {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _lightingStore.iStores
-        .removeWhere((element) => !okForUser(element.illusts));
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          elevation: 0.0,
-          titleSpacing: 0.0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          title: _buildFirstRow(context),
-        ),
-        SliverToBoxAdapter(
-          child: _buildSpotlightContainer(),
-        ),
-        SliverToBoxAdapter(
-          child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
-        ),
-        _lightingStore.iStores.isNotEmpty
-            ? SliverWaterfallFlow(
-                gridDelegate:
-                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: userSetting.crossCount,
-                  collectGarbage: (List<int> garbages) {
-                    garbages.forEach((index) {
-                      final provider = ExtendedNetworkImageProvider(
-                        _lightingStore.iStores[index].illusts.imageUrls.medium,
-                      );
-                      provider.evict();
-                    });
-                  },
-                ),
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  double radio = _lightingStore.iStores[index].illusts.height
-                          .toDouble() /
-                      _lightingStore.iStores[index].illusts.width.toDouble();
-                  double mainAxisExtent;
-                  if (radio > 3)
-                    mainAxisExtent = itemWidth;
-                  else
-                    mainAxisExtent = itemWidth * radio;
-                  return IllustCard(
-                    store: _lightingStore.iStores[index],
-                    iStores: _lightingStore.iStores,
-                    height: mainAxisExtent + 64.0,
-                    heroString: widget.hashCode.toString(),
-                  );
-                }, childCount: _lightingStore.iStores.length),
-              )
-            : SliverToBoxAdapter(
-                child: Container(
-                  height: 30,
-                ),
-              )
-      ],
-    );
+     return CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            elevation: 0.0,
+            titleSpacing: 0.0,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            title: _buildFirstRow(context),
+          ),
+          SliverToBoxAdapter(
+            child: _buildSpotlightContainer(),
+          ),
+          SliverToBoxAdapter(
+            child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
+          ),
+          _lightingStore.iStores.isNotEmpty
+              ? SliverWaterfallFlow(
+                  gridDelegate:
+                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: userSetting.crossCount,
+                    collectGarbage: (List<int> garbages) {
+                      garbages.forEach((index) {
+                        final provider = ExtendedNetworkImageProvider(
+                          _lightingStore
+                              .iStores[index].illusts.imageUrls.medium,
+                        );
+                        provider.evict();
+                      });
+                    },
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    if (!okForUser(_lightingStore.iStores[index].illusts)) {
+                      return Visibility(
+                          visible: false,
+                          child: Container(
+                            height: 0.0,
+                          ));
+                    }
+                    double radio = _lightingStore.iStores[index].illusts.height
+                            .toDouble() /
+                        _lightingStore.iStores[index].illusts.width.toDouble();
+                    double mainAxisExtent;
+                    if (radio > 3)
+                      mainAxisExtent = itemWidth;
+                    else
+                      mainAxisExtent = itemWidth * radio;
+                    return IllustCard(
+                      store: _lightingStore.iStores[index],
+                      iStores: _lightingStore.iStores,
+                      height: mainAxisExtent + 64.0,
+                      heroString: widget.hashCode.toString(),
+                    );
+                  }, childCount: _lightingStore.iStores.length),
+                )
+              : SliverToBoxAdapter(
+                  child: Container(
+                    height: 30,
+                  ),
+                )
+        ],
+      );
   }
 
   Widget _buildSpotlightContainer() {

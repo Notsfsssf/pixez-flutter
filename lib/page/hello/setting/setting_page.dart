@@ -56,7 +56,7 @@ class _SettingPageState extends State<SettingPage> {
   bool hasNewVersion = false;
 
   initMethod() async {
-    if (Constants.isGooglePlay) return;
+    if (Constants.isGooglePlay || Platform.isIOS) return;
     if (Updater.result != Result.timeout) {
       bool hasNew = Updater.result == Result.yes;
       if (mounted)
@@ -286,9 +286,7 @@ class _SettingPageState extends State<SettingPage> {
                 },
               ),
               FlatButton(
-                child: Text(I18n
-                    .of(context)
-                    .ok),
+                child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
                 },

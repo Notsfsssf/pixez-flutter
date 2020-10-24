@@ -13,6 +13,8 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:intl/intl.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 
 extension TimeExts on String {
   String toShortTime() {
@@ -34,5 +36,25 @@ extension TimeExts on String {
         .replaceAll(">", "")
         .replaceAll("|", "")
         .replaceAll("<", "");
+  }
+}
+
+extension IllustExts on Illusts {
+  bool hateByUser() {
+    for (var t in muteStore.banTags) {
+      for (var f in this.tags) {
+        if (f.name == t.name) return false;
+      }
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == this.user.id.toString()) {
+        return false;
+      }
+    }
+    for (var i in muteStore.banillusts)
+      if (this.id == i.id) {
+        return false;
+      }
+    return true;
   }
 }

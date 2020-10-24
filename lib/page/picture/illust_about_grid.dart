@@ -17,6 +17,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 
@@ -41,6 +43,7 @@ class _IllustAboutGridState extends State<IllustAboutGrid> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
+      _store.illusts.removeWhere((element) => element.hateByUser());
       if (_store.errorMessage != null) {
         return Container(
           height: 300,
@@ -57,7 +60,7 @@ class _IllustAboutGridState extends State<IllustAboutGrid> {
                 onPressed: () {
                   _store.fetch();
                 },
-                child: Text('Refresh'),
+                child: Text(I18n.of(context).refresh),
               )
             ],
           ),
