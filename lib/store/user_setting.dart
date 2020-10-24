@@ -150,6 +150,7 @@ abstract class _UserSettingBase with Store {
     isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY) ?? false;
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
+    isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
         this.themeMode = i;
@@ -275,7 +276,7 @@ abstract class _UserSettingBase with Store {
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
     final local =
-    I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
+        I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
     I18n.load(local);
   }
 

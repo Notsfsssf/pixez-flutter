@@ -339,7 +339,7 @@ class _JobPageState extends State<JobPage> {
                             ],
                           ),
                         ),
-                        if (job.min / job.max == 1)
+                        if (job.min / job.max != 1)
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
