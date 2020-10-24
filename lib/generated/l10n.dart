@@ -31,7 +31,7 @@ class I18n {
 
       return I18n.current;
     });
-  } 
+  }
 
   static I18n of(BuildContext context) {
     return Localizations.of<I18n>(context, I18n);
@@ -1987,10 +1987,10 @@ class I18n {
     );
   }
 
-  /// `在保存时删除旧版不带p0格式的图片`
+  /// `without _p0`
   String get clear_old_format_file_message {
     return Intl.message(
-      '在保存时删除旧版不带p0格式的图片',
+      'without _p0',
       name: 'clear_old_format_file_message',
       desc: '',
       args: [],

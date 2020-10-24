@@ -28,11 +28,13 @@ class MessageLookup extends MessageLookupByLibrary {
   static m3(length) => "Tap to show ${length} results";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "about" : MessageLookupByLibrary.simpleMessage("About"),
-    "about_picture" : MessageLookupByLibrary.simpleMessage("Related illusts"),
-    "account_change" : MessageLookupByLibrary.simpleMessage("Switch account"),
-    "account_message" : MessageLookupByLibrary.simpleMessage("Account info"),
+  static _notInlinedMessages(_) => <String, Function>{
+        "about": MessageLookupByLibrary.simpleMessage("About"),
+        "about_picture":
+            MessageLookupByLibrary.simpleMessage("Related illusts"),
+        "account_change":
+            MessageLookupByLibrary.simpleMessage("Switch account"),
+        "account_message": MessageLookupByLibrary.simpleMessage("Account info"),
         "all": MessageLookupByLibrary.simpleMessage("All"),
         "already_in_query":
             MessageLookupByLibrary.simpleMessage("Already in queue"),
@@ -64,7 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_old_format_file":
             MessageLookupByLibrary.simpleMessage("Clear old format file"),
         "clear_old_format_file_message":
-            MessageLookupByLibrary.simpleMessage("在保存时删除旧版不带p0格式的图片"),
+            MessageLookupByLibrary.simpleMessage("without _p0"),
         "clear_search_tag_history":
             MessageLookupByLibrary.simpleMessage("Clear search history"),
         "clearn_cache": MessageLookupByLibrary.simpleMessage("Clear cache"),
@@ -97,97 +99,108 @@ class MessageLookup extends MessageLookupByLibrary {
             "Do not change it unless your device supports it."),
         "donate_message": MessageLookupByLibrary.simpleMessage("Thank you!"),
         "donate_title": MessageLookupByLibrary.simpleMessage("Buy me a coffee"),
-    "donation": MessageLookupByLibrary.simpleMessage("Buy me a coffee"),
-    "dont_have_account": MessageLookupByLibrary.simpleMessage(
-        "Don\'t have an account yet?"),
-    "download_address": MessageLookupByLibrary.simpleMessage("Download link"),
-    "encode": MessageLookupByLibrary.simpleMessage("Encoding"),
-    "encode_message": MessageLookupByLibrary.simpleMessage(
-        "This may take some time and might fail"),
-    "enqueued": MessageLookupByLibrary.simpleMessage("Enqueued"),
-    "exact_match_for_tag": MessageLookupByLibrary.simpleMessage(
-        "Tag exact matches"),
-    "failed": MessageLookupByLibrary.simpleMessage("Failed"),
-    "favorited_tag": MessageLookupByLibrary.simpleMessage("favorited tag"),
-    "feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
-    "filter": MessageLookupByLibrary.simpleMessage("Filter"),
-    "follow": MessageLookupByLibrary.simpleMessage("Follow"),
-    "followed": MessageLookupByLibrary.simpleMessage("Following"),
-    "format": MessageLookupByLibrary.simpleMessage("Format"),
-    "gender": MessageLookupByLibrary.simpleMessage("Gender"),
-    "go_to_login": MessageLookupByLibrary.simpleMessage("Login"),
-    "go_to_project_address": MessageLookupByLibrary.simpleMessage(
-        "Go to GitHub repo"),
-    "history": MessageLookupByLibrary.simpleMessage("History"),
-    "history_record": MessageLookupByLibrary.simpleMessage("Browsing history"),
-    "home": MessageLookupByLibrary.simpleMessage("Home"),
-    "illust": MessageLookupByLibrary.simpleMessage("Illust"),
-    "illust_id": MessageLookupByLibrary.simpleMessage("Illust ID"),
-    "illustration_detail_page_quality": MessageLookupByLibrary.simpleMessage(
-        "Image quality (Details page)"),
-    "input_nickname": MessageLookupByLibrary.simpleMessage("Enter nickname"),
-    "job": MessageLookupByLibrary.simpleMessage("Job"),
-    "key_word": MessageLookupByLibrary.simpleMessage("Keywords"),
-    "large": MessageLookupByLibrary.simpleMessage("High"),
-    "large_preview_zoom_quality": MessageLookupByLibrary.simpleMessage(
-        "Image quality (Fullscreen)"),
-    "latest_version": MessageLookupByLibrary.simpleMessage("Latest version"),
-    "legacy_mode_warning": MessageLookupByLibrary.simpleMessage(
-        "legacy mode is not available since Android9"),
-    "let_go_and_load_more": MessageLookupByLibrary.simpleMessage(
-        "Release to load more"),
-    "light": MessageLookupByLibrary.simpleMessage("Light"),
-    "link": MessageLookupByLibrary.simpleMessage("Link"),
-    "load_image_failed_click_to_reload": MessageLookupByLibrary.simpleMessage(
-        "Failed to load. Click to retry"),
-    "loading_failed_retry_message": MessageLookupByLibrary.simpleMessage(
-        "Failed to load. Click to retry"),
-    "login": MessageLookupByLibrary.simpleMessage("Login"),
-    "login_message": MessageLookupByLibrary.simpleMessage(
-        "Discover a whole new world"),
-    "logout": MessageLookupByLibrary.simpleMessage("Logout"),
-    "logout_message": MessageLookupByLibrary.simpleMessage(
-        "This will clear account info and return to Login page."),
-    "manga": MessageLookupByLibrary.simpleMessage("Manga"),
-    "medium": MessageLookupByLibrary.simpleMessage("Medium"),
-    "mode_list": MessageLookupByLibrary.simpleMessage(
-        "Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G"),
-    "more": MessageLookupByLibrary.simpleMessage("More"),
-    "more_then_starnum_bookmark": m0,
-    "muti_choice_save": MessageLookupByLibrary.simpleMessage("Save selected"),
-    "my": MessageLookupByLibrary.simpleMessage("Mine"),
-    "need_to_restart_app": MessageLookupByLibrary.simpleMessage(
-        "Restart required"),
-    "new_password": MessageLookupByLibrary.simpleMessage("New password"),
-    "new_version_update_information": MessageLookupByLibrary.simpleMessage(
-        "Changelog"),
-    "news": MessageLookupByLibrary.simpleMessage("Activities"),
-    "nickname": MessageLookupByLibrary.simpleMessage("Nickname"),
-    "nickname_can_be_change_anytime": MessageLookupByLibrary.simpleMessage(
-        "Nickname can be changed anytime"),
-    "no_h": MessageLookupByLibrary.simpleMessage("H is not allowed!"),
-    "no_more_data": MessageLookupByLibrary.simpleMessage("No more data"),
-    "not_bookmarked": MessageLookupByLibrary.simpleMessage("Not bookmarked"),
-    "not_the_correct_link": MessageLookupByLibrary.simpleMessage(
-        "Not a valid Pixiv link >_<"),
-    "novel_mode_list": MessageLookupByLibrary.simpleMessage(
-        "Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G"),
-    "ok": MessageLookupByLibrary.simpleMessage("OK"),
-    "old_way": MessageLookupByLibrary.simpleMessage("Traditional"),
-    "old_way_message": MessageLookupByLibrary.simpleMessage(
-        "In order to use this method, you will need to allow PixEz to access your files and select a folder"),
-    "painter": MessageLookupByLibrary.simpleMessage("User"),
-    "painter_id" : MessageLookupByLibrary.simpleMessage("User ID"),
-    "painter_name" : MessageLookupByLibrary.simpleMessage("User name"),
-    "partial_match_for_tag" : MessageLookupByLibrary.simpleMessage("Tag partial matches"),
-    "path" : MessageLookupByLibrary.simpleMessage("Path"),
-    "paused" : MessageLookupByLibrary.simpleMessage("Paused"),
-    "permission_denied" : MessageLookupByLibrary.simpleMessage("Permission denied"),
-    "perol_message" : MessageLookupByLibrary.simpleMessage("Author of the project. Built with Flutter."),
-    "personal" : MessageLookupByLibrary.simpleMessage("Personal"),
-    "pick_a_color" : MessageLookupByLibrary.simpleMessage("Pick a color"),
-    "pixel" : MessageLookupByLibrary.simpleMessage("Resolution"),
-    "platform_special_setting" : MessageLookupByLibrary.simpleMessage("Platform-specific settings"),
+        "donation": MessageLookupByLibrary.simpleMessage("Buy me a coffee"),
+        "dont_have_account":
+            MessageLookupByLibrary.simpleMessage("Don\'t have an account yet?"),
+        "download_address":
+            MessageLookupByLibrary.simpleMessage("Download link"),
+        "encode": MessageLookupByLibrary.simpleMessage("Encoding"),
+        "encode_message": MessageLookupByLibrary.simpleMessage(
+            "This may take some time and might fail"),
+        "enqueued": MessageLookupByLibrary.simpleMessage("Enqueued"),
+        "exact_match_for_tag":
+            MessageLookupByLibrary.simpleMessage("Tag exact matches"),
+        "failed": MessageLookupByLibrary.simpleMessage("Failed"),
+        "favorited_tag": MessageLookupByLibrary.simpleMessage("favorited tag"),
+        "feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+        "filter": MessageLookupByLibrary.simpleMessage("Filter"),
+        "follow": MessageLookupByLibrary.simpleMessage("Follow"),
+        "followed": MessageLookupByLibrary.simpleMessage("Following"),
+        "format": MessageLookupByLibrary.simpleMessage("Format"),
+        "gender": MessageLookupByLibrary.simpleMessage("Gender"),
+        "go_to_login": MessageLookupByLibrary.simpleMessage("Login"),
+        "go_to_project_address":
+            MessageLookupByLibrary.simpleMessage("Go to GitHub repo"),
+        "history": MessageLookupByLibrary.simpleMessage("History"),
+        "history_record":
+            MessageLookupByLibrary.simpleMessage("Browsing history"),
+        "home": MessageLookupByLibrary.simpleMessage("Home"),
+        "illust": MessageLookupByLibrary.simpleMessage("Illust"),
+        "illust_id": MessageLookupByLibrary.simpleMessage("Illust ID"),
+        "illustration_detail_page_quality":
+            MessageLookupByLibrary.simpleMessage(
+                "Image quality (Details page)"),
+        "input_nickname":
+            MessageLookupByLibrary.simpleMessage("Enter nickname"),
+        "job": MessageLookupByLibrary.simpleMessage("Job"),
+        "key_word": MessageLookupByLibrary.simpleMessage("Keywords"),
+        "large": MessageLookupByLibrary.simpleMessage("High"),
+        "large_preview_zoom_quality":
+            MessageLookupByLibrary.simpleMessage("Image quality (Fullscreen)"),
+        "latest_version":
+            MessageLookupByLibrary.simpleMessage("Latest version"),
+        "legacy_mode_warning": MessageLookupByLibrary.simpleMessage(
+            "legacy mode is not available since Android9"),
+        "let_go_and_load_more":
+            MessageLookupByLibrary.simpleMessage("Release to load more"),
+        "light": MessageLookupByLibrary.simpleMessage("Light"),
+        "link": MessageLookupByLibrary.simpleMessage("Link"),
+        "load_image_failed_click_to_reload":
+            MessageLookupByLibrary.simpleMessage(
+                "Failed to load. Click to retry"),
+        "loading_failed_retry_message": MessageLookupByLibrary.simpleMessage(
+            "Failed to load. Click to retry"),
+        "login": MessageLookupByLibrary.simpleMessage("Login"),
+        "login_message":
+            MessageLookupByLibrary.simpleMessage("Discover a whole new world"),
+        "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "logout_message": MessageLookupByLibrary.simpleMessage(
+            "This will clear account info and return to Login page."),
+        "manga": MessageLookupByLibrary.simpleMessage("Manga"),
+        "medium": MessageLookupByLibrary.simpleMessage("Medium"),
+        "mode_list": MessageLookupByLibrary.simpleMessage(
+            "Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G"),
+        "more": MessageLookupByLibrary.simpleMessage("More"),
+        "more_then_starnum_bookmark": m0,
+        "muti_choice_save":
+            MessageLookupByLibrary.simpleMessage("Save selected"),
+        "my": MessageLookupByLibrary.simpleMessage("Mine"),
+        "need_to_restart_app":
+            MessageLookupByLibrary.simpleMessage("Restart required"),
+        "new_password": MessageLookupByLibrary.simpleMessage("New password"),
+        "new_version_update_information":
+            MessageLookupByLibrary.simpleMessage("Changelog"),
+        "news": MessageLookupByLibrary.simpleMessage("Activities"),
+        "nickname": MessageLookupByLibrary.simpleMessage("Nickname"),
+        "nickname_can_be_change_anytime": MessageLookupByLibrary.simpleMessage(
+            "Nickname can be changed anytime"),
+        "no_h": MessageLookupByLibrary.simpleMessage("H is not allowed!"),
+        "no_more_data": MessageLookupByLibrary.simpleMessage("No more data"),
+        "not_bookmarked":
+            MessageLookupByLibrary.simpleMessage("Not bookmarked"),
+        "not_the_correct_link":
+            MessageLookupByLibrary.simpleMessage("Not a valid Pixiv link >_<"),
+        "novel_mode_list": MessageLookupByLibrary.simpleMessage(
+            "Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G"),
+        "ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "old_way": MessageLookupByLibrary.simpleMessage("Traditional"),
+        "old_way_message": MessageLookupByLibrary.simpleMessage(
+            "In order to use this method, you will need to allow PixEz to access your files and select a folder"),
+        "painter": MessageLookupByLibrary.simpleMessage("User"),
+        "painter_id": MessageLookupByLibrary.simpleMessage("User ID"),
+        "painter_name": MessageLookupByLibrary.simpleMessage("User name"),
+        "partial_match_for_tag":
+            MessageLookupByLibrary.simpleMessage("Tag partial matches"),
+        "path": MessageLookupByLibrary.simpleMessage("Path"),
+        "paused": MessageLookupByLibrary.simpleMessage("Paused"),
+        "permission_denied":
+            MessageLookupByLibrary.simpleMessage("Permission denied"),
+        "perol_message": MessageLookupByLibrary.simpleMessage(
+            "Author of the project. Built with Flutter."),
+        "personal": MessageLookupByLibrary.simpleMessage("Personal"),
+        "pick_a_color": MessageLookupByLibrary.simpleMessage("Pick a color"),
+        "pixel": MessageLookupByLibrary.simpleMessage("Resolution"),
+        "platform_special_setting" : MessageLookupByLibrary.simpleMessage("Platform-specific settings"),
     "please_note_that" : MessageLookupByLibrary.simpleMessage("Notice"),
     "please_note_that_content" : MessageLookupByLibrary.simpleMessage("This option should be ON unless you are able to access pixiv.net without any issue."),
     "popular_desc" : MessageLookupByLibrary.simpleMessage("Popular"),

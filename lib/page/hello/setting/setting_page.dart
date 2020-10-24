@@ -280,13 +280,15 @@ class _SettingPageState extends State<SettingPage> {
             title: Text(I18n.of(context).logout),
             actions: <Widget>[
               FlatButton(
-                child: Text("CANCEL"),
+                child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
               FlatButton(
-                child: Text("OK"),
+                child: Text(I18n
+                    .of(context)
+                    .ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
                 },

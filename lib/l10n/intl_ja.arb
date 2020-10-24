@@ -81,7 +81,7 @@
   "manga": "漫画",
   "medium": "低画質",
   "mode_list": "デイリー 男性に人気 女性に人気 オリジナル ルーキー ウィークリー マンスリー XVIII XVIII_W XVIII_G",
-  "novel_mode_list":"デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G",
+  "novel_mode_list": "デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G",
   "more": "もっと見る",
   "more_then_starnum_bookmark": "More than {starNum} likes",
   "muti_choice_save": "選択したイラストを保存",
@@ -178,6 +178,7 @@
   "start": "始める",
   "clear_search_tag_history": "検索履歴を消去する",
   "link": "URLをクリップボードにコピーする",
+  "step": "Step",
   "special_shaped_screen": "异形屏",
   "platform_special_setting": "平台特殊设置",
   "system": "system",
@@ -192,7 +193,7 @@
   "save_format_lose_part_warning": "保存格式必须包含{part},否则多p作品会保存出错！",
   "save_painter_avatar": "save painter avatar",
   "favorited_tag": "favorited tag",
-  "legacy_mode_warning": "legacy mode is not available since Android9",
+  "legacy_mode_warning": "legacy mode is not recommend since Android10",
   "clear_old_format_file": "Clear old format file",
-  "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片"
+  "clear_old_format_file_message": "without _p0"
 }

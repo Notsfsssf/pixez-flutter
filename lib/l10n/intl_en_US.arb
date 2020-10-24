@@ -195,5 +195,5 @@
   "favorited_tag": "favorited tag",
   "legacy_mode_warning": "legacy mode is not available since Android9",
   "clear_old_format_file": "Clear old format file",
-  "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片"
+  "clear_old_format_file_message": "without _p0"
 }
