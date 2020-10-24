@@ -43,18 +43,19 @@ extension IllustExts on Illusts {
   bool hateByUser() {
     for (var t in muteStore.banTags) {
       for (var f in this.tags) {
-        if (f.name == t.name) return false;
+        if (f.name == t.name) return true;
       }
     }
     for (var j in muteStore.banUserIds) {
       if (j.userId == this.user.id.toString()) {
-        return false;
+        return true;
       }
     }
+    
     for (var i in muteStore.banillusts)
       if (this.id == i.id) {
-        return false;
+        return true;
       }
-    return true;
+    return false;
   }
 }

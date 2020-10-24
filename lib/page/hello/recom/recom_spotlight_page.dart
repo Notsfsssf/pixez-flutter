@@ -19,14 +19,11 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -34,6 +31,7 @@ import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
+import 'package:pixez/exts.dart';
 
 class RecomSpolightPage extends StatefulWidget {
   final LightingStore lightingStore;
@@ -171,24 +169,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  bool okForUser(Illusts illust) {
-    for (var t in muteStore.banTags) {
-      for (var f in illust.tags) {
-        if (f.name == t.name) return false;
-      }
-    }
-    for (var j in muteStore.banUserIds) {
-      if (j.userId == illust.user.id.toString()) {
-        return false;
-      }
-    }
-    for (var i in muteStore.banillusts)
-      if (illust.id == i.id) {
-        return false;
-      }
-    return true;
-  }
-
   Widget _buildWaterFall() {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
@@ -224,7 +204,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                   ),
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    if (!okForUser(_lightingStore.iStores[index].illusts)) {
+                    if (_lightingStore.iStores[index].illusts.hateByUser()) {
                       return Visibility(
                           visible: false,
                           child: Container(

@@ -87,7 +87,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 38
-        versionName "0.2.3"
+        versionName "0.2.3 Knockin"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

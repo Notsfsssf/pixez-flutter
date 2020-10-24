@@ -28,6 +28,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
+import 'package:pixez/exts.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
@@ -141,28 +142,10 @@ class _LightingListState extends State<LightingList> {
     );
   }
 
-  bool okForUser(Illusts illust) {
-    for (var t in muteStore.banTags) {
-      for (var f in illust.tags) {
-        if (f.name == t.name) return false;
-      }
-    }
-    for (var j in muteStore.banUserIds) {
-      if (j.userId == illust.user.id.toString()) {
-        return false;
-      }
-    }
-    for (var i in muteStore.banillusts)
-      if (illust.id == i.id) {
-        return false;
-      }
-    return true;
-  }
-
   Widget _buildWithoutHeader(context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _store.iStores.removeWhere((element) => !okForUser(element.illusts));
+    _store.iStores.removeWhere((element) => element.illusts.hateByUser());
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           ScrollMetrics metrics = notification.metrics;
@@ -296,12 +279,9 @@ class _LightingListState extends State<LightingList> {
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _store.iStores.removeWhere((element) => !okForUser(element.illusts));
+    _store.iStores.removeWhere((element) => element.illusts.hateByUser());
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       double radio = _store.iStores[index].illusts.height.toDouble() /
           _store.iStores[index].illusts.width.toDouble();
