@@ -193,7 +193,7 @@
   "save_format_lose_part_warning": "儲存格式必須包含{part},否則多P作品會儲存出錯！",
   "save_painter_avatar": "儲存繪師頭貼",
   "favorited_tag": "已收藏標籤",
-  "legacy_mode_warning": "從 Android 10 開始舊版方式不推荐使用",
-  "clear_old_format_file": "删除老格式的图片",
-  "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片"
+  "legacy_mode_warning": "Android 10 及之後作業系統不推薦使用舊版方式",
+  "clear_old_format_file": "刪除舊版軟體儲存的圖像",
+  "clear_old_format_file_message": "儲存圖像的同時刪除來自舊版軟體、不標記分P的圖像，防止圖像被重複儲存"
 }
