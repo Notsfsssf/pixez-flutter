@@ -15,6 +15,9 @@
  */
 
 import 'package:mobx/mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/onezero_client.dart';
@@ -34,16 +37,29 @@ abstract class _SplashStoreBase with Store {
 
   @action
   fetch() async {
-    helloWord = '@_@';
-    return;
+    if (userSetting.disableBypassSni) return;
+    ApiClient.BASE_IMAGE_HOST = "210.140.92.144";
     try {
-      OnezeroResponse onezeroResponse =
-          await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
-      this.onezeroResponse = onezeroResponse;
-      helloWord = '♪^∀^●)ノ';
-    } catch (e) {
-      print(e);
-      helloWord = 'T_T';
-    }
+      OnezeroClient onezeroClient = OnezeroClient();
+      onezeroClient.queryDns(ImageHost).then((value) {
+        final host = value.answer.first.data;
+        LPrinter.d(host);
+        if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
+          ApiClient.BASE_IMAGE_HOST = host;
+        helloWord = '♪^∀^●)ノ';
+      });
+    } catch (e) {}
+    Future.delayed(Duration(seconds: 2), () {
+      helloWord = '@_@';
+    });
+    // try {
+    //   OnezeroResponse onezeroResponse =
+    //       await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
+    //   this.onezeroResponse = onezeroResponse;
+    //   helloWord = '♪^∀^●)ノ';
+    // } catch (e) {
+    //   print(e);
+    //   helloWord = 'T_T';
+    // }
   }
 }

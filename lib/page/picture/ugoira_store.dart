@@ -16,11 +16,15 @@
 
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/exts.dart';
 part 'ugoira_store.g.dart';
 
 enum UgoiraStatus { pre, progress, play }
@@ -87,12 +91,24 @@ abstract class _UgoiraStoreBase with Store {
     File fullPathFile = File(fullPath);
     try {
       ugoiraMetadataResponse = await apiClient.getUgoiraMetadata(id);
-      String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium;
+      String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium.toTrueUrl();
       if (!fullPathFile.existsSync()) {
-        Dio(BaseOptions(headers: {
+        var dio = Dio(BaseOptions(headers: {
           "referer": "https://app-api.pixiv.net/",
-          "User-Agent": "PixivIOSApp/5.8.0"
-        })).download(zipUrl, fullPath,
+          "User-Agent": "PixivIOSApp/5.8.0",
+          "Host": Uri.parse(zipUrl).host
+        }));
+        if(!userSetting.disableBypassSni)
+        (dio.httpClientAdapter as DefaultHttpClientAdapter)
+            .onHttpClientCreate = (client) {
+          HttpClient httpClient = new HttpClient();
+          httpClient.badCertificateCallback =
+              (X509Certificate cert, String host, int port) {
+            return true;
+          };
+          return httpClient;
+        };
+        dio.download(zipUrl, fullPath,
             onReceiveProgress: (int count, int total) {
           this.count = count;
           this.total = total;

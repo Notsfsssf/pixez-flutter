@@ -17,7 +17,9 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
@@ -35,6 +37,7 @@ import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:share/share.dart';
+import 'package:pixez/exts.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;
@@ -269,8 +272,19 @@ class _UsersPageState extends State<UsersPage>
                             child: userStore.userDetail.profile
                                         .background_image_url !=
                                     null
-                                ? PixivImage(userStore
-                                    .userDetail.profile.background_image_url)
+                                ? ExtendedImage.network(
+                                    userStore
+                                        .userDetail.profile.background_image_url
+                                        .toTrueUrl(),
+                                    fit: BoxFit.fitWidth,
+                                    headers: {
+                                      "referer": "https://app-api.pixiv.net/",
+                                      "User-Agent": "PixivIOSApp/5.8.0",
+                                      "Host":  Uri.parse(userStore
+                                          .userDetail.profile.background_image_url).host
+                                    },
+                                    enableMemoryCache: false,
+                                  )
                                 : Container(
                                     color: Theme.of(context).accentColor,
                                   )),
@@ -489,9 +503,7 @@ class _UsersPageState extends State<UsersPage>
 
   Future _saveUserC() async {
     var url = userStore.userDetail.user.profile_image_urls.medium;
-    String meme = url
-        .split(".")
-        .last;
+    String meme = url.split(".").last;
     if (meme == null || meme.isEmpty) meme = "jpg";
     var replaceAll = userStore.userDetail.user.name
         .replaceAll("/", "")
@@ -505,10 +517,24 @@ class _UsersPageState extends State<UsersPage>
     String fileName = "${replaceAll}_${userStore.userDetail.user.id}.${meme}";
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
-      await Dio(BaseOptions(headers: {
+      final dio = Dio(BaseOptions(headers: {
         "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0"
-      })).download(url, tempFile, deleteOnError: true);
+        "User-Agent": "PixivIOSApp/5.8.0",
+        "Host": Uri
+            .parse(url)
+            .host
+      }));
+      if(!userSetting.disableBypassSni)
+      (dio.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        HttpClient httpClient = new HttpClient();
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+        return httpClient;
+      };
+      await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file != null && file.existsSync()) {
         await saveStore.saveToGallery(
@@ -516,13 +542,9 @@ class _UsersPageState extends State<UsersPage>
             Illusts(
                 user: User(id: userStore.userDetail.user.id, name: replaceAll)),
             fileName);
-        BotToast.showText(text: I18n
-            .of(context)
-            .complete);
+        BotToast.showText(text: I18n.of(context).complete);
       } else
-        BotToast.showText(text: I18n
-            .of(context)
-            .failed);
+        BotToast.showText(text: I18n.of(context).failed);
     } catch (e) {
       print(e);
     }

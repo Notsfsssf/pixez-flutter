@@ -35,6 +35,7 @@ import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
@@ -245,6 +246,15 @@ class _SettingPageState extends State<SettingPage> {
                             trailing: Visibility(
                               child: NewVersionChip(),
                               visible: hasNewVersion,
+                            ),
+                          ),
+                          Visibility(
+                            visible: false,
+                            child: ListTile(
+                              title: Text('novel'),
+                              onTap: () => Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => NovelRail())),
                             ),
                           ),
                           Observer(builder: (context) {

@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   void initState() {
-    splashStore = SplashStore(OnezeroClient());
+    splashStore = SplashStore(OnezeroClient())..fetch();
     if (accountStore.now != null)
       lightingStore = LightingStore(() => apiClient.getRecommend(), null)
         ..fetch();
@@ -61,11 +61,6 @@ class _SplashPageState extends State<SplashPage>
             'https://${ApiClient.BASE_API_URL_HOST}';
         oAuthClient.httpClient.options.baseUrl =
             'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) =>
-        //             Platform.isIOS ? HelloPage() : NovelRail()));
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -100,9 +95,7 @@ class _SplashPageState extends State<SplashPage>
               Platform.isIOS ? HelloPage() : AndroidHelloPage(
                   lightingStore: lightingStore)));
     });
-    Future.delayed(Duration(seconds: 2), () {
-      if (mounted) splashStore.fetch();
-    });
+
   }
 
   @override

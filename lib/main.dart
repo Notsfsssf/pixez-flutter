@@ -18,11 +18,19 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/models/onezero_response.dart';
+import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/oauth_client.dart';
+import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/store/account_store.dart';
@@ -70,7 +78,14 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  initMethod() async {}
+  initMethod() async {
+    if (userSetting.disableBypassSni) return;
+    HttpClient client = ExtendedNetworkImageProvider.httpClient as HttpClient;
+    client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) {
+      return true;
+    };
+  }
 
   Future<void> clean() async {
     final path = await saveStore.findLocalPath();

@@ -19,9 +19,11 @@ import 'dart:async';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/exts.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -121,10 +123,11 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         child: Container(
           height: MediaQuery.of(context).size.height,
           child: ExtendedImage.network(
-            url,
+            url.toTrueUrl(),
             headers: {
               "referer": "https://app-api.pixiv.net/",
-              "User-Agent": "PixivIOSApp/5.8.0"
+              "User-Agent": "PixivIOSApp/5.8.0",
+              "Host": ImageHost
             },
             enableLoadState: true,
             loadStateChanged: (ExtendedImageState state) {
@@ -194,12 +197,13 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             itemCount: metaPages.length,
             itemBuilder: (BuildContext context, int index) {
               return ExtendedImage.network(
-                userSetting.zoomQuality == 0
+                (userSetting.zoomQuality == 0
                     ? metaPages[index].imageUrls.large
-                    : metaPages[index].imageUrls.original,
+                    : metaPages[index].imageUrls.original).toTrueUrl(),
                 headers: {
                   "referer": "https://app-api.pixiv.net/",
-                  "User-Agent": "PixivIOSApp/5.8.0"
+                  "User-Agent": "PixivIOSApp/5.8.0",
+                  "Host": ImageHost
                 },
                 enableLoadState: true,
                 loadStateChanged: (ExtendedImageState state) {
