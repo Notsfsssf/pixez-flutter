@@ -61,6 +61,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   @override
   void dispose() {
     _filter?.dispose();
+    _sauceStore?.dispose();
     super.dispose();
   }
 
@@ -125,7 +126,6 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
               ),
           ],
         )),
-
       );
     });
   }

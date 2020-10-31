@@ -28,30 +28,42 @@ class SplashStore = _SplashStoreBase with _$SplashStore;
 
 abstract class _SplashStoreBase with Store {
   final OnezeroClient onezeroClient;
+  final String OK_TEXT = '♪^∀^●)ノ';
   @observable
   String helloWord = "= w =";
   @observable
   OnezeroResponse onezeroResponse;
 
   _SplashStoreBase(this.onezeroClient);
+  @action
+  hello() async {
+    Future.delayed(Duration(seconds: 2), () {
+      helloWord = ' w(ﾟДﾟ)w ';
+    });
+  }
+
+  maybeFetch() {
+    if (userSetting.disableBypassSni || helloWord == OK_TEXT) return;
+    fetch();
+  }
 
   @action
   fetch() async {
-    if (userSetting.disableBypassSni) return;
-    ApiClient.BASE_IMAGE_HOST = "210.140.92.144";
     try {
-      OnezeroClient onezeroClient = OnezeroClient();
+      onezeroClient.httpClient.lock();
+      if (helloWord == OK_TEXT) return;
       onezeroClient.queryDns(ImageHost).then((value) {
+        value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
         final host = value.answer.first.data;
         LPrinter.d(host);
         if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
           ApiClient.BASE_IMAGE_HOST = host;
-        helloWord = '♪^∀^●)ノ';
+        helloWord = OK_TEXT;
       });
-    } catch (e) {}
-    Future.delayed(Duration(seconds: 2), () {
-      helloWord = '@_@';
-    });
+    } catch (e) {
+      helloWord = 'T_T';
+    }
+    onezeroClient.httpClient.unlock();
     // try {
     //   OnezeroResponse onezeroResponse =
     //       await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);

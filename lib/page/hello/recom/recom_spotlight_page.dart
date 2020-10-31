@@ -222,7 +222,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                     return IllustCard(
                       store: _lightingStore.iStores[index],
                       iStores: _lightingStore.iStores,
-                      height: mainAxisExtent + 64.0,
+                      height: mainAxisExtent + 86.0,
                       heroString: widget.hashCode.toString(),
                     );
                   }, childCount: _lightingStore.iStores.length),

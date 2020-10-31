@@ -24,6 +24,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -46,11 +47,12 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     var isHelplessWay = false
-    val OPEN_DOCUMENT_TREE_CODE = 190
-    val PICK_IMAGE_FILE = 2
+    private val OPEN_DOCUMENT_TREE_CODE = 190
+    private val PICK_IMAGE_FILE = 2
     var pendingResult: MethodChannel.Result? = null
     var pendingPickResult: MethodChannel.Result? = null
     var helplessPath: String? = null
+
     private fun pickFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -315,8 +317,16 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CardAppWidget.CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "initialize" -> {
+                    if (call.arguments == null) return@setMethodCallHandler
+                    Log.d("native", "dart call")
+                    CardAppWidget.setHandle(this, call.arguments as Long)
+                }
+            }
+        }
     }
-
 
     override fun onActivityResult(
             requestCode: Int, resultCode: Int,

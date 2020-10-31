@@ -1,14 +1,32 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package com.perol.pixez
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.content.Intent
+import android.graphics.*
+import android.util.Log
 import android.widget.RemoteViews
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.view.FlutterCallbackInformation
 import io.flutter.view.FlutterMain
 
@@ -19,65 +37,74 @@ class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
 
     companion object {
         private var channel: MethodChannel? = null;
+        private const val WIDGET_PREFERENCES_KEY = "widget_preferences"
+        private const val WIDGET_HANDLE_KEY = "handle"
+
+        const val CHANNEL = "com.example.app/widget"
+        const val NO_HANDLE = -1L
+
+        fun setHandle(context: Context, handle: Long) {
+            context.getSharedPreferences(
+                    WIDGET_PREFERENCES_KEY,
+                    Context.MODE_PRIVATE
+            ).edit().apply {
+                putLong(WIDGET_HANDLE_KEY, handle)
+                apply()
+            }
+        }
+
+        fun getRawHandle(context: Context): Long {
+            return context.getSharedPreferences(
+                    WIDGET_PREFERENCES_KEY,
+                    Context.MODE_PRIVATE
+            ).getLong(WIDGET_HANDLE_KEY, NO_HANDLE)
+        }
     }
 
     private lateinit var context: Context
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         this.context = context
-        // There may be multiple widgets active, so update all of them
-        initializeFlutter()
+        init()
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
-            // Pass over the id so we can update it later...
             channel?.invokeMethod("update", appWidgetId, this)
         }
     }
 
     override fun onEnabled(context: Context) {
-        // Enter relevant functionality for when the first widget is created
     }
 
     override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
     }
 
-    private fun initializeFlutter() {
+    private fun init() {
         if (channel == null) {
             FlutterMain.startInitialization(context)
             FlutterMain.ensureInitializationComplete(context, arrayOf())
-
-            val handle = WidgetHelper.getRawHandle(context)
-            if (handle == WidgetHelper.NO_HANDLE) {
+            val handle = getRawHandle(context)
+            if (handle == NO_HANDLE) {
                 return
             }
-
             val callbackInfo = FlutterCallbackInformation.lookupCallbackInformation(handle)
-            // You could also use a hard coded value to save you from all
-            // the hassle with SharedPreferences, but alas when running your
-            // app in release mode this would fail.
             val entryPointFunctionName = callbackInfo.callbackName
-
-            // Instantiate a FlutterEngine.
             val engine = FlutterEngine(context.applicationContext)
             val entryPoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entryPointFunctionName)
             engine.dartExecutor.executeDartEntrypoint(entryPoint)
-
-            // Register Plugins when in background. When there
-            // is already an engine running, this will be ignored (although there will be some
-            // warnings in the log).
-            GeneratedPluginRegistrant.registerWith(engine)
-
-            channel = MethodChannel(engine.dartExecutor.binaryMessenger, WidgetHelper.CHANNEL)
+            engine.plugins.add(io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin())
+            engine.plugins.add(com.tekartik.sqflite.SqflitePlugin())
+            channel = MethodChannel(engine.dartExecutor.binaryMessenger, CHANNEL)
+            Log.d("w", "success initializeFlutter")
         }
     }
 
     override fun success(result: Any?) {
+        result ?: return
         val args = result as HashMap<*, *>
         val id = args["id"] as Int
+        val iId = args["iid"] as Int
         val value = args["value"] as ByteArray
-
-//        updateWidget("onDart $value", id, context)
-        updateWidget(context, value, id)
+        Log.d("w", "success${iId}")
+        updateWidget(context, value, id, iId)
     }
 
     override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
@@ -87,21 +114,32 @@ class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
     }
 }
 
-internal fun updateWidget(context: Context, byteArray: ByteArray, appWidgetId: Int) {
-    // Construct the RemoteViews object
+internal fun updateWidget(context: Context, byteArray: ByteArray, appWidgetId: Int, iId: Int?) {
     val views = RemoteViews(context.packageName, R.layout.card_app_widget)
     val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.lastIndex)
-    views.setImageViewBitmap(R.id.appwidget_image, bitmap)
     val manager = AppWidgetManager.getInstance(context)
-    // Instruct the widget manager to update the widget
+    val output = Bitmap.createBitmap(bitmap.width, bitmap
+            .height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(output)
+    val paint = Paint().apply {
+        isAntiAlias = true
+        color = -0xbdbdbe
+        isAntiAlias = true
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+    }
+    val rect = Rect(0, 0, bitmap.width, bitmap.height)
+    canvas.drawARGB(0, 0, 0, 0)
+    val roundPx = 16f
+    canvas.drawRoundRect(RectF(rect), roundPx, roundPx, paint)
+    canvas.drawBitmap(bitmap, rect, rect, paint)
+    views.setImageViewBitmap(R.id.appwidget_image, output)
+    val intent = Intent(context, IntentActivity::class.java).apply { putExtra("iid", iId) }
+    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
     manager.updateAppWidget(appWidgetId, views)
 }
 
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-    // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.card_app_widget)
-//    views.setImageViewBitmap(R.id.appwidget_image, BitmapFactory.decodeResource(context.resources,R.drawable.ic_baseline_folder_open_24))
-
-    // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }

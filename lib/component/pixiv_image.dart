@@ -20,6 +20,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/main.dart';
 
 const ImageHost = "i.pximg.net";
 const ImageSHost = "s.pximg.net";
@@ -46,15 +47,14 @@ class PixivImage extends HookWidget {
       this.enableMemoryCache,
       this.height,
       this.width});
-
   bool already = false;
-
   @override
   Widget build(BuildContext context) {
     final _controller = useAnimationController(
         duration: const Duration(milliseconds: 500),
         lowerBound: 0.2,
         upperBound: 1.0);
+
     return ExtendedImage.network(
       url.toTrueUrl(),
       height: height,
@@ -92,6 +92,7 @@ class PixivImage extends HookWidget {
         }
         if (state.extendedImageLoadState == LoadState.failed) {
           if (!_controller.isCompleted) _controller?.reset();
+          splashStore.maybeFetch();
           return Container(
             height: 150,
             child: GestureDetector(
@@ -111,6 +112,7 @@ class PixivImage extends HookWidget {
                 ],
               ),
               onTap: () {
+                splashStore.maybeFetch();
                 state.reLoadImage();
               },
             ),
@@ -127,7 +129,7 @@ class PixivProvider {
     return ExtendedNetworkImageProvider(url, headers: {
       "referer": "https://app-api.pixiv.net/",
       "User-Agent": "PixivIOSApp/5.8.0",
-      "Host": ImageHost
+      "Host": Uri.parse(url).host
     });
   }
 }

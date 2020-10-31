@@ -16,6 +16,8 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
@@ -24,15 +26,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
-import 'package:pixez/models/onezero_response.dart';
+import 'package:pixez/models/account.dart';
+import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
+import 'package:pixez/page/splash/splash_store.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/book_tag_store.dart';
 import 'package:pixez/store/mute_store.dart';
@@ -40,6 +42,7 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -49,9 +52,71 @@ final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final HistoryStore historyStore = HistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
-
+final SplashStore splashStore = SplashStore(OnezeroClient());
 main() {
+  initAppWidget();
   runApp(MyApp());
+}
+
+initAppWidget() {
+  if (Platform.isAndroid) {
+    WidgetsFlutterBinding.ensureInitialized();
+    const MethodChannel channel = MethodChannel('com.example.app/widget');
+    final CallbackHandle callback =
+        PluginUtilities.getCallbackHandle(onWidgetUpdate);
+    final handle = callback.toRawHandle();
+    channel.invokeMethod('initialize', handle);
+  }
+}
+
+void onWidgetUpdate() {
+  WidgetsFlutterBinding.ensureInitialized();
+  const MethodChannel channel = MethodChannel('com.example.app/widget');
+  channel.setMethodCallHandler(
+    (call) async {
+      if (call.method == 'update') {
+        try {
+          const NOW_POSITION = 'now_position';
+          LPrinter.d("setMethodCallHandler");
+          final id = call.arguments;
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          int position = pref.getInt(NOW_POSITION) ?? 0; //Position Zero!
+          ApiClient apiClient = ApiClient();
+          AccountProvider accountProvider = AccountProvider();
+          await accountProvider.open();
+          List<AccountPersist> accounts = await accountProvider.getAllAccount();
+          Response response;
+          if (accounts.isNotEmpty)
+            response = await apiClient.getIllustRanking("day", null);
+          else
+            response = await apiClient.walkthroughIllusts();
+          Recommend recommend = Recommend.fromJson(response.data);
+          print('on Dart ${call.method}!:${recommend.illusts[position].title}');
+          Dio dio = Dio(BaseOptions(headers: {
+            "referer": "https://app-api.pixiv.net/",
+            "User-Agent": "PixivIOSApp/5.8.0",
+            "Host": 'i.pximg.net'
+          }, responseType: ResponseType.bytes));
+          Response<List<int>> rs =
+              await dio.get(recommend.illusts[position].imageUrls.medium);
+          Uint8List uint8list = Uint8List.fromList(rs.data);
+          int fPosition = position + 1;
+          if (fPosition >= recommend.illusts.length) {
+            fPosition = 0;
+          }
+          await pref.setInt(NOW_POSITION, fPosition);
+          LPrinter.d("setMethodCallHandler:Success");
+          return {
+            'id': id,
+            'iid': recommend.illusts.first.id,
+            'value': uint8list,
+          };
+        } catch (e) {
+          LPrinter.d("setMethodCallHandler:Fail=$e");
+        }
+      }
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -60,6 +125,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   void dispose() {
     saveStore?.dispose();

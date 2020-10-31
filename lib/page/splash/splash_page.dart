@@ -23,10 +23,8 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
-import 'package:pixez/page/splash/splash_store.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -36,12 +34,10 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
-  SplashStore splashStore;
   LightingStore lightingStore;
 
   @override
   void initState() {
-    splashStore = SplashStore(OnezeroClient())..fetch();
     if (accountStore.now != null)
       lightingStore = LightingStore(() => apiClient.getRecommend(), null)
         ..fetch();
@@ -91,11 +87,11 @@ class _SplashPageState extends State<SplashPage>
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-              Platform.isIOS ? HelloPage() : AndroidHelloPage(
-                  lightingStore: lightingStore)));
+              builder: (BuildContext context) => Platform.isIOS
+                  ? HelloPage()
+                  : AndroidHelloPage(lightingStore: lightingStore)));
     });
-
+    splashStore.hello();
   }
 
   @override

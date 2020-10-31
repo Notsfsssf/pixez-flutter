@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.perol.pixez">
-
+    package="com.perol.pixez" >
     <!--
      io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -9,32 +8,37 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here.
     -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-            android:name=".PixEz"
-            android:icon="@mipmap/ic_launcher"
-            android:label="PixEz"
-            android:requestLegacyExternalStorage="true">
-        <!--        <receiver android:name=".CardAppWidget">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-        <!--            </intent-filter>-->
+        android:name=".PixEz"
+        android:icon="@mipmap/ic_launcher"
+        android:label="PixEz"
+        android:requestLegacyExternalStorage="true" >
+        <activity
+            android:name=".IntentActivity"
+            android:theme="@style/LaunchTheme" >
+        </activity>
 
-        <!--            <meta-data-->
-        <!--                android:name="android.appwidget.provider"-->
-        <!--                android:resource="@xml/card_app_widget_info" />-->
-        <!--        </receiver>-->
+        <receiver android:name=".CardAppWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/card_app_widget_info" />
+        </receiver>
 
         <activity
-                android:name=".MainActivity"
-                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-                android:hardwareAccelerated="true"
-                android:launchMode="singleTask"
-                android:theme="@style/LaunchTheme"
-                android:windowSoftInputMode="adjustResize">
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
+            android:theme="@style/LaunchTheme"
+            android:windowSoftInputMode="adjustResize" >
 
             <!--
                  Specifies an Android theme to apply to this Activity as soon as
@@ -43,8 +47,8 @@
                  to determine the Window background behind the Flutter UI.
             -->
             <meta-data
-                    android:name="io.flutter.embedding.android.NormalTheme"
-                    android:resource="@style/NormalTheme"/>
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
             <!--
                  Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash

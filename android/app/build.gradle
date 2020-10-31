@@ -86,8 +86,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 38
-        versionName "0.2.3 Knockin"
+        versionCode 39
+        versionName "0.2.4X1"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -122,7 +122,7 @@ dependencies {
     implementation('com.waynejo:androidndkgif:0.3.3')
     implementation 'androidx.preference:preference:1.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'com.google.android.play:core:1.8.0'
-    implementation 'com.google.android.gms:play-services-wallet:18.0.0'
+    implementation 'com.google.android.play:core:1.8.3'
+    implementation 'com.google.android.gms:play-services-wallet:18.1.2'
 //    implementation 'androidx.biometric:biometric:1.0.1'
 }

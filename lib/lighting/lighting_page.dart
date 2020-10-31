@@ -293,7 +293,7 @@ class _LightingListState extends State<LightingList> {
       return IllustCard(
         store: _store.iStores[index],
         iStores: _store.iStores,
-        height: mainAxisExtent + 64.0,
+        height: mainAxisExtent + 86.0,
         heroString: widget.hashCode.toString(),
       );
     }, childCount: _store.iStores.length);
@@ -324,7 +324,7 @@ class _LightingListState extends State<LightingList> {
     return IllustCard(
       store: _store.iStores[index],
       iStores: _store.iStores,
-      height: mainAxisExtent + 64.0,
+      height: mainAxisExtent + 86.0,
       heroString: widget.hashCode.toString(),
     );
   }

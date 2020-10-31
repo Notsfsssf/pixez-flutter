@@ -14,6 +14,7 @@
  */
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
@@ -29,13 +30,14 @@ extension TimeExts on String {
   }
 
   String toTrueUrl() {
-    if(userSetting.disableBypassSni){
+    if (userSetting.disableBypassSni) {
       return this;
-    }else{
-      if(this.contains(ImageHost)){
+    } else {
+      if (this.contains(ImageHost)) {
+        LPrinter.d(ApiClient.BASE_IMAGE_HOST);
         return this.replaceFirst(ImageHost, ApiClient.BASE_IMAGE_HOST);
       }
-      if(this.contains(ImageSHost)){
+      if (this.contains(ImageSHost)) {
         return this.replaceFirst(ImageSHost, ApiClient.BASE_IMAGE_HOST);
       }
     }
