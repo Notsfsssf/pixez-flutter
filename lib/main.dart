@@ -72,6 +72,7 @@ initAppWidget() {
 void onWidgetUpdate() {
   WidgetsFlutterBinding.ensureInitialized();
   const MethodChannel channel = MethodChannel('com.example.app/widget');
+  ApiClient apiClient = ApiClient();
   channel.setMethodCallHandler(
     (call) async {
       if (call.method == 'update') {
@@ -81,10 +82,10 @@ void onWidgetUpdate() {
           final id = call.arguments;
           SharedPreferences pref = await SharedPreferences.getInstance();
           int position = pref.getInt(NOW_POSITION) ?? 0; //Position Zero!
-          ApiClient apiClient = ApiClient();
           AccountProvider accountProvider = AccountProvider();
           await accountProvider.open();
-          List<AccountPersist> accounts = await accountProvider.getAllAccount();
+          List<AccountPersist> accounts =
+              await accountProvider.getAllAccount(); //bug  token refresh
           Response response;
           if (accounts.isNotEmpty)
             response = await apiClient.getIllustRanking("day", null);
@@ -97,9 +98,7 @@ void onWidgetUpdate() {
             "User-Agent": "PixivIOSApp/5.8.0",
             "Host": 'i.pximg.net'
           }, responseType: ResponseType.bytes));
-          Response<List<int>> rs =
-              await dio.get(recommend.illusts[position].imageUrls.medium);
-          Uint8List uint8list = Uint8List.fromList(rs.data);
+          String url = recommend.illusts[position].imageUrls.squareMedium;
           int fPosition = position + 1;
           if (fPosition >= recommend.illusts.length) {
             fPosition = 0;
@@ -107,12 +106,15 @@ void onWidgetUpdate() {
           await pref.setInt(NOW_POSITION, fPosition);
           LPrinter.d("setMethodCallHandler:Success");
           return {
+            'code': 200,
+            'message': 'success',
             'id': id,
-            'iid': recommend.illusts.first.id,
-            'value': uint8list,
+            'iid': recommend.illusts[position].id,
+            'value': url,
           };
         } catch (e) {
           LPrinter.d("setMethodCallHandler:Fail=$e");
+          return {'code': 400, 'message': e.toString()};
         }
       }
     },
@@ -125,7 +127,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void dispose() {
     saveStore?.dispose();

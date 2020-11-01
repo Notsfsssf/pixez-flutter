@@ -48,15 +48,16 @@ class _PictureListPageState extends State<PictureListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
+    return PageView.builder(
       controller: _pageController,
-      children: <Widget>[
-        ...widget.iStores.map((f) => IllustPage(
-              id: f.id,
-              heroString: widget.heroString,
-              store: f,
-            ))
-      ],
+      itemBuilder: (BuildContext context, int index) {
+        final f = widget.iStores[index];
+        return IllustPage(
+          id: f.id,
+          heroString: widget.heroString,
+          store: f,
+        );
+      },
     );
   }
 }

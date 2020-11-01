@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +31,15 @@ import 'package:pixez/page/about/update_page.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class Contributor {
+  final String name;
+  final String avatar;
+  final String url;
+  final String content;
+
+  Contributor(this.name, this.avatar, this.url, this.content);
+}
+
 class AboutPage extends StatefulWidget {
   final bool newVersion;
 
@@ -40,6 +50,41 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
+  List<Contributor> contributors = [
+    Contributor(
+        'Tragic Life',
+        'https://avatars3.githubusercontent.com/u/16817202?v=4',
+        'https://github.com/TragicLifeHu',
+        '🌍'),
+    Contributor(
+        'Skimige',
+        'https://avatars3.githubusercontent.com/u/9017470?v=4',
+        'https://xyx.moe/',
+        '📖'),
+    Contributor('Xian', 'https://avatars1.githubusercontent.com/u/34748039?v=4',
+        'https://github.com/itzXian', '🌍'),
+    Contributor(
+        'karin722',
+        'https://avatars0.githubusercontent.com/u/54385201?v=4',
+        'http://ivtune.net/',
+        '🌍'),
+    Contributor(
+        'Romani-Archman',
+        'https://avatars0.githubusercontent.com/u/68731023?v=4',
+        'http://archman.fun/',
+        '📖'),
+    Contributor(
+        'Henry-ZHR',
+        'https://avatars1.githubusercontent.com/u/51886614?s=64&v=4',
+        'https://github.com/Henry-ZHR',
+        '💻'),
+    Contributor(
+        'Takase',
+        'https://avatars0.githubusercontent.com/u/20792268?s=64&v=4',
+        'https://github.com/takase1121',
+        '🌍'),
+  ];
+
   StreamSubscription _purchaseUpdatedSubscription;
   StreamSubscription _purchaseErrorSubscription;
   final List<String> _productLists = ['support', 'support1'];
@@ -209,6 +254,64 @@ class _AboutPageState extends State<AboutPage> {
             );
           },
         ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('Contributors'),
+        ),
+        Container(
+          height: 142,
+          padding: EdgeInsets.only(left: 8.0),
+          child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: contributors.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final data = contributors[index];
+                return Card(
+                  child: InkWell(
+                    onTap: () {
+                      if (Constants.isGooglePlay || Platform.isIOS) return;
+                      launch(data.url);
+                    },
+                    child: Container(
+                      width: 80,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                height: 8,
+                              ),
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  data.avatar,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  data.name,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              data.content,
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+        ),
         ListTile(
           leading: Icon(Icons.rate_review),
           title: Text(I18n.of(context).rate_title),
@@ -225,9 +328,7 @@ class _AboutPageState extends State<AboutPage> {
         if (Platform.isAndroid) ...[
           ListTile(
             leading: Icon(Icons.device_hub),
-            title: Text(I18n
-                .of(context)
-                .repo_address),
+            title: Text(I18n.of(context).repo_address),
             subtitle: SelectableText('github.com/Notsfsssf/pixez-flutter'),
             trailing: Visibility(
               child: NewVersionChip(),
@@ -239,7 +340,7 @@ class _AboutPageState extends State<AboutPage> {
                     context: context,
                     shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16.0))),
+                            BorderRadius.vertical(top: Radius.circular(16.0))),
                     builder: (_) {
                       return Container(
                         child: Column(

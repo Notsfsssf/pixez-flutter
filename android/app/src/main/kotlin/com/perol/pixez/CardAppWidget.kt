@@ -21,14 +21,22 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Bitmap
 import android.util.Log
 import android.widget.RemoteViews
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.view.FlutterCallbackInformation
 import io.flutter.view.FlutterMain
+
 
 /**
  * Implementation of App Widget functionality.
@@ -66,7 +74,6 @@ class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
         this.context = context
         init()
         for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
             channel?.invokeMethod("update", appWidgetId, this)
         }
     }
@@ -100,9 +107,15 @@ class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
     override fun success(result: Any?) {
         result ?: return
         val args = result as HashMap<*, *>
+        val code = args["code"] as Int
+        if (code == 400) {
+            val message = args["message"] as String?
+            Log.d("update error", "message=$message")
+            return
+        }
         val id = args["id"] as Int
         val iId = args["iid"] as Int
-        val value = args["value"] as ByteArray
+        val value = args["value"] as String
         Log.d("w", "success${iId}")
         updateWidget(context, value, id, iId)
     }
@@ -114,29 +127,34 @@ class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
     }
 }
 
-internal fun updateWidget(context: Context, byteArray: ByteArray, appWidgetId: Int, iId: Int?) {
+internal fun updateWidget(context: Context, url: String, appWidgetId: Int, iId: Int?) {
     val views = RemoteViews(context.packageName, R.layout.card_app_widget)
-    val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.lastIndex)
     val manager = AppWidgetManager.getInstance(context)
-    val output = Bitmap.createBitmap(bitmap.width, bitmap
-            .height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(output)
-    val paint = Paint().apply {
-        isAntiAlias = true
-        color = -0xbdbdbe
-        isAntiAlias = true
-        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+    try {
+        val glideUrl = GlideUrl(url, LazyHeaders.Builder()
+                .addHeader("referer", "https://app-api.pixiv.net/")
+                .addHeader("User-Agent", "PixivIOSApp/5.8.0")
+                .build())
+        Glide.with(context)
+                .asBitmap()
+                .load(glideUrl)
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(20)))
+                .into(object :SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        views.setImageViewBitmap(R.id.appwidget_image, resource)
+                        val intent = Intent(context, IntentActivity::class.java).apply {
+                            putExtra("iid", iId)
+                            setPackage("com.perol.pixez")
+                        }
+                        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                        views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
+                        manager.updateAppWidget(appWidgetId, views)
+                    }
+                });
+    } catch (throwable: Throwable) {
+        Log.d("throw", "Throwable=" + throwable.message)
     }
-    val rect = Rect(0, 0, bitmap.width, bitmap.height)
-    canvas.drawARGB(0, 0, 0, 0)
-    val roundPx = 16f
-    canvas.drawRoundRect(RectF(rect), roundPx, roundPx, paint)
-    canvas.drawBitmap(bitmap, rect, rect, paint)
-    views.setImageViewBitmap(R.id.appwidget_image, output)
-    val intent = Intent(context, IntentActivity::class.java).apply { putExtra("iid", iId) }
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-    views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
-    manager.updateAppWidget(appWidgetId, views)
+
 }
 
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {

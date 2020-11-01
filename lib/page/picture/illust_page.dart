@@ -849,6 +849,7 @@ class _IllustPageState extends State<IllustPage> {
                 ? illust.metaPages[index].imageUrls.medium
                 : illust.metaPages[index].imageUrls.large,
             fade: false,
+            enableMemoryCache: false,
             placeWidget: Container(
               height: 150,
               child: Center(
