@@ -68,6 +68,9 @@
 
                 <data
                     android:host="www.pixiv.net"
+                    android:scheme="pixez" />
+                <data
+                    android:host="www.pixiv.net"
                     android:scheme="https" />
                 <data
                     android:host="www.pixiv.net"

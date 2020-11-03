@@ -103,7 +103,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           });
         },
         controller: _pageController,
-        itemCount: 5,
+        itemCount: _pageList.length,
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

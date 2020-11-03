@@ -144,7 +144,6 @@ internal fun updateWidget(context: Context, url: String, appWidgetId: Int, iId: 
                         views.setImageViewBitmap(R.id.appwidget_image, resource)
                         val intent = Intent(context, IntentActivity::class.java).apply {
                             putExtra("iid", iId)
-                            setPackage("com.perol.pixez")
                         }
                         val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                         views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)

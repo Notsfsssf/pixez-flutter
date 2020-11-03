@@ -93,11 +93,6 @@ void onWidgetUpdate() {
             response = await apiClient.walkthroughIllusts();
           Recommend recommend = Recommend.fromJson(response.data);
           print('on Dart ${call.method}!:${recommend.illusts[position].title}');
-          Dio dio = Dio(BaseOptions(headers: {
-            "referer": "https://app-api.pixiv.net/",
-            "User-Agent": "PixivIOSApp/5.8.0",
-            "Host": 'i.pximg.net'
-          }, responseType: ResponseType.bytes));
           String url = recommend.illusts[position].imageUrls.squareMedium;
           int fPosition = position + 1;
           if (fPosition >= recommend.illusts.length) {

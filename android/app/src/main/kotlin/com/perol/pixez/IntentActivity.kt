@@ -36,7 +36,7 @@ class IntentActivity : FragmentActivity() {
         if (iid == 0)
             startActivity(Intent(this, MainActivity::class.java))
         else {
-            val uri: Uri = Uri.parse("https://www.pixiv.net/artworks/$iid")
+            val uri: Uri = Uri.parse("pixez://www.pixiv.net/artworks/$iid")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
