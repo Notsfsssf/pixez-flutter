@@ -34,7 +34,6 @@ extension TimeExts on String {
       return this;
     } else {
       if (this.contains(ImageHost)) {
-        LPrinter.d(ApiClient.BASE_IMAGE_HOST);
         return this.replaceFirst(ImageHost, ApiClient.BASE_IMAGE_HOST);
       }
       if (this.contains(ImageSHost)) {

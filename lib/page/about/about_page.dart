@@ -16,16 +16,20 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:pixez/component/new_version_chip.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/models/recommend.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share/share.dart';
@@ -269,9 +273,27 @@ class _AboutPageState extends State<AboutPage> {
                 final data = contributors[index];
                 return Card(
                   child: InkWell(
-                    onTap: () {
-                      if (Constants.isGooglePlay || Platform.isIOS) return;
-                      launch(data.url);
+                    onTap: () async {
+                      if (index == 1) {}
+                      if (index == 2) {
+                        //XIAN:随机加载一张色图
+                        if (Platform.isIOS || Constants.isGooglePlay) return;
+                        try {
+                          final response =
+                              await apiClient.getIllustRanking('day_r18', null);
+                          Recommend recommend =
+                              Recommend.fromJson(response.data);
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SafeArea(
+                                    child: PixivImage(recommend
+                                        .illusts[Random().nextInt(10)]
+                                        .imageUrls
+                                        .medium));
+                              });
+                        } catch (e) {}
+                      }
                     },
                     child: Container(
                       width: 80,
