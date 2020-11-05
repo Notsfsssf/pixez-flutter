@@ -287,7 +287,8 @@ class _AboutPageState extends State<AboutPage> {
                               builder: (context) {
                                 return SafeArea(
                                     child: PixivImage(recommend
-                                        .illusts[Random().nextInt(10)]
+                                        .illusts[Random().nextInt(
+                                            recommend.illusts.length - 1)]
                                         .imageUrls
                                         .medium));
                               });
