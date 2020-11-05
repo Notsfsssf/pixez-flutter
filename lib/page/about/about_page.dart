@@ -274,40 +274,31 @@ class _AboutPageState extends State<AboutPage> {
                 return Card(
                   child: InkWell(
                     onTap: () async {
-                      if (index == 1) {
+                      if (index == 0) {
                         //Tragic Life:輪播凱留TAG 10000+收藏的圖
                         try {
-                          final response =
-                              await apiClient.getSearchIllust("Kyaru");
+                          final response = await apiClient
+                              .getSearchIllust("Kyaru 10000users入り");
                           Recommend recommend =
                               Recommend.fromJson(response.data);
                           if (recommend.illusts.isEmpty) return;
-                          Timer timer;
-                          await showModalBottomSheet(
+                          showModalBottomSheet(
                               context: context,
                               builder: (context) {
-                                int i = 0;
-                                return StatefulBuilder(
-                                  builder: (context, setT) {
-                                    timer = Timer(Duration(seconds: 4), () {
-                                      if (mounted)
-                                        setT(() {
-                                          if (i < recommend.illusts.length - 2)
-                                            i += i;
-                                          else
-                                            i = 0;
-                                        });
-                                    });
-                                    return SafeArea(
-                                        child: PixivImage(
-                                      recommend.illusts[i].imageUrls.medium,
-                                      enableMemoryCache: false,
-                                    ));
-                                  },
-                                );
+                                return SafeArea(
+                                    child: PixivImage(recommend
+                                        .illusts[Random().nextInt(10)]
+                                        .imageUrls
+                                        .medium));
                               });
-                          timer.cancel();
                         } catch (e) {}
+                      }
+                      if (index == 1) {
+                        //☆:“都给我去看 FAQ！”
+                        String text = Platform.isIOS || Constants.isGooglePlay
+                            ? "R！T！F！M！"
+                            : "Read The Fucking Manual!";
+                        BotToast.showText(text: text);
                       }
                       if (index == 2) {
                         //XIAN:随机加载一张色图
