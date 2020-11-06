@@ -122,6 +122,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         },
         child: Container(
           height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           child: ExtendedImage.network(
             url.toTrueUrl(),
             headers: {
@@ -185,6 +186,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         },
         child: Container(
           height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           child: ExtendedImageGesturePageView.builder(
             controller: PageController(
               initialPage: index,
@@ -198,8 +200,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             itemBuilder: (BuildContext context, int index) {
               return ExtendedImage.network(
                 (userSetting.zoomQuality == 0
-                    ? metaPages[index].imageUrls.large
-                    : metaPages[index].imageUrls.original).toTrueUrl(),
+                        ? metaPages[index].imageUrls.large
+                        : metaPages[index].imageUrls.original)
+                    .toTrueUrl(),
                 headers: {
                   "referer": "https://app-api.pixiv.net/",
                   "User-Agent": "PixivIOSApp/5.8.0",
