@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
@@ -52,7 +53,7 @@ class _PictureListPageState extends State<PictureListPage> {
       controller: _pageController,
       itemBuilder: (BuildContext context, int index) {
         final f = widget.iStores[index];
-        return IllustPage(
+        return IllustLightingPage(
           id: f.id,
           heroString: widget.heroString,
           store: f,
