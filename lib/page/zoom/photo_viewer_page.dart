@@ -18,9 +18,12 @@ import 'dart:async';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/exts.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -57,6 +60,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   @override
   void dispose() {
+    FlutterStatusbarManager.setHidden(false);
     _doubleClickAnimationController.dispose();
     rebuildIndex.close();
     rebuildSwiper.close();
@@ -83,6 +87,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     });
     super.initState();
     index = widget.index;
+    FlutterStatusbarManager.setHidden(true,
+        animation: StatusBarAnimation.SLIDE);
   }
 
   Widget _buildContent(BuildContext context) {
@@ -115,15 +121,14 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               });
         },
         child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           child: ExtendedImage.network(
-            url,
+            url.toTrueUrl(),
             headers: {
               "referer": "https://app-api.pixiv.net/",
-              "User-Agent": "PixivIOSApp/5.8.0"
+              "User-Agent": "PixivIOSApp/5.8.0",
+              "Host": ImageHost
             },
             enableLoadState: true,
             loadStateChanged: (ExtendedImageState state) {
@@ -155,7 +160,6 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       );
     } else {
       final metaPages = widget.illusts.metaPages;
-      int index = widget.index;
       return InkWell(
         onLongPress: () {
           showModalBottomSheet(
@@ -181,10 +185,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               });
         },
         child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           child: ExtendedImageGesturePageView.builder(
             controller: PageController(
               initialPage: index,
@@ -197,12 +199,14 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             itemCount: metaPages.length,
             itemBuilder: (BuildContext context, int index) {
               return ExtendedImage.network(
-                userSetting.zoomQuality == 0
-                    ? metaPages[index].imageUrls.large
-                    : metaPages[index].imageUrls.original,
+                (userSetting.zoomQuality == 0
+                        ? metaPages[index].imageUrls.large
+                        : metaPages[index].imageUrls.original)
+                    .toTrueUrl(),
                 headers: {
                   "referer": "https://app-api.pixiv.net/",
-                  "User-Agent": "PixivIOSApp/5.8.0"
+                  "User-Agent": "PixivIOSApp/5.8.0",
+                  "Host": ImageHost
                 },
                 enableLoadState: true,
                 loadStateChanged: (ExtendedImageState state) {
@@ -305,26 +309,18 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          leading: Visibility(
-            visible: show,
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          title: Visibility(
-            visible: show,
-            child: Text(
+        floatingActionButton: Visibility(
+          visible: show,
+          child: FloatingActionButton.extended(
+            onPressed: () async {
+              await FlutterStatusbarManager.setHidden(false);
+              Navigator.of(context).pop();
+            },
+            label: Text(
               "${index + 1}/${widget.illusts.pageCount}",
-              style: TextStyle(color: Colors.white),
+            ),
+            icon: Icon(
+              Icons.arrow_back,
             ),
           ),
         ),

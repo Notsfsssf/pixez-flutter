@@ -24,6 +24,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -46,11 +47,12 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     var isHelplessWay = false
-    val OPEN_DOCUMENT_TREE_CODE = 190
-    val PICK_IMAGE_FILE = 2
+    private val OPEN_DOCUMENT_TREE_CODE = 190
+    private val PICK_IMAGE_FILE = 2
     var pendingResult: MethodChannel.Result? = null
     var pendingPickResult: MethodChannel.Result? = null
     var helplessPath: String? = null
+
     private fun pickFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -123,7 +125,7 @@ class MainActivity : FlutterActivity() {
         return targetFile != null && targetFile.exists()
     }
 
-    private fun writeFileUri(fileName: String): Uri? {
+    private fun writeFileUri(fileName: String, clearOld: Boolean = false): Uri? {
         val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith("jpeg", ignoreCase = true)) {
             "image/jpg"
         } else {
@@ -144,11 +146,14 @@ class MainActivity : FlutterActivity() {
                         .first().uri
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
         val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+
         if (fileName.contains("/")) {
             val names = fileName.split("/")
             if (names.size >= 2) {
                 val fName = names.last()
                 val folderName = names.first()
+                if (clearOld && fName.contains("_p0"))
+                    treeDocument.findFile(fName.replace("_p0", ""))
                 var folderDocument = treeDocument.findFile(folderName)
                 if (folderDocument == null) {
                     val tempFolderDocument = treeDocument.createDirectory(folderName)
@@ -167,6 +172,8 @@ class MainActivity : FlutterActivity() {
                 return folderDocument?.createFile(mimeType, fName)?.uri
             }
         }
+        if (clearOld && fileName.contains("_p0"))
+            treeDocument.findFile(fileName.replace("_p0", ""))
         val fileId = splicingUrl(treeId, fileName)
         val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
         val targetFile = DocumentFile.fromSingleUri(this, fileUri)
@@ -191,32 +198,37 @@ class MainActivity : FlutterActivity() {
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
-                if (helplessPath == null) {
-                    helplessPath = sharedPreferences.getString("flutter.store_path", null)
-                }
+                var clearOld = call.argument<Boolean>("clear_old")
+                if (clearOld == null)
+                    clearOld = false
                 GlobalScope.launch(Dispatchers.Main) {
-                    val fullPath = "$helplessPath/$name"
-                    val file = File(fullPath)
-                    withContext(Dispatchers.IO) {
-                        if (isHelplessWay) {
-                            if (name.contains("/")) {
-                                val dirPath = file.parent
-                                val dirFile = File(dirPath)
-                                if (!dirFile.exists()) {
-                                    dirFile.mkdirs()
-                                }
+                    if (isHelplessWay) {
+                        if (helplessPath == null) {
+                            helplessPath = sharedPreferences.getString("flutter.store_path", null)
+                            if (helplessPath == null) {
+                                helplessPath = "/storage/emulated/0/Pictures/pixez"
+                            }
+                        }
+                        val fullPath = "$helplessPath/$name"
+                        val file = File(fullPath)
+                        withContext(Dispatchers.IO) {
+                            val dirPath = file.parent
+                            val dirFile = File(dirPath)
+                            if (!dirFile.exists()) {
+                                dirFile.mkdirs()
                             }
                             if (!file.exists()) {
                                 file.createNewFile()
                             }
                             file.outputStream().write(data)
-                            return@withContext
+                            if (clearOld && name.contains("_p0")) {
+                                val oldFileName = name.replace("_p0", "")
+                                val oldFile = File("$helplessPath", oldFileName)
+                                if (oldFile.exists()) {
+                                    oldFile.delete()
+                                }
+                            }
                         }
-                        writeFileUri(name)?.let {
-                            wr(data, it)
-                        }
-                    }
-                    if (isHelplessWay) {
                         MediaScannerConnection.scanFile(
                                 this@MainActivity,
                                 arrayOf(file.path),
@@ -225,6 +237,12 @@ class MainActivity : FlutterActivity() {
                                                 .getMimeTypeFromExtension(File(file.path).extension)
                                 )
                         ) { _, _ ->
+                        }
+
+                    }
+                    withContext(Dispatchers.IO) {
+                        writeFileUri(name, clearOld)?.let {
+                            wr(data, it)
                         }
                     }
                     result.success(true)
@@ -299,8 +317,16 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CardAppWidget.CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "initialize" -> {
+                    if (call.arguments == null) return@setMethodCallHandler
+                    Log.d("native", "dart call")
+                    CardAppWidget.setHandle(this, call.arguments as Long)
+                }
+            }
+        }
     }
-
 
     override fun onActivityResult(
             requestCode: Int, resultCode: Int,
@@ -366,11 +392,11 @@ class MainActivity : FlutterActivity() {
         val file = File(path)
         file.let {
             val tempFile = File(applicationContext.cacheDir, "${
-            if (name.contains("/")) {
-                name.split("/").last()
-            } else {
-                name
-            }
+                if (name.contains("/")) {
+                    name.split("/").last()
+                } else {
+                    name
+                }
             }.gif")
             try {
                 val fileName = "${name}.gif"

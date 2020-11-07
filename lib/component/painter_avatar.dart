@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/user/users_page.dart';
+import 'package:pixez/exts.dart';
 
 class PainterAvatar extends StatefulWidget {
   final String url;
@@ -66,7 +67,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: PixivProvider.url(widget.url), fit: BoxFit.cover),
+                      image: PixivProvider.url(widget.url.toTrueUrl()), fit: BoxFit.cover),
                 ),
               ));
   }

@@ -14,26 +14,81 @@
  *
  */
 
-import 'package:pixez/constants.dart';
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:pixez/component/new_version_chip.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/models/recommend.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class Contributor {
+  final String name;
+  final String avatar;
+  final String url;
+  final String content;
+
+  Contributor(this.name, this.avatar, this.url, this.content);
+}
+
 class AboutPage extends StatefulWidget {
+  final bool newVersion;
+
+  const AboutPage({Key key, this.newVersion}) : super(key: key);
+
   @override
   _AboutPageState createState() => _AboutPageState();
 }
 
 class _AboutPageState extends State<AboutPage> {
+  List<Contributor> contributors = [
+    Contributor(
+        'Tragic Life',
+        'https://avatars3.githubusercontent.com/u/16817202?v=4',
+        'https://github.com/TragicLifeHu',
+        '🌍'),
+    Contributor(
+        'Skimige',
+        'https://avatars3.githubusercontent.com/u/9017470?v=4',
+        'https://xyx.moe/',
+        '📖'),
+    Contributor('Xian', 'https://avatars1.githubusercontent.com/u/34748039?v=4',
+        'https://github.com/itzXian', '🌍'),
+    Contributor(
+        'karin722',
+        'https://avatars0.githubusercontent.com/u/54385201?v=4',
+        'http://ivtune.net/',
+        '🌍'),
+    Contributor(
+        'Romani-Archman',
+        'https://avatars0.githubusercontent.com/u/68731023?v=4',
+        'http://archman.fun/',
+        '📖'),
+    Contributor(
+        'Henry-ZHR',
+        'https://avatars1.githubusercontent.com/u/51886614?s=64&v=4',
+        'https://github.com/Henry-ZHR',
+        '💻'),
+    Contributor(
+        'Takase',
+        'https://avatars0.githubusercontent.com/u/20792268?s=64&v=4',
+        'https://github.com/takase1121',
+        '🌍'),
+  ];
+
   StreamSubscription _purchaseUpdatedSubscription;
   StreamSubscription _purchaseErrorSubscription;
   final List<String> _productLists = ['support', 'support1'];
@@ -91,8 +146,11 @@ class _AboutPageState extends State<AboutPage> {
     });
   }
 
+  bool hasNewVersion;
+
   @override
   void initState() {
+    hasNewVersion = widget.newVersion ?? false;
     super.initState();
     if (Platform.isIOS) initPlatformState();
     // if (Platform.isAndroid) initAndroidIap();
@@ -200,6 +258,108 @@ class _AboutPageState extends State<AboutPage> {
             );
           },
         ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('Contributors'),
+        ),
+        Container(
+          height: 142,
+          padding: EdgeInsets.only(left: 8.0),
+          child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: contributors.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final data = contributors[index];
+                return Card(
+                  child: InkWell(
+                    onTap: () async {
+                      if (index == 0) {
+                        //Tragic Life:輪播凱留TAG 10000+收藏的圖
+                        try {
+                          final response = await apiClient
+                              .getSearchIllust("Kyaru 10000users入り");
+                          Recommend recommend =
+                              Recommend.fromJson(response.data);
+                          if (recommend.illusts.isEmpty) return;
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SafeArea(
+                                    child: PixivImage(recommend
+                                        .illusts[Random().nextInt(
+                                            recommend.illusts.length - 1)]
+                                        .imageUrls
+                                        .medium));
+                              });
+                        } catch (e) {}
+                      }
+                      if (index == 1) {
+                        //☆:“都给我去看 FAQ！”
+                        String text = Platform.isIOS || Constants.isGooglePlay
+                            ? "R！T！F！M！"
+                            : "Read The Fucking Manual!";
+                        BotToast.showText(text: text);
+                      }
+                      if (index == 2) {
+                        //XIAN:随机加载一张色图
+                        if (Platform.isIOS || Constants.isGooglePlay) return;
+                        try {
+                          final response =
+                              await apiClient.getIllustRanking('day_r18', null);
+                          Recommend recommend =
+                              Recommend.fromJson(response.data);
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SafeArea(
+                                    child: PixivImage(recommend
+                                        .illusts[Random().nextInt(10)]
+                                        .imageUrls
+                                        .medium));
+                              });
+                        } catch (e) {}
+                      }
+                    },
+                    child: Container(
+                      width: 80,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                height: 8,
+                              ),
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  data.avatar,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  data.name,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              data.content,
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+        ),
         ListTile(
           leading: Icon(Icons.rate_review),
           title: Text(I18n.of(context).rate_title),
@@ -218,6 +378,10 @@ class _AboutPageState extends State<AboutPage> {
             leading: Icon(Icons.device_hub),
             title: Text(I18n.of(context).repo_address),
             subtitle: SelectableText('github.com/Notsfsssf/pixez-flutter'),
+            trailing: Visibility(
+              child: NewVersionChip(),
+              visible: hasNewVersion,
+            ),
             onTap: () {
               if (!Constants.isGooglePlay)
                 showModalBottomSheet(

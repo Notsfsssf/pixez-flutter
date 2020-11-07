@@ -28,21 +28,18 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
+import 'package:pixez/exts.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
   final bool isNested;
-  final Function onChange;
-  final ValueChanged<RefreshController> controllerReady;
 
   const LightingList({
     Key key,
     @required this.source,
     this.header,
     this.isNested,
-    this.onChange,
-    this.controllerReady,
   }) : super(key: key);
 
   @override
@@ -60,7 +57,7 @@ class _LightingListState extends State<LightingList> {
       _store.source = widget.source;
       _store.fetch();
       if (!_isNested && _store?.errorMessage == null)
-        _refreshController.position.jumpTo(0.0);
+        _refreshController?.position?.jumpTo(0.0);
     }
   }
 
@@ -69,10 +66,10 @@ class _LightingListState extends State<LightingList> {
   @override
   void initState() {
     _isNested = widget.isNested ?? false;
-    _store = LightingStore(widget.source, _refreshController,
-        onChange: widget.onChange ?? () {});
-    if (widget.controllerReady != null)
-      widget.controllerReady(_refreshController);
+    _store = LightingStore(
+      widget.source,
+      _refreshController,
+    );
     super.initState();
     _store.fetch();
   }
@@ -101,7 +98,10 @@ class _LightingListState extends State<LightingList> {
                     height: 24.0,
                     margin: EdgeInsets.only(bottom: 8.0),
                     child: IconButton(
-                      icon: Icon(Icons.arrow_drop_up_outlined, size: 24,),
+                      icon: Icon(
+                        Icons.arrow_drop_up_outlined,
+                        size: 24,
+                      ),
                       onPressed: () {
                         _refreshController.position.jumpTo(0);
                       },
@@ -124,23 +124,15 @@ class _LightingListState extends State<LightingList> {
       builder: (BuildContext context, LoadStatus mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
-          body = Text(I18n
-              .of(context)
-              .pull_up_to_load_more);
+          body = Text(I18n.of(context).pull_up_to_load_more);
         } else if (mode == LoadStatus.loading) {
           body = CircularProgressIndicator();
         } else if (mode == LoadStatus.failed) {
-          body = Text(I18n
-              .of(context)
-              .loading_failed_retry_message);
+          body = Text(I18n.of(context).loading_failed_retry_message);
         } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n
-              .of(context)
-              .let_go_and_load_more);
+          body = Text(I18n.of(context).let_go_and_load_more);
         } else {
-          body = Text(I18n
-              .of(context)
-              .no_more_data);
+          body = Text(I18n.of(context).no_more_data);
         }
         return Container(
           height: 55.0,
@@ -151,61 +143,45 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildWithoutHeader(context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
+    _store.iStores.removeWhere((element) => element.illusts.hateByUser());
     return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notification) {
-        ScrollMetrics metrics = notification.metrics;
-        if (backToTopVisible == metrics.atEdge && mounted) {
-          setState(() {
-            backToTopVisible = !backToTopVisible;
-          });
-        }
-        return true;
-      },
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-          color: Theme
-              .of(context)
-              .accentColor,
-          backgroundColor: Theme
-              .of(context)
-              .cardColor,
-        )
-            : ClassicHeader(),
-        footer: _buildCustomFooter(),
-        controller: _refreshController,
-        onRefresh: () {
-          _store.fetch();
+        onNotification: (ScrollNotification notification) {
+          ScrollMetrics metrics = notification.metrics;
+          if (backToTopVisible == metrics.atEdge && mounted) {
+            setState(() {
+              backToTopVisible = !backToTopVisible;
+            });
+          }
+          return true;
         },
-        onLoading: () {
-          _store.fetchNext();
-        },
-        child: WaterfallFlow.builder(
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: (Platform.isAndroid)
+              ? MaterialClassicHeader(
+                  color: Theme.of(context).accentColor,
+                  backgroundColor: Theme.of(context).cardColor,
+                )
+              : ClassicHeader(),
+          footer: _buildCustomFooter(),
+          controller: _refreshController,
+          onRefresh: () {
+            _store.fetch();
+          },
+          onLoading: () {
+            _store.fetchNext();
+          },
+          child: WaterfallFlow.builder(
             padding: EdgeInsets.all(5.0),
             itemCount: _store.iStores.length,
             itemBuilder: (context, index) {
               return _buildItem(index, itemWidth);
             },
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: userSetting.crossCount,
-              collectGarbage: (List<int> garbages) {
-                garbages.forEach((index) {
-                  final provider = ExtendedNetworkImageProvider(
-                    _store.iStores[index].illusts.imageUrls.medium,
-                  );
-                  provider.evict();
-                });
-              },
-            )),
-      ),
-    );
+            gridDelegate: _buildGridDelegate(),
+          ),
+        ));
   }
 
   bool needToBan(Illusts illust) {
@@ -259,11 +235,6 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildWithHeader(BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification notification) {
         ScrollMetrics metrics = notification.metrics;
@@ -279,13 +250,9 @@ class _LightingListState extends State<LightingList> {
         enablePullUp: true,
         header: (Platform.isAndroid)
             ? MaterialClassicHeader(
-          color: Theme
-              .of(context)
-              .accentColor,
-          backgroundColor: Theme
-              .of(context)
-              .cardColor,
-        )
+                color: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).cardColor,
+              )
             : ClassicHeader(),
         footer: _buildCustomFooter(),
         controller: _refreshController,
@@ -301,36 +268,48 @@ class _LightingListState extends State<LightingList> {
               child: Container(child: widget.header),
             ),
             SliverWaterfallFlow(
-              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                crossAxisCount: userSetting.crossCount,
-                collectGarbage: (List<int> garbages) {
-                  garbages.forEach((index) {
-                    final provider = ExtendedNetworkImageProvider(
-                      _store.iStores[index].illusts.imageUrls.medium,
-                    );
-                    provider.evict();
-                  });
-                },
-              ),
-              delegate:
-              SliverChildBuilderDelegate((BuildContext context, int index) {
-                double radio = _store.iStores[index].illusts.height.toDouble() /
-                    _store.iStores[index].illusts.width.toDouble();
-                double mainAxisExtent;
-                if (radio > 3)
-                  mainAxisExtent = itemWidth;
-                else
-                  mainAxisExtent = itemWidth * radio;
-                return IllustCard(
-                  store: _store.iStores[index],
-                  iStores: _store.iStores,
-                  height: mainAxisExtent + 64.0,
-                );
-              }, childCount: _store.iStores.length),
+              gridDelegate: _buildGridDelegate(),
+              delegate: _buildSliverChildBuilderDelegate(context),
             )
           ],
         ),
       ),
+    );
+  }
+
+  SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
+      BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
+    _store.iStores.removeWhere((element) => element.illusts.hateByUser());
+    return SliverChildBuilderDelegate((BuildContext context, int index) {
+      double radio = _store.iStores[index].illusts.height.toDouble() /
+          _store.iStores[index].illusts.width.toDouble();
+      double mainAxisExtent;
+      if (radio > 3)
+        mainAxisExtent = itemWidth;
+      else
+        mainAxisExtent = itemWidth * radio;
+      return IllustCard(
+        store: _store.iStores[index],
+        iStores: _store.iStores,
+        height: mainAxisExtent + 86.0,
+        heroString: widget.hashCode.toString(),
+      );
+    }, childCount: _store.iStores.length);
+  }
+
+  SliverWaterfallFlowDelegateWithFixedCrossAxisCount _buildGridDelegate() {
+    return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+      crossAxisCount: userSetting.crossCount,
+      collectGarbage: (List<int> garbages) {
+        garbages.forEach((index) {
+          final provider = ExtendedNetworkImageProvider(
+            _store.iStores[index].illusts.imageUrls.medium,
+          );
+          provider.evict();
+        });
+      },
     );
   }
 
@@ -345,7 +324,8 @@ class _LightingListState extends State<LightingList> {
     return IllustCard(
       store: _store.iStores[index],
       iStores: _store.iStores,
-      height: mainAxisExtent + 64.0,
+      height: mainAxisExtent + 86.0,
+      heroString: widget.hashCode.toString(),
     );
   }
 }

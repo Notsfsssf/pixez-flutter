@@ -18,16 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
-import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
-import 'package:pixez/page/novel/quick/novel_quick_page.dart';
-import 'package:pixez/page/novel/rank/novel_rank_page.dart';
-import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

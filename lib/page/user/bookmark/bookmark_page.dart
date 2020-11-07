@@ -60,7 +60,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
         return Stack(
           children: [
             LightingList(
-              onChange: () {},
               source: futureGet,
               header: Container(
                 height: 45,

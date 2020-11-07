@@ -38,31 +38,33 @@ abstract class _RankStoreBase with Store {
   @observable
   ObservableList<String> modeList = ObservableList();
   @observable
-  bool modifyUI = false;
+  bool inChoice = false;
 
   @action
   Future<void> reset() async {
     var pre = await SharedPreferences.getInstance();
     await pre.remove(MODE_LIST);
     modeList.clear();
+    inChoice = true;
+  }
+
+  @action
+  setInChoice(bool v) {
+    inChoice = v;
   }
 
   SharedPreferences pre;
+
   @action
   Future<void> init() async {
     pre = await SharedPreferences.getInstance();
-    var list = pre.getStringList(MODE_LIST);
-    if (list == null || list.isEmpty) {
-      return;
-    }
+    var list = pre.getStringList(MODE_LIST) ?? [];
     modeList.clear();
     modeList.addAll(list);
   }
 
   @action
   Future<void> saveChange(Map<int, bool> selectMap) async {
-    var pre = await SharedPreferences.getInstance();
-
     List<String> saveList = [];
     selectMap.forEach((s, b) {
       if (b) saveList.add(intialModeList[s]);

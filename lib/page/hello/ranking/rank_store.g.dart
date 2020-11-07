@@ -24,18 +24,18 @@ mixin _$RankStore on _RankStoreBase, Store {
     });
   }
 
-  final _$modifyUIAtom = Atom(name: '_RankStoreBase.modifyUI');
+  final _$inChoiceAtom = Atom(name: '_RankStoreBase.inChoice');
 
   @override
-  bool get modifyUI {
-    _$modifyUIAtom.reportRead();
-    return super.modifyUI;
+  bool get inChoice {
+    _$inChoiceAtom.reportRead();
+    return super.inChoice;
   }
 
   @override
-  set modifyUI(bool value) {
-    _$modifyUIAtom.reportWrite(value, super.modifyUI, () {
-      super.modifyUI = value;
+  set inChoice(bool value) {
+    _$inChoiceAtom.reportWrite(value, super.inChoice, () {
+      super.inChoice = value;
     });
   }
 
@@ -60,11 +60,25 @@ mixin _$RankStore on _RankStoreBase, Store {
     return _$saveChangeAsyncAction.run(() => super.saveChange(selectMap));
   }
 
+  final _$_RankStoreBaseActionController =
+      ActionController(name: '_RankStoreBase');
+
+  @override
+  dynamic setInChoice(bool v) {
+    final _$actionInfo = _$_RankStoreBaseActionController.startAction(
+        name: '_RankStoreBase.setInChoice');
+    try {
+      return super.setInChoice(v);
+    } finally {
+      _$_RankStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 modeList: ${modeList},
-modifyUI: ${modifyUI}
+inChoice: ${inChoice}
     ''';
   }
 }

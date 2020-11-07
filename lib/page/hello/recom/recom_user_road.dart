@@ -7,14 +7,15 @@ import 'package:pixez/page/hello/recom/recom_user_store.dart';
 class RecomUserRoad extends StatefulWidget {
   final RecomUserStore recomUserStore;
 
-  const RecomUserRoad({Key key, @required this.recomUserStore})
-      : super(key: key);
+  const RecomUserRoad({Key key, this.recomUserStore}) : super(key: key);
+
   @override
   _RecomUserRoadState createState() => _RecomUserRoadState();
 }
 
 class _RecomUserRoadState extends State<RecomUserRoad> {
   RecomUserStore _recomUserStore;
+
   @override
   void initState() {
     _recomUserStore = widget.recomUserStore ?? RecomUserStore()

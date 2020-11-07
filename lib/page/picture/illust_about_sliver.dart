@@ -27,17 +27,17 @@ class IllustAboutSliver extends StatefulWidget {
 }
 
 class _IllustAboutSliverState extends State<IllustAboutSliver> {
-  IllustAboutStore _store;
+  IllustAboutStore _aboutStore;
   @override
   void initState() {
-    _store = IllustAboutStore(widget.id)..fetch();
+    _aboutStore = IllustAboutStore(widget.id)..fetch();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      if (_store.errorMessage != null) {
+      if (_aboutStore.errorMessage != null) {
         return SliverToBoxAdapter(
           child: Container(
             height: 300,
@@ -52,7 +52,7 @@ class _IllustAboutSliverState extends State<IllustAboutSliver> {
                 ),
                 RaisedButton(
                   onPressed: () {
-                    _store.fetch();
+                    _aboutStore.fetch();
                   },
                   child: Text('Refresh'),
                 )
@@ -61,7 +61,7 @@ class _IllustAboutSliverState extends State<IllustAboutSliver> {
           ),
         );
       }
-      if (_store.illusts.isNotEmpty)
+      if (_aboutStore.illusts.isNotEmpty)
         return SliverGrid(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {

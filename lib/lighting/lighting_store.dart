@@ -14,9 +14,10 @@
  *
  */
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -31,7 +32,7 @@ typedef Future<Response> FutureGet();
 abstract class _LightingStoreBase with Store {
   FutureGet source;
   String nextUrl;
-  RefreshController _controller;
+  RefreshController controller;
   final Function onChange;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
@@ -49,27 +50,47 @@ abstract class _LightingStoreBase with Store {
   @observable
   String errorMessage;
 
-  _LightingStoreBase(this.source, this._controller, {this.onChange});
+  _LightingStoreBase(this.source, this.controller, {this.onChange});
+
+  bool okForUser(Illusts illust) {
+    // if (userSetting.hIsNotAllow)
+    //   for (int i = 0; i < illust.tags.length; i++)
+    //     if (illust.tags[i].name.startsWith('R-18')) return false;
+    for (var t in muteStore.banTags) {
+      for (var f in illust.tags) {
+        if (f.name == t.name) return false;
+      }
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == illust.user.id.toString()) {
+        return false;
+      }
+    }
+    for (var i in muteStore.banillusts)
+      if (illust.id == i.id) {
+        return false;
+      }
+    return true;
+  }
 
   @action
   Future<bool> fetch() async {
     nextUrl = null;
     errorMessage = null;
-    if (_controller?.footerMode != null)
-      _controller?.footerMode?.value = LoadStatus.idle;
-    _controller?.headerMode?.value =RefreshStatus.refreshing;
+    if (controller?.footerMode != null)
+      controller?.footerMode?.value = LoadStatus.idle;
+    controller?.headerMode?.value = RefreshStatus.refreshing;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-      _controller.refreshCompleted();
+      controller.refreshCompleted();
       return true;
     } catch (e) {
       errorMessage = e.toString();
-      // BotToast.showText(text: '${e.toString()}');
-      _controller.refreshFailed();
+      controller.refreshFailed();
       return false;
     }
   }
@@ -89,13 +110,13 @@ abstract class _LightingStoreBase with Store {
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
         iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-        _controller.loadComplete();
+        controller.loadComplete();
       } else {
-        _controller.loadNoData();
+        controller.loadNoData();
       }
       return true;
     } catch (e) {
-      _controller.loadFailed();
+      controller.loadFailed();
       return false;
     }
   }

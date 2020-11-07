@@ -18,17 +18,21 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/main.dart';
 part 'sauce_store.g.dart';
 
 class SauceStore = SauceStoreBase with _$SauceStore;
 
 abstract class SauceStoreBase with Store {
-  Dio dio = Dio(BaseOptions(baseUrl: "https://saucenao.com"));
+  static String host = "saucenao.com";
+  Dio dio = Dio(BaseOptions(
+      baseUrl: "https://45.32.0.237", headers: {HttpHeaders.hostHeader: host}));
   ObservableList<int> results = ObservableList();
   StreamController _streamController;
   ObservableStream observableStream;
@@ -41,12 +45,11 @@ abstract class SauceStoreBase with Store {
         ObservableStream(_streamController.stream.asBroadcastStream());
   }
 
-  @override
   void dispose() async {
     await _streamController?.close();
   }
 
-  Future findImage({String path}) async {
+  Future findImage({String path, bool retry = false}) async {
     notStart = false;
     results.clear();
     MultipartFile multipartFile;
@@ -68,6 +71,19 @@ abstract class SauceStoreBase with Store {
     ]);
     try {
       BotToast.showText(text: "uploading");
+      if (userSetting.disableBypassSni) {
+        dio.options.baseUrl = "https://$host";
+      } else {
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (client) {
+          HttpClient httpClient = new HttpClient();
+          httpClient.badCertificateCallback =
+              (X509Certificate cert, String host, int port) {
+            return true;
+          };
+          return httpClient;
+        };
+      }
       Response response = await dio.post('/search.php', data: formData);
       BotToast.showText(text: "parsing");
       var document = parse(response.data);

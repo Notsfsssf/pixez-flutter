@@ -19,13 +19,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
-import 'package:pixez/page/splash/splash_store.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -35,11 +34,13 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
-  SplashStore splashStore;
+  LightingStore lightingStore;
 
   @override
   void initState() {
-    splashStore = SplashStore(OnezeroClient());
+    if (accountStore.now != null)
+      lightingStore = LightingStore(() => apiClient.getRecommend(), null)
+        ..fetch();
     controller =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
     initMethod();
@@ -56,16 +57,11 @@ class _SplashPageState extends State<SplashPage>
             'https://${ApiClient.BASE_API_URL_HOST}';
         oAuthClient.httpClient.options.baseUrl =
             'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) =>
-        //             Platform.isIOS ? HelloPage() : NovelRail()));
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
@@ -91,12 +87,11 @@ class _SplashPageState extends State<SplashPage>
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-              Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+              builder: (BuildContext context) => Platform.isIOS
+                  ? HelloPage()
+                  : AndroidHelloPage(lightingStore: lightingStore)));
     });
-    Future.delayed(Duration(seconds: 2), () {
-      if (mounted) splashStore.fetch();
-    });
+    splashStore.hello();
   }
 
   @override

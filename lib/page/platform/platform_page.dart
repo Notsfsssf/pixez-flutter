@@ -19,16 +19,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info/package_info.dart';
-import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/directory/directory_page.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
-import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PlatformPage extends StatefulWidget {
   @override

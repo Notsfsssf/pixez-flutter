@@ -17,8 +17,10 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
+import 'package:pixez/exts.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
@@ -73,10 +75,11 @@ class SpotlightCard extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   child: Container(
                     child: ExtendedImage.network(
-                      spotlight.thumbnail,
+                      spotlight.thumbnail.toTrueUrl(),
                       headers: {
                         "referer": "https://app-api.pixiv.net/",
-                        "User-Agent": "PixivIOSApp/5.8.0"
+                        "User-Agent": "PixivIOSApp/5.8.0",
+                        "Host": ImageHost
                       },
                       fit: BoxFit.cover,
                       height: 150.0,

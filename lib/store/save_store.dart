@@ -17,13 +17,16 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -62,7 +65,16 @@ abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     streamController = StreamController();
     saveStream = ObservableStream(streamController.stream.asBroadcastStream());
-
+    if(!userSetting.disableBypassSni)
+    (imageDio.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (client) {
+      HttpClient httpClient = new HttpClient();
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return true;
+      };
+      return httpClient;
+    };
   }
 
   @override
@@ -193,7 +205,7 @@ abstract class _SaveStoreBase with Store {
 
   _joinOnDart(String url, Illusts illusts, String fileName) async {
     await taskPersistProvider.open();
-    final result =await taskPersistProvider.getAccount(url);
+    final result = await taskPersistProvider.getAccount(url);
     if (result != null) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
@@ -211,7 +223,7 @@ abstract class _SaveStoreBase with Store {
       var savePath = (await getTemporaryDirectory()).path +
           Platform.pathSeparator +
           fileName;
-      await imageDio.download(url, savePath,
+      await imageDio.download(url.toTrueUrl(), savePath,
           onReceiveProgress: (received, total) async {
         if (total != -1) {
           var job = jobMaps[url];
@@ -269,7 +281,8 @@ abstract class _SaveStoreBase with Store {
           deleteOnError: true,
           options: Options(headers: {
             "referer": "https://app-api.pixiv.net/",
-            "User-Agent": "PixivIOSApp/5.8.0"
+            "User-Agent": "PixivIOSApp/5.8.0",
+            "Host": ImageHost
           }));
     } catch (e) {
       print(e);
@@ -324,7 +337,11 @@ abstract class _SaveStoreBase with Store {
           String id = illusts.user.id.toString();
           fileName = "${name}_$id/$fileName";
         }
-        DocumentPlugin.save(uint8list, fileName);
+        if (userSetting.isClearOldFormatFile)
+          DocumentPlugin.save(uint8list, fileName,
+              clearOld: userSetting.isClearOldFormatFile);
+        else
+          DocumentPlugin.save(uint8list, fileName);
       } catch (e) {
         print(e);
       }

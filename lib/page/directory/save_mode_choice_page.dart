@@ -13,6 +13,8 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/constants.dart';
@@ -26,6 +28,7 @@ import 'directory_page.dart';
 
 class SaveModeChoicePage extends StatefulWidget {
   bool isFirst;
+
   SaveModeChoicePage({Key key, this.isFirst}) : super(key: key);
 
   @override
@@ -64,15 +67,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       floatingActionButton: FloatingActionButton.extended(
           heroTag: null,
           icon: Icon(Icons.next_plan, color: Colors.white),
-          onPressed: () async {
-            if (groupValue == 0) {
-              await _saffun(context);
-            }
-            if (groupValue == 1) {
-              await _helplessfun(context, isFirst: widget.isFirst);
-            }
-            Navigator.of(context).pop();
-          },
+          onPressed: () async => _onPress(context),
           backgroundColor: _animation.value,
           label: Text(
             I18n.of(context).start,
@@ -176,7 +171,16 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(I18n.of(context).old_way_message),
+                        child: Column(
+                          children: [
+                            Text(I18n
+                                .of(context)
+                                .old_way_message),
+                            Text(I18n
+                                .of(context)
+                                .legacy_mode_warning)
+                          ],
+                        ),
                       )
                     ],
                   ))
@@ -186,6 +190,31 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
         );
       }),
     );
+  }
+
+  Future _onPress(BuildContext context) async {
+    if (groupValue == 0) {
+      await _saffun(context);
+      Navigator.of(context).pop();
+    }
+    if (groupValue == 1) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      print('Running on ${androidInfo.version.sdkInt}');
+      if (androidInfo.version.sdkInt > 29) {
+        BotToast.showText(text: I18n
+            .of(context)
+            .legacy_mode_warning);
+      }
+      await _helplessfun(context, isFirst: widget.isFirst);
+      Navigator.of(context).pop();
+    }
+    if (groupValue == 0) {
+      _animationController.reverse();
+    }
+    if (groupValue == 1) {
+      _animationController.forward();
+    }
   }
 }
 

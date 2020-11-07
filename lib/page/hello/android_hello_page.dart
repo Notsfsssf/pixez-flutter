@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:badges/badges.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
@@ -53,18 +55,16 @@ class KeepContent extends StatelessWidget {
 }
 
 class AndroidHelloPage extends StatefulWidget {
+  final LightingStore lightingStore;
+
+  const AndroidHelloPage({Key key, this.lightingStore}) : super(key: key);
+
   @override
   _AndroidHelloPageState createState() => _AndroidHelloPageState();
 }
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
-  final _pageList = [
-    RecomSpolightPage(),
-    RankPage(),
-    NewPage(),
-    SearchPage(),
-    SettingPage()
-  ];
+  List<Widget> _pageList;
   DateTime _preTime;
 
   @override
@@ -103,7 +103,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           });
         },
         controller: _pageController,
-        itemCount: 5,
+        itemCount: _pageList.length,
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -129,7 +129,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.search), label: I18n.of(context).search),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: I18n.of(context).setting),
+                icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
           ]),
     );
   }
@@ -265,6 +265,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   void initState() {
+    _pageList = [
+      RecomSpolightPage(lightingStore: widget.lightingStore),
+      RankPage(),
+      NewPage(),
+      SearchPage(),
+      SettingPage()
+    ];
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: index);
     super.initState();

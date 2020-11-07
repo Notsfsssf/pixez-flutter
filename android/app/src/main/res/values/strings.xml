@@ -20,6 +20,4 @@
     <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正确取得授权，可能会导致部分功能失效或闪退</string>
     <string name="encode_success">encode success</string>
     <string name="do_not_choice_download_folder_message">The authorized directory contains the download directory, which may cause storage errors, please re-select the storage directory authorization</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
 </resources>

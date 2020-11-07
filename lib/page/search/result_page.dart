@@ -24,8 +24,9 @@ import 'package:pixez/page/search/result_illust_list.dart';
 class ResultPage extends StatefulWidget {
   final String word;
   final String translatedName;
-  const ResultPage({Key key, this.word, this.translatedName = ''})
+  const ResultPage({Key key, @required this.word, this.translatedName = ''})
       : super(key: key);
+
   @override
   _ResultPageState createState() => _ResultPageState();
 }

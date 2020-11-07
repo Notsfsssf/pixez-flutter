@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
@@ -59,16 +61,19 @@ class RefreshTokenInterceptor extends Interceptor {
     return super.onResponse(response);
   }
 
+  bool isRefreshing = false;
+
   @override
   onError(DioError err) async {
     if (err.response != null && err.response.statusCode == 400) {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
+        apiClient.httpClient.interceptors.errorLock.lock();
+        print("refresh token start ========================");
         try {
           ErrorMessage errorMessage = ErrorMessage.fromJson(err.response.data);
           if (errorMessage.error.message.contains("OAuth") &&
               accountStore.now != null) {
-            lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
             final client = OAuthClient();
             AccountPersist accountPersist = accountStore.now;
             Response response1 = await client.postRefreshAuthToken(
@@ -91,18 +96,7 @@ class RefreshTokenInterceptor extends Interceptor {
               ..mailAddress = user.mailAddress
               ..account = user.account
               ..xRestrict = user.xRestrict);
-            var request = err.response.request;
-            request.headers[OAuthClient.AUTHORIZATION] =
-                "Bearer " + accountResponse.accessToken;
-            apiClient.httpClient.unlock();
-            var response = await ApiClient().httpClient.request(
-                  request.path,
-                  data: request.data,
-                  queryParameters: request.queryParameters,
-                  cancelToken: request.cancelToken,
-                  options: request,
-                );
-            return response;
+            lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
           }
           if (errorMessage.error.message.contains("Limit")) {}
         } catch (e) {
@@ -110,15 +104,33 @@ class RefreshTokenInterceptor extends Interceptor {
           lastRefreshTime = 0;
           return e;
         }
+        print("refresh unlock ========================");
+        apiClient.httpClient.interceptors.errorLock.unlock();
       }
+      var request = err.response.request;
+      request.headers[OAuthClient.AUTHORIZATION] = (await getToken());
+      var response = await apiClient.httpClient.request(
+        request.path,
+        data: request.data,
+        queryParameters: request.queryParameters,
+        cancelToken: request.cancelToken,
+        options: request,
+      );
+      return response;
     }
     if (err.message != null &&
-        err.message.contains("Connection closed before full header was received") &&
+        err.message
+            .contains("Connection closed before full header was received") &&
         retryNum < 2) {
-      print('retry');
+      print('retry $retryNum =========================');
       retryNum++;
       RequestOptions options = err.request;
-      return apiClient.httpClient.request(options.path, options: options);
+      return apiClient.httpClient.request(
+        options.path,
+        options: options,
+        data: options.data,
+        queryParameters: options.queryParameters,
+      );
     }
     super.onError(err);
   }

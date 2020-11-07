@@ -3,10 +3,10 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:contentDescription="An image"
         android:id="@+id/appwidget_image"
+        android:adjustViewBounds="true"
         android:layout_width="match_parent"
-        android:src="@drawable/ic_baseline_folder_open_24"
-        android:layout_height="match_parent"
- />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
