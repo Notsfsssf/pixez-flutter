@@ -6,20 +6,24 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
+import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
+import 'package:pixez/page/search/result_page.dart';
 import 'package:share/share.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -135,6 +139,10 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
     );
   }
 
+  Widget colorText(String text, BuildContext context) => SelectableText(
+        text,
+        style: TextStyle(color: Theme.of(context).accentColor),
+      );
   Widget _buildContent(BuildContext context, Illusts data) {
     return CustomScrollView(
       slivers: [
@@ -190,8 +198,91 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                     child: _buildIllustsItem(index, data));
               }, childCount: data.metaPages.length)),
         SliverToBoxAdapter(
-          child: IllustDetailBody(
-            illust: data,
+          child: _buildNameAvatar(context, data),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(I18n.of(context).illust_id),
+                    Container(
+                      width: 10.0,
+                    ),
+                    colorText(data.id.toString(), context),
+                    Container(
+                      width: 20.0,
+                    ),
+                    Text(I18n.of(context).pixel),
+                    Container(
+                      width: 10.0,
+                    ),
+                    colorText("${data.width}x${data.height}", context)
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(I18n.of(context).total_view),
+                    Container(
+                      width: 10.0,
+                    ),
+                    colorText(data.totalView.toString(), context),
+                    Container(
+                      width: 20.0,
+                    ),
+                    Text(I18n.of(context).total_bookmark),
+                    Container(
+                      width: 10.0,
+                    ),
+                    colorText("${data.totalBookmarks}", context)
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 2, // gap between adjacent chips
+              runSpacing: 0, // gap between lines
+              children: [for (var f in data.tags) buildRow(context, f)],
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SelectableHtml(
+                data: data.caption.isEmpty ? "~" : data.caption,
+              ),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FlatButton(
+              child: Text(
+                I18n.of(context).view_comment,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: Theme.of(context).textTheme.bodyText1.fontSize),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => CommentPage(
+                          id: data.id,
+                        )));
+              },
+            ),
           ),
         ),
         SliverToBoxAdapter(
@@ -297,6 +388,76 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
               ),
             ),
           );
+  }
+
+  Future _longPressTag(BuildContext context, Tags f) async {
+    switch (await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text(f.name),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 0);
+                },
+                child: Text(I18n.of(context).ban),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 1);
+                },
+                child: Text(I18n.of(context).bookmark),
+              ),
+            ],
+          );
+        })) {
+      case 0:
+        {
+          muteStore.insertBanTag(BanTagPersist()
+            ..name = f.name
+            ..translateName = f.translatedName ?? '_');
+        }
+        break;
+      case 1:
+        {
+          bookTagStore.bookTag(f.name);
+        }
+        break;
+    }
+  }
+
+  Widget buildRow(BuildContext context, Tags f) {
+    return GestureDetector(
+      onLongPress: () async {
+        await _longPressTag(context, f);
+      },
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return ResultPage(
+            word: f.name,
+            translatedName: f.translatedName ?? '',
+          );
+        }));
+      },
+      child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+              text: "#${f.name}",
+              children: [
+                TextSpan(
+                  text: " ",
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                TextSpan(
+                    text: "${f.translatedName ?? "~"}",
+                    style: Theme.of(context).textTheme.caption)
+              ],
+              style: Theme.of(context)
+                  .textTheme
+                  .caption
+                  .copyWith(color: Theme.of(context).accentColor))),
+    );
   }
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
