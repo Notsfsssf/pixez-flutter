@@ -21,6 +21,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/document_plugin.dart';
@@ -53,8 +54,10 @@ abstract class SauceStoreBase with Store {
     notStart = false;
     results.clear();
     MultipartFile multipartFile;
+    final picker = ImagePicker();
     if (path == null) {
-      Uint8List uint8list = await DocumentPlugin.pickFile();
+      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      Uint8List uint8list = await pickedFile.readAsBytes();
       if (uint8list != null) {
         path =
             "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";

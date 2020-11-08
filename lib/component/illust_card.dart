@@ -192,18 +192,18 @@ class IllustCard extends StatelessWidget {
                       store.illusts.user.name,
                       maxLines: 1,
                       overflow: TextOverflow.clip,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .caption,
+                      style: Theme.of(context).textTheme.caption,
                     )
                   ]),
             ),
           ),
           Expanded(
             flex: 1,
-            child: StarIcon(
-              illustStore: store,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: StarIcon(
+                illustStore: store,
+              ),
             ),
           )
         ],

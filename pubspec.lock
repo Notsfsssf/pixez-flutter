@@ -347,6 +347,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.0+2"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.11"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -434,6 +441,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.4"
+  image_picker:
+    dependency: "direct main"
+    description:
+      name: image_picker
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.7+12"
+  image_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: image_picker_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   intl:
     dependency: transitive
     description:
@@ -672,6 +693,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.6.2"
+  quick_actions:
+    dependency: "direct main"
+    description:
+      name: quick_actions
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.0+10"
   quiver:
     dependency: transitive
     description:

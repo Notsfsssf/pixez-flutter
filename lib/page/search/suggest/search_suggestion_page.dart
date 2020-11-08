@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
@@ -73,6 +72,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
     return Observer(builder: (context) {
       return Scaffold(
         appBar: _buildAppBar(context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _sauceStore.findImage();
+          },
+          child: Icon(Icons.add_photo_alternate),
+        ),
         body: Container(
             child: CustomScrollView(
           slivers: [

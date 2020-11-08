@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/account.dart';
@@ -33,6 +34,8 @@ import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';
+import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/page/splash/splash_store.dart';
 import 'package:pixez/store/account_store.dart';
@@ -42,6 +45,7 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final UserSetting userSetting = UserSetting();
@@ -158,12 +162,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  final QuickActions quickActions = QuickActions();
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       return MaterialApp(
         navigatorObservers: [BotToastNavigatorObserver()],
         home: Builder(builder: (context) {
+          quickActions.initialize((shortcutType) {
+            if (shortcutType == 'action_search') {
+              LPrinter.d("quick action");
+              Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
+            }
+          });
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,

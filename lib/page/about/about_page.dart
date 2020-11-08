@@ -28,6 +28,7 @@ import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/thanks_list.dart';
@@ -274,23 +275,23 @@ class _AboutPageState extends State<AboutPage> {
                 return Card(
                   child: InkWell(
                     onTap: () async {
-                      if (index == 0) {
+                      if (index == 0 && accountStore.now != null) {
                         //Tragic Life:輪播凱留TAG 10000+收藏的圖
                         try {
                           final response = await apiClient
-                              .getSearchIllust("Kyaru 10000users入り");
+                              .getSearchIllust("キャル(プリコネ) 10000users入り");
                           Recommend recommend =
                               Recommend.fromJson(response.data);
                           if (recommend.illusts.isEmpty) return;
+                          int i =
+                              Random().nextInt(recommend.illusts.length - 1);
+                          if (i < 0 || i >= recommend.illusts.length) i = 0;
                           showModalBottomSheet(
                               context: context,
                               builder: (context) {
                                 return SafeArea(
-                                    child: PixivImage(recommend
-                                        .illusts[Random().nextInt(
-                                            recommend.illusts.length - 1)]
-                                        .imageUrls
-                                        .medium));
+                                    child: PixivImage(
+                                        recommend.illusts[0].imageUrls.medium));
                               });
                         } catch (e) {}
                       }
@@ -301,7 +302,7 @@ class _AboutPageState extends State<AboutPage> {
                             : "Read The Fucking Manual!";
                         BotToast.showText(text: text);
                       }
-                      if (index == 2) {
+                      if (index == 2 && accountStore.now != null) {
                         //XIAN:随机加载一张色图
                         if (Platform.isIOS || Constants.isGooglePlay) return;
                         try {
