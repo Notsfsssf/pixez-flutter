@@ -18,12 +18,12 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
-import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:share/share.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -46,6 +46,12 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
     _illustStore.fetch();
     _aboutStore = IllustAboutStore(widget.id)..fetch();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _illustStore?.dispose();
+    super.dispose();
   }
 
   Widget _buildAppbar() {
@@ -146,57 +152,77 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   Widget _buildContent(BuildContext context, Illusts data) {
     return CustomScrollView(
       slivers: [
-        if (!userSetting.isBangs)
+        if (userSetting.isBangs)
           SliverToBoxAdapter(
               child: Container(height: MediaQuery.of(context).padding.top)),
         if (data.type == "ugoira")
           SliverToBoxAdapter(
-            child: UgoiraLoader(
-              id: widget.id,
-              illusts: data,
+            child: Hero(
+              tag: '${data.imageUrls.medium}${widget.heroString}',
+              child: UgoiraLoader(
+                id: widget.id,
+                illusts: data,
+              ),
             ),
           ),
-        data.pageCount == 1 && data.type != "ugoira"
-            ? SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                String url = userSetting.pictureQuality == 1
-                    ? data.imageUrls.large
-                    : data.imageUrls.medium;
-                Widget placeWidget = Container(
-                  height: 150,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-                return InkWell(
-                  onLongPress: () {
-                    _pressSave(data, 0);
-                  },
-                  child: Hero(
-                    tag: '${data.imageUrls.medium}${widget.heroString}',
-                    child: PixivImage(
-                      url,
-                      fade: false,
-                      placeWidget: userSetting.pictureQuality == 1
-                          ? PixivImage(
-                              data.imageUrls.large,
-                              placeWidget: placeWidget,
-                            )
-                          : placeWidget,
+        if (data.type != "ugoira")
+          data.pageCount == 1
+              ? SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                  String url = userSetting.pictureQuality == 1
+                      ? data.imageUrls.large
+                      : data.imageUrls.medium;
+                  Widget placeWidget = Container(
+                    height: 150,
+                    child: Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  ),
-                );
-              }, childCount: 1))
-            : SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                return InkWell(
+                  );
+                  return InkWell(
                     onLongPress: () {
-                      _pressSave(data, index);
+                      _pressSave(data, 0);
                     },
-                    child: _buildIllustsItem(index, data));
-              }, childCount: data.metaPages.length)),
+                    onTap: () {
+                      Leader.push(
+                          context,
+                          PhotoViewerPage(
+                            index: 0,
+                            illusts: data,
+                          ));
+                    },
+                    child: Hero(
+                      tag: '${data.imageUrls.medium}${widget.heroString}',
+                      child: PixivImage(
+                        url,
+                        fade: false,
+                        placeWidget: userSetting.pictureQuality == 1
+                            ? PixivImage(
+                                data.imageUrls.large,
+                                placeWidget: placeWidget,
+                              )
+                            : placeWidget,
+                      ),
+                    ),
+                  );
+                }, childCount: 1))
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                  return InkWell(
+                      onLongPress: () {
+                        _pressSave(data, index);
+                      },
+                      onTap: () {
+                        Leader.push(
+                            context,
+                            PhotoViewerPage(
+                              index: index,
+                              illusts: data,
+                            ));
+                      },
+                      child: _buildIllustsItem(index, data));
+                }, childCount: data.metaPages.length)),
         SliverToBoxAdapter(
           child: _buildNameAvatar(context, data),
         ),
@@ -250,8 +276,8 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
             padding: const EdgeInsets.all(8.0),
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 2, // gap between adjacent chips
-              runSpacing: 0, // gap between lines
+              spacing: 2,
+              runSpacing: 0,
               children: [for (var f in data.tags) buildRow(context, f)],
             ),
           ),
@@ -379,7 +405,6 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                 ? illust.metaPages[index].imageUrls.medium
                 : illust.metaPages[index].imageUrls.large,
             fade: false,
-            enableMemoryCache: false,
             placeWidget: Container(
               height: 150,
               child: Center(

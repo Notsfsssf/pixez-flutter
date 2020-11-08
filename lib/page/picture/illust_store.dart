@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/error_message.dart';
@@ -36,6 +37,21 @@ abstract class _IllustStoreBase with Store {
   bool isBookmark;
   @observable
   String errorMessage;
+
+  Future dispose() {
+    if (illusts != null) {
+      if (illusts.pageCount != 1) {
+        for (var i in illusts.metaPages) {
+          if (illusts.metaPages.indexOf(i) == 0) continue;
+          final provider = ExtendedNetworkImageProvider(
+              userSetting.pictureQuality == 0
+                  ? i.imageUrls.medium
+                  : i.imageUrls.large);
+          provider?.evict();
+        }
+      }
+    }
+  }
 
   _IllustStoreBase(this.id, this.illusts) {
     isBookmark = illusts?.isBookmarked ?? false;

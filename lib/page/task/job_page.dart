@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -185,46 +186,10 @@ class _JobPageState extends State<JobPage> {
 
               if (currentIndex == 0) {
                 if (job == null) {
-                  return ListTile(
-                    title: Text(persist.title),
-                    subtitle: Text(toMessage(persist.status)),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return IllustPage(
-                          id: persist.illustId,
-                        );
-                      }));
-                    },
-                    trailing: Row(
-                      children: [
-                        if (persist.status == 3 ||
-                            persist.status == 0 ||
-                            persist.status == 2)
-                          IconButton(
-                              icon: Icon(Icons.refresh),
-                              onPressed: () async {
-                                await _retryJob(persist);
-                              }),
-                        IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () async {
-                              await _deleteJob(persist);
-                              initMethod();
-                            }),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                    ),
-                  );
-                }
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        persist.title,
-                        maxLines: 1,
-                      ),
+                  return Container(
+                    child: ListTile(
+                      title: Text(persist.title),
+                      subtitle: Text(toMessage(persist.status)),
                       onTap: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
@@ -233,9 +198,7 @@ class _JobPageState extends State<JobPage> {
                           );
                         }));
                       },
-                      subtitle: Text('${toMessage(job.status)}'),
                       trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           if (persist.status == 3 ||
                               persist.status == 0 ||
@@ -252,17 +215,59 @@ class _JobPageState extends State<JobPage> {
                                 initMethod();
                               }),
                         ],
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
                       ),
                     ),
-                    if (job.max / job.min != 1)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: LinearProgressIndicator(
-                          value: job.min / job.max,
-                          backgroundColor: Colors.grey,
+                  );
+                }
+                return Container(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          persist.title,
+                          maxLines: 1,
+                        ),
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return IllustPage(
+                              id: persist.illustId,
+                            );
+                          }));
+                        },
+                        subtitle: Text('${toMessage(job.status)}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (persist.status == 3 ||
+                                persist.status == 0 ||
+                                persist.status == 2)
+                              IconButton(
+                                  icon: Icon(Icons.refresh),
+                                  onPressed: () async {
+                                    await _retryJob(persist);
+                                  }),
+                            IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () async {
+                                  await _deleteJob(persist);
+                                  initMethod();
+                                }),
+                          ],
                         ),
                       ),
-                  ],
+                      if (job.max / job.min != 1)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: LinearProgressIndicator(
+                            value: job.min / job.max,
+                            backgroundColor: Colors.grey,
+                          ),
+                        ),
+                    ],
+                  ),
                 );
               } else {
                 return Builder(builder: (context) {
