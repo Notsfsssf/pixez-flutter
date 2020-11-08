@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
@@ -55,7 +56,7 @@ class IllustCard extends StatelessWidget {
                     store: store,
                   );
                 }
-                return IllustPage(
+                return IllustLightingPage(
                   store: store,
                   id: store.illusts.id,
                 );
@@ -129,7 +130,7 @@ class IllustCard extends StatelessWidget {
               iStores: iStores,
             );
           }
-          return IllustPage(
+          return IllustLightingPage(
             id: store.illusts.id,
             heroString: heroString,
             store: store,

@@ -21,6 +21,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/history/history_store.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
@@ -57,7 +58,7 @@ class HistoryPage extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(builder: (BuildContext context) {
-                                  return IllustPage(
+                                  return IllustLightingPage(
                                       id: reIllust[index].illustId,
                                       store: IllustStore(reIllust[index].illustId, null));
                                 }));

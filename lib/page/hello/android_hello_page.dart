@@ -33,6 +33,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
@@ -158,7 +159,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (context) {
-          return IllustPage(
+          return IllustLightingPage(
             id: id,
           );
         }));
@@ -187,7 +188,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
+              return IllustLightingPage(id: id);
             }));
             return;
           } catch (e) {}
@@ -213,7 +214,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           var id = link.queryParameters['illust_id'];
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id: int.parse(id));
+            return IllustLightingPage(id: int.parse(id));
           }));
 
           return;
@@ -239,7 +240,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
+              return IllustLightingPage(id: id);
             }));
             return;
           } catch (e) {}

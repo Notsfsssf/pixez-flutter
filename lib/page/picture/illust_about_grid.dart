@@ -20,6 +20,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 
 class IllustAboutGrid extends StatefulWidget {
@@ -80,7 +81,7 @@ class _IllustAboutGridState extends State<IllustAboutGrid> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return IllustPage(
+                    return IllustLightingPage(
                       id: _store.illusts[index].id,
                     );
                   }));

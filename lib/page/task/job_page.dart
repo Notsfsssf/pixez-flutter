@@ -27,6 +27,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/exts.dart';
@@ -193,7 +194,7 @@ class _JobPageState extends State<JobPage> {
                       onTap: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return IllustPage(
+                          return IllustLightingPage(
                             id: persist.illustId,
                           );
                         }));
@@ -232,7 +233,7 @@ class _JobPageState extends State<JobPage> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return IllustPage(
+                            return IllustLightingPage(
                               id: persist.illustId,
                             );
                           }));
@@ -280,7 +281,7 @@ class _JobPageState extends State<JobPage> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return IllustPage(
+                            return IllustLightingPage(
                               id: persist.illustId,
                             );
                           }));
@@ -320,7 +321,7 @@ class _JobPageState extends State<JobPage> {
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return IllustPage(
+                              return IllustLightingPage(
                                 id: persist.illustId,
                               );
                             }));

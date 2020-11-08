@@ -24,6 +24,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
@@ -263,7 +264,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           onLongPress: () {
                             Navigator.of(context, rootNavigator: true)
                                 .push(MaterialPageRoute(builder: (_) {
-                              return IllustPage(id: tags[index].illust.id);
+                              return IllustLightingPage(id: tags[index].illust.id);
                             }));
                           },
                           child: Card(
