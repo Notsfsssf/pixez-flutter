@@ -24,7 +24,6 @@ import 'package:html/parser.dart' show parse;
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/document_plugin.dart';
 import 'package:pixez/main.dart';
 part 'sauce_store.g.dart';
 

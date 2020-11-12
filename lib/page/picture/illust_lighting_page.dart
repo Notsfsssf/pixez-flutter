@@ -42,7 +42,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   IllustAboutStore _aboutStore;
   @override
   void initState() {
-    _illustStore = widget.store;
+    _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
     _aboutStore = IllustAboutStore(widget.id)..fetch();
     super.initState();
@@ -150,6 +150,32 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
         style: TextStyle(color: Theme.of(context).accentColor),
       );
   Widget _buildContent(BuildContext context, Illusts data) {
+    if (data == null)
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    if (_illustStore.errorMessage != null)
+      return Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(':(', style: Theme.of(context).textTheme.headline4),
+            ),
+            Text('${_illustStore.errorMessage}'),
+            RaisedButton(
+              onPressed: () {
+                _illustStore.fetch();
+              },
+              child: Text(I18n.of(context).refresh),
+            )
+          ],
+        ),
+      );
     return CustomScrollView(
       slivers: [
         if (userSetting.isBangs)

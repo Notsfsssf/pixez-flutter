@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -217,11 +218,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       if (link.queryParameters['illust_id'] != null) {
         try {
           var id = link.queryParameters['illust_id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustLightingPage(id: int.parse(id));
-          }));
-
+          Leader.push(context, IllustLightingPage(id: int.parse(id)));
           return;
         } catch (e) {}
       }
@@ -243,10 +240,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         if (i == "i") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustLightingPage(id: id);
-            }));
+            Leader.push(context, IllustLightingPage(id: id));
             return;
           } catch (e) {}
         }

@@ -22,7 +22,6 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
@@ -47,21 +46,7 @@ class IllustCard extends StatelessWidget {
       for (int i = 0; i < store.illusts.tags.length; i++) {
         if (store.illusts.tags[i].name.startsWith('R-18'))
           return InkWell(
-            onTap: () => {
-              Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(builder: (_) {
-                if (store != null) {
-                  return PictureListPage(
-                    iStores: iStores,
-                    store: store,
-                  );
-                }
-                return IllustLightingPage(
-                  store: store,
-                  id: store.illusts.id,
-                );
-              }))
-            },
+            onTap: () => {_buildTap(context)},
             onLongPress: () {
               saveStore.saveImage(store.illusts);
             },
@@ -81,6 +66,22 @@ class IllustCard extends StatelessWidget {
         height: height,
       );
     return buildInkWell(context);
+  }
+
+  Future _buildTap(BuildContext context) {
+    return Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
+      if (store != null) {
+        return PictureListPage(
+          iStores: iStores,
+          store: store,
+        );
+      }
+      return IllustLightingPage(
+        store: store,
+        id: store.illusts.id,
+      );
+    }));
   }
 
   Widget cardText() {
@@ -119,53 +120,55 @@ class IllustCard extends StatelessWidget {
   Widget buildInkWell(BuildContext context) {
     String heroString =
         this.heroString ?? DateTime.now().millisecondsSinceEpoch.toString();
-    return InkWell(
-      onTap: () => {
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (_) {
-          if (iStores != null) {
-            return PictureListPage(
-              heroString: heroString,
-              store: store,
-              iStores: iStores,
-            );
-          }
-          return IllustLightingPage(
-            id: store.illusts.id,
-            heroString: heroString,
-            store: store,
-          );
-        }))
-      },
-      onLongPress: () {
-        saveStore.saveImage(store.illusts);
-      },
-      child: Card(
-        margin: EdgeInsets.all(8.0),
-        elevation: 8.0,
-        clipBehavior: Clip.antiAlias,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: _buildPic(heroString),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildBottom(context),
-              ),
-              Align(
-                child: _buildVisibility(),
-                alignment: Alignment.topRight,
-              )
-            ],
-          ),
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      elevation: 8.0,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+      child: InkWell(
+        onLongPress: () {
+          saveStore.saveImage(store.illusts);
+        },
+        onTap: () {
+          _buildInkTap(context, heroString);
+        },
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: _buildPic(heroString),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildBottom(context),
+            ),
+            Align(
+              child: _buildVisibility(),
+              alignment: Alignment.topRight,
+            )
+          ],
         ),
       ),
     );
+  }
+
+  Future _buildInkTap(BuildContext context, String heroString) {
+    return Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
+      if (iStores != null) {
+        return PictureListPage(
+          heroString: heroString,
+          store: store,
+          iStores: iStores,
+        );
+      }
+      return IllustLightingPage(
+        id: store.illusts.id,
+        heroString: heroString,
+        store: store,
+      );
+    }));
   }
 
   Widget _buildBottom(BuildContext context) {

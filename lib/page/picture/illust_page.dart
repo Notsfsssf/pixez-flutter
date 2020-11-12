@@ -513,7 +513,7 @@ class _IllustPageState extends State<IllustPage> {
             ));
       } else {
         if (_illustStore.errorMessage != null) {
-          return Scaffold(
+       return Scaffold(
             appBar: AppBar(),
             body: Center(
               child: Column(
