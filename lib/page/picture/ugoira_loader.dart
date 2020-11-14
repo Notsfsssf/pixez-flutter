@@ -47,6 +47,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
+      double height = MediaQuery.of(context).size.width *
+          (widget.illusts.height.toDouble() / widget.illusts.width.toDouble());
       if (_store.status == UgoiraStatus.play) {
         return InkWell(
           onLongPress: () async {
@@ -114,17 +116,34 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
             )
           ],
         );
-      return Column(
-        children: <Widget>[
-          PixivImage(widget.illusts.imageUrls.medium),
-          Center(
-            child: IconButton(
-                icon: Icon(Icons.play_arrow),
-                onPressed: () {
-                  _store.downloadAndUnzip();
-                }),
-          )
-        ],
+      return Container(
+        height: height + 72.0,
+        child: Stack(
+          children: <Widget>[
+            PixivImage(
+              widget.illusts.imageUrls.medium,
+              height: height,
+              width: MediaQuery.of(context).size.width,
+              placeWidget: Container(
+                height: height,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Material(
+                child: Container(
+                  height: 72.0,
+                  width: 72.0,
+                  child: IconButton(
+                      icon: Icon(Icons.play_arrow),
+                      onPressed: () {
+                        _store.downloadAndUnzip();
+                      }),
+                ),
+              ),
+            )
+          ],
+        ),
       );
     });
   }

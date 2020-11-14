@@ -15,8 +15,8 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class PictureListPage extends StatefulWidget {
@@ -33,10 +33,10 @@ class PictureListPage extends StatefulWidget {
 
 class _PictureListPageState extends State<PictureListPage> {
   PageController _pageController;
-
+  int nowPosition;
   @override
   void initState() {
-    int nowPosition = widget.iStores.indexOf(widget.store);
+    nowPosition = widget.iStores.indexOf(widget.store);
     _pageController = PageController(initialPage: nowPosition);
     super.initState();
   }
@@ -60,5 +60,18 @@ class _PictureListPageState extends State<PictureListPage> {
         );
       },
     );
+    // return GestureDetector(
+    //   onHorizontalDragEnd: (d) {
+    //     LPrinter.d("i${d}");
+    //     setState(() {
+    //       nowPosition = nowPosition + 1;
+    //     });
+    //   },
+    //   child: IllustLightingPage(
+    //     id: widget.iStores[nowPosition].id,
+    //     heroString: widget.heroString,
+    //     store: widget.iStores[nowPosition],
+    //   ),
+    // );
   }
 }

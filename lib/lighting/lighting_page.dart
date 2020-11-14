@@ -95,7 +95,8 @@ class _LightingListState extends State<LightingList> {
                 child: Opacity(
                   opacity: 0.5,
                   child: Container(
-                    height: 24.0,
+                    height: 50.0,
+                    width: 50.0,
                     margin: EdgeInsets.only(bottom: 8.0),
                     child: IconButton(
                       icon: Icon(

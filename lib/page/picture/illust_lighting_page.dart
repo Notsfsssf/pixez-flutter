@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +53,12 @@ class IllustLightingPage extends StatefulWidget {
   _IllustLightingPageState createState() => _IllustLightingPageState();
 }
 
-class _IllustLightingPageState extends State<IllustLightingPage> {
+class _IllustLightingPageState extends State<IllustLightingPage>
+    with AutomaticKeepAliveClientMixin {
   IllustStore _illustStore;
   IllustAboutStore _aboutStore;
   ScrollController _scrollController;
+
   @override
   void initState() {
     _scrollController = ScrollController();
@@ -48,11 +66,19 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
     _illustStore.fetch();
     _aboutStore = IllustAboutStore(widget.id);
     super.initState();
-    _scrollController.addListener(() {
-      if (mounted &&
-          _scrollController.offset >=
-              _scrollController.position.maxScrollExtent) _aboutStore.fetch();
-    });
+    _scrollController.addListener(() => _loadAbout());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  void _loadAbout() {
+    if (mounted &&
+        _scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        _aboutStore.illusts.isEmpty) _aboutStore.fetch();
   }
 
   @override
@@ -531,6 +557,9 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     IllustDetailStore illustDetailStore = IllustDetailStore(illust);
     return Observer(builder: (_) {
+      Future.delayed(Duration(seconds: 2), () {
+        _loadAbout();
+      });
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -996,4 +1025,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
             },
           ));
   }
+
+  @override
+  bool get wantKeepAlive => false;
 }
