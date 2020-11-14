@@ -40,17 +40,25 @@ class IllustLightingPage extends StatefulWidget {
 class _IllustLightingPageState extends State<IllustLightingPage> {
   IllustStore _illustStore;
   IllustAboutStore _aboutStore;
+  ScrollController _scrollController;
   @override
   void initState() {
+    _scrollController = ScrollController();
     _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
-    _aboutStore = IllustAboutStore(widget.id)..fetch();
+    _aboutStore = IllustAboutStore(widget.id);
     super.initState();
+    _scrollController.addListener(() {
+      if (mounted &&
+          _scrollController.offset >=
+              _scrollController.position.maxScrollExtent) _aboutStore.fetch();
+    });
   }
 
   @override
   void dispose() {
     _illustStore?.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
@@ -74,7 +82,15 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(icon: Icon(Icons.expand_less), onPressed: () {}),
+                  IconButton(
+                      icon: Icon(Icons.expand_less),
+                      onPressed: () {
+                        double p = _scrollController.position.maxScrollExtent -
+                            (_aboutStore.illusts.length / 3.0) *
+                                (MediaQuery.of(context).size.width / 3.0);
+                        if (p < 0) p = 0;
+                        _scrollController.position.jumpTo(p);
+                      }),
                   IconButton(
                       icon: Icon(Icons.more_vert),
                       onPressed: () {
@@ -177,6 +193,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
         ),
       );
     return CustomScrollView(
+      controller: _scrollController,
       slivers: [
         if (userSetting.isBangs)
           SliverToBoxAdapter(
