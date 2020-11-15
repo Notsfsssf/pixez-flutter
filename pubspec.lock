@@ -511,6 +511,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.12.10-nullsafety.1"
+  md2_tab_indicator:
+    dependency: "direct main"
+    description:
+      name: md2_tab_indicator
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   meta:
     dependency: transitive
     description:

@@ -18,7 +18,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -28,7 +27,6 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/exts.dart';
 

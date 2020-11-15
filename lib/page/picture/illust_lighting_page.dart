@@ -53,8 +53,7 @@ class IllustLightingPage extends StatefulWidget {
   _IllustLightingPageState createState() => _IllustLightingPageState();
 }
 
-class _IllustLightingPageState extends State<IllustLightingPage>
-    with AutomaticKeepAliveClientMixin {
+class _IllustLightingPageState extends State<IllustLightingPage> {
   IllustStore _illustStore;
   IllustAboutStore _aboutStore;
   ScrollController _scrollController;
@@ -267,7 +266,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                         fade: false,
                         placeWidget: userSetting.pictureQuality == 1
                             ? PixivImage(
-                                data.imageUrls.large,
+                                data.imageUrls.medium,
                                 placeWidget: placeWidget,
                               )
                             : placeWidget,
@@ -462,10 +461,6 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 child: PixivImage(
                   illust.metaPages[index].imageUrls.medium,
                   fade: false,
-                  placeWidget: PixivImage(
-                    illust.metaPages[index].imageUrls.medium,
-                    fade: false,
-                  ),
                 ),
                 tag: '${illust.imageUrls.medium}${widget.heroString}',
               ))
@@ -1025,7 +1020,4 @@ class _IllustLightingPageState extends State<IllustLightingPage>
             },
           ));
   }
-
-  @override
-  bool get wantKeepAlive => false;
 }

@@ -111,11 +111,11 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       icon: Icon(Icons.dashboard,
                           color: Theme.of(context).textTheme.bodyText1.color),
                       onPressed: () async {
-                        if(Platform.isAndroid)
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return SauceNaoPage();
-                        }));
+                        if (Platform.isAndroid)
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SauceNaoPage();
+                          }));
                       }),
                 ),
                 backgroundColor: Colors.transparent,
@@ -260,7 +260,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           onLongPress: () {
                             Navigator.of(context, rootNavigator: true)
                                 .push(MaterialPageRoute(builder: (_) {
-                              return IllustLightingPage(id: tags[index].illust.id);
+                              return IllustLightingPage(
+                                  id: tags[index].illust.id);
                             }));
                           },
                           child: Card(

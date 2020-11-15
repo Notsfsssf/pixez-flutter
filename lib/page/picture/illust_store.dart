@@ -38,7 +38,7 @@ abstract class _IllustStoreBase with Store {
   @observable
   String errorMessage;
 
-  Future dispose() {
+  void dispose() {
     if (illusts != null) {
       if (illusts.pageCount != 1) {
         for (var i in illusts.metaPages) {

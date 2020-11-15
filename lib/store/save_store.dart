@@ -65,19 +65,19 @@ abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     streamController = StreamController();
     saveStream = ObservableStream(streamController.stream.asBroadcastStream());
-    if(!userSetting.disableBypassSni)
-    (imageDio.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    if (!userSetting.disableBypassSni)
+      (imageDio.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        HttpClient httpClient = new HttpClient();
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+        return httpClient;
       };
-      return httpClient;
-    };
+    taskPersistProvider.open();
   }
 
-  @override
   void dispose() async {
     await streamController?.close();
   }
@@ -204,7 +204,6 @@ abstract class _SaveStoreBase with Store {
   Map<String, JobEntity> jobMaps = Map();
 
   _joinOnDart(String url, Illusts illusts, String fileName) async {
-    await taskPersistProvider.open();
     final result = await taskPersistProvider.getAccount(url);
     if (result != null) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
