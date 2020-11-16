@@ -321,6 +321,13 @@ class _AboutPageState extends State<AboutPage> {
                               });
                         } catch (e) {}
                       }
+                      if (index == 4 && accountStore.now != null) {
+                        //摸一摸可爱的鱼
+                        return SafeArea(
+                          child: Image.asset(
+                            'assets/images/fish.gif',
+                            fit: BoxFit.cover,));
+                      }
                     },
                     child: Container(
                       width: 80,
