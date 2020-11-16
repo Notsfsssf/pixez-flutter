@@ -30,11 +30,11 @@ class StarIcon extends StatefulWidget {
 }
 
 class _StarIconState extends State<StarIcon> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 36,
+      height: 36,
       child: LikeButton(
         size: 24,
         countPostion: CountPostion.bottom,

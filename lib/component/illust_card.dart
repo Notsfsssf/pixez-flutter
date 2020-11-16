@@ -175,38 +175,31 @@ class IllustCard extends StatelessWidget {
     return Container(
       color: Theme.of(context).cardColor,
       height: 50,
-      child: Row(
+      child: Stack(
         children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 8.0, right: 34.0, top: 4, bottom: 4),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      store.illusts.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    Text(
-                      store.illusts.user.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.caption,
-                    )
-                  ]),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: StarIcon(
-                illustStore: store,
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 36.0, top: 4, bottom: 4),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                store.illusts.title,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Theme.of(context).textTheme.bodyText2,
               ),
+              Text(
+                store.illusts.user.name,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Theme.of(context).textTheme.caption,
+              )
+            ]),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: StarIcon(
+              illustStore: store,
             ),
           )
         ],
