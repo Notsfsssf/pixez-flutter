@@ -321,7 +321,7 @@ class _AboutPageState extends State<AboutPage> {
                               });
                         } catch (e) {}
                       }
-                      if (index == 4 && accountStore.now != null) {
+                      if (index == 4) {
                         //GC:摸一摸可爱的鱼
                         if (Platform.isIOS || Constants.isGooglePlay) {
                           //摸不了,来点tips
@@ -335,12 +335,15 @@ class _AboutPageState extends State<AboutPage> {
                           ];
                           BotToast.showText(text: RA_Tips[Random().nextInt(7)]);
                         } else {
-                      showModalBottomSheet(context: context, builder: (context){
-                        return SafeArea(
-                              child: Image.asset(
-                            'assets/images/fish.gif',
-                            fit: BoxFit.cover,
-                          ))});
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SafeArea(
+                                    child: Image.asset(
+                                  'assets/images/fish.gif',
+                                  fit: BoxFit.cover,
+                                ));
+                              });
                         }
                       }
                     },
