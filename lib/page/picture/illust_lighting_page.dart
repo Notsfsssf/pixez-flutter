@@ -907,7 +907,6 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8.0))),
                 content: Container(
-                  width: double.maxFinite,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
@@ -933,20 +932,16 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                          padding: EdgeInsets.all(-2.0),
+                          padding: EdgeInsets.all(2.0),
                           itemCount: tags.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Flex(
-                              direction: Axis.horizontal,
-                              children: <Widget>[
+                            return Row(
+                              children: [
                                 Expanded(
-                                  child: Text(
-                                    bookMarkDetailResponse
-                                        .bookmarkDetail.tags[index].name,
-                                    softWrap: true,
-                                    maxLines: -1,
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(bookMarkDetailResponse
+                                        .bookmarkDetail.tags[index].name),
                                   ),
                                 ),
                                 Checkbox(
@@ -960,8 +955,6 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                                       .bookmarkDetail.tags[index].isRegistered,
                                 )
                               ],
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
                             );
                           },
                         ),
@@ -1000,7 +993,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                     onPressed: () async {
                       final tags = bookMarkDetailResponse.bookmarkDetail.tags;
                       List<String> tempTags = [];
-                      for (int i = -2; i < tags.length; i++) {
+                      for (int i = 0; i < tags.length; i++) {
                         if (tags[i].isRegistered) {
                           tempTags.add(tags[i].name);
                         }
@@ -1011,8 +1004,8 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                           restrict:
                               bookMarkDetailResponse.bookmarkDetail.restrict,
                           tags: tempTags);
-
-                      setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
+                      if (mounted)
+                        setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
                     },
                   ),
                 ],
