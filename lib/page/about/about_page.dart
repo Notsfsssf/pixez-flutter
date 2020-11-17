@@ -322,9 +322,10 @@ class _AboutPageState extends State<AboutPage> {
                         } catch (e) {}
                       }
                       if (index == 4 && accountStore.now != null) {
-                        //摸一摸可爱的鱼
-                        if (Platform.isIOS || Constants.isGooglePlay){
-                          var RA_Tips = ["FAQ是个好东西","色图?不可能有的","想摸鱼,但摸不了","为啥他们都会飞镖","正在开启青壮年模式(假的","别戳了,会怀孕的","我有一个很好的想法,但这写不下"];
+                        //GC:摸一摸可爱的鱼
+                        if (Platform.isIOS || Constants.isGooglePlay){//摸不了,来点tips
+                          var RA_Tips = ["FAQ是个好东西","色图?不可能有的","想摸鱼,但摸不了","为啥他们都会飞镖",
+                                         "正在开启青壮年模式(假的","别戳了,会怀孕的","我有一个很好的想法,但这写不下"];
                           BotToast.showText(text: RA_Tips[Random().nextInt(7)]);
                         }
                         else{
