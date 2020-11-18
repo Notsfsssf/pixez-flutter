@@ -101,6 +101,7 @@ flutter:
     - assets/images/step1.png
     - assets/images/step2.png
     - assets/images/ic_front.png
+    - assets/images/fish.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
