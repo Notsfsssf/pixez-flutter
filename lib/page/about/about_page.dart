@@ -472,7 +472,7 @@ class _AboutPageState extends State<AboutPage> {
         ListTile(
           leading: Icon(Icons.favorite),
           title: Text(I18n.of(context).thanks),
-          subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
+          subtitle: Text(I18n.of(context).thanks_message),
           onTap: () {
             if (Platform.isAndroid)
               Navigator.of(context).push(MaterialPageRoute(
