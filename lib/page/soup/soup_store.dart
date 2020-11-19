@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:html/dom.dart';
 
 part 'soup_store.g.dart';
 
@@ -35,25 +35,29 @@ abstract class _SoupStoreBase with Store {
   _fetchEn(url) async{
     Response response = await dio.request(url);
     var document = parse(response.data);
-    var workInfo = document
-        .getElementsByTagName("article")
-        .first
-        .getElementsByTagName('header');
+    amWorks.clear();
+
     var nodes = document
         .getElementsByTagName("article")
         .first
         .getElementsByClassName('am__body')
         .first
         .children;
-    description = workInfo.first
-        .getElementsByTagName('p')
-        .map((e) => e.text)
-        .toList()
-        .toString()
-        .replaceAll('[', '')
-        .replaceAll(']', '')
-        .replaceAll(',', '');
-    amWorks.clear();
+
+    Element workInfo;
+    if (nodes.first.attributes['class'].contains('_feature')) {
+      // feature article body
+      nodes = nodes.first.children;
+      description = '';
+    } else {
+      workInfo = document
+          .getElementsByTagName("article")
+          .first
+          .getElementsByTagName('header')
+          .first;
+      description = ElementToString(workInfo);
+    }
+
     for (var value in nodes) {
       try {
         if (!value.attributes['class'].contains('illust')) {
@@ -68,8 +72,7 @@ abstract class _SoupStoreBase with Store {
             amWork.showImage =
             value.getElementsByTagName('img')[1].attributes['src'];
             amWork.title = value.getElementsByTagName('h3').first.text;
-          }
-          if (a.startsWith('https')&&segments.length>2&&segments[segments.length-2]=='users') {
+          }else if (a.startsWith('https')&&segments.length>2&&segments[segments.length-2]=='users') {
             amWork.userLink = a;
             amWork.user = value.getElementsByTagName('p').first.text;
             amWork.userImage =
@@ -88,25 +91,29 @@ abstract class _SoupStoreBase with Store {
   _fetchCNTW(url) async {
     Response response = await dio.request(url);
     var document = parse(response.data);
-    var workInfo = document
-        .getElementsByTagName("article")
-        .first
-        .getElementsByTagName('header');
+    amWorks.clear();
+
     var nodes = document
         .getElementsByTagName("article")
         .first
         .getElementsByClassName('am__body')
         .first
         .children;
-    description = workInfo.first
-        .getElementsByTagName('p')
-        .map((e) => e.text)
-        .toList()
-        .toString()
-        .replaceAll('[', '')
-        .replaceAll(']', '')
-        .replaceAll(',', '');
-    amWorks.clear();
+
+    Element workInfo;
+    if (nodes.first.attributes['class'].contains('_feature')) {
+      // feature article body
+      nodes = nodes.first.children;
+      description = '';
+    } else {
+      workInfo = document
+          .getElementsByTagName("article")
+          .first
+          .getElementsByTagName('header')
+          .first;
+      description = ElementToString(workInfo);
+    }
+
     for (var value in nodes) {
       try {
         if (!value.attributes['class'].contains('illust')) {
@@ -120,8 +127,7 @@ abstract class _SoupStoreBase with Store {
             amWork.showImage =
                 value.getElementsByTagName('img')[1].attributes['src'];
             amWork.title = value.getElementsByTagName('h3').first.text;
-          }
-          if (a.contains('https://www.pixiv.net/users')) {
+          } else if (a.contains('https://www.pixiv.net/users')) {
             amWork.userLink = a;
             amWork.user = value.getElementsByTagName('p').first.text;
             amWork.userImage =
@@ -136,5 +142,16 @@ abstract class _SoupStoreBase with Store {
         print(e);
       }
     }
+  }
+
+  static String ElementToString(Element e) {
+    return e
+        .getElementsByTagName('p')
+        .map((e) => e.text)
+        .toList()
+        .toString()
+        .replaceAll('[', '')
+        .replaceAll(']', '')
+        .replaceAll(',', '');
   }
 }
