@@ -178,7 +178,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$disableBypassSniAtom =
-  Atom(name: '_UserSettingBase.disableBypassSni');
+      Atom(name: '_UserSettingBase.disableBypassSni');
 
   @override
   bool get disableBypassSni {
@@ -269,7 +269,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setIsClearnOldFormatFileAsyncAction =
-  AsyncAction('_UserSettingBase.setIsClearnOldFormatFile');
+      AsyncAction('_UserSettingBase.setIsClearnOldFormatFile');
 
   @override
   Future setIsClearnOldFormatFile(bool v) {
@@ -278,7 +278,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setIsReturnAgainToExitAsyncAction =
-  AsyncAction('_UserSettingBase.setIsReturnAgainToExit');
+      AsyncAction('_UserSettingBase.setIsReturnAgainToExit');
 
   @override
   Future setIsReturnAgainToExit(bool value) {
@@ -287,7 +287,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setStorePathAsyncAction =
-  AsyncAction('_UserSettingBase.setStorePath');
+      AsyncAction('_UserSettingBase.setStorePath');
 
   @override
   Future setStorePath(String path) {
@@ -295,7 +295,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setIsHelplessWayAsyncAction =
-  AsyncAction('_UserSettingBase.setIsHelplessWay');
+      AsyncAction('_UserSettingBase.setIsHelplessWay');
 
   @override
   Future setIsHelplessWay(bool value) {
@@ -304,7 +304,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setThemeModeAsyncAction =
-  AsyncAction('_UserSettingBase.setThemeMode');
+      AsyncAction('_UserSettingBase.setThemeMode');
 
   @override
   Future setThemeMode(int themeMode) {
@@ -326,7 +326,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setThemeDataAsyncAction =
-  AsyncAction('_UserSettingBase.setThemeData');
+      AsyncAction('_UserSettingBase.setThemeData');
 
   @override
   Future setThemeData(List<String> data) {
@@ -334,7 +334,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setPictureQualityAsyncAction =
-  AsyncAction('_UserSettingBase.setPictureQuality');
+      AsyncAction('_UserSettingBase.setPictureQuality');
 
   @override
   Future setPictureQuality(int value) {
@@ -343,7 +343,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setCrossCountAsyncAction =
-  AsyncAction('_UserSettingBase.setCrossCount');
+      AsyncAction('_UserSettingBase.setCrossCount');
 
   @override
   Future setCrossCount(int value) {
@@ -351,7 +351,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setWelcomePageNumAsyncAction =
-  AsyncAction('_UserSettingBase.setWelcomePageNum');
+      AsyncAction('_UserSettingBase.setWelcomePageNum');
 
   @override
   Future setWelcomePageNum(int value) {
@@ -360,7 +360,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setHIsNotAllowAsyncAction =
-  AsyncAction('_UserSettingBase.setHIsNotAllow');
+      AsyncAction('_UserSettingBase.setHIsNotAllow');
 
   @override
   Future setHIsNotAllow(bool value) {
@@ -368,7 +368,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setDisableBypassSniAsyncAction =
-  AsyncAction('_UserSettingBase.setDisableBypassSni');
+      AsyncAction('_UserSettingBase.setDisableBypassSni');
 
   @override
   Future setDisableBypassSni(bool value) {
@@ -377,7 +377,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setDisplayModeAsyncAction =
-  AsyncAction('_UserSettingBase.setDisplayMode');
+      AsyncAction('_UserSettingBase.setDisplayMode');
 
   @override
   Future setDisplayMode(int value) {
@@ -385,7 +385,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setSingleFolderAsyncAction =
-  AsyncAction('_UserSettingBase.setSingleFolder');
+      AsyncAction('_UserSettingBase.setSingleFolder');
 
   @override
   Future<void> setSingleFolder(bool value) {
@@ -393,7 +393,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   }
 
   final _$setLanguageNumAsyncAction =
-  AsyncAction('_UserSettingBase.setLanguageNum');
+      AsyncAction('_UserSettingBase.setLanguageNum');
 
   @override
   Future setLanguageNum(int value) {

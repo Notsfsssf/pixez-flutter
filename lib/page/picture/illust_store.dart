@@ -38,6 +38,9 @@ abstract class _IllustStoreBase with Store {
   @observable
   String errorMessage;
 
+  @observable
+  int state = 0;
+
   void dispose() {
     if (illusts != null) {
       if (illusts.pageCount != 1) {
@@ -55,6 +58,7 @@ abstract class _IllustStoreBase with Store {
 
   _IllustStoreBase(this.id, this.illusts) {
     isBookmark = illusts?.isBookmarked ?? false;
+    state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
   }
 
   @action
@@ -83,12 +87,14 @@ abstract class _IllustStoreBase with Store {
 
   @action
   Future<bool> star({String restrict = 'public', List<String> tags}) async {
+    state = 1;
     if (!illusts.isBookmarked) {
       try {
         Response response = await ApiClient(isBookmark: true)
             .postLikeIllust(illusts.id, restrict, tags);
         illusts.isBookmarked = true;
         isBookmark = true;
+        state = 2;
         return true;
       } catch (e) {}
     } else {
@@ -97,9 +103,11 @@ abstract class _IllustStoreBase with Store {
             await ApiClient(isBookmark: true).postUnLikeIllust(illusts.id);
         illusts.isBookmarked = false;
         isBookmark = false;
+        state = 0;
         return false;
       } catch (e) {}
     }
-    return null;
+    state = illusts.isBookmarked ? 2 : 0;
+    return illusts.isBookmarked;
   }
 }

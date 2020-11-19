@@ -39,6 +39,13 @@ mixin _$SplashStore on _SplashStoreBase, Store {
     });
   }
 
+  final _$helloAsyncAction = AsyncAction('_SplashStoreBase.hello');
+
+  @override
+  Future hello() {
+    return _$helloAsyncAction.run(() => super.hello());
+  }
+
   final _$fetchAsyncAction = AsyncAction('_SplashStoreBase.fetch');
 
   @override
