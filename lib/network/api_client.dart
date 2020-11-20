@@ -27,6 +27,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
+import 'package:pixez/network/cache_interceptor.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 final ApiClient apiClient = ApiClient();
@@ -82,6 +83,7 @@ class ApiClient {
       }
       // ..options.connectTimeout = 10000
       // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+      ..interceptors.add(CacheInterceptor())
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
@@ -134,7 +136,7 @@ class ApiClient {
         queryParameters: notNullMap({"novel_id": novel_id}));
   }
 
-    //   @GET("/v2/illust/follow")
+  //   @GET("/v2/illust/follow")
   // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
   Future<Response> getNovelFollow(String restrict) {
     return httpClient.get(
@@ -152,12 +154,12 @@ class ApiClient {
     return httpClient.get(
         "/v1/illust/recommended?filter=for_ios&include_ranking_label=true");
   }
+
   //
   // @GET("/v1/user/recommended?filter=for_android")
   // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
   Future<Response> getUserRecommended() async {
-    return httpClient.get(
-        "/v1/user/recommended?filter=for_android");
+    return httpClient.get("/v1/user/recommended?filter=for_android");
   }
 
   Future<Response> getUser(int id) async {
@@ -336,7 +338,7 @@ class ApiClient {
         }));
   }
 
-    Future<Response> getSearchNovel(String word,
+  Future<Response> getSearchNovel(String word,
       {String sort = null,
       String search_target = null,
       DateTime start_date = null,
@@ -373,6 +375,7 @@ class ApiClient {
 */
   Future<Response> getIllustRelated(int illust_id) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
+          options: Options(extra: {"refresh": false}),
           queryParameters: notNullMap({"illust_id": illust_id}));
 
   //          @GET("/v2/illust/bookmark/detail")
