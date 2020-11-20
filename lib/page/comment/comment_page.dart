@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/exts.dart';
@@ -68,6 +70,12 @@ class _CommentPageState extends State<CommentPage> {
               SmartRefresher(
                 controller: easyRefreshController,
                 enablePullUp: true,
+                header: (Platform.isAndroid)
+                    ? MaterialClassicHeader(
+                        color: Theme.of(context).accentColor,
+                        backgroundColor: Theme.of(context).cardColor,
+                      )
+                    : ClassicHeader(),
                 onRefresh: () => _store.fetch(),
                 onLoading: () => _store.next(),
                 child: _store.comments.isNotEmpty

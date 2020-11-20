@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/section_card.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -42,26 +41,50 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   }
 
   var _group = [
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/itzXian');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars1.githubusercontent.com/u/34748039?s=400&u=9e784e6754531c9ecadc5d92ed6bc58647053657&v=4'),
+    Row(
+      children: [
+        InkWell(
+          onTap: () {
+            try {
+              if (Platform.isAndroid && !Constants.isGooglePlay)
+                launch('https://github.com/itzXian');
+            } catch (e) {}
+          },
+          child: Row(
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://avatars1.githubusercontent.com/u/34748039?s=400&u=9e784e6754531c9ecadc5d92ed6bc58647053657&v=4'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Xian'),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Xian'),
+        ),
+        InkWell(
+          onTap: () {
+            try {
+              if (Platform.isAndroid && !Constants.isGooglePlay)
+                launch('https://github.com/takase1121');
+            } catch (e) {}
+          },
+          child: Row(
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://avatars0.githubusercontent.com/u/20792268?s=400&u=0abbfec835713da83699ec3a6ae619df4a72a722&v=4'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Takase'),
+              ),
+              Icon(Icons.translate)
+            ],
           ),
-          Icon(Icons.translate)
-        ],
-      ),
+        ),
+      ],
     ),
     InkWell(
       onTap: () {
@@ -150,14 +173,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       style: TextStyle(color: Colors.green),
                     ),
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => PlatformPage()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PlatformPage()));
                     },
                   ),
                 ),
               ),
             ),
-
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
@@ -448,8 +470,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 return SwitchListTile(
                     activeColor: Theme.of(context).accentColor,
                     value: userSetting.hIsNotAllow,
-                    title:
-                        Text(userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
+                    title: Text(
+                        userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
                     onChanged: (value) async {
                       userSetting.setHIsNotAllow(value);
                     });
@@ -463,8 +485,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 return SwitchListTile(
                     activeColor: Theme.of(context).accentColor,
                     value: userSetting.isReturnAgainToExit,
-                    title:
-                    Text(I18n.of(context).return_again_to_exit),
+                    title: Text(I18n.of(context).return_again_to_exit),
                     onChanged: (value) async {
                       userSetting.setIsReturnAgainToExit(value);
                     });

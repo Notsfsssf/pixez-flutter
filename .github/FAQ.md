@@ -181,3 +181,7 @@ e.g. {illust_id}_p{part} 即「插画ID\_p第几张」
 如果你有什么好的建议，可以提 Issue，或者去 [README](https://github.com/Notsfsssf/pixez-flutter) 中提到的 Telegram 群组里反馈。如果是下载问题，就去企鹅群：1005400557
 
 提问前最好阅读[《提问的智慧》](http://archman.fun/2020/09/24/%E6%8F%90%E9%97%AE%E7%9A%84%E6%99%BA%E6%85%A7/)，拒绝 TCP 三次握手式提问，以及 DDoS 式轰炸提问。大多数群员都是友好的，希望你也能同样友好，互相理解最好啦。
+
+### 本FAQ被以下人数阅读,谢谢你们的配合:)
+
+![:PixezFAQ](https://count.getloli.com/get/@:PixezFAQ?theme=rule34)

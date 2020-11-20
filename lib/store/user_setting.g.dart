@@ -9,6 +9,23 @@ part of 'user_setting.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$UserSetting on _UserSettingBase, Store {
+  final _$isClearOldFormatFileAtom =
+      Atom(name: '_UserSettingBase.isClearOldFormatFile');
+
+  @override
+  bool get isClearOldFormatFile {
+    _$isClearOldFormatFileAtom.reportRead();
+    return super.isClearOldFormatFile;
+  }
+
+  @override
+  set isClearOldFormatFile(bool value) {
+    _$isClearOldFormatFileAtom.reportWrite(value, super.isClearOldFormatFile,
+        () {
+      super.isClearOldFormatFile = value;
+    });
+  }
+
   final _$isReturnAgainToExitAtom =
       Atom(name: '_UserSettingBase.isReturnAgainToExit');
 
@@ -251,6 +268,15 @@ mixin _$UserSetting on _UserSettingBase, Store {
     });
   }
 
+  final _$setIsClearnOldFormatFileAsyncAction =
+      AsyncAction('_UserSettingBase.setIsClearnOldFormatFile');
+
+  @override
+  Future setIsClearnOldFormatFile(bool v) {
+    return _$setIsClearnOldFormatFileAsyncAction
+        .run(() => super.setIsClearnOldFormatFile(v));
+  }
+
   final _$setIsReturnAgainToExitAsyncAction =
       AsyncAction('_UserSettingBase.setIsReturnAgainToExit');
 
@@ -391,6 +417,7 @@ mixin _$UserSetting on _UserSettingBase, Store {
   @override
   String toString() {
     return '''
+isClearOldFormatFile: ${isClearOldFormatFile},
 isReturnAgainToExit: ${isReturnAgainToExit},
 isHelplessWay: ${isHelplessWay},
 storePath: ${storePath},

@@ -17,6 +17,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -26,7 +27,6 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/search/result_page.dart';
-import 'package:intl/intl.dart';
 
 class GestureMe extends GestureRecognizer {
   @override
@@ -226,35 +226,7 @@ class IllustDetailBody extends StatelessWidget {
   Widget buildRow(BuildContext context, Tags f) {
     return GestureDetector(
       onLongPress: () async {
-        switch (await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(I18n.of(context).ban + "'${f.name}'?"),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(I18n.of(context).cancel),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context, "OK");
-                    },
-                    child: Text(I18n.of(context).ok),
-                  ),
-                ],
-              );
-            })) {
-          case "OK":
-            {
-              muteStore.insertBanTag(BanTagPersist()
-                ..name = f.name
-                ..translateName = f.translatedName ?? '_');
-            }
-            break;
-        }
+        await _longPressTag(context, f);
       },
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -282,5 +254,42 @@ class IllustDetailBody extends StatelessWidget {
                   .caption
                   .copyWith(color: Theme.of(context).accentColor))),
     );
+  }
+
+  Future _longPressTag(BuildContext context, Tags f) async {
+    switch (await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text(f.name),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 0);
+                },
+                child: Text(I18n.of(context).ban),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 1);
+                },
+                child: Text(I18n.of(context).bookmark),
+              ),
+            ],
+          );
+        })) {
+      case 0:
+        {
+          muteStore.insertBanTag(BanTagPersist()
+            ..name = f.name
+            ..translateName = f.translatedName ?? '_');
+        }
+        break;
+      case 1:
+        {
+          bookTagStore.bookTag(f.name);
+        }
+        break;
+    }
   }
 }

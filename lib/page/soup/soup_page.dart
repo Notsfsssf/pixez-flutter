@@ -21,6 +21,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/soup/soup_store.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -100,7 +101,7 @@ class _SoupPageState extends State<SoupPage> {
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return IllustPage(
+                        return IllustLightingPage(
                             id: int.parse(Uri.parse(amWork.arworkLink)
                                     .pathSegments[
                                 Uri.parse(amWork.arworkLink).pathSegments.length -

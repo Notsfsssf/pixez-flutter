@@ -54,6 +54,21 @@ mixin _$IllustStore on _IllustStoreBase, Store {
     });
   }
 
+  final _$stateAtom = Atom(name: '_IllustStoreBase.state');
+
+  @override
+  int get state {
+    _$stateAtom.reportRead();
+    return super.state;
+  }
+
+  @override
+  set state(int value) {
+    _$stateAtom.reportWrite(value, super.state, () {
+      super.state = value;
+    });
+  }
+
   final _$fetchAsyncAction = AsyncAction('_IllustStoreBase.fetch');
 
   @override
@@ -74,7 +89,8 @@ mixin _$IllustStore on _IllustStoreBase, Store {
     return '''
 illusts: ${illusts},
 isBookmark: ${isBookmark},
-errorMessage: ${errorMessage}
+errorMessage: ${errorMessage},
+state: ${state}
     ''';
   }
 }

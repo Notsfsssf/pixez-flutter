@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -10,6 +9,8 @@ import 'intl/messages_all.dart';
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values
 
 class I18n {
   I18n();
@@ -1934,11 +1935,61 @@ class I18n {
     );
   }
 
-  /// `保存格式必须包含part,否则多p作品会保存出错！`
-  String get save_format_lose_part_warning {
+  /// `保存格式必须包含{part},否则多p作品会保存出错！`
+  String save_format_lose_part_warning(Object part) {
     return Intl.message(
-      '保存格式必须包含part,否则多p作品会保存出错！',
+      '保存格式必须包含$part,否则多p作品会保存出错！',
       name: 'save_format_lose_part_warning',
+      desc: '',
+      args: [part],
+    );
+  }
+
+  /// `save painter avatar`
+  String get save_painter_avatar {
+    return Intl.message(
+      'save painter avatar',
+      name: 'save_painter_avatar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `favorited tag`
+  String get favorited_tag {
+    return Intl.message(
+      'favorited tag',
+      name: 'favorited_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `legacy mode is not available since Android9`
+  String get legacy_mode_warning {
+    return Intl.message(
+      'legacy mode is not available since Android9',
+      name: 'legacy_mode_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear old format file`
+  String get clear_old_format_file {
+    return Intl.message(
+      'Clear old format file',
+      name: 'clear_old_format_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `without _p0`
+  String get clear_old_format_file_message {
+    return Intl.message(
+      'without _p0',
+      name: 'clear_old_format_file_message',
       desc: '',
       args: [],
     );

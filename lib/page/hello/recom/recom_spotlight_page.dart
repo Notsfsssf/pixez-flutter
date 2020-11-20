@@ -24,7 +24,6 @@ import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -32,11 +31,12 @@ import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
+import 'package:pixez/exts.dart';
 
 class RecomSpolightPage extends StatefulWidget {
-  RecomSpolightPage({
-    Key key,
-  }) : super(key: key);
+  final LightingStore lightingStore;
+
+  RecomSpolightPage({Key key, this.lightingStore}) : super(key: key);
 
   @override
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
@@ -50,12 +50,24 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void initState() {
-    _easyRefreshController = RefreshController(initialRefresh: true);
+    _easyRefreshController = RefreshController();
     _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
-    _lightingStore =
+    _lightingStore = widget.lightingStore ??
         LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
+    if (widget.lightingStore != null) {
+      _lightingStore.controller = _easyRefreshController;
+    }
     super.initState();
+    initMethod();
+  }
+
+  initMethod() async {
+    _easyRefreshController.headerMode.value = RefreshStatus.refreshing;
+    await spotlightStore.fetch();
+    if (!_lightingStore.iStores.isNotEmpty) await _lightingStore.fetch();
+    await _recomUserStore.fetch();
+    _easyRefreshController.headerMode.value = RefreshStatus.completed;
   }
 
   RefreshController _easyRefreshController;
@@ -64,28 +76,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     await spotlightStore.fetch();
     await _lightingStore.fetch();
     await _recomUserStore.fetch();
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return buildEasyRefresh(context);
-  }
-
-  bool needToBan(Illusts illust) {
-    for (var i in muteStore.banillusts) {
-      if (i.illustId == illust.id.toString()) return true;
-    }
-    for (var j in muteStore.banUserIds) {
-      if (j.userId == illust.user.id.toString()) return true;
-    }
-    for (var t in muteStore.banTags) {
-      for (var f in illust.tags) {
-        if (f.name == t.name) return true;
-      }
-    }
-    return false;
   }
 
   bool backToTopVisible = false;
@@ -110,10 +106,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               enablePullUp: true,
               header: (Platform.isAndroid)
                   ? MaterialClassicHeader(
-                color: Theme
-                    .of(context)
-                    .accentColor,
-              )
+                      color: Theme.of(context).accentColor,
+                    )
                   : ClassicHeader(),
               footer: _buildCustomFooter(),
               onRefresh: () {
@@ -134,7 +128,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                   height: 24.0,
                   margin: EdgeInsets.only(bottom: 8.0),
                   child: IconButton(
-                    icon: Icon(Icons.arrow_drop_up_outlined, size: 24,),
+                    icon: Icon(
+                      Icons.arrow_drop_up_outlined,
+                      size: 24,
+                    ),
                     onPressed: () {
                       _easyRefreshController.position.jumpTo(0);
                     },
@@ -154,23 +151,15 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       builder: (BuildContext context, LoadStatus mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
-          body = Text(I18n
-              .of(context)
-              .pull_up_to_load_more);
+          body = Text(I18n.of(context).pull_up_to_load_more);
         } else if (mode == LoadStatus.loading) {
           body = CircularProgressIndicator();
         } else if (mode == LoadStatus.failed) {
-          body = Text(I18n
-              .of(context)
-              .loading_failed_retry_message);
+          body = Text(I18n.of(context).loading_failed_retry_message);
         } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n
-              .of(context)
-              .let_go_and_load_more);
+          body = Text(I18n.of(context).let_go_and_load_more);
         } else {
-          body = Text(I18n
-              .of(context)
-              .no_more_data);
+          body = Text(I18n.of(context).no_more_data);
         }
         return Container(
           height: 55.0,
@@ -181,64 +170,70 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget _buildWaterFall() {
-    double screanWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          elevation: 0.0,
-          titleSpacing: 0.0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          title: _buildFirstRow(context),
-        ),
-        SliverToBoxAdapter(
-          child: _buildSpotlightContainer(),
-        ),
-        SliverToBoxAdapter(
-          child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
-        ),
-        _lightingStore.iStores.isNotEmpty
-            ? SliverWaterfallFlow(
-                gridDelegate:
-                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: userSetting.crossCount,
-                  collectGarbage: (List<int> garbages) {
-                    garbages.forEach((index) {
-                      final provider = ExtendedNetworkImageProvider(
-                        _lightingStore.iStores[index].illusts.imageUrls.medium,
-                      );
-                      provider.evict();
-                    });
-                  },
-                ),
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  double radio = _lightingStore.iStores[index].illusts.height
-                          .toDouble() /
-                      _lightingStore.iStores[index].illusts.width.toDouble();
-                  double mainAxisExtent;
-                  if (radio > 3)
-                    mainAxisExtent = itemWidth;
-                  else
-                    mainAxisExtent = itemWidth * radio;
-                  return IllustCard(
-                    store: _lightingStore.iStores[index],
-                    iStores: _lightingStore.iStores,
-                    height: mainAxisExtent + 64.0,
-                  );
-                }, childCount: _lightingStore.iStores.length),
-              )
-            : SliverToBoxAdapter(
-                child: Container(
-                  height: 30,
-                ),
-              )
-      ],
-    );
+     return CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            elevation: 0.0,
+            titleSpacing: 0.0,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            title: _buildFirstRow(context),
+          ),
+          SliverToBoxAdapter(
+            child: _buildSpotlightContainer(),
+          ),
+          SliverToBoxAdapter(
+            child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
+          ),
+          _lightingStore.iStores.isNotEmpty
+              ? SliverWaterfallFlow(
+                  gridDelegate:
+                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: userSetting.crossCount,
+                    collectGarbage: (List<int> garbages) {
+                      garbages.forEach((index) {
+                        final provider = ExtendedNetworkImageProvider(
+                          _lightingStore
+                              .iStores[index].illusts.imageUrls.medium,
+                        );
+                        provider.evict();
+                      });
+                    },
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    if (_lightingStore.iStores[index].illusts.hateByUser()) {
+                      return Visibility(
+                          visible: false,
+                          child: Container(
+                            height: 0.0,
+                          ));
+                    }
+                    double radio = _lightingStore.iStores[index].illusts.height
+                            .toDouble() /
+                        _lightingStore.iStores[index].illusts.width.toDouble();
+                    double mainAxisExtent;
+                    if (radio > 3)
+                      mainAxisExtent = itemWidth;
+                    else
+                      mainAxisExtent = itemWidth * radio;
+                    return IllustCard(
+                      store: _lightingStore.iStores[index],
+                      iStores: _lightingStore.iStores,
+                      height: mainAxisExtent + 86.0,
+                      heroString: widget.hashCode.toString(),
+                    );
+                  }, childCount: _lightingStore.iStores.length),
+                )
+              : SliverToBoxAdapter(
+                  child: Container(
+                    height: 30,
+                  ),
+                )
+        ],
+      );
   }
 
   Widget _buildSpotlightContainer() {

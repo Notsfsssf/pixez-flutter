@@ -14,26 +14,30 @@
  *
  */
 
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
-class IllustCard extends HookWidget {
+class IllustCard extends StatelessWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
   final bool needToBan;
   final double height;
+  final String heroString;
+
   IllustCard({
     @required this.store,
     this.iStores,
     this.needToBan = false,
     this.height,
+    this.heroString,
   });
 
   @override
@@ -42,21 +46,7 @@ class IllustCard extends HookWidget {
       for (int i = 0; i < store.illusts.tags.length; i++) {
         if (store.illusts.tags[i].name.startsWith('R-18'))
           return InkWell(
-            onTap: () => {
-              Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(builder: (_) {
-                if (store != null) {
-                  return PictureListPage(
-                    iStores: iStores,
-                    store: store,
-                  );
-                }
-                return IllustPage(
-                  store: store,
-                  id: store.illusts.id,
-                );
-              }))
-            },
+            onTap: () => {_buildTap(context)},
             onLongPress: () {
               saveStore.saveImage(store.illusts);
             },
@@ -70,35 +60,28 @@ class IllustCard extends HookWidget {
             ),
           );
       }
-    for (var i in muteStore.banillusts) {
-      if (i.illustId == store.illusts.id.toString())
-        return Visibility(
-          visible: false,
-          child: Container(),
-        );
-    }
-    for (var j in muteStore.banUserIds) {
-      if (j.userId == store.illusts.user.id.toString())
-        return Visibility(
-          visible: false,
-          child: Container(),
-        );
-    }
-    for (var t in muteStore.banTags) {
-      for (var f in store.illusts.tags) {
-        if (f.name == t.name)
-          return Visibility(
-            visible: false,
-            child: Container(),
-          );
-      }
-    }
     if (height != null)
       return Container(
         child: buildInkWell(context),
         height: height,
       );
     return buildInkWell(context);
+  }
+
+  Future _buildTap(BuildContext context) {
+    return Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
+      if (store != null) {
+        return PictureListPage(
+          iStores: iStores,
+          store: store,
+        );
+      }
+      return IllustLightingPage(
+        store: store,
+        id: store.illusts.id,
+      );
+    }));
   }
 
   Widget cardText() {
@@ -135,54 +118,57 @@ class IllustCard extends HookWidget {
   }
 
   Widget buildInkWell(BuildContext context) {
-    String heroString = DateTime.now().millisecondsSinceEpoch.toString();
-    return InkWell(
-      onTap: () => {
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (_) {
-          if (iStores != null) {
-            return PictureListPage(
-              heroString: heroString,
-              store: store,
-              iStores: iStores,
-            );
-          }
-          return IllustPage(
-            id: store.illusts.id,
-            heroString: heroString,
-            store: store,
-          );
-        }))
-      },
-      onLongPress: () {
-        saveStore.saveImage(store.illusts);
-      },
-      child: Card(
-        margin: EdgeInsets.all(8.0),
-        elevation: 8.0,
-        clipBehavior: Clip.antiAlias,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: _buildPic(heroString),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildBottom(context),
-              ),
-              Align(
-                child: _buildVisibility(),
-                alignment: Alignment.topRight,
-              )
-            ],
-          ),
+    String heroString =
+        this.heroString ?? DateTime.now().millisecondsSinceEpoch.toString();
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      elevation: 8.0,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+      child: InkWell(
+        onLongPress: () {
+          saveStore.saveImage(store.illusts);
+        },
+        onTap: () {
+          _buildInkTap(context, heroString);
+        },
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: _buildPic(heroString),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildBottom(context),
+            ),
+            Align(
+              child: _buildVisibility(),
+              alignment: Alignment.topRight,
+            )
+          ],
         ),
       ),
     );
+  }
+
+  Future _buildInkTap(BuildContext context, String heroString) {
+    return Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
+      if (iStores != null) {
+        return PictureListPage(
+          heroString: heroString,
+          store: store,
+          iStores: iStores,
+        );
+      }
+      return IllustLightingPage(
+        id: store.illusts.id,
+        heroString: heroString,
+        store: store,
+      );
+    }));
   }
 
   Widget _buildBottom(BuildContext context) {
@@ -191,28 +177,24 @@ class IllustCard extends HookWidget {
       height: 50,
       child: Stack(
         children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 8.0, right: 34.0, top: 4, bottom: 4),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      store.illusts.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    Text(
-                      store.illusts.user.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.caption,
-                    )
-                  ]),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 36.0, top: 4, bottom: 4),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                store.illusts.title,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              Text(
+                store.illusts.user.name,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Theme.of(context).textTheme.caption,
+              )
+            ]),
           ),
           Align(
             alignment: Alignment.centerRight,

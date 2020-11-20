@@ -58,7 +58,9 @@ class _SelectableHtmlState extends State<SelectableHtml> {
         customStylesBuilder: (e) {
           if (e.attributes.containsKey('href')) {
             final color = userSetting.themeData.accentColor;
-            return {'color':'#${color.value.toRadixString(16).substring(2, 8)}'};
+            return {
+              'color': '#${color.value.toRadixString(16).substring(2, 8)}'
+            };
           }
           return null;
         },

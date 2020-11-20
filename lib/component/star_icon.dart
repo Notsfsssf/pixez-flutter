@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class StarIcon extends StatefulWidget {
@@ -30,36 +30,39 @@ class StarIcon extends StatefulWidget {
 }
 
 class _StarIconState extends State<StarIcon> {
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 36,
-      child: LikeButton(
-        size: 24,
-        countPostion: CountPostion.bottom,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        padding: EdgeInsets.all(0.0),
-        circleColor: CircleColor(start: Colors.transparent, end: Colors.red),
-        bubblesColor: BubblesColor(
-          dotPrimaryColor: Colors.red,
-          dotSecondaryColor: Colors.redAccent,
-        ),
-        animationDuration: Duration(milliseconds: 500),
-        isLiked: widget.illustStore.isBookmark,
-        likeBuilder: (context) {
-          return Icon(
-            widget.illustStore.isBookmark
-                ? Icons.favorite
-                : Icons.favorite_border,
-            color: widget.illustStore.isBookmark ? Colors.red : Colors.grey,
-          );
-        },
-        onTap: (v) {
-          return widget.illustStore.star();
-        },
-      ),
-    );
+    return Observer(builder: (_) {
+      return Container(
+        width: 36,
+        height: 36,
+        child: IconButton(
+            padding: EdgeInsets.all(0.0),
+            icon: _buildData(widget.illustStore.state),
+            onPressed: () async {
+              widget.illustStore.star();
+            }),
+      );
+    });
+  }
+
+  Widget _buildData(int state) {
+    switch (state) {
+      case 0:
+        return Icon(
+          Icons.favorite_border,
+          color: Colors.grey,
+        );
+        break;
+      case 1:
+        return Icon(Icons.favorite, color: Colors.grey);
+        break;
+      default:
+        return Icon(
+          Icons.favorite,
+          color: Colors.red,
+        );
+        break;
+    }
   }
 }

@@ -23,6 +23,7 @@ import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -35,6 +36,7 @@ class ApiClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static String BASE_API_URL_HOST = 'app-api.pixiv.net';
+  static String BASE_IMAGE_HOST = ImageHost;
   static String Accept_Language = "zh-CN";
 
   String getIsoDate() {
@@ -324,6 +326,24 @@ class ApiClient {
       int bookmark_num = null}) async {
     return httpClient.get(
         "/v1/search/illust?filter=for_android&merge_plain_keyword_results=true",
+        queryParameters: notNullMap({
+          "sort": sort,
+          "search_target": search_target,
+          "start_date": getFormatDate(start_date),
+          "end_date": getFormatDate(end_date),
+          "bookmark_num": bookmark_num,
+          "word": word
+        }));
+  }
+
+    Future<Response> getSearchNovel(String word,
+      {String sort = null,
+      String search_target = null,
+      DateTime start_date = null,
+      DateTime end_date = null,
+      int bookmark_num = null}) async {
+    return httpClient.get(
+        "/v1/search/novel?filter=for_android&merge_plain_keyword_results=true",
         queryParameters: notNullMap({
           "sort": sort,
           "search_target": search_target,

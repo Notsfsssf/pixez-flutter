@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
-import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 
 class NovelUserWorkPage extends StatefulWidget {
   final int id;

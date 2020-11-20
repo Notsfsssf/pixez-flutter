@@ -46,7 +46,7 @@ abstract class _LoginStoreBase with Store {
       if (e == null) {
         return false;
       }
-      if (e.response.data != null)
+      if (e.response!=null&&e.response.data != null)
         errorMessage =
             LoginErrorResponse.fromJson(e.response.data).errors.system.message;
       else

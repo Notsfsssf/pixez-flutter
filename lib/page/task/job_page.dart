@@ -20,13 +20,15 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
-import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:pixez/exts.dart';
 
 class JobPage extends StatefulWidget {
   @override
@@ -183,57 +185,19 @@ class _JobPageState extends State<JobPage> {
 
               if (currentIndex == 0) {
                 if (job == null) {
-                  return ListTile(
-                    title: Text(persist.title),
-                    subtitle: Text(toMessage(persist.status)),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return IllustPage(
-                          id: persist.illustId,
-                        );
-                      }));
-                    },
-                    trailing: Row(
-                      children: [
-                        if (persist.status == 3 ||
-                            persist.status == 0 ||
-                            persist.status == 2)
-                          IconButton(
-                              icon: Icon(Icons.refresh),
-                              onPressed: () async {
-                                await _retryJob(persist);
-                              }),
-                        IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () async {
-                              await _deleteJob(persist);
-                              initMethod();
-                            }),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                    ),
-                  );
-                }
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        persist.title,
-                        maxLines: 1,
-                      ),
+                  return Container(
+                    child: ListTile(
+                      title: Text(persist.title),
+                      subtitle: Text(toMessage(persist.status)),
                       onTap: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return IllustPage(
+                          return IllustLightingPage(
                             id: persist.illustId,
                           );
                         }));
                       },
-                      subtitle: Text('${toMessage(job.status)}'),
                       trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           if (persist.status == 3 ||
                               persist.status == 0 ||
@@ -250,17 +214,59 @@ class _JobPageState extends State<JobPage> {
                                 initMethod();
                               }),
                         ],
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
                       ),
                     ),
-                    if (job.max / job.min != 1)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: LinearProgressIndicator(
-                          value: job.min / job.max,
-                          backgroundColor: Colors.grey,
+                  );
+                }
+                return Container(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          persist.title,
+                          maxLines: 1,
+                        ),
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return IllustLightingPage(
+                              id: persist.illustId,
+                            );
+                          }));
+                        },
+                        subtitle: Text('${toMessage(job.status)}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (persist.status == 3 ||
+                                persist.status == 0 ||
+                                persist.status == 2)
+                              IconButton(
+                                  icon: Icon(Icons.refresh),
+                                  onPressed: () async {
+                                    await _retryJob(persist);
+                                  }),
+                            IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () async {
+                                  await _deleteJob(persist);
+                                  initMethod();
+                                }),
+                          ],
                         ),
                       ),
-                  ],
+                      if (job.max / job.min != 1)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: LinearProgressIndicator(
+                            value: job.min / job.max,
+                            backgroundColor: Colors.grey,
+                          ),
+                        ),
+                    ],
+                  ),
                 );
               } else {
                 return Builder(builder: (context) {
@@ -273,7 +279,7 @@ class _JobPageState extends State<JobPage> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return IllustPage(
+                            return IllustLightingPage(
                               id: persist.illustId,
                             );
                           }));
@@ -313,7 +319,7 @@ class _JobPageState extends State<JobPage> {
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return IllustPage(
+                              return IllustLightingPage(
                                 id: persist.illustId,
                               );
                             }));
@@ -339,7 +345,7 @@ class _JobPageState extends State<JobPage> {
                             ],
                           ),
                         ),
-                        if (job.min / job.max == 1)
+                        if (job.min / job.max != 1)
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
@@ -383,7 +389,7 @@ class _JobPageState extends State<JobPage> {
       var savePath = (await getTemporaryDirectory()).path +
           Platform.pathSeparator +
           persist.fileName;
-      await saveStore.imageDio.download(persist.url, savePath,
+      await saveStore.imageDio.download(persist.url.toTrueUrl(), savePath,
           onReceiveProgress: (received, total) async {
         if (total != -1) {
           var job = jobMaps[persist.url];
@@ -445,7 +451,8 @@ class _JobPageState extends State<JobPage> {
           deleteOnError: true,
           options: Options(headers: {
             "referer": "https://app-api.pixiv.net/",
-            "User-Agent": "PixivIOSApp/5.8.0"
+            "User-Agent": "PixivIOSApp/5.8.0",
+            "Host": ImageHost
           }));
     } catch (e) {
       await taskPersistProvider.update(taskPersist..status = 3);

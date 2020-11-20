@@ -16,6 +16,7 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 
@@ -92,7 +93,8 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
                 });
                 if (!_textEditingController.text.contains('{part}')) {
                   BotToast.showText(
-                      text: I18n.of(context).save_format_lose_part_warning);
+                      text: I18n.of(context)
+                          .save_format_lose_part_warning('{part}'));
                   return;
                 }
                 if (_textEditingController.text.isNotEmpty && !needBack)
@@ -126,6 +128,16 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
               ],
             ),
           ),
+          Observer(builder: (_) {
+            return SwitchListTile(
+              title: Text(I18n.of(context).clear_old_format_file),
+              subtitle: Text(I18n.of(context).clear_old_format_file_message),
+              onChanged: (bool value) {
+                userSetting.setIsClearnOldFormatFile(value);
+              },
+              value: userSetting.isClearOldFormatFile,
+            );
+          }),
           DataTable(
             columns: <DataColumn>[
               DataColumn(label: Text("Name")),

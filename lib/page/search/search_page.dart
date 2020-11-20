@@ -16,21 +16,18 @@
 
 import 'dart:io';
 import 'dart:ui';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
-import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
-import 'package:pixez/page/user/users_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key key}) : super(key: key);
@@ -114,11 +111,11 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       icon: Icon(Icons.dashboard,
                           color: Theme.of(context).textTheme.bodyText1.color),
                       onPressed: () async {
-                        if(Platform.isAndroid)
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return SauceNaoPage();
-                        }));
+                        if (Platform.isAndroid)
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SauceNaoPage();
+                          }));
                       }),
                 ),
                 backgroundColor: Colors.transparent,
@@ -263,7 +260,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           onLongPress: () {
                             Navigator.of(context, rootNavigator: true)
                                 .push(MaterialPageRoute(builder: (_) {
-                              return IllustPage(id: tags[index].illust.id);
+                              return IllustLightingPage(
+                                  id: tags[index].illust.id);
                             }));
                           },
                           child: Card(

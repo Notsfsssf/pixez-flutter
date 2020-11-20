@@ -155,16 +155,24 @@ class _DirectoryPageState extends State<DirectoryPage> {
                         itemCount: list.length,
                         itemBuilder: (context, index) {
                           FileSystemEntity fileSystemEntity = list[index];
-                          return ListTile(
-                            leading: fileSystemEntity is Directory
-                                ? Icon(Icons.folder)
-                                : Icon(Icons.attach_file),
-                            title: Text(fileSystemEntity.path.split("/").last),
-                            onTap: () {
-                              if (fileSystemEntity is Directory) {
-                                directoryStore.enterFolder(fileSystemEntity);
-                              }
-                            },
+                          return Visibility(
+                            visible: !(fileSystemEntity.path
+                                    .split("/")
+                                    ?.last
+                                    ?.startsWith(".") ??
+                                false),
+                            child: ListTile(
+                              leading: fileSystemEntity is Directory
+                                  ? Icon(Icons.folder)
+                                  : Icon(Icons.attach_file),
+                              title:
+                                  Text(fileSystemEntity.path.split("/").last),
+                              onTap: () {
+                                if (fileSystemEntity is Directory) {
+                                  directoryStore.enterFolder(fileSystemEntity);
+                                }
+                              },
+                            ),
                           );
                         }));
               else

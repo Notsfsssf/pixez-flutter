@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
+import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/novel/new/novel_new_page.dart';
 import 'package:pixez/page/novel/rank/novel_rank_page.dart';
 import 'package:pixez/page/novel/recom/novel_recom_page.dart';
@@ -31,8 +32,9 @@ class _NovelRailState extends State<NovelRail> {
   final _pageList = [
     NovelRecomPage(),
     NovelRankPage(),
+    NovelNewPage(),
     NovelSearchPage(),
-    NovelNewPage()
+    SettingPage()
   ];
   PageController _pageController;
 
@@ -65,15 +67,16 @@ class _NovelRailState extends State<NovelRail> {
         currentIndex: selectedIndex,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home), title: Text(I18n.of(context).home)),
+              icon: Icon(Icons.home), label: I18n.of(context).home),
           BottomNavigationBarItem(
               icon: Icon(CustomIcons.leaderboard),
-              title: Text(I18n.of(context).rank)),
+              label: I18n.of(context).rank),
           BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text(I18n.of(context).search)),
+              icon: Icon(Icons.favorite), label: I18n.of(context).news),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(I18n.of(context).setting)),
+              icon: Icon(Icons.search), label: I18n.of(context).search),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: I18n.of(context).setting),
         ],
         onTap: (index) {
           _pageController.jumpToPage(index);
@@ -82,17 +85,56 @@ class _NovelRailState extends State<NovelRail> {
           });
         },
       ),
-      body: PageView.builder(
-          itemCount: 3,
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() {
-              this.selectedIndex = index;
-            });
-          },
-          itemBuilder: (context, index) {
-            return _pageList[index];
-          }),
+      body: NestedScrollView(
+        body: PageView.builder(
+            itemCount: _pageList.length,
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                this.selectedIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return _pageList[index];
+            }),
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              pinned: false,
+              title: Container(
+                child: Container(
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0.0, 15.0), 
+                        blurRadius: 15.0, 
+                        spreadRadius: 1.0 
+                        )
+                  ], borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.menu_book), onPressed: () {}),
+                          Text("Search")
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          IconButton(icon: Icon(Icons.search), onPressed: () {})
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            
+          ];
+        },
+      ),
     );
   }
 }

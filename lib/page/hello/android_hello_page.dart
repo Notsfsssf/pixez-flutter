@@ -22,7 +22,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
@@ -31,10 +33,11 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/user/users_page.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -53,20 +56,18 @@ class KeepContent extends StatelessWidget {
 }
 
 class AndroidHelloPage extends StatefulWidget {
+  final LightingStore lightingStore;
+
+  const AndroidHelloPage({Key key, this.lightingStore}) : super(key: key);
+
   @override
   _AndroidHelloPageState createState() => _AndroidHelloPageState();
 }
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
-  final _pageList = [
-    RecomSpolightPage(),
-    RankPage(),
-    NewPage(),
-    SearchPage(),
-    SettingPage()
-  ];
+  List<Widget> _pageList;
   DateTime _preTime;
-
+  QuickActions quickActions;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -84,6 +85,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       },
       child: Observer(builder: (context) {
         if (accountStore.now != null) {
+          quickActions.setShortcutItems(<ShortcutItem>[
+            ShortcutItem(
+                type: 'action_search',
+                localizedTitle: I18n.of(context).search,
+                icon: 'ic_search'),
+          ]);
           return _buildScaffold(context);
         }
         return LoginPage();
@@ -103,7 +110,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           });
         },
         controller: _pageController,
-        itemCount: 5,
+        itemCount: _pageList.length,
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -129,7 +136,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.search), label: I18n.of(context).search),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: I18n.of(context).setting),
+                icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
           ]),
     );
   }
@@ -158,7 +165,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         int id = int.parse(idSource);
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (context) {
-          return IllustPage(
+          return IllustLightingPage(
             id: id,
           );
         }));
@@ -187,7 +194,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
+              return IllustLightingPage(id: id);
             }));
             return;
           } catch (e) {}
@@ -211,11 +218,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       if (link.queryParameters['illust_id'] != null) {
         try {
           var id = link.queryParameters['illust_id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id: int.parse(id));
-          }));
-
+          Leader.push(context, IllustLightingPage(id: int.parse(id)));
           return;
         } catch (e) {}
       }
@@ -237,10 +240,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         if (i == "i") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
-            }));
+            Leader.push(context, IllustLightingPage(id: id));
             return;
           } catch (e) {}
         }
@@ -265,8 +265,16 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   void initState() {
+    _pageList = [
+      RecomSpolightPage(lightingStore: widget.lightingStore),
+      RankPage(),
+      NewPage(),
+      SearchPage(),
+      SettingPage()
+    ];
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: index);
+    quickActions = QuickActions();
     super.initState();
     saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {

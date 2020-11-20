@@ -20,9 +20,10 @@ import 'package:flutter/services.dart';
 class DocumentPlugin {
   static const platform = const MethodChannel('com.perol.dev/save');
 
-  static Future<bool> save(Uint8List uint8list, String fileName) async {
-    return platform
-        .invokeMethod<bool>('save', {"data": uint8list, "name": fileName});
+  static Future<bool> save(Uint8List uint8list, String fileName,
+      {bool clearOld}) async {
+    return platform.invokeMethod<bool>(
+        'save', {"data": uint8list, "name": fileName, "clear_old": clearOld});
   }
 
   static Future<bool> exist(String fileName) =>
