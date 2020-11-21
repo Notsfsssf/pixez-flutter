@@ -3,6 +3,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/login_error_response.dart';
 import 'package:pixez/network/oauth_client.dart';
+
 part 'login_store.g.dart';
 
 class LoginStore = _LoginStoreBase with _$LoginStore;
@@ -46,12 +47,12 @@ abstract class _LoginStoreBase with Store {
       if (e == null) {
         return false;
       }
-      if (e.response!=null&&e.response.data != null)
+      if (e.response != null && e.response.data != null)
         errorMessage =
             LoginErrorResponse.fromJson(e.response.data).errors.system.message;
       else
         errorMessage = e.message;
-       return false;
+      return false;
     }
   }
 }

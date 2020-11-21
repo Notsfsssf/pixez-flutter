@@ -39,8 +39,7 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     if (accountStore.now != null)
-      lightingStore = LightingStore(() => apiClient.getRecommend(), null)
-        ..fetch();
+      lightingStore = LightingStore(() => apiClient.getRecommend(), null);
     controller =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
     initMethod();

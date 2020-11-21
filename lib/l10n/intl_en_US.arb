@@ -195,5 +195,6 @@
   "favorited_tag": "favorited tag",
   "legacy_mode_warning": "legacy mode is not available since Android9",
   "clear_old_format_file": "Clear old format file",
-  "clear_old_format_file_message": "without _p0"
+  "clear_old_format_file_message": "without _p0",
+  "login_error_message": "Incorrect account or password, or using a weak password, may cause login failure"
 }

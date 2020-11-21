@@ -195,5 +195,6 @@
   "favorited_tag": "收藏标签",
   "legacy_mode_warning": "传统模式从Android10开始不推荐使用",
   "clear_old_format_file": "删除老格式的图片",
-  "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片"
+  "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片",
+  "login_error_message": "账号或密码错误，或使用了弱密码，将可能导致登录失败"
 }
