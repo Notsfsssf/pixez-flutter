@@ -25,6 +25,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
@@ -37,6 +38,7 @@ import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
@@ -880,137 +882,13 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
       setState(() {});
       return;
     }
-    CancelFunc cancelFunc =
-        BotToast.showLoading(clickClose: true, allowClick: true);
-    Response response;
-    try {
-      response = await apiClient.getIllustBookmarkDetail(widget.id);
-      cancelFunc();
-    } catch (e) {
-      cancelFunc();
-      return;
+    final result =
+        await Leader.pushWithScaffold(context, TagForIllustPage(id: widget.id));
+    if (result is Map) {
+      LPrinter.d(result);
+      String restrict = result['restrict'];
+      List<String> tags = result['tags'];
+      _illustStore.star(restrict: restrict, tags: tags);
     }
-    BookMarkDetailResponse bookMarkDetailResponse =
-        BookMarkDetailResponse.fromJson(response.data);
-    if (mounted)
-      showDialog(
-          context: context,
-          child: StatefulBuilder(
-            builder: (_, setBookState) {
-              final TextEditingController textEditingController =
-                  TextEditingController();
-              final List<TagsR> tags =
-                  bookMarkDetailResponse.bookmarkDetail.tags;
-              final detail = bookMarkDetailResponse.bookmarkDetail;
-              return AlertDialog(
-                contentPadding: EdgeInsets.all(0.0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                content: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      TextField(
-                        controller: textEditingController,
-                        decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            final value =
-                                textEditingController.value.text.trim();
-                            if (value.isNotEmpty)
-                              setBookState(() {
-                                tags.insert(
-                                    -2,
-                                    TagsR()
-                                      ..name = value
-                                      ..isRegistered = true);
-                                textEditingController.clear();
-                              });
-                          },
-                        )),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(2.0),
-                          itemCount: tags.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(bookMarkDetailResponse
-                                        .bookmarkDetail.tags[index].name),
-                                  ),
-                                ),
-                                Checkbox(
-                                  onChanged: (bool value) {
-                                    setBookState(() {
-                                      bookMarkDetailResponse.bookmarkDetail
-                                          .tags[index].isRegistered = value;
-                                    });
-                                  },
-                                  value: bookMarkDetailResponse
-                                      .bookmarkDetail.tags[index].isRegistered,
-                                )
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Text((detail.restrict == "public"
-                                    ? I18n.of(context).public
-                                    : I18n.of(context).private) +
-                                I18n.of(context).bookmark),
-                          ),
-                          Switch(
-                            onChanged: (bool value) {
-                              setBookState(() {
-                                detail.restrict = value ? "public" : "private";
-                              });
-                            },
-                            value: detail.restrict == "public",
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).cancel)),
-                  FlatButton(
-                    child: Text(I18n.of(context).ok),
-                    onPressed: () async {
-                      final tags = bookMarkDetailResponse.bookmarkDetail.tags;
-                      List<String> tempTags = [];
-                      for (int i = 0; i < tags.length; i++) {
-                        if (tags[i].isRegistered) {
-                          tempTags.add(tags[i].name);
-                        }
-                      }
-                      if (tempTags.length == 0) tempTags = null;
-                      Navigator.of(context).pop();
-                      await _illustStore.star(
-                          restrict:
-                              bookMarkDetailResponse.bookmarkDetail.restrict,
-                          tags: tempTags);
-                      if (mounted)
-                        setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
-                    },
-                  ),
-                ],
-              );
-            },
-          ));
   }
 }
