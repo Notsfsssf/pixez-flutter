@@ -123,15 +123,15 @@ class Leader {
     }
   }
 
-  static pushWithScaffold(context, Widget widget) {
-    Navigator.of(context).push(MaterialPageRoute(
+  static Future<dynamic> pushWithScaffold(context, Widget widget) {
+    return Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Scaffold(
               body: widget,
             )));
   }
 
-  static push(context, Widget widget) {
-    Navigator.of(context).push(MaterialPageRoute(
+  static Future<dynamic> push(context, Widget widget) {
+    return Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Scaffold(
               body: widget,
             )));
