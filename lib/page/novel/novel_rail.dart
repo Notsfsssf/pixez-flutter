@@ -12,6 +12,7 @@
  *  You should have received a copy of the GNU General Public License along with
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -42,6 +43,7 @@ class _NovelRailState extends State<NovelRail> {
   void initState() {
     _pageController = PageController();
     super.initState();
+    BotToast.showText(text: 'Beta');
   }
 
   @override
@@ -60,7 +62,6 @@ class _NovelRailState extends State<NovelRail> {
         },
         child: Icon(Icons.picture_in_picture),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).accentColor,
@@ -85,56 +86,17 @@ class _NovelRailState extends State<NovelRail> {
           });
         },
       ),
-      body: NestedScrollView(
-        body: PageView.builder(
-            itemCount: _pageList.length,
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                this.selectedIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              return _pageList[index];
-            }),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              pinned: false,
-              title: Container(
-                child: Container(
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0.0, 15.0), 
-                        blurRadius: 15.0, 
-                        spreadRadius: 1.0 
-                        )
-                  ], borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                              icon: Icon(Icons.menu_book), onPressed: () {}),
-                          Text("Search")
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          IconButton(icon: Icon(Icons.search), onPressed: () {})
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            
-          ];
-        },
-      ),
+      body: PageView.builder(
+          itemCount: _pageList.length,
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              this.selectedIndex = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            return _pageList[index];
+          }),
     );
   }
 }

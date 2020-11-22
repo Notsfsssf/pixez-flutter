@@ -15,10 +15,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/user/novel_user_page.dart';
 
 class NovelNewPage extends StatefulWidget {
   @override
@@ -27,6 +30,7 @@ class NovelNewPage extends StatefulWidget {
 
 class _NovelNewPageState extends State<NovelNewPage> {
   FutureGet futureGet;
+
   @override
   void initState() {
     futureGet = () => apiClient.getNovelFollow('public');
@@ -38,6 +42,20 @@ class _NovelNewPageState extends State<NovelNewPage> {
     return Container(
       child: Column(
         children: [
+          AppBar(
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.account_circle),
+                  onPressed: () {
+                    if (accountStore.now != null)
+                      Leader.push(
+                          context,
+                          NovelUserPage(
+                            id: int.parse(accountStore.now.userId),
+                          ));
+                  })
+            ],
+          ),
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(

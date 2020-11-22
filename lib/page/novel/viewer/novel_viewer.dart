@@ -125,9 +125,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         height: 160,
                         child: PixivImage(widget.novel.imageUrls.medium))),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: ExtendedText(
                     _novelStore.novelTextResponse.novelText,
+                    selectionEnabled: true,
                     specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
                     style: Theme.of(context).textTheme.bodyText1,
                   ),

@@ -240,6 +240,14 @@ class _SettingPageState extends State<SettingPage> {
                       Column(
                         children: <Widget>[
                           ListTile(
+                            leading: Icon(Icons.book),
+                            title: Text('Novel(Beta)'),
+                            onTap: () =>
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushReplacement(MaterialPageRoute(
+                                        builder: (context) => NovelRail())),
+                          ),
+                          ListTile(
                             leading: Icon(Icons.message),
                             title: Text(I18n.of(context).about),
                             onTap: () => Leader.push(
@@ -247,15 +255,6 @@ class _SettingPageState extends State<SettingPage> {
                             trailing: Visibility(
                               child: NewVersionChip(),
                               visible: hasNewVersion,
-                            ),
-                          ),
-                          Visibility(
-                            visible: false,
-                            child: ListTile(
-                              title: Text('novel'),
-                              onTap: () => Navigator.of(context)
-                                  .pushReplacement(MaterialPageRoute(
-                                      builder: (context) => NovelRail())),
                             ),
                           ),
                           Observer(builder: (context) {

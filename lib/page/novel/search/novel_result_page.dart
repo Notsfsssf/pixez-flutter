@@ -22,7 +22,7 @@ class _NovelResultPageState extends State<NovelResultPage> {
           title: Text(widget.word),
           bottom: TabBar(tabs: [
             Tab(
-              child: Text(I18n.of(context).novel_mode_list),
+              child: Text(I18n.of(context).illust),
             ),
             Tab(
               child: Text(I18n.of(context).painter),
