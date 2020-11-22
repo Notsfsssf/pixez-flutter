@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
@@ -51,6 +52,7 @@ class IllustLightingPage extends StatefulWidget {
 
   const IllustLightingPage({Key key, this.id, this.heroString, this.store})
       : super(key: key);
+
   @override
   _IllustLightingPageState createState() => _IllustLightingPageState();
 }
@@ -192,6 +194,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
         text,
         style: TextStyle(color: Theme.of(context).accentColor),
       );
+
   Widget _buildContent(BuildContext context, Illusts data) {
     if (data == null)
       return Container(
@@ -227,8 +230,8 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
               child: Container(height: MediaQuery.of(context).padding.top)),
         if (data.type == "ugoira")
           SliverToBoxAdapter(
-            child: Hero(
-              tag: '${data.imageUrls.medium}${widget.heroString}',
+            child: NullHero(
+              tag: widget.heroString,
               child: UgoiraLoader(
                 id: widget.id,
                 illusts: data,
@@ -261,8 +264,8 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                             illusts: data,
                           ));
                     },
-                    child: Hero(
-                      tag: '${data.imageUrls.medium}${widget.heroString}',
+                    child: NullHero(
+                      tag: widget.heroString,
                       child: PixivImage(
                         url,
                         fade: false,
@@ -448,24 +451,24 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   Widget _buildIllustsItem(int index, Illusts illust) {
     return index == 0
         ? (userSetting.pictureQuality == 1
-            ? Hero(
-                child: PixivImage(
-                  illust.metaPages[index].imageUrls.large,
-                  placeWidget: PixivImage(
-                    illust.metaPages[index].imageUrls.medium,
-                    fade: false,
-                  ),
-                  fade: false,
-                ),
-                tag: '${illust.imageUrls.medium}${widget.heroString}',
-              )
-            : Hero(
-                child: PixivImage(
-                  illust.metaPages[index].imageUrls.medium,
-                  fade: false,
-                ),
-                tag: '${illust.imageUrls.medium}${widget.heroString}',
-              ))
+        ? NullHero(
+      child: PixivImage(
+        illust.metaPages[index].imageUrls.large,
+        placeWidget: PixivImage(
+          illust.metaPages[index].imageUrls.medium,
+          fade: false,
+        ),
+        fade: false,
+      ),
+      tag: widget.heroString,
+    )
+        : NullHero(
+      child: PixivImage(
+        illust.metaPages[index].imageUrls.medium,
+        fade: false,
+      ),
+      tag: widget.heroString,
+    ))
         : PixivImage(
             userSetting.pictureQuality == 0
                 ? illust.metaPages[index].imageUrls.medium

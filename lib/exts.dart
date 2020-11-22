@@ -29,7 +29,7 @@ extension TimeExts on String {
   }
 
   String toTrueUrl() {
-    if (userSetting.disableBypassSni) {
+    if (userSetting.disableBypassSni || this.contains("novel")) {
       return this;
     } else {
       if (this.contains(ImageHost)) {

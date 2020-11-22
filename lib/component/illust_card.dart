@@ -18,6 +18,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
@@ -80,6 +81,7 @@ class IllustCard extends StatelessWidget {
       return IllustLightingPage(
         store: store,
         id: store.illusts.id,
+        heroString: store.illusts.imageUrls.medium + heroString,
       );
     }));
   }
@@ -100,17 +102,17 @@ class IllustCard extends StatelessWidget {
     return Text('');
   }
 
-  Widget _buildPic(String heroString) {
+  Widget _buildPic(String tag) {
     return (store.illusts.height.toDouble() / store.illusts.width.toDouble()) >
             3
-        ? Hero(
-            tag: '${store.illusts.imageUrls.medium}$heroString',
+        ? NullHero(
+            tag: tag,
             child: PixivImage(
               store.illusts.imageUrls.squareMedium,
             ),
           )
-        : Hero(
-            tag: '${store.illusts.imageUrls.medium}$heroString',
+        : NullHero(
+            tag: tag,
             child: PixivImage(
               store.illusts.imageUrls.medium,
             ),
@@ -118,8 +120,7 @@ class IllustCard extends StatelessWidget {
   }
 
   Widget buildInkWell(BuildContext context) {
-    String heroString =
-        this.heroString ?? DateTime.now().millisecondsSinceEpoch.toString();
+    final tag = store.illusts.imageUrls.medium + heroString;
     return Card(
       margin: EdgeInsets.all(8.0),
       elevation: 8.0,
@@ -131,13 +132,13 @@ class IllustCard extends StatelessWidget {
           saveStore.saveImage(store.illusts);
         },
         onTap: () {
-          _buildInkTap(context, heroString);
+          _buildInkTap(context, tag);
         },
         child: Stack(
           children: <Widget>[
             Align(
               alignment: Alignment.topCenter,
-              child: _buildPic(heroString),
+              child: _buildPic(tag),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -153,19 +154,19 @@ class IllustCard extends StatelessWidget {
     );
   }
 
-  Future _buildInkTap(BuildContext context, String heroString) {
+  Future _buildInkTap(BuildContext context, String heroTag) {
     return Navigator.of(context, rootNavigator: true)
         .push(MaterialPageRoute(builder: (_) {
       if (iStores != null) {
         return PictureListPage(
-          heroString: heroString,
+          heroString: heroTag,
           store: store,
           iStores: iStores,
         );
       }
       return IllustLightingPage(
         id: store.illusts.id,
-        heroString: heroString,
+        heroString: heroTag,
         store: store,
       );
     }));
