@@ -196,5 +196,5 @@
   "legacy_mode_warning": "Android 10 及之後作業系統不推薦使用舊版方式",
   "clear_old_format_file": "刪除舊版軟體儲存的圖像",
   "clear_old_format_file_message": "儲存圖像的同時刪除來自舊版軟體、不標記分P的圖像，防止圖像被重複儲存",
-  "login_error_message": "账号或密码错误，或使用弱密碼可能會無法登入"
+  "login_error_message": "帳號或密碼錯誤，密碼過於簡單也可能造成無法登入"
 }
