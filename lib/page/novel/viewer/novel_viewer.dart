@@ -26,6 +26,7 @@ import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
+import 'package:share/share.dart';
 
 class NovelViewerPage extends StatefulWidget {
   final int id;
@@ -44,7 +45,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
 
   @override
   void initState() {
-    _novelStore = NovelStore(widget.id)..fetch();
+    _novelStore = NovelStore(widget.id,widget.novel)..fetch();
     _controller = ScrollController();
     super.initState();
   }
@@ -95,15 +96,18 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             ),
           );
         }
-        if (_novelStore.novelTextResponse != null) {
+        if (_novelStore.novelTextResponse != null&&_novelStore.novel!=null) {
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
               backgroundColor: Colors.transparent,
               actions: <Widget>[
                 NovelBookmarkButton(
-                  novel: widget.novel,
+                  novel: _novelStore.novel,
                 ),
+                IconButton(icon: Icon(Icons.share), onPressed: (){
+                  Share.share("https://www.pixiv.net/novel/show.php?id=${widget.id}");
+                }),
                 IconButton(
                   icon: Icon(Icons.more_vert),
                   onPressed: () {
@@ -123,7 +127,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 Center(
                     child: Container(
                         height: 160,
-                        child: PixivImage(widget.novel.imageUrls.medium))),
+                        child: PixivImage(_novelStore.novel.imageUrls.medium))),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ExtendedText(
@@ -142,13 +146,13 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: PainterAvatar(
-                          url: widget.novel.user.profileImageUrls.medium,
-                          id: widget.novel.user.id,
+                          url: _novelStore.novel.user.profileImageUrls.medium,
+                          id: _novelStore.novel.user.id,
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
                               return NovelUserPage(
-                                id: widget.novel.user.id,
+                                id: _novelStore.novel.user.id,
                               );
                             }));
                           },
@@ -164,12 +168,12 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
-                                  widget.novel.title ?? "",
+                                  _novelStore.novel.title ?? "",
                                   softWrap: true,
                                 ),
                               ),
                             ),
-                            Text(widget.novel.user.name),
+                            Text(_novelStore.novel.user.name),
                           ],
                         ),
                       )
@@ -221,16 +225,16 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ListTile(
-                  subtitle: Text(widget.novel.user.name),
-                  title: Text(widget.novel.title ?? ""),
+                  subtitle: Text(_novelStore.novel.user.name),
+                  title: Text(_novelStore.novel.title ?? ""),
                   leading: PainterAvatar(
-                    url: widget.novel.user.profileImageUrls.medium,
-                    id: widget.novel.user.id,
+                    url: _novelStore.novel.user.profileImageUrls.medium,
+                    id: _novelStore.novel.user.id,
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
                         return NovelUserPage(
-                          id: widget.novel.user.id,
+                          id: _novelStore.novel.user.id,
                         );
                       }));
                     },

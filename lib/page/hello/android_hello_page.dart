@@ -68,6 +68,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   List<Widget> _pageList;
   DateTime _preTime;
   QuickActions quickActions;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -149,115 +150,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   initPlatform() async {
     try {
       Uri initialLink = await getInitialUri();
-      if (initialLink != null) judgePushPage(initialLink);
+      if (initialLink != null) Leader.pushWithUri(context, initialLink);
       _sub = getUriLinksStream().listen((Uri link) {
-        judgePushPage(link);
+        Leader.pushWithUri(context, link);
       });
     } catch (e) {
       print(e);
-    }
-  }
-
-  void judgePushPage(Uri link) {
-    if (link.host.contains('illusts')) {
-      var idSource = link.pathSegments.last;
-      try {
-        int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return IllustLightingPage(
-            id: id,
-          );
-        }));
-      } catch (e) {}
-      return;
-    }
-    if (link.host.contains('user')) {
-      var idSource = link.pathSegments.last;
-      try {
-        int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return UsersPage(
-            id: id,
-          );
-        }));
-      } catch (e) {}
-      return;
-    }
-    if (link.host.contains('pixiv')) {
-      if (link.path.contains("artworks")) {
-        List<String> paths = link.pathSegments;
-        int index = paths.indexOf("artworks");
-        if (index != -1) {
-          try {
-            int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustLightingPage(id: id);
-            }));
-            return;
-          } catch (e) {}
-        }
-      }
-      if (link.path.contains("users")) {
-        List<String> paths = link.pathSegments;
-        int index = paths.indexOf("users");
-        if (index != -1) {
-          try {
-            int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                builder: (context) => UsersPage(
-                      id: id,
-                    )));
-          } catch (e) {
-            print(e);
-          }
-        }
-      }
-      if (link.queryParameters['illust_id'] != null) {
-        try {
-          var id = link.queryParameters['illust_id'];
-          Leader.push(context, IllustLightingPage(id: int.parse(id)));
-          return;
-        } catch (e) {}
-      }
-      if (link.queryParameters['id'] != null) {
-        try {
-          var id = link.queryParameters['id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: int.parse(id),
-            );
-          }));
-
-          return;
-        } catch (e) {}
-      }
-      if (link.pathSegments.length >= 2) {
-        String i = link.pathSegments[link.pathSegments.length - 2];
-        if (i == "i") {
-          try {
-            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Leader.push(context, IllustLightingPage(id: id));
-            return;
-          } catch (e) {}
-        }
-
-        if (i == "u") {
-          try {
-            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return UsersPage(
-                id: id,
-              );
-            }));
-            return;
-          } catch (e) {}
-        }
-      }
     }
   }
 

@@ -16,6 +16,7 @@
 //有是有top level fun和extension，奈何auto import 太傻，还是这种更稳一些
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
@@ -87,13 +88,20 @@ class Leader {
       if (link.queryParameters['id'] != null) {
         try {
           var id = link.queryParameters['id'];
+          if(!link.path.contains("novel"))
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
             return UsersPage(
               id: int.parse(id),
             );
           }));
-
+              else
+          Navigator.of(context, rootNavigator: true)
+              .push(MaterialPageRoute(builder: (context) {
+            return NovelViewerPage(
+              id: int.parse(id), novel: null,
+            );
+          }));
           return;
         } catch (e) {}
       }

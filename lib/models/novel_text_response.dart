@@ -45,8 +45,16 @@ class NovelTextResponse {
       NovelTextResponse(
         novelMarker: NovelMarker.fromJson(json["novel_marker"]),
         novelText: json["novel_text"],
-        seriesPrev: false ? Novel.fromJson(json["series_prev"]) : null,
-        seriesNext: false ? Novel.fromJson(json["series_next"]) : null,
+        seriesPrev: json['series_prev'] != null &&
+                json.containsKey('series_prev') &&
+                json['series_prev'].isNotEmpty
+            ? Novel.fromJson(json["series_prev"])
+            : null,
+        seriesNext: json['series_next'] != null &&
+                json.containsKey('series_next') &&
+                json['series_next'].isNotEmpty //绝了
+            ? Novel.fromJson(json["series_next"])
+            : null,
       );
 
   Map<String, dynamic> toJson() => {

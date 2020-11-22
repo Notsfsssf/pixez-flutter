@@ -82,7 +82,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+      ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..interceptors.add(CacheInterceptor())
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
@@ -134,6 +134,11 @@ class ApiClient {
   Future<Response> getNovelText(int novel_id) async {
     return httpClient.get("/v1/novel/text",
         queryParameters: notNullMap({"novel_id": novel_id}));
+  }
+
+  Future<Response> getNovelDetail(int id) async {
+    return httpClient.get("/v2/novel/detail",
+        queryParameters: notNullMap({"novel_id": id}));
   }
 
   //   @GET("/v2/illust/follow")

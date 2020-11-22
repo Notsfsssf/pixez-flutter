@@ -14,7 +14,9 @@
  *
  */
 
+import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -25,8 +27,10 @@ class NovelStore = _NovelStoreBase with _$NovelStore;
 abstract class _NovelStoreBase with Store {
   final int id;
 
-  _NovelStoreBase(this.id);
+  _NovelStoreBase(this.id, this.novel);
 
+  @observable
+  Novel novel;
   @observable
   NovelTextResponse novelTextResponse;
   @observable
@@ -38,6 +42,10 @@ abstract class _NovelStoreBase with Store {
     try {
       var response = await apiClient.getNovelText(id);
       novelTextResponse = NovelTextResponse.fromJson(response.data);
+      if (novel == null) {
+        Response response = await apiClient.getNovelDetail(id);
+        novel = Novel.fromJson(response.data['novel']);
+      }
     } catch (e) {
       print(e);
       errorMessage = e.toString();
