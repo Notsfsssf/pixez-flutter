@@ -20,5 +20,5 @@
     <string name="choose_a_suitable_image_storage_directory">選擇合適的資料夾並授權以儲存圖像</string>
     <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正確取得授權，可能造成軟體功能異常或崩潰</string>
     <string name="encode_success">合成成功</string>
-    <string name="do_not_choice_download_folder_message">授权目录包含download目录，可能会导致保存出错，请重新选择保存目录授权</string>
+    <string name="do_not_choice_download_folder_message">授權的資料夾包含下載目錄，可能會造成儲存失敗，請選擇其他資料夾作為儲存目錄</string>
 </resources>
