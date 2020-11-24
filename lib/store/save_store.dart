@@ -348,7 +348,7 @@ abstract class _SaveStoreBase with Store {
     } else {
       final _imageSaver = ImageSaver();
       List<Uint8List> bytesList = [uint8list];
-      final res = await _imageSaver.saveImages(
+      await _imageSaver.saveImages(
           imageBytes: bytesList, directoryName: 'pxez');
     }
   }

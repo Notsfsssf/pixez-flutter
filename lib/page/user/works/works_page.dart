@@ -61,7 +61,6 @@ class _WorksPageState extends State<WorksPage> {
     );
   }
 
-  int _currentSelection = 0;
   Widget _buildSortChip() {
     return SortGroup(
       onChange: (index) {
@@ -74,75 +73,6 @@ class _WorksPageState extends State<WorksPage> {
         I18n.of(context).illust,
         I18n.of(context).manga,
       ],
-    );
-  }
-
-  Widget _buildSegment() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: CupertinoSlidingSegmentedControl(
-        groupValue: _currentSelection,
-        children: <int, Widget>{
-          0: Text(I18n.of(context).illust),
-          1: Text(I18n.of(context).painter),
-        },
-        onValueChanged: (int index) {
-          setState(() {
-            _currentSelection = index;
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-        child: Wrap(
-          alignment: WrapAlignment.center,
-          children: <Widget>[
-            ActionChip(
-              backgroundColor: now == 'illust'
-                  ? Theme.of(context).accentColor
-                  : Colors.white,
-              label: Text(
-                I18n.of(context).illust,
-                style: TextStyle(
-                    color: now == 'illust'
-                        ? Colors.white
-                        : Theme.of(context).textTheme.headline6.color),
-              ),
-              onPressed: () {
-                setState(() {
-                  futureGet =
-                      () => apiClient.getUserIllusts(widget.id, 'illust');
-                  now = 'illust';
-                });
-              },
-            ),
-            ActionChip(
-              label: Text(
-                I18n.of(context).manga,
-                style: TextStyle(
-                    color: now == 'manga'
-                        ? Colors.white
-                        : Theme.of(context).textTheme.headline6.color),
-              ),
-              onPressed: () {
-                setState(() {
-                  futureGet =
-                      () => apiClient.getUserIllusts(widget.id, 'manga');
-                  now = 'manga';
-                });
-              },
-              backgroundColor: now != 'illust'
-                  ? Theme.of(context).accentColor
-                  : Colors.transparent,
-            )
-          ],
-        ),
-      ),
     );
   }
 }

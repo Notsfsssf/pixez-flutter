@@ -20,10 +20,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/exts.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -53,7 +53,6 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   List<double> doubleTapScales = <double>[1.0, 2.0];
   GlobalKey<ExtendedImageSlidePageState> slidePagekey =
       GlobalKey<ExtendedImageSlidePageState>();
-  int _currentIndex = 0;
   bool _showSwiper = true;
   double _imageDetailY = 0;
   Rect imageDRect;

@@ -90,7 +90,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
     if (_store.novels.isNotEmpty) {
       return ListView.builder(
         itemBuilder: (context, index) {
-          Novel novel = _store.novels[index];
+          Novel novel = _store.novels[index].novel;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: InkWell(
@@ -99,7 +99,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                     .push(MaterialPageRoute(
                         builder: (BuildContext context) => NovelViewerPage(
                               id: novel.id,
-                              novel: novel,
+                              novelStore: _store.novels[index],
                             )));
               },
               child: Card(

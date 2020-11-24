@@ -15,11 +15,13 @@
  */
 
 import 'dart:ffi';
+
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'novel_lighting_store.g.dart';
@@ -34,7 +36,7 @@ abstract class _NovelLightingStoreBase with Store {
   _NovelLightingStoreBase(this.source, this._controller);
 
   String nextUrl;
-  ObservableList<Novel> novels = ObservableList();
+  ObservableList<NovelStore> novels = ObservableList();
   @observable
   String errorMessage;
 
@@ -50,7 +52,9 @@ abstract class _NovelLightingStoreBase with Store {
       nextUrl = novelRecomResponse.nextUrl;
       final novel = novelRecomResponse.novels;
       this.novels.clear();
-      this.novels.addAll(novel);
+      this
+          .novels
+          .addAll(novel.map((element) => NovelStore(element.id, element)));
       _controller.refreshCompleted();
     } catch (e) {
       print(e);
@@ -65,10 +69,10 @@ abstract class _NovelLightingStoreBase with Store {
       try {
         Response response = await _client.getNext(nextUrl);
         NovelRecomResponse novelRecomResponse =
-            NovelRecomResponse.fromJson(response.data);
+        NovelRecomResponse.fromJson(response.data);
         nextUrl = novelRecomResponse.nextUrl;
         final novel = novelRecomResponse.novels;
-        novels.addAll(novel);
+        novels.addAll(novel.map((element) => NovelStore(element.id, element)));
         _controller.loadComplete();
       } catch (e) {
         _controller.loadFailed();

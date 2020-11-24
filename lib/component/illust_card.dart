@@ -123,7 +123,7 @@ class IllustCard extends StatelessWidget {
     final tag = store.illusts.imageUrls.medium + heroString;
     return Card(
       margin: EdgeInsets.all(8.0),
-      elevation: 8.0,
+      elevation: 4.0,
       clipBehavior: Clip.antiAlias,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0))),

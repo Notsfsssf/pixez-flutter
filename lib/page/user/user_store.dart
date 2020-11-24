@@ -26,7 +26,7 @@ part 'user_store.g.dart';
 class UserStore = _UserStoreBase with _$UserStore;
 
 abstract class _UserStoreBase with Store {
-  final ApiClient client=apiClient;
+  final ApiClient client = apiClient;
   final int id;
   @observable
   UserDetail userDetail;
@@ -35,14 +35,13 @@ abstract class _UserStoreBase with Store {
   @observable
   int value = 0;
 
-  _UserStoreBase(this.id,{this.userDetail});
+  _UserStoreBase(this.id, {this.userDetail});
 
   @action
   Future<void> follow({bool needPrivate = false}) async {
     if (userDetail.user.is_followed) {
       try {
-        Response response = await client.postUnFollowUser(id);
-
+        await client.postUnFollowUser(id);
         userDetail.user.is_followed = false;
         isFollow = userDetail.user.is_followed;
       } on DioError catch (e) {
@@ -53,7 +52,7 @@ abstract class _UserStoreBase with Store {
     }
     if (needPrivate) {
       try {
-        Response response = await client.postFollowUser(id, 'private');
+        await client.postFollowUser(id, 'private');
         userDetail.user.is_followed = true;
         isFollow = userDetail.user.is_followed;
       } on DioError catch (e) {
@@ -62,7 +61,7 @@ abstract class _UserStoreBase with Store {
       }
     } else {
       try {
-        Response response = await client.postFollowUser(id, 'public');
+        await client.postFollowUser(id, 'public');
         userDetail.user.is_followed = true;
         isFollow = userDetail.user.is_followed;
       } on DioError catch (e) {

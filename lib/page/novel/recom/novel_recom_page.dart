@@ -91,7 +91,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                Novel novel = _store.novels[index];
+                Novel novel = _store.novels[index].novel;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: InkWell(
@@ -101,7 +101,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                               builder: (BuildContext context) =>
                                   NovelViewerPage(
                                     id: novel.id,
-                                    novel: novel,
+                                    novelStore: _store.novels[index],
                                   )));
                     },
                     child: Card(

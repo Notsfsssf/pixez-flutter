@@ -30,9 +30,9 @@ import 'package:share/share.dart';
 
 class NovelViewerPage extends StatefulWidget {
   final int id;
-  final Novel novel;
+  final NovelStore novelStore;
 
-  const NovelViewerPage({Key key, @required this.id, @required this.novel})
+  const NovelViewerPage({Key key, @required this.id, this.novelStore})
       : super(key: key);
 
   @override
@@ -45,7 +45,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
 
   @override
   void initState() {
-    _novelStore = NovelStore(widget.id,widget.novel)..fetch();
+    _novelStore = widget.novelStore ?? NovelStore(widget.id, null);
+    _novelStore.fetch();
     _controller = ScrollController();
     super.initState();
   }
@@ -59,6 +60,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   final double leading = 0.9;
   final double textLineHeight = 2;
   final double fontSize = 16;
+
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -96,7 +98,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             ),
           );
         }
-        if (_novelStore.novelTextResponse != null&&_novelStore.novel!=null) {
+        if (_novelStore.novelTextResponse != null &&
+            _novelStore.novel != null) {
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
@@ -105,9 +108,12 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 NovelBookmarkButton(
                   novel: _novelStore.novel,
                 ),
-                IconButton(icon: Icon(Icons.share), onPressed: (){
-                  Share.share("https://www.pixiv.net/novel/show.php?id=${widget.id}");
-                }),
+                IconButton(
+                    icon: Icon(Icons.share),
+                    onPressed: () {
+                      Share.share(
+                          "https://www.pixiv.net/novel/show.php?id=${widget.id}");
+                    }),
                 IconButton(
                   icon: Icon(Icons.more_vert),
                   onPressed: () {
@@ -268,9 +274,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(
                 builder: (BuildContext context) => NovelViewerPage(
-                      id: series.id,
-                      novel: series,
-                    )));
+                  id: series.id,
+                  novelStore: NovelStore(series.id, series),
+                )));
       },
     );
   }

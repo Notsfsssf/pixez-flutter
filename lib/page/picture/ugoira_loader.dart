@@ -88,7 +88,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 });
                 BotToast.showCustomText(
                     toastBuilder: (_) => Text("encoding..."));
-              } on PlatformException catch (e) {
+              } on PlatformException {
                 isEncoding = false;
               }
             }

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/network/api_client.dart';

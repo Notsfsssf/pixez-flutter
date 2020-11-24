@@ -46,35 +46,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
     super.initState();
   }
 
-  _showMaterialBottom() {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (context, setM) {
-            return Container(
-                child: Column(
-              children: <Widget>[
-                TabBar(tabs: [
-                  Tab(text: 's'),
-                  Tab(text: 'x'),
-                  Tab(
-                    text: 'y',
-                  )
-                ]),
-                TabBar(tabs: [
-                  Tab(text: 's'),
-                  Tab(text: 'x'),
-                  Tab(
-                    text: 'y',
-                  )
-                ]),
-                Slider(value: 0, max: 10, onChanged: (value) {})
-              ],
-            ));
-          });
-        });
-  }
-
   List<int> starNum = [
     0,
     100,

@@ -31,7 +31,6 @@ import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_about_grid.dart';
-import 'package:pixez/page/picture/illust_about_sliver.dart';
 import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -559,32 +558,6 @@ class _IllustPageState extends State<IllustPage> {
       }
       return result;
     }
-  }
-
-  Widget _buildSliver(BuildContext context, Illusts data) {
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-            delegate: SliverChildListDelegate([
-          ...(data.type == "ugoira")
-              ? [
-                  UgoiraLoader(
-                    id: widget.id,
-                    illusts: data,
-                  )
-                ]
-              : buildPage(context, data)
-        ])),
-        SliverToBoxAdapter(
-          child: IllustDetailBody(
-            illust: data,
-          ),
-        ),
-        IllustAboutSliver(
-          id: data.id,
-        )
-      ],
-    );
   }
 
   Widget _buildBody(BuildContext context, Illusts data) {

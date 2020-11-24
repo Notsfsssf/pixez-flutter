@@ -22,7 +22,6 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/soup/soup_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 

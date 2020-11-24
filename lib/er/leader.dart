@@ -99,9 +99,10 @@ class Leader {
           Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (context) {
             return NovelViewerPage(
-              id: int.parse(id), novel: null,
-            );
-          }));
+                id: int.parse(id),
+                novelStore: null,
+              );
+            }));
           return;
         } catch (e) {}
       }

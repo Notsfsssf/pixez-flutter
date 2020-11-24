@@ -88,6 +88,11 @@ class _AboutPageState extends State<AboutPage> {
         'https://avatars0.githubusercontent.com/u/20792268?s=64&v=4',
         'https://github.com/takase1121',
         '🌍'),
+    Contributor(
+        'ChsBuffer',
+        'https://avatars3.githubusercontent.com/u/33744752?s=64&v=4',
+        'https://github.com/chsbuffer',
+        '💻')
   ];
 
   StreamSubscription _purchaseUpdatedSubscription;
