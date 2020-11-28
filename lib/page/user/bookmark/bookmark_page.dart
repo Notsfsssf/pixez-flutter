@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -23,6 +24,7 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/user/bookmark/tag/user_bookmark_tag_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class BookmarkPage extends StatefulWidget {
   final int id;
@@ -45,12 +47,25 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage> {
   FutureGet futureGet;
   String restrict = 'public';
+  ReactionDisposer disposer;
+  RefreshController _refreshController;
 
   @override
   void initState() {
+    _refreshController = RefreshController();
     restrict = widget.restrict;
     futureGet = () => apiClient.getBookmarksIllust(widget.id, restrict, null);
     super.initState();
+    disposer = when((_) => topStore.topName == "302", () {
+      _refreshController.position.jumpTo(0);
+    });
+  }
+
+  @override
+  void dispose() {
+    disposer();
+    _refreshController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -61,6 +76,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           children: [
             LightingList(
               source: futureGet,
+              refreshController: _refreshController,
               header: Container(
                 height: 45,
               ),

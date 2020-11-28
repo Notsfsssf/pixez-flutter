@@ -196,5 +196,6 @@
   "legacy_mode_warning": "android10以降では推奨しません",
   "clear_old_format_file": "Clear old format file",
   "clear_old_format_file_message": "without _p0",
-  "login_error_message": "Incorrect account or password, or using a weak password, may cause login failure"
+  "login_error_message": "Incorrect account or password, or using a weak password, may cause login failure",
+  "translate": "翻译"
 }

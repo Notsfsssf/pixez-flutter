@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
@@ -48,6 +49,14 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   LightingStore _lightingStore;
   RecomUserStore _recomUserStore;
 
+  ReactionDisposer disposer;
+
+  @override
+  void dispose() {
+    dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     _easyRefreshController = RefreshController();
@@ -60,6 +69,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     }
     super.initState();
     initMethod();
+    disposer = when((_) => topStore.topName == "100", () {
+      _easyRefreshController.position.jumpTo(0);
+    });
   }
 
   initMethod() async {

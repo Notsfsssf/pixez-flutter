@@ -14,11 +14,14 @@
  *
  */
 
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/component/text_selection_toolbar.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/supportor_plugin.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -32,46 +35,89 @@ class SelectableHtml extends StatefulWidget {
 }
 
 class _SelectableHtmlState extends State<SelectableHtml> {
+  bool l = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    initMethod();
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () async {
-        await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("长按复制"),
-                content: SelectableText(widget.data ?? ""),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(I18n.of(context).ok),
-                    onPressed: () {
-                      Navigator.of(context).pop("OK");
-                    },
+        setState(() {
+          l = true;
+        });
+      },
+      child: l
+          ? Container(
+              child: Column(
+                children: [
+                  ExtendedText(
+                    (widget.data ?? "~").toTranslateText(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                    selectionEnabled: true,
+                    textSelectionControls: TranslateTextSelectionControls(),
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (supportTranslate)
+                        InkWell(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(Icons.translate),
+                          ),
+                          onTap: () {
+                            SupportorPlugin.start(
+                                (widget.data ?? "~").toTranslateText());
+                          },
+                        ),
+                      InkWell(
+                          child: Icon(Icons.close),
+                          onTap: () {
+                            setState(() {
+                              l = false;
+                            });
+                          })
+                    ],
                   )
                 ],
-              );
-            });
-      },
-      child: HtmlWidget(
-        widget.data ?? '~',
-        customStylesBuilder: (e) {
-          if (e.attributes.containsKey('href')) {
-            final color = userSetting.themeData.accentColor;
-            return {
-              'color': '#${color.value.toRadixString(16).substring(2, 8)}'
-            };
-          }
-          return null;
-        },
-        onTapUrl: (String url) async {
-          if (await canLaunch(url)) {
-            await launch(url);
-          } else {
-            Share.share(url);
-          }
-        },
-      ),
+              ),
+            )
+          : HtmlWidget(
+              widget.data ?? '~',
+              customStylesBuilder: (e) {
+                if (e.attributes.containsKey('href')) {
+                  final color = userSetting.themeData.accentColor;
+                  return {
+                    'color': '#${color.value.toRadixString(16).substring(2, 8)}'
+                  };
+                }
+                return null;
+              },
+              onTapUrl: (String url) async {
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  Share.share(url);
+                }
+              },
+            ),
     );
+  }
+
+  bool supportTranslate = false;
+
+  Future<void> initMethod() async {
+    bool results = await SupportorPlugin.processText();
+    setState(() {
+      supportTranslate = results;
+    });
   }
 }

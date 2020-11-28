@@ -28,6 +28,16 @@ extension TimeExts on String {
     }
   }
 
+  String toTranslateText() {
+    return this
+        .replaceAll("</br>", "\n")
+        .replaceAll("<br />", "\n")
+        .replaceAll("<strong>", "")
+        .replaceAll("</strong>", "")
+        .replaceAll("<p>", "")
+        .replaceAll("</p>", "");
+  }
+
   String toTrueUrl() {
     if (userSetting.disableBypassSni || this.contains("novel")) {
       return this;

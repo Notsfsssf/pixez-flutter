@@ -22,24 +22,26 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
-import 'package:pixez/exts.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
   final Widget header;
   final bool isNested;
+  final RefreshController refreshController;
 
   const LightingList({
     Key key,
     @required this.source,
     this.header,
     this.isNested,
+    this.refreshController,
   }) : super(key: key);
 
   @override
@@ -66,6 +68,7 @@ class _LightingListState extends State<LightingList> {
   @override
   void initState() {
     _isNested = widget.isNested ?? false;
+    _refreshController = widget.refreshController ?? RefreshController();
     _store = LightingStore(
       widget.source,
       _refreshController,
@@ -118,7 +121,7 @@ class _LightingListState extends State<LightingList> {
     });
   }
 
-  RefreshController _refreshController = RefreshController();
+  RefreshController _refreshController;
 
   CustomFooter _buildCustomFooter() {
     return CustomFooter(

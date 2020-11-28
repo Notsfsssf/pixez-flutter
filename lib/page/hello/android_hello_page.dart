@@ -116,7 +116,14 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           selectedItemColor: Theme.of(context).accentColor,
           currentIndex: index,
           onTap: (index) {
-            if (this.index == index) {}
+            if (this.index == index) {
+              tapCount++;
+              if (tapCount == 2) {
+                topStore.setTop("${index + 1}00");
+                tapCount = 0;
+              }
+            } else
+              tapCount = 0;
             setState(() {
               this.index = index;
             });
@@ -139,6 +146,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           ]),
     );
   }
+
+  int tapCount = 0;
 
   int index;
   PageController _pageController;

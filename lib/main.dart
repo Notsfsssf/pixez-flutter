@@ -55,6 +55,7 @@ final HistoryStore historyStore = HistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
 final SplashStore splashStore = SplashStore(OnezeroClient());
+
 main() {
   initAppWidget();
   runApp(MyApp());

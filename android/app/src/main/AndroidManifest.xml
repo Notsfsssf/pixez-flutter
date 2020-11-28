@@ -31,7 +31,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/card_app_widget_info" />
         </receiver>
-
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

@@ -17,9 +17,11 @@
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
@@ -138,6 +140,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: ExtendedText(
                     _novelStore.novelTextResponse.novelText,
+                    textSelectionControls: TranslateTextSelectionControls(),
                     selectionEnabled: true,
                     specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
                     style: Theme.of(context).textTheme.bodyText1,
@@ -273,7 +276,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => NovelViewerPage(
+            builder: (BuildContext context) =>
+                NovelViewerPage(
                   id: series.id,
                   novelStore: NovelStore(series.id, series),
                 )));
@@ -281,3 +285,5 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     );
   }
 }
+
+

@@ -17,14 +17,17 @@
 package com.perol.pixez
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Bundle
+import android.os.Build
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -39,13 +42,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import java.util.*
 import kotlin.Comparator
+import kotlin.collections.HashMap
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
+    private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
     var isHelplessWay = false
     private val OPEN_DOCUMENT_TREE_CODE = 190
     private val PICK_IMAGE_FILE = 2
@@ -194,6 +201,38 @@ class MainActivity : FlutterActivity() {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SUPPORTER_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "process_text") {
+                try {
+                    val queryIntentActivities = packageManager.queryIntentActivities(Intent().apply {
+                        type = "text/plain"
+                    }, 0)
+                    for (resolveInfo: ResolveInfo in queryIntentActivities) {
+                        if (resolveInfo.activityInfo.packageName.contains("com.google.android.apps.translate")) {
+                            result.success(true)
+                            return@setMethodCallHandler
+                        }
+                    }
+                } catch (ignore: Throwable) {
+
+                }
+                result.success(false)
+            }
+            if (call.method == "process") {
+                val text = call.argument<String>("text")
+                val intent = Intent()
+                        .setType("text/plain")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    intent.action = Intent.ACTION_PROCESS_TEXT
+                    intent.putExtra(Intent.EXTRA_PROCESS_TEXT, text)
+                } else {
+                    intent.action = Intent.ACTION_SEND
+                    intent.putExtra(Intent.EXTRA_TEXT, text)
+                }
+                startActivity(intent)
+                result.success(0)
+            }
+        }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!

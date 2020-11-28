@@ -18,6 +18,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
@@ -40,14 +42,26 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 
-class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin {
+class _NewPageState extends State<NewPage>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  TabController _tabController;
+  ReactionDisposer disposer;
+
   @override
   void initState() {
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
+    disposer = when((_) => topStore.topName == "300", () {
+      String name = (300 + _tabController.index + 1).toString();
+      LPrinter.d(name);
+      topStore.setTop(name);
+    });
   }
 
   @override
   void dispose() {
+    disposer();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -56,54 +70,54 @@ class _NewPageState extends State<NewPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return Observer(builder: (context) {
       if (accountStore.now != null)
-        return DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            body: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                AppBar(
-                  automaticallyImplyLeading: false,
-                  title:
-                      TabBar(indicatorSize: TabBarIndicatorSize.label, tabs: [
-                    Tab(
-                      text: I18n.of(context).news,
+        return Scaffold(
+          body: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              AppBar(
+                automaticallyImplyLeading: false,
+                title: TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    controller: _tabController,
+                    tabs: [
+                      Tab(
+                        text: I18n.of(context).news,
+                      ),
+                      Tab(
+                        text: I18n.of(context).bookmark,
+                      ),
+                      Tab(
+                        text: I18n.of(context).followed,
+                      ),
+                    ]),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.account_circle),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => UsersPage(
+                                id: int.parse(accountStore.now.userId),
+                              )));
+                    },
+                  )
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    NewIllustPage(),
+                    BookmarkPage(
+                      isNested: false,
+                      id: int.parse(accountStore.now.userId),
                     ),
-                    Tab(
-                      text: I18n.of(context).bookmark,
+                    FollowList(
+                      id: int.parse(accountStore.now.userId),
                     ),
-                    Tab(
-                      text: I18n.of(context).followed,
-                    ),
-                  ]),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.account_circle),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => UsersPage(
-                                  id: int.parse(accountStore.now.userId),
-                                )));
-                      },
-                    )
                   ],
                 ),
-                Expanded(
-                  child: TabBarView(
-                    children: <Widget>[
-                      NewIllustPage(),
-                      BookmarkPage(
-                        isNested: false,
-                        id: int.parse(accountStore.now.userId),
-                      ),
-                      FollowList(
-                        id: int.parse(accountStore.now.userId),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         );
 
