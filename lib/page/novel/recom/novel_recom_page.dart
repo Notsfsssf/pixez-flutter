@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -78,6 +80,9 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
         onLoading: () => _store.next(),
         enablePullUp: true,
         controller: _easyRefreshController,
+        header: Platform.isAndroid?MaterialClassicHeader(
+          color: Theme.of(context).accentColor,
+        ):ClassicHeader(),
         child: CustomScrollView(
           slivers: [
             SliverAppBar(

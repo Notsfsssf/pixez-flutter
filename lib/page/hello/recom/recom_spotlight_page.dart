@@ -50,12 +50,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   LightingStore _lightingStore;
   RecomUserStore _recomUserStore;
 
-  ReactionDisposer disposer;
 
   @override
   void dispose() {
     subscription?.cancel();
-    dispose();
     super.dispose();
   }
 

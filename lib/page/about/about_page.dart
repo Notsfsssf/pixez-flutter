@@ -14,7 +14,6 @@
  *
  */
 
-import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -22,13 +21,12 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
@@ -496,6 +494,7 @@ class _AboutPageState extends State<AboutPage> {
             for (var i in iapStore.items)
               Card(
                 child: ListTile(
+                leading: Icon(FontAwesomeIcons.coffee),
                   title: Text(i.description),
                   subtitle: Text(i.localizedPrice),
                   onTap: () {
