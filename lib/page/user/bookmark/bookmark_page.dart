@@ -14,9 +14,10 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobx/mobx.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -47,8 +48,8 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage> {
   FutureGet futureGet;
   String restrict = 'public';
-  ReactionDisposer disposer;
   RefreshController _refreshController;
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -56,14 +57,16 @@ class _BookmarkPageState extends State<BookmarkPage> {
     restrict = widget.restrict;
     futureGet = () => apiClient.getBookmarksIllust(widget.id, restrict, null);
     super.initState();
-    disposer = when((_) => topStore.topName == "302", () {
-      _refreshController.position.jumpTo(0);
+    subscription = topStore.topStream.listen((event) {
+      if (event == "302") {
+        _refreshController?.position?.jumpTo(0);
+      }
     });
   }
 
   @override
   void dispose() {
-    disposer();
+    subscription?.cancel();
     _refreshController?.dispose();
     super.dispose();
   }

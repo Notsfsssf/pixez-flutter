@@ -14,9 +14,10 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobx/mobx.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -36,23 +37,24 @@ class NewIllustPage extends StatefulWidget {
 
 class _NewIllustPageState extends State<NewIllustPage> {
   FutureGet futureGet;
-
-  ReactionDisposer disposer;
   RefreshController _refreshController;
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
     _refreshController = RefreshController();
     futureGet = () => apiClient.getFollowIllusts(widget.restrict);
     super.initState();
-    disposer = when((_) => topStore.topName == "301", () {
-      _refreshController.position.jumpTo(0);
+    subscription = topStore.topStream.listen((event) {
+      if (event == "301") {
+        _refreshController?.position?.jumpTo(0);
+      }
     });
   }
 
   @override
   void dispose() {
-    disposer();
+    subscription?.cancel();
     _refreshController?.dispose();
     super.dispose();
   }

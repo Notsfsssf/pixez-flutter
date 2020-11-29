@@ -128,6 +128,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     saveStore?.dispose();
+    topStore?.dispose();
     super.dispose();
   }
 

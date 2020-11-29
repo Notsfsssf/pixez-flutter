@@ -14,9 +14,9 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
@@ -34,24 +34,25 @@ class RankModePage extends StatefulWidget {
 }
 
 class _RankModePageState extends State<RankModePage> {
-  ReactionDisposer disposer;
   RefreshController _refreshController;
 
   @override
   void dispose() {
-    disposer();
     _refreshController?.dispose();
+    subscription?.cancel();
     super.dispose();
   }
+
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
     super.initState();
     _refreshController = RefreshController();
-    disposer =
-        when((_) => topStore.topName == (201 + widget.index).toString(), () {
-      LPrinter.d(widget.index);
-      _refreshController.position.jumpTo(0);
+    subscription = topStore.topStream.listen((event) {
+      if (event == (201 + widget.index).toString()) {
+        _refreshController?.position?.jumpTo(0);
+      }
     });
   }
 
@@ -59,11 +60,10 @@ class _RankModePageState extends State<RankModePage> {
   Widget build(BuildContext context) {
     return LightingList(
       refreshController: _refreshController,
-      source: () =>
-          apiClient.getIllustRanking(
-            widget.mode,
-            widget.date,
-          ),
+      source: () => apiClient.getIllustRanking(
+        widget.mode,
+        widget.date,
+      ),
     );
   }
 }

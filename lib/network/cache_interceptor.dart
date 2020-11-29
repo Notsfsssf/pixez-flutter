@@ -17,14 +17,17 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:pixez/er/lprinter.dart';
+import 'package:quiver/collection.dart';
 
 class CacheInterceptor extends Interceptor {
   CacheInterceptor();
 
-  var _cache = Map<Uri, Response>();
+  LruMap _cache = LruMap<Uri, Response>(maximumSize: 10);
 
   final String RELATED_LINK = "/v2/illust/related";
+
+  final String TAG_RECOMMEND_LINK = "/v1/trending-tags/illust";
+
   @override
   Future onRequest(RequestOptions options) async {
     final extra = options.extra["refresh"];
@@ -39,8 +42,8 @@ class CacheInterceptor extends Interceptor {
 
   @override
   Future onResponse(Response response) async {
-    if (response.request.uri.path.contains(RELATED_LINK)) {
-      LPrinter.d("save cache");
+    if (response.request.uri.path.contains(RELATED_LINK) ||
+        response.request.uri.path.contains(TAG_RECOMMEND_LINK)) {
       _cache[response.request.uri] = response;
     }
   }

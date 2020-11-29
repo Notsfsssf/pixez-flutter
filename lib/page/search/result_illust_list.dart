@@ -25,6 +25,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result_illust_store.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ResultIllustList extends StatefulWidget {
   final String word;
@@ -38,12 +39,19 @@ class ResultIllustList extends StatefulWidget {
 class _ResultIllustListState extends State<ResultIllustList> {
   ResultIllustStore resultIllustStore;
   FutureGet futureGet;
+  RefreshController _refreshController;
 
   @override
   void initState() {
+    _refreshController = RefreshController();
     futureGet = () => apiClient.getSearchIllust(widget.word);
 
     super.initState();
+    topStore.topStream.listen((event) {
+      if (event == "401") {
+        _refreshController?.position?.jumpTo(0);
+      }
+    });
   }
 
   List<int> starNum = [
@@ -119,7 +127,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
               )
             ],
           ),
-          Expanded(child: LightingList(source: futureGet))
+          Expanded(
+              child: LightingList(
+            source: futureGet,
+            refreshController: _refreshController,
+          ))
         ],
       ),
     );

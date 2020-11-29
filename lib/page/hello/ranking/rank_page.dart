@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -32,7 +34,7 @@ class RankPage extends StatefulWidget {
 }
 
 class _RankPageState extends State<RankPage>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin {
   RankStore rankStore;
   final modeList = [
     "day",
@@ -49,15 +51,13 @@ class _RankPageState extends State<RankPage>
   var boolList = Map<int, bool>();
   DateTime nowDate;
 
-  ReactionDisposer disposer;
-  TabController _tabController;
-
   @override
   void dispose() {
-    dispose();
-    _tabController?.dispose();
+    subscription?.cancel();
     super.dispose();
   }
+
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -69,8 +69,10 @@ class _RankPageState extends State<RankPage>
       i++;
     });
     super.initState();
-    disposer = when((_) => topStore.topName == "200", () {
-      topStore.setTop((201 + _tabController.index).toString());
+    subscription = topStore.topStream.listen((event) {
+      if (event == "200") {
+        topStore.setTop((201 + index).toString());
+      }
     });
   }
 
@@ -108,66 +110,66 @@ class _RankPageState extends State<RankPage>
           int index = modeList.indexOf(rankStore.modeList[i]);
           titles.add(list[index]);
         }
-        _tabController =
-            TabController(length: rankStore.modeList.length, vsync: this);
-        return Column(
-          children: <Widget>[
-            AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.transparent,
-              title: TabBar(
-                controller: _tabController,
-                onTap: (i) {
-                  if (i == index) {
-                    tapCount++;
-                    if (tapCount == 2) {
-                      topStore.setTop((201 + _tabController.index).toString());
-                      tapCount = 0;
-                    }
-                  } else
-                    tapCount = 0;
-                  setState(() {
-                    this.index = i;
-                  });
-                },
-                indicatorSize: TabBarIndicatorSize.label,
-                isScrollable: true,
-                tabs: <Widget>[
-                  for (var i in titles)
-                    Tab(
-                      text: i,
+        return DefaultTabController(
+          length: rankStore.modeList.length,
+          child: Column(
+            children: <Widget>[
+              AppBar(
+                elevation: 0.0,
+                backgroundColor: Colors.transparent,
+                title: TabBar(
+                  onTap: (i) {
+                    setState(() {
+                      this.index = i;
+                    });
+                    // if (i == index) {
+                    //   tapCount++;
+                    //   if (tapCount == 2) {
+                    //     topStore.setTop((201 + i).toString());
+                    //     tapCount = 0;
+                    //   }
+                    // } else
+                    //   tapCount = 0;
+                  },
+                  indicatorSize: TabBarIndicatorSize.label,
+                  isScrollable: true,
+                  tabs: <Widget>[
+                    for (var i in titles)
+                      Tab(
+                        text: i,
+                      ),
+                  ],
+                ),
+                actions: <Widget>[
+                  Visibility(
+                    visible: index < rankStore.modeList.length,
+                    child: IconButton(
+                      icon: Icon(Icons.date_range),
+                      onPressed: () async {
+                        await _showTimePicker(context);
+                      },
                     ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.undo),
+                    onPressed: () {
+                      rankStore.reset();
+                    },
+                  )
                 ],
               ),
-              actions: <Widget>[
-                Visibility(
-                  visible: index < rankStore.modeList.length,
-                  child: IconButton(
-                    icon: Icon(Icons.date_range),
-                    onPressed: () async {
-                      await _showTimePicker(context);
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.undo),
-                  onPressed: () {
-                    rankStore.reset();
-                  },
-                )
-              ],
-            ),
-            Expanded(
-              child: TabBarView(controller: _tabController, children: [
-                for (var element in rankStore.modeList)
-                  RankModePage(
-                    date: dateTime,
-                    mode: element,
-                    index: rankStore.modeList.indexOf(element),
-                  ),
-              ]),
-            )
-          ],
+              Expanded(
+                child: TabBarView(children: [
+                  for (var element in rankStore.modeList)
+                    RankModePage(
+                      date: dateTime,
+                      mode: element,
+                      index: rankStore.modeList.indexOf(element),
+                    ),
+                ]),
+              )
+            ],
+          ),
         );
       } else {
         return _buildChoicePage(context, rankListMean);

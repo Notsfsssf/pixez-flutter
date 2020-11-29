@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -45,22 +47,23 @@ class NewPage extends StatefulWidget {
 class _NewPageState extends State<NewPage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   TabController _tabController;
-  ReactionDisposer disposer;
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
-    disposer = when((_) => topStore.topName == "300", () {
-      String name = (300 + _tabController.index + 1).toString();
-      LPrinter.d(name);
-      topStore.setTop(name);
+    subscription = topStore.topStream.listen((event) {
+      if (event == "300") {
+        String name = (300 + _tabController.index + 1).toString();
+        topStore.setTop(name);
+      }
     });
   }
 
   @override
   void dispose() {
-    disposer();
+    subscription?.cancel();
     _tabController?.dispose();
     super.dispose();
   }
@@ -79,6 +82,10 @@ class _NewPageState extends State<NewPage>
                 title: TabBar(
                     indicatorSize: TabBarIndicatorSize.label,
                     controller: _tabController,
+                    onTap: (i) {
+                      if (_tabController.index == i)
+                        topStore.setTop((301 + i).toString());
+                    },
                     tabs: [
                       Tab(
                         text: I18n.of(context).news,

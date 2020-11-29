@@ -138,8 +138,8 @@ class _AboutPageState extends State<AboutPage> {
       if (productItem.purchaseStateAndroid == 1) {
         if (!productItem.isAcknowledgedAndroid) {
           FlutterInappPurchase.instance.acknowledgePurchaseAndroid(
-              productItem.purchaseToken,
-              developerPayload: productItem.developerPayloadAndroid);
+            productItem.purchaseToken,
+          );
         }
         print('purchase-acknowledgePurchaseAndroid: ok');
         BotToast.showText(text: 'thanks');

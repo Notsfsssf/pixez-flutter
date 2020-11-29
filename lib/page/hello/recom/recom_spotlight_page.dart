@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
@@ -53,9 +54,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void dispose() {
+    subscription?.cancel();
     dispose();
     super.dispose();
   }
+
+  StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -69,8 +73,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     }
     super.initState();
     initMethod();
-    disposer = when((_) => topStore.topName == "100", () {
-      _easyRefreshController.position.jumpTo(0);
+    subscription = topStore.topStream.listen((event) {
+      if (event == "100") {
+        _easyRefreshController.position.jumpTo(0);
+      }
     });
   }
 

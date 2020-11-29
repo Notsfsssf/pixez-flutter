@@ -229,8 +229,12 @@ class MainActivity : FlutterActivity() {
                     intent.action = Intent.ACTION_SEND
                     intent.putExtra(Intent.EXTRA_TEXT, text)
                 }
-                startActivity(intent)
                 result.success(0)
+                try {
+                    startActivity(intent)
+
+                } catch (throwable: Throwable) {
+                }
             }
         }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->

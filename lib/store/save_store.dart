@@ -34,6 +34,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
+import 'package:quiver/collection.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 
 part 'save_store.g.dart';
@@ -201,7 +202,7 @@ abstract class _SaveStoreBase with Store {
 
   final imageDio = Dio();
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
-  Map<String, JobEntity> jobMaps = Map();
+  LruMap<String, JobEntity> jobMaps = LruMap();
 
   _joinOnDart(String url, Illusts illusts, String fileName) async {
     final result = await taskPersistProvider.getAccount(url);

@@ -18,11 +18,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pixez/supportor_plugin.dart';
 
-const double _kHandleSize = 21.0;
+const double _kHandleSize = 20.0;
 const double _kToolbarScreenPadding = 3.0;
-const double _kToolbarHeight = 31.0;
+const double _kToolbarHeight = 32.0;
 const double _kToolbarContentDistanceBelow = _kHandleSize - 1.0;
-const double _kToolbarContentDistance = 7.0;
+const double _kToolbarContentDistance = 4.0;
 
 class TranslateTextSelectionControls
     extends ExtendedMaterialTextSelectionControls {
