@@ -135,22 +135,27 @@ class _AboutPageState extends State<AboutPage> {
             title: Text('Perol_Notsfsssf'),
             subtitle: Text(I18n.of(context).perol_message),
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                ),
-                builder: (BuildContext context) {
-                  return Container(
-                    child: Image.asset(
-                      'assets/images/liz.png',
-                      fit: BoxFit.cover,
+              if (Platform.isIOS)
+                showModalBottomSheet(
+                  context: context,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
                     ),
-                  );
-                },
-              );
+                  ),
+                  builder: (BuildContext context) {
+                    return Container(
+                      child: Image.asset(
+                        'assets/images/liz.png',
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                );
+              else
+                launch(Constants.isGooglePlay
+                    ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
+                    : "https://www.bilibili.com/video/BV16J411N7xa");
             },
           ),
           ListTile(
@@ -419,6 +424,11 @@ class _AboutPageState extends State<AboutPage> {
               }
             },
           ),
+          ListTile(
+            leading: Icon(FontAwesomeIcons.telegram),
+            title: Text("Group"),
+            subtitle: SelectableText("t.me/PixEzViewer"),
+          ),
           if (Platform.isAndroid && !Constants.isGooglePlay) ...[
             ListTile(
               title: Text(I18n.of(context).donate_title),
@@ -490,11 +500,15 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ),
           ],
-          if (!Platform.isIOS && iapStore.items.isNotEmpty)
+          if (!Platform.isIOS &&
+              iapStore.items.isNotEmpty &&
+              Constants.isGooglePlay)
             for (var i in iapStore.items)
               Card(
+                margin: EdgeInsets.all(8.0),
+                elevation: 1.0,
                 child: ListTile(
-                leading: Icon(FontAwesomeIcons.coffee),
+                  leading: Icon(FontAwesomeIcons.coffee),
                   title: Text(i.description),
                   subtitle: Text(i.localizedPrice),
                   onTap: () {
