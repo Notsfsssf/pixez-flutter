@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,12 +58,19 @@ class _SelectableHtmlState extends State<SelectableHtml> {
           ? Container(
               child: Column(
                 children: [
-                  ExtendedText(
-                    (widget.data ?? "~").toTranslateText(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                    selectionEnabled: true,
-                    textSelectionControls: TranslateTextSelectionControls(),
-                  ),
+                  (Platform.isAndroid)
+                      ? ExtendedText(
+                          (widget.data ?? "~").toTranslateText(),
+                          style: Theme.of(context).textTheme.bodyText1,
+                          selectionEnabled: true,
+                          textSelectionControls:
+                              TranslateTextSelectionControls(),
+                        )
+                      : ExtendedText(
+                          (widget.data ?? "~").toTranslateText(),
+                          style: Theme.of(context).textTheme.bodyText1,
+                          selectionEnabled: true,
+                        ),
                   Divider(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

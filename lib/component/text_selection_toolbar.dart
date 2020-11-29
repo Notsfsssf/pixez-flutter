@@ -13,10 +13,13 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pixez/supportor_plugin.dart';
+import 'package:share_extend/share_extend.dart';
 
 const double _kHandleSize = 20.0;
 const double _kToolbarScreenPadding = 3.0;
@@ -84,6 +87,13 @@ class TranslateTextSelectionControls
             handleLike: () async {
               final TextEditingValue value = delegate.textEditingValue;
               String selectionText = value.selection.textInside(value.text);
+              if (Platform.isIOS) {
+                ShareExtend.share(
+                  selectionText,
+                  "text"
+                );
+                return;
+              }
               await SupportorPlugin.start(selectionText);
             },
           ),

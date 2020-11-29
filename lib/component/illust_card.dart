@@ -109,12 +109,14 @@ class IllustCard extends StatelessWidget {
             tag: tag,
             child: PixivImage(
               store.illusts.imageUrls.squareMedium,
+              fit:BoxFit.fitWidth
             ),
           )
         : NullHero(
             tag: tag,
             child: PixivImage(
               store.illusts.imageUrls.medium,
+              fit:BoxFit.fitWidth
             ),
           );
   }
