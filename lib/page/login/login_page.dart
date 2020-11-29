@@ -153,16 +153,16 @@ class _LoginPageState extends State<LoginPage> {
                                   decoration: BoxDecoration(
                                     color: Colors.redAccent,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
+                                        BorderRadius.all(Radius.circular(4.0)),
                                   ),
                                   padding: EdgeInsets.all(4.0),
                                   child: Text(
-                                    _loginStore.errorMessage ??
-                                        "".contains('103') ? _loginStore
-                                        .errorMessage ?? "\n" + I18n
-                                        .of(context)
-                                        .login_error_message : _loginStore
-                                        .errorMessage ?? "",
+                                    (_loginStore.errorMessage ?? "")
+                                            .contains('103')
+                                        ? ((_loginStore.errorMessage ?? "\n") +
+                                            I18n.of(context)
+                                                .login_error_message)
+                                        : _loginStore.errorMessage ?? "",
                                     textAlign: TextAlign.start,
                                     style: TextStyle(color: Colors.white),
                                   ),
@@ -171,13 +171,9 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           }),
                           RaisedButton(
-                              color: Theme
-                                  .of(context)
-                                  .primaryColor,
+                              color: Theme.of(context).primaryColor,
                               child: Text(
-                                I18n
-                                    .of(context)
-                                    .login,
+                                I18n.of(context).login,
                               ),
                               onPressed: () async {
                                 if (userNameController.value.text.isEmpty ||
@@ -186,8 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                                 BotToast.showCustomText(
                                     onlyOne: true,
                                     duration: Duration(seconds: 1),
-                                    toastBuilder: (textCancel) =>
-                                        Align(
+                                    toastBuilder: (textCancel) => Align(
                                           alignment: Alignment(0, 0.8),
                                           child: Card(
                                             child: Row(
@@ -195,18 +190,17 @@ class _LoginPageState extends State<LoginPage> {
                                               children: <Widget>[
                                                 Padding(
                                                   padding:
-                                                  const EdgeInsets.all(8.0),
+                                                      const EdgeInsets.all(8.0),
                                                   child: Icon(
                                                     Icons.scatter_plot,
                                                   ),
                                                 ),
                                                 Padding(
                                                   padding: const EdgeInsets
-                                                      .symmetric(
+                                                          .symmetric(
                                                       horizontal: 8.0,
                                                       vertical: 8.0),
-                                                  child: Text(I18n
-                                                      .of(context)
+                                                  child: Text(I18n.of(context)
                                                       .attempting_to_log_in),
                                                 )
                                               ],
@@ -221,10 +215,10 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                        Platform.isIOS
-                                            ? HelloPage()
-                                            : AndroidHelloPage()),
-                                        (route) => route == null,
+                                            Platform.isIOS
+                                                ? HelloPage()
+                                                : AndroidHelloPage()),
+                                    (route) => route == null,
                                   );
                                 }
                               }),
@@ -233,8 +227,8 @@ class _LoginPageState extends State<LoginPage> {
                               final result = await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                        return CreateUserPage();
-                                      }));
+                                return CreateUserPage();
+                              }));
                               if (result != null &&
                                   result is CreateUserResponse) {
                                 userNameController.text =
@@ -250,23 +244,19 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                        Platform.isIOS
-                                            ? HelloPage()
-                                            : AndroidHelloPage()),
-                                        (route) => route == null,
+                                            Platform.isIOS
+                                                ? HelloPage()
+                                                : AndroidHelloPage()),
+                                    (route) => route == null,
                                   );
                                 }
                               }
                             },
-                            child: Text(I18n
-                                .of(context)
-                                .dont_have_account),
+                            child: Text(I18n.of(context).dont_have_account),
                           ),
                           FlatButton(
                             child: Text(
-                              I18n
-                                  .of(context)
-                                  .terms,
+                              I18n.of(context).terms,
                             ),
                             onPressed: () async {
                               final url =

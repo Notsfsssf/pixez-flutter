@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,18 +42,24 @@ class _ResultIllustListState extends State<ResultIllustList> {
   ResultIllustStore resultIllustStore;
   FutureGet futureGet;
   RefreshController _refreshController;
+  StreamSubscription<String> listen;
 
   @override
   void initState() {
     _refreshController = RefreshController();
     futureGet = () => apiClient.getSearchIllust(widget.word);
-
     super.initState();
-    topStore.topStream.listen((event) {
+    listen = topStore.topStream.listen((event) {
       if (event == "401") {
         _refreshController?.position?.jumpTo(0);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    listen?.cancel();
+    super.dispose();
   }
 
   List<int> starNum = [
