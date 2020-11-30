@@ -19,5 +19,5 @@ class Constants {
 
   // static bool isGooglePlay =
   //     bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);//为何没用啊咕鸽？
-  static bool isGooglePlay = false;
+  static bool isGooglePlay = true;
 }

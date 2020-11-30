@@ -96,7 +96,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
           ? widget.illusts.imageUrls.large
           : widget.illusts.metaSinglePage.originalImageUrl;
       return InkWell(
-        onLongPress: () {
+        onLongPress: () async {
           showModalBottomSheet(
               context: context,
               shape: RoundedRectangleBorder(
@@ -129,6 +129,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               "User-Agent": "PixivIOSApp/5.8.0",
               "Host": ImageHost
             },
+            handleLoadingProgress: true,
+            clearMemoryCacheWhenDispose: true,
             enableLoadState: true,
             loadStateChanged: (ExtendedImageState state) {
               return _loadStateWidget(state);
@@ -167,18 +169,22 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(16.0))),
               builder: (_) {
-                return SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(I18n.of(context).save),
-                        onTap: () {
-                          saveStore.saveImage(widget.illusts, index: index);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
+                return Container(
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(I18n
+                              .of(context)
+                              .save),
+                          onTap: () {
+                            saveStore.saveImage(widget.illusts, index: index);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               });
@@ -199,14 +205,16 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             itemBuilder: (BuildContext context, int index) {
               return ExtendedImage.network(
                 (userSetting.zoomQuality == 0
-                        ? metaPages[index].imageUrls.large
-                        : metaPages[index].imageUrls.original)
+                    ? metaPages[index].imageUrls.large
+                    : metaPages[index].imageUrls.original)
                     .toTrueUrl(),
                 headers: {
                   "referer": "https://app-api.pixiv.net/",
                   "User-Agent": "PixivIOSApp/5.8.0",
                   "Host": ImageHost
                 },
+                handleLoadingProgress: true,
+                clearMemoryCacheWhenDispose: true,
                 enableLoadState: true,
                 loadStateChanged: (ExtendedImageState state) {
                   return _loadStateWidget(state);
@@ -240,10 +248,29 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   Widget _loadStateWidget(ExtendedImageState state) {
     if (state.extendedImageLoadState == LoadState.loading) {
-      // return CircularProgressIndicator(
-      //   value: state.loadingProgress.cumulativeBytesLoaded.toDouble() /
-      //       state.loadingProgress.expectedTotalBytes,
-      // );
+      final ImageChunkEvent loadingProgress = state.loadingProgress;
+      final double progress = loadingProgress?.expectedTotalBytes != null
+          ? loadingProgress.cumulativeBytesLoaded /
+          loadingProgress.expectedTotalBytes
+          : null;
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(
+              value: progress,
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              '${((progress ?? 0.0) * 100).toInt()}%',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      );
     }
     return null;
   }
@@ -303,6 +330,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   }
 
   bool show = true;
+  bool shareShow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -310,17 +338,36 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         backgroundColor: Colors.black,
         floatingActionButton: Visibility(
           visible: show,
-          child: FloatingActionButton.extended(
-            onPressed: () async {
-              await FlutterStatusbarManager.setHidden(false);
-              Navigator.of(context).pop();
-            },
-            label: Text(
-              "${index + 1}/${widget.illusts.pageCount}",
-            ),
-            icon: Icon(
-              Icons.arrow_back,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Visibility(
+                  visible: shareShow,
+                  child: Card(
+                    shape: CircleBorder(),
+                    child: IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ),
+              FloatingActionButton.extended(
+                elevation: 1.0,
+                onPressed: () async {
+                  await FlutterStatusbarManager.setHidden(false);
+                  Navigator.of(context).pop();
+                },
+                label: Text(
+                  "${index + 1}/${widget.illusts.pageCount}",
+                ),
+                icon: Icon(
+                  Icons.arrow_back,
+                ),
+              ),
+            ],
           ),
         ),
         extendBodyBehindAppBar: true,
