@@ -15,15 +15,19 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:share_extend/share_extend.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -71,7 +75,6 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   void initState() {
     _doubleClickAnimationController = AnimationController(
         duration: const Duration(milliseconds: 150), vsync: this);
-
     _slideEndAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 150),
@@ -92,9 +95,11 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   Widget _buildContent(BuildContext context) {
     if (widget.illusts.pageCount == 1) {
-      final url = userSetting.zoomQuality == 0
-          ? widget.illusts.imageUrls.large
-          : widget.illusts.metaSinglePage.originalImageUrl;
+      final url = (userSetting.zoomQuality == 0
+              ? widget.illusts.imageUrls.large
+              : widget.illusts.metaSinglePage.originalImageUrl)
+          .toTrueUrl();
+      nowUrl = url;
       return InkWell(
         onLongPress: () async {
           showModalBottomSheet(
@@ -123,7 +128,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: ExtendedImage.network(
-            url.toTrueUrl(),
+            url,
             headers: {
               "referer": "https://app-api.pixiv.net/",
               "User-Agent": "PixivIOSApp/5.8.0",
@@ -161,13 +166,18 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       );
     } else {
       final metaPages = widget.illusts.metaPages;
+      final url = (userSetting.zoomQuality == 0
+          ? metaPages[index].imageUrls.large
+          : metaPages[index].imageUrls.original)
+          .toTrueUrl();
+      nowUrl = url;
       return InkWell(
         onLongPress: () {
           showModalBottomSheet(
               context: context,
               shape: RoundedRectangleBorder(
                   borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(16.0))),
+                  BorderRadius.vertical(top: Radius.circular(16.0))),
               builder: (_) {
                 return Container(
                   child: SafeArea(
@@ -196,10 +206,21 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             controller: PageController(
               initialPage: index,
             ),
-            onPageChanged: (i) {
+            onPageChanged: (i) async {
               setState(() {
+                shareShow = false;
                 index = i;
               });
+              final url = (userSetting.zoomQuality == 0
+                  ? metaPages[index].imageUrls.large
+                  : metaPages[index].imageUrls.original)
+                  .toTrueUrl();
+              nowUrl = url;
+              File file = await getCachedImageFile(url);
+              if (file != null && mounted)
+                setState(() {
+                  shareShow = true;
+                });
             },
             itemCount: metaPages.length,
             itemBuilder: (BuildContext context, int index) {
@@ -216,14 +237,10 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                 handleLoadingProgress: true,
                 clearMemoryCacheWhenDispose: true,
                 enableLoadState: true,
-                loadStateChanged: (ExtendedImageState state) {
-                  return _loadStateWidget(state);
-                },
-                onDoubleTap: (ExtendedImageGestureState state) {
-                  ///you can use define pointerDownPosition as you can,
-                  ///default value is double tap pointer down postion.
-                  _doubleTap(state);
-                },
+                loadStateChanged: (ExtendedImageState state) =>
+                    _loadStateWidget(state),
+                onDoubleTap: (ExtendedImageGestureState state) =>
+                    _doubleTap(state),
                 mode: ExtendedImageMode.gesture,
                 filterQuality: FilterQuality.high,
                 initGestureConfigHandler: (ExtendedImageState state) {
@@ -245,6 +262,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       );
     }
   }
+
+  String nowUrl = "";
 
   Widget _loadStateWidget(ExtendedImageState state) {
     if (state.extendedImageLoadState == LoadState.loading) {
@@ -272,42 +291,38 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         ),
       );
     }
+    if (state.extendedImageLoadState == LoadState.completed) {
+      Future.delayed(Duration(milliseconds: 0), () {
+        //defer
+        if (mounted)
+          setState(() {
+            shareShow = true;
+          });
+      });
+    }
     return null;
   }
 
   void _doubleTap(ExtendedImageGestureState state) {
-    ///you can use define pointerDownPosition as you can,
-    ///default value is double tap pointer down postion.
     final Offset pointerDownPosition = state.pointerDownPosition;
     final double begin = state.gestureDetails.totalScale;
     double end;
-
-    //remove old
     _doubleClickAnimation?.removeListener(_doubleClickAnimationListener);
-
-    //stop pre
     _doubleClickAnimationController.stop();
-
-    //reset to use
     _doubleClickAnimationController.reset();
-
     if (begin == doubleTapScales[0]) {
       end = doubleTapScales[1];
     } else {
       end = doubleTapScales[0];
     }
-
     _doubleClickAnimationListener = () {
-      //print(_animation.value);
       state.handleDoubleTap(
           scale: _doubleClickAnimation.value,
           doubleTapPosition: pointerDownPosition);
     };
     _doubleClickAnimation = _doubleClickAnimationController
         .drive(Tween<double>(begin: begin, end: end));
-
     _doubleClickAnimation.addListener(_doubleClickAnimationListener);
-
     _doubleClickAnimationController.forward();
   }
 
@@ -349,7 +364,20 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                     shape: CircleBorder(),
                     child: IconButton(
                       icon: Icon(Icons.share),
-                      onPressed: () {},
+                      onPressed: () async {
+                        File file = await getCachedImageFile(nowUrl);
+                        if (file != null) {
+                          String targetPath =
+                              (await getTemporaryDirectory()).path +
+                                  "/share_cache/" +
+                                  DateTime.now().toIso8601String() +
+                                  ".png"; //很蠢但是没办法
+                          file.copySync(targetPath);
+                          ShareExtend.share(targetPath, 'image');
+                        } else {
+                          BotToast.showText(text: "can not find image cache");
+                        }
+                      },
                     ),
                   ),
                 ),
