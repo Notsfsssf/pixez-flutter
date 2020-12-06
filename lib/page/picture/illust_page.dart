@@ -459,9 +459,11 @@ class _IllustPageState extends State<IllustPage> {
                 heroTag: widget.id,
                 backgroundColor: Colors.white,
                 onPressed: () => _illustStore.star(),
-                child: StarIcon(
-                  illustStore: _illustStore,
-                ),
+                child: Observer(builder: (context) {
+                  return StarIcon(
+                    state: _illustStore.state,
+                  );
+                }),
               ),
             ),
             body: Stack(
@@ -512,7 +514,7 @@ class _IllustPageState extends State<IllustPage> {
             ));
       } else {
         if (_illustStore.errorMessage != null) {
-       return Scaffold(
+          return Scaffold(
             appBar: AppBar(),
             body: Center(
               child: Column(
@@ -676,9 +678,7 @@ class _IllustPageState extends State<IllustPage> {
           title: Text(I18n.of(context).muti_choice_save),
           actions: <Widget>[
             FlatButton(
-              child: Text(I18n
-                  .of(context)
-                  .cancel),
+              child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -687,9 +687,7 @@ class _IllustPageState extends State<IllustPage> {
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
-              child: Text(I18n
-                  .of(context)
-                  .ok),
+              child: Text(I18n.of(context).ok),
             ),
           ],
           content: Container(

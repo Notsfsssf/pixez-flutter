@@ -39,7 +39,7 @@ dependencies:
   flutter_mobx: ^1.1.0+2
   flutter_inapp_purchase: ^3.0.0
   flutter_widget_from_html_core: ^0.5.1+4
-  extended_nested_scroll_view: ^1.0.1
+  extended_nested_scroll_view: ^2.0.0
   scrollable_positioned_list: ^0.1.8
   flutter_date_pickers: ^0.1.8
   device_info: ^1.0.0
