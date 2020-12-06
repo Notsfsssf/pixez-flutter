@@ -18,6 +18,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
@@ -81,7 +82,7 @@ class IllustCard extends StatelessWidget {
       return IllustLightingPage(
         store: store,
         id: store.illusts.id,
-        heroString: store.illusts.imageUrls.medium + heroString,
+        heroString: this.hashCode.toString(),
       );
     }));
   }
@@ -106,23 +107,19 @@ class IllustCard extends StatelessWidget {
     return (store.illusts.height.toDouble() / store.illusts.width.toDouble()) >
             3
         ? NullHero(
-            tag: tag,
-            child: PixivImage(
-              store.illusts.imageUrls.squareMedium,
-              fit:BoxFit.fitWidth
-            ),
+      tag: tag,
+            child: PixivImage(store.illusts.imageUrls.squareMedium,
+                fit: BoxFit.fitWidth),
           )
         : NullHero(
-            tag: tag,
-            child: PixivImage(
-              store.illusts.imageUrls.medium,
-              fit:BoxFit.fitWidth
-            ),
+      tag: tag,
+      child: PixivImage(store.illusts.imageUrls.medium,
+          fit: BoxFit.fitWidth),
           );
   }
 
   Widget buildInkWell(BuildContext context) {
-    final tag = store.illusts.imageUrls.medium + heroString;
+    final tag = this.hashCode.toString();
     return Card(
       margin: EdgeInsets.all(8.0),
       elevation: 4.0,
@@ -201,8 +198,13 @@ class IllustCard extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: StarIcon(
-              illustStore: store,
+            child: IconButton(
+              icon: Observer(builder: (_) {
+                return StarIcon(
+                  state: store.state,
+                );
+              }),
+              onPressed: () => store.star(),
             ),
           )
         ],

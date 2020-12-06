@@ -70,6 +70,7 @@ abstract class _IllustStoreBase with Store {
         final result = Illusts.fromJson(response.data['illust']);
         illusts = result;
         isBookmark = illusts.isBookmarked;
+        state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
       } on DioError catch (e) {
         if (e.response != null) {
           if (e.response.statusCode == HttpStatus.notFound) {

@@ -15,14 +15,13 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/page/picture/illust_store.dart';
 
 class StarIcon extends StatefulWidget {
-  final IllustStore illustStore;
+  final int state;
+
   const StarIcon({
     Key key,
-    @required this.illustStore,
+    @required this.state,
   }) : super(key: key);
 
   @override
@@ -30,20 +29,31 @@ class StarIcon extends StatefulWidget {
 }
 
 class _StarIconState extends State<StarIcon> {
+  int state;
+
+  @override
+  void initState() {
+    state = widget.state;
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant StarIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.state != widget.state) {
+      setState(() {
+        state = widget.state;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return Container(
-        width: 36,
-        height: 36,
-        child: IconButton(
-            padding: EdgeInsets.all(0.0),
-            icon: _buildData(widget.illustStore.state),
-            onPressed: () async {
-              widget.illustStore.star();
-            }),
-      );
-    });
+    return Container(
+      width: 36,
+      height: 36,
+      child: _buildData(state),
+    );
   }
 
   Widget _buildData(int state) {

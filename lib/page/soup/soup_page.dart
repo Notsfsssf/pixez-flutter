@@ -22,6 +22,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -98,13 +99,16 @@ class _SoupPageState extends State<SoupPage> {
                   AmWork amWork = _soupStore.amWorks[index - 1];
                   return InkWell(
                     onTap: () {
+                      int id = int.parse(
+                          Uri.parse(amWork.arworkLink).pathSegments[
+                              Uri.parse(amWork.arworkLink).pathSegments.length -
+                                  1]);
                       Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(builder: (BuildContext context) {
                         return IllustLightingPage(
-                            id: int.parse(Uri.parse(amWork.arworkLink)
-                                    .pathSegments[
-                                Uri.parse(amWork.arworkLink).pathSegments.length -
-                                    1]));
+                          id: id,
+                          store: IllustStore(id, null),
+                        );
                       }));
                     },
                     child: Card(
@@ -117,10 +121,13 @@ class _SoupPageState extends State<SoupPage> {
                           ListTile(
                             leading: PainterAvatar(
                               url: amWork.userImage,
-                              id: int.parse(Uri.parse(amWork.userLink)
-                                      .pathSegments[
-                                  Uri.parse(amWork.userLink).pathSegments.length -
-                                      1]),
+                              id: int.parse(Uri
+                                  .parse(amWork.userLink)
+                                  .pathSegments[Uri
+                                  .parse(amWork.userLink)
+                                  .pathSegments
+                                  .length -
+                                  1]),
                             ),
                             title: Text(amWork.title),
                             subtitle: Text(amWork.user),

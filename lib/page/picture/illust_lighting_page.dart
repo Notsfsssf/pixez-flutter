@@ -69,11 +69,6 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
     _scrollController.addListener(() => _loadAbout());
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
   void _loadAbout() {
     if (mounted &&
         _scrollController.offset >=
@@ -145,9 +140,11 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
           heroTag: widget.id,
           backgroundColor: Colors.white,
           onPressed: () => _illustStore.star(),
-          child: StarIcon(
-            illustStore: _illustStore,
-          ),
+          child: Observer(builder: (_) {
+            return StarIcon(
+              state: _illustStore.state,
+            );
+          }),
         ),
       ),
       body: Observer(builder: (_) {
@@ -448,24 +445,24 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   Widget _buildIllustsItem(int index, Illusts illust) {
     return index == 0
         ? (userSetting.pictureQuality == 1
-        ? NullHero(
-      child: PixivImage(
-        illust.metaPages[index].imageUrls.large,
-        placeWidget: PixivImage(
-          illust.metaPages[index].imageUrls.medium,
-          fade: false,
-        ),
-        fade: false,
-      ),
-      tag: widget.heroString,
-    )
-        : NullHero(
-      child: PixivImage(
-        illust.metaPages[index].imageUrls.medium,
-        fade: false,
-      ),
-      tag: widget.heroString,
-    ))
+            ? NullHero(
+                child: PixivImage(
+                  illust.metaPages[index].imageUrls.large,
+                  placeWidget: PixivImage(
+                    illust.metaPages[index].imageUrls.medium,
+                    fade: false,
+                  ),
+                  fade: false,
+                ),
+                tag: widget.heroString,
+              )
+            : NullHero(
+                child: PixivImage(
+                  illust.metaPages[index].imageUrls.medium,
+                  fade: false,
+                ),
+                tag: widget.heroString,
+              ))
         : PixivImage(
             userSetting.pictureQuality == 0
                 ? illust.metaPages[index].imageUrls.medium
