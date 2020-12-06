@@ -21,6 +21,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/exts.dart';
@@ -167,8 +168,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     } else {
       final metaPages = widget.illusts.metaPages;
       final url = (userSetting.zoomQuality == 0
-          ? metaPages[index].imageUrls.large
-          : metaPages[index].imageUrls.original)
+              ? metaPages[index].imageUrls.large
+              : metaPages[index].imageUrls.original)
           .toTrueUrl();
       nowUrl = url;
       return InkWell(
@@ -367,11 +368,15 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                       onPressed: () async {
                         File file = await getCachedImageFile(nowUrl);
                         if (file != null) {
-                          String targetPath =
-                              (await getTemporaryDirectory()).path +
-                                  "/share_cache/" +
-                                  DateTime.now().toIso8601String() +
-                                  ".png"; //很蠢但是没办法
+                          String targetPath = join(
+                              (await getTemporaryDirectory()).path,
+                              "share_cache",
+                              basenameWithoutExtension(file.path) +
+                                  (nowUrl.endsWith(".png") ? ".png" : ".jpg"));
+                          File targetFile = new File(targetPath);
+                          if (!targetFile.existsSync()) {
+                            targetFile.createSync(recursive: true);
+                          }
                           file.copySync(targetPath);
                           ShareExtend.share(targetPath, 'image');
                         } else {
