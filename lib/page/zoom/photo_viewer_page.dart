@@ -178,7 +178,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               context: context,
               shape: RoundedRectangleBorder(
                   borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(16.0))),
+                      BorderRadius.vertical(top: Radius.circular(16.0))),
               builder: (_) {
                 return Container(
                   child: SafeArea(
@@ -186,9 +186,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         ListTile(
-                          title: Text(I18n
-                              .of(context)
-                              .save),
+                          title: Text(I18n.of(context).save),
                           onTap: () {
                             saveStore.saveImage(widget.illusts, index: index);
                             Navigator.of(context).pop();
@@ -358,12 +356,15 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Visibility(
-                  visible: shareShow,
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: AnimatedOpacity(
+                  opacity: shareShow ? 1 : 0,
+                  duration: Duration(milliseconds: 500),
                   child: Card(
                     shape: CircleBorder(),
+                    margin: EdgeInsets.all(0.0),
                     child: IconButton(
+                      padding: EdgeInsets.all(0.0),
                       icon: Icon(Icons.share),
                       onPressed: () async {
                         File file = await getCachedImageFile(nowUrl);
