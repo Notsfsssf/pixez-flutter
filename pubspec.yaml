@@ -67,6 +67,7 @@ dependencies:
   md2_tab_indicator: ^1.0.2
   quiver: ^2.1.5
   flutter_swiper: ^1.1.6
+  image: ^2.1.19
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

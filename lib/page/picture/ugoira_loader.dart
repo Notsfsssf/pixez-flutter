@@ -14,28 +14,39 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:image/image.dart';
+import 'package:image/image.dart' hide Color;
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 
 class UgoiraLoader extends StatefulWidget {
   final int id;
   final Illusts illusts;
+
   const UgoiraLoader({Key key, @required this.id, @required this.illusts})
       : super(key: key);
+
   @override
   _UgoiraLoaderState createState() => _UgoiraLoaderState();
 }
 
 class _UgoiraLoaderState extends State<UgoiraLoader> {
   UgoiraStore _store;
+
   @override
   void initState() {
     _store = UgoiraStore(widget.id);
@@ -44,6 +55,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
 
   bool isEncoding = false;
   static const platform = const MethodChannel('samples.flutter.dev/battery');
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -110,8 +122,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
             PixivImage(widget.illusts.imageUrls.medium),
             LinearProgressIndicator(
               backgroundColor: Theme.of(context).cardColor,
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+              valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),
               value: _store.count / _store.total,
             )
           ],
@@ -147,4 +158,44 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
       );
     });
   }
+
+  Future _isolateWay() async {
+    Map<int, dynamic> map = Map();
+    map[1] = _store.ugoiraMetadataResponse;
+    map[2] = _store.drawPool;
+    final illusts = widget.illusts;
+    List<int> result = await compute(encodeGif, map);
+    File cacheFile = File(
+      join((await getTemporaryDirectory()).path, 'cache_gif',
+          "${illusts.id}.gif"),
+    );
+    if (!cacheFile.existsSync()) {
+      cacheFile.createSync(recursive: true);
+    }
+    cacheFile.writeAsBytesSync(result);
+    String fileName = userSetting.singleFolder
+        ? "${illusts.user.name}_${illusts.user.id}/${illusts.id}"
+        : "${illusts.id}";
+    await saveStore.saveToGallery(
+        cacheFile.readAsBytesSync(), illusts, fileName);
+    BotToast.showText(text: "encoding succes");
+  }
+}
+
+Future<List<int>> encodeGif(Map<int, dynamic> a) async {
+  UgoiraMetadataResponse ugoiraMetadataResponse = a[1];
+  List<FileSystemEntity> drawPool = a[2];
+  var firstDelay =
+      ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay.toDouble() /
+          1000.0;
+  GifEncoder encoder = GifEncoder(
+      delay: firstDelay.toInt(), samplingFactor: 10);
+  for (var i in drawPool) {
+    var bytesSync = File(i.path).readAsBytesSync();
+    Image image =
+    i.path.endsWith(".png") ? decodePng(bytesSync) : decodeJpg(bytesSync);
+    encoder.addFrame(image);
+  }
+  List<int> result = encoder.finish();
+  return result;
 }
