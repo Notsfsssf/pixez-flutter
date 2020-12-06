@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/error_message.dart';
@@ -37,8 +38,27 @@ abstract class _IllustStoreBase with Store {
   @observable
   String errorMessage;
 
+  @observable
+  int state = 0;
+
+  void dispose() {
+    if (illusts != null) {
+      if (illusts.pageCount != 1) {
+        for (var i in illusts.metaPages) {
+          if (illusts.metaPages.indexOf(i) == 0) continue;
+          final provider = ExtendedNetworkImageProvider(
+              userSetting.pictureQuality == 0
+                  ? i.imageUrls.medium
+                  : i.imageUrls.large);
+          provider?.evict();
+        }
+      }
+    }
+  }
+
   _IllustStoreBase(this.id, this.illusts) {
     isBookmark = illusts?.isBookmarked ?? false;
+    state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
   }
 
   @action
@@ -50,6 +70,7 @@ abstract class _IllustStoreBase with Store {
         final result = Illusts.fromJson(response.data['illust']);
         illusts = result;
         isBookmark = illusts.isBookmarked;
+        state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
       } on DioError catch (e) {
         if (e.response != null) {
           if (e.response.statusCode == HttpStatus.notFound) {
@@ -67,23 +88,26 @@ abstract class _IllustStoreBase with Store {
 
   @action
   Future<bool> star({String restrict = 'public', List<String> tags}) async {
+    state = 1;
     if (!illusts.isBookmarked) {
       try {
-        Response response = await ApiClient(isBookmark: true)
+        await ApiClient(isBookmark: true)
             .postLikeIllust(illusts.id, restrict, tags);
         illusts.isBookmarked = true;
         isBookmark = true;
+        state = 2;
         return true;
       } catch (e) {}
     } else {
       try {
-        Response response =
-            await ApiClient(isBookmark: true).postUnLikeIllust(illusts.id);
+        await ApiClient(isBookmark: true).postUnLikeIllust(illusts.id);
         illusts.isBookmarked = false;
         isBookmark = false;
+        state = 0;
         return false;
       } catch (e) {}
     }
-    return null;
+    state = illusts.isBookmarked ? 2 : 0;
+    return illusts.isBookmarked;
   }
 }

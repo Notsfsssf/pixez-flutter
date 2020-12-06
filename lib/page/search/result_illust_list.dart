@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result_illust_store.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ResultIllustList extends StatefulWidget {
   final String word;
@@ -38,41 +41,25 @@ class ResultIllustList extends StatefulWidget {
 class _ResultIllustListState extends State<ResultIllustList> {
   ResultIllustStore resultIllustStore;
   FutureGet futureGet;
+  RefreshController _refreshController;
+  StreamSubscription<String> listen;
 
   @override
   void initState() {
+    _refreshController = RefreshController();
     futureGet = () => apiClient.getSearchIllust(widget.word);
-
     super.initState();
+    listen = topStore.topStream.listen((event) {
+      if (event == "401") {
+        _refreshController?.position?.jumpTo(0);
+      }
+    });
   }
 
-  _showMaterialBottom() {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (context, setM) {
-            return Container(
-                child: Column(
-              children: <Widget>[
-                TabBar(tabs: [
-                  Tab(text: 's'),
-                  Tab(text: 'x'),
-                  Tab(
-                    text: 'y',
-                  )
-                ]),
-                TabBar(tabs: [
-                  Tab(text: 's'),
-                  Tab(text: 'x'),
-                  Tab(
-                    text: 'y',
-                  )
-                ]),
-                Slider(value: 0, max: 10, onChanged: (value) {})
-              ],
-            ));
-          });
-        });
+  @override
+  void dispose() {
+    listen?.cancel();
+    super.dispose();
   }
 
   List<int> starNum = [
@@ -148,7 +135,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
               )
             ],
           ),
-          Expanded(child: LightingList(source: futureGet))
+          Expanded(
+              child: LightingList(
+            source: futureGet,
+            refreshController: _refreshController,
+          ))
         ],
       ),
     );

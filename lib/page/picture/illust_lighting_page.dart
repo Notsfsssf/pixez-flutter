@@ -1,29 +1,45 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
-import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
-import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
-import 'package:pixez/exts.dart';
+import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:share/share.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -33,6 +49,7 @@ class IllustLightingPage extends StatefulWidget {
 
   const IllustLightingPage({Key key, this.id, this.heroString, this.store})
       : super(key: key);
+
   @override
   _IllustLightingPageState createState() => _IllustLightingPageState();
 }
@@ -40,12 +57,30 @@ class IllustLightingPage extends StatefulWidget {
 class _IllustLightingPageState extends State<IllustLightingPage> {
   IllustStore _illustStore;
   IllustAboutStore _aboutStore;
+  ScrollController _scrollController;
+
   @override
   void initState() {
-    _illustStore = widget.store;
+    _scrollController = ScrollController();
+    _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
-    _aboutStore = IllustAboutStore(widget.id)..fetch();
+    _aboutStore = IllustAboutStore(widget.id);
     super.initState();
+    _scrollController.addListener(() => _loadAbout());
+  }
+
+  void _loadAbout() {
+    if (mounted &&
+        _scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        _aboutStore.illusts.isEmpty) _aboutStore.fetch();
+  }
+
+  @override
+  void dispose() {
+    _illustStore?.dispose();
+    _scrollController?.dispose();
+    super.dispose();
   }
 
   Widget _buildAppbar() {
@@ -68,7 +103,15 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(icon: Icon(Icons.expand_less), onPressed: () {}),
+                  IconButton(
+                      icon: Icon(Icons.expand_less),
+                      onPressed: () {
+                        double p = _scrollController.position.maxScrollExtent -
+                            (_aboutStore.illusts.length / 3.0) *
+                                (MediaQuery.of(context).size.width / 3.0);
+                        if (p < 0) p = 0;
+                        _scrollController.position.jumpTo(p);
+                      }),
                   IconButton(
                       icon: Icon(Icons.more_vert),
                       onPressed: () {
@@ -97,9 +140,11 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
           heroTag: widget.id,
           backgroundColor: Colors.white,
           onPressed: () => _illustStore.star(),
-          child: StarIcon(
-            illustStore: _illustStore,
-          ),
+          child: Observer(builder: (_) {
+            return StarIcon(
+              state: _illustStore.state,
+            );
+          }),
         ),
       ),
       body: Observer(builder: (_) {
@@ -143,60 +188,108 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
         text,
         style: TextStyle(color: Theme.of(context).accentColor),
       );
+
   Widget _buildContent(BuildContext context, Illusts data) {
+    if (data == null)
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    if (_illustStore.errorMessage != null)
+      return Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(':(', style: Theme.of(context).textTheme.headline4),
+            ),
+            Text('${_illustStore.errorMessage}'),
+            RaisedButton(
+              onPressed: () {
+                _illustStore.fetch();
+              },
+              child: Text(I18n.of(context).refresh),
+            )
+          ],
+        ),
+      );
     return CustomScrollView(
+      controller: _scrollController,
       slivers: [
-        if (!userSetting.isBangs)
+        if (userSetting.isBangs)
           SliverToBoxAdapter(
               child: Container(height: MediaQuery.of(context).padding.top)),
         if (data.type == "ugoira")
           SliverToBoxAdapter(
-            child: UgoiraLoader(
-              id: widget.id,
-              illusts: data,
+            child: NullHero(
+              tag: widget.heroString,
+              child: UgoiraLoader(
+                id: widget.id,
+                illusts: data,
+              ),
             ),
           ),
-        data.pageCount == 1 && data.type != "ugoira"
-            ? SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                String url = userSetting.pictureQuality == 1
-                    ? data.imageUrls.large
-                    : data.imageUrls.medium;
-                Widget placeWidget = Container(
-                  height: 150,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-                return InkWell(
-                  onLongPress: () {
-                    _pressSave(data, 0);
-                  },
-                  child: Hero(
-                    tag: '${data.imageUrls.medium}${widget.heroString}',
-                    child: PixivImage(
-                      url,
-                      fade: false,
-                      placeWidget: userSetting.pictureQuality == 1
-                          ? PixivImage(
-                              data.imageUrls.large,
-                              placeWidget: placeWidget,
-                            )
-                          : placeWidget,
+        if (data.type != "ugoira")
+          data.pageCount == 1
+              ? SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                  String url = userSetting.pictureQuality == 1
+                      ? data.imageUrls.large
+                      : data.imageUrls.medium;
+                  Widget placeWidget = Container(
+                    height: 150,
+                    child: Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  ),
-                );
-              }, childCount: 1))
-            : SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                return InkWell(
+                  );
+                  return InkWell(
                     onLongPress: () {
-                      _pressSave(data, index);
+                      _pressSave(data, 0);
                     },
-                    child: _buildIllustsItem(index, data));
-              }, childCount: data.metaPages.length)),
+                    onTap: () {
+                      Leader.push(
+                          context,
+                          PhotoViewerPage(
+                            index: 0,
+                            illusts: data,
+                          ));
+                    },
+                    child: NullHero(
+                      tag: widget.heroString,
+                      child: PixivImage(
+                        url,
+                        fade: false,
+                        placeWidget: userSetting.pictureQuality == 1
+                            ? PixivImage(
+                                data.imageUrls.medium,
+                                placeWidget: placeWidget,
+                              )
+                            : placeWidget,
+                      ),
+                    ),
+                  );
+                }, childCount: 1))
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                  return InkWell(
+                      onLongPress: () {
+                        _pressSave(data, index);
+                      },
+                      onTap: () {
+                        Leader.push(
+                            context,
+                            PhotoViewerPage(
+                              index: index,
+                              illusts: data,
+                            ));
+                      },
+                      child: _buildIllustsItem(index, data));
+                }, childCount: data.metaPages.length)),
         SliverToBoxAdapter(
           child: _buildNameAvatar(context, data),
         ),
@@ -250,8 +343,8 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
             padding: const EdgeInsets.all(8.0),
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 2, // gap between adjacent chips
-              runSpacing: 0, // gap between lines
+              spacing: 2,
+              runSpacing: 0,
               children: [for (var f in data.tags) buildRow(context, f)],
             ),
           ),
@@ -352,7 +445,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   Widget _buildIllustsItem(int index, Illusts illust) {
     return index == 0
         ? (userSetting.pictureQuality == 1
-            ? Hero(
+            ? NullHero(
                 child: PixivImage(
                   illust.metaPages[index].imageUrls.large,
                   placeWidget: PixivImage(
@@ -361,25 +454,20 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
                   ),
                   fade: false,
                 ),
-                tag: '${illust.imageUrls.medium}${widget.heroString}',
+                tag: widget.heroString,
               )
-            : Hero(
+            : NullHero(
                 child: PixivImage(
                   illust.metaPages[index].imageUrls.medium,
                   fade: false,
-                  placeWidget: PixivImage(
-                    illust.metaPages[index].imageUrls.medium,
-                    fade: false,
-                  ),
                 ),
-                tag: '${illust.imageUrls.medium}${widget.heroString}',
+                tag: widget.heroString,
               ))
         : PixivImage(
             userSetting.pictureQuality == 0
                 ? illust.metaPages[index].imageUrls.medium
                 : illust.metaPages[index].imageUrls.large,
             fade: false,
-            enableMemoryCache: false,
             placeWidget: Container(
               height: 150,
               child: Center(
@@ -463,6 +551,9 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     IllustDetailStore illustDetailStore = IllustDetailStore(illust);
     return Observer(builder: (_) {
+      Future.delayed(Duration(seconds: 2), () {
+        _loadAbout();
+      });
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -788,144 +879,13 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
       setState(() {});
       return;
     }
-    CancelFunc cancelFunc =
-        BotToast.showLoading(clickClose: true, allowClick: true);
-    Response response;
-    try {
-      response = await apiClient.getIllustBookmarkDetail(widget.id);
-      cancelFunc();
-    } catch (e) {
-      cancelFunc();
-      return;
+    final result =
+        await Leader.pushWithScaffold(context, TagForIllustPage(id: widget.id));
+    if (result is Map) {
+      LPrinter.d(result);
+      String restrict = result['restrict'];
+      List<String> tags = result['tags'];
+      _illustStore.star(restrict: restrict, tags: tags);
     }
-    BookMarkDetailResponse bookMarkDetailResponse =
-        BookMarkDetailResponse.fromJson(response.data);
-    if (mounted)
-      showDialog(
-          context: context,
-          child: StatefulBuilder(
-            builder: (_, setBookState) {
-              final TextEditingController textEditingController =
-                  TextEditingController();
-              final List<TagsR> tags =
-                  bookMarkDetailResponse.bookmarkDetail.tags;
-              final detail = bookMarkDetailResponse.bookmarkDetail;
-              return AlertDialog(
-                contentPadding: EdgeInsets.all(0.0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                content: Container(
-                  width: double.maxFinite,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      TextField(
-                        controller: textEditingController,
-                        decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            final value =
-                                textEditingController.value.text.trim();
-                            if (value.isNotEmpty)
-                              setBookState(() {
-                                tags.insert(
-                                    -2,
-                                    TagsR()
-                                      ..name = value
-                                      ..isRegistered = true);
-                                textEditingController.clear();
-                              });
-                          },
-                        )),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(-2.0),
-                          itemCount: tags.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Flex(
-                              direction: Axis.horizontal,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    bookMarkDetailResponse
-                                        .bookmarkDetail.tags[index].name,
-                                    softWrap: true,
-                                    maxLines: -1,
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Checkbox(
-                                  onChanged: (bool value) {
-                                    setBookState(() {
-                                      bookMarkDetailResponse.bookmarkDetail
-                                          .tags[index].isRegistered = value;
-                                    });
-                                  },
-                                  value: bookMarkDetailResponse
-                                      .bookmarkDetail.tags[index].isRegistered,
-                                )
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                            );
-                          },
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Text((detail.restrict == "public"
-                                    ? I18n.of(context).public
-                                    : I18n.of(context).private) +
-                                I18n.of(context).bookmark),
-                          ),
-                          Switch(
-                            onChanged: (bool value) {
-                              setBookState(() {
-                                detail.restrict = value ? "public" : "private";
-                              });
-                            },
-                            value: detail.restrict == "public",
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).cancel)),
-                  FlatButton(
-                    child: Text(I18n.of(context).ok),
-                    onPressed: () async {
-                      final tags = bookMarkDetailResponse.bookmarkDetail.tags;
-                      List<String> tempTags = [];
-                      for (int i = -2; i < tags.length; i++) {
-                        if (tags[i].isRegistered) {
-                          tempTags.add(tags[i].name);
-                        }
-                      }
-                      if (tempTags.length == 0) tempTags = null;
-                      Navigator.of(context).pop();
-                      await _illustStore.star(
-                          restrict:
-                              bookMarkDetailResponse.bookmarkDetail.restrict,
-                          tags: tempTags);
-
-                      setState(() {}); //star请求不管成功或是失败都强刷一次外层ui，因为mobx影响不到
-                    },
-                  ),
-                ],
-              );
-            },
-          ));
   }
 }

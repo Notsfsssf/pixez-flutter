@@ -18,10 +18,12 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
@@ -46,21 +48,7 @@ class IllustCard extends StatelessWidget {
       for (int i = 0; i < store.illusts.tags.length; i++) {
         if (store.illusts.tags[i].name.startsWith('R-18'))
           return InkWell(
-            onTap: () => {
-              Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(builder: (_) {
-                if (store != null) {
-                  return PictureListPage(
-                    iStores: iStores,
-                    store: store,
-                  );
-                }
-                return IllustPage(
-                  store: store,
-                  id: store.illusts.id,
-                );
-              }))
-            },
+            onTap: () => {_buildTap(context)},
             onLongPress: () {
               saveStore.saveImage(store.illusts);
             },
@@ -82,6 +70,23 @@ class IllustCard extends StatelessWidget {
     return buildInkWell(context);
   }
 
+  Future _buildTap(BuildContext context) {
+    return Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
+      if (store != null) {
+        return PictureListPage(
+          iStores: iStores,
+          store: store,
+        );
+      }
+      return IllustLightingPage(
+        store: store,
+        id: store.illusts.id,
+        heroString: this.hashCode.toString(),
+      );
+    }));
+  }
+
   Widget cardText() {
     if (store.illusts.type != "illust") {
       return Text(
@@ -98,111 +103,108 @@ class IllustCard extends StatelessWidget {
     return Text('');
   }
 
-  Widget _buildPic(String heroString) {
+  Widget _buildPic(String tag) {
     return (store.illusts.height.toDouble() / store.illusts.width.toDouble()) >
             3
-        ? Hero(
-            tag: '${store.illusts.imageUrls.medium}$heroString',
-            child: PixivImage(
-              store.illusts.imageUrls.squareMedium,
-            ),
+        ? NullHero(
+      tag: tag,
+            child: PixivImage(store.illusts.imageUrls.squareMedium,
+                fit: BoxFit.fitWidth),
           )
-        : Hero(
-            tag: '${store.illusts.imageUrls.medium}$heroString',
-            child: PixivImage(
-              store.illusts.imageUrls.medium,
-            ),
+        : NullHero(
+      tag: tag,
+      child: PixivImage(store.illusts.imageUrls.medium,
+          fit: BoxFit.fitWidth),
           );
   }
 
   Widget buildInkWell(BuildContext context) {
-    String heroString =
-        this.heroString ?? DateTime.now().millisecondsSinceEpoch.toString();
-    return InkWell(
-      onTap: () => {
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (_) {
-          if (iStores != null) {
-            return PictureListPage(
-              heroString: heroString,
-              store: store,
-              iStores: iStores,
-            );
-          }
-          return IllustPage(
-            id: store.illusts.id,
-            heroString: heroString,
-            store: store,
-          );
-        }))
-      },
-      onLongPress: () {
-        saveStore.saveImage(store.illusts);
-      },
-      child: Card(
-        margin: EdgeInsets.all(8.0),
-        elevation: 8.0,
-        clipBehavior: Clip.antiAlias,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: _buildPic(heroString),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildBottom(context),
-              ),
-              Align(
-                child: _buildVisibility(),
-                alignment: Alignment.topRight,
-              )
-            ],
-          ),
+    final tag = this.hashCode.toString();
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      elevation: 4.0,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+      child: InkWell(
+        onLongPress: () {
+          saveStore.saveImage(store.illusts);
+        },
+        onTap: () {
+          _buildInkTap(context, tag);
+        },
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: _buildPic(tag),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildBottom(context),
+            ),
+            Align(
+              child: _buildVisibility(),
+              alignment: Alignment.topRight,
+            )
+          ],
         ),
       ),
     );
+  }
+
+  Future _buildInkTap(BuildContext context, String heroTag) {
+    return Navigator.of(context, rootNavigator: true)
+        .push(MaterialPageRoute(builder: (_) {
+      if (iStores != null) {
+        return PictureListPage(
+          heroString: heroTag,
+          store: store,
+          iStores: iStores,
+        );
+      }
+      return IllustLightingPage(
+        id: store.illusts.id,
+        heroString: heroTag,
+        store: store,
+      );
+    }));
   }
 
   Widget _buildBottom(BuildContext context) {
     return Container(
       color: Theme.of(context).cardColor,
       height: 50,
-      child: Row(
+      child: Stack(
         children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 8.0, right: 34.0, top: 4, bottom: 4),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      store.illusts.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    Text(
-                      store.illusts.user.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .caption,
-                    )
-                  ]),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 36.0, top: 4, bottom: 4),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                store.illusts.title,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              Text(
+                store.illusts.user.name,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Theme.of(context).textTheme.caption,
+              )
+            ]),
           ),
-          Expanded(
-            flex: 1,
-            child: StarIcon(
-              illustStore: store,
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Observer(builder: (_) {
+                return StarIcon(
+                  state: store.state,
+                );
+              }),
+              onPressed: () => store.star(),
             ),
           )
         ],

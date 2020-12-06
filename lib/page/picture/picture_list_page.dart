@@ -16,13 +16,13 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class PictureListPage extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
   final String heroString;
+
   const PictureListPage(
       {Key key, @required this.store, @required this.iStores, this.heroString})
       : super(key: key);
@@ -33,10 +33,11 @@ class PictureListPage extends StatefulWidget {
 
 class _PictureListPageState extends State<PictureListPage> {
   PageController _pageController;
+  int nowPosition;
 
   @override
   void initState() {
-    int nowPosition = widget.iStores.indexOf(widget.store);
+    nowPosition = widget.iStores.indexOf(widget.store);
     _pageController = PageController(initialPage: nowPosition);
     super.initState();
   }
@@ -53,9 +54,10 @@ class _PictureListPageState extends State<PictureListPage> {
       controller: _pageController,
       itemBuilder: (BuildContext context, int index) {
         final f = widget.iStores[index];
+        String tag = nowPosition == index ? widget.heroString : null;
         return IllustLightingPage(
           id: f.id,
-          heroString: widget.heroString,
+          heroString: tag,
           store: f,
         );
       },

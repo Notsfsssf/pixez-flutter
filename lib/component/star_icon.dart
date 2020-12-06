@@ -15,14 +15,13 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
-import 'package:pixez/page/picture/illust_store.dart';
 
 class StarIcon extends StatefulWidget {
-  final IllustStore illustStore;
+  final int state;
+
   const StarIcon({
     Key key,
-    @required this.illustStore,
+    @required this.state,
   }) : super(key: key);
 
   @override
@@ -30,36 +29,50 @@ class StarIcon extends StatefulWidget {
 }
 
 class _StarIconState extends State<StarIcon> {
+  int state;
+
+  @override
+  void initState() {
+    state = widget.state;
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant StarIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.state != widget.state) {
+      setState(() {
+        state = widget.state;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 36,
-      child: LikeButton(
-        size: 24,
-        countPostion: CountPostion.bottom,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        padding: EdgeInsets.all(0.0),
-        circleColor: CircleColor(start: Colors.transparent, end: Colors.red),
-        bubblesColor: BubblesColor(
-          dotPrimaryColor: Colors.red,
-          dotSecondaryColor: Colors.redAccent,
-        ),
-        animationDuration: Duration(milliseconds: 500),
-        isLiked: widget.illustStore.isBookmark,
-        likeBuilder: (context) {
-          return Icon(
-            widget.illustStore.isBookmark
-                ? Icons.favorite
-                : Icons.favorite_border,
-            color: widget.illustStore.isBookmark ? Colors.red : Colors.grey,
-          );
-        },
-        onTap: (v) {
-          return widget.illustStore.star();
-        },
-      ),
+      height: 36,
+      child: _buildData(state),
     );
+  }
+
+  Widget _buildData(int state) {
+    switch (state) {
+      case 0:
+        return Icon(
+          Icons.favorite_border,
+          color: Colors.grey,
+        );
+        break;
+      case 1:
+        return Icon(Icons.favorite, color: Colors.grey);
+        break;
+      default:
+        return Icon(
+          Icons.favorite,
+          color: Colors.red,
+        );
+        break;
+    }
   }
 }

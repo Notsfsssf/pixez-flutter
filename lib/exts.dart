@@ -14,7 +14,6 @@
  */
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
@@ -29,8 +28,18 @@ extension TimeExts on String {
     }
   }
 
+  String toTranslateText() {
+    return this
+        .replaceAll("</br>", "\n")
+        .replaceAll("<br />", "\n")
+        .replaceAll("<strong>", "")
+        .replaceAll("</strong>", "")
+        .replaceAll("<p>", "")
+        .replaceAll("</p>", "");
+  }
+
   String toTrueUrl() {
-    if (userSetting.disableBypassSni) {
+    if (userSetting.disableBypassSni || this.contains("novel")) {
       return this;
     } else {
       if (this.contains(ImageHost)) {

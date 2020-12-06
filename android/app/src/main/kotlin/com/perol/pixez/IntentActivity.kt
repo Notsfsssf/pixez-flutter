@@ -39,6 +39,7 @@ class IntentActivity : FragmentActivity() {
             val uri: Uri = Uri.parse("pixez://www.pixiv.net/artworks/$iid")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
+            finish()
         }
     }
 }

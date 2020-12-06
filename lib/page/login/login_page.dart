@@ -15,6 +15,7 @@
  */
 
 import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -91,7 +92,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBody(BuildContext context) {
     return Theme(
-      data: ThemeData(primaryColor: Theme.of(context).accentColor,brightness: Theme.of(context).brightness),
+      data: ThemeData(
+          primaryColor: Theme.of(context).accentColor,
+          brightness: Theme.of(context).brightness),
       child: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: SingleChildScrollView(
@@ -154,7 +157,12 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   padding: EdgeInsets.all(4.0),
                                   child: Text(
-                                    _loginStore.errorMessage ?? '',
+                                    (_loginStore.errorMessage ?? "")
+                                            .contains('103')
+                                        ? ((_loginStore.errorMessage ?? "\n") +
+                                            I18n.of(context)
+                                                .login_error_message)
+                                        : _loginStore.errorMessage ?? "",
                                     textAlign: TextAlign.start,
                                     style: TextStyle(color: Colors.white),
                                   ),

@@ -26,7 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -37,7 +37,6 @@ import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:share/share.dart';
-import 'package:pixez/exts.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;

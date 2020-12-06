@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -78,6 +80,9 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
         onLoading: () => _store.next(),
         enablePullUp: true,
         controller: _easyRefreshController,
+        header: Platform.isAndroid?MaterialClassicHeader(
+          color: Theme.of(context).accentColor,
+        ):ClassicHeader(),
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -91,7 +96,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                Novel novel = _store.novels[index];
+                Novel novel = _store.novels[index].novel;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: InkWell(
@@ -101,7 +106,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                               builder: (BuildContext context) =>
                                   NovelViewerPage(
                                     id: novel.id,
-                                    novel: novel,
+                                    novelStore: _store.novels[index],
                                   )));
                     },
                     child: Card(

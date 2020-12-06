@@ -83,9 +83,7 @@ class TagsPersist {
   int id;
   String name;
   String translatedName;
-TagsPersist(){
-
-}
+  TagsPersist() {}
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       columnId: id,

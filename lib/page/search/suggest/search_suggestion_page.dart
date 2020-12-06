@@ -18,7 +18,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/generated/l10n.dart';
-import 'package:pixez/page/picture/illust_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
@@ -47,7 +47,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PageView(
                   children: _sauceStore.results
-                      .map((element) => IllustPage(id: element))
+                      .map((element) => IllustLightingPage(id: element))
                       .toList(),
                 )));
       } else {
@@ -72,6 +72,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
     return Observer(builder: (context) {
       return Scaffold(
         appBar: _buildAppBar(context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _sauceStore.findImage();
+          },
+          child: Icon(Icons.add_photo_alternate),
+        ),
         body: Container(
             child: CustomScrollView(
           slivers: [
@@ -84,7 +90,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                       subtitle: Text(I18n.of(context).illust_id),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => IllustPage(
+                            builder: (context) => IllustLightingPage(
                                   id: int.tryParse(_filter.text),
                                 )));
                       },
@@ -180,7 +186,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                 Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            IllustPage(id: int.parse(segment[1]))));
+                            IllustLightingPage(id: int.parse(segment[1]))));
                 _filter.clear();
               }
               if (segment[0] == 'users') {

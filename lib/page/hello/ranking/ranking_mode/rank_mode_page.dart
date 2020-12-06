@@ -14,28 +14,52 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pixez/lighting/lighting_page.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RankModePage extends StatefulWidget {
   final String mode, date;
+  final int index;
 
-  const RankModePage({Key key, this.mode, this.date}) : super(key: key);
+  const RankModePage({Key key, this.mode, this.date, this.index})
+      : super(key: key);
 
   @override
   _RankModePageState createState() => _RankModePageState();
 }
 
 class _RankModePageState extends State<RankModePage> {
+  RefreshController _refreshController;
+
+  @override
+  void dispose() {
+    _refreshController?.dispose();
+    subscription?.cancel();
+    super.dispose();
+  }
+
+  StreamSubscription<String> subscription;
+
   @override
   void initState() {
     super.initState();
+    _refreshController = RefreshController();
+    subscription = topStore.topStream.listen((event) {
+      if (event == (201 + widget.index).toString()) {
+        _refreshController?.position?.jumpTo(0);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return LightingList(
+      refreshController: _refreshController,
       source: () => apiClient.getIllustRanking(
         widget.mode,
         widget.date,

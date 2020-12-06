@@ -16,13 +16,13 @@
 
 import 'dart:async';
 
-import 'package:badges/badges.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -33,10 +33,9 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/picture/illust_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:pixez/page/user/users_page.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -66,6 +65,7 @@ class AndroidHelloPage extends StatefulWidget {
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   List<Widget> _pageList;
   DateTime _preTime;
+  QuickActions quickActions;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +84,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       },
       child: Observer(builder: (context) {
         if (accountStore.now != null) {
+          quickActions.setShortcutItems(<ShortcutItem>[
+            ShortcutItem(
+                type: 'action_search',
+                localizedTitle: I18n.of(context).search,
+                icon: 'ic_search'),
+          ]);
           return _buildScaffold(context);
         }
         return LoginPage();
@@ -110,7 +116,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           selectedItemColor: Theme.of(context).accentColor,
           currentIndex: index,
           onTap: (index) {
-            if (this.index == index) {}
+            if (this.index == index) {
+              topStore.setTop("${index + 1}00");
+            }
             setState(() {
               this.index = index;
             });
@@ -142,122 +150,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   initPlatform() async {
     try {
       Uri initialLink = await getInitialUri();
-      if (initialLink != null) judgePushPage(initialLink);
+      if (initialLink != null) Leader.pushWithUri(context, initialLink);
       _sub = getUriLinksStream().listen((Uri link) {
-        judgePushPage(link);
+        Leader.pushWithUri(context, link);
       });
     } catch (e) {
       print(e);
-    }
-  }
-
-  void judgePushPage(Uri link) {
-    if (link.host.contains('illusts')) {
-      var idSource = link.pathSegments.last;
-      try {
-        int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return IllustPage(
-            id: id,
-          );
-        }));
-      } catch (e) {}
-      return;
-    }
-    if (link.host.contains('user')) {
-      var idSource = link.pathSegments.last;
-      try {
-        int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return UsersPage(
-            id: id,
-          );
-        }));
-      } catch (e) {}
-      return;
-    }
-    if (link.host.contains('pixiv')) {
-      if (link.path.contains("artworks")) {
-        List<String> paths = link.pathSegments;
-        int index = paths.indexOf("artworks");
-        if (index != -1) {
-          try {
-            int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
-            }));
-            return;
-          } catch (e) {}
-        }
-      }
-      if (link.path.contains("users")) {
-        List<String> paths = link.pathSegments;
-        int index = paths.indexOf("users");
-        if (index != -1) {
-          try {
-            int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                builder: (context) => UsersPage(
-                      id: id,
-                    )));
-          } catch (e) {
-            print(e);
-          }
-        }
-      }
-      if (link.queryParameters['illust_id'] != null) {
-        try {
-          var id = link.queryParameters['illust_id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustPage(id: int.parse(id));
-          }));
-
-          return;
-        } catch (e) {}
-      }
-      if (link.queryParameters['id'] != null) {
-        try {
-          var id = link.queryParameters['id'];
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: int.parse(id),
-            );
-          }));
-
-          return;
-        } catch (e) {}
-      }
-      if (link.pathSegments.length >= 2) {
-        String i = link.pathSegments[link.pathSegments.length - 2];
-        if (i == "i") {
-          try {
-            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustPage(id: id);
-            }));
-            return;
-          } catch (e) {}
-        }
-
-        if (i == "u") {
-          try {
-            int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return UsersPage(
-                id: id,
-              );
-            }));
-            return;
-          } catch (e) {}
-        }
-      }
     }
   }
 
@@ -274,6 +172,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     ];
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: index);
+    quickActions = QuickActions();
     super.initState();
     saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {

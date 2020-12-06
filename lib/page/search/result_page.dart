@@ -24,6 +24,7 @@ import 'package:pixez/page/search/result_illust_list.dart';
 class ResultPage extends StatefulWidget {
   final String word;
   final String translatedName;
+
   const ResultPage({Key key, @required this.word, this.translatedName = ''})
       : super(key: key);
 
@@ -40,6 +41,8 @@ class _ResultPageState extends State<ResultPage> {
       ..translatedName = widget.translatedName);
   }
 
+  int index = 0;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -48,6 +51,12 @@ class _ResultPageState extends State<ResultPage> {
         appBar: AppBar(
           title: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
+              onTap: (i) {
+                if (i == index) {
+                  topStore.setTop("401");
+                }
+                index = i;
+              },
               tabs: [
                 Tab(
                   text: I18n.of(context).illust,

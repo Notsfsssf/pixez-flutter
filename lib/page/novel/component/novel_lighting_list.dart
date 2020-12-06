@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -90,7 +92,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
     if (_store.novels.isNotEmpty) {
       return ListView.builder(
         itemBuilder: (context, index) {
-          Novel novel = _store.novels[index];
+          Novel novel = _store.novels[index].novel;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: InkWell(
@@ -99,7 +101,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                     .push(MaterialPageRoute(
                         builder: (BuildContext context) => NovelViewerPage(
                               id: novel.id,
-                              novel: novel,
+                              novelStore: _store.novels[index],
                             )));
               },
               child: Card(
@@ -124,18 +126,19 @@ class _NovelLightingListState extends State<NovelLightingList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 8.0, left: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, left: 8.0),
                                   child: Text(
                                     novel.title,
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodyText1,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
                                     maxLines: 3,
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
                                   child: Text(
                                     novel.user.name,
                                     maxLines: 1,
@@ -143,20 +146,23 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                         .textTheme
                                         .caption
                                         .copyWith(
-                                            color: Theme.of(context).accentColor),
+                                            color:
+                                                Theme.of(context).accentColor),
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
                                   child: Wrap(
-                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
                                     children: [
                                       for (var f in novel.tags)
                                         Text(
                                           f.name,
-                                          style:
-                                              Theme.of(context).textTheme.caption,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
                                         )
                                     ],
                                   ),
@@ -199,6 +205,11 @@ class _NovelLightingListState extends State<NovelLightingList> {
       return SmartRefresher(
         onLoading: () => _store.next(),
         onRefresh: () => _store.fetch(),
+        header: Platform.isAndroid
+            ? MaterialClassicHeader(
+                color: Theme.of(context).accentColor,
+              )
+            : ClassicHeader(),
         enablePullDown: true,
         enablePullUp: true,
         controller: _easyRefreshController,

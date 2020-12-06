@@ -31,7 +31,6 @@ import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_about_grid.dart';
-import 'package:pixez/page/picture/illust_about_sliver.dart';
 import 'package:pixez/page/picture/illust_detail_body.dart';
 import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -460,9 +459,11 @@ class _IllustPageState extends State<IllustPage> {
                 heroTag: widget.id,
                 backgroundColor: Colors.white,
                 onPressed: () => _illustStore.star(),
-                child: StarIcon(
-                  illustStore: _illustStore,
-                ),
+                child: Observer(builder: (context) {
+                  return StarIcon(
+                    state: _illustStore.state,
+                  );
+                }),
               ),
             ),
             body: Stack(
@@ -559,32 +560,6 @@ class _IllustPageState extends State<IllustPage> {
       }
       return result;
     }
-  }
-
-  Widget _buildSliver(BuildContext context, Illusts data) {
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-            delegate: SliverChildListDelegate([
-          ...(data.type == "ugoira")
-              ? [
-                  UgoiraLoader(
-                    id: widget.id,
-                    illusts: data,
-                  )
-                ]
-              : buildPage(context, data)
-        ])),
-        SliverToBoxAdapter(
-          child: IllustDetailBody(
-            illust: data,
-          ),
-        ),
-        IllustAboutSliver(
-          id: data.id,
-        )
-      ],
-    );
   }
 
   Widget _buildBody(BuildContext context, Illusts data) {
@@ -703,9 +678,7 @@ class _IllustPageState extends State<IllustPage> {
           title: Text(I18n.of(context).muti_choice_save),
           actions: <Widget>[
             FlatButton(
-              child: Text(I18n
-                  .of(context)
-                  .cancel),
+              child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -714,9 +687,7 @@ class _IllustPageState extends State<IllustPage> {
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
-              child: Text(I18n
-                  .of(context)
-                  .ok),
+              child: Text(I18n.of(context).ok),
             ),
           ],
           content: Container(

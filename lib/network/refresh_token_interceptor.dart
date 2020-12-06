@@ -69,7 +69,7 @@ class RefreshTokenInterceptor extends Interceptor {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
         apiClient.httpClient.interceptors.errorLock.lock();
-        print("refresh token start ========================");
+        print("lock start ========================");
         try {
           ErrorMessage errorMessage = ErrorMessage.fromJson(err.response.data);
           if (errorMessage.error.message.contains("OAuth") &&
@@ -98,13 +98,14 @@ class RefreshTokenInterceptor extends Interceptor {
               ..xRestrict = user.xRestrict);
             lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
           }
-          if (errorMessage.error.message.contains("Limit")) {}
+          if (errorMessage.error.message.contains("Limit")) {
+          }
         } catch (e) {
           print(e);
           lastRefreshTime = 0;
           return e;
         }
-        print("refresh unlock ========================");
+        print("unlock ========================");
         apiClient.httpClient.interceptors.errorLock.unlock();
       }
       var request = err.response.request;

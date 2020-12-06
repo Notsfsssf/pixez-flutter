@@ -14,8 +14,11 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
@@ -49,6 +52,14 @@ class _RankPageState extends State<RankPage>
   DateTime nowDate;
 
   @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
+  }
+
+  StreamSubscription<String> subscription;
+
+  @override
   void initState() {
     nowDate = DateTime.now();
     rankStore = RankStore()..init();
@@ -58,6 +69,11 @@ class _RankPageState extends State<RankPage>
       i++;
     });
     super.initState();
+    subscription = topStore.topStream.listen((event) {
+      if (event == "200") {
+        topStore.setTop((201 + index).toString());
+      }
+    });
   }
 
   String dateTime;
@@ -71,17 +87,24 @@ class _RankPageState extends State<RankPage>
 
   DateTime nowDateTime = DateTime.now();
   int index = 0;
+  int tapCount = 0;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final rankListMean = I18n.of(context).mode_list.split(' ');
+    final rankListMean = I18n
+        .of(context)
+        .mode_list
+        .split(' ');
     return Observer(builder: (_) {
       if (rankStore.inChoice) {
         return _buildChoicePage(context, rankListMean);
       }
       if (rankStore.modeList.isNotEmpty) {
-        var list = I18n.of(context).mode_list.split(' ');
+        var list = I18n
+            .of(context)
+            .mode_list
+            .split(' ');
         List<String> titles = [];
         for (var i = 0; i < rankStore.modeList.length; i++) {
           int index = modeList.indexOf(rankStore.modeList[i]);
@@ -99,6 +122,14 @@ class _RankPageState extends State<RankPage>
                     setState(() {
                       this.index = i;
                     });
+                    // if (i == index) {
+                    //   tapCount++;
+                    //   if (tapCount == 2) {
+                    //     topStore.setTop((201 + i).toString());
+                    //     tapCount = 0;
+                    //   }
+                    // } else
+                    //   tapCount = 0;
                   },
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
@@ -133,6 +164,7 @@ class _RankPageState extends State<RankPage>
                     RankModePage(
                       date: dateTime,
                       mode: element,
+                      index: rankStore.modeList.indexOf(element),
                     ),
                 ]),
               )

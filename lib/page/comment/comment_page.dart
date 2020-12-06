@@ -14,14 +14,15 @@
  *
  */
 
-import 'package:dio/dio.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:pixez/exts.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CommentPage extends StatefulWidget {
@@ -68,6 +69,12 @@ class _CommentPageState extends State<CommentPage> {
               SmartRefresher(
                 controller: easyRefreshController,
                 enablePullUp: true,
+                header: (Platform.isAndroid)
+                    ? MaterialClassicHeader(
+                        color: Theme.of(context).accentColor,
+                        backgroundColor: Theme.of(context).cardColor,
+                      )
+                    : ClassicHeader(),
                 onRefresh: () => _store.fetch(),
                 onLoading: () => _store.next(),
                 child: _store.comments.isNotEmpty
@@ -198,7 +205,6 @@ class _CommentPageState extends State<CommentPage> {
                                             _editController.text.trim();
                                         try {
                                           if (txt.isNotEmpty)
-                                            Response reponse =
                                                 await client.postIllustComment(
                                                     widget.id, txt,
                                                     parent_comment_id:

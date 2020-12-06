@@ -23,6 +23,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,6 +35,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
+import 'package:quiver/collection.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 
 part 'save_store.g.dart';
@@ -65,19 +67,19 @@ abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     streamController = StreamController();
     saveStream = ObservableStream(streamController.stream.asBroadcastStream());
-    if(!userSetting.disableBypassSni)
-    (imageDio.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    if (!userSetting.disableBypassSni)
+      (imageDio.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        HttpClient httpClient = new HttpClient();
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+        return httpClient;
       };
-      return httpClient;
-    };
+    taskPersistProvider.open();
   }
 
-  @override
   void dispose() async {
     await streamController?.close();
   }
@@ -199,12 +201,10 @@ abstract class _SaveStoreBase with Store {
     return directory;
   }
 
-  final imageDio = Dio();
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
-  Map<String, JobEntity> jobMaps = Map();
+  LruMap<String, JobEntity> jobMaps = LruMap();
 
   _joinOnDart(String url, Illusts illusts, String fileName) async {
-    await taskPersistProvider.open();
     final result = await taskPersistProvider.getAccount(url);
     if (result != null) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
@@ -223,67 +223,44 @@ abstract class _SaveStoreBase with Store {
       var savePath = (await getTemporaryDirectory()).path +
           Platform.pathSeparator +
           fileName;
-      await imageDio.download(url.toTrueUrl(), savePath,
-          onReceiveProgress: (received, total) async {
-        if (total != -1) {
-          var job = jobMaps[url];
-          if (job != null) {
-            job
-              ..min = received
-              ..status = 1
-              ..max = total;
-          } else {
-            jobMaps[url] = JobEntity()
-              ..status = 1
-              ..min = received
-              ..max = total;
-          }
-          if (received / total == 1) {
-            await taskPersistProvider.update(taskPersist..status = 2);
-            File file = File(savePath);
-            final uint8list = await file.readAsBytes();
-            await saveStore.saveToGallery(uint8list, illusts, fileName);
-            BotToast.showCustomText(
-                onlyOne: true,
-                duration: Duration(seconds: 1),
-                toastBuilder: (textCancel) => Align(
-                      alignment: Alignment(0, 0.8),
-                      child: Card(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 8.0),
-                              child: Text(
-                                  "${illusts.title} ${I18n.of(context).saved}"),
-                            )
-                          ],
-                        ),
+      Map data = {0: url, 1: savePath, 2: jobMaps};
+      await compute(isolateDownload, data);
+      await taskPersistProvider.update(taskPersist..status = 2);
+      File file = File(savePath);
+      final uint8list = await file.readAsBytes();
+      await saveStore.saveToGallery(uint8list, illusts, fileName);
+      BotToast.showCustomText(
+          onlyOne: true,
+          duration: Duration(seconds: 1),
+          toastBuilder: (textCancel) => Align(
+                alignment: Alignment(0, 0.8),
+                child: Card(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
                       ),
-                    ));
-            var job = jobMaps[url];
-            if (job != null) {
-              job.status = 2;
-            } else {
-              jobMaps[url] = JobEntity()
-                ..status = 2
-                ..min = 1
-                ..max = 1;
-            }
-          }
-        }
-      },
-          deleteOnError: true,
-          options: Options(headers: {
-            "referer": "https://app-api.pixiv.net/",
-            "User-Agent": "PixivIOSApp/5.8.0",
-            "Host": ImageHost
-          }));
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 8.0),
+                        child:
+                            Text("${illusts.title} ${I18n.of(context).saved}"),
+                      )
+                    ],
+                  ),
+                ),
+              ));
+      var job = jobMaps[url];
+      if (job != null) {
+        job.status = 2;
+      } else {
+        jobMaps[url] = JobEntity()
+          ..status = 2
+          ..min = 1
+          ..max = 1;
+      }
     } catch (e) {
       print(e);
       await taskPersistProvider.update(taskPersist..status = 3);
@@ -349,7 +326,7 @@ abstract class _SaveStoreBase with Store {
     } else {
       final _imageSaver = ImageSaver();
       List<Uint8List> bytesList = [uint8list];
-      final res = await _imageSaver.saveImages(
+      await _imageSaver.saveImages(
           imageBytes: bytesList, directoryName: 'pxez');
     }
   }
@@ -411,4 +388,35 @@ abstract class _SaveStoreBase with Store {
       }
     }
   }
+}
+
+final imageDio = Dio();
+
+void isolateDownload(Map data) async {
+  String url = data[0];
+  Map jobMaps = data[2];
+  await imageDio.download(url.toTrueUrl(), data[1],
+      onReceiveProgress: (received, total) async {
+    if (total != -1) {
+      var job = jobMaps[url];
+      if (job != null) {
+        job
+          ..min = received
+          ..status = 1
+          ..max = total;
+      } else {
+        jobMaps[url] = JobEntity()
+          ..status = 1
+          ..min = received
+          ..max = total;
+      }
+      if (received / total == 1) {}
+    }
+  },
+      deleteOnError: true,
+      options: Options(headers: {
+        "referer": "https://app-api.pixiv.net/",
+        "User-Agent": "PixivIOSApp/5.8.0",
+        "Host": ImageHost
+      }));
 }

@@ -39,6 +39,7 @@ import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key key}) : super(key: key);
@@ -239,6 +240,14 @@ class _SettingPageState extends State<SettingPage> {
                       Column(
                         children: <Widget>[
                           ListTile(
+                            leading: Icon(Icons.book),
+                            title: Text('Novel(Beta)'),
+                            onTap: () =>
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushReplacement(MaterialPageRoute(
+                                        builder: (context) => NovelRail())),
+                          ),
+                          ListTile(
                             leading: Icon(Icons.message),
                             title: Text(I18n.of(context).about),
                             onTap: () => Leader.push(
@@ -246,15 +255,6 @@ class _SettingPageState extends State<SettingPage> {
                             trailing: Visibility(
                               child: NewVersionChip(),
                               visible: hasNewVersion,
-                            ),
-                          ),
-                          Visibility(
-                            visible: false,
-                            child: ListTile(
-                              title: Text('novel'),
-                              onTap: () => Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) => NovelRail())),
                             ),
                           ),
                           Observer(builder: (context) {
@@ -308,6 +308,7 @@ class _SettingPageState extends State<SettingPage> {
       case "OK":
         {
           accountStore.deleteAll();
+          QuickActions().clearShortcutItems();
         }
         break;
       case "CANCEL":
