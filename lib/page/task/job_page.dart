@@ -17,10 +17,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -28,7 +27,6 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/store/save_store.dart';
-import 'package:pixez/exts.dart';
 
 class JobPage extends StatefulWidget {
   @override
@@ -389,71 +387,47 @@ class _JobPageState extends State<JobPage> {
       var savePath = (await getTemporaryDirectory()).path +
           Platform.pathSeparator +
           persist.fileName;
-      await saveStore.imageDio.download(persist.url.toTrueUrl(), savePath,
-          onReceiveProgress: (received, total) async {
-        if (total != -1) {
-          var job = jobMaps[persist.url];
-          if (job != null) {
-            job
-              ..min = received
-              ..status = 1
-              ..max = total;
-          } else {
-            jobMaps[persist.url] = JobEntity()
-              ..status = 1
-              ..min = received
-              ..max = total;
-          }
-          initMethod();
-          if (received / total == 1) {
-            await taskPersistProvider.update(taskPersist..status = 2);
-            File file = File(savePath);
-            final uint8list = await file.readAsBytes();
-            await saveStore.saveToGallery(
-                uint8list,
-                Illusts(user: User(id: persist.userId, name: persist.userName)),
-                persist.fileName);
-            BotToast.showCustomText(
-                onlyOne: true,
-                duration: Duration(seconds: 1),
-                toastBuilder: (textCancel) => Align(
-                      alignment: Alignment(0, 0.8),
-                      child: Card(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 8.0),
-                              child: Text(
-                                  "${persist.title} ${I18n.of(context).saved}"),
-                            )
-                          ],
-                        ),
+      Map data = {0: persist.url, 1: savePath, 2: jobMaps};
+      await compute(isolateDownload, data);
+      await taskPersistProvider.update(taskPersist..status = 1);
+      File file = File(savePath);
+      final uint8list = await file.readAsBytes();
+      await saveStore.saveToGallery(
+          uint8list,
+          Illusts(user: User(id: persist.userId, name: persist.userName)),
+          persist.fileName);
+      BotToast.showCustomText(
+          onlyOne: true,
+          duration: Duration(seconds: 0),
+          toastBuilder: (textCancel) => Align(
+                alignment: Alignment(-1, 0.8),
+                child: Card(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
                       ),
-                    ));
-            var job = jobMaps[persist.url];
-            if (job != null) {
-              job.status = 2;
-            } else {
-              jobMaps[persist.url] = JobEntity()
-                ..status = 2
-                ..min = 1
-                ..max = 1;
-            }
-          }
-        }
-      },
-          deleteOnError: true,
-          options: Options(headers: {
-            "referer": "https://app-api.pixiv.net/",
-            "User-Agent": "PixivIOSApp/5.8.0",
-            "Host": ImageHost
-          }));
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7.0, vertical: 8.0),
+                        child:
+                            Text("${persist.title} ${I18n.of(context).saved}"),
+                      )
+                    ],
+                  ),
+                ),
+              ));
+      var job = jobMaps[persist.url];
+      if (job != null) {
+        job.status = 1;
+      } else {
+        jobMaps[persist.url] = JobEntity()
+          ..status = 1
+          ..min = 0
+          ..max = 0;
+      }
     } catch (e) {
       await taskPersistProvider.update(taskPersist..status = 3);
       var job = jobMaps[persist.url];
