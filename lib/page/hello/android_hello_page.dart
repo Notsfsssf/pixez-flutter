@@ -163,6 +163,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   void initState() {
+    fetcher.context = context;
     _pageList = [
       RecomSpolightPage(lightingStore: widget.lightingStore),
       RankPage(),

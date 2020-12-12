@@ -13,6 +13,7 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:path/path.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TaskPersist {
@@ -56,6 +57,16 @@ class TaskPersist {
     data[columnStatus] = this.status;
     data[columnFileName] = this.fileName;
     return data;
+  }
+
+  Illusts toIllusts() {
+    var illusts = Illusts();
+    illusts.user = User()
+      ..id = this.userId
+      ..name = this.userName;
+    illusts.title = this.title;
+    illusts.id = this.illustId;
+    return illusts;
   }
 }
 

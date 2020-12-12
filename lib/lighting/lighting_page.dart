@@ -298,7 +298,6 @@ class _LightingListState extends State<LightingList> {
         store: _store.iStores[index],
         iStores: _store.iStores,
         height: mainAxisExtent + 86.0,
-        heroString: widget.hashCode.toString(),
       );
     }, childCount: _store.iStores.length);
   }
@@ -329,7 +328,6 @@ class _LightingListState extends State<LightingList> {
       store: _store.iStores[index],
       iStores: _store.iStores,
       height: mainAxisExtent + 86.0,
-      heroString: widget.hashCode.toString(),
     );
   }
 }

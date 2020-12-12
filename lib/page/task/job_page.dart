@@ -17,9 +17,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/foundation.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -27,6 +29,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:pixez/exts.dart';
 
 class JobPage extends StatefulWidget {
   @override
@@ -50,7 +53,6 @@ class _JobPageState extends State<JobPage> {
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
       if (mounted) setState(() {});
     });
-
     initMethod();
   }
 
@@ -179,8 +181,7 @@ class _JobPageState extends State<JobPage> {
                 );
               }
               var persist = _list[index];
-              var job = saveStore.jobMaps[persist.url];
-
+              var job = fetcher.jobMaps[persist.url];
               if (currentIndex == 0) {
                 if (job == null) {
                   return Container(
@@ -375,71 +376,13 @@ class _JobPageState extends State<JobPage> {
 
   Future _deleteJob(TaskPersist persist) async {
     await taskPersistProvider.remove(persist.id);
-    saveStore.jobMaps.remove(persist.url);
+    fetcher.jobMaps.remove(persist.url);
   }
 
   Future _retryJob(TaskPersist persist) async {
     await _deleteJob(persist);
     final taskPersist = persist;
-    final jobMaps = saveStore.jobMaps;
-    try {
-      await taskPersistProvider.insert(taskPersist);
-      var savePath = (await getTemporaryDirectory()).path +
-          Platform.pathSeparator +
-          persist.fileName;
-      Map data = {0: persist.url, 1: savePath, 2: jobMaps};
-      await compute(isolateDownload, data);
-      await taskPersistProvider.update(taskPersist..status = 1);
-      File file = File(savePath);
-      final uint8list = await file.readAsBytes();
-      await saveStore.saveToGallery(
-          uint8list,
-          Illusts(user: User(id: persist.userId, name: persist.userName)),
-          persist.fileName);
-      BotToast.showCustomText(
-          onlyOne: true,
-          duration: Duration(seconds: 0),
-          toastBuilder: (textCancel) => Align(
-                alignment: Alignment(-1, 0.8),
-                child: Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7.0, vertical: 8.0),
-                        child:
-                            Text("${persist.title} ${I18n.of(context).saved}"),
-                      )
-                    ],
-                  ),
-                ),
-              ));
-      var job = jobMaps[persist.url];
-      if (job != null) {
-        job.status = 1;
-      } else {
-        jobMaps[persist.url] = JobEntity()
-          ..status = 1
-          ..min = 0
-          ..max = 0;
-      }
-    } catch (e) {
-      await taskPersistProvider.update(taskPersist..status = 3);
-      var job = jobMaps[persist.url];
-      if (job != null) {
-        job.status = 3;
-      } else {
-        jobMaps[persist.url] = JobEntity()
-          ..status = 3
-          ..min = 1
-          ..max = 1;
-      }
-      print(e);
-    }
+    await taskPersistProvider.insert(taskPersist);
+    fetcher.save(persist.url, taskPersist.toIllusts(), persist.fileName);
   }
 }

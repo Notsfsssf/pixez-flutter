@@ -61,7 +61,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void initState() {
-    _easyRefreshController = RefreshController();
+    _easyRefreshController = RefreshController(initialRefresh: true);
     _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
     _lightingStore = widget.lightingStore ??
@@ -70,20 +70,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       _lightingStore.controller = _easyRefreshController;
     }
     super.initState();
-    initMethod();
     subscription = topStore.topStream.listen((event) {
       if (event == "100") {
         _easyRefreshController.position.jumpTo(0);
       }
     });
-  }
-
-  initMethod() async {
-    _easyRefreshController.headerMode.value = RefreshStatus.refreshing;
-    await spotlightStore.fetch();
-    if (_lightingStore.iStores.isEmpty) await _lightingStore.fetch();
-    await _recomUserStore.fetch();
-    _easyRefreshController.headerMode.value = RefreshStatus.completed;
   }
 
   RefreshController _easyRefreshController;
@@ -238,7 +229,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                     store: _lightingStore.iStores[index],
                     iStores: _lightingStore.iStores,
                     height: mainAxisExtent + 86.0,
-                    heroString: widget.hashCode.toString(),
                   );
                 }, childCount: _lightingStore.iStores.length),
               )

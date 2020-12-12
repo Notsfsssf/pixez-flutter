@@ -364,7 +364,7 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "initialize" -> {
                     if (call.arguments == null) return@setMethodCallHandler
-                    Log.d("native", "dart call")
+                    Log.d("native", "initialize widget")
                     CardAppWidget.setHandle(this, call.arguments as Long)
                 }
             }

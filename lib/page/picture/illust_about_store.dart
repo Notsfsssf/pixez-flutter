@@ -27,10 +27,12 @@ abstract class _IllustAboutStoreBase with Store {
   final int id;
 
   _IllustAboutStoreBase(this.id);
+
   @observable
   String errorMessage;
 
   ObservableList<Illusts> illusts = ObservableList();
+
   fetch() async {
     errorMessage = null;
     try {

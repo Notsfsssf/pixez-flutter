@@ -23,19 +23,19 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
+import 'package:pixez/network/compute_interceptor.dart';
 import 'package:pixez/page/task/job_page.dart';
-import 'package:quiver/collection.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 
 part 'save_store.g.dart';
@@ -67,17 +67,6 @@ abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
     streamController = StreamController();
     saveStream = ObservableStream(streamController.stream.asBroadcastStream());
-    if (!userSetting.disableBypassSni)
-      (imageDio.httpClientAdapter as DefaultHttpClientAdapter)
-          .onHttpClientCreate = (client) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
-        };
-        return httpClient;
-      };
-    taskPersistProvider.open();
   }
 
   void dispose() async {
@@ -87,29 +76,7 @@ abstract class _SaveStoreBase with Store {
   void listenBehavior(SaveStream stream) {
     switch (stream.state) {
       case SaveState.SUCCESS:
-        BotToast.showCustomText(
-            onlyOne: true,
-            duration: Duration(seconds: 1),
-            toastBuilder: (textCancel) => Align(
-                  alignment: Alignment(0, 0.8),
-                  child: Card(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 8.0),
-                          child: Text(
-                              "${stream.data.title} ${I18n.of(context).saved}"),
-                        )
-                      ],
-                    ),
-                  ),
-                ));
+        Toaster.downloadOk("${stream.data.title} ${I18n.of(context).saved}");
         break;
       case SaveState.JOIN:
         BotToast.showCustomText(
@@ -201,11 +168,8 @@ abstract class _SaveStoreBase with Store {
     return directory;
   }
 
-  TaskPersistProvider taskPersistProvider = TaskPersistProvider();
-  LruMap<String, JobEntity> jobMaps = LruMap();
-
   _joinOnDart(String url, Illusts illusts, String fileName) async {
-    final result = await taskPersistProvider.getAccount(url);
+    final result = await fetcher.taskPersistProvider.getAccount(url);
     if (result != null) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts));
       return;
@@ -219,61 +183,9 @@ abstract class _SaveStoreBase with Store {
         status: 0,
         url: url);
     try {
-      await taskPersistProvider.insert(taskPersist);
-      var savePath = (await getTemporaryDirectory()).path +
-          Platform.pathSeparator +
-          fileName;
-      Map data = {0: url, 1: savePath, 2: jobMaps};
-      await compute(isolateDownload, data);
-      await taskPersistProvider.update(taskPersist..status = 2);
-      File file = File(savePath);
-      final uint8list = await file.readAsBytes();
-      await saveStore.saveToGallery(uint8list, illusts, fileName);
-      BotToast.showCustomText(
-          onlyOne: true,
-          duration: Duration(seconds: 1),
-          toastBuilder: (textCancel) => Align(
-                alignment: Alignment(0, 0.8),
-                child: Card(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8.0),
-                        child:
-                            Text("${illusts.title} ${I18n.of(context).saved}"),
-                      )
-                    ],
-                  ),
-                ),
-              ));
-      var job = jobMaps[url];
-      if (job != null) {
-        job.status = 2;
-      } else {
-        jobMaps[url] = JobEntity()
-          ..status = 2
-          ..min = 1
-          ..max = 1;
-      }
-    } catch (e) {
-      print(e);
-      await taskPersistProvider.update(taskPersist..status = 3);
-      var job = jobMaps[url];
-      if (job != null) {
-        job.status = 3;
-      } else {
-        jobMaps[url] = JobEntity()
-          ..status = 3
-          ..min = 1
-          ..max = 1;
-      }
-    }
+      await fetcher.taskPersistProvider.insert(taskPersist);
+      fetcher.save(url, illusts, fileName);
+    } catch (e) {}
   }
 
   _joinQueue(String url, Illusts illusts, String fileName) async {
@@ -305,13 +217,13 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
-  Future<void> saveToGallery(
-      Uint8List uint8list, Illusts illusts, String fileName) async {
+  Future<void> saveToGalleryWithUser(
+      Uint8List uint8list, String userName, int userId, String fileName) async {
     if (Platform.isAndroid) {
       try {
         if (userSetting.singleFolder) {
-          String name = illusts.user.name.toLegal();
-          String id = illusts.user.id.toString();
+          String name = userName.toLegal();
+          String id = userId.toString();
           fileName = "${name}_$id/$fileName";
         }
         if (userSetting.isClearOldFormatFile)
@@ -329,6 +241,12 @@ abstract class _SaveStoreBase with Store {
       await _imageSaver.saveImages(
           imageBytes: bytesList, directoryName: 'pxez');
     }
+  }
+
+  Future<void> saveToGallery(
+      Uint8List uint8list, Illusts illusts, String fileName) async {
+    saveToGalleryWithUser(
+        uint8list, illusts.user.name, illusts.user.id, fileName);
   }
 
   @action
@@ -388,35 +306,4 @@ abstract class _SaveStoreBase with Store {
       }
     }
   }
-}
-
-final imageDio = Dio();
-
-void isolateDownload(Map data) async {
-  String url = data[0];
-  Map jobMaps = data[2];
-  await imageDio.download(url.toTrueUrl(), data[1],
-      onReceiveProgress: (received, total) async {
-    if (total != -1) {
-      var job = jobMaps[url];
-      if (job != null) {
-        job
-          ..min = received
-          ..status = 1
-          ..max = total;
-      } else {
-        jobMaps[url] = JobEntity()
-          ..status = 1
-          ..min = received
-          ..max = total;
-      }
-      if (received / total == 1) {}
-    }
-  },
-      deleteOnError: true,
-      options: Options(headers: {
-        "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": ImageHost
-      }));
 }

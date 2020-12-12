@@ -22,12 +22,12 @@
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart';
+import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
   });
 }

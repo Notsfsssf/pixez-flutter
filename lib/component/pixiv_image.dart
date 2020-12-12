@@ -58,7 +58,6 @@ class PixivImage extends HookWidget {
         duration: const Duration(milliseconds: 500),
         lowerBound: 0.2,
         upperBound: 1.0);
-
     return ExtendedImage.network(
       url.toTrueUrl(),
       height: height,

@@ -14,6 +14,7 @@ class KVPair {
   String value;
   int expireTime;
   int dateTime;
+
   KVPair({this.key, this.value, this.expireTime, this.dateTime});
 
   factory KVPair.fromJson(jsonRes) => jsonRes == null
@@ -51,7 +52,7 @@ create table $tableKVPair (
   $columnKey text not null,
   $columnValue text not null,
   $columnExpireTime integer not null,
-  $columnDateTime integer not null,
+  $columnDateTime integer not null
   )
 ''');
     });
@@ -112,5 +113,9 @@ create table $tableKVPair (
       });
     }
     return result;
+  }
+
+  Future<void> delete(String key) async {
+    await db.delete(tableKVPair, where: '$columnKey = ?', whereArgs: [key]);
   }
 }

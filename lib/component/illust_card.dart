@@ -27,20 +27,35 @@ import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 
-class IllustCard extends StatelessWidget {
+class IllustCard extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
   final bool needToBan;
   final double height;
-  final String heroString;
 
   IllustCard({
     @required this.store,
     this.iStores,
     this.needToBan = false,
     this.height,
-    this.heroString,
   });
+
+  @override
+  _IllustCardState createState() => _IllustCardState();
+}
+
+class _IllustCardState extends State<IllustCard> {
+  IllustStore store;
+  List<IllustStore> iStores;
+  String tag;
+
+  @override
+  void initState() {
+    store = widget.store;
+    iStores = widget.iStores;
+    tag = this.hashCode.toString();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +63,8 @@ class IllustCard extends StatelessWidget {
       for (int i = 0; i < store.illusts.tags.length; i++) {
         if (store.illusts.tags[i].name.startsWith('R-18'))
           return InkWell(
-            onTap: () => {_buildTap(context)},
-            onLongPress: () {
-              saveStore.saveImage(store.illusts);
-            },
+            onTap: () => _buildTap(context),
+            onLongPress: () => saveStore.saveImage(store.illusts),
             child: Card(
               margin: EdgeInsets.all(8.0),
               elevation: 8.0,
@@ -62,10 +75,10 @@ class IllustCard extends StatelessWidget {
             ),
           );
       }
-    if (height != null)
+    if (widget.height != null)
       return Container(
         child: buildInkWell(context),
-        height: height,
+        height: widget.height,
       );
     return buildInkWell(context);
   }
@@ -77,12 +90,13 @@ class IllustCard extends StatelessWidget {
         return PictureListPage(
           iStores: iStores,
           store: store,
+          heroString: tag,
         );
       }
       return IllustLightingPage(
         store: store,
         id: store.illusts.id,
-        heroString: this.hashCode.toString(),
+        heroString: tag,
       );
     }));
   }
@@ -107,19 +121,18 @@ class IllustCard extends StatelessWidget {
     return (store.illusts.height.toDouble() / store.illusts.width.toDouble()) >
             3
         ? NullHero(
-      tag: tag,
+            tag: tag,
             child: PixivImage(store.illusts.imageUrls.squareMedium,
                 fit: BoxFit.fitWidth),
           )
         : NullHero(
-      tag: tag,
-      child: PixivImage(store.illusts.imageUrls.medium,
-          fit: BoxFit.fitWidth),
+            tag: tag,
+            child: PixivImage(store.illusts.imageUrls.medium,
+                fit: BoxFit.fitWidth),
           );
   }
 
   Widget buildInkWell(BuildContext context) {
-    final tag = this.hashCode.toString();
     return Card(
       margin: EdgeInsets.all(8.0),
       elevation: 4.0,

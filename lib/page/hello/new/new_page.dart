@@ -73,61 +73,58 @@ class _NewPageState extends State<NewPage>
     super.build(context);
     return Observer(builder: (context) {
       if (accountStore.now != null)
-        return Scaffold(
-          body: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              AppBar(
-                automaticallyImplyLeading: false,
-                title: TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    controller: _tabController,
-                    onTap: (i) {
-                      if (_tabController.index == i)
-                        topStore.setTop((301 + i).toString());
-                    },
-                    tabs: [
-                      Tab(
-                        text: I18n.of(context).news,
-                      ),
-                      Tab(
-                        text: I18n.of(context).bookmark,
-                      ),
-                      Tab(
-                        text: I18n.of(context).followed,
-                      ),
-                    ]),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.account_circle),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => UsersPage(
-                                id: int.parse(accountStore.now.userId),
-                              )));
-                    },
-                  )
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            AppBar(
+              automaticallyImplyLeading: false,
+              title: TabBar(
+                  indicatorSize: TabBarIndicatorSize.label,
+                  controller: _tabController,
+                  onTap: (i) {
+                    if (_tabController.index == i)
+                      topStore.setTop((301 + i).toString());
+                  },
+                  tabs: [
+                    Tab(
+                      text: I18n.of(context).news,
+                    ),
+                    Tab(
+                      text: I18n.of(context).bookmark,
+                    ),
+                    Tab(
+                      text: I18n.of(context).followed,
+                    ),
+                  ]),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.account_circle),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => UsersPage(
+                              id: int.parse(accountStore.now.userId),
+                            )));
+                  },
+                )
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: <Widget>[
+                  NewIllustPage(),
+                  BookmarkPage(
+                    isNested: false,
+                    id: int.parse(accountStore.now.userId),
+                  ),
+                  FollowList(
+                    id: int.parse(accountStore.now.userId),
+                  ),
                 ],
               ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    NewIllustPage(),
-                    BookmarkPage(
-                      isNested: false,
-                      id: int.parse(accountStore.now.userId),
-                    ),
-                    FollowList(
-                      id: int.parse(accountStore.now.userId),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         );
-
       return DefaultTabController(
           length: 3,
           child: Scaffold(

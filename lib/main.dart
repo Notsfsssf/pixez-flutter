@@ -25,6 +25,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/fetcher.dart';
+import 'package:pixez/er/kver.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -55,6 +57,8 @@ final HistoryStore historyStore = HistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
 final SplashStore splashStore = SplashStore(OnezeroClient());
+final Fetcher fetcher = new Fetcher();
+final KVer kVer = KVer();
 
 main() {
   initAppWidget();
@@ -129,6 +133,7 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     saveStore?.dispose();
     topStore?.dispose();
+    fetcher.stop();
     super.dispose();
   }
 
@@ -141,6 +146,7 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
     initMethod();
+    fetcher.start();
     super.initState();
   }
 

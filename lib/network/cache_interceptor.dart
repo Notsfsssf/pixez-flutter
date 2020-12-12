@@ -15,14 +15,14 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:quiver/collection.dart';
+import 'package:pixez/main.dart';
 
 class CacheInterceptor extends Interceptor {
   CacheInterceptor();
-
-  LruMap _cache = LruMap<Uri, Response>(maximumSize: 10);
 
   final String RELATED_LINK = "/v2/illust/related";
 
@@ -32,22 +32,28 @@ class CacheInterceptor extends Interceptor {
   Future onRequest(RequestOptions options) async {
     final extra = options.extra["refresh"];
     if (extra == null) return options;
-    Response response;
+    String value;
     if (extra == true) {
       return options;
-    } else if ((response = _cache[options.uri]) != null) {
+    } else if ((value = (await kVer.get(options.uri.toString()))) != null) {
+      Response response =
+          Response(data: json.decode(value) as Map, statusCode: HttpStatus.ok);
       return response;
     }
   }
 
   @override
   Future onResponse(Response response) async {
+    if (response.statusCode != HttpStatus.ok) return;
     if (response.request.uri.path.contains(RELATED_LINK) ||
         response.request.uri.path.contains(TAG_RECOMMEND_LINK)) {
-      _cache[response.request.uri] = response;
+      await kVer.setExp(response.request.uri.toString(),
+          json.encode(response.data), 1000 * 60 * 60);
     }
   }
 
   @override
-  Future onError(DioError e) async {}
+  Future onError(DioError e) async {
+    kVer.remove(e.request.uri.toString());
+  }
 }
