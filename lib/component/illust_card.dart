@@ -58,6 +58,13 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   @override
+  void didUpdateWidget(covariant IllustCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    store = widget.store;
+    iStores = widget.iStores;
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (userSetting.hIsNotAllow)
       for (int i = 0; i < store.illusts.tags.length; i++) {

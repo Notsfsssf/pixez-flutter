@@ -21,20 +21,10 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image/image.dart';
-import 'package:pixez/er/fetcher.dart';
-import 'package:pixez/er/kver.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/component/ugoira_painter.dart';
-import 'package:pixez/models/key_value_pair.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(MyApp());
-    kVer.setExp("test_exip", "a", 100);
-    Future.delayed(Duration(milliseconds: 200),() async {
-      String a =await kVer.get("test_exip");
-      print(a);
-    });
   });
 }
