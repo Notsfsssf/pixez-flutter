@@ -20,6 +20,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
@@ -164,6 +165,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void initState() {
     fetcher.context = context;
+    Constants.type = 0;
     _pageList = [
       RecomSpolightPage(lightingStore: widget.lightingStore),
       RankPage(),

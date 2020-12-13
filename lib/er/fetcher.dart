@@ -59,7 +59,7 @@ class TaskBean {
 
 class Fetcher {
   BuildContext context;
-  Queue queue = new Queue();
+  Queue<IsoContactBean> queue = new Queue();
   ReceivePort receivePort = ReceivePort();
   SendPort sendPortToChild;
   Isolate isolate;
@@ -110,13 +110,14 @@ class Fetcher {
   }
 
   save(String url, Illusts illusts, String fileName) async {
-    sendPortToChild?.send(IsoContactBean(
+    IsoContactBean isoContactBean = IsoContactBean(
         state: IsoTaskState.APPEND,
         data: TaskBean(
             url: url,
             illusts: illusts,
             fileName: fileName,
-            savePath: (await getTemporaryDirectory()).path)));
+            savePath: (await getTemporaryDirectory()).path));
+    sendPortToChild?.send(isoContactBean);
   }
 
   void stop() {

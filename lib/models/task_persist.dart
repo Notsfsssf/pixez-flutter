@@ -148,7 +148,6 @@ create table $tableAccount (
   }
 
   Future<List<TaskPersist>> getAllAccount() async {
-    List result = new List<TaskPersist>();
     List<Map> maps = await db.query(tableAccount, columns: [
       columnId,
       columnUserId,
@@ -158,13 +157,7 @@ create table $tableAccount (
       columnUrl,
       columnFileName,
       columnStatus
-    ]);
-
-    if (maps.length > 0) {
-      maps.forEach((f) {
-        result.add(TaskPersist.fromJson(f));
-      });
-    }
-    return result;
+    ],orderBy: "${columnId} DESC",);
+    return maps.map((e) => TaskPersist.fromJson(e)).toList();
   }
 }

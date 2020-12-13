@@ -19,6 +19,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 
 class CacheInterceptor extends Interceptor {
@@ -38,6 +39,7 @@ class CacheInterceptor extends Interceptor {
     } else if ((value = (await kVer.get(options.uri.toString()))) != null) {
       Response response =
           Response(data: json.decode(value) as Map, statusCode: HttpStatus.ok);
+      LPrinter.d("hit cache");
       return response;
     }
   }

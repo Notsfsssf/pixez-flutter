@@ -14,22 +14,13 @@
  */
 
 import 'dart:async';
-import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/adapter.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/store/save_store.dart';
-import 'package:pixez/exts.dart';
 
 class JobPage extends StatefulWidget {
   @override
@@ -58,7 +49,7 @@ class _JobPageState extends State<JobPage> {
 
   initMethod() async {
     await taskPersistProvider.open();
-    final results = await taskPersistProvider.getAllAccount();
+    List<TaskPersist> results = await taskPersistProvider.getAllAccount();
     if (results != null) {
       if (mounted) {
         setState(() {
@@ -112,6 +103,19 @@ class _JobPageState extends State<JobPage> {
                                     await taskPersistProvider.getAllAccount();
                                 results.forEach((element) {
                                   if (element.status == 3) {
+                                    _retryJob(element);
+                                  }
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ListTile(
+                              title: Text(I18n.of(context).retry_seed_task),
+                              onTap: () async {
+                                final results =
+                                    await taskPersistProvider.getAllAccount();
+                                results.forEach((element) {
+                                  if (element.status == 0) {
                                     _retryJob(element);
                                   }
                                 });

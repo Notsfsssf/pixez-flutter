@@ -115,22 +115,10 @@ class _RankPageState extends State<RankPage>
           child: Column(
             children: <Widget>[
               AppBar(
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
                 title: TabBar(
-                  onTap: (i) {
-                    setState(() {
+                  onTap: (i) => setState(() {
                       this.index = i;
-                    });
-                    // if (i == index) {
-                    //   tapCount++;
-                    //   if (tapCount == 2) {
-                    //     topStore.setTop((201 + i).toString());
-                    //     tapCount = 0;
-                    //   }
-                    // } else
-                    //   tapCount = 0;
-                  },
+                    }),
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
                   tabs: <Widget>[

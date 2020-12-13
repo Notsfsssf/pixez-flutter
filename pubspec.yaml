@@ -49,7 +49,7 @@ dependencies:
   like_button: ^1.0.4
   flutter_hooks: ^0.15.0
   pull_to_refresh: ^1.6.3
-  extended_image: ^1.1.2
+  extended_image: ^1.4.0
   flutter_colorpicker: ^0.3.4
   waterfall_flow: ^2.0.5
   animations: ^1.1.2
@@ -59,9 +59,9 @@ dependencies:
   json_annotation: ^3.1.0
   flutter_staggered_animations: ^0.1.2
   flutter_statusbar_manager: ^2.0.0
-  badges: ^1.1.4
+  badges: ^1.1.6
   quick_actions: ^0.4.0+10
-  image_picker: ^0.6.7+14
+  image_picker: ^0.6.7+15
   intl: ^0.16.1
   intl_utils: ^1.9.0
   md2_tab_indicator: ^1.0.2

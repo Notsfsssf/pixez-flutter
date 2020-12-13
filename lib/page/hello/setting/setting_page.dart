@@ -35,6 +35,7 @@ import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/novel/history/novel_history_page.dart';
 import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
@@ -199,7 +200,9 @@ class _SettingPageState extends State<SettingPage> {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                return HistoryPage();
+                                return Constants.type == 0
+                                    ? HistoryPage()
+                                    : NovelHistory();
                               }));
                             },
                           ),

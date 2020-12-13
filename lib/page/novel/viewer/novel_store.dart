@@ -16,6 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/network/api_client.dart';
@@ -46,6 +47,7 @@ abstract class _NovelStoreBase with Store {
         Response response = await apiClient.getNovelDetail(id);
         novel = Novel.fromJson(response.data['novel']);
       }
+      novelHistoryStore.insert(novel);
     } catch (e) {
       print(e);
       errorMessage = e.toString();

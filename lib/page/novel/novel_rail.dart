@@ -14,8 +14,10 @@
  */
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/novel/new/novel_new_page.dart';
@@ -42,6 +44,8 @@ class _NovelRailState extends State<NovelRail> {
   @override
   void initState() {
     _pageController = PageController();
+    Constants.type = 1;
+    fetcher.context = context;
     super.initState();
     BotToast.showText(text: 'Beta');
   }

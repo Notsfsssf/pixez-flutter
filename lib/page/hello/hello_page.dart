@@ -19,6 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -41,6 +42,7 @@ class HelloPage extends StatefulWidget {
 
 class _HelloPageState extends State<HelloPage> {
   StreamSubscription _sub;
+
   @override
   void dispose() {
     _sub?.cancel();
@@ -50,8 +52,11 @@ class _HelloPageState extends State<HelloPage> {
 
   int index;
   PageController _pageController;
+
   @override
   void initState() {
+    Constants.type = 0;
+    fetcher.context = context;
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: userSetting.welcomePageNum);
     super.initState();
@@ -146,12 +151,14 @@ class _HelloPageState extends State<HelloPage> {
       else
         return PreviewPage();
     }),
-      Observer(builder: (context) {
+    Observer(builder: (context) {
       if (accountStore.now != null)
         return RankPage();
       else
-        return Column(children:[
-          AppBar(title: Text('rank(day)'),),
+        return Column(children: [
+          AppBar(
+            title: Text('rank(day)'),
+          ),
           Expanded(child: PreviewPage())
         ]);
     }),
