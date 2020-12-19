@@ -3,7 +3,9 @@ import 'package:pixez/models/key_value_pair.dart';
 class KVer {
   KVProvider kvProvider = KVProvider();
 
-  KVer() {
+  KVer() {}
+
+  open() {
     kvProvider.open();
   }
 

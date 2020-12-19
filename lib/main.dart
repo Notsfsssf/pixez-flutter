@@ -148,6 +148,7 @@ class _MyAppState extends State<MyApp> {
     muteStore.fetchBanIllusts();
     muteStore.fetchBanTags();
     initMethod();
+    kVer.open();
     fetcher.start();
     super.initState();
   }

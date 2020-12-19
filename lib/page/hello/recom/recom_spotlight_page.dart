@@ -50,7 +50,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   LightingStore _lightingStore;
   RecomUserStore _recomUserStore;
 
-
   @override
   void dispose() {
     subscription?.cancel();
@@ -107,23 +106,37 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               }
               return true;
             },
-            child: SmartRefresher(
-              controller: _easyRefreshController,
-              enablePullDown: true,
-              enablePullUp: true,
-              header: (Platform.isAndroid)
-                  ? MaterialClassicHeader(
-                      color: Theme.of(context).accentColor,
-                    )
-                  : ClassicHeader(),
-              footer: _buildCustomFooter(),
-              onRefresh: () {
-                return fetchT();
+            child: NestedScrollView(
+              body: SmartRefresher(
+                controller: _easyRefreshController,
+                enablePullDown: true,
+                enablePullUp: true,
+                header: (Platform.isAndroid)
+                    ? MaterialClassicHeader(
+                        color: Theme.of(context).accentColor,
+                      )
+                    : ClassicHeader(),
+                footer: _buildCustomFooter(),
+                onRefresh: () {
+                  return fetchT();
+                },
+                onLoading: () {
+                  return _lightingStore.fetchNext();
+                },
+                child: _buildWaterFall(),
+              ),
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    elevation: 0.0,
+                    titleSpacing: 0.0,
+                    automaticallyImplyLeading: false,
+                    backgroundColor: Colors.transparent,
+                    title: _buildFirstRow(context),
+                  )
+                ];
               },
-              onLoading: () {
-                return _lightingStore.fetchNext();
-              },
-              child: _buildWaterFall(),
             ),
           ),
           Align(
@@ -181,13 +194,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          elevation: 0.0,
-          titleSpacing: 0.0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          title: _buildFirstRow(context),
-        ),
         SliverToBoxAdapter(
           child: _buildSpotlightContainer(),
         ),

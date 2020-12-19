@@ -86,7 +86,7 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 52
+        versionCode 53
         versionName "0.3.0 Meow"
     }
     compileOptions {
