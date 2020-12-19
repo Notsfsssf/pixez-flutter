@@ -147,7 +147,7 @@ import Photos
             gifPath.utf8CString.count > 0 else {
                 return false
         }
-        
+    
         let url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, gifPath as CFString, .cfurlposixPathStyle, false)
         let destion = CGImageDestinationCreateWithURL(url!, kUTTypeGIF, images.count, nil)
         let adelay = Float(delay)/Float(1000)
@@ -158,6 +158,11 @@ import Photos
             CGImageDestinationAddImage(destion!, (image as! UIImage).cgImage!, destDic as CFDictionary)
             print("kkkkkkkk\(images.count)")
         }
+        let gifPropertiesDic:NSMutableDictionary = NSMutableDictionary()
+
+       gifPropertiesDic.setValue(0, forKey: kCGImagePropertyGIFLoopCount as String)//
+       let gifDictionaryDestDic = [kCGImagePropertyGIFDictionary as String:gifPropertiesDic]
+       CGImageDestinationSetProperties(destion!,gifDictionaryDestDic as CFDictionary?);
         return CGImageDestinationFinalize(destion!)
     }
 }
