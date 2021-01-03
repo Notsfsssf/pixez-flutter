@@ -54,7 +54,8 @@ class IllustLightingPage extends StatefulWidget {
   _IllustLightingPageState createState() => _IllustLightingPageState();
 }
 
-class _IllustLightingPageState extends State<IllustLightingPage> {
+class _IllustLightingPageState extends State<IllustLightingPage>
+    with AutomaticKeepAliveClientMixin {
   IllustStore _illustStore;
   IllustAboutStore _aboutStore;
   ScrollController _scrollController;
@@ -67,6 +68,17 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
     _aboutStore = IllustAboutStore(widget.id);
     super.initState();
     _scrollController.addListener(() => _loadAbout());
+  }
+
+  @override
+  void didUpdateWidget(covariant IllustLightingPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.store != widget.store) {
+      _illustStore = widget.store ?? IllustStore(widget.id, null);
+      _illustStore.fetch();
+      _aboutStore = IllustAboutStore(widget.id);
+      LPrinter.d("state change");
+    }
   }
 
   void _loadAbout() {
@@ -129,6 +141,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -888,4 +901,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
       _illustStore.star(restrict: restrict, tags: tags);
     }
   }
+
+  @override
+  bool get wantKeepAlive => false;
 }

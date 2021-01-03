@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.2.3+53
 
 environment:
-  sdk: ">=2.9.1 <3.0.0"
+  sdk: ">=2.10.4 <3.0.0"
 
 dependencies:
   flutter:
@@ -37,7 +37,7 @@ dependencies:
   uni_links: ^0.4.0
   mobx: ^1.2.1+4
   flutter_mobx: ^1.1.0+2
-  flutter_inapp_purchase: ^3.0.0
+  flutter_inapp_purchase: ^3.0.1
   flutter_widget_from_html_core: ^0.5.1+4
   extended_nested_scroll_view: ^2.0.0
   scrollable_positioned_list: ^0.1.8
@@ -49,7 +49,7 @@ dependencies:
   like_button: ^1.0.4
   flutter_hooks: ^0.15.0
   pull_to_refresh: ^1.6.3
-  extended_image: ^1.4.0
+  extended_image: ^1.5.0
   flutter_colorpicker: ^0.3.4
   waterfall_flow: ^2.0.5
   animations: ^1.1.2
