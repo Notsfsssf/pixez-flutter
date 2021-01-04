@@ -387,6 +387,7 @@ class _JobPageState extends State<JobPage> {
     await _deleteJob(persist);
     final taskPersist = persist;
     await taskPersistProvider.insert(taskPersist);
-    fetcher.save(persist.url, taskPersist.toIllusts(), persist.fileName);
+    fetcher.save(persist.url.replaceAll('i.pximg.net','pixivimg.archman.fun'), taskPersist.toIllusts(), persist.fileName);
+    //把重试的接口换成反代的,如果这个接口挂了就换成i.pixiv.cat
   }
 }
