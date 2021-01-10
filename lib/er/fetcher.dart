@@ -28,6 +28,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/exts.dart';
 import 'package:quiver/collection.dart';
@@ -73,43 +74,46 @@ class Fetcher {
     taskPersistProvider.open();
     LPrinter.d("Fetcher start");
     receivePort.listen((message) {
-      IsoContactBean isoContactBean = message;
-      switch (isoContactBean.state) {
-        case IsoTaskState.INIT:
-          sendPortToChild = isoContactBean.data;
-          break;
-        case IsoTaskState.PROGRESS:
-          IsoProgressBean isoProgressBean = isoContactBean.data;
-          var job = fetcher.jobMaps[isoProgressBean.url];
-          if (job != null) {
-            job
-              ..min = isoProgressBean.min
-              ..status = 1
-              ..max = isoProgressBean.total;
-          } else {
-            fetcher.jobMaps[isoProgressBean.url] = JobEntity()
-              ..status = 1
-              ..min = isoProgressBean.min
-              ..max = isoProgressBean.total;
-          }
-          break;
-        case IsoTaskState.COMPLETE:
-          TaskBean taskBean = isoContactBean.data;
-          _complete(taskBean.url, taskBean.savePath, taskBean.fileName,
-              taskBean.illusts);
-          break;
-        case IsoTaskState.ERROR:
-          _errorD(isoContactBean.data as String);
-          break;
-        default:
-          break;
-      }
+      try {
+        IsoContactBean isoContactBean = message;
+        switch (isoContactBean.state) {
+          case IsoTaskState.INIT:
+            sendPortToChild = isoContactBean.data;
+            break;
+          case IsoTaskState.PROGRESS:
+            IsoProgressBean isoProgressBean = isoContactBean.data;
+            var job = fetcher.jobMaps[isoProgressBean.url];
+            if (job != null) {
+              job
+                ..min = isoProgressBean.min
+                ..status = 1
+                ..max = isoProgressBean.total;
+            } else {
+              fetcher.jobMaps[isoProgressBean.url] = JobEntity()
+                ..status = 1
+                ..min = isoProgressBean.min
+                ..max = isoProgressBean.total;
+            }
+            break;
+          case IsoTaskState.COMPLETE:
+            TaskBean taskBean = isoContactBean.data;
+            _complete(taskBean.url, taskBean.savePath, taskBean.fileName,
+                taskBean.illusts);
+            break;
+          case IsoTaskState.ERROR:
+            _errorD(isoContactBean.data as String);
+            break;
+          default:
+            break;
+        }
+      } catch (e) {}
     });
     isolate = await Isolate.spawn(entryPoint, receivePort.sendPort,
         debugName: 'childIsolate');
   }
 
   save(String url, Illusts illusts, String fileName) async {
+    LPrinter.d(sendPortToChild.toString() + url);
     IsoContactBean isoContactBean = IsoContactBean(
         state: IsoTaskState.APPEND,
         data: TaskBean(
@@ -188,6 +192,7 @@ entryPoint(SendPort sendPort) {
   sendPort.send(
       IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort));
   receivePort.listen((message) async {
+    LPrinter.d(message);
     try {
       IsoContactBean isoContactBean = message;
       TaskBean taskBean = isoContactBean.data;
@@ -198,7 +203,12 @@ entryPoint(SendPort sendPort) {
           try {
             var savePath =
                 taskBean.savePath + Platform.pathSeparator + taskBean.fileName;
-            await dio.download(taskBean.url.toTrueUrl(), savePath,
+            String trueUrl = userSetting.disableBypassSni
+                ? taskBean.url
+                : (Uri.parse(taskBean.url)
+                      ..replace(host: ApiClient.BASE_IMAGE_HOST))
+                    .toString();
+            await dio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(
                   state: IsoTaskState.PROGRESS,
@@ -207,7 +217,8 @@ entryPoint(SendPort sendPort) {
             });
             sendPort.send(
                 IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
-          } catch (e) {
+          } on DioError catch (e)  {
+            splashStore.maybeFetch();
             sendPort.send(
                 IsoContactBean(state: IsoTaskState.ERROR, data: taskBean.url));
           }

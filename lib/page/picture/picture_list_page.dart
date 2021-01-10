@@ -15,7 +15,6 @@
  */
 
 import 'package:flutter/widgets.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
@@ -55,7 +54,6 @@ class _PictureListPageState extends State<PictureListPage> {
     screenWidth = MediaQuery.of(context).size.width / 2;
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails detail) {
-        LPrinter.d(detail);
         if (detail.velocity.pixelsPerSecond.dx.abs() > screenWidth) {
           int result = nowPosition;
           if (detail.velocity.pixelsPerSecond.dx < 0)

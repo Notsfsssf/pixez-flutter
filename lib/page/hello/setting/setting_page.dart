@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -25,6 +26,7 @@ import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
@@ -107,6 +109,12 @@ class _SettingPageState extends State<SettingPage> {
                         automaticallyImplyLeading: false,
                         backgroundColor: Colors.transparent,
                         actions: [
+                          if (kDebugMode)
+                            IconButton(
+                                icon: Icon(Icons.code),
+                                onPressed: () {
+                                  _showSavedLogDialog(context);
+                                }),
                           IconButton(
                             icon: Icon(
                               Icons.palette,
@@ -283,6 +291,42 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
     );
+  }
+
+  Future _showSavedLogDialog(BuildContext context) async {
+    var savedLogFile = await LPrinter.savedLogFile();
+    var content = savedLogFile.readAsStringSync();
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Log"),
+            content: Container(child: Text(content ?? ""),height: 400,),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(I18n.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop("CANCEL");
+                },
+              ),
+              FlatButton(
+                child: Text(I18n.of(context).ok),
+                onPressed: () {
+                  Navigator.of(context).pop("OK");
+                },
+              ),
+            ],
+          );
+        });
+    switch (result) {
+      case "OK":
+        {
+        }
+        break;
+      case "CANCEL":
+        {}
+        break;
+    }
   }
 
   Future _showLogoutDialog(BuildContext context) async {

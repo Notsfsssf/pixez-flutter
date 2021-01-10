@@ -13,7 +13,11 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 //分下层，以免以后尴尬
 class LPrinter {
@@ -23,5 +27,31 @@ class LPrinter {
 
   static void d(i) {
     if (kDebugMode) print(i);
+  }
+
+  static void t(i) {
+  }
+
+  static var buffer = StringBuffer();
+
+  static f(i) async {
+    buffer.write(i.toString());
+    String nowRecord = buffer.toString();
+    if (nowRecord.length > 50) {
+      var path = await getTemporaryDirectory();
+      var filePath = join(path.path, "log.log");
+      File file = File(filePath);
+      file.writeAsStringSync(nowRecord, mode: FileMode.append);
+      buffer.clear();
+    }
+  }
+
+  static Future<File> savedLogFile() async {
+    var path = await getTemporaryDirectory();
+    var filePath = join(path.path, "log.log");
+    File file = File(filePath);
+    file.writeAsStringSync(buffer.toString());
+    buffer.clear();
+    return file;
   }
 }

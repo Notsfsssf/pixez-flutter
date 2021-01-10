@@ -211,8 +211,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                 index = i;
               });
               final url = (userSetting.zoomQuality == 0
-                  ? metaPages[index].imageUrls.large
-                  : metaPages[index].imageUrls.original)
+                      ? metaPages[index].imageUrls.large
+                      : metaPages[index].imageUrls.original)
                   .toTrueUrl();
               nowUrl = url;
               File file = await getCachedImageFile(url);
@@ -225,8 +225,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
             itemBuilder: (BuildContext context, int index) {
               return ExtendedImage.network(
                 (userSetting.zoomQuality == 0
-                    ? metaPages[index].imageUrls.large
-                    : metaPages[index].imageUrls.original)
+                        ? metaPages[index].imageUrls.large
+                        : metaPages[index].imageUrls.original)
                     .toTrueUrl(),
                 headers: {
                   "referer": "https://app-api.pixiv.net/",
@@ -269,7 +269,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       final ImageChunkEvent loadingProgress = state.loadingProgress;
       final double progress = loadingProgress?.expectedTotalBytes != null
           ? loadingProgress.cumulativeBytesLoaded /
-          loadingProgress.expectedTotalBytes
+              loadingProgress.expectedTotalBytes
           : null;
       return Center(
         child: Column(
@@ -350,58 +350,79 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        floatingActionButton: Visibility(
-          visible: show,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: AnimatedOpacity(
-                  opacity: shareShow ? 1 : 0,
-                  duration: Duration(milliseconds: 500),
-                  child: Card(
-                    shape: CircleBorder(),
-                    margin: EdgeInsets.all(0.0),
-                    child: IconButton(
-                      padding: EdgeInsets.all(0.0),
-                      icon: Icon(Icons.share),
-                      onPressed: () async {
-                        File file = await getCachedImageFile(nowUrl);
-                        if (file != null) {
-                          String targetPath = join(
-                              (await getTemporaryDirectory()).path,
-                              "share_cache",
-                              basenameWithoutExtension(file.path) +
-                                  (nowUrl.endsWith(".png") ? ".png" : ".jpg"));
-                          File targetFile = new File(targetPath);
-                          if (!targetFile.existsSync()) {
-                            targetFile.createSync(recursive: true);
-                          }
-                          file.copySync(targetPath);
-                          ShareExtend.share(targetPath, 'image');
-                        } else {
-                          BotToast.showText(text: "can not find image cache");
-                        }
-                      },
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          child: Visibility(
+            visible: show,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      iconSize: 16,
+                      icon: Icon(
+                        Icons.photo_library_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {},
                     ),
-                  ),
+                    Text(
+                      "${index + 1}/${widget.illusts.pageCount}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: Colors.white),
+                    ),
+                  ],
                 ),
-              ),
-              FloatingActionButton.extended(
-                elevation: 1.0,
-                onPressed: () async {
-                  await FlutterStatusbarManager.setHidden(false);
-                  Navigator.of(context).pop();
-                },
-                label: Text(
-                  "${index + 1}/${widget.illusts.pageCount}",
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        onPressed: () async {
+                          await FlutterStatusbarManager.setHidden(false);
+                          Navigator.of(context).pop();
+                        }),
+                    AnimatedOpacity(
+                      opacity: shareShow ? 1 : 0,
+                      duration: Duration(milliseconds: 500),
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            color: Colors.white,
+                          ),
+                          onPressed: () async {
+                            File file = await getCachedImageFile(nowUrl);
+                            if (file != null) {
+                              String targetPath = join(
+                                  (await getTemporaryDirectory()).path,
+                                  "share_cache",
+                                  basenameWithoutExtension(file.path) +
+                                      (nowUrl.endsWith(".png")
+                                          ? ".png"
+                                          : ".jpg"));
+                              File targetFile = new File(targetPath);
+                              if (!targetFile.existsSync()) {
+                                targetFile.createSync(recursive: true);
+                              }
+                              file.copySync(targetPath);
+                              ShareExtend.share(targetPath, 'image');
+                            } else {
+                              BotToast.showText(
+                                  text: "can not find image cache");
+                            }
+                          }),
+                    )
+                  ],
                 ),
-                icon: Icon(
-                  Icons.arrow_back,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         extendBodyBehindAppBar: true,

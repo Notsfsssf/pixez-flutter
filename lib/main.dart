@@ -62,7 +62,32 @@ final SplashStore splashStore = SplashStore(OnezeroClient());
 final Fetcher fetcher = new Fetcher();
 final KVer kVer = KVer();
 
-main() {
+void runTestLogApp() {
+  runZoned(() => runApp(MyApp()),
+      zoneSpecification: ZoneSpecification(
+        print: (
+          Zone self,
+          ZoneDelegate parent,
+          Zone zone,
+          String line,
+        ) {
+          LPrinter.f(line);
+          Zone.current.parent?.print(line);
+        },
+        handleUncaughtError: (
+          Zone self,
+          ZoneDelegate parent,
+          Zone zone,
+          Object error,
+          StackTrace stackTrace,
+        ) {
+          LPrinter.f(error);
+          Zone.current.parent?.print(error);
+        },
+      ));
+}
+
+main() async {
   initAppWidget();
   runApp(MyApp());
 }
@@ -172,6 +197,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   final QuickActions quickActions = QuickActions();
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
