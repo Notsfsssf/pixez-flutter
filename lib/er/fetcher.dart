@@ -217,7 +217,7 @@ entryPoint(SendPort sendPort) {
             });
             sendPort.send(
                 IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
-          } on DioError catch (e)  {
+          } on DioError catch (e) {
             splashStore.maybeFetch();
             sendPort.send(
                 IsoContactBean(state: IsoTaskState.ERROR, data: taskBean.url));

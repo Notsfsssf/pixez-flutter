@@ -88,6 +88,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       }
       rebuildDetail.sink.add(_imageDetailY);
     });
+    _loadSource = userSetting.zoomQuality == 1;
     super.initState();
     index = widget.index;
     FlutterStatusbarManager.setHidden(true,
@@ -96,173 +97,122 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   Widget _buildContent(BuildContext context) {
     if (widget.illusts.pageCount == 1) {
-      final url = (userSetting.zoomQuality == 0
-              ? widget.illusts.imageUrls.large
-              : widget.illusts.metaSinglePage.originalImageUrl)
+      final url = (userSetting.zoomQuality == 1 || _loadSource
+              ? widget.illusts.metaSinglePage.originalImageUrl
+              : widget.illusts.imageUrls.large)
           .toTrueUrl();
       nowUrl = url;
-      return InkWell(
-        onLongPress: () async {
-          showModalBottomSheet(
-              context: context,
-              shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(16.0))),
-              builder: (_) {
-                return SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(I18n.of(context).save),
-                        onTap: () {
-                          saveStore.saveImage(widget.illusts);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              });
-        },
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: ExtendedImage.network(
-            url,
-            headers: {
-              "referer": "https://app-api.pixiv.net/",
-              "User-Agent": "PixivIOSApp/5.8.0",
-              "Host": ImageHost
-            },
-            handleLoadingProgress: true,
-            clearMemoryCacheWhenDispose: true,
-            enableLoadState: true,
-            loadStateChanged: (ExtendedImageState state) {
-              return _loadStateWidget(state);
-            },
-            onDoubleTap: (ExtendedImageGestureState state) {
-              _doubleTap(state);
-            },
-            filterQuality: FilterQuality.high,
-            mode: ExtendedImageMode.gesture,
-            initGestureConfigHandler: (state) {
-              return GestureConfig(
-                minScale: 0.9,
-                animationMinScale: 0.7,
-                maxScale: 3.0,
-                animationMaxScale: 3.5,
-                speed: 1.0,
-                inertialSpeed: 100.0,
-                initialScale: 1.0,
-                inPageView: false,
-                gestureDetailsIsChanged: (GestureDetails ge) {
-                  _showOrHideAppbar(ge); //肯定可以优化，先放着，想不动了
-                },
-                initialAlignment: InitialAlignment.center,
-              );
-            },
-          ),
+      return Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: ExtendedImage.network(
+          url,
+          headers: {
+            "referer": "https://app-api.pixiv.net/",
+            "User-Agent": "PixivIOSApp/5.8.0",
+            "Host": ImageHost
+          },
+          handleLoadingProgress: true,
+          clearMemoryCacheWhenDispose: true,
+          enableLoadState: true,
+          loadStateChanged: (ExtendedImageState state) {
+            return _loadStateWidget(state);
+          },
+          onDoubleTap: (ExtendedImageGestureState state) {
+            _doubleTap(state);
+          },
+          filterQuality: FilterQuality.high,
+          mode: ExtendedImageMode.gesture,
+          initGestureConfigHandler: (state) {
+            return GestureConfig(
+              minScale: 0.9,
+              animationMinScale: 0.7,
+              maxScale: 3.0,
+              animationMaxScale: 3.5,
+              speed: 1.0,
+              inertialSpeed: 100.0,
+              initialScale: 1.0,
+              inPageView: false,
+              gestureDetailsIsChanged: (GestureDetails ge) {
+                _showOrHideAppbar(ge); //肯定可以优化，先放着，想不动了
+              },
+              initialAlignment: InitialAlignment.center,
+            );
+          },
         ),
       );
     } else {
       final metaPages = widget.illusts.metaPages;
-      final url = (userSetting.zoomQuality == 0
-              ? metaPages[index].imageUrls.large
-              : metaPages[index].imageUrls.original)
+      final url = (userSetting.zoomQuality == 1 || _loadSource
+              ? metaPages[index].imageUrls.original
+              : metaPages[index].imageUrls.large)
           .toTrueUrl();
       nowUrl = url;
-      return InkWell(
-        onLongPress: () {
-          showModalBottomSheet(
-              context: context,
-              shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(16.0))),
-              builder: (_) {
-                return Container(
-                  child: SafeArea(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          title: Text(I18n.of(context).save),
-                          onTap: () {
-                            saveStore.saveImage(widget.illusts, index: index);
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              });
-        },
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: ExtendedImageGesturePageView.builder(
-            controller: PageController(
-              initialPage: index,
-            ),
-            onPageChanged: (i) async {
+      return Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: ExtendedImageGesturePageView.builder(
+          controller: PageController(
+            initialPage: index,
+          ),
+          onPageChanged: (i) async {
+            setState(() {
+              shareShow = false;
+              index = i;
+            });
+            final url = (userSetting.zoomQuality == 0
+                    ? metaPages[index].imageUrls.large
+                    : metaPages[index].imageUrls.original)
+                .toTrueUrl();
+            nowUrl = url;
+            File file = await getCachedImageFile(url);
+            if (file != null && mounted)
               setState(() {
-                shareShow = false;
-                index = i;
+                shareShow = true;
               });
-              final url = (userSetting.zoomQuality == 0
+          },
+          itemCount: metaPages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ExtendedImage.network(
+              (userSetting.zoomQuality == 0
                       ? metaPages[index].imageUrls.large
                       : metaPages[index].imageUrls.original)
-                  .toTrueUrl();
-              nowUrl = url;
-              File file = await getCachedImageFile(url);
-              if (file != null && mounted)
-                setState(() {
-                  shareShow = true;
-                });
-            },
-            itemCount: metaPages.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ExtendedImage.network(
-                (userSetting.zoomQuality == 0
-                        ? metaPages[index].imageUrls.large
-                        : metaPages[index].imageUrls.original)
-                    .toTrueUrl(),
-                headers: {
-                  "referer": "https://app-api.pixiv.net/",
-                  "User-Agent": "PixivIOSApp/5.8.0",
-                  "Host": ImageHost
-                },
-                handleLoadingProgress: true,
-                clearMemoryCacheWhenDispose: true,
-                enableLoadState: true,
-                loadStateChanged: (ExtendedImageState state) =>
-                    _loadStateWidget(state),
-                onDoubleTap: (ExtendedImageGestureState state) =>
-                    _doubleTap(state),
-                mode: ExtendedImageMode.gesture,
-                filterQuality: FilterQuality.high,
-                initGestureConfigHandler: (ExtendedImageState state) {
-                  return GestureConfig(
-                    inPageView: true,
-                    initialScale: 1.0,
-                    gestureDetailsIsChanged: (GestureDetails ge) {
-                      _showOrHideAppbar(ge);
-                    },
-                    maxScale: 5.0,
-                    animationMaxScale: 6.0,
-                    initialAlignment: InitialAlignment.center,
-                  );
-                },
-              );
-            },
-          ),
+                  .toTrueUrl(),
+              headers: {
+                "referer": "https://app-api.pixiv.net/",
+                "User-Agent": "PixivIOSApp/5.8.0",
+                "Host": ImageHost
+              },
+              handleLoadingProgress: true,
+              clearMemoryCacheWhenDispose: true,
+              enableLoadState: true,
+              loadStateChanged: (ExtendedImageState state) =>
+                  _loadStateWidget(state),
+              onDoubleTap: (ExtendedImageGestureState state) =>
+                  _doubleTap(state),
+              mode: ExtendedImageMode.gesture,
+              filterQuality: FilterQuality.high,
+              initGestureConfigHandler: (ExtendedImageState state) {
+                return GestureConfig(
+                  inPageView: true,
+                  initialScale: 1.0,
+                  gestureDetailsIsChanged: (GestureDetails ge) {
+                    _showOrHideAppbar(ge);
+                  },
+                  maxScale: 5.0,
+                  animationMaxScale: 6.0,
+                  initialAlignment: InitialAlignment.center,
+                );
+              },
+            );
+          },
         ),
       );
     }
   }
 
   String nowUrl = "";
+  bool _loadSource = false;
 
   Widget _loadStateWidget(ExtendedImageState state) {
     if (state.extendedImageLoadState == LoadState.loading) {
@@ -389,6 +339,17 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                           await FlutterStatusbarManager.setHidden(false);
                           Navigator.of(context).pop();
                         }),
+                    IconButton(
+                        icon: Icon(
+                          Icons.save,
+                          color: Colors.white,
+                        ),
+                        onPressed: () async {
+                          if (widget.illusts.metaPages.isNotEmpty)
+                            saveStore.saveImage(widget.illusts, index: index);
+                          else
+                            saveStore.saveImage(widget.illusts);
+                        }),
                     AnimatedOpacity(
                       opacity: shareShow ? 1 : 0,
                       duration: Duration(milliseconds: 500),
@@ -418,6 +379,39 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                                   text: "can not find image cache");
                             }
                           }),
+                    ),
+                    PopupMenuButton<int>(
+                      icon: Icon(Icons.more_vert, color: Colors.white),
+                      onSelected: (index) async {
+                        switch (index) {
+                          case 0:
+                            setState(() {
+                              _loadSource = false;
+                            });
+                            break;
+                          case 1:
+                            setState(() {
+                              _loadSource = true;
+                            });
+                            break;
+                          default:
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) {
+                        return [
+                          CheckedPopupMenuItem<int>(
+                            checked: !_loadSource,
+                            value: 0,
+                            child: Text(I18n.of(context).large),
+                          ),
+                          CheckedPopupMenuItem<int>(
+                            checked: _loadSource,
+                            value: 1,
+                            child: Text(I18n.of(context).source),
+                          ),
+                        ];
+                      },
                     )
                   ],
                 ),

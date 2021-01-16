@@ -23,8 +23,8 @@ dependencies:
     sdk: flutter
   dio: ^3.0.10
   crypto: any
-  sqflite: ^1.3.2+1
-  path_provider: ^1.6.24
+  sqflite: ^1.3.2+2
+  path_provider: ^1.6.27
   shared_preferences: ^0.5.12+4
   share: ^0.6.5+4
   share_extend: ^1.1.9
@@ -40,7 +40,7 @@ dependencies:
   flutter_inapp_purchase: ^3.0.1
   flutter_widget_from_html_core: ^0.5.1+4
   extended_nested_scroll_view: ^2.0.0
-  scrollable_positioned_list: ^0.1.8
+  scrollable_positioned_list: ^0.1.9
   flutter_date_pickers: ^0.1.8
   device_info: ^1.0.0
   provider: ^4.3.2+2
@@ -61,7 +61,7 @@ dependencies:
   flutter_statusbar_manager: ^2.0.0
   badges: ^1.1.6
   quick_actions: ^0.4.0+10
-  image_picker: ^0.6.7+15
+  image_picker: ^0.6.7+21
   intl: ^0.16.1
   intl_utils: ^1.9.0
   md2_tab_indicator: ^1.0.2
