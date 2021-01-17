@@ -154,6 +154,18 @@ class _PlatformPageState extends State<PlatformPage> {
                   );
                 },
               ),
+              Observer(
+                builder: (context) {
+                  return SwitchListTile(
+                    secondary: Icon(Icons.folder_open),
+                    onChanged: (bool value) async {
+                      await userSetting.setOverSanityLevelFolder(value);
+                    },
+                    title: Text("Sanity Single Folder"),
+                    value: userSetting.overSanityLevelFolder,
+                  );
+                },
+              ),
               ListTile(
                 leading: Icon(Icons.mobile_screen_share),
                 onTap: () {

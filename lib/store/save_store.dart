@@ -217,14 +217,18 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
-  Future<void> saveToGalleryWithUser(
-      Uint8List uint8list, String userName, int userId, String fileName) async {
+  Future<void> saveToGalleryWithUser(Uint8List uint8list, String userName,
+      int userId, int sanityLevel, String fileName) async {
     if (Platform.isAndroid) {
       try {
+        String overFileName = fileName;
         if (userSetting.singleFolder) {
           String name = userName.toLegal();
           String id = userId.toString();
-          fileName = "${name}_$id/$fileName";
+          fileName = "${name}_$id/$overFileName";
+        }
+        if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
+          fileName = "sanity/$overFileName";
         }
         if (userSetting.isClearOldFormatFile)
           DocumentPlugin.save(uint8list, fileName,
@@ -245,8 +249,8 @@ abstract class _SaveStoreBase with Store {
 
   Future<void> saveToGallery(
       Uint8List uint8list, Illusts illusts, String fileName) async {
-    saveToGalleryWithUser(
-        uint8list, illusts.user.name, illusts.user.id, fileName);
+    saveToGalleryWithUser(uint8list, illusts.user.name, illusts.user.id,
+        illusts.sanityLevel, fileName);
   }
 
   @action

@@ -46,6 +46,9 @@ abstract class _UserSettingBase with Store {
   static const String THEME_MODE_KEY = "theme_mode";
   static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
   static const String IS_CLEAR_OLD_FORMAT_FILE_KEY = "is_clear_old_format_file";
+  static const String IS_OVER_SANITY_LEVEL_FOLDER =
+      "is_over_sanity_level_folder";
+
   @observable
   bool isClearOldFormatFile = false;
   @observable
@@ -77,6 +80,8 @@ abstract class _UserSettingBase with Store {
   @observable
   bool singleFolder = false;
   @observable
+  bool overSanityLevelFolder = false;
+  @observable
   bool hIsNotAllow = false;
 
   @observable
@@ -87,6 +92,12 @@ abstract class _UserSettingBase with Store {
   setIsClearnOldFormatFile(bool v) async {
     await prefs.setBool(IS_CLEAR_OLD_FORMAT_FILE_KEY, v);
     isClearOldFormatFile = v;
+  }
+
+  @action
+  setOverSanityLevelFolder(bool v) async {
+    await prefs.setBool(IS_OVER_SANITY_LEVEL_FOLDER, v);
+    overSanityLevelFolder = v;
   }
 
   @action
@@ -165,6 +176,7 @@ abstract class _UserSettingBase with Store {
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
+    overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
         this.themeMode = i;
