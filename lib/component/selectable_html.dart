@@ -124,6 +124,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
   bool supportTranslate = false;
 
   Future<void> initMethod() async {
+    if (!Platform.isAndroid) return;
     bool results = await SupportorPlugin.processText();
     setState(() {
       supportTranslate = results;
