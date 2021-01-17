@@ -170,17 +170,17 @@ class Fetcher {
 
 class Seed {}
 
+Dio isolateDio = Dio(BaseOptions(headers: {
+  "referer": "https://app-api.pixiv.net/",
+  "User-Agent": "PixivIOSApp/5.8.0",
+  "Host": "i.pximg.net"
+}));
 // 新Isolate入口函数
 entryPoint(SendPort sendPort) {
   LPrinter.d("entryPoint =======");
-  Dio dio = Dio(BaseOptions(headers: {
-    "referer": "https://app-api.pixiv.net/",
-    "User-Agent": "PixivIOSApp/5.8.0",
-    "Host": "i.pximg.net"
-  }));
   if (!userSetting.disableBypassSni)
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
+    (isolateDio.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (client) {
       HttpClient httpClient = new HttpClient();
       httpClient.badCertificateCallback =
           (X509Certificate cert, String host, int port) {
@@ -207,19 +207,26 @@ entryPoint(SendPort sendPort) {
                 : (Uri.parse(taskBean.url)
                         .replace(host: ApiClient.BASE_IMAGE_HOST))
                     .toString();
-            await dio.download(trueUrl, savePath,
+            isolateDio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(
                   state: IsoTaskState.PROGRESS,
                   data: IsoProgressBean(
                       min: min, total: total, url: taskBean.url)));
+            }).then((value) {
+              sendPort.send(
+                  IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
+            }).catchError((e) {
+              try {
+                useLessFetch();
+                sendPort.send(IsoContactBean(
+                    state: IsoTaskState.ERROR, data: taskBean.url));
+              } catch (e) {
+                LPrinter.d(e);
+              }
             });
-            sendPort.send(
-                IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
-          } on DioError catch (e) {
-            splashStore.maybeFetch();
-            sendPort.send(
-                IsoContactBean(state: IsoTaskState.ERROR, data: taskBean.url));
+          } catch (e) {
+            LPrinter.d(e);
           }
           break;
         default:
@@ -229,4 +236,23 @@ entryPoint(SendPort sendPort) {
       LPrinter.d(e);
     }
   });
+}
+
+Future<int> useLessFetch() async {
+  try {
+    onezeroClient.httpClient.lock();
+    if (splashStore.helloWord == splashStore.OK_TEXT) return 1;
+    onezeroClient.queryDns("i.pximg.net").then((value) {
+      value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
+      final host = value.answer.first.data;
+      LPrinter.d(host);
+      if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
+        ApiClient.BASE_IMAGE_HOST = host;
+      splashStore.helloWord = splashStore.OK_TEXT;
+    }).catchError((e) {
+      splashStore.helloWord = 'T_T';
+    });
+  } catch (e) {} finally {
+    onezeroClient.httpClient.unlock();
+  }
 }

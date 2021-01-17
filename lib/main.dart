@@ -58,7 +58,8 @@ final HistoryStore historyStore = HistoryStore();
 final NovelHistoryStore novelHistoryStore = NovelHistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
-final SplashStore splashStore = SplashStore(OnezeroClient());
+OnezeroClient onezeroClient =OnezeroClient();
+final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
 final KVer kVer = KVer();
 

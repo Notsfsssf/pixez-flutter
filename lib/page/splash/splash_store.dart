@@ -59,11 +59,13 @@ abstract class _SplashStoreBase with Store {
         if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
           ApiClient.BASE_IMAGE_HOST = host;
         helloWord = OK_TEXT;
+      }).catchError((e) {
+        helloWord = 'T_T';
       });
-    } catch (e) {
-      helloWord = 'T_T';
+    } catch (e) {} finally {
+      onezeroClient.httpClient.unlock();
     }
-    onezeroClient.httpClient.unlock();
+
     // try {
     //   OnezeroResponse onezeroResponse =
     //       await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
