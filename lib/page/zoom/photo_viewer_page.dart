@@ -351,7 +351,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                             saveStore.saveImage(widget.illusts);
                         }),
                     AnimatedOpacity(
-                      opacity: shareShow ? 1 : 0,
+                      opacity: shareShow ? 1 : 0.5,
                       duration: Duration(milliseconds: 500),
                       child: IconButton(
                           icon: Icon(

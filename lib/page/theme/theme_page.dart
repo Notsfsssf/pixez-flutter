@@ -218,6 +218,14 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                     ]),
               );
             }),
+            Observer(builder: (_) {
+              return Card(
+                  child: SwitchListTile(
+                value: userSetting.isAMOLED,
+                onChanged: (v) => userSetting.setIsAMOLED(v),
+                title: Text("AMOLED"),
+              ));
+            }),
             Card(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

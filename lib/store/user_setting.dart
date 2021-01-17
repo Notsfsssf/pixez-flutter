@@ -37,8 +37,10 @@ abstract class _UserSettingBase with Store {
   static const String LANGUAGE_NUM_KEY = "language_num";
   static const String CROSS_COUNT_KEY = "cross_count";
   static const String PICTURE_QUALITY_KEY = "picture_quality";
+  static const String MANGA_QUALITY_KEY = "manga_quality";
   static const String THEME_DATA_KEY = "theme_data";
   static const String IS_BANGS_KEY = "is_bangs";
+  static const String IS_AMOLED_KEY = "is_amoled";
   static const String STORE_PATH_KEY = "save_store";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
@@ -51,6 +53,8 @@ abstract class _UserSettingBase with Store {
   @observable
   bool isHelplessWay = false;
   @observable
+  bool isAMOLED = false;
+  @observable
   String storePath = null;
   @observable
   bool isBangs = false;
@@ -58,6 +62,8 @@ abstract class _UserSettingBase with Store {
   int zoomQuality = 0;
   @observable
   int pictureQuality = 0;
+  @observable
+  int mangaQuality = 0;
   @observable
   int languageNum = 0;
   @observable
@@ -136,6 +142,12 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setIsAMOLED(bool v) async {
+    await prefs.setBool(IS_AMOLED_KEY, v);
+    isAMOLED = v;
+  }
+
+  @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
@@ -146,7 +158,9 @@ abstract class _UserSettingBase with Store {
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
+    mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
+    isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
     isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY) ?? false;
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
@@ -222,6 +236,12 @@ abstract class _UserSettingBase with Store {
       primaryColor: Colors.white,
       accentColor: _stringToColor(data[0]),
     );
+  }
+
+  @action
+  setMangaQuality(int value) async {
+    await prefs.setInt(MANGA_QUALITY_KEY, value);
+    mangaQuality = value;
   }
 
   @action

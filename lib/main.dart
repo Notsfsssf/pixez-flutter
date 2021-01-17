@@ -222,6 +222,7 @@ class _MyAppState extends State<MyApp> {
         theme: userSetting.themeData,
         darkTheme: ThemeData.dark().copyWith(
             accentColor: userSetting.themeData.accentColor,
+            scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
             indicatorColor: userSetting.themeData.accentColor),
         supportedLocales: I18n.delegate.supportedLocales,
         localizationsDelegates: [

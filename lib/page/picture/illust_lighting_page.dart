@@ -253,6 +253,14 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                   String url = userSetting.pictureQuality == 1
                       ? data.imageUrls.large
                       : data.imageUrls.medium;
+                  if (data.type == "manga") {
+                    if (userSetting.mangaQuality == 0)
+                      url = data.imageUrls.medium;
+                    else if (userSetting.mangaQuality == 1)
+                      url = data.imageUrls.large;
+                    else
+                      url = data.metaSinglePage.originalImageUrl;
+                  }
                   Widget placeWidget = Container(
                     height: 150,
                     child: Center(
@@ -276,7 +284,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       child: PixivImage(
                         url,
                         fade: false,
-                        placeWidget: userSetting.pictureQuality == 1
+                        placeWidget: (url != data.imageUrls.medium)
                             ? PixivImage(
                                 data.imageUrls.medium,
                                 placeWidget: placeWidget,
@@ -456,6 +464,37 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   }
 
   Widget _buildIllustsItem(int index, Illusts illust) {
+    if (illust.type == "manga") {
+      String url;
+      if (userSetting.mangaQuality == 0)
+        url = illust.metaPages[index].imageUrls.medium;
+      else if (userSetting.mangaQuality == 1)
+        url = illust.metaPages[index].imageUrls.large;
+      else
+        url = illust.metaPages[index].imageUrls.original;
+      if (index == 0)
+        return NullHero(
+          child: PixivImage(
+            url,
+            placeWidget: PixivImage(
+              illust.metaPages[index].imageUrls.medium,
+              fade: false,
+            ),
+            fade: false,
+          ),
+          tag: widget.heroString,
+        );
+      return PixivImage(
+        url,
+        fade: false,
+        placeWidget: Container(
+          height: 150,
+          child: Center(
+            child: Text('$index', style: Theme.of(context).textTheme.headline4),
+          ),
+        ),
+      );
+    }
     return index == 0
         ? (userSetting.pictureQuality == 1
             ? NullHero(

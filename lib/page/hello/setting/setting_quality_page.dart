@@ -254,6 +254,45 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             ),
           ),
           Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    child:
+                        Text("manga detail quality"),
+                    padding: EdgeInsets.all(16),
+                  ),
+                  Observer(builder: (_) {
+                    return TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Theme.of(context).accentColor,
+                      tabs: [
+                        Tab(
+                          text: I18n.of(context).medium,
+                        ),
+                        Tab(
+                          text: I18n.of(context).large,
+                        ),
+                        Tab(
+                          text: I18n.of(context).source,
+                        ),
+                      ],
+                      onTap: (index) {
+                        userSetting.setMangaQuality(index);
+                      },
+                      controller: TabController(
+                          length: 3,
+                          vsync: this,
+                          initialIndex: userSetting.mangaQuality),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+          Padding(
             padding: EdgeInsets.all(8.0),
             child: Card(
                 child: Column(
