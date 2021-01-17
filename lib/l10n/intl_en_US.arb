@@ -197,6 +197,7 @@
   "clear_old_format_file": "Clear old format file",
   "clear_old_format_file_message": "without _p0",
   "login_error_message": "Incorrect account or password, or using a weak password, may cause login failure",
-  "translate": "翻译",
-  "retry_seed_task": "retry seed task"
+  "translate": "translate",
+  "retry_seed_task": "retry seed task",
+  "manga_detail_page_quality":"Manga quality (Details page)"
 }

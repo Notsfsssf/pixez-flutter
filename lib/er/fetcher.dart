@@ -192,7 +192,6 @@ entryPoint(SendPort sendPort) {
   sendPort.send(
       IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort));
   receivePort.listen((message) async {
-    LPrinter.d(message);
     try {
       IsoContactBean isoContactBean = message;
       TaskBean taskBean = isoContactBean.data;
@@ -206,7 +205,7 @@ entryPoint(SendPort sendPort) {
             String trueUrl = userSetting.disableBypassSni
                 ? taskBean.url
                 : (Uri.parse(taskBean.url)
-                      ..replace(host: ApiClient.BASE_IMAGE_HOST))
+                        .replace(host: ApiClient.BASE_IMAGE_HOST))
                     .toString();
             await dio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {

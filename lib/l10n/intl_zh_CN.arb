@@ -198,5 +198,6 @@
   "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片",
   "login_error_message": "账号或密码错误，或使用了弱密码，将可能导致登录失败",
   "translate": "翻译",
-  "retry_seed_task": "重试所有seed任务"
+  "retry_seed_task": "重试所有seed任务",
+  "manga_detail_page_quality":"漫画详情页画质"
 }

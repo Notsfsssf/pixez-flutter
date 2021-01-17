@@ -198,5 +198,6 @@
   "clear_old_format_file_message": "without _p0",
   "login_error_message": "アカウントID,パスワードが間違っていたり、弱いパスワードを使用していると、ログインに失敗する可能性があります",
   "translate": "翻訳",
-  "retry_seed_task": "retry seed task"
+  "retry_seed_task": "retry seed task",
+  "manga_detail_page_quality":"Manga quality (Details page)"
 }
