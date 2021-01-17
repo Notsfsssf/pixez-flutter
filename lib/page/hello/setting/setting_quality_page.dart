@@ -508,9 +508,9 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 return SwitchListTile(
                     activeColor: Theme.of(context).accentColor,
                     value: userSetting.hIsNotAllow,
-                    title: Text(
-                        userSetting.hIsNotAllow ? 'H是不行的！' : 'H是可以的！(ˉ﹃ˉ)'),
+                    title: Text('H是不行的！'),
                     onChanged: (value) async {
+                      if (!value) BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
                       userSetting.setHIsNotAllow(value);
                     });
               }),
