@@ -22,6 +22,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -32,8 +33,9 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/exts.dart';
 import 'package:quiver/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE }
+enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE, NOTIFY }
 
 class IsoContactBean {
   final IsoTaskState state;
@@ -79,6 +81,16 @@ class Fetcher {
         switch (isoContactBean.state) {
           case IsoTaskState.INIT:
             sendPortToChild = isoContactBean.data;
+            if (_presetHost != ImageHost) {
+              IsoContactBean bean = IsoContactBean(
+                  state: IsoTaskState.NOTIFY,
+                  data: TaskBean(
+                      url: _presetHost,
+                      illusts: null,
+                      fileName: null,
+                      savePath: null));
+              sendPortToChild?.send(bean);
+            }
             break;
           case IsoTaskState.PROGRESS:
             IsoProgressBean isoProgressBean = isoContactBean.data;
@@ -103,6 +115,8 @@ class Fetcher {
           case IsoTaskState.ERROR:
             _errorD(isoContactBean.data as String);
             break;
+          case IsoTaskState.NOTIFY:
+            break;
           default:
             break;
         }
@@ -122,6 +136,17 @@ class Fetcher {
             fileName: fileName,
             savePath: (await getTemporaryDirectory()).path));
     sendPortToChild?.send(isoContactBean);
+  }
+
+  String _presetHost = ImageHost;
+
+  notify(String host) {
+    _presetHost = host;
+    IsoContactBean bean = IsoContactBean(
+        state: IsoTaskState.NOTIFY,
+        data: TaskBean(
+            url: _presetHost, illusts: null, fileName: null, savePath: null));
+    sendPortToChild?.send(bean);
   }
 
   void stop() {
@@ -178,6 +203,7 @@ Dio isolateDio = Dio(BaseOptions(headers: {
 // 新Isolate入口函数
 entryPoint(SendPort sendPort) {
   LPrinter.d("entryPoint =======");
+  String inHost = splashStore.host;
   if (!userSetting.disableBypassSni)
     (isolateDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
@@ -196,17 +222,19 @@ entryPoint(SendPort sendPort) {
       IsoContactBean isoContactBean = message;
       TaskBean taskBean = isoContactBean.data;
       switch (isoContactBean.state) {
+        case IsoTaskState.NOTIFY:
+          inHost = taskBean.url;
+          break;
         case IsoTaskState.ERROR:
           break;
         case IsoTaskState.APPEND:
           try {
+            LPrinter.d("append =======" + inHost);
             var savePath =
                 taskBean.savePath + Platform.pathSeparator + taskBean.fileName;
             String trueUrl = userSetting.disableBypassSni
                 ? taskBean.url
-                : (Uri.parse(taskBean.url)
-                        .replace(host: ApiClient.BASE_IMAGE_HOST))
-                    .toString();
+                : (Uri.parse(taskBean.url).replace(host: inHost)).toString();
             isolateDio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(
@@ -218,7 +246,7 @@ entryPoint(SendPort sendPort) {
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
             }).catchError((e) {
               try {
-                useLessFetch();
+                splashStore.maybeFetch();
                 sendPort.send(IsoContactBean(
                     state: IsoTaskState.ERROR, data: taskBean.url));
               } catch (e) {
@@ -236,23 +264,4 @@ entryPoint(SendPort sendPort) {
       LPrinter.d(e);
     }
   });
-}
-
-Future<int> useLessFetch() async {
-  try {
-    onezeroClient.httpClient.lock();
-    if (splashStore.helloWord == splashStore.OK_TEXT) return 1;
-    onezeroClient.queryDns("i.pximg.net").then((value) {
-      value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
-      final host = value.answer.first.data;
-      LPrinter.d(host);
-      if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
-        ApiClient.BASE_IMAGE_HOST = host;
-      splashStore.helloWord = splashStore.OK_TEXT;
-    }).catchError((e) {
-      splashStore.helloWord = 'T_T';
-    });
-  } catch (e) {} finally {
-    onezeroClient.httpClient.unlock();
-  }
 }

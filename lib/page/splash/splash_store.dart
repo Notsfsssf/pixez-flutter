@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -21,6 +23,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/onezero_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'splash_store.g.dart';
 
@@ -31,12 +34,14 @@ abstract class _SplashStoreBase with Store {
   final String OK_TEXT = '♪^∀^●)ノ';
   @observable
   String helloWord = "= w =";
+  String host = ImageHost;
   @observable
   OnezeroResponse onezeroResponse;
 
   _SplashStoreBase(this.onezeroClient);
   @action
   hello() async {
+    maybeFetch();
     Future.delayed(Duration(seconds: 2), () {
       helloWord = ' w(ﾟДﾟ)w ';
     });
@@ -47,22 +52,35 @@ abstract class _SplashStoreBase with Store {
     fetch();
   }
 
+  List<String> hardCoreArray = ["210.140.92.143", "210.140.92.145"];
   @action
   fetch() async {
+    if (helloWord == OK_TEXT) return;
     try {
       onezeroClient.httpClient.lock();
-      if (helloWord == OK_TEXT) return;
       onezeroClient.queryDns(ImageHost).then((value) {
         value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
         final host = value.answer.first.data;
         LPrinter.d(host);
         if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
-          ApiClient.BASE_IMAGE_HOST = host;
-        helloWord = OK_TEXT;
+          this.host = host;
+        try {
+          fetcher.notify(this.host);
+        } catch (e) {}
       }).catchError((e) {
-        helloWord = 'T_T';
+        this.host = hardCoreArray[Random().nextInt(hardCoreArray.length)];
+        helloWord = OK_TEXT;
+        try {
+          fetcher.notify(this.host);
+        } catch (e) {}
       });
-    } catch (e) {} finally {
+    } catch (e) {
+      this.host = hardCoreArray[Random().nextInt(hardCoreArray.length)];
+      helloWord = OK_TEXT;
+      try {
+        fetcher.notify(this.host);
+      } catch (e) {}
+    } finally {
       onezeroClient.httpClient.unlock();
     }
 

@@ -43,10 +43,10 @@ extension TimeExts on String {
       return this;
     } else {
       if (this.contains(ImageHost)) {
-        return this.replaceFirst(ImageHost, ApiClient.BASE_IMAGE_HOST);
+        return this.replaceFirst(ImageHost, splashStore.host);
       }
       if (this.contains(ImageSHost)) {
-        return this.replaceFirst(ImageSHost, ApiClient.BASE_IMAGE_HOST);
+        return this.replaceFirst(ImageSHost, splashStore.host);
       }
     }
     return this;
