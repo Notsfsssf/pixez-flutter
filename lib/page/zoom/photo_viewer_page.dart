@@ -64,7 +64,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   @override
   void dispose() {
-    FlutterStatusbarManager.setHidden(false);
+    if (Platform.isAndroid || Platform.isIOS)
+      FlutterStatusbarManager.setHidden(false);
     _doubleClickAnimationController.dispose();
     rebuildIndex.close();
     rebuildSwiper.close();
@@ -91,8 +92,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     _loadSource = userSetting.zoomQuality == 1;
     super.initState();
     index = widget.index;
-    FlutterStatusbarManager.setHidden(true,
-        animation: StatusBarAnimation.SLIDE);
+    if (Platform.isAndroid || Platform.isIOS)
+      FlutterStatusbarManager.setHidden(true,
+          animation: StatusBarAnimation.SLIDE);
   }
 
   Widget _buildContent(BuildContext context) {
@@ -336,7 +338,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                           color: Colors.white,
                         ),
                         onPressed: () async {
-                          await FlutterStatusbarManager.setHidden(false);
+                          if (Platform.isAndroid || Platform.isIOS)
+                            await FlutterStatusbarManager.setHidden(false);
                           Navigator.of(context).pop();
                         }),
                     IconButton(
