@@ -235,11 +235,15 @@ abstract class _SaveStoreBase with Store {
         print(e);
       }
       return;
-    } else {
+    } else if (Platform.isIOS) {
       final _imageSaver = ImageSaver();
       List<Uint8List> bytesList = [uint8list];
       await _imageSaver.saveImages(
           imageBytes: bytesList, directoryName: 'pxez');
+    } else if (Platform.isWindows) {
+      //TODO windows plugin
+    } else if (Platform.isLinux) {
+      //TODO linux plugin
     }
   }
 
