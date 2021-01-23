@@ -3,7 +3,6 @@ import 'dart:core';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -17,7 +16,7 @@ abstract class _IAPStoreBase with Store {
 
   dispose() {
     _purchaseErrorSubscription?.cancel();
-    _purchaseErrorSubscription?.cancel();
+    _purchaseUpdatedSubscription?.cancel();
   }
 
   StreamSubscription _purchaseUpdatedSubscription;
@@ -26,8 +25,6 @@ abstract class _IAPStoreBase with Store {
   Future<void> initPlatformState() async {
     var result = await FlutterInappPurchase.instance.initConnection;
     print('result: $result');
-    List<IAPItem> iaps =
-        await FlutterInappPurchase.instance.getProducts(_productLists);
     try {
       List<IAPItem> msg = await FlutterInappPurchase.instance
           .getProducts(['support', 'support1']);
@@ -53,12 +50,6 @@ abstract class _IAPStoreBase with Store {
 
   @action
   Future<void> initAndroidIap() async {
-    String platformVersion;
-    try {
-      platformVersion = await FlutterInappPurchase.instance.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
     var result = await FlutterInappPurchase.instance.initConnection;
     print('result: $result');
     try {

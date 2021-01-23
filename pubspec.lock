@@ -252,7 +252,7 @@ packages:
       name: extended_nested_scroll_view
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   extended_text:
     dependency: "direct main"
     description:
@@ -525,13 +525,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.5.1"
-  like_button:
-    dependency: "direct main"
-    description:
-      name: like_button
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.4"
   logging:
     dependency: transitive
     description:
@@ -546,13 +539,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.12.10-nullsafety.1"
-  md2_tab_indicator:
-    dependency: "direct main"
-    description:
-      name: md2_tab_indicator
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.2"
   meta:
     dependency: transitive
     description:
@@ -720,7 +706,7 @@ packages:
       name: provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.3.2+3"
+    version: "4.3.3"
   pub_semver:
     dependency: transitive
     description:
@@ -741,7 +727,7 @@ packages:
       name: pull_to_refresh
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.3"
+    version: "1.6.4"
   quick_actions:
     dependency: "direct main"
     description:
@@ -762,7 +748,7 @@ packages:
       name: receive_sharing_intent
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.4.2"
+    version: "1.4.3"
   save_in_gallery:
     dependency: "direct main"
     description:
@@ -770,13 +756,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.3"
-  scrollable_positioned_list:
-    dependency: "direct main"
-    description:
-      name: scrollable_positioned_list
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.9"
   share:
     dependency: "direct main"
     description:

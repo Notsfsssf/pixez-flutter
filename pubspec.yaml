@@ -39,16 +39,14 @@ dependencies:
   flutter_mobx: ^1.1.0+2
   flutter_inapp_purchase: ^3.0.1
   flutter_widget_from_html_core: ^0.5.1+4
-  extended_nested_scroll_view: ^2.0.0
-  scrollable_positioned_list: ^0.1.9
+  extended_nested_scroll_view: ^2.0.1
   flutter_date_pickers: ^0.1.8
   device_info: ^1.0.0
-  provider: ^4.3.2+2
+  provider: ^4.3.3
   flutter_displaymode: ^0.1.1
-  receive_sharing_intent: ^1.4.2
-  like_button: ^1.0.4
+  receive_sharing_intent: ^1.4.3
   flutter_hooks: ^0.15.0
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: ^1.6.4
   extended_image: ^1.5.0
   flutter_colorpicker: ^0.3.4
   waterfall_flow: ^2.0.5
@@ -64,7 +62,6 @@ dependencies:
   image_picker: ^0.6.7+21
   intl: ^0.16.1
   intl_utils: ^1.9.0
-  md2_tab_indicator: ^1.0.2
   quiver: ^2.1.5
   flutter_swiper: ^1.1.6
   image: ^2.1.19

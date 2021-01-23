@@ -152,9 +152,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       Uri initialLink = await getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = getUriLinksStream().listen((Uri link) {
-        Leader.pushWithUri(context, link);
-      });
+      _sub = getUriLinksStream().listen((Uri link) => Leader.pushWithUri(context, link));
     } catch (e) {
       print(e);
     }
@@ -207,6 +205,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   void dispose() {
     _intentDataStreamSubscription?.cancel();
     _pageController?.dispose();
+    _sub?.cancel();
     super.dispose();
   }
 

@@ -691,7 +691,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     });
   }
 
-  Future _pressSave(Illusts illust, int index) {
+  Future<void> _pressSave(Illusts illust, int index) async {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(

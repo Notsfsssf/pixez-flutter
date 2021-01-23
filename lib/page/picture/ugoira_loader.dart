@@ -23,8 +23,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image/image.dart';
 import 'package:image/image.dart' hide Color;
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -157,28 +155,6 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
         ),
       );
     });
-  }
-
-  Future _isolateWay() async {
-    Map<int, dynamic> map = Map();
-    map[1] = _store.ugoiraMetadataResponse;
-    map[2] = _store.drawPool;
-    final illusts = widget.illusts;
-    List<int> result = await compute(encodeGif, map);
-    File cacheFile = File(
-      join((await getTemporaryDirectory()).path, 'cache_gif',
-          "${illusts.id}.gif"),
-    );
-    if (!cacheFile.existsSync()) {
-      cacheFile.createSync(recursive: true);
-    }
-    cacheFile.writeAsBytesSync(result);
-    String fileName = userSetting.singleFolder
-        ? "${illusts.user.name}_${illusts.user.id}/${illusts.id}"
-        : "${illusts.id}";
-    await saveStore.saveToGallery(
-        cacheFile.readAsBytesSync(), illusts, fileName);
-    BotToast.showText(text: "encoding succes");
   }
 }
 

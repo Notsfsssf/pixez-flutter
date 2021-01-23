@@ -64,7 +64,7 @@ abstract class _NovelLightingStoreBase with Store {
   }
 
   @action
-  Future<Void> next() async {
+  Future<void> next() async {
     if (nextUrl != null && nextUrl.isNotEmpty) {
       try {
         Response response = await _client.getNext(nextUrl);

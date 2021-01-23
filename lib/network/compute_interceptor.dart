@@ -13,7 +13,6 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class ComputeInterceptor extends Interceptor {
   @override
