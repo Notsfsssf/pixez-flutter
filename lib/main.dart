@@ -48,6 +48,8 @@ import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -58,7 +60,7 @@ final HistoryStore historyStore = HistoryStore();
 final NovelHistoryStore novelHistoryStore = NovelHistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
-OnezeroClient onezeroClient =OnezeroClient();
+OnezeroClient onezeroClient = OnezeroClient();
 final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
 final KVer kVer = KVer();
@@ -89,6 +91,12 @@ void runTestLogApp() {
 }
 
 main() async {
+  if (Platform.isWindows || Platform.isLinux) {
+    // Initialize FFI
+    sqfliteFfiInit();
+    // Change the default factory
+    databaseFactory = databaseFactoryFfi;
+  }
   initAppWidget();
   runApp(MyApp());
 }
