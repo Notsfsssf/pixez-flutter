@@ -29,11 +29,8 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/store/save_store.dart';
-import 'package:pixez/exts.dart';
 import 'package:quiver/collection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE, NOTIFY }
 

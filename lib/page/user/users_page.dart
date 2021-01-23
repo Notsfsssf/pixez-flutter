@@ -25,6 +25,7 @@ import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/generated/l10n.dart';
@@ -40,8 +41,9 @@ import 'package:share/share.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;
+  final User user;
 
-  const UsersPage({Key key, this.id}) : super(key: key);
+  const UsersPage({Key key, this.id, this.user}) : super(key: key);
 
   @override
   _UsersPageState createState() => _UsersPageState();
@@ -55,7 +57,7 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   void initState() {
-    userStore = UserStore(widget.id);
+    userStore = UserStore(widget.id, user: widget.user);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     super.initState();
@@ -143,7 +145,7 @@ class _UsersPageState extends State<UsersPage>
           )),
         );
       }
-      if (userStore.userDetail == null) {
+      if (userStore.user == null) {
         return Scaffold(
           appBar: AppBar(),
           body: Container(
@@ -154,15 +156,11 @@ class _UsersPageState extends State<UsersPage>
       }
       return Scaffold(
         body: NestedScrollView(
-          pinnedHeaderSliverHeightBuilder: () {
-            return MediaQuery.of(context).padding.top + kToolbarHeight + 46.0;
-          },
+          pinnedHeaderSliverHeightBuilder: () =>
+              MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
           controller: _scrollController,
-          innerScrollPositionKeyBuilder: () {
-            var index = "Tab";
-            index += _tabController.index.toString();
-            return Key(index);
-          },
+          innerScrollPositionKeyBuilder: () =>
+              Key("Tab${_tabController.index}"),
           body: IndexedStack(index: _tabIndex, children: [
             NestedScrollViewInnerScrollPositionKeyWidget(
                 Key('Tab0'),
@@ -176,7 +174,10 @@ class _UsersPageState extends State<UsersPage>
                   id: widget.id,
                 )),
             NestedScrollViewInnerScrollPositionKeyWidget(
-                Key('Tab2'), UserDetailPage(userDetail: userStore.userDetail)),
+                Key('Tab2'),
+                userStore.userDetail != null
+                    ? UserDetailPage(userDetail: userStore.userDetail)
+                    : Container()),
           ]),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
@@ -188,9 +189,8 @@ class _UsersPageState extends State<UsersPage>
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.share),
-                      onPressed: () {
-                        Share.share('https://www.pixiv.net/users/${widget.id}');
-                      }),
+                      onPressed: () => Share.share(
+                          'https://www.pixiv.net/users/${widget.id}')),
                   PopupMenuButton<int>(
                     onSelected: (index) async {
                       switch (index) {
@@ -268,25 +268,29 @@ class _UsersPageState extends State<UsersPage>
                         Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).padding.top + 160,
-                            child: userStore.userDetail.profile
-                                        .background_image_url !=
-                                    null
-                                ? ExtendedImage.network(
-                                    userStore
-                                        .userDetail.profile.background_image_url
-                                        .toTrueUrl(),
-                                    fit: BoxFit.fitWidth,
-                                    headers: {
-                                      "referer": "https://app-api.pixiv.net/",
-                                      "User-Agent": "PixivIOSApp/5.8.0",
-                                      "Host":  Uri.parse(userStore
-                                          .userDetail.profile.background_image_url).host
-                                    },
-                                    enableMemoryCache: false,
-                                  )
-                                : Container(
-                                    color: Theme.of(context).accentColor,
-                                  )),
+                            child: userStore.userDetail != null
+                                ? userStore.userDetail.profile
+                                            .background_image_url !=
+                                        null
+                                    ? ExtendedImage.network(
+                                        userStore.userDetail.profile
+                                            .background_image_url
+                                            .toTrueUrl(),
+                                        fit: BoxFit.fitWidth,
+                                        headers: {
+                                          "referer":
+                                              "https://app-api.pixiv.net/",
+                                          "User-Agent": "PixivIOSApp/5.8.0",
+                                          "Host": Uri.parse(userStore.userDetail
+                                                  .profile.background_image_url)
+                                              .host
+                                        },
+                                        enableMemoryCache: false,
+                                      )
+                                    : Container(
+                                        color: Theme.of(context).accentColor,
+                                      )
+                                : Container()),
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Column(
@@ -351,9 +355,12 @@ class _UsersPageState extends State<UsersPage>
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SelectableText(
-                userStore.userDetail.user.name,
-                style: Theme.of(context).textTheme.headline6,
+              NullHero(
+                tag: userStore.user?.name,
+                child: SelectableText(
+                  userStore.user?.name ?? "",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
               ),
               InkWell(
                 onTap: () {
@@ -368,7 +375,9 @@ class _UsersPageState extends State<UsersPage>
                   }));
                 },
                 child: Text(
-                  '${userStore.userDetail.profile.total_follow_users} ${I18n.of(context).follow}',
+                  userStore.userDetail == null
+                      ? ""
+                      : '${userStore.userDetail.profile.total_follow_users} ${I18n.of(context).follow}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               )
@@ -386,7 +395,9 @@ class _UsersPageState extends State<UsersPage>
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
         child: SingleChildScrollView(
           child: Text(
-            '${userStore.userDetail.user.comment}',
+            userStore.userDetail == null
+                ? ""
+                : '${userStore.userDetail.user.comment}',
             style: Theme.of(context).textTheme.caption,
             overflow: TextOverflow.ellipsis,
           ),
@@ -406,75 +417,85 @@ class _UsersPageState extends State<UsersPage>
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-              child: PainterAvatar(
-                url: userStore.userDetail.user.profile_image_urls.medium,
-                size: Size(80, 80),
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(I18n.of(context).save_painter_avatar),
-                          actions: [
-                            FlatButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(I18n.of(context).cancel)),
-                            FlatButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  await _saveUserC();
-                                },
-                                child: Text(I18n.of(context).ok)),
-                          ],
-                        );
-                      });
-                },
+              child: Hero(
+                tag: userStore.user.profileImageUrls.medium,
+                child: PainterAvatar(
+                  url: userStore.user.profileImageUrls.medium,
+                  size: Size(80, 80),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(I18n.of(context).save_painter_avatar),
+                            actions: [
+                              FlatButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(I18n.of(context).cancel)),
+                              FlatButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    await _saveUserC();
+                                  },
+                                  child: Text(I18n.of(context).ok)),
+                            ],
+                          );
+                        });
+                  },
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-              child: userStore.isFollow
-                  ? FlatButton(
-                      textColor: Colors.white,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                      color: Theme.of(context).accentColor,
-                      onPressed: () {
-                        if (accountStore.now != null) {
-                          if (int.parse(accountStore.now.userId) != widget.id) {
-                            userStore.follow(needPrivate: false);
-                          } else {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'Who is the most beautiful person in the world?')));
+            Visibility(
+              visible: userStore.user != null,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
+                child: userStore.isFollow
+                    ? FlatButton(
+                        textColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+                        color: Theme.of(context).accentColor,
+                        onPressed: () {
+                          if (accountStore.now != null) {
+                            if (int.parse(accountStore.now.userId) !=
+                                widget.id) {
+                              userStore.follow(needPrivate: false);
+                            } else {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      'Who is the most beautiful person in the world?')));
+                            }
                           }
-                        }
-                      },
-                      child: Text(I18n.of(context).followed),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                    )
-                  : OutlineButton(
-                      borderSide: BorderSide(),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      onPressed: () {
-                        if (accountStore.now != null) {
-                          if (int.parse(accountStore.now.userId) != widget.id) {
-                            userStore.follow(needPrivate: false);
-                          } else {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'Who is the most beautiful person in the world?')));
+                        },
+                        child: Text(I18n.of(context).followed),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                      )
+                    : OutlineButton(
+                        borderSide: BorderSide(),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        onPressed: () {
+                          if (accountStore.now != null) {
+                            if (int.parse(accountStore.now.userId) !=
+                                widget.id) {
+                              userStore.follow(needPrivate: false);
+                            } else {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      'Who is the most beautiful person in the world?')));
+                            }
                           }
-                        }
-                      },
-                      child: Text(I18n.of(context).follow),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                    ),
+                        },
+                        child: Text(I18n.of(context).follow),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+                      ),
+              ),
             )
           ],
         ),
@@ -501,7 +522,7 @@ class _UsersPageState extends State<UsersPage>
   }
 
   Future _saveUserC() async {
-    var url = userStore.userDetail.user.profile_image_urls.medium;
+    var url = userStore.userDetail.user.profileImageUrls.medium;
     String meme = url.split(".").last;
     if (meme == null || meme.isEmpty) meme = "jpg";
     var replaceAll = userStore.userDetail.user.name
@@ -519,20 +540,18 @@ class _UsersPageState extends State<UsersPage>
       final dio = Dio(BaseOptions(headers: {
         "referer": "https://app-api.pixiv.net/",
         "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": Uri
-            .parse(url)
-            .host
+        "Host": Uri.parse(url).host
       }));
-      if(!userSetting.disableBypassSni)
-      (dio.httpClientAdapter as DefaultHttpClientAdapter)
-          .onHttpClientCreate = (client) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
+      if (!userSetting.disableBypassSni)
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (client) {
+          HttpClient httpClient = new HttpClient();
+          httpClient.badCertificateCallback =
+              (X509Certificate cert, String host, int port) {
+            return true;
+          };
+          return httpClient;
         };
-        return httpClient;
-      };
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file != null && file.existsSync()) {

@@ -16,7 +16,6 @@ import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/network/api_client.dart';
 
 extension TimeExts on String {
   String toShortTime() {

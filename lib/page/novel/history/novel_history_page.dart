@@ -18,7 +18,6 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NovelHistory extends StatefulWidget {
   @override

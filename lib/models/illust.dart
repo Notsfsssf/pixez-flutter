@@ -33,13 +33,15 @@ class MetaPages {
     return data;
   }
 }
+
 class MetaPagesImageUrls {
   String squareMedium;
   String medium;
   String large;
   String original;
 
-  MetaPagesImageUrls({this.squareMedium, this.medium, this.large, this.original});
+  MetaPagesImageUrls(
+      {this.squareMedium, this.medium, this.large, this.original});
 
   MetaPagesImageUrls.fromJson(Map<String, dynamic> json) {
     squareMedium = json['square_medium'];
@@ -57,6 +59,7 @@ class MetaPagesImageUrls {
     return data;
   }
 }
+
 class Illusts {
   int id;
   String title;
@@ -84,28 +87,28 @@ class Illusts {
 
   Illusts(
       {this.id,
-        this.title,
-        this.type,
-        this.imageUrls,
-        this.caption,
-        this.restrict,
-        this.user,
-        this.tags,
-        this.tools,
-        this.createDate,
-        this.pageCount,
-        this.width,
-        this.height,
-        this.sanityLevel,
-        this.xRestrict,
-        this.series,
-        this.metaSinglePage,
-        this.metaPages,
-        this.totalView,
-        this.totalBookmarks,
-        this.isBookmarked,
-        this.visible,
-        this.isMuted});
+      this.title,
+      this.type,
+      this.imageUrls,
+      this.caption,
+      this.restrict,
+      this.user,
+      this.tags,
+      this.tools,
+      this.createDate,
+      this.pageCount,
+      this.width,
+      this.height,
+      this.sanityLevel,
+      this.xRestrict,
+      this.series,
+      this.metaSinglePage,
+      this.metaPages,
+      this.totalView,
+      this.totalBookmarks,
+      this.isBookmarked,
+      this.visible,
+      this.isMuted});
   Illusts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
@@ -219,14 +222,16 @@ class User {
   String name;
   String account;
   ProfileImageUrls profileImageUrls;
+  String comment;
   bool isFollowed;
 
   User(
       {this.id,
-        this.name,
-        this.account,
-        this.profileImageUrls,
-        this.isFollowed});
+      this.name,
+      this.account,
+      this.profileImageUrls,
+      this.comment,
+      this.isFollowed});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -235,6 +240,7 @@ class User {
     profileImageUrls = json['profile_image_urls'] != null
         ? new ProfileImageUrls.fromJson(json['profile_image_urls'])
         : null;
+    comment = json['comment'];
     isFollowed = json['is_followed'];
   }
 
@@ -246,6 +252,7 @@ class User {
     if (this.profileImageUrls != null) {
       data['profile_image_urls'] = this.profileImageUrls.toJson();
     }
+    data['comment']= this.comment;
     data['is_followed'] = this.isFollowed;
     return data;
   }

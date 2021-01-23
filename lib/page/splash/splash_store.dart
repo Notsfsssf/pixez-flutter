@@ -21,9 +21,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/onezero_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'splash_store.g.dart';
 

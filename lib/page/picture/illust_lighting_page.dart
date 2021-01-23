@@ -39,6 +39,7 @@ import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:share/share.dart';
 
@@ -637,9 +638,18 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                         ),
                       ),
                       Center(
-                        child: PainterAvatar(
-                          url: illust.user.profileImageUrls.medium,
-                          id: illust.user.id,
+                        child: Hero(
+                          tag: illust.user.profileImageUrls.medium,
+                          child: PainterAvatar(
+                            url: illust.user.profileImageUrls.medium,
+                            id: illust.user.id,
+                            onTap: () {
+                              Leader.push(
+                                  context,
+                                  UsersPage(
+                                      id: illust.user.id, user: illust.user));
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -661,9 +671,12 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                   Container(
                     height: 4.0,
                   ),
-                  SelectableText(
-                    illust.user.name,
-                    style: Theme.of(context).textTheme.bodyText2,
+                  Hero(
+                    tag: illust.user.name,
+                    child: SelectableText(
+                      illust.user.name,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
                   ),
                   Text(
                     illust.createDate.toShortTime(),

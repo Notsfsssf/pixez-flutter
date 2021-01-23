@@ -362,7 +362,7 @@ class _NovelUserPageState extends State<NovelUserPage>
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               child: PainterAvatar(
-                url: userStore.userDetail.user.profile_image_urls.medium,
+                url: userStore.userDetail.user.profileImageUrls.medium,
                 size: Size(80, 80),
                 onTap: () {},
               ),

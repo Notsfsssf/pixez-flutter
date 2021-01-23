@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/user_detail.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -31,19 +32,21 @@ abstract class _UserStoreBase with Store {
   @observable
   UserDetail userDetail;
   @observable
+  User user;
+  @observable
   bool isFollow = false;
   @observable
   int value = 0;
 
-  _UserStoreBase(this.id, {this.userDetail});
+  _UserStoreBase(this.id, {this.userDetail, this.user});
 
   @action
   Future<void> follow({bool needPrivate = false}) async {
-    if (userDetail.user.is_followed) {
+    if (userDetail.user.isFollowed) {
       try {
         await client.postUnFollowUser(id);
-        userDetail.user.is_followed = false;
-        isFollow = userDetail.user.is_followed;
+        userDetail.user.isFollowed = false;
+        isFollow = userDetail.user.isFollowed;
       } on DioError catch (e) {
         if (e.response != null &&
             e.response.statusCode == HttpStatus.badRequest) {}
@@ -53,8 +56,8 @@ abstract class _UserStoreBase with Store {
     if (needPrivate) {
       try {
         await client.postFollowUser(id, 'private');
-        userDetail.user.is_followed = true;
-        isFollow = userDetail.user.is_followed;
+        userDetail.user.isFollowed = true;
+        isFollow = userDetail.user.isFollowed;
       } on DioError catch (e) {
         if (e.response != null &&
             e.response.statusCode == HttpStatus.badRequest) {}
@@ -62,8 +65,8 @@ abstract class _UserStoreBase with Store {
     } else {
       try {
         await client.postFollowUser(id, 'public');
-        userDetail.user.is_followed = true;
-        isFollow = userDetail.user.is_followed;
+        userDetail.user.isFollowed = true;
+        isFollow = userDetail.user.isFollowed;
       } on DioError catch (e) {
         if (e.response != null &&
             e.response.statusCode == HttpStatus.badRequest) {}
@@ -80,7 +83,8 @@ abstract class _UserStoreBase with Store {
       Response response = await client.getUser(id);
       UserDetail userDetail = UserDetail.fromJson(response.data);
       this.userDetail = userDetail;
-      this.isFollow = this.userDetail.user.is_followed;
+      this.user = userDetail.user;
+      this.isFollow = this.userDetail.user.isFollowed;
     } on DioError catch (e) {
       if (e.response != null && e.response.statusCode == HttpStatus.notFound) {
         errorMessage = '404';

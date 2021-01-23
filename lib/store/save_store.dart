@@ -19,14 +19,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/adapter.dart';
-import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
@@ -34,7 +31,6 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
-import 'package:pixez/network/compute_interceptor.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 

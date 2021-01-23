@@ -25,6 +25,7 @@ import 'package:pixez/page/user/users_page.dart';
 class PainterCard extends StatelessWidget {
   final UserPreviews user;
   final bool isNovel;
+
   const PainterCard({Key key, this.user, this.isNovel = false})
       : super(key: key);
 
@@ -41,6 +42,7 @@ class PainterCard extends StatelessWidget {
           }
           return UsersPage(
             id: user.user.id,
+            user: user.user,
           );
         }));
       },
@@ -63,7 +65,7 @@ class PainterCard extends StatelessWidget {
                       fit: BoxFit.cover,
                     );
                   }, childCount: user.illusts.length)),
-              SliverToBoxAdapter(child: buildPadding())
+              SliverToBoxAdapter(child: buildPadding(context))
             ],
           ),
         ),
@@ -71,18 +73,40 @@ class PainterCard extends StatelessWidget {
     );
   }
 
-  Padding buildPadding() {
+  Padding buildPadding(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          PainterAvatar(
-              url: user.user.profileImageUrls.medium, id: user.user.id),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(user.user.name),
+          Hero(
+            tag: user.user.profileImageUrls.medium,
+            child: PainterAvatar(
+              url: user.user.profileImageUrls.medium,
+              id: user.user.id,
+              onTap: () {
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  if (isNovel) {
+                    return NovelUserPage(
+                      id: user.user.id,
+                    );
+                  }
+                  return UsersPage(
+                    id: user.user.id,
+                    user: user.user,
+                  );
+                }));
+              },
+            ),
+          ),
+          Hero(
+            tag: user.user.name,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(user.user.name),
+            ),
           )
         ],
       ),

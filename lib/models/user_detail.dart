@@ -16,6 +16,8 @@
 
 import 'dart:convert' show json;
 
+import 'package:pixez/models/illust.dart';
+
 
 class UserDetail {
   User user;
@@ -47,77 +49,6 @@ class UserDetail {
         'profile': profile,
         'profile_publicity': profile_publicity,
         'workspace': workspace,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
-}
-
-class User {
-  int id;
-  String name;
-  String account;
-  Profile_image_urls profile_image_urls;
-  String comment;
-  bool is_followed;
-
-  User({
-    this.id,
-    this.name,
-    this.account,
-    this.profile_image_urls,
-    this.comment,
-    this.is_followed,
-  });
-
-  factory User.fromJson(jsonRes) =>
-      jsonRes == null
-          ? null
-          : User(
-        id: jsonRes['id'],
-        name: jsonRes['name'],
-        account: jsonRes['account'],
-        profile_image_urls:
-        Profile_image_urls.fromJson(jsonRes['profile_image_urls']),
-        comment: jsonRes['comment'],
-        is_followed: jsonRes['is_followed'],
-      );
-
-  Map<String, dynamic> toJson() =>
-      {
-        'id': id,
-        'name': name,
-        'account': account,
-        'profile_image_urls': profile_image_urls,
-        'comment': comment,
-        'is_followed': is_followed,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
-}
-
-class Profile_image_urls {
-  String medium;
-
-  Profile_image_urls({
-    this.medium,
-  });
-
-  factory Profile_image_urls.fromJson(jsonRes) =>
-      jsonRes == null
-          ? null
-          : Profile_image_urls(
-        medium: jsonRes['medium'],
-      );
-
-  Map<String, dynamic> toJson() =>
-      {
-        'medium': medium,
       };
 
   @override
