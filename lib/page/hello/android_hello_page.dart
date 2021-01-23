@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
@@ -84,7 +85,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         return true;
       },
       child: Observer(builder: (context) {
-        if (accountStore.now != null) {
+        if (accountStore.now != null &&
+            (Platform.isIOS || Platform.isAndroid)) {
           quickActions.setShortcutItems(<ShortcutItem>[
             ShortcutItem(
                 type: 'action_search',
@@ -152,7 +154,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       Uri initialLink = await getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = getUriLinksStream().listen((Uri link) => Leader.pushWithUri(context, link));
+      _sub = getUriLinksStream()
+          .listen((Uri link) => Leader.pushWithUri(context, link));
     } catch (e) {
       print(e);
     }

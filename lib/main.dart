@@ -205,12 +205,13 @@ class _MyAppState extends State<MyApp> {
       return MaterialApp(
         navigatorObservers: [BotToastNavigatorObserver()],
         home: Builder(builder: (context) {
-          quickActions.initialize((shortcutType) {
-            if (shortcutType == 'action_search') {
-              LPrinter.d("quick action");
-              Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
-            }
-          });
+          if (Platform.isIOS || Platform.isAndroid)
+            quickActions.initialize((shortcutType) {
+              if (shortcutType == 'action_search') {
+                LPrinter.d("quick action");
+                Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
+              }
+            });
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,

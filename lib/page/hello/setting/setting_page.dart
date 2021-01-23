@@ -20,7 +20,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -93,199 +92,185 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: AnimationLimiter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: AnimationConfiguration.toStaggeredList(
-                    childAnimationBuilder: (widget) => SlideAnimation(
-                      horizontalOffset: 50.0,
-                      child: FadeInAnimation(child: widget),
-                    ),
-                    children: <Widget>[
-                      AppBar(
-                        elevation: 0.0,
-                        automaticallyImplyLeading: false,
-                        backgroundColor: Colors.transparent,
-                        actions: [
-                          if (kDebugMode)
-                            IconButton(
-                                icon: Icon(Icons.code),
-                                onPressed: () {
-                                  _showSavedLogDialog(context);
-                                }),
-                          IconButton(
-                            icon: Icon(
-                              Icons.palette,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1.color,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ThemePage()));
-                            },
-                          ),
-                        ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                AppBar(
+                  elevation: 0.0,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  actions: [
+                    if (kDebugMode)
+                      IconButton(
+                          icon: Icon(Icons.code),
+                          onPressed: () {
+                            _showSavedLogDialog(context);
+                          }),
+                    IconButton(
+                      icon: Icon(
+                        Icons.palette,
+                        color: Theme.of(context).textTheme.bodyText1.color,
                       ),
-                      Observer(builder: (context) {
-                        if (accountStore.now != null)
-                          return SingleChildScrollView(
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .push(MaterialPageRoute(builder: (_) {
-                                        return AccountSelectPage();
-                                      }));
-                                    },
-                                    child: Row(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ThemePage()));
+                      },
+                    ),
+                  ],
+                ),
+                Observer(builder: (context) {
+                  if (accountStore.now != null)
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(builder: (_) {
+                                  return AccountSelectPage();
+                                }));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  PainterAvatar(
+                                    url: accountStore.now.userImage,
+                                    id: int.parse(accountStore.now.userId),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        PainterAvatar(
-                                          url: accountStore.now.userImage,
-                                          id: int.parse(
-                                              accountStore.now.userId),
-                                        ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
-                                                child: Text(
-                                                    accountStore.now.name,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .subtitle1),
-                                              ),
-                                              Text(
-                                                accountStore.now.mailAddress,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              )
-                                            ],
-                                          ),
+                                              vertical: 8.0),
+                                          child: Text(accountStore.now.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1),
+                                        ),
+                                        Text(
+                                          accountStore.now.mailAddress,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
                                         )
                                       ],
                                     ),
-                                  ),
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.account_box),
-                                  title: Text(I18n.of(context).account_message),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                AccountEditPage()));
-                                  },
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
-                          );
-                        return Container();
-                      }),
-                      Divider(),
-                      Column(
-                        children: <Widget>[
+                          ),
                           ListTile(
-                            leading: Icon(Icons.history),
-                            title: Text(I18n.of(context).history_record),
+                            leading: Icon(Icons.account_box),
+                            title: Text(I18n.of(context).account_message),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return Constants.type == 0
-                                    ? HistoryPage()
-                                    : NovelHistory();
-                              }));
+                                  builder: (BuildContext context) =>
+                                      AccountEditPage()));
                             },
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.settings),
-                            title: Text(I18n.of(context).quality_setting),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return SettingQualityPage();
-                              }));
-                            },
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.bookmark),
-                            title: Text(I18n.of(context).favorited_tag),
-                            onTap: () =>
-                                Leader.pushWithScaffold(context, BookTagPage()),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.block),
-                            title: Text(I18n.of(context).shielding_settings),
-                            onTap: () => Leader.push(context, ShieldPage()),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.description),
-                            title: Text(I18n.of(context).task_progress),
-                            onTap: () => Leader.push(context, JobPage()),
-                          ),
-                          ListTile(
-                            onTap: () => _showClearCacheDialog(context),
-                            title: Text(I18n.of(context).clearn_cache),
-                            leading: Icon(Icons.clear),
-                          ),
+                          )
                         ],
                       ),
-                      Divider(),
-                      Column(
-                        children: <Widget>[
-                          ListTile(
-                            leading: Icon(Icons.book),
-                            title: Text('Novel(Beta)'),
-                            onTap: () =>
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushReplacement(MaterialPageRoute(
-                                        builder: (context) => NovelRail())),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.message),
-                            title: Text(I18n.of(context).about),
-                            onTap: () => Leader.push(
-                                context, AboutPage(newVersion: hasNewVersion)),
-                            trailing: Visibility(
-                              child: NewVersionChip(),
-                              visible: hasNewVersion,
-                            ),
-                          ),
-                          Observer(builder: (context) {
-                            if (accountStore.now != null)
-                              return ListTile(
-                                leading: Icon(Icons.arrow_back),
-                                title: Text(I18n.of(context).logout),
-                                onTap: () => _showLogoutDialog(context),
-                              );
-                            else
-                              return ListTile(
-                                leading: Icon(Icons.arrow_back),
-                                title: Text(I18n.of(context).login),
-                                onTap: () => Leader.push(context, LoginPage()),
-                              );
-                          })
-                        ],
-                      )
-                    ],
-                  )),
+                    );
+                  return Container();
+                }),
+                Divider(),
+                Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.history),
+                      title: Text(I18n.of(context).history_record),
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return Constants.type == 0
+                              ? HistoryPage()
+                              : NovelHistory();
+                        }));
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.settings),
+                      title: Text(I18n.of(context).quality_setting),
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return SettingQualityPage();
+                        }));
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.bookmark),
+                      title: Text(I18n.of(context).favorited_tag),
+                      onTap: () =>
+                          Leader.pushWithScaffold(context, BookTagPage()),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.block),
+                      title: Text(I18n.of(context).shielding_settings),
+                      onTap: () => Leader.push(context, ShieldPage()),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.description),
+                      title: Text(I18n.of(context).task_progress),
+                      onTap: () => Leader.push(context, JobPage()),
+                    ),
+                    ListTile(
+                      onTap: () => _showClearCacheDialog(context),
+                      title: Text(I18n.of(context).clearn_cache),
+                      leading: Icon(Icons.clear),
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.book),
+                      title: Text('Novel(Beta)'),
+                      onTap: () => Navigator.of(context, rootNavigator: true)
+                          .pushReplacement(MaterialPageRoute(
+                              builder: (context) => NovelRail())),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.message),
+                      title: Text(I18n.of(context).about),
+                      onTap: () => Leader.push(
+                          context, AboutPage(newVersion: hasNewVersion)),
+                      trailing: Visibility(
+                        child: NewVersionChip(),
+                        visible: hasNewVersion,
+                      ),
+                    ),
+                    Observer(builder: (context) {
+                      if (accountStore.now != null)
+                        return ListTile(
+                          leading: Icon(Icons.arrow_back),
+                          title: Text(I18n.of(context).logout),
+                          onTap: () => _showLogoutDialog(context),
+                        );
+                      else
+                        return ListTile(
+                          leading: Icon(Icons.arrow_back),
+                          title: Text(I18n.of(context).login),
+                          onTap: () => Leader.push(context, LoginPage()),
+                        );
+                    })
+                  ],
+                )
+              ],
             ),
           ),
         ),
@@ -301,7 +286,10 @@ class _SettingPageState extends State<SettingPage> {
         builder: (context) {
           return AlertDialog(
             title: Text("Log"),
-            content: Container(child: Text(content ?? ""),height: 400,),
+            content: Container(
+              child: Text(content ?? ""),
+              height: 400,
+            ),
             actions: <Widget>[
               FlatButton(
                 child: Text(I18n.of(context).cancel),
@@ -320,8 +308,7 @@ class _SettingPageState extends State<SettingPage> {
         });
     switch (result) {
       case "OK":
-        {
-        }
+        {}
         break;
       case "CANCEL":
         {}
@@ -355,7 +342,8 @@ class _SettingPageState extends State<SettingPage> {
       case "OK":
         {
           accountStore.deleteAll();
-          QuickActions().clearShortcutItems();
+          if (Platform.isIOS || Platform.isAndroid)
+            QuickActions().clearShortcutItems();
         }
         break;
       case "CANCEL":
