@@ -66,9 +66,7 @@ class PixivImage extends HookWidget {
       headers: {
         "referer": "https://app-api.pixiv.net/",
         "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": Uri
-            .parse(url)
-            .host
+        "Host": Uri.parse(url).host
       },
       enableMemoryCache: enableMemoryCache ?? true,
       loadStateChanged: (ExtendedImageState state) {
@@ -130,11 +128,11 @@ class PixivImage extends HookWidget {
 }
 
 class PixivProvider {
-  static ExtendedNetworkImageProvider url(String url) {
+  static ExtendedNetworkImageProvider url(String url, {String host}) {
     return ExtendedNetworkImageProvider(url, headers: {
       "referer": "https://app-api.pixiv.net/",
       "User-Agent": "PixivIOSApp/5.8.0",
-      "Host": Uri.parse(url).host
+      "Host":host?? Uri.parse(url).host
     });
   }
 }

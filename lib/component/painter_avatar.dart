@@ -55,9 +55,8 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 height: 60,
                 width: 60,
                 child: CircleAvatar(
-                  backgroundImage: PixivProvider.url(
-                    widget.url,
-                  ),
+                  backgroundImage: PixivProvider.url(widget.url.toTrueUrl(),
+                      host: Uri.parse(widget.url).host),
                   radius: 100.0,
                 ),
               )
@@ -67,7 +66,9 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: PixivProvider.url(widget.url.toTrueUrl()), fit: BoxFit.cover),
+                      image: PixivProvider.url(widget.url.toTrueUrl(),
+                          host: Uri.parse(widget.url).host),
+                      fit: BoxFit.cover),
                 ),
               ));
   }

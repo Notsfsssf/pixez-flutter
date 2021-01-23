@@ -3,6 +3,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
+import 'package:pixez/exts.dart';
 
 class RecomUserRoad extends StatefulWidget {
   final RecomUserStore recomUserStore;
@@ -79,8 +80,8 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
         width: 40,
         child: CircleAvatar(
           backgroundImage: PixivProvider.url(
-            data.user.profileImageUrls.medium,
-          ),
+              data.user.profileImageUrls.medium.toTrueUrl(),
+              host: Uri.parse(data.user.profileImageUrls.medium).host),
           radius: 100.0,
         ),
       ),
