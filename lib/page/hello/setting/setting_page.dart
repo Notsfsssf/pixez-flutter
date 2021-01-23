@@ -20,7 +20,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -93,16 +92,12 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: AnimationLimiter(
+    
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: AnimationConfiguration.toStaggeredList(
-                    childAnimationBuilder: (widget) => SlideAnimation(
-                      horizontalOffset: 50.0,
-                      child: FadeInAnimation(child: widget),
-                    ),
+          
                     children: <Widget>[
                       AppBar(
                         elevation: 0.0,
@@ -285,8 +280,8 @@ class _SettingPageState extends State<SettingPage> {
                         ],
                       )
                     ],
-                  )),
-            ),
+                  ),
+            
           ),
         ),
       ),

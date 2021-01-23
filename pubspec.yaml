@@ -55,7 +55,6 @@ dependencies:
   backdrop: ^0.4.7
   font_awesome_flutter: ^8.10.0
   json_annotation: ^3.1.0
-  flutter_staggered_animations: ^0.1.2
   flutter_statusbar_manager: ^2.0.0
   badges: ^1.1.6
   quick_actions: ^0.4.0+10
@@ -65,6 +64,10 @@ dependencies:
   quiver: ^2.1.5
   flutter_swiper: ^1.1.6
   image: ^2.1.19
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
+  extended_image: 1.5.0-dev
+  extended_nested_scroll_view: 2.0.0-dev
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
