@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -49,18 +48,12 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
                         topLeft: Radius.circular(16.0)),
                     color: Colors.transparent),
                 child: _recomUserStore.users.isNotEmpty
-                    ? AnimationLimiter(
-                        child: ListView.builder(
-                          itemCount: _recomUserStore.users.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return AnimationConfiguration.staggeredList(
-                                position: index,
-                                child: SlideAnimation(
-                                    horizontalOffset: 50.0,
-                                    child: _buildUserList(index)));
-                          },
-                        ),
+                    ? ListView.builder(
+                        itemCount: _recomUserStore.users.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return _buildUserList(index);
+                        },
                       )
                     : Container(),
               ),

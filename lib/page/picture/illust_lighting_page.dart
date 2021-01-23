@@ -746,62 +746,64 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     }
     final result = await showDialog(
       context: context,
-      child: StatefulBuilder(builder: (context, setDialogState) {
-        return AlertDialog(
-          title: Text(I18n.of(context).muti_choice_save),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(I18n.of(context).cancel),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context, "OK");
-              },
-              child: Text(I18n.of(context).ok),
-            ),
-          ],
-          content: Container(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: (context, index) => index == 0
-                  ? ListTile(
-                      title: Text(I18n.of(context).all),
-                      trailing: Checkbox(
-                          value: allOn,
-                          onChanged: (ischeck) {
-                            setDialogState(() {
-                              allOn = ischeck;
-                              if (ischeck)
-                                for (int i = 0; i < indexs.length; i++) {
-                                  indexs[i] = true;
-                                } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
-                              else {
-                                for (int i = 0; i < indexs.length; i++) {
-                                  indexs[i] = false;
+      builder: (context) {
+       return StatefulBuilder(builder: (context, setDialogState) {
+          return AlertDialog(
+            title: Text(I18n.of(context).muti_choice_save),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(I18n.of(context).cancel),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context, "OK");
+                },
+                child: Text(I18n.of(context).ok),
+              ),
+            ],
+            content: Container(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, index) => index == 0
+                    ? ListTile(
+                        title: Text(I18n.of(context).all),
+                        trailing: Checkbox(
+                            value: allOn,
+                            onChanged: (ischeck) {
+                              setDialogState(() {
+                                allOn = ischeck;
+                                if (ischeck)
+                                  for (int i = 0; i < indexs.length; i++) {
+                                    indexs[i] = true;
+                                  } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
+                                else {
+                                  for (int i = 0; i < indexs.length; i++) {
+                                    indexs[i] = false;
+                                  }
                                 }
-                              }
-                            });
-                          }),
-                    )
-                  : ListTile(
-                      title: Text((index - 1).toString()),
-                      trailing: Checkbox(
-                          value: indexs[index - 1],
-                          onChanged: (ischeck) {
-                            setDialogState(() {
-                              indexs[index - 1] = ischeck;
-                            });
-                          }),
-                    ),
-              itemCount: illust.metaPages.length + 1,
+                              });
+                            }),
+                      )
+                    : ListTile(
+                        title: Text((index - 1).toString()),
+                        trailing: Checkbox(
+                            value: indexs[index - 1],
+                            onChanged: (ischeck) {
+                              setDialogState(() {
+                                indexs[index - 1] = ischeck;
+                              });
+                            }),
+                      ),
+                itemCount: illust.metaPages.length + 1,
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        });
+      },
     );
     switch (result) {
       case "OK":
