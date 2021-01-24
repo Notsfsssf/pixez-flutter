@@ -161,7 +161,7 @@ class _PlatformPageState extends State<PlatformPage> {
                     onChanged: (bool value) async {
                       await userSetting.setOverSanityLevelFolder(value);
                     },
-                    title: Text("Sanity Single Folder"),
+                    title: Text(I18n.of(context).sanity_single_folder),
                     value: userSetting.overSanityLevelFolder,
                   );
                 },
