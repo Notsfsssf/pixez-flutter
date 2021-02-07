@@ -41,9 +41,9 @@ import 'package:share/share.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;
-  final User user;
+  final UserStore userStore;
 
-  const UsersPage({Key key, this.id, this.user}) : super(key: key);
+  const UsersPage({Key key, this.id, this.userStore}) : super(key: key);
 
   @override
   _UsersPageState createState() => _UsersPageState();
@@ -57,7 +57,7 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   void initState() {
-    userStore = UserStore(widget.id, user: widget.user);
+    userStore = widget.userStore ?? UserStore(widget.id);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     super.initState();
@@ -447,55 +447,59 @@ class _UsersPageState extends State<UsersPage>
                 ),
               ),
             ),
-            Visibility(
-              visible: userStore.user != null,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-                child: userStore.isFollow
-                    ? FlatButton(
-                        textColor: Colors.white,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                        color: Theme.of(context).accentColor,
-                        onPressed: () {
-                          if (accountStore.now != null) {
-                            if (int.parse(accountStore.now.userId) !=
-                                widget.id) {
-                              userStore.follow(needPrivate: false);
-                            } else {
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      'Who is the most beautiful person in the world?')));
-                            }
-                          }
-                        },
-                        child: Text(I18n.of(context).followed),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                      )
-                    : OutlineButton(
-                        borderSide: BorderSide(),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        onPressed: () {
-                          if (accountStore.now != null) {
-                            if (int.parse(accountStore.now.userId) !=
-                                widget.id) {
-                              userStore.follow(needPrivate: false);
-                            } else {
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      'Who is the most beautiful person in the world?')));
-                            }
-                          }
-                        },
-                        child: Text(I18n.of(context).follow),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                      ),
-              ),
+            Container(
+              child: userStore.userDetail == null
+                  ? Container(
+                      padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
+                      child: CircularProgressIndicator(),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
+                      child: userStore.isFollow
+                          ? FlatButton(
+                              textColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 0),
+                              color: Theme.of(context).accentColor,
+                              onPressed: () {
+                                if (accountStore.now != null) {
+                                  if (int.parse(accountStore.now.userId) !=
+                                      widget.id) {
+                                    userStore.follow(needPrivate: false);
+                                  } else {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Who is the most beautiful person in the world?')));
+                                  }
+                                }
+                              },
+                              child: Text(I18n.of(context).followed),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                            )
+                          : OutlineButton(
+                              borderSide: BorderSide(),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              onPressed: () {
+                                if (accountStore.now != null) {
+                                  if (int.parse(accountStore.now.userId) !=
+                                      widget.id) {
+                                    userStore.follow(needPrivate: false);
+                                  } else {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Who is the most beautiful person in the world?')));
+                                  }
+                                }
+                              },
+                              child: Text(I18n.of(context).follow),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 0),
+                            ),
+                    ),
             )
           ],
         ),

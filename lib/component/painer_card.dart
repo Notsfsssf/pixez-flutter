@@ -20,6 +20,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class PainterCard extends StatelessWidget {
@@ -42,7 +43,7 @@ class PainterCard extends StatelessWidget {
           }
           return UsersPage(
             id: user.user.id,
-            user: user.user,
+            userStore: UserStore(user.user.id, user: user.user),
           );
         }));
       },
@@ -95,7 +96,7 @@ class PainterCard extends StatelessWidget {
                   }
                   return UsersPage(
                     id: user.user.id,
-                    user: user.user,
+                    userStore: UserStore(user.user.id, user: user.user),
                   );
                 }));
               },

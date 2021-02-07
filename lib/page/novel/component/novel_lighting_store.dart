@@ -14,8 +14,6 @@
  *
  */
 
-import 'dart:ffi';
-
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';

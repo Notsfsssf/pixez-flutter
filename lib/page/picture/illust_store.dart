@@ -77,7 +77,11 @@ abstract class _IllustStoreBase with Store {
             errorMessage = '404 Not Found';
             return;
           }
-          errorMessage = ErrorMessage.fromJson(e.response.data).error.message;
+          try {
+            errorMessage = ErrorMessage.fromJson(e.response.data).error.message;
+          } catch (e) {
+            errorMessage = e.toString();
+          }
         } else {
           errorMessage = e.toString();
         }

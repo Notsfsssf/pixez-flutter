@@ -34,11 +34,11 @@ import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
-import 'package:pixez/page/picture/illust_detail_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:share/share.dart';
@@ -57,6 +57,7 @@ class IllustLightingPage extends StatefulWidget {
 
 class _IllustLightingPageState extends State<IllustLightingPage>
     with AutomaticKeepAliveClientMixin {
+  UserStore userStore;
   IllustStore _illustStore;
   IllustAboutStore _aboutStore;
   ScrollController _scrollController;
@@ -602,7 +603,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   }
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
-    IllustDetailStore illustDetailStore = IllustDetailStore(illust);
+    if (userStore == null)
+      userStore = UserStore(illust.user.id, user: illust.user);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
@@ -614,7 +616,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
           Padding(
               child: GestureDetector(
                 onLongPress: () {
-                  illustDetailStore.followUser();
+                  userStore.follow();
                 },
                 child: Container(
                   height: 70,
@@ -629,7 +631,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                             decoration: illust != null
                                 ? BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: illustDetailStore.isFollow
+                                    color: userStore.isFollow
                                         ? Colors.yellow
                                         : Theme.of(context).accentColor,
                                   )
@@ -643,11 +645,15 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                           child: PainterAvatar(
                             url: illust.user.profileImageUrls.medium,
                             id: illust.user.id,
-                            onTap: () {
-                              Leader.push(
+                            onTap: () async {
+                              await Leader.push(
                                   context,
                                   UsersPage(
-                                      id: illust.user.id, user: illust.user));
+                                    id: illust.user.id,
+                                    userStore: userStore,
+                                  ));
+                              _illustStore.illusts.user.isFollowed =
+                                  userStore.isFollow;
                             },
                           ),
                         ),
@@ -747,7 +753,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     final result = await showDialog(
       context: context,
       builder: (context) {
-       return StatefulBuilder(builder: (context, setDialogState) {
+        return StatefulBuilder(builder: (context, setDialogState) {
           return AlertDialog(
             title: Text(I18n.of(context).muti_choice_save),
             actions: <Widget>[

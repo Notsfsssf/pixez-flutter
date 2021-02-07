@@ -38,15 +38,17 @@ abstract class _UserStoreBase with Store {
   @observable
   int value = 0;
 
-  _UserStoreBase(this.id, {this.userDetail, this.user});
+  _UserStoreBase(this.id, {this.userDetail, this.user}) {
+    this.isFollow = user?.isFollowed ?? false;
+  }
 
   @action
   Future<void> follow({bool needPrivate = false}) async {
-    if (userDetail.user.isFollowed) {
+    if (user.isFollowed) {
       try {
         await client.postUnFollowUser(id);
-        userDetail.user.isFollowed = false;
-        isFollow = userDetail.user.isFollowed;
+        userDetail?.user?.isFollowed = false;
+        isFollow = false;
       } on DioError catch (e) {
         if (e.response != null &&
             e.response.statusCode == HttpStatus.badRequest) {}
@@ -56,8 +58,8 @@ abstract class _UserStoreBase with Store {
     if (needPrivate) {
       try {
         await client.postFollowUser(id, 'private');
-        userDetail.user.isFollowed = true;
-        isFollow = userDetail.user.isFollowed;
+        userDetail?.user?.isFollowed = true;
+        isFollow = true;
       } on DioError catch (e) {
         if (e.response != null &&
             e.response.statusCode == HttpStatus.badRequest) {}
@@ -65,8 +67,8 @@ abstract class _UserStoreBase with Store {
     } else {
       try {
         await client.postFollowUser(id, 'public');
-        userDetail.user.isFollowed = true;
-        isFollow = userDetail.user.isFollowed;
+        userDetail?.user?.isFollowed = true;
+        isFollow = true;
       } on DioError catch (e) {
         if (e.response != null &&
             e.response.statusCode == HttpStatus.badRequest) {}
