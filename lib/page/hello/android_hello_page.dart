@@ -102,18 +102,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      body: PageView.builder(
-        itemBuilder: (context, index) {
-          return _pageList[index];
-        },
-        onPageChanged: (index) {
-          setState(() {
-            this.index = index;
-          });
-        },
-        controller: _pageController,
-        itemCount: _pageList.length,
-      ),
+      body: _buildPageContent(context),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).accentColor,
@@ -142,6 +131,21 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
           ]),
+    );
+  }
+
+  Widget _buildPageContent(BuildContext context) {
+    return PageView.builder(
+      itemBuilder: (context, index) {
+        return _pageList[index];
+      },
+      onPageChanged: (index) {
+        setState(() {
+          this.index = index;
+        });
+      },
+      controller: _pageController,
+      itemCount: _pageList.length,
     );
   }
 

@@ -29,6 +29,7 @@ import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/kver.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/er/overlayer.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/recommend.dart';
@@ -58,7 +59,7 @@ final HistoryStore historyStore = HistoryStore();
 final NovelHistoryStore novelHistoryStore = NovelHistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
-OnezeroClient onezeroClient =OnezeroClient();
+OnezeroClient onezeroClient = OnezeroClient();
 final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
 final KVer kVer = KVer();
@@ -212,6 +213,7 @@ class _MyAppState extends State<MyApp> {
                 Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
               }
             });
+          OverLayer.show(context);
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,

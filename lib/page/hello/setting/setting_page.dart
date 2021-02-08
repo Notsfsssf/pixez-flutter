@@ -36,6 +36,7 @@ import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/network/network_setting_page.dart';
 import 'package:pixez/page/novel/history/novel_history_page.dart';
 import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
@@ -244,6 +245,13 @@ class _SettingPageState extends State<SettingPage> {
                           .pushReplacement(MaterialPageRoute(
                               builder: (context) => NovelRail())),
                     ),
+                    if (kDebugMode)
+                      ListTile(
+                        title: Text("网络诊断"),
+                        onTap: () {
+                          Leader.push(context, NetworkSettingPage());
+                        },
+                      ),
                     ListTile(
                       leading: Icon(Icons.message),
                       title: Text(I18n.of(context).about),
