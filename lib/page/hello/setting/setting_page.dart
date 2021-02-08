@@ -224,7 +224,7 @@ class _SettingPageState extends State<SettingPage> {
                       onTap: () => Leader.push(context, ShieldPage()),
                     ),
                     ListTile(
-                      leading: Icon(Icons.description),
+                      leading: Icon(Icons.save_alt),
                       title: Text(I18n.of(context).task_progress),
                       onTap: () => Leader.push(context, JobPage()),
                     ),

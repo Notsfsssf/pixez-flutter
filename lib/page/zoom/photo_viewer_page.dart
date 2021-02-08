@@ -344,7 +344,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                         }),
                     IconButton(
                         icon: Icon(
-                          Icons.save,
+                          Icons.save_alt,
                           color: Colors.white,
                         ),
                         onPressed: () async {
@@ -383,39 +383,16 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                             }
                           }),
                     ),
-                    PopupMenuButton<int>(
-                      icon: Icon(Icons.more_vert, color: Colors.white),
-                      onSelected: (index) async {
-                        switch (index) {
-                          case 0:
-                            setState(() {
-                              _loadSource = false;
-                            });
-                            break;
-                          case 1:
-                            setState(() {
-                              _loadSource = true;
-                            });
-                            break;
-                          default:
-                            break;
-                        }
-                      },
-                      itemBuilder: (context) {
-                        return [
-                          CheckedPopupMenuItem<int>(
-                            checked: !_loadSource,
-                            value: 0,
-                            child: Text(I18n.of(context).large),
-                          ),
-                          CheckedPopupMenuItem<int>(
-                            checked: _loadSource,
-                            value: 1,
-                            child: Text(I18n.of(context).source),
-                          ),
-                        ];
-                      },
-                    )
+                    IconButton(
+                        icon: Icon(
+                          !_loadSource ? Icons.hd_outlined : Icons.hd,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _loadSource = !_loadSource;
+                          });
+                        }),
                   ],
                 ),
               ],
