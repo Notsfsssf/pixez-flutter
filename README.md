@@ -8,6 +8,12 @@
 
 同样支持中国大陆地区直连。
 
+## ⚠ 注意
+
+目前因 pixiv 关闭旧登录接口，官方客户端全面转向跳转网页登录，新的登录方式暂未实现，所以未登录用户会无法登录。
+
+这是已知问题，正在努力适配新版登录以及直连。请已登录用户不要手贱退出登录，可正常使用。
+
 # 下载
 
 推荐渠道顺序为从左到右。
@@ -38,12 +44,18 @@
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/Notsfsssf"><img src="https://avatars3.githubusercontent.com/u/16934707?v=4" width="100px;" alt=""/><br /><sub><b>Perol_Notsfsssf</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Notsfsssf" title="Code">💻</a></td>
-    <td align="center"><a href="https://xyx.moe"><img src="https://avatars3.githubusercontent.com/u/9017470?v=4" width="100px;" alt=""/><br /><sub><b>Skimige</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Skimige" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/TragicLifeHu"><img src="https://avatars3.githubusercontent.com/u/16817202?v=4" width="100px;" alt=""/><br /><sub><b>Tragic Life</b></sub></a><br /><a href="#translation-TragicLifeHu" title="Translation">🌍 (zh_TW)</a></td>
-    <td align="center"><a href="http://ivtune.net"><img src="https://avatars0.githubusercontent.com/u/54385201?v=4" width="100px;" alt=""/><br /><sub><b>karin722</b></sub></a><br /><a href="#translation-karin722" title="Translation">🌍 (ja)</a></td>
-    <td align="center"><a href="http://archman.fun"><img src="https://avatars0.githubusercontent.com/u/68731023?v=4" width="100px;" alt=""/><br /><sub><b>Romani-Archman</b></sub></a><br /><a href="https://github.com/Skimige/pixez-flutter/commits?author=Romani-Archman" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/itzXian"><img src="https://avatars1.githubusercontent.com/u/34748039?v=4" width="100px;" alt=""/><br /><sub><b>Xian</b></sub></a><br /><a href="#translation-itzXian" title="Translation">🌍 (en_US)</a></td>
+    <td align="center"><a href="https://github.com/Notsfsssf"><img src="https://avatars.githubusercontent.com/u/16934707?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Perol_Notsfsssf</b></sub></a><br /><a href="https://github.com/Notsfsssf/pixez-flutter/commits?author=Notsfsssf" title="Code">💻</a></td>
+    <td align="center"><a href="https://xyx.moe/"><img src="https://avatars.githubusercontent.com/u/9017470?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Skimige</b></sub></a><br /><a href="https://github.com/Notsfsssf/pixez-flutter/commits?author=Skimige" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/TragicLifeHu"><img src="https://avatars.githubusercontent.com/u/16817202?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tragic Life</b></sub></a><br /><a href="#translation-TragicLifeHu" title="Translation">🌍 (zh_TW)</a></td>
+    <td align="center"><a href="https://github.com/karin722"><img src="https://avatars.githubusercontent.com/u/54385201?v=4?s=100" width="100px;" alt=""/><br /><sub><b>karin722</b></sub></a><br /><a href="#translation-karin722" title="Translation">🌍 (ja)</a></td>
+    <td align="center"><a href="https://github.com/Romani-Archman"><img src="https://avatars.githubusercontent.com/u/68731023?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Romani-Archman</b></sub></a><br /><a href="https://github.com/Notsfsssf/pixez-flutter/commits?author=Romani-Archman" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/itzXian"><img src="https://avatars.githubusercontent.com/u/34748039?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Xian</b></sub></a><br /><a href="#translation-itzXian" title="Translation">🌍 (en_US)</a></td>
+    <td align="center"><a href="https://github.com/RtYkk"><img src="https://avatars.githubusercontent.com/u/45971730?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Whalko</b></sub></a><br /><a href="https://github.com/Notsfsssf/pixez-flutter/commits?author=RtYkk" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Henry-ZHR"><img src="https://avatars.githubusercontent.com/u/51886614?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Henry Zhang</b></sub></a><br /><a href="https://github.com/Notsfsssf/pixez-flutter/commits?author=Henry-ZHR" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/takase1121"><img src="https://avatars.githubusercontent.com/u/20792268?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Takase</b></sub></a><br /><a href="#translation-takase1121" title="Translation">🌍 (en_US)</a></td>
+    <td align="center"><a href="https://github.com/chsbuffer"><img src="https://avatars.githubusercontent.com/u/33744752?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ChsBuffer</b></sub></a><br /><a href="https://github.com/Notsfsssf/pixez-flutter/commits?author=chsbuffer" title="Code">💻</a></td>
   </tr>
 </table>
 
