@@ -126,17 +126,17 @@ class _HelloPageState extends State<HelloPage> {
   }
 
   initPlatformState() async {
-    try {
-      Uri initialLink = await getInitialUri();
-      print(initialLink);
-      if (initialLink != null) judgePushPage(initialLink);
-      _sub = getUriLinksStream().listen((Uri link) {
-        print("link:${link}");
-        judgePushPage(link);
-      });
-    } catch (e) {
-      print(e);
-    }
+    // try {
+    //   Uri initialLink = await getInitialUri();
+    //   print(initialLink);
+    //   if (initialLink != null) judgePushPage(initialLink);
+    //   _sub = getUriLinksStream().listen((Uri link) {
+    //     print("link:${link}");
+    //     judgePushPage(link);
+    //   });
+    // } catch (e) {
+    //   print(e);
+    // }
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context)

@@ -65,6 +65,9 @@ dependencies:
   quiver: ^2.1.5
   flutter_swiper: ^1.1.6
   image: ^2.1.19
+  webview_flutter: ^1.0.7
+  http_interceptor: ^0.3.3
+  dio_cookie_manager: ^1.0.0
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

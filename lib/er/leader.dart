@@ -14,14 +14,67 @@
  */
 
 //有是有top level fun和extension，奈何auto import 太傻，还是这种更稳一些
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/account.dart';
+import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/oauth_client.dart';
+import 'package:pixez/page/hello/android_hello_page.dart';
+import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class Leader {
-  static pushWithUri(context, Uri link) {
+  static int bti(bool bool) {
+    if (bool) {
+      return 1;
+    } else
+      return 0;
+  }
+
+  static pushWithUri(context, Uri link) async {
+    if (link.host.contains("account")) {
+      try {
+        String code = link.queryParameters['code'];
+        LPrinter.d("here we go:" + code);
+        Response response = await oAuthClient.code2Token(code);
+        AccountResponse accountResponse =
+            Account.fromJson(response.data).response;
+        final user = accountResponse.user;
+        AccountProvider accountProvider = new AccountProvider();
+        await accountProvider.open();
+        var accountPersist = AccountPersist()
+          ..passWord = ""
+          ..accessToken = accountResponse.accessToken
+          ..deviceToken = accountResponse.deviceToken ?? ""
+          ..refreshToken = accountResponse.refreshToken
+          ..userImage = user.profileImageUrls.px170x170
+          ..userId = user.id
+          ..name = user.name
+          ..isMailAuthorized = bti(user.isMailAuthorized)
+          ..isPremium = bti(user.isPremium)
+          ..mailAddress = user.mailAddress
+          ..account = user.account
+          ..xRestrict = user.xRestrict;
+        await accountProvider.insert(accountPersist);
+        await accountStore.fetch();
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  Platform.isIOS ? HelloPage() : AndroidHelloPage()),
+          (route) => route == null,
+        );
+      } catch (e) {
+        LPrinter.d(e);
+      }
+      return;
+    }
     if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
@@ -88,17 +141,17 @@ class Leader {
       if (link.queryParameters['id'] != null) {
         try {
           var id = link.queryParameters['id'];
-          if(!link.path.contains("novel"))
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: int.parse(id),
-            );
-          }));
-              else
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return NovelViewerPage(
+          if (!link.path.contains("novel"))
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return UsersPage(
+                id: int.parse(id),
+              );
+            }));
+          else
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return NovelViewerPage(
                 id: int.parse(id),
                 novelStore: null,
               );

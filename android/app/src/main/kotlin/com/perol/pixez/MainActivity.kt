@@ -51,6 +51,7 @@ import kotlin.collections.HashMap
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
+    private val CRYPTO_CHANNEL = "com.perol.dev/crypto"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
     var isHelplessWay = false
@@ -201,6 +202,13 @@ class MainActivity : FlutterActivity() {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CRYPTO_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "code_verifier") {
+                result.success(CodeGen.getCodeVer())
+            } else if (call.method == "code_challenge") {
+                result.success(CodeGen.getCodeChallenge(call.argument<String>("code")!!))
+            }
+        }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SUPPORTER_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "process_text") {
                 try {

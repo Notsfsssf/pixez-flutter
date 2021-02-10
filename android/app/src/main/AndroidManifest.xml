@@ -87,6 +87,9 @@
                 <data
                     android:host="illusts"
                     android:scheme="pixiv" />
+                <data
+                    android:host="account"
+                    android:scheme="pixiv" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

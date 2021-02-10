@@ -152,19 +152,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   int index;
   PageController _pageController;
   StreamSubscription _intentDataStreamSubscription;
-  StreamSubscription _sub;
-
-  initPlatform() async {
-    try {
-      Uri initialLink = await getInitialUri();
-      if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = getUriLinksStream()
-          .listen((Uri link) => Leader.pushWithUri(context, link));
-    } catch (e) {
-      print(e);
-    }
-  }
-
   bool hasNewVersion = false;
 
   @override
@@ -212,12 +199,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   void dispose() {
     _intentDataStreamSubscription?.cancel();
     _pageController?.dispose();
-    _sub?.cancel();
     super.dispose();
   }
 
   initPlatformState() async {
-    initPlatform();
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context).pushAndRemoveUntil(

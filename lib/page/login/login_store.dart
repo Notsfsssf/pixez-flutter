@@ -10,6 +10,7 @@ class LoginStore = _LoginStoreBase with _$LoginStore;
 
 abstract class _LoginStoreBase with Store {
   final OAuthClient client = oAuthClient;
+
   int bti(bool bool) {
     if (bool) {
       return 1;
@@ -19,6 +20,7 @@ abstract class _LoginStoreBase with Store {
 
   @observable
   String errorMessage;
+
   @action
   Future<bool> auth(String username, password, {String deviceToken}) async {
     try {

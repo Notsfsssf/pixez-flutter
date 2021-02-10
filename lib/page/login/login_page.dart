@@ -20,15 +20,18 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/create_user_response.dart';
+import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/create/user/create_user_page.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/login/login_store.dart';
+import 'package:pixez/page/login/token_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -176,6 +179,12 @@ class _LoginPageState extends State<LoginPage> {
                                 I18n.of(context).login,
                               ),
                               onPressed: () async {
+                                try {
+                                  String url =
+                                      await OAuthClient.generateWebviewUrl();
+                                  launch(url);
+                                } catch (e) {}
+                                return;
                                 if (userNameController.value.text.isEmpty ||
                                     userNameController.value.text.isEmpty)
                                   return;
@@ -222,6 +231,12 @@ class _LoginPageState extends State<LoginPage> {
                                   );
                                 }
                               }),
+                          RaisedButton(
+                            onPressed: () {
+                              Leader.push(context, TokenPage());
+                            },
+                            child: Text("TOKEN"),
+                          ),
                           RaisedButton(
                             onPressed: () async {
                               final result = await Navigator.of(context).push(

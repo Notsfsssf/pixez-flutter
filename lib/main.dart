@@ -49,6 +49,7 @@ import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -181,6 +182,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   initMethod() async {
+    initPlatform();
     if (userSetting.disableBypassSni) return;
     HttpClient client = ExtendedNetworkImageProvider.httpClient as HttpClient;
     client.badCertificateCallback =
@@ -199,6 +201,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   final QuickActions quickActions = QuickActions();
+  StreamSubscription _sub;
+  initPlatform() async {
+    try {
+      Uri initialLink = await getInitialUri();
+      if (initialLink != null) Leader.pushWithUri(context, initialLink);
+      _sub = getUriLinksStream()
+          .listen((Uri link) => Leader.pushWithUri(context, link));
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

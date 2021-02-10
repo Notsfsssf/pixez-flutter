@@ -17,12 +17,15 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-
+import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/constants.dart';
+import 'package:pixez/crypto_plugin.dart';
+import 'package:pixez/er/lprinter.dart';
 
 final OAuthClient oAuthClient = OAuthClient();
 
@@ -31,6 +34,12 @@ class OAuthClient {
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   Dio httpClient;
   static const BASE_OAUTH_URL_HOST = "oauth.secure.pixiv.net";
+
+  final String CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
+  final String CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj";
+  final String REFRESH_CLIENT_ID = "KzEZED7aC0vird8jWyHM38mXjNTY";
+  final String REFRESH_CLIENT_SECRET =
+      "W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP";//这换行绝了
 
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
@@ -54,7 +63,7 @@ class OAuthClient {
   OAuthClient() {
     String time = getIsoDate();
     this.httpClient = httpClient ?? Dio()
-      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+      ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..options.baseUrl = "https://210.140.131.199"
       ..options.headers = {
         "X-Client-Time": time,
@@ -74,7 +83,6 @@ class OAuthClient {
           (X509Certificate cert, String host, int port) {
         return true;
       };
-
       return httpClient;
     };
     initA(time);
@@ -85,9 +93,6 @@ class OAuthClient {
     var digest = md5.convert(content);
     return digest.toString();
   }
-
-  final String CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
-  final String CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj";
 
   Future<Response> postAuthToken(String userName, String passWord,
       {String deviceToken = "pixiv"}) {
@@ -103,16 +108,68 @@ class OAuthClient {
     });
   }
 
+  Future<Response> code2Token(String code) {
+    return httpClient.post("/auth/token",
+        data: {
+          "code": code,
+          "redirect_uri":
+              "https://app-api.pixiv.net/web/v1/users/auth/pixiv/callback",
+          "grant_type": "authorization_code",
+          "include_policy": true,
+          "client_id": CLIENT_ID,
+          "code_verifier": Constants.code_verifier,
+          "client_secret": CLIENT_SECRET
+        },
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  static Future<String> generateWebviewUrl() async {
+    await generateCodeVerify();
+    String codeChallenge = await CryptoPlugin.getCodeChallenge();
+    String url =
+        "https://app-api.pixiv.net/web/v1/login?code_challenge=${codeChallenge}&code_challenge_method=S256&client=pixiv-android";
+    return url;
+    // String verify = await generateCodeVerify();
+    // AsciiCodec asciiCodec = AsciiCodec();
+    // var f = asciiCodec.encode(verify);
+    // Digest foo = sha256.convert(f);
+    // String code_challenge = base64
+    //     .encode(foo.bytes)
+    //     .replaceAll("=", "")
+    //     .replaceAll("/", "")
+    //     .replaceAll("\\", "")
+    //     .replaceAll("+", "");
+    // LPrinter.d(code_challenge);
+    // String url =
+    //     "https://app-api.pixiv.net/web/v1/login?code_challenge=${code_challenge}&code_challenge_method=S256&client=pixiv-android";
+    // return url;
+  }
+
+  static Future<String> generateCodeVerify() async {
+    return await CryptoPlugin.getCodeVer();
+    var random = Random.secure();
+    var values = List<int>.generate(32, (i) => random.nextInt(255));
+    String verify = base64
+        .encode(values)
+        .replaceAll("=", "")
+        .replaceAll("/", "")
+        .replaceAll("\\", "")
+        .replaceAll("+", "");
+    LPrinter.d(verify);
+    return verify;
+  }
+
   Future<Response> postRefreshAuthToken(
       {refreshToken: String, deviceToken: String}) {
-    return httpClient.post("/auth/token", data: {
-      "client_id": CLIENT_ID,
-      "client_secret": CLIENT_SECRET,
-      "grant_type": "refresh_token",
-      "refresh_token": refreshToken,
-      "device_token": deviceToken,
-      "get_secure_url": true
-    });
+    return httpClient.post("/auth/token",
+        data: FormData.fromMap({
+          "client_id": REFRESH_CLIENT_ID,
+          "client_secret": REFRESH_CLIENT_SECRET,
+          "grant_type": "refresh_token",
+          "refresh_token": refreshToken,
+          "device_token": deviceToken,
+          "get_secure_url": true
+        }));
   }
 
 //  @FormUrlEncoded
