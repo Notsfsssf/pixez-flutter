@@ -14,25 +14,17 @@
  *
  */
 
-import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
-import 'package:pixez/page/create/user/create_user_page.dart';
-import 'package:pixez/page/hello/android_hello_page.dart';
-import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
-import 'package:pixez/page/login/login_store.dart';
-import 'package:pixez/page/login/token_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -43,11 +35,36 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passWordController = TextEditingController();
-  LoginStore _loginStore = LoginStore();
 
   @override
   void initState() {
     super.initState();
+    initHintDialog();
+  }
+
+  initHintDialog() async {
+    if (userSetting.disableBypassSni) return;
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool r = sharedPreferences.getBool('disable_login_readme') ?? false;
+    if (r) return;
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(":|"),
+            content: Text("登录不再支持直连，等待跟进，请使用登录进行网页版授权，登录后支持直连"),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop("ok");
+                  },
+                  child: Text("我已知晓"))
+            ],
+          );
+        });
+    if (result == "ok") {
+      sharedPreferences.setBool('disable_login_readme', true);
+    }
   }
 
   @override
@@ -143,7 +160,8 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () async {
                               try {
                                 String url =
-                                    await OAuthClient.generateWebviewUrl(create: true);
+                                    await OAuthClient.generateWebviewUrl(
+                                        create: true);
                                 Leader.push(
                                     context,
                                     WebViewPage(

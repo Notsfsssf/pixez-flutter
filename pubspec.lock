@@ -455,13 +455,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.1"
-  http_interceptor:
-    dependency: "direct main"
-    description:
-      name: http_interceptor
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.3.3"
   http_multi_server:
     dependency: transitive
     description:
