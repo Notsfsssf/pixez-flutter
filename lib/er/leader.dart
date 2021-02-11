@@ -16,6 +16,7 @@
 //有是有top level fun和extension，奈何auto import 太傻，还是这种更稳一些
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class Leader {
   static pushWithUri(context, Uri link) async {
     if (link.host.contains("account")) {
       try {
+        BotToast.showText(text: "working....");
         String code = link.queryParameters['code'];
         LPrinter.d("here we go:" + code);
         Response response = await oAuthClient.code2Token(code);

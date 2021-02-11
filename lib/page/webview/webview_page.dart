@@ -5,8 +5,10 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,20 +35,20 @@ class WebViewPage extends StatefulWidget {
 
 class _WebViewPageState extends State<WebViewPage> {
   final Completer<WebViewController> _controller =
-  Completer<WebViewController>();
+      Completer<WebViewController>();
 
   @override
   void initState() {
+    // initProxy();
+    // initClient();
     super.initState();
-    initProxy();
-    initClient();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   initProxy() {
-    return;
     Dio dio = Dio();
-    (dio.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (client) {
       HttpClient httpClient = new HttpClient();
       httpClient.badCertificateCallback =
           (X509Certificate cert, String host, int port) {
@@ -56,62 +58,62 @@ class _WebViewPageState extends State<WebViewPage> {
     };
     HttpServer.bind(InternetAddress.loopbackIPv4, 8089).then((server) {
       server.listen((request) {
+        LPrinter.d(request.uri.toString());
+        request.response.write("obj");
+        request.response.close();
+        return;
         Map he = Map();
         request.headers.forEach((name, values) {
           he[name] = values.last;
         });
         request.last;
         dio.request(request.uri.path,
-            options: Options(method: request.method, headers:he,));
+            options: Options(
+              method: request.method,
+              headers: he,
+            ));
         // request.response.write(obj)
-        LPrinter.d(request.uri.toString());
       });
     });
   }
 
+  WebViewController _webViewController;
   initClient() {
-    // HttpOverrides.global = MyProxyHttpOverride();
+    HttpOverrides.global = MyProxyHttpOverride();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter WebView example'),
-        // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
-        actions: <Widget>[],
+        title: const Text(''),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.open_in_browser),
+              onPressed: () => launch(widget.url)),
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () => _webViewController.reload())
+        ],
       ),
-      // We're using a Builder here so we have a context that is below the Scaffold
-      // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
           initialUrl: widget.url,
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
+            _webViewController = webViewController;
             _controller.complete(webViewController);
           },
-          // TODO(iskakaushik): Remove this when collection literals makes it to stable.
-          // ignore: prefer_collection_literals
           javascriptChannels: <JavascriptChannel>[].toSet(),
           navigationDelegate: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              print('blocking navigation to $request}');
+            if (request.url.startsWith("pixiv:")) {
+              Leader.pushWithUri(context, Uri.parse(request.url));
               return NavigationDecision.prevent;
             }
-            if (request.url.startsWith('pixiv')) {
-              print('blocking navigation to $request}');
-              return NavigationDecision.prevent;
-            }
-            print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
-          onPageStarted: (String url) {
-            print('Page started loading: $url');
-          },
-          onPageFinished: (String url) {
-            print('Page finished loading: $url');
-          },
-          gestureNavigationEnabled: true,
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
         );
       }),
     );

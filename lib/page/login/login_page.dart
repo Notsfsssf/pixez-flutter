@@ -32,6 +32,7 @@ import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/login/login_store.dart';
 import 'package:pixez/page/login/token_page.dart';
+import 'package:pixez/page/webview/webview_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -119,60 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: AutofillGroup(
                       child: Column(
                         children: <Widget>[
-                          TextFormField(
-                            maxLines: 1,
-                            decoration: const InputDecoration(
-                              icon: Icon(Icons.supervised_user_circle),
-                              hintText: 'Pixiv id/Email',
-                              labelText: 'Pixiv id/Email',
-                            ),
-                            controller: userNameController,
-                            autofillHints: [AutofillHints.username],
-                          ),
                           Padding(
                             padding: EdgeInsets.all(10),
                           ),
-                          TextFormField(
-                            obscureText: true,
-                            maxLines: 1,
-                            decoration: const InputDecoration(
-                              icon: Icon(Icons.kitchen),
-                              hintText: 'Password',
-                              labelText: 'Password *',
-                            ),
-                            controller: passWordController,
-                            autofillHints: [AutofillHints.password],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                          ),
-                          Observer(builder: (_) {
-                            return Visibility(
-                              visible: _loginStore.errorMessage != null,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4.0, horizontal: 0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.redAccent,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4.0)),
-                                  ),
-                                  padding: EdgeInsets.all(4.0),
-                                  child: Text(
-                                    (_loginStore.errorMessage ?? "")
-                                            .contains('103')
-                                        ? ((_loginStore.errorMessage ?? "\n") +
-                                            I18n.of(context)
-                                                .login_error_message)
-                                        : _loginStore.errorMessage ?? "",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
                           RaisedButton(
                               color: Theme.of(context).primaryColor,
                               child: Text(
@@ -182,90 +132,24 @@ class _LoginPageState extends State<LoginPage> {
                                 try {
                                   String url =
                                       await OAuthClient.generateWebviewUrl();
-                                  launch(url);
+                                  Leader.push(
+                                      context,
+                                      WebViewPage(
+                                        url: url,
+                                      ));
                                 } catch (e) {}
-                                return;
-                                if (userNameController.value.text.isEmpty ||
-                                    userNameController.value.text.isEmpty)
-                                  return;
-                                BotToast.showCustomText(
-                                    onlyOne: true,
-                                    duration: Duration(seconds: 1),
-                                    toastBuilder: (textCancel) => Align(
-                                          alignment: Alignment(0, 0.8),
-                                          child: Card(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Icon(
-                                                    Icons.scatter_plot,
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 8.0,
-                                                      vertical: 8.0),
-                                                  child: Text(I18n.of(context)
-                                                      .attempting_to_log_in),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ));
-                                bool isAuth = await _loginStore.auth(
-                                    userNameController.value.text.trim(),
-                                    passWordController.value.text.trim());
-                                if (isAuth) {
-                                  accountStore.fetch();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Platform.isIOS
-                                                ? HelloPage()
-                                                : AndroidHelloPage()),
-                                    (route) => route == null,
-                                  );
-                                }
                               }),
                           RaisedButton(
-                            onPressed: () {
-                              Leader.push(context, TokenPage());
-                            },
-                            child: Text("TOKEN"),
-                          ),
-                          RaisedButton(
                             onPressed: () async {
-                              final result = await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                return CreateUserPage();
-                              }));
-                              if (result != null &&
-                                  result is CreateUserResponse) {
-                                userNameController.text =
-                                    result.body.userAccount;
-                                passWordController.text = result.body.password;
-
-                                bool isAuth = await _loginStore.auth(
-                                    userNameController.value.text.trim(),
-                                    passWordController.value.text.trim(),
-                                    deviceToken: result.body.deviceToken);
-                                if (isAuth) {
-                                  accountStore.fetch();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Platform.isIOS
-                                                ? HelloPage()
-                                                : AndroidHelloPage()),
-                                    (route) => route == null,
-                                  );
-                                }
-                              }
+                              try {
+                                String url =
+                                    await OAuthClient.generateWebviewUrl(create: true);
+                                Leader.push(
+                                    context,
+                                    WebViewPage(
+                                      url: url,
+                                    ));
+                              } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),
                           ),

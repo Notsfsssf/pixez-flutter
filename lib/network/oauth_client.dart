@@ -39,7 +39,7 @@ class OAuthClient {
   final String CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj";
   final String REFRESH_CLIENT_ID = "KzEZED7aC0vird8jWyHM38mXjNTY";
   final String REFRESH_CLIENT_SECRET =
-      "W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP";//这换行绝了
+      "W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP"; //这换行绝了
 
   String getIsoDate() {
     DateTime dateTime = new DateTime.now();
@@ -123,11 +123,12 @@ class OAuthClient {
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 
-  static Future<String> generateWebviewUrl() async {
+  static Future<String> generateWebviewUrl({bool create = false}) async {
     await generateCodeVerify();
     String codeChallenge = await CryptoPlugin.getCodeChallenge();
-    String url =
-        "https://app-api.pixiv.net/web/v1/login?code_challenge=${codeChallenge}&code_challenge_method=S256&client=pixiv-android";
+    String url = !create
+        ? "https://app-api.pixiv.net/web/v1/login?code_challenge=${codeChallenge}&code_challenge_method=S256&client=pixiv-android"
+        : "https://app-api.pixiv.net/web/v1/provisional-accounts/create?code_challenge=${codeChallenge}&code_challenge_method=S256&client=pixiv-android";
     return url;
     // String verify = await generateCodeVerify();
     // AsciiCodec asciiCodec = AsciiCodec();
@@ -162,14 +163,13 @@ class OAuthClient {
   Future<Response> postRefreshAuthToken(
       {refreshToken: String, deviceToken: String}) {
     return httpClient.post("/auth/token",
-        data: FormData.fromMap({
-          "client_id": REFRESH_CLIENT_ID,
-          "client_secret": REFRESH_CLIENT_SECRET,
+        data: {
+          "client_id": CLIENT_ID,
+          "client_secret": CLIENT_SECRET,
           "grant_type": "refresh_token",
           "refresh_token": refreshToken,
-          "device_token": deviceToken,
-          "get_secure_url": true
-        }));
+          "include_policy": true
+        });
   }
 
 //  @FormUrlEncoded

@@ -40,6 +40,7 @@ import 'package:pixez/page/novel/history/novel_history_store.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/page/splash/splash_store.dart';
+import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/book_tag_store.dart';
 import 'package:pixez/store/mute_store.dart';

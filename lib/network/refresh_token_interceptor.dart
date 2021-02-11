@@ -84,12 +84,12 @@ class RefreshTokenInterceptor extends Interceptor {
             final user = accountResponse.user;
             accountStore.updateSingle(AccountPersist()
               ..id = accountPersist.id
-              ..accessToken = accountResponse.accessToken
-              ..deviceToken = accountResponse.deviceToken
-              ..refreshToken = accountResponse.refreshToken
-              ..userImage = user.profileImageUrls.px170x170
-              ..userId = user.id
-              ..name = user.name
+              ..accessToken = accountResponse.accessToken??""//偷懒一下
+              ..deviceToken = accountResponse.deviceToken??""
+              ..refreshToken = accountResponse.refreshToken??""
+              ..userImage = user.profileImageUrls.px170x170??""
+              ..userId = user.id??""
+              ..name = user.name??""
               ..passWord = accountPersist.passWord
               ..isMailAuthorized = bti(user.isMailAuthorized)
               ..isPremium = bti(user.isPremium)
