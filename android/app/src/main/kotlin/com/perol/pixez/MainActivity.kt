@@ -17,17 +17,16 @@
 package com.perol.pixez
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -42,12 +41,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 import java.util.*
 import kotlin.Comparator
-import kotlin.collections.HashMap
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
@@ -202,6 +198,7 @@ class MainActivity : FlutterActivity() {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
+        Weiss.bindChannel(this, flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CRYPTO_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "code_verifier") {
                 result.success(CodeGen.getCodeVer())

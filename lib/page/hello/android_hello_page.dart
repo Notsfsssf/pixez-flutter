@@ -193,12 +193,26 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           );
         }));
     });
+    initPlatform();
+  }
+
+  StreamSubscription _sub;
+  initPlatform() async {
+    try {
+      Uri initialLink = await getInitialUri();
+      if (initialLink != null) Leader.pushWithUri(context, initialLink);
+      _sub = getUriLinksStream()
+          .listen((Uri link) => Leader.pushWithUri(context, link));
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   void dispose() {
     _intentDataStreamSubscription?.cancel();
     _pageController?.dispose();
+    _sub?.cancel();
     super.dispose();
   }
 

@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
@@ -24,6 +23,7 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
+import 'package:pixez/weiss_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -39,32 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    initHintDialog();
-  }
-
-  initHintDialog() async {
-    if (userSetting.disableBypassSni) return;
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    bool r = sharedPreferences.getBool('disable_login_readme') ?? false;
-    if (r) return;
-    final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(":|"),
-            content: Text("登录不再支持直连，等待跟进，请使用登录进行网页版授权，登录后支持直连"),
-            actions: [
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop("ok");
-                  },
-                  child: Text("我已知晓"))
-            ],
-          );
-        });
-    if (result == "ok") {
-      sharedPreferences.setBool('disable_login_readme', true);
-    }
   }
 
   @override
@@ -149,11 +123,11 @@ class _LoginPageState extends State<LoginPage> {
                                 try {
                                   String url =
                                       await OAuthClient.generateWebviewUrl();
-                                  Leader.push(
-                                      context,
-                                      WebViewPage(
-                                        url: url,
-                                      ));
+                                  if (!userSetting.disableBypassSni) {
+                                    await WeissPlugin.start();
+                                    await WeissPlugin.proxy();
+                                  }
+                                  WeissPlugin.launch(url);
                                 } catch (e) {}
                               }),
                           RaisedButton(
@@ -162,11 +136,11 @@ class _LoginPageState extends State<LoginPage> {
                                 String url =
                                     await OAuthClient.generateWebviewUrl(
                                         create: true);
-                                Leader.push(
-                                    context,
-                                    WebViewPage(
-                                      url: url,
-                                    ));
+                                if (!userSetting.disableBypassSni) {
+                                  await WeissPlugin.start();
+                                  await WeissPlugin.proxy();
+                                }
+                                WeissPlugin.launch(url);
                               } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),

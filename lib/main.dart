@@ -40,7 +40,6 @@ import 'package:pixez/page/novel/history/novel_history_store.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/page/splash/splash_store.dart';
-import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/book_tag_store.dart';
 import 'package:pixez/store/mute_store.dart';
@@ -48,9 +47,9 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:pixez/weiss_plugin.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -92,13 +91,13 @@ void runTestLogApp() {
 }
 
 main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   initAppWidget();
   runApp(MyApp());
 }
 
 initAppWidget() {
   if (Platform.isAndroid) {
-    WidgetsFlutterBinding.ensureInitialized();
     const MethodChannel channel = MethodChannel('com.example.app/widget');
     final CallbackHandle callback =
         PluginUtilities.getCallbackHandle(onWidgetUpdate);
@@ -179,11 +178,11 @@ class _MyAppState extends State<MyApp> {
     initMethod();
     kVer.open();
     fetcher.start();
+    WeissPlugin.invoke(context);
     super.initState();
   }
 
   initMethod() async {
-    initPlatform();
     if (userSetting.disableBypassSni) return;
     HttpClient client = ExtendedNetworkImageProvider.httpClient as HttpClient;
     client.badCertificateCallback =
@@ -202,17 +201,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   final QuickActions quickActions = QuickActions();
-  StreamSubscription _sub;
-  initPlatform() async {
-    try {
-      Uri initialLink = await getInitialUri();
-      if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = getUriLinksStream()
-          .listen((Uri link) => Leader.pushWithUri(context, link));
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

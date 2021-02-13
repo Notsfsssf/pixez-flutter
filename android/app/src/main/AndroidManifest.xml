@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.perol.pixez" >
+    package="com.perol.pixez">
     <!--
      io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -17,13 +17,12 @@
         android:name=".PixEz"
         android:icon="@mipmap/ic_launcher"
         android:label="PixEz"
-        android:requestLegacyExternalStorage="true" >
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".IntentActivity"
-            android:theme="@style/LaunchTheme" >
-        </activity>
+            android:theme="@style/LaunchTheme"></activity>
 
-        <receiver android:name=".CardAppWidget" >
+        <receiver android:name=".CardAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -32,13 +31,14 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/card_app_widget_info" />
         </receiver>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize">
 
             <!--
                  Specifies an Android theme to apply to this Activity as soon as
@@ -104,6 +104,9 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WebViewActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <!--
  Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java

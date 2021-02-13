@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
@@ -76,8 +75,7 @@ class Leader {
         LPrinter.d(e);
       }
       return;
-    }
-    if (link.host.contains('illusts')) {
+    } else if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
@@ -89,8 +87,7 @@ class Leader {
         }));
       } catch (e) {}
       return;
-    }
-    if (link.host.contains('user')) {
+    } else if (link.host.contains('user')) {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
@@ -102,8 +99,7 @@ class Leader {
         }));
       } catch (e) {}
       return;
-    }
-    if (link.host.contains('pixiv')) {
+    } else if (link.host.contains('pixiv')) {
       if (link.path.contains("artworks")) {
         List<String> paths = link.pathSegments;
         int index = paths.indexOf("artworks");
@@ -115,10 +111,11 @@ class Leader {
               return IllustLightingPage(id: id);
             }));
             return;
-          } catch (e) {}
+          } catch (e) {
+            LPrinter.d(e);
+          }
         }
-      }
-      if (link.path.contains("users")) {
+      } else if (link.path.contains("users")) {
         List<String> paths = link.pathSegments;
         int index = paths.indexOf("users");
         if (index != -1) {

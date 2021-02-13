@@ -1,93 +1,76 @@
 package com.perol.pixez
 
-import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.net.http.SslError
 import android.os.Bundle
-import android.util.Log
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.view.Menu
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
-import okhttp3.Dns
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.net.InetAddress
-import java.net.Socket
-import java.security.cert.X509Certificate
-import javax.net.ssl.SSLSocket
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.X509TrustManager
+import kotlinx.android.synthetic.main.activity_webview.*
 
-class WebViewActivity : Activity() {
-    lateinit var webView: WebView
+class WebViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val url = intent.getStringExtra("url")
-        webView = WebView(this)
-        setContentView(webView)
-
-        val webViewClient = object : WebViewClient() {
-           val okHttpClient = OkHttpClient.Builder().apply {
-                dns(object :Dns{
-                    override fun lookup(hostname: String): List<InetAddress> {
-                        val addressList = mutableListOf<InetAddress>()
-                        if (hostname.contains("pixiv",ignoreCase = true)){
-                            addressList.addAll(InetAddress.getAllByName("210.140.131.199"))
-                        }
-                        return addressList
-                    }
-                })
-                sslSocketFactory(object : SSLSocketFactory() {
-
-                    override fun getDefaultCipherSuites() = arrayOf<String>()
-
-                    override fun getSupportedCipherSuites() = arrayOf<String>()
-
-                    override fun createSocket(socket: Socket?, host: String?, port: Int, autoClose: Boolean): Socket {
-                        val address = socket!!.inetAddress
-                        if (autoClose) socket.close()
-                        val sslSocket = (getDefault().createSocket(address, port) as SSLSocket).apply { enabledProtocols = supportedProtocols }
-                        val sslSession = sslSocket.session
-                        Log.i(
-                                "!",
-                                "Address: ${address.hostAddress}, Protocol: ${sslSession.protocol}, PeerHost: ${sslSession.peerHost}, CipherSuite: ${sslSession.cipherSuite}."
-                        )
-                        return sslSocket
-                    }
-
-                    override fun createSocket(host: String?, port: Int): Socket? = null
-
-                    override fun createSocket(host: String?, port: Int, localHost: InetAddress?, localPort: Int): Socket? = null
-
-                    override fun createSocket(address: InetAddress?, port: Int): Socket? = null
-
-                    override fun createSocket(address: InetAddress?, port: Int, localAddress: InetAddress?, localPort: Int): Socket? = null
-                }, object : X509TrustManager {
-                    override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-                    }
-
-                    override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-                    }
-
-                    override fun getAcceptedIssuers(): Array<X509Certificate> {
-                        return arrayOf()
-                    }
-                })
-            }.build()
-            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-                if(request!!.url.host!!.contains("pixiv")){
+        val url = intent.getStringExtra("url")!!
+        setContentView(R.layout.activity_webview)
+        webView.settings.javaScriptEnabled = true
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.browser -> {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                 }
-
-                return super.shouldInterceptRequest(view, request)
+                R.id.refresh -> {
+                    webView.reload()
+                }
+            }
+            true
+        }
+        val webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                handler?.proceed()
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 if (request?.url?.scheme == "pixiv") {
+                    Weiss.invokeDart(request.url?.toString()!!)
+                    finish()
+                    return true
+                }
+                if (request?.url?.host == "www.pixiv.net") {
                     return true
                 }
                 return super.shouldOverrideUrlLoading(view, request)
             }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                toolbar.title = "Loading..."
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                toolbar.title = "Login"
+                webView.loadUrl("javascript:(function() { " +
+                        "document.getElementsByClassName('signup-form__sns-btn-area')[0].style.display='none'; })()");
+            }
         }
         webView.webViewClient = webViewClient
+        webView.loadUrl(url)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_webview, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onDestroy() {
+        Weiss.stop()
+        super.onDestroy()
     }
 }

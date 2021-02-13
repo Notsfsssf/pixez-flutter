@@ -15,11 +15,11 @@
  */
 
 class Constants {
-  static String tagName = "0.3.6";
+  static String tagName = "0.3.8";
 
   // static bool isGooglePlay =
   //     bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);//为何没用啊咕鸽？
-  static bool isGooglePlay = false;
+  static bool isGooglePlay = true;
   static int type = 0;
   static String code_verifier = null;
 }

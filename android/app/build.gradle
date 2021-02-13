@@ -46,7 +46,7 @@ if (project.hasProperty('dart-defines')) {
             .split(',')
             .collectEntries { entry ->
                 def pair = URLDecoder.decode(entry).split('=')
-                [(pair.first()): pair.last()=="true"]
+                [(pair.first()): pair.last() == "true"]
             }
 }
 print("\n" +
@@ -64,7 +64,7 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-def packageName = dartEnvironmentVariables.IS_GOOGLEPLAY?'com.perol.play.pixez' :'com.perol.pixez'
+def packageName = dartEnvironmentVariables.IS_GOOGLEPLAY ? 'com.perol.play.pixez' : 'com.perol.pixez'
 println(packageName)
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -86,8 +86,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 69
-        versionName "0.3.6 X"
+        versionCode 71
+        versionName "0.3.8 go"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -117,7 +117,8 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation project(":weiss")
+    implementation 'androidx.webkit:webkit:1.2.0'
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
