@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
@@ -123,11 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                                 try {
                                   String url =
                                       await OAuthClient.generateWebviewUrl();
-                                  if (!userSetting.disableBypassSni) {
-                                    await WeissPlugin.start();
-                                    await WeissPlugin.proxy();
-                                  }
-                                  WeissPlugin.launch(url);
+                                  _launch(url);
                                 } catch (e) {}
                               }),
                           RaisedButton(
@@ -136,11 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                                 String url =
                                     await OAuthClient.generateWebviewUrl(
                                         create: true);
-                                if (!userSetting.disableBypassSni) {
-                                  await WeissPlugin.start();
-                                  await WeissPlugin.proxy();
-                                }
-                                WeissPlugin.launch(url);
+                                _launch(url);
                               } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),
@@ -168,5 +162,21 @@ class _LoginPageState extends State<LoginPage> {
             )),
       ),
     );
+  }
+
+  _launch(url) async {
+    if (Platform.isAndroid) {
+      if (!userSetting.disableBypassSni) {
+        await WeissPlugin.start();
+        await WeissPlugin.proxy();
+      }
+      WeissPlugin.launch(url);
+    } else {
+      Leader.push(
+          context,
+          WebViewPage(
+            url: url,
+          ));
+    }
   }
 }

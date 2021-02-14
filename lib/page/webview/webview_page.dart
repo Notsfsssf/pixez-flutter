@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WebViewPage extends StatefulWidget {
   final String url;
 
-  const WebViewPage({Key key, this.url}) : super(key: key);
+  const WebViewPage({Key key, @required this.url}) : super(key: key);
 
   @override
   _WebViewPageState createState() => _WebViewPageState();
@@ -15,8 +16,6 @@ class WebViewPage extends StatefulWidget {
 class _WebViewPageState extends State<WebViewPage> {
   @override
   void initState() {
-    // initProxy();
-    // initClient();
     super.initState();
   }
 
@@ -38,23 +37,33 @@ class _WebViewPageState extends State<WebViewPage> {
       ),
       body: Builder(builder: (BuildContext context) {
         return InAppWebView(
-          initialUrl: widget.url,
-          initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              useShouldOverrideUrlLoading: true,
-              debuggingEnabled: kDebugMode,
+            initialUrl: widget.url,
+            initialOptions: InAppWebViewGroupOptions(
+              crossPlatform: InAppWebViewOptions(
+                useShouldOverrideUrlLoading: true,
+                debuggingEnabled: kDebugMode,
+              ),
             ),
-          ),
-          onWebViewCreated: (InAppWebViewController controller) {
-            _webViewController = controller;
-          },
-          onReceivedServerTrustAuthRequest: (controller, challenge) async{
-             return await ServerTrustAuthResponse(
-                action: ServerTrustAuthResponseAction.PROCEED);
-          },
-          onLoadStart: (InAppWebViewController controller, String url) {},
-          onLoadStop: (InAppWebViewController controller, String url) async {},
-        );
+            onWebViewCreated: (InAppWebViewController controller) {
+              _webViewController = controller;
+            },
+            onReceivedServerTrustAuthRequest: (controller, challenge) async {
+              return await ServerTrustAuthResponse(
+                  action: ServerTrustAuthResponseAction.PROCEED);
+            },
+            onLoadStart: (InAppWebViewController controller, String url) {},
+            onLoadStop:
+                (InAppWebViewController controller, String url) async {},
+            shouldOverrideUrlLoading: (InAppWebViewController controller,
+                ShouldOverrideUrlLoadingRequest
+                    shouldOverrideUrlLoadingRequest) async {
+              if (shouldOverrideUrlLoadingRequest.url.startsWith("pixiv://")) {
+                Leader.pushWithUri(
+                    context, Uri.parse(shouldOverrideUrlLoadingRequest.url));
+                return ShouldOverrideUrlLoadingAction.CANCEL;
+              }
+              return ShouldOverrideUrlLoadingAction.ALLOW;
+            });
       }),
     );
   }

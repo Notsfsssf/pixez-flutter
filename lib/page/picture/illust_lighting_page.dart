@@ -35,6 +35,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
@@ -435,14 +436,15 @@ class _IllustLightingPageState extends State<IllustLightingPage>
             ? SliverGrid(
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
+                  var list = _aboutStore.illusts
+                      .map((element) => IllustStore(element.id, element)).toList();
                   return InkWell(
                     onTap: () {
                       Leader.push(
                           context,
-                          IllustLightingPage(
-                            id: _aboutStore.illusts[index].id,
-                            store: IllustStore(_aboutStore.illusts[index].id,
-                                _aboutStore.illusts[index]),
+                          PictureListPage(
+                            iStores: list,
+                            store: list[index],
                           ));
                     },
                     child: PixivImage(
