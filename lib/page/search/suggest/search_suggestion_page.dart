@@ -17,6 +17,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
@@ -168,37 +169,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
             idV = isNum;
           });
           if (query.startsWith('https://')) {
-            Uri uri = Uri.parse(query);
-            if (!uri.host.contains('pixiv')) {
-              return;
-            }
-            final segment = uri.pathSegments;
-            if (segment.length == 1 && query.contains("/member.php?id=")) {
-              final id = uri.queryParameters['id'];
-              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                  builder: (BuildContext context) => UsersPage(
-                        id: int.parse(id),
-                      )));
-              _filter.clear();
-            }
-            if (segment.length == 2) {
-              if (segment[0] == 'artworks') {
-                Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            IllustLightingPage(id: int.parse(segment[1]))));
-                _filter.clear();
-              }
-              if (segment[0] == 'users') {
-                Navigator.of(context, rootNavigator: true)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  return UsersPage(
-                    id: int.parse(segment[1]),
-                  );
-                }));
-                _filter.clear();
-              }
-            }
+            Leader.pushWithUri(
+              context,
+              Uri.parse(query)
+            );
+            _filter.clear();
+            return;
           }
           var word = query.trim();
           if (word.isEmpty) return;
