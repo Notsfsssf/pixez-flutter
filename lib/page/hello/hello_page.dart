@@ -29,10 +29,8 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:pixez/page/user/users_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -42,15 +40,16 @@ class HelloPage extends StatefulWidget {
 }
 
 class _HelloPageState extends State<HelloPage> {
+  StreamSubscription _sub;
+  int index;
+  PageController _pageController;
+
   @override
   void dispose() {
     _sub?.cancel();
     _pageController?.dispose();
     super.dispose();
   }
-
-  int index;
-  PageController _pageController;
 
   @override
   void initState() {
@@ -63,69 +62,11 @@ class _HelloPageState extends State<HelloPage> {
     saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });
-    initPlatform();
+    initLinksStream();
     initPlatformState();
   }
 
-  judgePushPage(Uri link) {
-    if (link.path.contains("artworks")) {
-      List<String> paths = link.pathSegments;
-      int index = paths.indexOf("artworks");
-      if (index != -1) {
-        try {
-          int id = int.parse(paths[index + 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustLightingPage(id: id);
-          }));
-          return;
-        } catch (e) {}
-      }
-    }
-    if (link.path.contains("users")) {
-      List<String> paths = link.pathSegments;
-      int index = paths.indexOf("users");
-      if (index != -1) {
-        try {
-          int id = int.parse(paths[index + 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustLightingPage(id: id);
-          }));
-        } catch (e) {
-          print(e);
-        }
-      }
-    }
-    if (link.pathSegments.length >= 2) {
-      String i = link.pathSegments[link.pathSegments.length - 2];
-      if (i == "i") {
-        try {
-          int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return IllustLightingPage(id: id);
-          }));
-          return;
-        } catch (e) {}
-      }
-
-      if (i == "u") {
-        try {
-          int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-          Navigator.of(context, rootNavigator: true)
-              .push(MaterialPageRoute(builder: (context) {
-            return UsersPage(
-              id: id,
-            );
-          }));
-          return;
-        } catch (e) {}
-      }
-    }
-  }
-
-  initPlatformState() async {
+  Future<void> initPlatformState() async {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context)
@@ -133,9 +74,7 @@ class _HelloPageState extends State<HelloPage> {
     }
   }
 
-  StreamSubscription _sub;
-
-  initPlatform() async {
+  Future<void> initLinksStream() async {
     try {
       Uri initialLink = await getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
@@ -146,7 +85,7 @@ class _HelloPageState extends State<HelloPage> {
     }
   }
 
-  var lists = <Widget>[
+  List<Widget> _lists = <Widget>[
     Observer(builder: (context) {
       if (accountStore.now != null)
         return RecomSpolightPage();
@@ -181,7 +120,7 @@ class _HelloPageState extends State<HelloPage> {
             });
           },
           itemBuilder: (context, index) {
-            return lists[index];
+            return _lists[index];
           }),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

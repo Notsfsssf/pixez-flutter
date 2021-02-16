@@ -13,9 +13,6 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-//有是有top level fun和extension，奈何auto import 太傻，还是这种更稳一些
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,52 +21,54 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/hello/android_hello_page.dart';
-import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class Leader {
-  static int bti(bool bool) {
-    if (bool) {
-      return 1;
-    } else
-      return 0;
+
+  static Future<void> pushWithUri(BuildContext context, Uri link) async {
+    if (link.scheme == "pixiv") {
+      if (link.host.contains("account")) {
+        try {
+          BotToast.showText(text: "working....");
+          String code = link.queryParameters['code'];
+          LPrinter.d("here we go:" + code);
+          Response response = await oAuthClient.code2Token(code);
+          AccountResponse accountResponse =
+              Account.fromJson(response.data).response;
+          final user = accountResponse.user;
+          AccountProvider accountProvider = new AccountProvider();
+          await accountProvider.open();
+          var accountPersist = AccountPersist()
+            ..passWord = ""
+            ..accessToken = accountResponse.accessToken
+            ..deviceToken = accountResponse.deviceToken ?? ""
+            ..refreshToken = accountResponse.refreshToken
+            ..userImage = user.profileImageUrls.px170x170
+            ..userId = user.id
+            ..name = user.name
+            ..isMailAuthorized = user.isMailAuthorized ? 1 : 0
+            ..isPremium = user.isPremium ? 1 : 0
+            ..mailAddress = user.mailAddress
+            ..account = user.account
+            ..xRestrict = user.xRestrict;
+          await accountProvider.insert(accountPersist);
+          await accountStore.fetch();
+        } catch (e) {
+          LPrinter.d(e);
+        }
+        return;
+      }
+    } else if (link.scheme.contains("http")) {
+      _parseUriContent(context, link);
+    } else if (link.scheme == "pixez") {
+      _parseUriContent(context, link);
+    }
   }
 
-  static pushWithUri(context, Uri link) async {
-    if (link.host.contains("account")) {
-      try {
-        BotToast.showText(text: "working....");
-        String code = link.queryParameters['code'];
-        LPrinter.d("here we go:" + code);
-        Response response = await oAuthClient.code2Token(code);
-        AccountResponse accountResponse =
-            Account.fromJson(response.data).response;
-        final user = accountResponse.user;
-        AccountProvider accountProvider = new AccountProvider();
-        await accountProvider.open();
-        var accountPersist = AccountPersist()
-          ..passWord = ""
-          ..accessToken = accountResponse.accessToken
-          ..deviceToken = accountResponse.deviceToken ?? ""
-          ..refreshToken = accountResponse.refreshToken
-          ..userImage = user.profileImageUrls.px170x170
-          ..userId = user.id
-          ..name = user.name
-          ..isMailAuthorized = bti(user.isMailAuthorized)
-          ..isPremium = bti(user.isPremium)
-          ..mailAddress = user.mailAddress
-          ..account = user.account
-          ..xRestrict = user.xRestrict;
-        await accountProvider.insert(accountPersist);
-        await accountStore.fetch();
-      } catch (e) {
-        LPrinter.d(e);
-      }
-      return;
-    } else if (link.host.contains('illusts')) {
+  static void _parseUriContent(BuildContext context, Uri link) {
+    if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
