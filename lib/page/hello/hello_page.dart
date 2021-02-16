@@ -21,6 +21,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/init_page.dart';
@@ -41,8 +42,6 @@ class HelloPage extends StatefulWidget {
 }
 
 class _HelloPageState extends State<HelloPage> {
-  StreamSubscription _sub;
-
   @override
   void dispose() {
     _sub?.cancel();
@@ -64,6 +63,7 @@ class _HelloPageState extends State<HelloPage> {
     saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });
+    initPlatform();
     initPlatformState();
   }
 
@@ -126,21 +126,23 @@ class _HelloPageState extends State<HelloPage> {
   }
 
   initPlatformState() async {
-    // try {
-    //   Uri initialLink = await getInitialUri();
-    //   print(initialLink);
-    //   if (initialLink != null) judgePushPage(initialLink);
-    //   _sub = getUriLinksStream().listen((Uri link) {
-    //     print("link:${link}");
-    //     judgePushPage(link);
-    //   });
-    // } catch (e) {
-    //   print(e);
-    // }
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => InitPage()));
+    }
+  }
+
+  StreamSubscription _sub;
+
+  initPlatform() async {
+    try {
+      Uri initialLink = await getInitialUri();
+      if (initialLink != null) Leader.pushWithUri(context, initialLink);
+      _sub = getUriLinksStream()
+          .listen((Uri link) => Leader.pushWithUri(context, link));
+    } catch (e) {
+      print(e);
     }
   }
 

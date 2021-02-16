@@ -65,12 +65,6 @@ class Leader {
           ..xRestrict = user.xRestrict;
         await accountProvider.insert(accountPersist);
         await accountStore.fetch();
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  Platform.isIOS ? HelloPage() : AndroidHelloPage()),
-          (route) => route == null,
-        );
       } catch (e) {
         LPrinter.d(e);
       }

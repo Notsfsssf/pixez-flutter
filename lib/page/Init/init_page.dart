@@ -38,11 +38,14 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
             var prefs = await SharedPreferences.getInstance();
             await prefs.setInt('language_num', userSetting.languageNum);
             //有可能用户啥都没选
-            final languageList = ['en-US', 'zh-CN', 'zh-TW','ja'];
+            final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
             ApiClient.Accept_Language = languageList[userSetting.languageNum];
-            apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader]=ApiClient.Accept_Language;
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) =>Platform.isIOS?HelloPage(): AndroidHelloPage()));
+            apiClient.httpClient.options
+                    .headers[HttpHeaders.acceptLanguageHeader] =
+                ApiClient.Accept_Language;
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) =>
+                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
           },
         ),
         body: Container(

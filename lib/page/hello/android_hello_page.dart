@@ -197,6 +197,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   StreamSubscription _sub;
+  
   initPlatform() async {
     try {
       Uri initialLink = await getInitialUri();
