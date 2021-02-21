@@ -23,10 +23,10 @@ import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
+import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class Leader {
-
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
     if (link.scheme == "pixiv") {
       if (link.host.contains("account")) {
@@ -159,9 +159,7 @@ class Leader {
             Leader.push(context, IllustLightingPage(id: id));
             return;
           } catch (e) {}
-        }
-
-        if (i == "u") {
+        } else if (i == "u") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
@@ -171,6 +169,16 @@ class Leader {
               );
             }));
             return;
+          } catch (e) {}
+        } else if (i == "tags") {
+          try {
+            String tag = link.pathSegments[link.pathSegments.length - 1];
+            Navigator.of(context, rootNavigator: true)
+                .push(MaterialPageRoute(builder: (context) {
+              return ResultPage(
+                word: tag,
+              );
+            }));
           } catch (e) {}
         }
       }
