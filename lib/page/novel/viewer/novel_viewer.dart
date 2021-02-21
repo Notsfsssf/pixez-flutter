@@ -147,62 +147,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   ),
                 ),
                 Container(
-                  height: 400,
+                  height: 10,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: PainterAvatar(
-                          url: _novelStore.novel.user.profileImageUrls.medium,
-                          id: _novelStore.novel.user.id,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return NovelUserPage(
-                                id: _novelStore.novel.user.id,
-                              );
-                            }));
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  _novelStore.novel.title ?? "",
-                                  softWrap: true,
-                                ),
-                              ),
-                            ),
-                            Text(_novelStore.novel.user.name),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Pre'),
-                ),
-                buildListTile(_novelStore.novelTextResponse.seriesPrev),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Next'),
-                ),
-                buildListTile(_novelStore.novelTextResponse.seriesNext),
-                Container(
-                  height: MediaQuery.of(context).padding.bottom + 100,
-                )
               ],
             ),
           );

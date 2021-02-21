@@ -62,19 +62,6 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
               )
             ],
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 400,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      '小说模块的基本功能是做完了，但是很多地方UI交互不知道如何处理,bug也未全面测试，完成度不是很高，放出来逐步完善吧'),
-                ),
-              ),
-            ),
-          )
-
           // SliverGrid(
           //   gridDelegate:
           //       SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
