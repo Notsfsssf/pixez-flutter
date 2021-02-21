@@ -112,10 +112,6 @@ class _RankPageState extends State<RankPage>
                 elevation: 0.0,
                 backgroundColor: Colors.transparent,
                 title: TabBar(
-                  labelStyle:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                  unselectedLabelStyle:
-                      TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                   onTap: (i) => setState(() {
                     this.index = i;
                   }),

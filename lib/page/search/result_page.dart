@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
@@ -49,8 +50,14 @@ class _ResultPageState extends State<ResultPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
           title: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
+              indicator: MD2Indicator(
+                  indicatorHeight: 3,
+                  indicatorColor: Theme.of(context).accentColor,
+                  indicatorSize: MD2IndicatorSize.normal),
               onTap: (i) {
                 if (i == index) {
                   topStore.setTop("401");

@@ -86,10 +86,6 @@ class _NewPageState extends State<NewPage>
                       indicatorHeight: 3,
                       indicatorColor: Theme.of(context).accentColor,
                       indicatorSize: MD2IndicatorSize.normal),
-                  labelStyle:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                  unselectedLabelStyle:
-                      TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                   onTap: (i) {
                     if (_tabController.index == i)
                       topStore.setTop((301 + i).toString());
