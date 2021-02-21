@@ -239,6 +239,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  dio_http_cache:
+    dependency: "direct main"
+    description:
+      name: dio_http_cache
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.11"
   extended_image:
     dependency: "direct main"
     description:
@@ -567,6 +574,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.12.10-nullsafety.1"
+  md2_tab_indicator:
+    dependency: "direct main"
+    description:
+      name: md2_tab_indicator
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   meta:
     dependency: transitive
     description:

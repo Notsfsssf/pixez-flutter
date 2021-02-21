@@ -165,18 +165,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _launch(url) async {
-    if (Platform.isAndroid) {
-      if (!userSetting.disableBypassSni) {
-        await WeissPlugin.start();
-        await WeissPlugin.proxy();
-      }
-      WeissPlugin.launch(url);
-    } else {
-      Leader.push(
-          context,
-          WebViewPage(
-            url: url,
-          ));
+    if (!userSetting.disableBypassSni) {
+      await WeissPlugin.start();
+      await WeissPlugin.proxy();
     }
+    Leader.push(
+        context,
+        WebViewPage(
+          url: url,
+        ));
   }
 }

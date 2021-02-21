@@ -68,6 +68,8 @@ dependencies:
   flutter_inappwebview: ^4.0.0+4
   http_interceptor: ^0.3.3
   dio_cookie_manager: ^1.0.0
+  dio_http_cache: ^0.2.11
+  md2_tab_indicator: ^1.0.2
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4

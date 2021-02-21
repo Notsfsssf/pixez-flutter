@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -135,6 +136,20 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildPageContent(BuildContext context) {
+    return PageTransitionSwitcher(
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        );
+      },
+      child: _pageList[index],
+    );
     return PageView.builder(
       itemBuilder: (context, index) {
         return _pageList[index];
@@ -197,7 +212,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   StreamSubscription _sub;
-  
+
   initPlatform() async {
     try {
       Uri initialLink = await getInitialUri();

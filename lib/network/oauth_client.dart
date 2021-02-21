@@ -134,12 +134,9 @@ class OAuthClient {
     // AsciiCodec asciiCodec = AsciiCodec();
     // var f = asciiCodec.encode(verify);
     // Digest foo = sha256.convert(f);
-    // String code_challenge = base64
-    //     .encode(foo.bytes)
-    //     .replaceAll("=", "")
-    //     .replaceAll("/", "")
-    //     .replaceAll("\\", "")
-    //     .replaceAll("+", "");
+    // String code_challenge = base64.encode(foo.bytes).replaceAll("+", "-")
+    //   ..replaceAll("/", "_")
+    //   ..replaceAll("=", "");
     // LPrinter.d(code_challenge);
     // String url =
     //     "https://app-api.pixiv.net/web/v1/login?code_challenge=${code_challenge}&code_challenge_method=S256&client=pixiv-android";
@@ -148,28 +145,26 @@ class OAuthClient {
 
   static Future<String> generateCodeVerify() async {
     return await CryptoPlugin.getCodeVer();
-    var random = Random.secure();
-    var values = List<int>.generate(32, (i) => random.nextInt(255));
-    String verify = base64
-        .encode(values)
-        .replaceAll("=", "")
-        .replaceAll("/", "")
-        .replaceAll("\\", "")
-        .replaceAll("+", "");
-    LPrinter.d(verify);
-    return verify;
+  //   var random = Random.secure();
+  //   var values = List<int>.generate(32, (i) => random.nextInt(255));
+  //   String verify = base64
+  //       .encode(values)
+  //  .replaceAll("+", "-")
+  //     ..replaceAll("/", "_")
+  //     ..replaceAll("=", ""));
+  //   LPrinter.d(verify);
+  //   return verify;
   }
 
   Future<Response> postRefreshAuthToken(
       {refreshToken: String, deviceToken: String}) {
-    return httpClient.post("/auth/token",
-        data: {
-          "client_id": CLIENT_ID,
-          "client_secret": CLIENT_SECRET,
-          "grant_type": "refresh_token",
-          "refresh_token": refreshToken,
-          "include_policy": true
-        });
+    return httpClient.post("/auth/token", data: {
+      "client_id": CLIENT_ID,
+      "client_secret": CLIENT_SECRET,
+      "grant_type": "refresh_token",
+      "refresh_token": refreshToken,
+      "include_policy": true
+    });
   }
 
 //  @FormUrlEncoded

@@ -20,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
@@ -76,9 +77,19 @@ class _NewPageState extends State<NewPage>
           children: <Widget>[
             AppBar(
               automaticallyImplyLeading: false,
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
               title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
                   controller: _tabController,
+                  indicator: MD2Indicator(
+                      indicatorHeight: 3,
+                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorSize: MD2IndicatorSize.normal),
+                  labelStyle:
+                      TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                  unselectedLabelStyle:
+                      TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                   onTap: (i) {
                     if (_tabController.index == i)
                       topStore.setTop((301 + i).toString());

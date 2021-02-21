@@ -22,6 +22,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 class RankPage extends StatefulWidget {
   RankPage({
@@ -91,19 +92,13 @@ class _RankPageState extends State<RankPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final rankListMean = I18n
-        .of(context)
-        .mode_list
-        .split(' ');
+    final rankListMean = I18n.of(context).mode_list.split(' ');
     return Observer(builder: (_) {
       if (rankStore.inChoice) {
         return _buildChoicePage(context, rankListMean);
       }
       if (rankStore.modeList.isNotEmpty) {
-        var list = I18n
-            .of(context)
-            .mode_list
-            .split(' ');
+        var list = I18n.of(context).mode_list.split(' ');
         List<String> titles = [];
         for (var i = 0; i < rankStore.modeList.length; i++) {
           int index = modeList.indexOf(rankStore.modeList[i]);
@@ -114,10 +109,21 @@ class _RankPageState extends State<RankPage>
           child: Column(
             children: <Widget>[
               AppBar(
+                elevation: 0.0,
+                backgroundColor: Colors.transparent,
                 title: TabBar(
+                  labelStyle:
+                      TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                  unselectedLabelStyle:
+                      TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                   onTap: (i) => setState(() {
-                      this.index = i;
-                    }),
+                    this.index = i;
+                  }),
+                  indicator: MD2Indicator(
+                      indicatorHeight: 3,
+                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorSize: MD2IndicatorSize.normal
+                      ),
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
                   tabs: <Widget>[
@@ -171,9 +177,7 @@ class _RankPageState extends State<RankPage>
           AppBar(
             elevation: 0.0,
             backgroundColor: Colors.transparent,
-            title: Text(I18n
-                .of(context)
-                .choice_you_like),
+            title: Text(I18n.of(context).choice_you_like),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.save),
@@ -223,7 +227,7 @@ class _RankPageState extends State<RankPage>
         context: context,
         initialDate: nowDateTime,
         locale: I18n.delegate.supportedLocales[
-        userSetting.toRealLanguageNum(userSetting.languageNum)],
+            userSetting.toRealLanguageNum(userSetting.languageNum)],
         firstDate: DateTime(2007, 8),
         //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
         lastDate: nowdate);

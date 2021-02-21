@@ -22,6 +22,7 @@ import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
@@ -83,7 +84,13 @@ class ApiClient {
       }
       // ..options.connectTimeout = 10000
       // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
-      ..interceptors.add(CacheInterceptor())
+      // ..interceptors.add(CacheInterceptor())
+      ..interceptors.add(DioCacheManager(
+        CacheConfig(
+            defaultMaxAge: Duration(days: 1),
+            defaultRequestMethod: "GET",
+            skipMemoryCache: true),
+      ).interceptor)
       ..interceptors.add(RefreshTokenInterceptor());
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
@@ -164,7 +171,7 @@ class ApiClient {
   // @GET("/v1/user/recommended?filter=for_android")
   // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
   Future<Response> getUserRecommended() async {
-    return httpClient.get("/v1/user/recommended?filter=for_android");
+    return httpClient.get("/v1/user/recommended?filter=for_android",options: buildCacheOptions(Duration(minutes: 2)));
   }
 
   Future<Response> getUser(int id) async {
@@ -233,11 +240,14 @@ class ApiClient {
 /*  @GET("/v1/illust/ranking?filter=for_android")
   fun getIllustRanking(@Header("Authorization") paramString1: String, @Query("mode") paramString2: String, @Query("date") paramString3: String?): Observable<IllustNext>*/
   Future<Response> getIllustRanking(String mode, date) async {
-    return httpClient.get("/v1/illust/ranking?filter=for_android",
-        queryParameters: notNullMap({
-          "mode": mode,
-          "date": date,
-        }));
+    return httpClient.get(
+      "/v1/illust/ranking?filter=for_android",
+      queryParameters: notNullMap({
+        "mode": mode,
+        "date": date,
+      }),
+      options: buildCacheOptions(Duration(hours: 1)),
+    );
   }
 
 //  @GET("/v1/user/illusts?filter=for_android")
@@ -286,6 +296,7 @@ class ApiClient {
     return httpClient.get(
       "/v2/illust/follow",
       queryParameters: {"restrict": restrict},
+      options: buildCacheOptions(Duration(minutes: 2)),
     );
   }
 
@@ -313,6 +324,7 @@ class ApiClient {
   Future<Response> getIllustTrendTags() async {
     return httpClient.get(
       "/v1/trending-tags/illust?filter=for_android",
+      options: buildCacheOptions(Duration(hours: 1)),
     );
   }
 
@@ -380,7 +392,7 @@ class ApiClient {
 */
   Future<Response> getIllustRelated(int illust_id) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
-          options: Options(extra: {"refresh": false}),
+          options: buildCacheOptions(Duration(days: 1)),
           queryParameters: notNullMap({"illust_id": illust_id}));
 
   //          @GET("/v2/illust/bookmark/detail")
@@ -418,8 +430,11 @@ class ApiClient {
   //   @GET("/v1/spotlight/articles?filter=for_android")
   // fun getPixivisionArticles(@Header("Authorization") paramString1: String, @Query("category") paramString2: String): Observable<SpotlightResponse>
   Future<Response> getSpotlightArticles(String category) {
-    return httpClient.get("/v1/spotlight/articles?filter=for_android",
-        queryParameters: {"category": category});
+    return httpClient.get(
+      "/v1/spotlight/articles?filter=for_android",
+      queryParameters: {"category": category},
+      options: buildCacheOptions(Duration(hours: 23)),
+    );
   }
 
 //  @GET("/v1/illust/comments")
