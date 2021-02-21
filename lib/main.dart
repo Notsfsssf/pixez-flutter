@@ -47,7 +47,6 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:pixez/weiss_plugin.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -178,7 +177,6 @@ class _MyAppState extends State<MyApp> {
     initMethod();
     kVer.open();
     fetcher.start();
-    WeissPlugin.invoke(context);
     super.initState();
   }
 
@@ -218,8 +216,8 @@ class _MyAppState extends State<MyApp> {
           OverLayer.show(context);
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-              ),
+                  statusBarColor: Colors.transparent,
+                  systemNavigationBarColor: Colors.transparent),
               child: SplashPage());
         }),
         title: 'PixEz',

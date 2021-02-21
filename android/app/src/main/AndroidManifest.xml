@@ -104,9 +104,6 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".WebViewActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <!--
  Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java

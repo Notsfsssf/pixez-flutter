@@ -19,9 +19,6 @@ object Weiss {
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WEISS_CHANNEL)
         methodChannel?.setMethodCallHandler { call, result ->
             when (call.method) {
-                "launch" -> {
-                    context.launch(call.argument<String>("url")!!)
-                }
                 "start" -> {
                     start()
                 }
@@ -35,19 +32,7 @@ object Weiss {
             result.success(null)
         }
     }
-
-    fun invokeDart(url: String) {
-        val obj = HashMap<String, Any>()
-        obj["url"] = url
-        methodChannel?.invokeMethod("invoke", obj)
-    }
-
-    private fun Context.launch(url: String) {
-        startActivity(Intent(this, WebViewActivity::class.java).apply {
-            putExtra("url", url)
-        })
-    }
-
+    
     fun start() {
         try {
             weiss.Weiss.start(port)
