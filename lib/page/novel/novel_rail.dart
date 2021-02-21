@@ -84,7 +84,7 @@ class _NovelRailState extends State<NovelRail> {
               icon: Icon(Icons.settings), label: I18n.of(context).setting),
         ],
         onTap: (index) {
-          _pageController.jumpToPage(index);
+          if (_pageController.hasClients) _pageController.jumpToPage(index);
           setState(() {
             selectedIndex = index;
           });

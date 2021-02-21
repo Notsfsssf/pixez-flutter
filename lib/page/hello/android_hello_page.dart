@@ -115,7 +115,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             setState(() {
               this.index = index;
             });
-            _pageController.jumpToPage(index);
+            if (_pageController.hasClients) _pageController.jumpToPage(index);
           },
           items: [
             BottomNavigationBarItem(
