@@ -90,6 +90,16 @@ abstract class _IllustStoreBase with Store {
     if (illusts != null) historyStore.insert(illusts);
   }
 
+  Future<bool> followAfterStar() async {
+    try {
+      if (!illusts.user.isFollowed) {
+        await apiClient.postFollowUser(illusts.user.id, "public");
+        return illusts.user.isFollowed = true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
   @action
   Future<bool> star({String restrict = 'public', List<String> tags}) async {
     state = 1;

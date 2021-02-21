@@ -16,12 +16,14 @@
 
 import 'dart:ui';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -224,7 +226,18 @@ class _IllustCardState extends State<IllustCard> {
                   state: store.state,
                 );
               }),
-              onPressed: () => store.star(),
+              onPressed: () async {
+                store.star();
+                if (!userSetting.followAfterStar) {
+                  return;
+                }
+                bool success = await store.followAfterStar();
+                if (success) {
+                  BotToast.showText(
+                      text:
+                          "${store.illusts.user.name} ${I18n.of(context).followed}");
+                }
+              },
             ),
           )
         ],

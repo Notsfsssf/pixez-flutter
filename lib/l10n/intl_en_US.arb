@@ -199,5 +199,6 @@
   "login_error_message": "Incorrect account or password, or using a weak password, may cause login failure",
   "translate": "translate",
   "retry_seed_task": "retry seed task",
-  "manga_detail_page_quality":"Manga quality (Details page)"
+  "manga_detail_page_quality":"Manga quality (Details page)",
+  "follow_after_star":"follow after star"
 }

@@ -529,6 +529,20 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     });
               }),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
+                    value: userSetting.followAfterStar,
+                    title: Text(I18n.of(context).follow_after_star),
+                    onChanged: (value) async {
+                      userSetting.setFollowAfterStar(value);
+                    });
+              }),
+            ),
           )
         ]),
       ),

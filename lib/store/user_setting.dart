@@ -46,6 +46,7 @@ abstract class _UserSettingBase with Store {
   static const String THEME_MODE_KEY = "theme_mode";
   static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
   static const String IS_CLEAR_OLD_FORMAT_FILE_KEY = "is_clear_old_format_file";
+  static const String IS_FOLLOW_AFTER_STAR = "is_follow_after_star";
   static const String IS_OVER_SANITY_LEVEL_FOLDER =
       "is_over_sanity_level_folder";
 
@@ -83,6 +84,8 @@ abstract class _UserSettingBase with Store {
   bool overSanityLevelFolder = false;
   @observable
   bool hIsNotAllow = false;
+  @observable
+  bool followAfterStar = false;
 
   @observable
   String format = "";
@@ -117,6 +120,12 @@ abstract class _UserSettingBase with Store {
     await prefs.setBool(ISHELPLESSWAY_KEY, value);
     isHelplessWay = value;
     await DocumentPlugin.isHelplessWay();
+  }
+
+  @action
+  setFollowAfterStar(bool value) async {
+    await prefs.setBool(IS_FOLLOW_AFTER_STAR, value);
+    followAfterStar = value;
   }
 
   Color _stringToColor(String colorString) {
@@ -177,6 +186,8 @@ abstract class _UserSettingBase with Store {
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
+    followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
+
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
         this.themeMode = i;

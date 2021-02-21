@@ -107,15 +107,21 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).accentColor,
-          currentIndex: index,
+          currentIndex: _settingPageVisible ? _pageList.length : _index,
           onTap: (index) {
-            if (this.index == index) {
-              topStore.setTop("${index + 1}00");
+            // if (this._index == index) {
+            //   topStore.setTop("${index + 1}00");
+            // }
+            if (index < _pageList.length) {
+              setState(() {
+                this._index = index;
+                _settingPageVisible = false;
+              });
+            } else {
+              setState(() {
+                _settingPageVisible = true;
+              });
             }
-            setState(() {
-              this.index = index;
-            });
-            if (_pageController.hasClients) _pageController.jumpToPage(index);
           },
           items: [
             BottomNavigationBarItem(
@@ -135,37 +141,35 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     );
   }
 
+  bool _settingPageVisible = false;
+
   Widget _buildPageContent(BuildContext context) {
-    return PageTransitionSwitcher(
-      transitionBuilder: (
-        Widget child,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return FadeThroughTransition(
-          animation: animation,
-          secondaryAnimation: secondaryAnimation,
-          child: child,
-        );
-      },
-      child: _pageList[index],
-    );
-    return PageView.builder(
-      itemBuilder: (context, index) {
-        return _pageList[index];
-      },
-      onPageChanged: (index) {
-        setState(() {
-          this.index = index;
-        });
-      },
-      controller: _pageController,
-      itemCount: _pageList.length,
+    return Stack(
+      children: [
+        PageTransitionSwitcher(
+          transitionBuilder: (
+            Widget child,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) {
+            return FadeThroughTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: _pageList[_index],
+        ),
+        AnimatedOpacity(
+          child: _settingPageVisible ? SettingPage() : Container(),
+          opacity: _settingPageVisible ? 1.0 : 0.0,
+          duration: Duration(milliseconds: 300),
+        )
+      ],
     );
   }
 
-  int index;
-  PageController _pageController;
+  int _index;
   StreamSubscription _intentDataStreamSubscription;
   bool hasNewVersion = false;
 
@@ -178,10 +182,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       RankPage(),
       NewPage(),
       SearchPage(),
-      SettingPage()
     ];
-    index = userSetting.welcomePageNum;
-    _pageController = PageController(initialPage: index);
+    _index = userSetting.welcomePageNum;
     quickActions = QuickActions();
     super.initState();
     saveStore.context = this.context;
@@ -227,7 +229,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void dispose() {
     _intentDataStreamSubscription?.cancel();
-    _pageController?.dispose();
     _sub?.cancel();
     super.dispose();
   }
