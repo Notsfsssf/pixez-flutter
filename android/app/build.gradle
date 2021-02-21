@@ -82,7 +82,6 @@ android {
         disable 'InvalidPackage'
     }
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
@@ -128,7 +127,6 @@ dependencies {
     implementation('com.waynejo:androidndkgif:0.3.3')
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'com.google.android.play:core:1.8.3'
+    implementation 'com.google.android.play:core:1.9.1'
     implementation 'com.google.android.gms:play-services-wallet:18.1.2'
-//    implementation 'androidx.biometric:biometric:1.0.1'
 }
