@@ -86,6 +86,9 @@ abstract class _UserSettingBase with Store {
   bool hIsNotAllow = false;
   @observable
   bool followAfterStar = false;
+  @observable
+  bool pictureReverseProxy = false;
+
 
   @observable
   String format = "";
@@ -175,6 +178,7 @@ abstract class _UserSettingBase with Store {
     displayMode = prefs.getInt('display_mode');
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
+    pictureReverseProxy = prefs.getBool('picture_reverse_proxy') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
@@ -289,6 +293,12 @@ abstract class _UserSettingBase with Store {
   setHIsNotAllow(bool value) async {
     await prefs.setBool('h_is_not_allow', value);
     hIsNotAllow = value;
+  }
+
+  @action
+  setPictureReverseProxy(bool value) async {
+    await prefs.setBool('picture_reverse_proxy', value);
+    pictureReverseProxy = value;
   }
 
   @action

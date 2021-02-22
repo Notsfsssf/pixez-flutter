@@ -86,7 +86,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 73
-        versionName "0.3.9 BRAVO"
+        versionName "0.3.9 fish"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

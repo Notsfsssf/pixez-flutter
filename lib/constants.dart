@@ -22,4 +22,5 @@ class Constants {
   static bool isGooglePlay = false;
   static int type = 0;
   static String code_verifier = null;
+  static String reverseServer = "i.pixiv.cat";
 }

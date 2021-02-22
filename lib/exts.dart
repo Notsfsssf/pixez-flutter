@@ -16,8 +16,12 @@ import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/constants.dart';
 
-extension TimeExts on String {
+
+
+import 'constants.dart';
+import 'main.dart';extension TimeExts on String {
   String toShortTime() {
     try {
       var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
@@ -40,15 +44,27 @@ extension TimeExts on String {
   String toTrueUrl() {
     if (userSetting.disableBypassSni || this.contains("novel")) {
       return this;
-    } else {
+    } else { //额,不太清楚在这几个是干啥的,反正都改一下,非图片是匹配不到的...
       if (this.contains(ImageHost)) {
-        return this.replaceFirst(ImageHost, splashStore.host);
+        if (userSetting.pictureReverseProxy) {
+          return this.replaceFirst(ImageHost, splashStore.host).replaceAll("i.pximg.net",Constants.reverseServer);
+        } else{
+          return this.replaceFirst(ImageHost, splashStore.host);
+        }
       }
       if (this.contains(ImageSHost)) {
-        return this.replaceFirst(ImageSHost, splashStore.host);
+        if (userSetting.pictureReverseProxy) {
+          return this.replaceFirst(ImageSHost, splashStore.host).replaceAll("i.pximg.net",Constants.reverseServer);
+        } else {        
+          return this.replaceFirst(ImageSHost, splashStore.host);
+        }      
       }
     }
-    return this;
+    if (userSetting.pictureReverseProxy) {
+      return this.replaceAll("i.pximg.net",Constants.reverseServer);
+    } else {
+      return this;
+    }
   }
 
   String toLegal() {

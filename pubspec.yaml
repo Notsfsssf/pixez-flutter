@@ -60,7 +60,7 @@ dependencies:
   badges: ^1.1.6
   quick_actions: ^0.4.0+10
   image_picker: ^0.6.7+21
-  intl: ^0.16.1
+  #intl: ^0.16.1
   intl_utils: ^1.9.0
   quiver: ^2.1.5
   flutter_swiper: ^1.1.6
@@ -71,13 +71,14 @@ dependencies:
   dio_http_cache: ^0.2.11
   md2_tab_indicator: ^1.0.2
 
-#dependency_overrides:
-#  flutter_svg: ^0.17.4
+dependency_overrides:
+  intl: 0.17.0-nullsafety.2
+  analyzer: 0.41.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.10.2
-  mobx_codegen: ^1.1.0+2
+  build_runner: ^1.10.9
+  mobx_codegen: ^1.1.2
   json_serializable: ^3.4.1
 
 

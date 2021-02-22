@@ -507,6 +507,22 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Observer(builder: (_) {
                 return SwitchListTile(
                     activeColor: Theme.of(context).accentColor,
+                    value: userSetting.pictureReverseProxy,
+                    title: Text('图片不使用反向代理'),
+                    subtitle: Text('使用pixiv.cat提供的图片反代服务'),
+                    onChanged: (value) async {
+                      if (!value) BotToast.showText(text: '图片使用反向代理');
+                      userSetting.setPictureReverseProxy(value);
+                    });
+              }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).accentColor,
                     value: userSetting.hIsNotAllow,
                     title: Text('H是不行的！'),
                     onChanged: (value) async {
