@@ -508,10 +508,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 return SwitchListTile(
                     activeColor: Theme.of(context).accentColor,
                     value: userSetting.pictureReverseProxy,
-                    title: Text('图片不使用反向代理'),
+                    title: Text('图片使用反向代理'),
                     subtitle: Text('使用pixiv.cat提供的图片反代服务'),
                     onChanged: (value) async {
-                      if (!value) BotToast.showText(text: '图片使用反向代理');
+                      if (value) BotToast.showText(text: '本功能不稳定,可能会失效');                
                       userSetting.setPictureReverseProxy(value);
                     });
               }),
