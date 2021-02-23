@@ -16,8 +16,9 @@ jobs:
         java-version: '12.x'
     - uses: subosito/flutter-action@v1.4.0
       with:
-        flutter-version: '1.27.0-4.0.pre'
-        channel: 'dev'
+        flutter-version: '1.22.6'
+        channel: 'stable'
+    - run: flutter doctor -v
     - run: flutter pub get
     - run: flutter pub run intl_utils:generate
     - run: flutter pub run build_runner build
