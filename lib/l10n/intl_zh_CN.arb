@@ -200,5 +200,8 @@
   "translate": "翻译",
   "retry_seed_task": "重试所有seed任务",
   "manga_detail_page_quality":"漫画详情页画质",
-  "follow_after_star":"收藏后关注画师"
+  "follow_after_star":"收藏后关注画师",
+  "default_title": "默认",
+  "image_site": "图床",
+  "network": "网络"
 }

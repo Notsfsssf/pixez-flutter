@@ -215,9 +215,7 @@ class _MyAppState extends State<MyApp> {
             });
           OverLayer.show(context);
           return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  systemNavigationBarColor: Colors.transparent),
+              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
               child: SplashPage());
         }),
         title: 'PixEz',

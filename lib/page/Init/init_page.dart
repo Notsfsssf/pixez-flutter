@@ -17,10 +17,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/network/network_page.dart';
+import 'package:pixez/page/network/network_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InitPage extends StatefulWidget {
@@ -43,9 +46,8 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
             apiClient.httpClient.options
                     .headers[HttpHeaders.acceptLanguageHeader] =
                 ApiClient.Accept_Language;
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) =>
-                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => NetworkSelectPage()));
           },
         ),
         body: Container(

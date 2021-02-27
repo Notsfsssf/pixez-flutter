@@ -336,7 +336,7 @@ class _AboutPageState extends State<AboutPage> {
                           borderRadius: BorderRadius.vertical(
                               top: Radius.circular(16.0))),
                       builder: (_) {
-                        return Container(
+                        return SafeArea(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
@@ -404,7 +404,7 @@ class _AboutPageState extends State<AboutPage> {
           ListTile(
             leading: Icon(Icons.favorite),
             title: Text(I18n.of(context).thanks),
-            subtitle: Text('感谢帮助我测试的弹幕委员会群友们'),
+            subtitle: Text('感谢帮助我测试的弹幕委员会群友们\n感谢pixiv cat站主提供的图床'),
             onTap: () {
               if (Platform.isAndroid)
                 Navigator.of(context).push(MaterialPageRoute(

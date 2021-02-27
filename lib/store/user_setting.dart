@@ -20,8 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +44,7 @@ abstract class _UserSettingBase with Store {
   static const String IS_BANGS_KEY = "is_bangs";
   static const String IS_AMOLED_KEY = "is_amoled";
   static const String STORE_PATH_KEY = "save_store";
+  static const String PICTURE_SOURCE_KEY = "picture_source";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
   static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
@@ -86,6 +89,8 @@ abstract class _UserSettingBase with Store {
   bool hIsNotAllow = false;
   @observable
   bool followAfterStar = false;
+  @observable
+  String pictureSource;
 
   @observable
   String format = "";
@@ -168,6 +173,12 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setPictureSource(String value) async {
+    await prefs.setString(PICTURE_SOURCE_KEY, value);
+    pictureSource = value;
+  }
+
+  @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
@@ -187,6 +198,8 @@ abstract class _UserSettingBase with Store {
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
+    pictureSource = prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost;
+    splashStore.setHost(pictureSource);
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {

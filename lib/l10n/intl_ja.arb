@@ -200,5 +200,8 @@
   "translate": "翻訳",
   "retry_seed_task": "retry seed task",
   "manga_detail_page_quality":"Manga quality (Details page)",
-  "follow_after_star":"follow after star"
+  "follow_after_star":"follow after star",
+  "default_title": "Default",
+  "image_site": "Image Site",
+  "network": "Network"
 }

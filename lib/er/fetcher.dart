@@ -232,6 +232,8 @@ entryPoint(SendPort sendPort) {
             String trueUrl = userSetting.disableBypassSni
                 ? taskBean.url
                 : (Uri.parse(taskBean.url).replace(host: inHost)).toString();
+            isolateDio.options.headers['Host'] =
+                inHost == ImageCatHost ? inHost : ImageHost;
             isolateDio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(

@@ -23,6 +23,7 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 
 const ImageHost = "i.pximg.net";
+const ImageCatHost = "i.pixiv.cat";
 const ImageSHost = "s.pximg.net";
 
 const Map<String, String> PixivHeader = {
@@ -132,7 +133,7 @@ class PixivProvider {
     return ExtendedNetworkImageProvider(url, headers: {
       "referer": "https://app-api.pixiv.net/",
       "User-Agent": "PixivIOSApp/5.8.0",
-      "Host":host?? Uri.parse(url).host
+      "Host": host ?? Uri.parse(url).host
     });
   }
 }

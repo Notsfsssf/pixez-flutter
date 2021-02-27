@@ -200,5 +200,8 @@
   "translate": "翻譯",
   "retry_seed_task": "重試所有掛起工作",
   "manga_detail_page_quality":"漫畫內容頁圖像品質",
-  "follow_after_star":"收藏后關註繪師"
+  "follow_after_star":"收藏后關註繪師",
+  "default_title": "默認",
+  "image_site": "Image Site",
+  "network": "網絡"
 }

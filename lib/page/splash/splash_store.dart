@@ -30,6 +30,7 @@ class SplashStore = _SplashStoreBase with _$SplashStore;
 abstract class _SplashStoreBase with Store {
   final OnezeroClient onezeroClient;
   final String OK_TEXT = '♪^∀^●)ノ';
+  List<String> _hardCoreArray = ["210.140.92.143", "210.140.92.145"];
   @observable
   String helloWord = "= w =";
   String host = ImageHost;
@@ -37,6 +38,7 @@ abstract class _SplashStoreBase with Store {
   OnezeroResponse onezeroResponse;
 
   _SplashStoreBase(this.onezeroClient);
+
   @action
   hello() async {
     maybeFetch();
@@ -50,7 +52,6 @@ abstract class _SplashStoreBase with Store {
     fetch();
   }
 
-  List<String> hardCoreArray = ["210.140.92.143", "210.140.92.145"];
   @action
   fetch() async {
     if (helloWord == OK_TEXT) return;
@@ -62,34 +63,30 @@ abstract class _SplashStoreBase with Store {
         LPrinter.d(host);
         if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
           this.host = host;
-        try {
-          fetcher.notify(this.host);
-        } catch (e) {}
       }).catchError((e) {
-        this.host = hardCoreArray[Random().nextInt(hardCoreArray.length)];
+        this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
         helloWord = OK_TEXT;
-        try {
-          fetcher.notify(this.host);
-        } catch (e) {}
       });
     } catch (e) {
-      this.host = hardCoreArray[Random().nextInt(hardCoreArray.length)];
+      this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
       helloWord = OK_TEXT;
-      try {
-        fetcher.notify(this.host);
-      } catch (e) {}
     } finally {
       onezeroClient.httpClient.unlock();
     }
+    try {
+      fetcher.notify(this.host);
+    } catch (e) {}
+  }
 
-    // try {
-    //   OnezeroResponse onezeroResponse =
-    //       await onezeroClient.queryDns(ApiClient.BASE_API_URL_HOST);
-    //   this.onezeroResponse = onezeroResponse;
-    //   helloWord = '♪^∀^●)ノ';
-    // } catch (e) {
-    //   print(e);
-    //   helloWord = 'T_T';
-    // }
+  setHost(String value) {
+    host = value;
+    if (host != ImageHost) {
+      try {
+        fetcher.notify(this.host);
+      } catch (e) {}
+    } else {
+      helloWord = ' w(ﾟДﾟ)w ';
+      maybeFetch();
+    }
   }
 }

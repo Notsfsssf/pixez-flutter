@@ -58,175 +58,197 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(I18n.of(context).view_comment),
-        ),
-        body: SafeArea(
-          child: Stack(
-            children: <Widget>[
-              SmartRefresher(
-                controller: easyRefreshController,
-                enablePullUp: true,
-                header: (Platform.isAndroid)
-                    ? MaterialClassicHeader(
-                        color: Theme.of(context).accentColor,
-                        backgroundColor: Theme.of(context).cardColor,
-                      )
-                    : ClassicHeader(),
-                onRefresh: () => _store.fetch(),
-                onLoading: () => _store.next(),
-                child: _store.comments.isNotEmpty
-                    ? ListView.separated(
-                        itemCount: _store.comments.length,
-                        itemBuilder: (context, index) {
-                          var comment = _store.comments[index];
-                          return Container(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: PainterAvatar(
-                                    url: _store.comments[index].user
-                                        .profileImageUrls.medium,
-                                    id: _store.comments[index].user.id,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            comment.user.name,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .accentColor),
-                                          ),
-                                          FlatButton(
-                                              onPressed: () {
-                                                parentCommentId = comment.id;
-                                                setState(() {
-                                                  parentCommentName =
-                                                      comment.user.name;
-                                                });
-                                              },
-                                              child: Text(
-                                                "Reply",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .accentColor),
-                                              ))
-                                        ],
-                                      ),
-                                      ...comment.parentComment.user != null
-                                          ? [
-                                              Text(
-                                                  'To ${comment.parentComment.user.name}')
-                                            ]
-                                          : [],
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 4.0),
-                                        child: SelectableText(
-                                          comment.comment,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 8.0),
-                                        child: Text(comment.date
-                                            .toString()
-                                            .toShortTime()),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Divider(),
-                          );
-                        },
-                      )
-                    : Container(),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  color: Theme.of(context).dialogBackgroundColor,
-                  child: Row(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.book),
-                        onPressed: () {
-                          setState(() {
-                            parentCommentName = null;
-                            parentCommentId = null;
-                          });
-                        },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(I18n.of(context).view_comment),
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            SmartRefresher(
+              controller: easyRefreshController,
+              enablePullUp: true,
+              header: (Platform.isAndroid)
+                  ? MaterialClassicHeader(
+                      color: Theme.of(context).accentColor,
+                      backgroundColor: Theme.of(context).cardColor,
+                    )
+                  : ClassicHeader(),
+              onRefresh: () => _store.fetch(),
+              onLoading: () => _store.next(),
+              child: Observer(
+                builder: (context) {
+                  if (_store.errorMessage != null) {
+                    return Container(
+                      child: Center(
+                        child: Text(_store.errorMessage),
                       ),
-                      Expanded(
+                    );
+                  }
+                  if (_store.isEmpty) {
+                    return Container(
+                      child: Center(
                         child: Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 2.0, right: 8.0),
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                                primaryColor: Theme.of(context).accentColor),
-                            child: TextField(
-                              controller: _editController,
-                              decoration: InputDecoration(
-                                  labelText:
-                                      "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
-                                  suffixIcon: IconButton(
-                                      icon: Icon(
-                                        Icons.reply,
-                                      ),
-                                      onPressed: () async {
-                                        final client = apiClient;
-                                        String txt =
-                                            _editController.text.trim();
-                                        try {
-                                          if (txt.isNotEmpty)
-                                                await client.postIllustComment(
-                                                    widget.id, txt,
-                                                    parent_comment_id:
-                                                        parentCommentId);
-                                          _editController.clear();
-                                          _store.fetch();
-                                        } catch (e) {
-                                          print(e);
-                                        }
-                                      })),
-                            ),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('[ ]',
+                              style: Theme.of(context).textTheme.headline4),
+                        ),
+                      ),
+                    );
+                  }
+                  return _store.comments.isNotEmpty
+                      ? ListView.separated(
+                          itemCount: _store.comments.length,
+                          itemBuilder: (context, index) {
+                            var comment = _store.comments[index];
+                            return Container(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: PainterAvatar(
+                                      url: _store.comments[index].user
+                                          .profileImageUrls.medium,
+                                      id: _store.comments[index].user.id,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              comment.user.name,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .accentColor),
+                                            ),
+                                            FlatButton(
+                                                onPressed: () {
+                                                  parentCommentId = comment.id;
+                                                  setState(() {
+                                                    parentCommentName =
+                                                        comment.user.name;
+                                                  });
+                                                },
+                                                child: Text(
+                                                  "Reply",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
+                                                ))
+                                          ],
+                                        ),
+                                        ...comment.parentComment.user != null
+                                            ? [
+                                                Text(
+                                                    'To ${comment.parentComment.user.name}')
+                                              ]
+                                            : [],
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 4.0),
+                                          child: SelectableText(
+                                            comment.comment,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8.0),
+                                          child: Text(comment.date
+                                              .toString()
+                                              .toShortTime()),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Divider(),
+                            );
+                          },
+                        )
+                      : Container(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: Theme.of(context).dialogBackgroundColor,
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.book),
+                      onPressed: () {
+                        setState(() {
+                          parentCommentName = null;
+                          parentCommentId = null;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 2.0, right: 8.0),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                              primaryColor: Theme.of(context).accentColor),
+                          child: TextField(
+                            controller: _editController,
+                            decoration: InputDecoration(
+                                labelText:
+                                    "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                suffixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.reply,
+                                    ),
+                                    onPressed: () async {
+                                      final client = apiClient;
+                                      String txt = _editController.text.trim();
+                                      try {
+                                        if (txt.isNotEmpty)
+                                          await client.postIllustComment(
+                                              widget.id, txt,
+                                              parent_comment_id:
+                                                  parentCommentId);
+                                        _editController.clear();
+                                        _store.fetch();
+                                      } catch (e) {
+                                        print(e);
+                                      }
+                                    })),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
-      );
-    });
+      ),
+    );
   }
 }
