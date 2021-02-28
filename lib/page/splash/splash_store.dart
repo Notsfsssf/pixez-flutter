@@ -54,7 +54,9 @@ abstract class _SplashStoreBase with Store {
 
   @action
   fetch() async {
-    if (helloWord == OK_TEXT) return;
+    if (helloWord == OK_TEXT ||
+        host != ImageHost ||
+        userSetting.pictureSource != ImageHost) return;
     try {
       final value = await onezeroClient.queryDns(ImageHost);
       value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
@@ -65,8 +67,7 @@ abstract class _SplashStoreBase with Store {
     } catch (e) {
       this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
       helloWord = OK_TEXT;
-    } finally {
-    }
+    } finally {}
     try {
       fetcher.notify(this.host);
     } catch (e) {}

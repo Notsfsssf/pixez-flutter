@@ -85,8 +85,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 74
-        versionName "0.4.0X"
+        versionCode 78
+        versionName "0.4.0 Lotus"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
