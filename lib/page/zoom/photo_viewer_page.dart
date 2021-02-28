@@ -112,7 +112,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
           headers: {
             "referer": "https://app-api.pixiv.net/",
             "User-Agent": "PixivIOSApp/5.8.0",
-            "Host": ImageHost
+            "Host": splashStore.host == ImageCatHost
+                ? ImageCatHost
+                : ImageHost
           },
           handleLoadingProgress: true,
           clearMemoryCacheWhenDispose: true,
@@ -183,7 +185,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               headers: {
                 "referer": "https://app-api.pixiv.net/",
                 "User-Agent": "PixivIOSApp/5.8.0",
-                "Host": ImageHost
+                "Host": splashStore.host == ImageCatHost
+                    ? ImageCatHost
+                    : ImageHost
               },
               handleLoadingProgress: true,
               clearMemoryCacheWhenDispose: true,

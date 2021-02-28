@@ -244,6 +244,7 @@ entryPoint(SendPort sendPort) {
               sendPort.send(
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
             }).catchError((e) {
+              LPrinter.d(e);
               try {
                 splashStore.maybeFetch();
                 sendPort.send(IsoContactBean(

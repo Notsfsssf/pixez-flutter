@@ -38,6 +38,7 @@ import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:share/share.dart';
+import 'package:pixez/component/pixiv_image.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;
@@ -544,7 +545,7 @@ class _UsersPageState extends State<UsersPage>
       final dio = Dio(BaseOptions(headers: {
         "referer": "https://app-api.pixiv.net/",
         "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": Uri.parse(url).host
+        "Host": splashStore.host == ImageCatHost ? ImageCatHost : ImageHost
       }));
       if (!userSetting.disableBypassSni)
         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

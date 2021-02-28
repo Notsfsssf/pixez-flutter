@@ -56,22 +56,16 @@ abstract class _SplashStoreBase with Store {
   fetch() async {
     if (helloWord == OK_TEXT) return;
     try {
-      onezeroClient.httpClient.lock();
-      onezeroClient.queryDns(ImageHost).then((value) {
-        value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
-        final host = value.answer.first.data;
-        LPrinter.d(host);
-        if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
-          this.host = host;
-      }).catchError((e) {
-        this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
-        helloWord = OK_TEXT;
-      });
+      final value = await onezeroClient.queryDns(ImageHost);
+      value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
+      final host = value.answer.first.data;
+      LPrinter.d(host);
+      if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
+        this.host = host;
     } catch (e) {
       this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
       helloWord = OK_TEXT;
     } finally {
-      onezeroClient.httpClient.unlock();
     }
     try {
       fetcher.notify(this.host);

@@ -26,12 +26,6 @@ const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.cat";
 const ImageSHost = "s.pximg.net";
 
-const Map<String, String> PixivHeader = {
-  "referer": "https://app-api.pixiv.net/",
-  "User-Agent": "PixivIOSApp/5.8.0",
-  "Host": ImageHost
-};
-
 class PixivImage extends HookWidget {
   final String url;
   final Widget placeWidget;
@@ -67,7 +61,9 @@ class PixivImage extends HookWidget {
       headers: {
         "referer": "https://app-api.pixiv.net/",
         "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": Uri.parse(url).host
+        "Host": splashStore.host == ImageCatHost
+            ? ImageCatHost
+            : Uri.parse(url).host
       },
       enableMemoryCache: enableMemoryCache ?? true,
       loadStateChanged: (ExtendedImageState state) {
@@ -133,7 +129,7 @@ class PixivProvider {
     return ExtendedNetworkImageProvider(url, headers: {
       "referer": "https://app-api.pixiv.net/",
       "User-Agent": "PixivIOSApp/5.8.0",
-      "Host": host ?? Uri.parse(url).host
+      "Host": (splashStore.host == ImageCatHost ? ImageCatHost : ImageHost)
     });
   }
 }

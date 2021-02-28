@@ -43,19 +43,6 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
-class KeepContent extends StatelessWidget {
-  final Widget item;
-
-  const KeepContent({Key key, this.item}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: item,
-    );
-  }
-}
-
 class AndroidHelloPage extends StatefulWidget {
   final LightingStore lightingStore;
 
@@ -225,10 +212,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         MaterialPageRoute(builder: (context) => GuidePage()),
         (route) => route == null,
       );
-    } else {
-      if (await DocumentPlugin.needChoice()) {
-        await showPathDialog(context, isFirst: true);
-      }
     }
   }
 }

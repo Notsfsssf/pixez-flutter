@@ -116,7 +116,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           icon: Icon(Icons.refresh_outlined),
                           onPressed: () async {
                             userSetting.setPictureSource(ImageHost);
-                            splashStore.setHost(ImageCatHost);
+                            splashStore.setHost(ImageHost);
                           },
                         ),
                       ),
@@ -131,7 +131,7 @@ class _NetworkPageState extends State<NetworkPage> {
                         selectedTileColor: Theme.of(context).accentColor,
                         onTap: () async {
                           userSetting.setPictureSource(ImageHost);
-                          splashStore.setHost(ImageCatHost);
+                          splashStore.setHost(ImageHost);
                         },
                       ),
                       ListTile(

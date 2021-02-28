@@ -33,6 +33,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
+import 'package:pixez/page/directory/save_mode_choice_page.dart';
 
 part 'save_store.g.dart';
 
@@ -279,6 +280,11 @@ abstract class _SaveStoreBase with Store {
   @action
   Future<void> saveImage(Illusts illusts,
       {int index, bool redo = false}) async {
+    try {
+      if (await DocumentPlugin.needChoice()) {
+        await showPathDialog(context, isFirst: true);
+      }
+    } catch (e) {}
     String memType;
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage.originalImageUrl;

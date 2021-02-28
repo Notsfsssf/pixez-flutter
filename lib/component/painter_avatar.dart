@@ -19,6 +19,8 @@ import 'package:flutter/widgets.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/main.dart';
 
 class PainterAvatar extends StatefulWidget {
   final String url;
@@ -55,8 +57,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 height: 60,
                 width: 60,
                 child: CircleAvatar(
-                  backgroundImage: PixivProvider.url(widget.url.toTrueUrl(),
-                      host: Uri.parse(widget.url).host),
+                  backgroundImage: PixivProvider.url(widget.url.toTrueUrl()),
                   radius: 100.0,
                 ),
               )
@@ -66,8 +67,12 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: PixivProvider.url(widget.url.toTrueUrl(),
-                          host: Uri.parse(widget.url).host),
+                      image: PixivProvider.url(
+                        widget.url.toTrueUrl(),
+                        host: splashStore.host == ImageCatHost
+                            ? ImageCatHost
+                            : ImageHost,
+                      ),
                       fit: BoxFit.cover),
                 ),
               ));

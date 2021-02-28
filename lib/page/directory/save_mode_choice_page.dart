@@ -26,6 +26,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'directory_page.dart';
 
+showPathDialog(BuildContext context, {bool isFirst = false}) async {
+  return Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => SaveModeChoicePage(
+            isFirst: isFirst,
+          )));
+}
+
 class SaveModeChoicePage extends StatefulWidget {
   bool isFirst;
 
@@ -173,12 +180,8 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            Text(I18n
-                                .of(context)
-                                .old_way_message),
-                            Text(I18n
-                                .of(context)
-                                .legacy_mode_warning)
+                            Text(I18n.of(context).old_way_message),
+                            Text(I18n.of(context).legacy_mode_warning)
                           ],
                         ),
                       )
@@ -202,9 +205,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       print('Running on ${androidInfo.version.sdkInt}');
       if (androidInfo.version.sdkInt > 29) {
-        BotToast.showText(text: I18n
-            .of(context)
-            .legacy_mode_warning);
+        BotToast.showText(text: I18n.of(context).legacy_mode_warning);
       }
       await _helplessfun(context, isFirst: widget.isFirst);
       Navigator.of(context).pop();
@@ -216,13 +217,6 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       _animationController.forward();
     }
   }
-}
-
-showPathDialog(BuildContext context, {bool isFirst = false}) async {
-  return Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => SaveModeChoicePage(
-            isFirst: isFirst,
-          )));
 }
 
 Future _saffun(BuildContext context) async {

@@ -21,6 +21,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/main.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
@@ -79,7 +80,9 @@ class SpotlightCard extends StatelessWidget {
                       headers: {
                         "referer": "https://app-api.pixiv.net/",
                         "User-Agent": "PixivIOSApp/5.8.0",
-                        "Host": ImageHost
+                        "Host": splashStore.host == ImageCatHost
+                            ? ImageCatHost
+                            : ImageHost
                       },
                       fit: BoxFit.cover,
                       height: 150.0,
