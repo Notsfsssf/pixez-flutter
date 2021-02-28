@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
@@ -168,11 +169,17 @@ class _LoginPageState extends State<LoginPage> {
     if (!userSetting.disableBypassSni) {
       await WeissPlugin.start();
       await WeissPlugin.proxy();
+      Leader.push(
+          context,
+          WebViewPage(
+            url: url,
+          ));
+    } else {
+      try {
+        launch(url);
+      } catch (e) {
+        BotToast.showText(text: e.toString());
+      }
     }
-    Leader.push(
-        context,
-        WebViewPage(
-          url: url,
-        ));
   }
 }
