@@ -198,7 +198,9 @@ abstract class _UserSettingBase with Store {
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
-    pictureSource = prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost;
+    pictureSource = disableBypassSni
+        ? ImageHost
+        : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
     splashStore.setHost(pictureSource);
 
     for (var i in ThemeMode.values) {
