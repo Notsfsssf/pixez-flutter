@@ -281,7 +281,7 @@ abstract class _SaveStoreBase with Store {
   Future<void> saveImage(Illusts illusts,
       {int index, bool redo = false}) async {
     try {
-      if (await DocumentPlugin.needChoice()) {
+      if (Platform.isAndroid && await DocumentPlugin.needChoice()) {
         await showPathDialog(context, isFirst: true);
       }
     } catch (e) {}
