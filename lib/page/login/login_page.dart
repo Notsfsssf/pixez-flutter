@@ -147,9 +147,9 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () async {
                               final url =
                                   'https://www.pixiv.net/terms/?page=term';
-                              if (await canLaunch(url)) {
+                              try {
                                 await launch(url);
-                              } else {}
+                              } catch (e) {}
                             },
                           ),
                         ],

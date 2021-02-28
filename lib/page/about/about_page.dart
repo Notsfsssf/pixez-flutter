@@ -98,6 +98,7 @@ class _AboutPageState extends State<AboutPage> {
 
   bool hasNewVersion;
   IAPStore iapStore;
+
   @override
   void initState() {
     iapStore = IAPStore();
@@ -313,9 +314,9 @@ class _AboutPageState extends State<AboutPage> {
             onTap: () async {
               if (Platform.isIOS) {
                 var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
-                if (await canLaunch(url)) {
+                try {
                   await launch(url);
-                } else {}
+                } catch (e) {}
               }
             },
           ),

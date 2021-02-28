@@ -111,9 +111,9 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                 return null;
               },
               onTapUrl: (String url) async {
-                if (await canLaunch(url)) {
+                try {
                   await launch(url);
-                } else {
+                } catch (e) {
                   Share.share(url);
                 }
               },

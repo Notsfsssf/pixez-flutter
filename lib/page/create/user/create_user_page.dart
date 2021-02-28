@@ -49,32 +49,31 @@ class _CreateUserPageState extends State<CreateUserPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Builder(
-            builder: (context) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  TextFormField(
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.supervised_user_circle),
-                      hintText: I18n.of(context).nickname,
-                      labelText: '${I18n.of(context).nickname} *',
-                    ),
-                    controller: _userNameController,
+          child: Builder(builder: (context) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                TextFormField(
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.supervised_user_circle),
+                    hintText: I18n.of(context).nickname,
+                    labelText: '${I18n.of(context).nickname} *',
                   ),
-                  RaisedButton(
-                    onPressed: () async {
-                      try {
-                        final name = _userNameController.text.trim();
-                        if (name == null || name.isEmpty) return;
-                        final response =
-                            await AccountClient().createProvisionalAccount(name);
-                        print(response.data);
-                        var createUserResponseFromJson2 =
-                            CreateUserResponse.fromJson(response.data);
-                        Navigator.of(context).pop(createUserResponseFromJson2);
+                  controller: _userNameController,
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    try {
+                      final name = _userNameController.text.trim();
+                      if (name == null || name.isEmpty) return;
+                      final response =
+                          await AccountClient().createProvisionalAccount(name);
+                      print(response.data);
+                      var createUserResponseFromJson2 =
+                          CreateUserResponse.fromJson(response.data);
+                      Navigator.of(context).pop(createUserResponseFromJson2);
 /*                AccountProvider accountProvider = new AccountProvider();
                         await accountProvider.open();
                         var accountResponse = createUserResponseFromJson2.body;
@@ -92,31 +91,30 @@ class _CreateUserPageState extends State<CreateUserPage> {
                           ..mailAddress = user.mailAddress
                           ..account = user.account
                           ..xRestrict = user.xRestrict);*/
-                      } catch (e) {
-                        Scaffold.of(context)
-                            .showSnackBar(SnackBar(content: Text("创建次数过多")));
-                      }
-                    },
-                    child: Text("Start"),
+                    } catch (e) {
+                      Scaffold.of(context)
+                          .showSnackBar(SnackBar(content: Text("创建次数过多")));
+                    }
+                  },
+                  child: Text("Start"),
+                ),
+                Center(
+                  child: Text(I18n.of(context).nickname_can_be_change_anytime),
+                ),
+                FlatButton(
+                  child: Text(
+                    I18n.of(context).terms,
                   ),
-                  Center(
-                    child: Text(I18n.of(context).nickname_can_be_change_anytime),
-                  ),
-                  FlatButton(
-                    child: Text(
-                      I18n.of(context).terms,
-                    ),
-                    onPressed: () async {
-                      final url = 'https://www.pixiv.net/terms/?page=term';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {}
-                    },
-                  ),
-                ],
-              );
-            }
-          ),
+                  onPressed: () async {
+                    final url = 'https://www.pixiv.net/terms/?page=term';
+                    try {
+                      await launch(url);
+                    } catch (e) {}
+                  },
+                ),
+              ],
+            );
+          }),
         ),
       ),
     );

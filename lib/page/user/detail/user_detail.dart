@@ -105,9 +105,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         DataCell(Text(profile.twitter_account),
                             onTap: () async {
                           final url = profile.twitter_url;
-                          if (await canLaunch(url)) {
+                          try {
                             await launch(url);
-                          } else {}
+                          } catch (e) {}
                         }),
                       ]),
                       DataRow(cells: [
@@ -124,9 +124,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
                             onTap: () async {
                           if (!public.pawoo) return;
                           var url = detail.profile.pawoo_url;
-                          if (await canLaunch(url)) {
+                          try {
                             await launch(url);
-                          } else {}
+                          } catch (e) {}
                         }),
                       ]),
                     ],
