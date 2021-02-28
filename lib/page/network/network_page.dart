@@ -38,10 +38,24 @@ class _NetworkPageState extends State<NetworkPage> {
               automaticallyImplyLeading: _automaticallyImplyLeading,
               elevation: 0.0,
             ),
-            Text(
-              I18n.of(context).network,
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                I18n.of(context).network,
+                style: Theme.of(context).textTheme.headline5,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                "tip:如果不能载图，可以尝试切换图床，你可以在设置页重新回到这里",
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
             Padding(
@@ -92,7 +106,12 @@ class _NetworkPageState extends State<NetworkPage> {
                   child: Column(
                     children: [
                       ListTile(
-                        title: Text(I18n.of(context).image_site),
+                        title: Text(
+                          I18n.of(context).image_site,
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color),
+                        ),
                         trailing: IconButton(
                           icon: Icon(Icons.refresh_outlined),
                           onPressed: () async {
@@ -102,7 +121,12 @@ class _NetworkPageState extends State<NetworkPage> {
                         ),
                       ),
                       ListTile(
-                        title: Text(I18n.of(context).default_title),
+                        title: Text(
+                          I18n.of(context).default_title,
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color),
+                        ),
                         selected: userSetting.pictureSource == ImageHost,
                         selectedTileColor: Theme.of(context).accentColor,
                         onTap: () async {
@@ -111,7 +135,12 @@ class _NetworkPageState extends State<NetworkPage> {
                         },
                       ),
                       ListTile(
-                        title: Text(ImageCatHost),
+                        title: Text(
+                          ImageCatHost,
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color),
+                        ),
                         selected: userSetting.pictureSource == ImageCatHost,
                         selectedTileColor: Theme.of(context).accentColor,
                         onTap: () async {
@@ -123,7 +152,7 @@ class _NetworkPageState extends State<NetworkPage> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         );
       }),
