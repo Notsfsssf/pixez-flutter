@@ -191,7 +191,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   title: Text(I18n.of(context).network),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => NetworkPage()));
+                        builder: (context) => NetworkPage(automaticallyImplyLeading: true,)));
                   },
                 ),
               ),

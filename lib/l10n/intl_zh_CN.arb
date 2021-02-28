@@ -203,5 +203,7 @@
   "follow_after_star":"收藏后关注画师",
   "default_title": "默认",
   "image_site": "图床",
-  "network": "网络"
+  "network": "网络",
+  "select_language": "语言选择",
+  "network_question": "你的网络环境能够正常访问pixiv吗?"
 }

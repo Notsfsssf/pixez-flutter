@@ -28,6 +28,7 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/Init/guide_page.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
@@ -219,9 +220,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   initPlatformState() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('language_num') == null) {
+    if (prefs.getBool('guide_enable') == null) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => InitPage()),
+        MaterialPageRoute(builder: (context) => GuidePage()),
         (route) => route == null,
       );
     } else {

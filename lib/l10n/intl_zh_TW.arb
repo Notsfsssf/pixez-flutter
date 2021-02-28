@@ -203,5 +203,7 @@
   "follow_after_star":"收藏后關註繪師",
   "default_title": "默認",
   "image_site": "Image Site",
-  "network": "網絡"
+  "network": "網絡",
+  "select_language": "語言選擇",
+  "network_question": "妳的網絡環境能夠正常訪問pixiv嗎?"
 }

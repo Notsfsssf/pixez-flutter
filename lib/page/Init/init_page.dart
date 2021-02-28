@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
@@ -35,30 +36,26 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_forward),
-          onPressed: () async {
-            var prefs = await SharedPreferences.getInstance();
-            await prefs.setInt('language_num', userSetting.languageNum);
-            //有可能用户啥都没选
-            final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
-            ApiClient.Accept_Language = languageList[userSetting.languageNum];
-            apiClient.httpClient.options
-                    .headers[HttpHeaders.acceptLanguageHeader] =
-                ApiClient.Accept_Language;
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => NetworkSelectPage()));
-          },
-        ),
         body: Container(
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
+            child: ListView(
               children: <Widget>[
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  automaticallyImplyLeading: false,
+                  elevation: 0.0,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください"),
+                  child: Text(
+                    I18n.of(context).select_language,
+                    style: Theme.of(context).textTheme.headline5,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Center(child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください")),
                 ),
                 Observer(builder: (_) {
                   return TabBar(

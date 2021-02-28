@@ -106,7 +106,7 @@
   "personal": "Personal",
   "pixel": "Resolution",
   "please_note_that": "Notice",
-  "please_note_that_content": "This option should be ON unless you are able to access pixiv.net without any issue.",
+  "please_note_that_content": "This option should be OFF unless you are able to access pixiv.net without any issue.",
   "popular_desc": "Popular",
   "private": "Private",
   "public": "Public",
@@ -203,5 +203,7 @@
   "follow_after_star":"follow after star",
   "default_title": "Default",
   "image_site": "Image Site",
-  "network": "Network"
+  "network": "Network",
+  "select_language": "Select Language",
+  "network_question": "Is your network environment able to access pixiv normally?"
 }
