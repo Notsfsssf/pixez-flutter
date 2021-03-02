@@ -42,7 +42,7 @@
   "display_mode_message": "選擇支援的顯示模式（實驗性）",
   "display_mode_warning": "意在解決部分支援高影格率裝置白名單機制的問題,如果沒有問題，請不要隨意改動。如果出現任何問題，請清除程式資料",
   "donate_message": "支持一下開發者吧!",
-  "donate_title": "如果妳覺得這個程式還不錯",
+  "donate_title": "如果你覺得這個程式還不錯",
   "donation": "抖內",
   "dont_have_account": "沒有帳戶？",
   "download_address": "下載地址",
@@ -189,7 +189,7 @@
   "old_way": "舊版方式",
   "permission_denied": "未取得授權",
   "old_way_message": "以舊版方式儲存圖像，需要取得外部儲存空間的存取權限，並選擇一個資料夾以繼續",
-  "return_again_to_exit": "再次點擊返回鍵以退出",
+  "return_again_to_exit": "再次點擊返回鍵退出",
   "save_format_lose_part_warning": "儲存格式必須包含{part},否則多P作品會儲存出錯！",
   "save_painter_avatar": "儲存繪師頭貼",
   "favorited_tag": "標籤收藏",
@@ -201,9 +201,9 @@
   "retry_seed_task": "重試所有掛起工作",
   "manga_detail_page_quality":"漫畫內容頁圖像品質",
   "follow_after_star":"收藏后關註繪師",
-  "default_title": "默認",
-  "image_site": "Image Site",
-  "network": "網絡",
-  "select_language": "語言選擇",
-  "network_question": "妳的網絡環境能夠正常訪問pixiv嗎?"
+  "default_title": "預設",
+  "image_site": "圖片來源",
+  "network": "網路",
+  "select_language": "選取語言",
+  "network_question": "你的網路環境能夠正常訪問 pixiv 嗎？"
 }
