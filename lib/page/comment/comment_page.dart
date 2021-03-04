@@ -63,134 +63,136 @@ class _CommentPageState extends State<CommentPage> {
         title: Text(I18n.of(context).view_comment),
       ),
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: <Widget>[
-            SmartRefresher(
-              controller: easyRefreshController,
-              enablePullUp: true,
-              header: (Platform.isAndroid)
-                  ? MaterialClassicHeader(
-                      color: Theme.of(context).accentColor,
-                      backgroundColor: Theme.of(context).cardColor,
-                    )
-                  : ClassicHeader(),
-              onRefresh: () => _store.fetch(),
-              onLoading: () => _store.next(),
-              child: Observer(
-                builder: (context) {
-                  if (_store.errorMessage != null) {
-                    return Container(
-                      child: Center(
-                        child: Text(_store.errorMessage),
-                      ),
-                    );
-                  }
-                  if (_store.isEmpty) {
-                    return Container(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('[ ]',
-                              style: Theme.of(context).textTheme.headline4),
+            Expanded(
+              child: SmartRefresher(
+                controller: easyRefreshController,
+                enablePullUp: true,
+                header: (Platform.isAndroid)
+                    ? MaterialClassicHeader(
+                        color: Theme.of(context).accentColor,
+                        backgroundColor: Theme.of(context).cardColor,
+                      )
+                    : ClassicHeader(),
+                onRefresh: () => _store.fetch(),
+                onLoading: () => _store.next(),
+                child: Observer(
+                  builder: (context) {
+                    if (_store.errorMessage != null) {
+                      return Container(
+                        child: Center(
+                          child: Text(_store.errorMessage),
                         ),
-                      ),
-                    );
-                  }
-                  return _store.comments.isNotEmpty
-                      ? ListView.separated(
-                          itemCount: _store.comments.length,
-                          itemBuilder: (context, index) {
-                            var comment = _store.comments[index];
-                            return Container(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: PainterAvatar(
-                                      url: _store.comments[index].user
-                                          .profileImageUrls.medium,
-                                      id: _store.comments[index].user.id,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(
-                                              comment.user.name,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                            ),
-                                            FlatButton(
-                                                onPressed: () {
-                                                  parentCommentId = comment.id;
-                                                  setState(() {
-                                                    parentCommentName =
-                                                        comment.user.name;
-                                                  });
-                                                },
-                                                child: Text(
-                                                  "Reply",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .accentColor),
-                                                ))
-                                          ],
-                                        ),
-                                        ...comment.parentComment.user != null
-                                            ? [
-                                                Text(
-                                                    'To ${comment.parentComment.user.name}')
-                                              ]
-                                            : [],
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 4.0),
-                                          child: SelectableText(
-                                            comment.comment,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Text(comment.date
-                                              .toString()
-                                              .toShortTime()),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Divider(),
-                            );
-                          },
-                        )
-                      : Container(
-                          child: Center(
-                            child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (_store.isEmpty) {
+                      return Container(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('[ ]',
+                                style: Theme.of(context).textTheme.headline4),
                           ),
-                        );
-                },
+                        ),
+                      );
+                    }
+                    return _store.comments.isNotEmpty
+                        ? ListView.separated(
+                            itemCount: _store.comments.length,
+                            itemBuilder: (context, index) {
+                              var comment = _store.comments[index];
+                              return Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: PainterAvatar(
+                                        url: _store.comments[index].user
+                                            .profileImageUrls.medium,
+                                        id: _store.comments[index].user.id,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(
+                                                comment.user.name,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .accentColor),
+                                              ),
+                                              FlatButton(
+                                                  onPressed: () {
+                                                    parentCommentId = comment.id;
+                                                    setState(() {
+                                                      parentCommentName =
+                                                          comment.user.name;
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "Reply",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .accentColor),
+                                                  ))
+                                            ],
+                                          ),
+                                          ...comment.parentComment.user != null
+                                              ? [
+                                                  Text(
+                                                      'To ${comment.parentComment.user.name}')
+                                                ]
+                                              : [],
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 4.0),
+                                            child: SelectableText(
+                                              comment.comment,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8.0),
+                                            child: Text(comment.date
+                                                .toString()
+                                                .toShortTime()),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder: (BuildContext context, int index) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Divider(),
+                              );
+                            },
+                          )
+                        : Container(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                  },
+                ),
               ),
             ),
             Align(
