@@ -67,7 +67,7 @@ dependencies:
   image_picker: ^0.7.2
   intl: ^0.17.0
   extended_nested_scroll_view: 2.0.0-dev
-#  intl_utils: ^2.0.0
+  intl_utils: ^2.0.0
   quiver: ^3.0.0
   flutter_swiper: ^1.1.6
   image: ^3.0.1
@@ -87,10 +87,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.5
-  mobx_codegen:
-    git:
-      url: https://github.com/fzyzcjy/mobx.dart
-      path: mobx_codegen
+#  mobx_codegen:
+#    git:
+#      url: https://github.com/fzyzcjy/mobx.dart
+#      path: mobx_codegen
   json_serializable: ^4.0.2
 
 
