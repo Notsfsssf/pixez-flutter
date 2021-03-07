@@ -7,7 +7,7 @@ class CryptoPlugin {
 
   static Future<String> getCodeVer() async {
     Constants.code_verifier = await platform.invokeMethod("code_verifier");
-    return Constants.code_verifier;
+    return Constants.code_verifier!;
   }
 
   static Future<String> getCodeChallenge() async {

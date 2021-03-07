@@ -40,9 +40,9 @@ class HelloPage extends StatefulWidget {
 }
 
 class _HelloPageState extends State<HelloPage> {
-  StreamSubscription _sub;
-  int index;
-  PageController _pageController;
+  late StreamSubscription _sub;
+  late int index;
+  late PageController _pageController;
 
   @override
   void dispose() {

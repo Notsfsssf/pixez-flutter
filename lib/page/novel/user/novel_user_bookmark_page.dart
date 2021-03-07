@@ -24,7 +24,7 @@ import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
 class NovelUserBookmarkPage extends HookWidget {
   final int id;
-  NovelUserBookmarkPage({@required this.id});
+  NovelUserBookmarkPage({required this.id});
   @override
   Widget build(BuildContext context) {
     final restrict = useState<String>('public');
@@ -34,7 +34,7 @@ class NovelUserBookmarkPage extends HookWidget {
       children: [
         Align(
           alignment: Alignment.centerRight,
-          child: int.parse(accountStore.now.userId) == id
+          child: int.parse(accountStore.now!.userId) == id
               ? IconButton(
                   icon: Icon(Icons.list),
                   onPressed: () {

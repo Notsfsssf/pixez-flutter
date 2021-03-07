@@ -32,20 +32,20 @@ abstract class _IllustStoreBase with Store {
   final int id;
   final ApiClient client = apiClient;
   @observable
-  Illusts illusts;
+  Illusts? illusts;
   @observable
-  bool isBookmark;
+  bool isBookmark = false;
   @observable
-  String errorMessage;
+  String? errorMessage;
 
   @observable
   int state = 0;
 
   void dispose() {
     if (illusts != null) {
-      if (illusts.pageCount != 1) {
-        for (var i in illusts.metaPages) {
-          if (illusts.metaPages.indexOf(i) == 0) continue;
+      if (illusts!.pageCount != 1) {
+        for (var i in illusts!.metaPages) {
+          if (illusts!.metaPages.indexOf(i) == 0) continue;
           final provider = ExtendedNetworkImageProvider(
               userSetting.pictureQuality == 0
                   ? i.imageUrls.medium
@@ -69,16 +69,17 @@ abstract class _IllustStoreBase with Store {
         Response response = await client.getIllustDetail(id);
         final result = Illusts.fromJson(response.data['illust']);
         illusts = result;
-        isBookmark = illusts.isBookmarked;
+        isBookmark = illusts!.isBookmarked;
         state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
       } on DioError catch (e) {
         if (e.response != null) {
-          if (e.response.statusCode == HttpStatus.notFound) {
+          if (e.response!.statusCode == HttpStatus.notFound) {
             errorMessage = '404 Not Found';
             return;
           }
           try {
-            errorMessage = ErrorMessage.fromJson(e.response.data).error.message;
+            errorMessage =
+                ErrorMessage.fromJson(e.response!.data).error.message;
           } catch (e) {
             errorMessage = e.toString();
           }
@@ -87,41 +88,41 @@ abstract class _IllustStoreBase with Store {
         }
       }
     }
-    if (illusts != null) historyStore.insert(illusts);
+    if (illusts != null) historyStore.insert(illusts!);
   }
 
   Future<bool> followAfterStar() async {
     try {
-      if (!illusts.user.isFollowed) {
-        await apiClient.postFollowUser(illusts.user.id, "public");
-        return illusts.user.isFollowed = true;
+      if (!illusts!.user.isFollowed) {
+        await apiClient.postFollowUser(illusts!.user.id, "public");
+        return illusts!.user.isFollowed = true;
       }
     } catch (e) {}
     return false;
   }
 
   @action
-  Future<bool> star({String restrict = 'public', List<String> tags}) async {
+  Future<bool> star({String restrict = 'public', List<String>? tags}) async {
     state = 1;
-    if (!illusts.isBookmarked) {
+    if (!illusts!.isBookmarked) {
       try {
         await ApiClient(isBookmark: true)
-            .postLikeIllust(illusts.id, restrict, tags);
-        illusts.isBookmarked = true;
+            .postLikeIllust(illusts!.id, restrict, tags);
+        illusts!.isBookmarked = true;
         isBookmark = true;
         state = 2;
         return true;
       } catch (e) {}
     } else {
       try {
-        await ApiClient(isBookmark: true).postUnLikeIllust(illusts.id);
-        illusts.isBookmarked = false;
+        await ApiClient(isBookmark: true).postUnLikeIllust(illusts!.id);
+        illusts!.isBookmarked = false;
         isBookmark = false;
         state = 0;
         return false;
       } catch (e) {}
     }
-    state = illusts.isBookmarked ? 2 : 0;
-    return illusts.isBookmarked;
+    state = illusts!.isBookmarked ? 2 : 0;
+    return illusts!.isBookmarked;
   }
 }

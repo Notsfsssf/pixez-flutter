@@ -21,5 +21,5 @@ class Constants {
   //     bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);//为何没用啊咕鸽？
   static bool isGooglePlay = true;
   static int type = 0;
-  static String code_verifier = null;
+  static String? code_verifier = null;
 }

@@ -5,7 +5,8 @@ import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 class NovelResultList extends StatefulWidget {
   final String word;
 
-  const NovelResultList({Key key, this.word}) : super(key: key);
+  const NovelResultList({Key? key, required this.word}) : super(key: key);
+
   @override
   _NovelResultListState createState() => _NovelResultListState();
 }

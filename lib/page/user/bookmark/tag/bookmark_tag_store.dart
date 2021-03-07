@@ -26,13 +26,13 @@ abstract class _BookMarkTagStoreBase with Store {
   ObservableList<BookmarkTag> bookmarkTags = ObservableList();
   final RefreshController _controller;
   final int id;
-  String nextUrl;
+  String? nextUrl;
   _BookMarkTagStoreBase(this.id, this._controller);
   @action
   fetch(String restrict) async {
     nextUrl = null;
-    _controller.headerMode.value = RefreshStatus.idle;
-    _controller.footerMode.value = LoadStatus.idle;
+    _controller.headerMode?.value = RefreshStatus.idle;
+    _controller.footerMode?.value = LoadStatus.idle;
     try {
       var result =
           await apiClient.getUserBookmarkTagsIllust(id, restrict: restrict);
@@ -47,9 +47,9 @@ abstract class _BookMarkTagStoreBase with Store {
 
   @action
   next() async {
-    if (nextUrl != null && nextUrl.isNotEmpty) {
+    if (nextUrl != null && nextUrl!.isNotEmpty) {
       try {
-        final result = await apiClient.getNext(nextUrl);
+        final result = await apiClient.getNext(nextUrl!);
         var r = IllustBookmarkTagsResponse.fromJson(result.data);
         nextUrl = r.nextUrl;
         bookmarkTags.addAll(r.bookmarkTags);

@@ -9,9 +9,9 @@ import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 
 class NetworkPage extends StatefulWidget {
-  final bool automaticallyImplyLeading;
+  final bool? automaticallyImplyLeading;
 
-  const NetworkPage({Key key, this.automaticallyImplyLeading})
+  const NetworkPage({Key? key, this.automaticallyImplyLeading})
       : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class NetworkPage extends StatefulWidget {
 }
 
 class _NetworkPageState extends State<NetworkPage> {
-  bool _automaticallyImplyLeading;
+  late bool _automaticallyImplyLeading;
 
   @override
   void initState() {
@@ -110,7 +110,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           I18n.of(context).image_site,
                           style: TextStyle(
                               color:
-                                  Theme.of(context).textTheme.bodyText1.color),
+                                  Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.refresh_outlined),
@@ -125,7 +125,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           I18n.of(context).default_title,
                           style: TextStyle(
                               color:
-                                  Theme.of(context).textTheme.bodyText1.color),
+                                  Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         selected: userSetting.pictureSource == ImageHost,
                         selectedTileColor: Theme.of(context).accentColor,
@@ -139,7 +139,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           ImageCatHost,
                           style: TextStyle(
                               color:
-                                  Theme.of(context).textTheme.bodyText1.color),
+                                  Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         selected: userSetting.pictureSource == ImageCatHost,
                         selectedTileColor: Theme.of(context).accentColor,

@@ -10,14 +10,14 @@ import 'package:url_launcher/url_launcher.dart';
 class WebViewPage extends StatefulWidget {
   final String url;
 
-  const WebViewPage({Key key, @required this.url}) : super(key: key);
+  const WebViewPage({Key? key, required this.url}) : super(key: key);
 
   @override
   _WebViewPageState createState() => _WebViewPageState();
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  InAppWebViewController _webViewController;
+  late InAppWebViewController _webViewController;
   bool _alreadyAgree = false;
   double progressValue = 0.0;
 
@@ -57,13 +57,14 @@ class _WebViewPageState extends State<WebViewPage> {
             ),
             Expanded(
               child: InAppWebView(
-                  initialUrl: widget.url,
+                  initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),
                   initialOptions: InAppWebViewGroupOptions(
-                    crossPlatform: InAppWebViewOptions(
-                      useShouldOverrideUrlLoading: true,
-                      debuggingEnabled: kDebugMode,
-                    ),
-                  ),
+                      crossPlatform: InAppWebViewOptions(
+                        useShouldOverrideUrlLoading: true,
+                      ),
+                      android: AndroidInAppWebViewOptions(
+                        useHybridComposition: true,
+                      )),
                   onWebViewCreated: (InAppWebViewController controller) {
                     _webViewController = controller;
                   },
@@ -78,7 +79,8 @@ class _WebViewPageState extends State<WebViewPage> {
                         barrierDismissible: false,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("${challenge.message},continue?"),
+                            title: Text(
+                                "${challenge.protectionSpace.sslError?.message ?? "Ssl Cert Error"},continue?"),
                             actions: [
                               FlatButton(
                                 onPressed: () {
@@ -105,12 +107,11 @@ class _WebViewPageState extends State<WebViewPage> {
                             ? ServerTrustAuthResponseAction.PROCEED
                             : ServerTrustAuthResponseAction.CANCEL);
                   },
-                  onLoadStart:
-                      (InAppWebViewController controller, String url) {},
                   onLoadStop:
-                      (InAppWebViewController controller, String url) async {
-                    if (!userSetting.disableBypassSni &&
-                        !url.startsWith("pixiv://"))
+                      (InAppWebViewController controller, Uri? uri) async {
+                    if (uri != null &&
+                        !userSetting.disableBypassSni &&
+                        uri.host == "pixiv.net")
                       controller.evaluateJavascript(
                           source:
                               "javascript:(function() {document.getElementsByClassName('signup-form__sns-btn-area')[0].style.display='none'; })()");
@@ -121,16 +122,16 @@ class _WebViewPageState extends State<WebViewPage> {
                     });
                   },
                   shouldOverrideUrlLoading: (InAppWebViewController controller,
-                      ShouldOverrideUrlLoadingRequest
-                          shouldOverrideUrlLoadingRequest) async {
-                    if (shouldOverrideUrlLoadingRequest.url
-                        .startsWith("pixiv://")) {
-                      Leader.pushWithUri(context,
-                          Uri.parse(shouldOverrideUrlLoadingRequest.url));
+                      NavigationAction navigationAction) async {
+                    if (navigationAction.request.url == null)
+                      return NavigationActionPolicy.ALLOW;
+                    var uri = navigationAction.request.url!;
+                    if (uri.scheme == "pixiv") {
+                      Leader.pushWithUri(context, uri);
                       Navigator.of(context).pop();
-                      return ShouldOverrideUrlLoadingAction.CANCEL;
+                      return NavigationActionPolicy.CANCEL;
                     }
-                    return ShouldOverrideUrlLoadingAction.ALLOW;
+                    return NavigationActionPolicy.ALLOW;
                   }),
             ),
           ],

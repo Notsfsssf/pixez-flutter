@@ -5,7 +5,8 @@ import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 class NovelWorkPage extends StatefulWidget {
   final int id;
 
-  const NovelWorkPage({Key key, this.id}) : super(key: key);
+  const NovelWorkPage({Key? key, required this.id}) : super(key: key);
+
   @override
   _NovelWorkPageState createState() => _NovelWorkPageState();
 }

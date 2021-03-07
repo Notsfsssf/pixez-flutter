@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/supportor_plugin.dart';
@@ -30,7 +31,7 @@ import 'package:url_launcher/url_launcher.dart';
 class SelectableHtml extends StatefulWidget {
   final String data;
 
-  const SelectableHtml({Key key, @required this.data}) : super(key: key);
+  const SelectableHtml({Key? key, required this.data}) : super(key: key);
 
   @override
   _SelectableHtmlState createState() => _SelectableHtmlState();
@@ -112,6 +113,9 @@ class _SelectableHtmlState extends State<SelectableHtml> {
               },
               onTapUrl: (String url) async {
                 try {
+                  if (url.startsWith("pixiv")) {
+                    Leader.pushWithUri(context, Uri.parse(url));
+                  }
                   await launch(url);
                 } catch (e) {
                   Share.share(url);

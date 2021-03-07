@@ -24,24 +24,28 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/exts.dart';
+
 part 'ugoira_store.g.dart';
 
 enum UgoiraStatus { pre, progress, play }
+
 class UgoiraStore = _UgoiraStoreBase with _$UgoiraStore;
 
 abstract class _UgoiraStoreBase with Store {
   final int id;
 
   _UgoiraStoreBase(this.id);
-  @observable
-  UgoiraStatus status;
-  @observable
-  int count=0;
-  @observable
-  int total=1;
 
-  List<FileSystemEntity> drawPool;
-  UgoiraMetadataResponse ugoiraMetadataResponse;
+  @observable
+  UgoiraStatus? status;
+  @observable
+  int count = 0;
+  @observable
+  int total = 1;
+
+  List<FileSystemEntity> drawPool = [];
+  UgoiraMetadataResponse? ugoiraMetadataResponse;
+
   @action
   unZip() async {
     Directory tempDir = await getTemporaryDirectory();
@@ -90,23 +94,24 @@ abstract class _UgoiraStoreBase with Store {
     File fullPathFile = File(fullPath);
     try {
       ugoiraMetadataResponse = await apiClient.getUgoiraMetadata(id);
-      String zipUrl = ugoiraMetadataResponse.ugoiraMetadata.zipUrls.medium.toTrueUrl();
+      String zipUrl =
+          ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium.toTrueUrl();
       if (!fullPathFile.existsSync()) {
         var dio = Dio(BaseOptions(headers: {
           "referer": "https://app-api.pixiv.net/",
           "User-Agent": "PixivIOSApp/5.8.0",
           "Host": Uri.parse(zipUrl).host
         }));
-        if(!userSetting.disableBypassSni)
-        (dio.httpClientAdapter as DefaultHttpClientAdapter)
-            .onHttpClientCreate = (client) {
-          HttpClient httpClient = new HttpClient();
-          httpClient.badCertificateCallback =
-              (X509Certificate cert, String host, int port) {
-            return true;
+        if (!userSetting.disableBypassSni)
+          (dio.httpClientAdapter as DefaultHttpClientAdapter)
+              .onHttpClientCreate = (client) {
+            HttpClient httpClient = new HttpClient();
+            httpClient.badCertificateCallback =
+                (X509Certificate cert, String host, int port) {
+              return true;
+            };
+            return httpClient;
           };
-          return httpClient;
-        };
         dio.download(zipUrl, fullPath,
             onReceiveProgress: (int count, int total) {
           this.count = count;

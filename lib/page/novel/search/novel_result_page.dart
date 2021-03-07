@@ -7,7 +7,8 @@ import 'package:pixez/page/painter/painter_list.dart';
 class NovelResultPage extends StatefulWidget {
   final String word;
 
-  const NovelResultPage({Key key, this.word}) : super(key: key);
+  const NovelResultPage({Key? key, required this.word}) : super(key: key);
+
   @override
   _NovelResultPageState createState() => _NovelResultPageState();
 }

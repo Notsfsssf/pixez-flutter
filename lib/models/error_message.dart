@@ -13,24 +13,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert' show json;
 
 class ErrorMessage {
   Error error;
 
   ErrorMessage({
-    this.error,
+    required this.error,
   });
 
-
-  factory ErrorMessage.fromJson(jsonRes)=>
-      jsonRes == null ? null : ErrorMessage(
+  factory ErrorMessage.fromJson(jsonRes) => ErrorMessage(
         error: Error.fromJson(jsonRes['error']),
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'error': error,
       };
 
@@ -47,22 +43,20 @@ class Error {
   Object user_message_details;
 
   Error({
-    this.user_message,
-    this.message,
-    this.reason,
-    this.user_message_details,
+    required this.user_message,
+    required this.message,
+    required this.reason,
+    required this.user_message_details,
   });
 
-
-  factory Error.fromJson(jsonRes)=>
-      jsonRes == null ? null : Error(user_message: jsonRes['user_message'],
+  factory Error.fromJson(jsonRes) => Error(
+        user_message: jsonRes['user_message'],
         message: jsonRes['message'],
         reason: jsonRes['reason'],
         user_message_details: jsonRes['user_message_details'],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'user_message': user_message,
         'message': message,
         'reason': reason,

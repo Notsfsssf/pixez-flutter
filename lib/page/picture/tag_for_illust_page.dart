@@ -7,14 +7,16 @@ import 'package:pixez/page/picture/tag_for_illust_store.dart';
 class TagForIllustPage extends StatefulWidget {
   final int id;
 
-  const TagForIllustPage({Key key, this.id}) : super(key: key);
+  const TagForIllustPage({Key? key, required this.id}) : super(key: key);
+
   @override
   _TagForIllustPageState createState() => _TagForIllustPageState();
 }
 
 class _TagForIllustPageState extends State<TagForIllustPage> {
-  TagForIllustStore _store;
+  late TagForIllustStore _store;
   final TextEditingController textEditingController = TextEditingController();
+
   @override
   void initState() {
     _store = TagForIllustStore(widget.id)..fetch();
@@ -65,9 +67,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                     onPressed: () {
                       final value = textEditingController.value.text.trim();
                       if (value.isNotEmpty)
-                        _store.insert(TagsR()
-                          ..name = value
-                          ..isRegistered = true);
+                        _store.insert(TagsR(isRegistered: true, name: value));
                       textEditingController.clear();
                     },
                   )),
@@ -89,8 +89,8 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                               ),
                             ),
                             Checkbox(
-                              onChanged: (bool value) {
-                                _store.check(index, value);
+                              onChanged: (bool? value) {
+                                _store.check(index, value!);
                               },
                               value: _store.checkList[index],
                             )
@@ -135,7 +135,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
 
   confirm() async {
     final tags = _store.tags;
-    List<String> tempTags = [];
+    List<String>? tempTags = [];
     for (int i = 0; i < tags.length; i++) {
       if (tags[i].isRegistered) {
         tempTags.add(tags[i].name);

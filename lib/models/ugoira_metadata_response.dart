@@ -13,7 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert';
 
 UgoiraMetadataResponse ugoiraMetadataResponseFromJson(String str) =>
@@ -26,7 +25,7 @@ class UgoiraMetadataResponse {
   UgoiraMetadata ugoiraMetadata;
 
   UgoiraMetadataResponse({
-    this.ugoiraMetadata,
+    required this.ugoiraMetadata,
   });
 
   factory UgoiraMetadataResponse.fromJson(Map<String, dynamic> json) =>
@@ -44,8 +43,8 @@ class UgoiraMetadata {
   List<Frame> frames;
 
   UgoiraMetadata({
-    this.zipUrls,
-    this.frames,
+    required this.zipUrls,
+    required this.frames,
   });
 
   factory UgoiraMetadata.fromJson(Map<String, dynamic> json) => UgoiraMetadata(
@@ -64,8 +63,8 @@ class Frame {
   int delay;
 
   Frame({
-    this.file,
-    this.delay,
+    required this.file,
+    required this.delay,
   });
 
   factory Frame.fromJson(Map<String, dynamic> json) => Frame(
@@ -83,7 +82,7 @@ class ZipUrls {
   String medium;
 
   ZipUrls({
-    this.medium,
+    required this.medium,
   });
 
   factory ZipUrls.fromJson(Map<String, dynamic> json) => ZipUrls(

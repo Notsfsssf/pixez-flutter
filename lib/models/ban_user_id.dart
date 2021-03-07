@@ -13,21 +13,19 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BanUserIdPersist {
-  String userId;
-  int id;
-  String name;
+  String? userId;
+  int? id;
+  String? name;
 
-  BanUserIdPersist();
+  BanUserIdPersist({this.userId, this.name, this.id});
 
-  BanUserIdPersist.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json[columnUserId];
-    name = json[columnName];
+  factory BanUserIdPersist.fromJson(Map<String, dynamic> json) {
+    return BanUserIdPersist(
+        userId: json[columnUserId], name: json[columnName], id: json[columnId]);
   }
 
   Map<String, dynamic> toJson() {
@@ -46,10 +44,10 @@ final String columnName = 'name';
 final String tableBanUserId = 'banuserid';
 
 class BanUserIdProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'banuserid.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -69,8 +67,8 @@ create table $tableBanUserId (
     return todo;
   }
 
-  Future<BanUserIdPersist> getAccount(int id) async {
-    List<Map> maps = await db.query(tableBanUserId,
+  Future<BanUserIdPersist?> getAccount(int id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableBanUserId,
         columns: [columnId, columnUserId],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -81,8 +79,8 @@ create table $tableBanUserId (
   }
 
   Future<List<BanUserIdPersist>> getAllAccount() async {
-    List result = new List<BanUserIdPersist>();
-    List<Map> maps = await db
+    List<BanUserIdPersist> result = [];
+    List<Map<String, dynamic>> maps = await db
         .query(tableBanUserId, columns: [columnId, columnUserId, columnName]);
 
     if (maps.length > 0) {

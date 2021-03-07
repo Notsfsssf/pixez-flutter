@@ -21,9 +21,9 @@ import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 
 class SauceNaoPage extends StatefulWidget {
-  final String path;
+  final String? path;
 
-  const SauceNaoPage({Key key, this.path}) : super(key: key);
+  const SauceNaoPage({Key? key, this.path}) : super(key: key);
 
   @override
   _SauceNaoPageState createState() => _SauceNaoPageState();
@@ -31,6 +31,7 @@ class SauceNaoPage extends StatefulWidget {
 
 class _SauceNaoPageState extends State<SauceNaoPage> {
   SauceStore _store = SauceStore();
+
   @override
   void dispose() {
     _store.dispose();
@@ -104,7 +105,8 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => PageView(
                               children: _store.results
-                                  .map((element) => IllustLightingPage(id: element))
+                                  .map((element) =>
+                                      IllustLightingPage(id: element))
                                   .toList(),
                             )));
                   }

@@ -34,7 +34,7 @@ class PhotoViewerPage extends StatefulWidget {
   final int index;
   final Illusts illusts;
 
-  const PhotoViewerPage({Key key, this.index, this.illusts}) : super(key: key);
+  const PhotoViewerPage({required this.index, required this.illusts});
 
   @override
   _PhotoViewerPageState createState() => _PhotoViewerPageState();
@@ -50,17 +50,16 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       StreamController<bool>.broadcast();
   final StreamController<double> rebuildDetail =
       StreamController<double>.broadcast();
-  AnimationController _doubleClickAnimationController;
-  AnimationController _slideEndAnimationController;
-  Animation<double> _slideEndAnimation;
-  Animation<double> _doubleClickAnimation;
-  DoubleClickAnimationListener _doubleClickAnimationListener;
+  late AnimationController _doubleClickAnimationController;
+  late AnimationController _slideEndAnimationController;
+  late Animation<double> _slideEndAnimation;
+  Animation<double>? _doubleClickAnimation;
+  late DoubleClickAnimationListener _doubleClickAnimationListener;
   List<double> doubleTapScales = <double>[1.0, 2.0];
   GlobalKey<ExtendedImageSlidePageState> slidePagekey =
       GlobalKey<ExtendedImageSlidePageState>();
   bool _showSwiper = true;
   double _imageDetailY = 0;
-  Rect imageDRect;
 
   @override
   void dispose() {
@@ -112,9 +111,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
           headers: {
             "referer": "https://app-api.pixiv.net/",
             "User-Agent": "PixivIOSApp/5.8.0",
-            "Host": splashStore.host == ImageCatHost
-                ? ImageCatHost
-                : ImageHost
+            "Host": splashStore.host == ImageCatHost ? ImageCatHost : ImageHost
           },
           handleLoadingProgress: true,
           clearMemoryCacheWhenDispose: true,
@@ -137,8 +134,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               inertialSpeed: 100.0,
               initialScale: 1.0,
               inPageView: false,
-              gestureDetailsIsChanged: (GestureDetails ge) {
-                _showOrHideAppbar(ge); //肯定可以优化，先放着，想不动了
+              gestureDetailsIsChanged: (GestureDetails? ge) {
+                _showOrHideAppbar(ge!); //肯定可以优化，先放着，想不动了
               },
               initialAlignment: InitialAlignment.center,
             );
@@ -169,7 +166,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                     : metaPages[index].imageUrls.original)
                 .toTrueUrl();
             nowUrl = url;
-            File file = await getCachedImageFile(url);
+            File file = (await getCachedImageFile(url))!;
             if (file != null && mounted)
               setState(() {
                 shareShow = true;
@@ -185,9 +182,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               headers: {
                 "referer": "https://app-api.pixiv.net/",
                 "User-Agent": "PixivIOSApp/5.8.0",
-                "Host": splashStore.host == ImageCatHost
-                    ? ImageCatHost
-                    : ImageHost
+                "Host":
+                    splashStore.host == ImageCatHost ? ImageCatHost : ImageHost
               },
               handleLoadingProgress: true,
               clearMemoryCacheWhenDispose: true,
@@ -202,8 +198,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                 return GestureConfig(
                   inPageView: true,
                   initialScale: 1.0,
-                  gestureDetailsIsChanged: (GestureDetails ge) {
-                    _showOrHideAppbar(ge);
+                  gestureDetailsIsChanged: (GestureDetails? ge) {
+                    _showOrHideAppbar(ge!);
                   },
                   maxScale: 5.0,
                   animationMaxScale: 6.0,
@@ -220,13 +216,17 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   String nowUrl = "";
   bool _loadSource = false;
 
-  Widget _loadStateWidget(ExtendedImageState state) {
+  Widget? _loadStateWidget(ExtendedImageState state) {
     if (state.extendedImageLoadState == LoadState.loading) {
-      final ImageChunkEvent loadingProgress = state.loadingProgress;
-      final double progress = loadingProgress?.expectedTotalBytes != null
+      final ImageChunkEvent? loadingProgress = state.loadingProgress;
+      if (loadingProgress == null)
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      final double progress = (loadingProgress.expectedTotalBytes != null
           ? loadingProgress.cumulativeBytesLoaded /
-              loadingProgress.expectedTotalBytes
-          : null;
+              loadingProgress.expectedTotalBytes!
+          : null)!;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -260,7 +260,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   void _doubleTap(ExtendedImageGestureState state) {
     final Offset pointerDownPosition = state.pointerDownPosition;
-    final double begin = state.gestureDetails.totalScale;
+    final double begin = state.gestureDetails!.totalScale;
     double end;
     _doubleClickAnimation?.removeListener(_doubleClickAnimationListener);
     _doubleClickAnimationController.stop();
@@ -272,12 +272,12 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     }
     _doubleClickAnimationListener = () {
       state.handleDoubleTap(
-          scale: _doubleClickAnimation.value,
+          scale: _doubleClickAnimation!.value,
           doubleTapPosition: pointerDownPosition);
     };
     _doubleClickAnimation = _doubleClickAnimationController
         .drive(Tween<double>(begin: begin, end: end));
-    _doubleClickAnimation.addListener(_doubleClickAnimationListener);
+    _doubleClickAnimation!.addListener(_doubleClickAnimationListener);
     _doubleClickAnimationController.forward();
   }
 
@@ -328,7 +328,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                       "${index + 1}/${widget.illusts.pageCount}",
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyText1!
                           .copyWith(color: Colors.white),
                     ),
                   ],
@@ -366,7 +366,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                             color: Colors.white,
                           ),
                           onPressed: () async {
-                            File file = await getCachedImageFile(nowUrl);
+                            File file = (await getCachedImageFile(nowUrl))!;
                             if (file != null) {
                               String targetPath = join(
                                   (await getTemporaryDirectory()).path,

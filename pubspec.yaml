@@ -14,71 +14,84 @@ description: A new Flutter project.
 version: 1.3.6+80
 
 environment:
-  sdk: ">=2.8.3 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^3.0.10
-  crypto: any
-  sqflite: ^1.3.2+2
-  path_provider: ^1.6.27
-  shared_preferences: ^0.5.12+4
-  share: ^0.6.5+4
+  dio: ^4.0.0-beta5
+  crypto: ^3.0.0
+  sqflite: ^2.0.0+2
+  path_provider: ^2.0.1
+  shared_preferences: ^2.0.3
+  share: ^2.0.0
   share_extend: ^1.1.9
-  permission_handler: ^5.0.1+1
+  permission_handler: ^5.1.0+2
   save_in_gallery: ^0.1.3
-  archive: ^2.0.13
-  url_launcher: ^5.7.10
-  bot_toast: ^3.0.5
-  package_info: ^0.4.3+2
+  archive: ^3.1.2
+  url_launcher: ^6.0.2
+  bot_toast: ^4.0.0+1
+  package_info: ^2.0.0
   uni_links: ^0.4.0
-  mobx: ^1.2.1+4
-  flutter_mobx: ^1.1.0+2
-  flutter_inapp_purchase: ^3.0.1
-  flutter_widget_from_html_core: ^0.5.1+4
-  extended_nested_scroll_view: any
-  flutter_date_pickers: ^0.1.8
-  device_info: ^1.0.0
-  provider: ^4.3.3
+  mobx: ^2.0.0-nullsafety.2
+  flutter_mobx: ^2.0.0-nullsafety.0
+  flutter_inapp_purchase: ^4.0.0 
+  flutter_widget_from_html_core: ^0.6.0-rc.2021030401
+  flutter_date_pickers: ^0.1.10
+  device_info: ^2.0.0
+  provider: ^5.0.0
   flutter_displaymode: ^0.1.1
   receive_sharing_intent: ^1.4.3
-  flutter_hooks: ^0.15.0
-  pull_to_refresh: 1.6.3
-  extended_image: ^1.5.0
-  flutter_colorpicker: ^0.3.4
+  flutter_hooks: ^0.16.0
+  pull_to_refresh:
+    git:
+      url: https://github.com/peng8350/flutter_pulltorefresh
+  extended_image: 
+    git:
+      url: https://github.com/fluttercandies/extended_image
+      ref: nnbd-migrate
+  flutter_colorpicker: ^0.4.0-nullsafety.0
   waterfall_flow: ^2.0.5
-  animations: ^1.1.2
-  extended_text: ^4.0.0
-  backdrop: ^0.4.7
-  font_awesome_flutter: ^8.10.0
-  json_annotation: ^3.1.0
+  animations: ^2.0.0
+  extended_text:
+    git:
+      url: https://github.com/Notsfsssf/extended_text
+  font_awesome_flutter: ^9.0.0-nullsafety
+  json_annotation: ^4.0.0
   flutter_staggered_animations: ^0.1.2
   flutter_statusbar_manager: ^2.0.0
   badges: ^1.1.6
-  quick_actions: ^0.4.0+10
-  image_picker: ^0.6.7+21
-  intl: ^0.16.1
-  intl_utils: ^1.9.0
-  quiver: ^2.1.5
+  quick_actions: ^0.5.0
+  image_picker: ^0.7.2
+  intl: ^0.17.0
+  extended_nested_scroll_view: 2.0.0-dev
+#  intl_utils: ^2.0.0
+  quiver: ^3.0.0
   flutter_swiper: ^1.1.6
-  image: ^2.1.19
-  flutter_inappwebview: ^4.0.0+4
-  http_interceptor: ^0.3.3
-  dio_cookie_manager: ^1.0.0
-  dio_http_cache: ^0.2.11
-  md2_tab_indicator: ^1.0.2
+  image: ^3.0.1
+  flutter_inappwebview: ^5.1.0+1
+  # http_interceptor: ^0.3.3
+  dio_cookie_manager: ^2.0.0-beta1
+  dio_http_cache:
+    git:
+      url: https://github.com/shinayser/dio-http-cache
+  md2_tab_indicator:
+    git:
+      url: https://github.com/Notsfsssf/md2_tab_indicator
 
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.10.2
-  mobx_codegen: ^1.1.0+2
-  json_serializable: ^3.4.1
+  build_runner: ^1.11.5
+  mobx_codegen:
+    git:
+      url: https://github.com/fzyzcjy/mobx.dart
+      path: mobx_codegen
+  json_serializable: ^4.0.2
 
 
 

@@ -13,42 +13,39 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class NovelPersist {
-  NovelPersist();
+part 'novel_persist.g.dart';
 
+@JsonSerializable()
+class NovelPersist {
   int id;
+  @JsonKey(name: 'novel_id')
   int novelId;
+  @JsonKey(name: 'user_id')
   int userId;
+  @JsonKey(name: 'picture_url')
   String pictureUrl;
   int time;
   String title;
+  @JsonKey(name: 'user_name')
   String userName;
 
-  NovelPersist.fromJson(Map<String, dynamic> json) {
-    id = json[cid];
-    novelId = json[cNovel_id];
-    userId = json[cuser_id];
-    pictureUrl = json[cpicture_url];
-    title = json[ctitle];
-    time = json[ctime];
-    title = json[ctitle];
-    userName = json[cuserName];
-  }
+  NovelPersist(
+      {required this.id,
+      required this.novelId,
+      required this.userId,
+      required this.pictureUrl,
+      required this.time,
+      required this.title,
+      required this.userName});
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data[cid] = this.id;
-    data[cNovel_id] = this.novelId;
-    data[cuser_id] = this.userId;
-    data[cpicture_url] = this.pictureUrl;
-    data[ctime] = this.time;
-    data[ctitle] = this.title;
-    data[cuserName] = this.userName;
-    return data;
-  }
+  factory NovelPersist.fromJson(Map<String, dynamic> json) =>
+      _$NovelPersistFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NovelPersistToJson(this);
 }
 
 final String tableNovelPersist = 'Novelpersist';
@@ -61,10 +58,10 @@ final String ctitle = "title";
 final String cuserName = "user_name";
 
 class NovelPersistProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'Novelpersist.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -92,8 +89,8 @@ create table $tableNovelPersist (
     return todo;
   }
 
-  Future<NovelPersist> getAccount(int Novel_id) async {
-    List<Map> maps = await db.query(tableNovelPersist,
+  Future<NovelPersist?> getAccount(int Novel_id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableNovelPersist,
         columns: [
           cid,
           cNovel_id,
@@ -112,16 +109,18 @@ create table $tableNovelPersist (
   }
 
   Future<List<NovelPersist>> getAllAccount() async {
-    List result = new List<NovelPersist>();
-    List<Map> maps = await db.query(tableNovelPersist, columns: [
-      cid,
-      cNovel_id,
-      cuser_id,
-      cpicture_url,
-      ctime,
-      ctitle,
-      cuserName
-    ],orderBy: "$ctime DESC");
+    List<NovelPersist> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableNovelPersist,
+        columns: [
+          cid,
+          cNovel_id,
+          cuser_id,
+          cpicture_url,
+          ctime,
+          ctitle,
+          cuserName
+        ],
+        orderBy: "$ctime DESC");
 
     if (maps.length > 0) {
       maps.forEach((f) {

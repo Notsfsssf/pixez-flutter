@@ -14,35 +14,34 @@
  *
  */
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class IllustPersist {
-  IllustPersist();
+part 'illust_persist.g.dart';
 
-  int id;
+@JsonSerializable()
+class IllustPersist {
+  int? id;
+  @JsonKey(name: 'illust_id')
   int illustId;
+  @JsonKey(name: 'user_id')
   int userId;
+  @JsonKey(name: 'picture_url')
   String pictureUrl;
   int time;
 
-  IllustPersist.fromJson(Map<String, dynamic> json) {
-    id = json[cid];
-    illustId = json[cillust_id];
-    userId = json[cuser_id];
-    pictureUrl = json[cpicture_url];
-    time = json[ctime];
-  }
+  IllustPersist(
+      {this.id,
+      required this.illustId,
+      required this.userId,
+      required this.pictureUrl,
+      required this.time});
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data[cid] = this.id;
-    data[cillust_id] = this.illustId;
-    data[cuser_id] = this.userId;
-    data[cpicture_url] = this.pictureUrl;
-    data[ctime] = this.time;
-    return data;
-  }
+  factory IllustPersist.fromJson(Map<String, dynamic> json) =>
+      _$IllustPersistFromJson(json);
+
+  Map<String, dynamic> toJson() => _$IllustPersistToJson(this);
 }
 
 final String tableIllustPersist = 'illustpersist';
@@ -53,10 +52,10 @@ final String cpicture_url = "picture_url";
 final String ctime = "time";
 
 class IllustPersistProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'illustpersist.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -82,8 +81,8 @@ create table $tableIllustPersist (
     return todo;
   }
 
-  Future<IllustPersist> getAccount(int illust_id) async {
-    List<Map> maps = await db.query(tableIllustPersist,
+  Future<IllustPersist?> getAccount(int illust_id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
         columns: [cid, cillust_id, cuser_id, cpicture_url, ctime],
         where: '$cillust_id = ?',
         whereArgs: [illust_id]);
@@ -94,9 +93,10 @@ create table $tableIllustPersist (
   }
 
   Future<List<IllustPersist>> getAllAccount() async {
-    List result = new List<IllustPersist>();
-    List<Map> maps = await db.query(tableIllustPersist,
-        columns: [cid, cillust_id, cuser_id, cpicture_url, ctime]);
+    List<IllustPersist> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
+        columns: [cid, cillust_id, cuser_id, cpicture_url, ctime],
+        orderBy: ctime);
 
     if (maps.length > 0) {
       maps.forEach((f) {

@@ -33,10 +33,10 @@ abstract class _NovelLightingStoreBase with Store {
 
   _NovelLightingStoreBase(this.source, this._controller);
 
-  String nextUrl;
+  String? nextUrl;
   ObservableList<NovelStore> novels = ObservableList();
   @observable
-  String errorMessage;
+  String? errorMessage;
 
   @action
   Future<void> fetch() async {
@@ -63,11 +63,11 @@ abstract class _NovelLightingStoreBase with Store {
 
   @action
   Future<void> next() async {
-    if (nextUrl != null && nextUrl.isNotEmpty) {
+    if (nextUrl != null && nextUrl!.isNotEmpty) {
       try {
-        Response response = await _client.getNext(nextUrl);
+        Response response = await _client.getNext(nextUrl!);
         NovelRecomResponse novelRecomResponse =
-        NovelRecomResponse.fromJson(response.data);
+            NovelRecomResponse.fromJson(response.data);
         nextUrl = novelRecomResponse.nextUrl;
         final novel = novelRecomResponse.novels;
         novels.addAll(novel.map((element) => NovelStore(element.id, element)));

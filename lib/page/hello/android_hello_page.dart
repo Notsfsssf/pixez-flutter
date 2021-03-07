@@ -44,18 +44,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
 class AndroidHelloPage extends StatefulWidget {
-  final LightingStore lightingStore;
+  final LightingStore? lightingStore;
 
-  const AndroidHelloPage({Key key, this.lightingStore}) : super(key: key);
+  const AndroidHelloPage({Key? key, this.lightingStore}) : super(key: key);
 
   @override
   _AndroidHelloPageState createState() => _AndroidHelloPageState();
 }
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
-  List<Widget> _pageList;
-  DateTime _preTime;
-  QuickActions quickActions;
+  late List<Widget> _pageList;
+  late DateTime _preTime;
+  late QuickActions quickActions;
 
   @override
   Widget build(BuildContext context) {
@@ -137,9 +137,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     );
   }
 
-  int index;
-  PageController _pageController;
-  StreamSubscription _intentDataStreamSubscription;
+  late int index;
+  late PageController _pageController;
+  late StreamSubscription _intentDataStreamSubscription;
   bool hasNewVersion = false;
 
   @override
@@ -184,7 +184,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     initPlatform();
   }
 
-  StreamSubscription _sub;
+  late StreamSubscription _sub;
 
   initPlatform() async {
     try {

@@ -28,18 +28,13 @@ class _BookTagPageState extends State<BookTagPage>
     with TickerProviderStateMixin {
   bool edit = false;
 
-  TabController _tabController;
-
   @override
   void initState() {
-    _tabController =
-        TabController(length: bookTagStore.bookTagList.length, vsync: this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _tabController?.dispose();
     super.dispose();
   }
 
@@ -68,6 +63,8 @@ class _BookTagPageState extends State<BookTagPage>
         ),
       );
     return Observer(builder: (_) {
+      TabController _tabController =
+          TabController(length: bookTagStore.bookTagList.length, vsync: this);
       return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -120,36 +117,40 @@ class _BookTagPageState extends State<BookTagPage>
   }
 
   Widget _buildTagChip() {
-    return Container(
-      child: Wrap(
-        spacing: 2.0,
+    return SingleChildScrollView(
+      child: Column(
         children: [
-          for (var i in bookTagStore.bookTagList)
-            FilterChip(
-                label: Text(i),
-                selected: true,
-                onSelected: (v) {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(I18n.of(context).delete + "$i?"),
-                          actions: [
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(I18n.of(context).cancel)),
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  bookTagStore.unBookTag(i);
-                                },
-                                child: Text(I18n.of(context).ok)),
-                          ],
-                        );
-                      });
-                })
+          Wrap(
+            spacing: 2.0,
+            children: [
+              for (var i in bookTagStore.bookTagList)
+                FilterChip(
+                    label: Text(i),
+                    selected: true,
+                    onSelected: (v) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(I18n.of(context).delete + "$i?"),
+                              actions: [
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(I18n.of(context).cancel)),
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      bookTagStore.unBookTag(i);
+                                    },
+                                    child: Text(I18n.of(context).ok)),
+                              ],
+                            );
+                          });
+                    })
+            ],
+          ),
         ],
       ),
     );

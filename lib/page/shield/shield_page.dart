@@ -78,7 +78,7 @@ class _ShieldPageState extends State<ShieldPage> {
                         children: muteStore.banUserIds
                             .map((f) => ActionChip(
                                   onPressed: () => _deleteUserIdTag(context, f),
-                                  label: Text(f.name),
+                                  label: Text(f.name ?? ""),
                                 ))
                             .toList(),
                       ),
@@ -168,7 +168,7 @@ class _ShieldPageState extends State<ShieldPage> {
     switch (result) {
       case "OK":
         {
-          muteStore.deleteBanIllusts(f.id);
+          muteStore.deleteBanIllusts(f.id!);
         }
         break;
     }
@@ -201,7 +201,7 @@ class _ShieldPageState extends State<ShieldPage> {
     switch (result) {
       case "OK":
         {
-          muteStore.deleteBanUserId(f.id);
+          muteStore.deleteBanUserId(f.id!);
         }
         break;
     }

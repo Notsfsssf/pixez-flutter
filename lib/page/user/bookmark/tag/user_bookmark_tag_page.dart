@@ -28,7 +28,8 @@ class UserBookmarkTagPage extends StatefulWidget {
 
 class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  late TabController _tabController;
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -74,14 +75,14 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
 class NewWidget extends StatelessWidget {
   final String restrict;
 
-  const NewWidget({Key key, this.restrict}) : super(key: key);
+  const NewWidget({Key? key, required this.restrict}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final RefreshController _easyRefreshController =
         RefreshController(initialRefresh: true);
     BookMarkTagStore _bookMarkTagStore = BookMarkTagStore(
-        int.parse(accountStore.now.userId), _easyRefreshController);
+        int.parse(accountStore.now!.userId), _easyRefreshController);
     return Observer(builder: (_) {
       return SmartRefresher(
         enablePullUp: true,
@@ -110,11 +111,11 @@ class NewWidget extends StatelessWidget {
                 itemCount: _bookMarkTagStore.bookmarkTags.length + 1,
               )
             : Container(),
-        onRefresh: () {
-          return _bookMarkTagStore.fetch(restrict);
+        onRefresh: () async {
+          await _bookMarkTagStore.fetch(restrict);
         },
-        onLoading: () {
-          return _bookMarkTagStore.next();
+        onLoading: () async {
+          await _bookMarkTagStore.next();
         },
       );
     });

@@ -21,7 +21,7 @@ import 'package:pixez/page/shield/shield_page.dart';
 class BanPage extends StatefulWidget {
   final String name;
 
-  const BanPage({Key key, @required this.name}) : super(key: key);
+  const BanPage({Key? key, required this.name}) : super(key: key);
 
   @override
   _BanPageState createState() => _BanPageState();

@@ -20,7 +20,8 @@ class _NovelRankPageState extends State<NovelRankPage> {
     "week_r18",
     "week_r18g"
   ];
-  FutureGet futureGet;
+  late FutureGet futureGet;
+
   @override
   void initState() {
     futureGet = () {
@@ -29,15 +30,16 @@ class _NovelRankPageState extends State<NovelRankPage> {
     super.initState();
   }
 
-  String toRequestDate(DateTime dateTime) {
+  String? toRequestDate(DateTime dateTime) {
     if (dateTime == null) {
       return null;
     }
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
-  String dateTime;
+  String? dateTime;
   DateTime nowDateTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     List<String> w = I18n.of(context).novel_mode_list.split(" ");
@@ -62,8 +64,8 @@ class _NovelRankPageState extends State<NovelRankPage> {
                 var date = await showDatePicker(
                     context: context,
                     initialDate: nowDateTime,
-                    locale:
-                        I18n.delegate.supportedLocales[userSetting.toRealLanguageNum(userSetting.languageNum)],
+                    locale: I18n.delegate.supportedLocales[
+                        userSetting.toRealLanguageNum(userSetting.languageNum)],
                     firstDate: DateTime(2007, 8),
                     //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
                     lastDate: nowdate);

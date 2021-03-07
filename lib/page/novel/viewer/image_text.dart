@@ -28,7 +28,8 @@ import 'package:pixez/network/api_client.dart';
 class PixivImageSpan extends ExtendedWidgetSpan {
   final int id;
   final String actualText;
-  static Future<Illusts> _getData(int id) async {
+
+  static Future<Illusts?> _getData(int id) async {
     try {
       if (id == null) return null;
       Response response = await apiClient.getIllustDetail(id);
@@ -45,12 +46,13 @@ class PixivImageSpan extends ExtendedWidgetSpan {
             child: Container(
           child: FutureBuilder(
               future: _getData(id),
-              builder: (BuildContext context, AsyncSnapshot<Illusts> snapshot) {
+              builder:
+                  (BuildContext context, AsyncSnapshot<Illusts?> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
                     snapshot.data != null)
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: PixivImage(snapshot.data.imageUrls.medium),
+                    child: PixivImage(snapshot.data!.imageUrls.medium),
                   );
 
                 return Container();
@@ -59,17 +61,19 @@ class PixivImageSpan extends ExtendedWidgetSpan {
 }
 
 class SpecialImageText extends SpecialText {
+  static const String flag = '[pixivimage';
+  final int? start;
+
   SpecialImageText(TextStyle textStyle, {this.start})
       : super(SpecialImageText.flag, ']', textStyle);
-  static const String flag = '[pixivimage';
-  final int start;
+
   @override
   InlineSpan finishText() {
     final String key = toString();
     String now = key.substring(flag.length + 1, key.indexOf("]"));
     int trueId = 0;
     if (now.contains('-')) {
-      trueId = int.tryParse(now.split('-').first);
+      trueId = int.tryParse(now.split('-').first)!;
     }
     if (int == null) return TextSpan(text: key, style: textStyle);
     return PixivImageSpan(trueId, key);
@@ -81,7 +85,8 @@ class RbText extends SpecialText {
   RbText(TextStyle textStyle, {this.start})
       : super(ChapterText.flag, ']', textStyle);
   static const String flag = '[[rb:';
-  final int start;
+  final int? start;
+
   @override
   InlineSpan finishText() {
     final String key = toString();
@@ -96,7 +101,8 @@ class ChapterText extends SpecialText {
   ChapterText(TextStyle textStyle, {this.start})
       : super(ChapterText.flag, ']', textStyle);
   static const String flag = '[chapter:';
-  final int start;
+  final int? start;
+
   @override
   InlineSpan finishText() {
     final String key = toString();
@@ -109,7 +115,8 @@ class ChapterText extends SpecialText {
 //[newpage]
 class NextPageSpan extends ExtendedWidgetSpan {
   final String actualText;
-  final TextStyle style;
+  final TextStyle? style;
+
   NextPageSpan(this.actualText, {this.style})
       : super(
             child: Container(
@@ -126,7 +133,8 @@ class NextPageText extends SpecialText {
   NextPageText(TextStyle textStyle, {this.start})
       : super(SpecialImageText.flag, ']', textStyle);
   static const String flag = '[newpage';
-  final int start;
+  final int? start;
+
   @override
   InlineSpan finishText() {
     return NextPageSpan("下一页", style: textStyle);
@@ -138,31 +146,33 @@ class NovelSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
   @override
   TextSpan build(String data,
-      {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
+      {TextStyle? textStyle, SpecialTextGestureTapCallback? onTap}) {
     return super.build(data, textStyle: textStyle, onTap: onTap);
   }
 
   @override
-  SpecialText createSpecialText(String flag,
-      {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
+  SpecialText? createSpecialText(String flag,
+      {TextStyle? textStyle,
+      SpecialTextGestureTapCallback? onTap,
+      int? index}) {
     if (flag == null || flag == '') {
       return null;
     }
     if (isStart(flag, NextPageText.flag)) {
-      return NextPageText(textStyle,
-          start: index - (NextPageText.flag.length - 1));
+      return NextPageText(textStyle!,
+          start: index! - (NextPageText.flag.length - 1));
     }
     if (isStart(flag, ChapterText.flag)) {
       return ChapterText(
-          textStyle.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold),
-          start: index - (NextPageText.flag.length - 1));
+          textStyle!.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold),
+          start: index! - (NextPageText.flag.length - 1));
     }
     if (isStart(flag, SpecialImageText.flag)) {
-      return SpecialImageText(textStyle,
-          start: index - (SpecialImageText.flag.length - 1));
+      return SpecialImageText(textStyle!,
+          start: index! - (SpecialImageText.flag.length - 1));
     }
     if (isStart(flag, RbText.flag)) {
-      return RbText(textStyle, start: index - (RbText.flag.length - 1));
+      return RbText(textStyle!, start: index! - (RbText.flag.length - 1));
     }
     return null;
   }

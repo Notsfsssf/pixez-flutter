@@ -18,7 +18,8 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
   int apiStatus = 0;
   int imgStatus = 0;
   String message = "";
-  String host;
+  late String host;
+  late TextEditingController editingController;
 
   @override
   void initState() {
@@ -85,8 +86,6 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
         });
     }
   }
-
-  TextEditingController editingController;
 
   @override
   Widget build(BuildContext context) {

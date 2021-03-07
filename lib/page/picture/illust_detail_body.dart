@@ -42,12 +42,13 @@ class GestureMe extends GestureRecognizer {
 class IllustDetailBody extends StatelessWidget {
   final Illusts illust;
 
-  IllustDetailBody({Key key, @required this.illust}) : super(key: key);
+  IllustDetailBody({Key? key, required this.illust}) : super(key: key);
 
   Widget colorText(String text, BuildContext context) => SelectableText(
         text,
         style: TextStyle(color: Theme.of(context).accentColor),
       );
+
   Widget _buildNameAvatar(
       BuildContext context, Illusts illust, IllustDetailStore _store) {
     return Row(
@@ -207,7 +208,8 @@ class IllustDetailBody extends StatelessWidget {
                   I18n.of(context).view_comment,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.bodyText1.fontSize),
+                      fontSize:
+                          Theme.of(context).textTheme.bodyText1!.fontSize),
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -251,7 +253,7 @@ class IllustDetailBody extends StatelessWidget {
               ],
               style: Theme.of(context)
                   .textTheme
-                  .caption
+                  .caption!
                   .copyWith(color: Theme.of(context).accentColor))),
     );
   }
@@ -280,9 +282,11 @@ class IllustDetailBody extends StatelessWidget {
         })) {
       case 0:
         {
-          muteStore.insertBanTag(BanTagPersist()
-            ..name = f.name
-            ..translateName = f.translatedName ?? '_');
+          muteStore.insertBanTag(BanTagPersist(
+            id: 0,
+            name: f.name,
+            translateName: f.translatedName ?? '_',
+          ));
         }
         break;
       case 1:

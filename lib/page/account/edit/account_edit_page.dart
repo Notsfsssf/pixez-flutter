@@ -26,11 +26,12 @@ class AccountEditPage extends StatefulWidget {
 }
 
 class _AccountEditPageState extends State<AccountEditPage> {
-  TextEditingController _passwordController,
+  late TextEditingController _passwordController,
       _oldPasswordController,
       _emailController,
       _accountController;
   AccountEditStore _accountEditStore = AccountEditStore();
+
   @override
   void initState() {
     _passwordController = TextEditingController();
@@ -38,11 +39,11 @@ class _AccountEditPageState extends State<AccountEditPage> {
     _accountController = TextEditingController();
     _oldPasswordController = TextEditingController();
     if (accountStore.now != null) {
-      if (accountStore.now.isMailAuthorized != 1) {
-        _oldPasswordController.text = accountStore.now.passWord;
+      if (accountStore.now!.isMailAuthorized != 1) {
+        _oldPasswordController.text = accountStore.now!.passWord;
       }
-      _accountController.text = accountStore.now.account;
-      _emailController.text = accountStore.now.mailAddress;
+      _accountController.text = accountStore.now!.account;
+      _emailController.text = accountStore.now!.mailAddress;
     }
 
     super.initState();
@@ -84,9 +85,9 @@ class _AccountEditPageState extends State<AccountEditPage> {
                 return;
               }
               bool success = await _accountEditStore.fetch(
-                  _emailController.value.text.isEmpty
+                  (_emailController.value.text.isEmpty
                       ? null
-                      : _emailController.value.text,
+                      : _emailController.value.text)!,
                   _passwordController.value.text.isEmpty
                       ? null
                       : _passwordController.value.text,
@@ -95,12 +96,12 @@ class _AccountEditPageState extends State<AccountEditPage> {
               if (success) {
                 if (accountStore.now != null) {
                   if (_passwordController.text.isNotEmpty) {
-                    accountStore.now.passWord = _passwordController.text;
+                    accountStore.now!.passWord = _passwordController.text;
                   }
                   if (_emailController.text.isNotEmpty) {
-                    accountStore.now.mailAddress = _emailController.text;
+                    accountStore.now!.mailAddress = _emailController.text;
                   }
-                  accountStore.updateSingle(accountStore.now);
+                  accountStore.updateSingle(accountStore.now!);
                 }
               } else {
                 Scaffold.of(context).showSnackBar(SnackBar(

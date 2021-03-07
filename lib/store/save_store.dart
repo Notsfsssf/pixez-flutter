@@ -42,20 +42,24 @@ enum SaveState { JOIN, SUCCESS, ALREADY, INQUEUE }
 class SaveData {
   Illusts illusts;
   String fileName;
+
+  SaveData({required this.illusts, required this.fileName});
 }
 
 class SaveStream {
   SaveState state;
   Illusts data;
-  int index;
+  int? index;
 
   SaveStream(this.state, this.data, {this.index});
 }
 
 class JobEntity {
-  int max;
-  int min;
-  int status;
+  int? max;
+  int? min;
+  int? status;
+
+// JobEntity({required this.max, required this.min, required this.status});
 }
 
 class SaveStore = _SaveStoreBase with _$SaveStore;
@@ -73,7 +77,7 @@ abstract class _SaveStoreBase with Store {
   void listenBehavior(SaveStream stream) {
     switch (stream.state) {
       case SaveState.SUCCESS:
-        Toaster.downloadOk("${stream.data.title} ${I18n.of(context).saved}");
+        Toaster.downloadOk("${stream.data.title} ${I18n.of(context!).saved}");
         break;
       case SaveState.JOIN:
         BotToast.showCustomText(
@@ -88,7 +92,7 @@ abstract class _SaveStoreBase with Store {
                         IconButton(
                             icon: Icon(Icons.arrow_downward),
                             onPressed: () {
-                              Navigator.of(context, rootNavigator: true)
+                              Navigator.of(context!, rootNavigator: true)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return JobPage();
                               }));
@@ -96,7 +100,7 @@ abstract class _SaveStoreBase with Store {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(context).append_to_query}"),
+                          child: Text("${I18n.of(context!).append_to_query}"),
                         )
                       ],
                     ),
@@ -117,7 +121,7 @@ abstract class _SaveStoreBase with Store {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(context).already_in_query}"),
+                          child: Text("${I18n.of(context!).already_in_query}"),
                         )
                       ],
                     ),
@@ -137,12 +141,12 @@ abstract class _SaveStoreBase with Store {
                         IconButton(
                             icon: Icon(Icons.refresh),
                             onPressed: () {
-                              saveStore.redo(stream.data, stream.index);
+                              saveStore.redo(stream.data, stream.index!);
                             }),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(context).already_saved}"),
+                          child: Text("${I18n.of(context!).already_saved}"),
                         )
                       ],
                     ),
@@ -153,10 +157,10 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
-  BuildContext context;
+  BuildContext? context;
 
-  StreamController<SaveStream> streamController;
-  ObservableStream<SaveStream> saveStream;
+  late StreamController<SaveStream> streamController;
+  late ObservableStream<SaveStream> saveStream;
 
   Future<String> findLocalPath() async {
     final directory = Platform.isAndroid
@@ -172,6 +176,7 @@ abstract class _SaveStoreBase with Store {
       return;
     }
     var taskPersist = TaskPersist(
+        id: 0,
         userId: illusts.user.id,
         userName: illusts.user.name,
         illustId: illusts.id,
@@ -199,14 +204,14 @@ abstract class _SaveStoreBase with Store {
               "${illusts.user.name.toLegal()}_${illusts.user.id}/$fileName";
         }
         final isExist = await DocumentPlugin.exist(targetFileName);
-        if (isExist) {
+        if (isExist!) {
           streamController.add(SaveStream(SaveState.ALREADY, illusts));
           return;
         }
       } catch (e) {}
     }
     streamController.add(SaveStream(SaveState.JOIN, illusts));
-    File file = await getCachedImageFile(url);
+    File? file = (await getCachedImageFile(url));
     if (file == null) {
       _joinQueue(url, illusts, fileName);
     } else {
@@ -268,7 +273,7 @@ abstract class _SaveStoreBase with Store {
   }
 
   String _handleFileName(Illusts illust, int index, String memType) {
-    final result = userSetting.format
+    final result = userSetting.format!
         .replaceAll("{illust_id}", illust.id.toString())
         .replaceAll("{user_id}", illust.user.id.toString())
         .replaceAll("{part}", index.toString())
@@ -279,10 +284,10 @@ abstract class _SaveStoreBase with Store {
 
   @action
   Future<void> saveImage(Illusts illusts,
-      {int index, bool redo = false}) async {
+      {int? index, bool redo = false}) async {
     try {
-      if (Platform.isAndroid && await DocumentPlugin.needChoice()) {
-        await showPathDialog(context, isFirst: true);
+      if (Platform.isAndroid && (await DocumentPlugin.needChoice())!) {
+        await showPathDialog(context!, isFirst: true);
       }
     } catch (e) {}
     String memType;

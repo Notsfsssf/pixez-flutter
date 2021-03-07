@@ -25,7 +25,7 @@ import 'package:pixez/network/oauth_client.dart';
 
 class RefreshTokenInterceptor extends Interceptor {
   Future<String> getToken() async {
-    String token = accountStore?.now?.accessToken; //可能读的时候没有错的快，导致now为null
+    String? token = accountStore?.now?.accessToken; //可能读的时候没有错的快，导致now为null
     String result;
     if (token != null)
       result = "Bearer " + token;
@@ -65,41 +65,40 @@ class RefreshTokenInterceptor extends Interceptor {
 
   @override
   onError(DioError err) async {
-    if (err.response != null && err.response.statusCode == 400) {
+    if (err.response != null && err.response!.statusCode == 400) {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
         apiClient.httpClient.interceptors.errorLock.lock();
         print("lock start ========================");
         try {
-          ErrorMessage errorMessage = ErrorMessage.fromJson(err.response.data);
+          ErrorMessage errorMessage = ErrorMessage.fromJson(err.response!.data);
           if (errorMessage.error.message.contains("OAuth") &&
               accountStore.now != null) {
             final client = OAuthClient();
-            AccountPersist accountPersist = accountStore.now;
+            AccountPersist accountPersist = accountStore.now!;
             Response response1 = await client.postRefreshAuthToken(
                 refreshToken: accountPersist.refreshToken,
                 deviceToken: accountPersist.deviceToken);
             AccountResponse accountResponse =
                 Account.fromJson(response1.data).response;
             final user = accountResponse.user;
-            accountStore.updateSingle(AccountPersist()
-              ..id = accountPersist.id
-              ..accessToken = accountResponse.accessToken??""//偷懒一下
-              ..deviceToken = accountResponse.deviceToken??""
-              ..refreshToken = accountResponse.refreshToken??""
-              ..userImage = user.profileImageUrls.px170x170??""
-              ..userId = user.id??""
-              ..name = user.name??""
-              ..passWord = accountPersist.passWord
-              ..isMailAuthorized = bti(user.isMailAuthorized)
-              ..isPremium = bti(user.isPremium)
-              ..mailAddress = user.mailAddress
-              ..account = user.account
-              ..xRestrict = user.xRestrict);
+            accountStore.updateSingle(AccountPersist(
+                userId: user.id,
+                userImage: user.profileImageUrls.px170x170,
+                accessToken: accountResponse.accessToken ?? "",
+                refreshToken: accountResponse.refreshToken ?? "",
+                deviceToken: accountResponse.deviceToken ?? "",
+                passWord: "no more",
+                name: user.name,
+                account: user.account,
+                mailAddress: user.mailAddress,
+                isPremium: bti(user.isPremium),
+                xRestrict: user.xRestrict,
+                isMailAuthorized: bti(user.isMailAuthorized),
+                id: accountPersist.id));
             lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
           }
-          if (errorMessage.error.message.contains("Limit")) {
-          }
+          if (errorMessage.error.message.contains("Limit")) {}
         } catch (e) {
           print(e);
           lastRefreshTime = 0;
@@ -108,14 +107,18 @@ class RefreshTokenInterceptor extends Interceptor {
         print("unlock ========================");
         apiClient.httpClient.interceptors.errorLock.unlock();
       }
-      var request = err.response.request;
+      var request = err.response!.request;
       request.headers[OAuthClient.AUTHORIZATION] = (await getToken());
       var response = await apiClient.httpClient.request(
         request.path,
         data: request.data,
         queryParameters: request.queryParameters,
         cancelToken: request.cancelToken,
-        options: request,
+        // options: Options(
+        //   method: options.method,
+        //   headers: options.headers,
+        //   contentType: options.contentType,
+        // ),
       );
       return response;
     }
@@ -125,10 +128,14 @@ class RefreshTokenInterceptor extends Interceptor {
         retryNum < 2) {
       print('retry $retryNum =========================');
       retryNum++;
-      RequestOptions options = err.request;
+      RequestOptions options = err.request!;
       return apiClient.httpClient.request(
         options.path,
-        options: options,
+        options: Options(
+          method: options.method,
+          headers: options.headers,
+          contentType: options.contentType,
+        ),
         data: options.data,
         queryParameters: options.queryParameters,
       );

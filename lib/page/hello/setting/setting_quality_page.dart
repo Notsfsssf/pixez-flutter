@@ -33,7 +33,7 @@ class SettingQualityPage extends StatefulWidget {
 
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
-  Widget _languageTranlator;
+  late Widget _languageTranlator;
 
   @override
   void initState() {
@@ -210,7 +210,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return Container(
                       child: TabBar(
                         indicatorColor: Theme.of(context).accentColor,
-                        labelColor: Theme.of(context).textTheme.headline6.color,
+                        labelColor: Theme.of(context).textTheme.headline6!.color,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: [
                           Tab(
@@ -246,7 +246,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   ),
                   Observer(builder: (_) {
                     return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
@@ -281,7 +281,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   ),
                   Observer(builder: (_) {
                     return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
@@ -328,7 +328,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
@@ -407,7 +407,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).accentColor,
                       tabs: tablist,
@@ -435,7 +435,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   ),
                   Observer(builder: (_) {
                     return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6.color,
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [

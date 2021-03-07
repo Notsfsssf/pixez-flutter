@@ -21,21 +21,21 @@ import 'package:pixez/component/pixiv_image.dart';
 class ZoomPage extends StatefulWidget {
   final String url;
 
-  const ZoomPage({Key key, this.url}) : super(key: key);
+  const ZoomPage({Key? key, required this.url}) : super(key: key);
 
   @override
   _ZoomPageState createState() => _ZoomPageState();
 }
 
 class _ZoomPageState extends State<ZoomPage> {
-  bool fabvisible =true;
+  bool fabvisible = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-      
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -45,13 +45,13 @@ class _ZoomPageState extends State<ZoomPage> {
           onZoomStart: () {
             print('Zoom started');
             setState(() {
-              fabvisible=false;
+              fabvisible = false;
             });
           },
           onZoomEnd: () {
             print('Zoom finished');
-              setState(() {
-              fabvisible=true;
+            setState(() {
+              fabvisible = true;
             });
           },
         ),
@@ -59,7 +59,8 @@ class _ZoomPageState extends State<ZoomPage> {
       floatingActionButton: Visibility(
         visible: fabvisible,
         child: FloatingActionButton(
-          child: Icon(Icons.flip_to_back), onPressed: () {
+          child: Icon(Icons.flip_to_back),
+          onPressed: () {
             Navigator.of(context).pop();
           },
         ),
@@ -71,11 +72,11 @@ class _ZoomPageState extends State<ZoomPage> {
 class PinchZoomImage extends StatefulWidget {
   final Widget image;
   final Color zoomedBackgroundColor;
-  final Function onZoomStart;
-  final Function onZoomEnd;
+  final Function? onZoomStart;
+  final Function? onZoomEnd;
 
   PinchZoomImage({
-    @required this.image,
+    required this.image,
     this.zoomedBackgroundColor = Colors.transparent,
     this.onZoomStart,
     this.onZoomEnd,
@@ -86,9 +87,9 @@ class PinchZoomImage extends StatefulWidget {
 }
 
 class _PinchZoomImageState extends State<PinchZoomImage> {
-  OverlayEntry overlayEntry;
-  Offset scaleStartPosition;
-  Offset origin;
+  OverlayEntry? overlayEntry;
+  Offset? scaleStartPosition;
+  Offset? origin;
   int numPointers = 0;
   bool zooming = false;
   bool reversing = false;
@@ -131,10 +132,10 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
     setState(() {
       zooming = true;
     });
-    if (widget.onZoomStart != null) widget.onZoomStart();
-    OverlayState overlayState = Overlay.of(context);
-    double width = context.size.width;
-    double height = context.size.height;
+    if (widget.onZoomStart != null) widget.onZoomStart!();
+    OverlayState overlayState = Overlay.of(context)!;
+    double width = context.size!.width;
+    double height = context.size!.height;
     origin = (context.findRenderObject() as RenderBox)
         .localToGlobal(Offset(0.0, 0.0));
     scaleStartPosition = details.focalPoint;
@@ -146,19 +147,19 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
           key: overlayKey,
           height: height,
           width: width,
-          origin: origin,
+          origin: origin!,
           image: widget.image,
         );
       },
     );
 
-    overlayState.insert(overlayEntry);
+    overlayState.insert(overlayEntry!);
   }
 
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     if (reversing || numPointers < 2) return;
     overlayKey?.currentState
-        ?.updatePosition(origin - (scaleStartPosition - details.focalPoint));
+        ?.updatePosition(origin! - (scaleStartPosition! - details.focalPoint));
     if (details.scale >= 1.0)
       overlayKey?.currentState?.updateScale(details.scale);
   }
@@ -166,7 +167,7 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
   void _handleScaleEnd(ScaleEndDetails details) async {
     if (reversing || !zooming) return;
     reversing = true;
-    if (widget.onZoomEnd != null) widget.onZoomEnd();
+    if (widget.onZoomEnd != null) widget.onZoomEnd!();
     await overlayKey?.currentState?.reverse();
     overlayEntry?.remove();
     overlayEntry = null;
@@ -180,7 +181,7 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
 }
 
 class PinchZoomOverlayImage extends StatefulWidget {
-  final Key key;
+  final Key? key;
   final Offset origin;
   final double width;
   final double height;
@@ -188,10 +189,10 @@ class PinchZoomOverlayImage extends StatefulWidget {
 
   PinchZoomOverlayImage({
     this.key,
-    @required this.origin,
-    @required this.width,
-    @required this.height,
-    @required this.image,
+    required this.origin,
+    required this.width,
+    required this.height,
+    required this.image,
   }) : super(key: key);
 
   @override
@@ -200,8 +201,8 @@ class PinchZoomOverlayImage extends StatefulWidget {
 
 class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
     with TickerProviderStateMixin {
-  AnimationController reverseAnimationController;
-  Offset position;
+  AnimationController? reverseAnimationController;
+  Offset? position;
   double scale = 1.0;
 
   @override
@@ -212,7 +213,7 @@ class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
 
   @override
   void dispose() {
-    reverseAnimationController.dispose();
+    reverseAnimationController?.dispose();
     super.dispose();
   }
 
@@ -229,8 +230,8 @@ class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
           ),
         ),
         Positioned(
-          top: position.dy,
-          left: position.dx,
+          top: position!.dy,
+          left: position!.dx,
           width: widget.width,
           height: widget.height,
           child: Transform.scale(
@@ -256,7 +257,7 @@ class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
 
   TickerFuture reverse() {
     Offset origin = widget.origin;
-    Offset reverseStartPosition = position;
+    Offset reverseStartPosition = position!;
     double reverseStartScale = scale;
 
     reverseAnimationController = AnimationController(
@@ -267,17 +268,17 @@ class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
           position = Offset.lerp(
             reverseStartPosition,
             origin,
-            Curves.easeInOut.transform(reverseAnimationController.value),
+            Curves.easeInOut.transform(reverseAnimationController!.value),
           );
 
           scale = lerpDouble(
-            reverseStartScale,
+            reverseStartScale!,
             1.0,
-            Curves.easeInOut.transform(reverseAnimationController.value),
-          );
+            Curves.easeInOut.transform(reverseAnimationController!.value),
+          )!;
         });
       });
 
-    return reverseAnimationController.forward(from: 0.0);
+    return reverseAnimationController!.forward(from: 0.0);
   }
 }

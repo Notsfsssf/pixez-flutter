@@ -31,8 +31,8 @@ class IllustBookmarkTagsResponse {
   String nextUrl;
 
   IllustBookmarkTagsResponse({
-    this.bookmarkTags,
-    this.nextUrl,
+    required this.bookmarkTags,
+    required this.nextUrl,
   });
 
   factory IllustBookmarkTagsResponse.fromJson(Map<String, dynamic> json) =>
@@ -54,8 +54,8 @@ class BookmarkTag {
   int count;
 
   BookmarkTag({
-    this.name,
-    this.count,
+    required this.name,
+    required this.count,
   });
 
   factory BookmarkTag.fromJson(Map<String, dynamic> json) => BookmarkTag(

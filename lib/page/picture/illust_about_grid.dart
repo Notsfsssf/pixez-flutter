@@ -25,14 +25,14 @@ import 'package:pixez/page/picture/illust_lighting_page.dart';
 class IllustAboutGrid extends StatefulWidget {
   final int id;
 
-  const IllustAboutGrid({Key key, this.id}) : super(key: key);
+  const IllustAboutGrid({Key? key, required this.id}) : super(key: key);
 
   @override
   _IllustAboutGridState createState() => _IllustAboutGridState();
 }
 
 class _IllustAboutGridState extends State<IllustAboutGrid> {
-  IllustAboutStore _store;
+  late IllustAboutStore _store;
 
   @override
   void initState() {

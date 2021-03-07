@@ -25,6 +25,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/main.dart';
+
 part 'sauce_store.g.dart';
 
 class SauceStore = SauceStoreBase with _$SauceStore;
@@ -34,8 +35,8 @@ abstract class SauceStoreBase with Store {
   Dio dio = Dio(BaseOptions(
       baseUrl: "https://45.32.0.237", headers: {HttpHeaders.hostHeader: host}));
   ObservableList<int> results = ObservableList();
-  StreamController _streamController;
-  ObservableStream observableStream;
+  late StreamController _streamController;
+  late ObservableStream observableStream;
   @observable
   bool notStart = true;
 
@@ -49,14 +50,14 @@ abstract class SauceStoreBase with Store {
     await _streamController?.close();
   }
 
-  Future findImage({String path, bool retry = false}) async {
+  Future findImage({String? path, bool retry = false}) async {
     notStart = false;
     results.clear();
-    MultipartFile multipartFile;
+    MultipartFile? multipartFile;
     final picker = ImagePicker();
     if (path == null) {
       final pickedFile = await picker.getImage(source: ImageSource.gallery);
-      Uint8List uint8list = await pickedFile.readAsBytes();
+      Uint8List uint8list = await pickedFile!.readAsBytes();
       if (uint8list != null) {
         path =
             "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";

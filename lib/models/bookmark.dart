@@ -13,24 +13,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert' show json;
 
+import 'package:json_annotation/json_annotation.dart';
+part 'bookmark.g.dart';
+@JsonSerializable()
 class BookmarkRsp {
   Bookmark_detail bookmark_detail;
 
   BookmarkRsp({
-    this.bookmark_detail,
+    required this.bookmark_detail,
   });
 
-  factory BookmarkRsp.fromJson(jsonRes) => jsonRes == null
-      ? null
-      : BookmarkRsp(
-          bookmark_detail: Bookmark_detail.fromJson(jsonRes['bookmark_detail']),
-        );
-  Map<String, dynamic> toJson() => {
-        'bookmark_detail': bookmark_detail,
-      };
+  factory BookmarkRsp.fromJson(Map<String, dynamic> json) => _$BookmarkRspFromJson(json);
+  Map<String, dynamic> toJson() => _$BookmarkRspToJson(this);
 
   @override
   String toString() {
@@ -38,39 +34,20 @@ class BookmarkRsp {
   }
 }
 
+@JsonSerializable()
 class Bookmark_detail {
   bool is_bookmarked;
   List<Tags> tags;
   String restrict;
 
   Bookmark_detail({
-    this.is_bookmarked,
-    this.tags,
-    this.restrict,
+    required this.is_bookmarked,
+    required this.tags,
+    required this.restrict,
   });
 
-  factory Bookmark_detail.fromJson(jsonRes) {
-    if (jsonRes == null) return null;
-    List<Tags> tags = jsonRes['tags'] is List ? [] : null;
-    if (tags != null) {
-      for (var item in jsonRes['tags']) {
-        if (item != null) {
-          tags.add(Tags.fromJson(item));
-        }
-      }
-    }
-
-    return Bookmark_detail(
-      is_bookmarked: jsonRes['is_bookmarked'],
-      tags: tags,
-      restrict: jsonRes['restrict'],
-    );
-  }
-  Map<String, dynamic> toJson() => {
-        'is_bookmarked': is_bookmarked,
-        'tags': tags,
-        'restrict': restrict,
-      };
+  factory Bookmark_detail.fromJson(Map<String, dynamic> json) => _$Bookmark_detailFromJson(json);
+  Map<String, dynamic> toJson() => _$Bookmark_detailToJson(this);
 
   @override
   String toString() {
@@ -78,25 +55,18 @@ class Bookmark_detail {
   }
 }
 
+@JsonSerializable()
 class Tags {
   String name;
   bool is_registered;
 
   Tags({
-    this.name,
-    this.is_registered,
+    required this.name,
+    required this.is_registered,
   });
 
-  factory Tags.fromJson(jsonRes) => jsonRes == null
-      ? null
-      : Tags(
-          name: jsonRes['name'],
-          is_registered: jsonRes['is_registered'],
-        );
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'is_registered': is_registered,
-      };
+  factory Tags.fromJson(Map<String, dynamic> json) => _$TagsFromJson(json);
+  Map<String, dynamic> toJson() => _$TagsToJson(this);
 
   @override
   String toString() {

@@ -52,19 +52,20 @@ class _TokenPageState extends State<TokenPage> {
                   final user = accountResponse.user;
                   AccountProvider accountProvider = new AccountProvider();
                   await accountProvider.open();
-                  await accountProvider.insert(AccountPersist()
-                    ..passWord = ""
-                    ..accessToken = accountResponse.accessToken
-                    ..deviceToken = accountResponse.deviceToken ?? ""
-                    ..refreshToken = accountResponse.refreshToken
-                    ..userImage = user.profileImageUrls.px170x170
-                    ..userId = user.id
-                    ..name = user.name
-                    ..isMailAuthorized = bti(user.isMailAuthorized)
-                    ..isPremium = bti(user.isPremium)
-                    ..mailAddress = user.mailAddress
-                    ..account = user.account
-                    ..xRestrict = user.xRestrict);
+                  var accountPersist = AccountPersist(
+                      userId: user.id,
+                      userImage: user.profileImageUrls.px170x170,
+                      accessToken: accountResponse.accessToken ?? "",
+                      refreshToken: accountResponse.refreshToken ?? "",
+                      deviceToken: accountResponse.deviceToken ?? "",
+                      passWord: "no more",
+                      name: user.name,
+                      account: user.account,
+                      mailAddress: user.mailAddress,
+                      isPremium: user.isPremium ? 1 : 0,
+                      xRestrict: user.xRestrict,
+                      isMailAuthorized: user.isMailAuthorized ? 1 : 0);
+                  await accountProvider.insert(accountPersist);
                   await accountStore.fetch();
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(

@@ -45,7 +45,7 @@ import 'package:pixez/page/theme/theme_page.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 class SettingPage extends StatefulWidget {
-  const SettingPage({Key key}) : super(key: key);
+  const SettingPage({Key? key}) : super(key: key);
 
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -112,7 +112,7 @@ class _SettingPageState extends State<SettingPage> {
                     IconButton(
                       icon: Icon(
                         Icons.palette,
-                        color: Theme.of(context).textTheme.bodyText1.color,
+                        color: Theme.of(context).textTheme.bodyText1!.color,
                       ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -139,8 +139,8 @@ class _SettingPageState extends State<SettingPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   PainterAvatar(
-                                    url: accountStore.now.userImage,
-                                    id: int.parse(accountStore.now.userId),
+                                    url: accountStore.now!.userImage,
+                                    id: int.parse(accountStore.now!.userId),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -155,13 +155,13 @@ class _SettingPageState extends State<SettingPage> {
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 8.0),
-                                          child: Text(accountStore.now.name,
+                                          child: Text(accountStore.now!.name,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .subtitle1),
                                         ),
                                         Text(
-                                          accountStore.now.mailAddress,
+                                          accountStore.now!.mailAddress,
                                           style: Theme.of(context)
                                               .textTheme
                                               .caption,

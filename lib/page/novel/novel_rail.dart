@@ -39,7 +39,7 @@ class _NovelRailState extends State<NovelRail> {
     NovelSearchPage(),
     SettingPage()
   ];
-  PageController _pageController;
+  late PageController _pageController;
 
   @override
   void initState() {

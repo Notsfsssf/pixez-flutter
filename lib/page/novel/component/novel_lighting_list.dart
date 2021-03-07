@@ -31,7 +31,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class NovelLightingList extends StatefulWidget {
   final FutureGet futureGet;
 
-  const NovelLightingList({Key key, @required this.futureGet})
+  const NovelLightingList({Key? key, required this.futureGet})
       : super(key: key);
 
   @override
@@ -39,8 +39,8 @@ class NovelLightingList extends StatefulWidget {
 }
 
 class _NovelLightingListState extends State<NovelLightingList> {
-  RefreshController _easyRefreshController;
-  NovelLightingStore _store;
+  late RefreshController _easyRefreshController;
+  late NovelLightingStore _store;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
 
   @override
   void dispose() {
-    _easyRefreshController?.dispose();
+    _easyRefreshController.dispose();
     super.dispose();
   }
 
@@ -92,7 +92,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
     if (_store.novels.isNotEmpty) {
       return ListView.builder(
         itemBuilder: (context, index) {
-          Novel novel = _store.novels[index].novel;
+          Novel novel = _store.novels[index].novel!;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: InkWell(
@@ -144,7 +144,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                     maxLines: 1,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .caption!
                                         .copyWith(
                                             color:
                                                 Theme.of(context).accentColor),

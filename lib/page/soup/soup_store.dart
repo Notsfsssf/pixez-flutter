@@ -39,7 +39,7 @@ abstract class _SoupStoreBase with Store {
   ObservableList<AmWork> amWorks = ObservableList();
 
   @observable
-  String description;
+  String? description;
 
   @action
   fetch(String url) async {
@@ -63,7 +63,7 @@ abstract class _SoupStoreBase with Store {
         .children;
 
     Element workInfo;
-    if (nodes.first.attributes['class'].contains('_feature')) {
+    if (nodes.first.attributes['class']!.contains('_feature')) {
       // feature article body
       nodes = nodes.first.children;
       description = '';
@@ -78,19 +78,19 @@ abstract class _SoupStoreBase with Store {
 
     for (var value in nodes) {
       try {
-        if (!value.attributes['class'].contains('illust')) {
+        if (!value.attributes['class']!.contains('illust')) {
           continue;
         }
         AmWork amWork = AmWork();
         for (var aa in value.getElementsByTagName('a')) {
           var a = aa.attributes['href'];
-          var segments = Uri.parse(a).pathSegments;
-          if (a.startsWith('https') &&
+          var segments = Uri.parse(a!).pathSegments;
+          if (a!.startsWith('https') &&
               segments.length > 2 &&
               segments[segments.length - 2] == 'artworks') {
-            amWork.arworkLink = a;
+            amWork.arworkLink = a!;
             amWork.showImage =
-                value.getElementsByTagName('img')[1].attributes['src'];
+                value.getElementsByTagName('img')[1].attributes['src']!;
             amWork.title = value.getElementsByTagName('h3').first.text;
           } else if (a.startsWith('https') &&
               segments.length > 2 &&
@@ -98,7 +98,7 @@ abstract class _SoupStoreBase with Store {
             amWork.userLink = a;
             amWork.user = value.getElementsByTagName('p').first.text;
             amWork.userImage =
-                value.getElementsByTagName('img').first.attributes['src'];
+                value.getElementsByTagName('img').first.attributes['src']!;
           }
         }
         if (amWork.userLink == null || amWork.arworkLink == null) {
@@ -124,7 +124,7 @@ abstract class _SoupStoreBase with Store {
         .children;
 
     Element workInfo;
-    if (nodes.first.attributes['class'].contains('_feature')) {
+    if (nodes.first.attributes['class']!.contains('_feature')) {
       // feature article body
       nodes = nodes.first.children;
       description = '';
@@ -139,22 +139,22 @@ abstract class _SoupStoreBase with Store {
 
     for (var value in nodes) {
       try {
-        if (!value.attributes['class'].contains('illust')) {
+        if (!value.attributes['class']!.contains('illust')) {
           continue;
         }
         AmWork amWork = AmWork();
         for (var aa in value.getElementsByTagName('a')) {
-          var a = aa.attributes['href'];
+          var a = aa.attributes['href']!;
           if (a.contains('https://www.pixiv.net/artworks')) {
             amWork.arworkLink = a;
             amWork.showImage =
-                value.getElementsByTagName('img')[1].attributes['src'];
+                value.getElementsByTagName('img')[1].attributes['src']!;
             amWork.title = value.getElementsByTagName('h3').first.text;
           } else if (a.contains('https://www.pixiv.net/users')) {
             amWork.userLink = a;
             amWork.user = value.getElementsByTagName('p').first.text;
             amWork.userImage =
-                value.getElementsByTagName('img').first.attributes['src'];
+                value.getElementsByTagName('img').first.attributes['src']!;
           }
         }
         if (amWork.userLink == null || amWork.arworkLink == null) {

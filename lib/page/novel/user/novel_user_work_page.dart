@@ -22,13 +22,13 @@ import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 class NovelUserWorkPage extends StatefulWidget {
   final int id;
 
-  const NovelUserWorkPage({Key key, @required this.id}) : super(key: key);
+  const NovelUserWorkPage({Key? key, required this.id}) : super(key: key);
   @override
   _NovelUserWorkPageState createState() => _NovelUserWorkPageState();
 }
 
 class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
-  FutureGet futureGet;
+  late FutureGet futureGet;
   @override
   void initState() {
     futureGet = () => apiClient.getUserNovels(widget.id);

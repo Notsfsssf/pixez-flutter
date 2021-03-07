@@ -15,6 +15,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/novel_persist.dart';
 import 'package:pixez/models/novel_recom_response.dart';
+
 part 'novel_history_store.g.dart';
 
 class NovelHistoryStore = _NovelHistoryStoreBase with _$NovelHistoryStore;
@@ -22,6 +23,7 @@ class NovelHistoryStore = _NovelHistoryStoreBase with _$NovelHistoryStore;
 abstract class _NovelHistoryStoreBase with Store {
   NovelPersistProvider novelPersistProvider = NovelPersistProvider();
   ObservableList<NovelPersist> data = ObservableList();
+
   @action
   fetch() async {
     await novelPersistProvider.open();
@@ -33,13 +35,14 @@ abstract class _NovelHistoryStoreBase with Store {
   @action
   insert(Novel novel) async {
     await novelPersistProvider.open();
-    await novelPersistProvider.insert(NovelPersist()
-      ..time = DateTime.now().millisecondsSinceEpoch
-      ..userId = novel.user.id
-      ..title = novel.title
-      ..userName = novel.user.name
-      ..pictureUrl = novel.imageUrls.squareMedium
-      ..novelId = novel.id);
+    await novelPersistProvider.insert(NovelPersist(
+        time: DateTime.now().millisecondsSinceEpoch,
+        userId: novel.user.id,
+        title: novel.title,
+        userName: novel.user.name,
+        pictureUrl: novel.imageUrls.squareMedium,
+        novelId: novel.id,
+        id: 0));
     await fetch();
   }
 

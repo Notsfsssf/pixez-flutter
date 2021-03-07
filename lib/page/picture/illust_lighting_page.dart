@@ -46,10 +46,11 @@ import 'package:share/share.dart';
 
 class IllustLightingPage extends StatefulWidget {
   final int id;
-  final String heroString;
-  final IllustStore store;
+  final String? heroString;
+  final IllustStore? store;
 
-  const IllustLightingPage({Key key, this.id, this.heroString, this.store})
+  const IllustLightingPage(
+      {Key? key, required this.id, this.heroString, this.store})
       : super(key: key);
 
   @override
@@ -58,10 +59,10 @@ class IllustLightingPage extends StatefulWidget {
 
 class _IllustLightingPageState extends State<IllustLightingPage>
     with AutomaticKeepAliveClientMixin {
-  UserStore userStore;
-  IllustStore _illustStore;
-  IllustAboutStore _aboutStore;
-  ScrollController _scrollController;
+  UserStore? userStore;
+  late IllustStore _illustStore;
+  late IllustAboutStore _aboutStore;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -131,7 +132,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       icon: Icon(Icons.more_vert),
                       onPressed: () {
                         buildShowModalBottomSheet(
-                            context, _illustStore.illusts);
+                            context, _illustStore.illusts!);
                       })
                 ],
               )
@@ -152,16 +153,21 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         onLongPress: () {
           _showBookMarkTag();
         },
-        child: FloatingActionButton(
-          heroTag: widget.id,
-          backgroundColor: Colors.white,
-          onPressed: () => _illustStore.star(),
-          child: Observer(builder: (_) {
-            return StarIcon(
-              state: _illustStore.state,
-            );
-          }),
-        ),
+        child: Observer(builder: (context) {
+          return Visibility(
+            visible: _illustStore.errorMessage == null,
+            child: FloatingActionButton(
+              heroTag: widget.id,
+              backgroundColor: Colors.white,
+              onPressed: () => _illustStore.star(),
+              child: Observer(builder: (_) {
+                return StarIcon(
+                  state: _illustStore.state,
+                );
+              }),
+            ),
+          );
+        }),
       ),
       body: Observer(builder: (_) {
         for (var i in muteStore.banillusts) {
@@ -173,14 +179,14 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         }
         if (_illustStore.illusts != null) {
           for (var j in muteStore.banUserIds) {
-            if (j.userId == _illustStore.illusts.user.id.toString()) {
+            if (j.userId == _illustStore.illusts!.user.id.toString()) {
               return BanPage(
                 name: I18n.of(context).painter,
               );
             }
           }
           for (var t in muteStore.banTags) {
-            for (var t1 in _illustStore.illusts.tags) {
+            for (var t1 in _illustStore.illusts!.tags) {
               if (t.name == t1.name)
                 return BanPage(
                   name: I18n.of(context).tag,
@@ -205,13 +211,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         style: TextStyle(color: Theme.of(context).accentColor),
       );
 
-  Widget _buildContent(BuildContext context, Illusts data) {
-    if (data == null)
-      return Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+  Widget _buildContent(BuildContext context, Illusts? data) {
     if (_illustStore.errorMessage != null)
       return Center(
         child: Column(
@@ -230,6 +230,12 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               child: Text(I18n.of(context).refresh),
             )
           ],
+        ),
+      );
+    if (data == null)
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
       );
     return CustomScrollView(
@@ -391,7 +397,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 I18n.of(context).view_comment,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.bodyText1.fontSize),
+                    fontSize: Theme.of(context).textTheme.bodyText1!.fontSize),
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -437,7 +443,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                   var list = _aboutStore.illusts
-                      .map((element) => IllustStore(element.id, element)).toList();
+                      .map((element) => IllustStore(element.id, element))
+                      .toList();
                   return InkWell(
                     onTap: () {
                       Leader.push(
@@ -558,9 +565,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         })) {
       case 0:
         {
-          muteStore.insertBanTag(BanTagPersist()
-            ..name = f.name
-            ..translateName = f.translatedName ?? '_');
+          muteStore.insertBanTag(BanTagPersist(
+              name: f.name, translateName: f.translatedName ?? '_', id: 0));
         }
         break;
       case 1:
@@ -599,7 +605,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               ],
               style: Theme.of(context)
                   .textTheme
-                  .caption
+                  .caption!
                   .copyWith(color: Theme.of(context).accentColor))),
     );
   }
@@ -618,7 +624,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
           Padding(
               child: GestureDetector(
                 onLongPress: () {
-                  userStore.follow();
+                  userStore!.follow();
                 },
                 child: Container(
                   height: 70,
@@ -633,7 +639,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                             decoration: illust != null
                                 ? BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: userStore.isFollow
+                                    color: userStore!.isFollow
                                         ? Colors.yellow
                                         : Theme.of(context).accentColor,
                                   )
@@ -654,8 +660,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                                     id: illust.user.id,
                                     userStore: userStore,
                                   ));
-                              _illustStore.illusts.user.isFollowed =
-                                  userStore.isFollow;
+                              _illustStore.illusts!.user.isFollowed =
+                                  userStore!.isFollow;
                             },
                           ),
                         ),
@@ -747,7 +753,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   }
 
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
-    List<bool> indexs = List(illust.metaPages.length);
+    List<bool> indexs = [];
     bool allOn = false;
     for (int i = 0; i < illust.metaPages.length; i++) {
       indexs[i] = false;
@@ -783,7 +789,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                             value: allOn,
                             onChanged: (ischeck) {
                               setDialogState(() {
-                                allOn = ischeck;
+                                allOn = ischeck!;
                                 if (ischeck)
                                   for (int i = 0; i < indexs.length; i++) {
                                     indexs[i] = true;
@@ -802,7 +808,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                             value: indexs[index - 1],
                             onChanged: (ischeck) {
                               setDialogState(() {
-                                indexs[index - 1] = ischeck;
+                                indexs[index - 1] = ischeck!;
                               });
                             }),
                       ),
@@ -901,9 +907,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                         title: Text(I18n.of(context).ban),
                         leading: Icon(Icons.brightness_auto),
                         onTap: () {
-                          muteStore.insertBanIllusts(BanIllustIdPersist()
-                            ..illustId = widget.id.toString()
-                            ..name = illusts.title);
+                          muteStore.insertBanIllusts(BanIllustIdPersist(
+                              illustId: widget.id.toString(),
+                              name: illusts.title));
                           Navigator.pop(context);
                         },
                       ),

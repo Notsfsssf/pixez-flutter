@@ -18,46 +18,38 @@
 //
 //     final commentResponse = commentResponseFromJson(jsonString);
 
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
-CommentResponse commentResponseFromJson(String str) =>
-    CommentResponse.fromJson(json.decode(str));
+part 'comment_response.g.dart';
 
-String commentResponseToJson(CommentResponse data) =>
-    json.encode(data.toJson());
-
+@JsonSerializable()
 class CommentResponse {
+  @JsonKey(name: "total_comments")
   int totalComments;
   List<Comment> comments;
-  String nextUrl;
+  @JsonKey(name: "next_url")
+  String? nextUrl;
 
   CommentResponse({
-    this.totalComments,
-    this.comments,
+    required this.totalComments,
+    required this.comments,
     this.nextUrl,
   });
 
   factory CommentResponse.fromJson(Map<String, dynamic> json) =>
-      CommentResponse(
-        totalComments: json["total_comments"],
-        comments: List<Comment>.from(
-            json["comments"].map((x) => Comment.fromJson(x))),
-        nextUrl: json["next_url"],
-      );
+      _$CommentResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "total_comments": totalComments,
-        "comments": List<dynamic>.from(comments.map((x) => x.toJson())),
-        "next_url": nextUrl,
-      };
+  Map<String, dynamic> toJson() => _$CommentResponseToJson(this);
 }
 
+@JsonSerializable()
 class Comment {
-  int id;
-  String comment;
-  DateTime date;
-  User user;
-  Comment parentComment;
+  int? id;
+  String? comment;
+  DateTime? date;
+  User? user;
+  @JsonKey(name: 'parent_comment')
+  Comment? parentComment;
 
   Comment({
     this.id,
@@ -67,58 +59,37 @@ class Comment {
     this.parentComment,
   });
 
-  factory Comment.fromJson(Map<String, dynamic> json) => Comment(
-        id: json["id"] == null ? null : json["id"],
-        comment: json["comment"] == null ? null : json["comment"],
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        user: json["user"] == null ? null : User.fromJson(json["user"]),
-        parentComment: json["parent_comment"] == null
-            ? null
-            : Comment.fromJson(json["parent_comment"]),
-      );
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "id": id == null ? null : id,
-        "comment": comment == null ? null : comment,
-        "date": date == null ? null : date.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
-        "parent_comment": parentComment == null ? null : parentComment.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$CommentToJson(this);
 }
 
+@JsonSerializable()
 class User {
   int id;
   String name;
   String account;
+  @JsonKey(name: 'profile_image_urls')
   ProfileImageUrls profileImageUrls;
 
   User({
-    this.id,
-    this.name,
-    this.account,
-    this.profileImageUrls,
+    required this.id,
+    required this.name,
+    required this.account,
+    required this.profileImageUrls,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        name: json["name"],
-        account: json["account"],
-        profileImageUrls: ProfileImageUrls.fromJson(json["profile_image_urls"]),
-      );
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "account": account,
-        "profile_image_urls": profileImageUrls.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
 class ProfileImageUrls {
   String medium;
 
   ProfileImageUrls({
-    this.medium,
+    required this.medium,
   });
 
   factory ProfileImageUrls.fromJson(Map<String, dynamic> json) =>

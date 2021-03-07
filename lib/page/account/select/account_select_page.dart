@@ -41,22 +41,22 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
           itemBuilder: (context, index) {
             AccountPersist accountPersist = accountStore.accounts[index];
             return ListTile(
-              leading:
-                  PainterAvatar(url: accountStore.accounts[index].userImage),
+              leading: PainterAvatar(
+                url: accountStore.accounts[index].userImage,
+                id: int.parse(accountStore.accounts[index].userId),
+              ),
               title: Text(accountPersist.name),
               subtitle: Text(accountPersist.mailAddress),
-              trailing:
-                  accountStore.accounts.indexOf(accountStore.now) == index
-                      ? Icon(Icons.check)
-                      : IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            accountStore.deleteSingle(accountPersist.id);
-                          },
-                        ),
+              trailing: accountStore.accounts.indexOf(accountStore.now) == index
+                  ? Icon(Icons.check)
+                  : IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        accountStore.deleteSingle(accountPersist.id!);
+                      },
+                    ),
               onTap: () {
-                if (accountStore.accounts.indexOf(accountStore.now) !=
-                    index) {
+                if (accountStore.accounts.indexOf(accountStore.now) != index) {
                   accountStore.select(index);
                 }
               },

@@ -30,15 +30,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class BookmarkPage extends StatefulWidget {
   final int id;
   final String restrict;
-  final String tag;
   final bool isNested;
 
   const BookmarkPage({
-    Key key,
-    @required this.id,
+    Key? key,
+    required this.id,
     this.restrict = "public",
-    this.tag,
-    this.isNested,
+    this.isNested = false,
   }) : super(key: key);
 
   @override
@@ -46,10 +44,10 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
-  FutureGet futureGet;
+  late FutureGet futureGet;
   String restrict = 'public';
-  RefreshController _refreshController;
-  StreamSubscription<String> subscription;
+  late RefreshController _refreshController;
+  late StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -74,7 +72,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   Widget build(BuildContext context) {
     if (accountStore.now != null) {
-      if (int.parse(accountStore.now.userId) == widget.id) {
+      if (int.parse(accountStore.now!.userId) == widget.id) {
         return Stack(
           children: [
             LightingList(

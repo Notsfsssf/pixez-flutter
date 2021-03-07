@@ -27,8 +27,8 @@ class SpotlightStore = _SpotlightStoreBase with _$SpotlightStore;
 abstract class _SpotlightStoreBase with Store {
   final ApiClient client = apiClient;
   ObservableList<SpotlightArticle> articles = ObservableList();
-  String nextUrl;
-  final RefreshController _controller;
+  String? nextUrl;
+  final RefreshController? _controller;
 
   _SpotlightStoreBase(this._controller);
 
@@ -36,8 +36,8 @@ abstract class _SpotlightStoreBase with Store {
   Future<void> fetch() async {
     nextUrl = null;
     if (_controller != null) {
-      _controller.headerMode.value = RefreshStatus.idle;
-      _controller.footerMode.value = LoadStatus.idle;
+      _controller!.headerMode?.value = RefreshStatus.idle;
+      _controller!.footerMode?.value = LoadStatus.idle;
     }
     try {
       Response response = await client.getSpotlightArticles("all");
@@ -53,9 +53,9 @@ abstract class _SpotlightStoreBase with Store {
 
   @action
   next() async {
-    if (nextUrl != null && nextUrl.isNotEmpty) {
+    if (nextUrl != null && nextUrl!.isNotEmpty) {
       try {
-        Response response = await client.getNext(nextUrl);
+        Response response = await client.getNext(nextUrl!);
         final results = SpotlightResponse.fromJson(response.data);
         nextUrl = results.nextUrl;
         articles.addAll(results.spotlightArticles);

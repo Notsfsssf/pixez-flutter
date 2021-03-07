@@ -13,43 +13,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-class BanIllustIdPersist {
-  String illustId;
-  String name;
-  int id;
-
-  BanIllustIdPersist();
-
-  BanIllustIdPersist.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json[columnName];
-    illustId = json[columnIllustId];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data[columnIllustId] = this.illustId;
-    data[columnName] = this.name;
-    return data;
-  }
-}
+part 'ban_illust_id.g.dart';
 
 final String columnId = 'id';
 final String columnIllustId = 'illust_id';
 final String columnName = 'name';
-
 final String tableBanIllustId = 'banillustid';
 
+@JsonSerializable()
+class BanIllustIdPersist {
+  @JsonKey(name: 'illust_id')
+  String illustId;
+  String name;
+  int? id;
+
+  BanIllustIdPersist({required this.illustId, required this.name, this.id});
+
+  factory BanIllustIdPersist.fromJson(Map<String, dynamic> json) =>
+      _$BanIllustIdPersistFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BanIllustIdPersistToJson(this);
+}
+
 class BanIllustIdProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'banillustid.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -69,8 +62,8 @@ create table $tableBanIllustId (
     return todo;
   }
 
-  Future<BanIllustIdPersist> getAccount(int id) async {
-    List<Map> maps = await db.query(tableBanIllustId,
+  Future<BanIllustIdPersist?> getAccount(int id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableBanIllustId,
         columns: [columnId, columnIllustId],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -81,8 +74,8 @@ create table $tableBanIllustId (
   }
 
   Future<List<BanIllustIdPersist>> getAllAccount() async {
-    List result = new List<BanIllustIdPersist>();
-    List<Map> maps = await db.query(tableBanIllustId,
+    List<BanIllustIdPersist> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableBanIllustId,
         columns: [columnId, columnIllustId, columnName]);
 
     if (maps.length > 0) {

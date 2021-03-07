@@ -13,7 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert' show json;
 
 import 'package:pixez/models/illust.dart';
@@ -23,19 +22,15 @@ class UserPreviewsResponse {
   String next_url;
 
   UserPreviewsResponse({
-    this.user_previews,
-    this.next_url,
+    required this.user_previews,
+    required this.next_url,
   });
 
   factory UserPreviewsResponse.fromJson(jsonRes) {
-    if (jsonRes == null) return null;
-    List<UserPreviews> user_previews =
-        jsonRes['user_previews'] is List ? [] : null;
-    if (user_previews != null) {
-      for (var item in jsonRes['user_previews']) {
-        if (item != null) {
-          user_previews.add(UserPreviews.fromJson(item));
-        }
+    List<UserPreviews> user_previews = [];
+    for (var item in jsonRes['user_previews']) {
+      if (item != null) {
+        user_previews.add(UserPreviews.fromJson(item));
       }
     }
 
@@ -63,29 +58,24 @@ class UserPreviews {
   bool is_muted;
 
   UserPreviews({
-    this.user,
-    this.illusts,
-    this.novels,
-    this.is_muted,
+    required this.user,
+    required this.illusts,
+    required this.novels,
+    required this.is_muted,
   });
 
   factory UserPreviews.fromJson(jsonRes) {
-    if (jsonRes == null) return null;
-    List<Illusts> illusts = jsonRes['illusts'] is List ? [] : null;
-    if (illusts != null) {
-      for (var item in jsonRes['illusts']) {
-        if (item != null) {
-          illusts.add(Illusts.fromJson(item));
-        }
+    List<Illusts> illusts = [];
+    for (var item in jsonRes['illusts']) {
+      if (item != null) {
+        illusts.add(Illusts.fromJson(item));
       }
     }
 
-    List<Object> novels = jsonRes['novels'] is List ? [] : null;
-    if (novels != null) {
-      for (var item in jsonRes['novels']) {
-        if (item != null) {
-          novels.add(item);
-        }
+    List<Object> novels = [];
+    for (var item in jsonRes['novels']) {
+      if (item != null) {
+        novels.add(item);
       }
     }
 

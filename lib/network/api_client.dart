@@ -28,13 +28,12 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
-import 'package:pixez/network/cache_interceptor.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 final ApiClient apiClient = ApiClient();
 
 class ApiClient {
-  Dio httpClient;
+  late Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static String BASE_API_URL_HOST = 'app-api.pixiv.net';
@@ -171,7 +170,8 @@ class ApiClient {
   // @GET("/v1/user/recommended?filter=for_android")
   // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
   Future<Response> getUserRecommended() async {
-    return httpClient.get("/v1/user/recommended?filter=for_android",options: buildCacheOptions(Duration(minutes: 2)));
+    return httpClient.get("/v1/user/recommended?filter=for_android",
+        options: buildCacheOptions(Duration(minutes: 2)));
   }
 
   Future<Response> getUser(int id) async {
@@ -179,12 +179,12 @@ class ApiClient {
         queryParameters: {"user_id": id});
   }
 
-  Future<Response> postUser(int a, String b) async {
+  Future<Response> postUser(int? a, String? b) async {
     return httpClient.post("/v1/user",
         data: {"a": a, "b": b}..removeWhere((k, v) => v == null));
   }
 
-  Map<String, dynamic> notNullMap(Map<String, dynamic> map) {
+  Map<String, dynamic> notNullMap(Map<String, dynamic?> map) {
     return map..removeWhere((k, v) => v == null);
   }
 
@@ -196,7 +196,7 @@ class ApiClient {
 //  @POST("/v2/illust/bookmark/add")
 //  fun postLikeIllust(@Header("Authorization") paramString1: String, @Field("illust_id") paramLong: Long, @Field("restrict") paramString2: String, @Field("tags[]") paramList: List<String>?): Observable<ResponseBody>
   Future<Response> postLikeIllust(
-      int illust_id, String restrict, List<String> tags) async {
+      int illust_id, String restrict, List<String>? tags) async {
     if (tags != null && tags.isNotEmpty) {
       String tagString = tags.first;
       for (var i = 1; i < tags.length; i++) {
@@ -266,7 +266,7 @@ class ApiClient {
 //  fun getLikeIllust(@Header("Authorization") paramString1: String, @Query("user_id") paramLong: Long, @Query("restrict") paramString2: String, @Query("tag") paramString3: String?): Observable<IllustNext>
 
   Future<Response> getBookmarksIllust(
-      int user_id, String restrict, String tag) async {
+      int user_id, String restrict, String? tag) async {
     return httpClient.get("/v1/user/bookmarks/illust",
         queryParameters:
             notNullMap({"user_id": user_id, "restrict": restrict, "tag": tag}));
@@ -328,7 +328,7 @@ class ApiClient {
     );
   }
 
-  String getFormatDate(DateTime dateTime) {
+  String? getFormatDate(DateTime? dateTime) {
     if (dateTime == null) {
       return null;
     } else
@@ -338,11 +338,11 @@ class ApiClient {
   //  @GET("/v1/search/illust?filter=for_android&merge_plain_keyword_results=true")
   // fun getSearchIllust(@Query("word") paramString1: String, @Query("sort") paramString2: String, @Query("search_target") paramString3: String?, @Query("bookmark_num") paramInteger: Int?, @Query("duration") paramString4: String?, @Header("Authorization") paramString5: String): Observable<SearchIllustResponse>
   Future<Response> getSearchIllust(String word,
-      {String sort = null,
-      String search_target = null,
-      DateTime start_date = null,
-      DateTime end_date = null,
-      int bookmark_num = null}) async {
+      {String? sort,
+      String? search_target,
+      DateTime? start_date,
+      DateTime? end_date,
+      int? bookmark_num}) async {
     return httpClient.get(
         "/v1/search/illust?filter=for_android&merge_plain_keyword_results=true",
         queryParameters: notNullMap({
@@ -356,11 +356,11 @@ class ApiClient {
   }
 
   Future<Response> getSearchNovel(String word,
-      {String sort = null,
-      String search_target = null,
-      DateTime start_date = null,
-      DateTime end_date = null,
-      int bookmark_num = null}) async {
+      {String? sort,
+      String? search_target,
+      DateTime? start_date,
+      DateTime? end_date,
+      int? bookmark_num}) async {
     return httpClient.get(
         "/v1/search/novel?filter=for_android&merge_plain_keyword_results=true",
         queryParameters: notNullMap({
@@ -449,7 +449,7 @@ class ApiClient {
   fun postIllustComment(@Header("Authorization") paramString1: String, @Field("illust_id") illust_id: Long, @Field("comment") comment: String, @Field("parent_comment_id") parent_comment_id: Int?): Observable<ResponseBody>
 */
   Future<Response> postIllustComment(int illust_id, String comment,
-      {int parent_comment_id = null}) {
+      {int? parent_comment_id}) {
     return httpClient.post("/v1/illust/comment/add",
         data: notNullMap({
           "illust_id": illust_id,

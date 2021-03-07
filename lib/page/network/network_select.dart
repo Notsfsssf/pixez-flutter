@@ -16,7 +16,7 @@ class NetworkSelectPage extends StatefulWidget {
 
 class _NetworkSelectPageState extends State<NetworkSelectPage>
     with TickerProviderStateMixin {
-  TabController tabController;
+  late TabController tabController;
 
   @override
   void initState() {

@@ -13,59 +13,34 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:pixez/models/illust.dart';
 
+part 'recommend.g.dart';
+
+@JsonSerializable()
 class Recommend {
   List<Illusts> illusts;
-  List<Illusts> rankingIllusts;
-  bool contestExists;
-  PrivacyPolicy privacyPolicy;
-  String nextUrl;
+  @JsonKey(name: 'ranking_illusts')
+  List<Illusts>? rankingIllusts;
+  @JsonKey(name: 'contest_exists')
+  bool? contestExists;
+  @JsonKey(name: 'privacy_policy')
+  PrivacyPolicy? privacyPolicy;
+  @JsonKey(name: 'next_url')
+  String? nextUrl;
 
   Recommend(
-      {this.illusts,
+      {required this.illusts,
       this.rankingIllusts,
       this.contestExists,
       this.privacyPolicy,
       this.nextUrl});
 
-  Recommend.fromJson(Map<String, dynamic> json) {
-    if (json['illusts'] != null) {
-      illusts = new List<Illusts>();
-      json['illusts'].forEach((v) {
-        illusts.add(new Illusts.fromJson(v));
-      });
-    }
-    if (json['ranking_illusts'] != null) {
-      rankingIllusts = new List<Illusts>();
-      json['ranking_illusts'].forEach((v) {
-        rankingIllusts.add(new Illusts.fromJson(v));
-      });
-    }
-    contestExists = json['contest_exists'];
-    privacyPolicy = json['privacy_policy'] != null
-        ? new PrivacyPolicy.fromJson(json['privacy_policy'])
-        : null;
-    nextUrl = json['next_url'];
-  }
+  factory Recommend.fromJson(Map<String, dynamic> json) =>
+      _$RecommendFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.illusts != null) {
-      data['illusts'] = this.illusts.map((v) => v.toJson()).toList();
-    }
-    if (this.rankingIllusts != null) {
-      data['ranking_illusts'] =
-          this.rankingIllusts.map((v) => v.toJson()).toList();
-    }
-    data['contest_exists'] = this.contestExists;
-    if (this.privacyPolicy != null) {
-      data['privacy_policy'] = this.privacyPolicy.toJson();
-    }
-    data['next_url'] = this.nextUrl;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$RecommendToJson(this);
 }
 
 class PrivacyPolicy {

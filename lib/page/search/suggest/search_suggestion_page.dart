@@ -26,18 +26,18 @@ import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
-  final String preword;
+  final String? preword;
 
-  const SearchSuggestionPage({Key key, this.preword}) : super(key: key);
+  const SearchSuggestionPage({Key? key, this.preword}) : super(key: key);
 
   @override
   _SearchSuggestionPageState createState() => _SearchSuggestionPageState();
 }
 
 class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
-  TextEditingController _filter;
-  SuggestionStore _suggestionStore;
-  SauceStore _sauceStore;
+  late TextEditingController _filter;
+  late SuggestionStore _suggestionStore;
+  late SauceStore _sauceStore;
 
   @override
   void initState() {
@@ -92,7 +92,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => IllustLightingPage(
-                                  id: int.tryParse(_filter.text),
+                                  id: int.tryParse(_filter.text)!,
                                 )));
                       },
                     );
@@ -102,7 +102,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UsersPage(
-                                id: int.tryParse(_filter.text),
+                                id: int.tryParse(_filter.text)!,
                               )));
                     },
                   );
@@ -111,10 +111,10 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
               visible: idV,
             ),
             if (_suggestionStore.autoWords != null &&
-                _suggestionStore.autoWords.tags.isNotEmpty)
+                _suggestionStore.autoWords!.tags.isNotEmpty)
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final tags = _suggestionStore.autoWords.tags;
+                  final tags = _suggestionStore.autoWords!.tags;
                   return ListTile(
                     onTap: () {
                       FocusScope.of(context).unfocus();
@@ -129,7 +129,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                     title: Text(tags[index].name),
                     subtitle: Text(tags[index].translated_name ?? ""),
                   );
-                }, childCount: _suggestionStore.autoWords.tags.length),
+                }, childCount: _suggestionStore.autoWords!.tags.length),
               ),
           ],
         )),
@@ -169,10 +169,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
             idV = isNum;
           });
           if (query.startsWith('https://')) {
-            Leader.pushWithUri(
-              context,
-              Uri.parse(query)
-            );
+            Leader.pushWithUri(context, Uri.parse(query));
             _filter.clear();
             return;
           }
@@ -198,7 +195,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
 class Suggestions extends StatefulWidget {
   final SuggestionStore suggestionStore;
 
-  const Suggestions({Key key, this.suggestionStore}) : super(key: key);
+  const Suggestions({Key? key, required this.suggestionStore})
+      : super(key: key);
 
   @override
   _SuggestionsState createState() => _SuggestionsState();
@@ -210,7 +208,7 @@ class _SuggestionsState extends State<Suggestions> {
     return Observer(
       builder: (context) {
         if (widget.suggestionStore.autoWords != null) {
-          final tags = widget.suggestionStore.autoWords.tags;
+          final tags = widget.suggestionStore.autoWords!.tags;
           return tags.isNotEmpty
               ? ListView.separated(
                   itemBuilder: (context, index) {

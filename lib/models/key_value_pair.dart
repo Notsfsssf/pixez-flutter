@@ -1,6 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:convert' show json;
 import 'package:path/path.dart';
+
+part 'key_value_pair.g.dart';
 
 final String tableKVPair = 'kvpair';
 final String columnId = '_id';
@@ -9,28 +12,24 @@ final String columnValue = 'value';
 final String columnExpireTime = 'expire_time';
 final String columnDateTime = 'date_time';
 
+@JsonSerializable()
 class KVPair {
   String key;
   String value;
+  @JsonKey(name: 'expire_time')
   int expireTime;
+  @JsonKey(name: 'date_time')
   int dateTime;
 
-  KVPair({this.key, this.value, this.expireTime, this.dateTime});
+  KVPair(
+      {required this.key,
+      required this.value,
+      required this.expireTime,
+      required this.dateTime});
 
-  factory KVPair.fromJson(jsonRes) => jsonRes == null
-      ? null
-      : KVPair(
-          key: jsonRes['key'],
-          value: jsonRes['value'],
-          expireTime: jsonRes['expire_time'],
-          dateTime: jsonRes['date_time']);
+  factory KVPair.fromJson(Map<String, dynamic> json) => _$KVPairFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'key': key,
-        'value': value,
-        'expire_time': expireTime,
-        'date_time': dateTime
-      };
+  Map<String, dynamic> toJson() => _$KVPairToJson(this);
 
   @override
   String toString() {
@@ -39,10 +38,10 @@ class KVPair {
 }
 
 class KVProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'kvpair.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -61,11 +60,10 @@ create table $tableKVPair (
   Future<void> insert(KVPair todo) async {
     await db.insert(tableKVPair, todo.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    return todo;
   }
 
-  Future<KVPair> getAccount(String key) async {
-    List<Map> maps = await db.query(tableKVPair,
+  Future<KVPair?> getAccount(String key) async {
+    List<Map<String, dynamic>> maps = await db.query(tableKVPair,
         columns: [
           columnId,
           columnKey,
@@ -98,8 +96,8 @@ create table $tableKVPair (
   }
 
   Future<List<KVPair>> getAllAccount() async {
-    List result = new List<KVPair>();
-    List<Map> maps = await db.query(tableKVPair, columns: [
+    List<KVPair> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableKVPair, columns: [
       columnId,
       columnKey,
       columnValue,

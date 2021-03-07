@@ -8,9 +8,9 @@ part 'top_store.g.dart';
 class TopStore = _TopStoreBase with _$TopStore;
 
 abstract class _TopStoreBase with Store {
-  StreamController<String> _streamController;
+  late StreamController<String> _streamController;
 
-  ObservableStream<String> topStream;
+  late ObservableStream<String> topStream;
 
   _TopStoreBase() {
     _streamController = StreamController();

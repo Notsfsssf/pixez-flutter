@@ -25,7 +25,7 @@ class IllustDetailStore = _IllustDetailStoreBase with _$IllustDetailStore;
 abstract class _IllustDetailStoreBase with Store {
   final Illusts illust;
   @observable
-  bool isFollow;
+  bool isFollow = false;
 
   _IllustDetailStoreBase(this.illust) {
     isFollow = illust.user.isFollowed;

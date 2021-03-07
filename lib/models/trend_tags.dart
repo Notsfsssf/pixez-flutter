@@ -13,7 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert' show json;
 
 import 'package:pixez/models/illust.dart';
@@ -22,17 +21,14 @@ class TrendingTag {
   List<Trend_tags> trend_tags;
 
   TrendingTag({
-    this.trend_tags,
+    required this.trend_tags,
   });
 
   factory TrendingTag.fromJson(jsonRes) {
-    if (jsonRes == null) return null;
-    List<Trend_tags> trend_tags = jsonRes['trend_tags'] is List ? [] : null;
-    if (trend_tags != null) {
-      for (var item in jsonRes['trend_tags']) {
-        if (item != null) {
-          trend_tags.add(Trend_tags.fromJson(item));
-        }
+    List<Trend_tags> trend_tags = [];
+    for (var item in jsonRes['trend_tags']) {
+      if (item != null) {
+        trend_tags.add(Trend_tags.fromJson(item));
       }
     }
 
@@ -40,6 +36,7 @@ class TrendingTag {
       trend_tags: trend_tags,
     );
   }
+
   Map<String, dynamic> toJson() => {
         'trend_tags': trend_tags,
       };
@@ -55,16 +52,15 @@ class Trend_tags {
   Illusts illust;
 
   Trend_tags({
-    this.tag,
-    this.illust,
+    required this.tag,
+    required this.illust,
   });
 
-  factory Trend_tags.fromJson(jsonRes) => jsonRes == null
-      ? null
-      : Trend_tags(
-          tag: jsonRes['tag'],
-          illust: Illusts.fromJson(jsonRes['illust']),
-        );
+  factory Trend_tags.fromJson(jsonRes) => Trend_tags(
+        tag: jsonRes['tag'],
+        illust: Illusts.fromJson(jsonRes['illust']),
+      );
+
   Map<String, dynamic> toJson() => {
         'tag': tag,
         'illust': illust,

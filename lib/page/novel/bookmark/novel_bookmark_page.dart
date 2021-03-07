@@ -23,20 +23,20 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
 class NovelBookmarkPage extends StatefulWidget {
-  final int id;
+  final int? id;
 
-  const NovelBookmarkPage({Key key, this.id}) : super(key: key);
+  const NovelBookmarkPage({Key? key, this.id}) : super(key: key);
   @override
   _NovelBookmarkPageState createState() => _NovelBookmarkPageState();
 }
 
 class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
   String restrict = 'public';
-  FutureGet futureGet;
-  int id;
+  late FutureGet futureGet;
+  late int id;
   @override
   void initState() {
-    id = widget.id ?? int.parse(accountStore.now.userId);
+    id = widget.id ?? int.parse(accountStore.now!.userId);
     futureGet = () => apiClient.getUserBookmarkNovel(id, restrict);
     super.initState();
   }
@@ -44,7 +44,7 @@ class _NovelBookmarkPageState extends State<NovelBookmarkPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      if (int.parse(accountStore.now.userId) == id)
+      if (int.parse(accountStore.now!.userId) == id)
         return Column(
           children: <Widget>[
             Align(

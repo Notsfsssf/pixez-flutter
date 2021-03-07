@@ -19,13 +19,13 @@ abstract class _LoginStoreBase with Store {
   }
 
   @observable
-  String errorMessage;
+  String? errorMessage;
 
-  @action
-  Future<bool> auth(String username, password, {String deviceToken}) async {
+/*  @action
+  Future<bool> auth(String username, password, {String? deviceToken}) async {
     try {
       final response = await client.postAuthToken(username, password,
-          deviceToken: deviceToken);
+          deviceToken: deviceToken!);
       AccountResponse accountResponse =
           Account.fromJson(response.data).response;
       User user = accountResponse.user;
@@ -49,12 +49,12 @@ abstract class _LoginStoreBase with Store {
       if (e == null) {
         return false;
       }
-      if (e.response != null && e.response.data != null)
+      if (e.response != null && e.response!.data != null)
         errorMessage =
-            LoginErrorResponse.fromJson(e.response.data).errors.system.message;
+            LoginErrorResponse.fromJson(e.response!.data).errors.system.message;
       else
         errorMessage = e.message;
       return false;
     }
-  }
+  }*/
 }

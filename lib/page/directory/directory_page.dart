@@ -25,15 +25,16 @@ import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/page/directory/directory_store.dart';
 
 class DirectoryPage extends StatefulWidget {
-  final String initPath;
+  final String? initPath;
 
-  const DirectoryPage({Key key, this.initPath}) : super(key: key);
+  const DirectoryPage({Key? key, this.initPath}) : super(key: key);
+
   @override
   _DirectoryPageState createState() => _DirectoryPageState();
 }
 
 class _DirectoryPageState extends State<DirectoryPage> {
-  DirectoryStore directoryStore;
+  late DirectoryStore directoryStore;
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _DirectoryPageState extends State<DirectoryPage> {
     super.initState();
     _initMethod();
     final dispose = reaction((_) => directoryStore.checkSuccess, (value) {
-      if (value) Navigator.of(context).pop(directoryStore.path);
+      if (value as bool) Navigator.of(context).pop(directoryStore.path);
     });
     dispose();
   }

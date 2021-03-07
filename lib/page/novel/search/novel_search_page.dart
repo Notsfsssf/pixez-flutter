@@ -24,7 +24,7 @@ class NovelSearchPage extends StatefulWidget {
 }
 
 class _NovelSearchPageState extends State<NovelSearchPage> {
-  TextEditingController _textEditingController;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {

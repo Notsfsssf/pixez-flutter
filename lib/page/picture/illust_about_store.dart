@@ -29,7 +29,7 @@ abstract class _IllustAboutStoreBase with Store {
   _IllustAboutStoreBase(this.id);
 
   @observable
-  String errorMessage;
+  String? errorMessage;
 
   ObservableList<Illusts> illusts = ObservableList();
 

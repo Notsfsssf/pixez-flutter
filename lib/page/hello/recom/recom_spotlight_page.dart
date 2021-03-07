@@ -36,9 +36,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
-  final LightingStore lightingStore;
+  final LightingStore? lightingStore;
 
-  RecomSpolightPage({Key key, this.lightingStore}) : super(key: key);
+  RecomSpolightPage({Key? key, this.lightingStore}) : super(key: key);
 
   @override
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
@@ -46,17 +46,17 @@ class RecomSpolightPage extends StatefulWidget {
 
 class _RecomSpolightPageState extends State<RecomSpolightPage>
     with AutomaticKeepAliveClientMixin {
-  SpotlightStore spotlightStore;
-  LightingStore _lightingStore;
-  RecomUserStore _recomUserStore;
+  late SpotlightStore spotlightStore;
+  late LightingStore _lightingStore;
+  late RecomUserStore _recomUserStore;
+  late StreamSubscription<String> subscription;
+  late RefreshController _easyRefreshController;
 
   @override
   void dispose() {
     subscription?.cancel();
     super.dispose();
   }
-
-  StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -71,12 +71,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "100") {
-        _easyRefreshController.position.jumpTo(0);
+        _easyRefreshController.position?.jumpTo(0);
       }
     });
   }
-
-  RefreshController _easyRefreshController;
 
   Future<void> fetchT() async {
     await spotlightStore.fetch();
@@ -117,11 +115,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                       )
                     : ClassicHeader(),
                 footer: _buildCustomFooter(),
-                onRefresh: () {
-                  return fetchT();
+                onRefresh: () async {
+                  await fetchT();
                 },
-                onLoading: () {
-                  return _lightingStore.fetchNext();
+                onLoading: () async {
+                  await _lightingStore.fetchNext();
                 },
                 child: _buildWaterFall(),
               ),
@@ -153,7 +151,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                       size: 24,
                     ),
                     onPressed: () {
-                      _easyRefreshController.position.jumpTo(0);
+                      _easyRefreshController.position?.jumpTo(0);
                     },
                   ),
                 ),
@@ -168,7 +166,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   CustomFooter _buildCustomFooter() {
     return CustomFooter(
-      builder: (BuildContext context, LoadStatus mode) {
+      builder: (BuildContext context, LoadStatus? mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
           body = Text(I18n.of(context).pull_up_to_load_more);
@@ -213,7 +211,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               collectGarbage: (List<int> garbages) {
                 garbages.forEach((index) {
                   final provider = ExtendedNetworkImageProvider(
-                    _lightingStore.iStores[index].illusts.imageUrls.medium,
+                    _lightingStore.iStores[index].illusts!.imageUrls.medium,
                   );
                   provider.evict();
                 });
@@ -221,7 +219,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             ),
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-              if (_lightingStore.iStores[index].illusts.hateByUser()) {
+              if (_lightingStore.iStores[index].illusts!.hateByUser()) {
                 return Visibility(
                     visible: false,
                     child: Container(
@@ -229,8 +227,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                     ));
               }
               double radio =
-                  _lightingStore.iStores[index].illusts.height.toDouble() /
-                      _lightingStore.iStores[index].illusts.width.toDouble();
+                  _lightingStore.iStores[index].illusts!.height.toDouble() /
+                      _lightingStore.iStores[index].illusts!.width.toDouble();
               double mainAxisExtent;
               if (radio > 3)
                 mainAxisExtent = itemWidth;
@@ -283,7 +281,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
-                    color: Theme.of(context).textTheme.headline6.color),
+                    color: Theme.of(context).textTheme.headline6!.color),
               ),
               padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
             ),

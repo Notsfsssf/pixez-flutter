@@ -13,28 +13,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+part 'account.g.dart';
+
+@JsonSerializable()
 class Account {
-  AccountResponse response;
+  final AccountResponse response;
 
-  Account({this.response});
+  Account({required this.response});
 
-  Account.fromJson(Map<String, dynamic> json) {
-    response = json['response'] != null
-        ? new AccountResponse.fromJson(json['response'])
-        : null;
-  }
+  factory Account.fromJson(Map<String, dynamic> json) =>
+      _$AccountFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.response != null) {
-      data['response'] = this.response.toJson();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$AccountToJson(this);
 }
 
 final String tableAccount = 'account';
@@ -53,10 +47,10 @@ final String columnXRestrict = 'x_restrict';
 final String columnIsMailAuthorized = 'is_mail_authorized';
 
 class AccountProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'account.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -86,8 +80,8 @@ create table $tableAccount (
     return todo;
   }
 
-  Future<AccountPersist> getAccount(int id) async {
-    List<Map> maps = await db.query(tableAccount,
+  Future<AccountPersist?> getAccount(int id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableAccount,
         columns: [
           columnId,
           columnUserImage,
@@ -113,8 +107,8 @@ create table $tableAccount (
   }
 
   Future<List<AccountPersist>> getAllAccount() async {
-    List result = new List<AccountPersist>();
-    List<Map> maps = await db.query(tableAccount, columns: [
+    List<AccountPersist> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableAccount, columns: [
       columnId,
       columnUserImage,
       columnAccessToken,
@@ -143,10 +137,11 @@ create table $tableAccount (
     return await db
         .delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
   }
- Future<int> deleteAll() async {
-    return await db
-        .delete(tableAccount);
+
+  Future<int> deleteAll() async {
+    return await db.delete(tableAccount);
   }
+
   Future<int> update(AccountPersist todo) async {
     return await db.update(tableAccount, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
@@ -155,168 +150,128 @@ create table $tableAccount (
   Future close() async => db.close();
 }
 
+@JsonSerializable()
 class AccountPersist {
-  int id;
+  int? id;
+  @JsonKey(name: 'user_id')
   String userId;
+  @JsonKey(name: 'user_image')
   String userImage;
+  @JsonKey(name: 'access_token')
   String accessToken;
+  @JsonKey(name: 'refresh_token')
   String refreshToken;
+  @JsonKey(name: 'device_token')
   String deviceToken;
   String name;
   String account;
+  @JsonKey(name: 'mail_address')
   String mailAddress;
+  @JsonKey(name: 'password')
   String passWord;
+  @JsonKey(name: 'is_premium')
   int isPremium;
+  @JsonKey(name: 'x_restrict')
   int xRestrict;
+  @JsonKey(name: 'is_mail_authorized')
   int isMailAuthorized;
 
-  AccountPersist({this.userId,this.userImage,this.accessToken, this.refreshToken, this.deviceToken,this.name,this.account,this.mailAddress,this.isPremium,this.xRestrict,this.isMailAuthorized});
+  AccountPersist(
+      {required this.userId,
+      this.id,
+      required this.userImage,
+      required this.accessToken,
+      required this.refreshToken,
+      required this.deviceToken,
+      required this.passWord,
+      required this.name,
+      required this.account,
+      required this.mailAddress,
+      required this.isPremium,
+      required this.xRestrict,
+      required this.isMailAuthorized});
 
-  AccountPersist.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    accessToken = json['access_token'];
-    refreshToken = json['refresh_token'];
-    deviceToken = json['device_token'];
-    userImage = json[columnUserImage];
-    name = json['name'];
-    account = json['account'];
-    mailAddress = json['mail_address'];
-    isPremium = json['is_premium'];
-    xRestrict = json['x_restrict'];
-    passWord=json[columnPassWord];
-    isMailAuthorized = json['is_mail_authorized'];
-  }
+  factory AccountPersist.fromJson(Map<String, dynamic> json) =>
+      _$AccountPersistFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data[columnAccessToken] = this.accessToken;
-    data[columnRefreshToken] = this.refreshToken;
-    data[columnDeviceToken] = this.deviceToken;
-    data['name'] = this.name;
-    data[columnPassWord]=this.passWord;
-    data['account'] = this.account;
-    data['mail_address'] = this.mailAddress;
-    data['is_premium'] = this.isPremium;
-    data['x_restrict'] = this.xRestrict;
-    data['is_mail_authorized'] = this.isMailAuthorized;
-    data[columnUserImage] = this.userImage;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$AccountPersistToJson(this);
 }
 
+@JsonSerializable()
 class AccountResponse {
+  @JsonKey(name: "access_token")
   String accessToken;
+  @JsonKey(name: "expires_in")
   int expiresIn;
+  @JsonKey(name: "token_type")
   String tokenType;
   String scope;
+  @JsonKey(name: 'refresh_token')
   String refreshToken;
   User user;
+  @JsonKey(name: 'device_token')
   String deviceToken;
 
+  factory AccountResponse.fromJson(Map<String, dynamic> json) =>
+      _$AccountResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AccountResponseToJson(this);
+
   AccountResponse(
-      {this.accessToken,
-      this.expiresIn,
-      this.tokenType,
-      this.scope,
-      this.refreshToken,
-      this.user,
-      this.deviceToken});
-
-  AccountResponse.fromJson(Map<String, dynamic> json) {
-    accessToken = json['access_token'];
-    expiresIn = json['expires_in'];
-    tokenType = json['token_type'];
-    scope = json['scope'];
-    refreshToken = json['refresh_token'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    deviceToken = json['device_token'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['access_token'] = this.accessToken;
-    data['expires_in'] = this.expiresIn;
-    data['token_type'] = this.tokenType;
-    data['scope'] = this.scope;
-    data['refresh_token'] = this.refreshToken;
-    if (this.user != null) {
-      data['user'] = this.user.toJson();
-    }
-    data['device_token'] = this.deviceToken;
-    return data;
-  }
+      {required this.accessToken,
+      required this.expiresIn,
+      required this.tokenType,
+      required this.scope,
+      required this.refreshToken,
+      required this.user,
+      required this.deviceToken});
 }
 
+@JsonSerializable()
 class User {
+  @JsonKey(name: 'profile_image_urls')
   ProfileImageUrls profileImageUrls;
   String id;
   String name;
   String account;
+  @JsonKey(name: 'mail_address')
   String mailAddress;
+  @JsonKey(name: 'is_premium')
   bool isPremium;
+  @JsonKey(name: 'x_restrict')
   int xRestrict;
+  @JsonKey(name: 'is_mail_authorized')
   bool isMailAuthorized;
 
   User(
-      {this.profileImageUrls,
-      this.id,
-      this.name,
-      this.account,
-      this.mailAddress,
-      this.isPremium,
-      this.xRestrict,
-      this.isMailAuthorized});
+      {required this.profileImageUrls,
+      required this.id,
+      required this.name,
+      required this.account,
+      required this.mailAddress,
+      required this.isPremium,
+      required this.xRestrict,
+      required this.isMailAuthorized});
 
-  User.fromJson(Map<String, dynamic> json) {
-    profileImageUrls = json['profile_image_urls'] != null
-        ? new ProfileImageUrls.fromJson(json['profile_image_urls'])
-        : null;
-    id = json['id'];
-    name = json['name'];
-    account = json['account'];
-    mailAddress = json['mail_address'];
-    isPremium = json['is_premium'];
-    xRestrict = json['x_restrict'];
-    isMailAuthorized = json['is_mail_authorized'];
-  }
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.profileImageUrls != null) {
-      data['profile_image_urls'] = this.profileImageUrls.toJson();
-    }
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['account'] = this.account;
-    data['mail_address'] = this.mailAddress;
-    data['is_premium'] = this.isPremium;
-    data['x_restrict'] = this.xRestrict;
-    data['is_mail_authorized'] = this.isMailAuthorized;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
+@JsonSerializable()
 class ProfileImageUrls {
+  @JsonKey(name: "px_16x16")
   String px16x16;
+  @JsonKey(name: "px_50x50")
   String px50x50;
+  @JsonKey(name: "px_170x170")
   String px170x170;
 
-  ProfileImageUrls({this.px16x16, this.px50x50, this.px170x170});
+  ProfileImageUrls(
+      {required this.px16x16, required this.px50x50, required this.px170x170});
 
-  ProfileImageUrls.fromJson(Map<String, dynamic> json) {
-    px16x16 = json['px_16x16'];
-    px50x50 = json['px_50x50'];
-    px170x170 = json['px_170x170'];
-  }
+  factory ProfileImageUrls.fromJson(Map<String, dynamic> json) =>
+      _$ProfileImageUrlsFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['px_16x16'] = this.px16x16;
-    data['px_50x50'] = this.px50x50;
-    data['px_170x170'] = this.px170x170;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$ProfileImageUrlsToJson(this);
 }

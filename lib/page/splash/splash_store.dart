@@ -35,7 +35,7 @@ abstract class _SplashStoreBase with Store {
   String helloWord = "= w =";
   String host = ImageHost;
   @observable
-  OnezeroResponse onezeroResponse;
+  OnezeroResponse? onezeroResponse;
 
   _SplashStoreBase(this.onezeroClient);
 

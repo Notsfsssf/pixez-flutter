@@ -21,10 +21,10 @@ import 'package:pixez/page/picture/illust_store.dart';
 class PictureListPage extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore> iStores;
-  final String heroString;
+  final String? heroString;
 
   const PictureListPage(
-      {Key key, @required this.store, @required this.iStores, this.heroString})
+      {Key? key, required this.store, required this.iStores, this.heroString})
       : super(key: key);
 
   @override
@@ -32,8 +32,8 @@ class PictureListPage extends StatefulWidget {
 }
 
 class _PictureListPageState extends State<PictureListPage> {
-  PageController _pageController;
-  int nowPosition;
+  late PageController _pageController;
+  late int nowPosition;
   double screenWidth = 0;
 
   @override
@@ -75,7 +75,7 @@ class _PictureListPageState extends State<PictureListPage> {
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
           final f = widget.iStores[index];
-          String tag = nowPosition == index ? widget.heroString : null;
+          String? tag = nowPosition == index ? widget.heroString : null;
           return IllustLightingPage(
             id: f.id,
             heroString: tag,

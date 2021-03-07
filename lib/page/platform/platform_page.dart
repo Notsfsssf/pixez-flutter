@@ -33,7 +33,7 @@ class PlatformPage extends StatefulWidget {
 class _PlatformPageState extends State<PlatformPage> {
   String path = "";
   List<DisplayMode> modes = <DisplayMode>[];
-  DisplayMode selected;
+  late DisplayMode selected;
 
   @override
   void initState() {
@@ -67,7 +67,7 @@ class _PlatformPageState extends State<PlatformPage> {
       /// noActivity - Activity is not available. Probably app is in background
     }
     selected =
-        modes.firstWhere((DisplayMode m) => m.selected, orElse: () => null);
+        modes.firstWhere((DisplayMode m) => m.selected);
     // if (mounted) {
     //   setState(() {});
     // }
@@ -79,7 +79,7 @@ class _PlatformPageState extends State<PlatformPage> {
       version = packageInfo.version;
     });
     fetchModes();
-    String path = await DocumentPlugin.getPath();
+    String path = (await DocumentPlugin.getPath())!;
     if (mounted) {
       setState(() {
         this.path = path;
@@ -117,7 +117,7 @@ class _PlatformPageState extends State<PlatformPage> {
                   debugPrint(path);
                   if (mounted) {
                     setState(() {
-                      this.path = path;
+                      this.path = path!;
                     });
                   }
                 },

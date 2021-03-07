@@ -27,7 +27,7 @@ class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
   static const platform = const MethodChannel('samples.flutter.dev/battery');
 
-  const SpotlightCard({Key key, this.spotlight}) : super(key: key);
+  const SpotlightCard({Key? key,required this.spotlight}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

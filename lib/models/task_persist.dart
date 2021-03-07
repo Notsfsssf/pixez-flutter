@@ -17,7 +17,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TaskPersist {
-  int id;
+  int? id;
   String userName;
   String fileName;
   String title;
@@ -27,23 +27,25 @@ class TaskPersist {
   int status;
 
   TaskPersist(
-      {this.userName,
-      this.title,
-      this.url,
-      this.userId,
-      this.illustId,
-      this.fileName,
-      this.status});
+      {required this.userName,
+      required this.title,
+      required this.url,
+      required this.userId,
+      required this.illustId,
+      required this.id,
+      required this.fileName,
+      required this.status});
 
-  TaskPersist.fromJson(Map<String, dynamic> json) {
-    id = json[columnId];
-    userName = json[columnUserName];
-    title = json[columnTitle];
-    url = json[columnUrl];
-    userId = json[columnUserId];
-    illustId = json[columnIllustId];
-    status = json[columnStatus];
-    fileName = json[columnFileName];
+  factory TaskPersist.fromJson(Map<String, dynamic> json) {
+    return TaskPersist(
+        id: json[columnId],
+        userName: json[columnUserName],
+        title: json[columnTitle],
+        url: json[columnUrl],
+        userId: json[columnUserId],
+        illustId: json[columnIllustId],
+        status: json[columnStatus],
+        fileName: json[columnFileName]);
   }
 
   Map<String, dynamic> toJson() {
@@ -60,10 +62,38 @@ class TaskPersist {
   }
 
   Illusts toIllusts() {
-    var illusts = Illusts();
-    illusts.user = User()
-      ..id = this.userId
-      ..name = this.userName;
+    var user2 = User(
+        id: this.userId,
+        name: this.userName,
+        account: '',
+        profileImageUrls: ProfileImageUrls(medium: ''),
+        comment: "",
+        isFollowed: false);
+    var illusts = Illusts(
+        id: this.illustId,
+        title: this.title,
+        type: 'type',
+        imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
+        caption: 'caption',
+        restrict: 0,
+        user: user2,
+        tags: [],
+        tools: [],
+        createDate: '',
+        pageCount: 0,
+        width: 0,
+        height: 0,
+        sanityLevel: 2,
+        xRestrict: 0,
+        series: Object(),
+        metaSinglePage: MetaSinglePage(originalImageUrl: ''),
+        metaPages: [],
+        totalView: 0,
+        totalBookmarks: 0,
+        isBookmarked: false,
+        visible: false,
+        isMuted: false);
+    illusts.user = user2;
     illusts.title = this.title;
     illusts.id = this.illustId;
     return illusts;
@@ -81,10 +111,10 @@ final String columnStatus = 'status';
 final String columnFileName = 'file_name';
 
 class TaskPersistProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'task.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -109,8 +139,8 @@ create table $tableAccount (
     return todo;
   }
 
-  Future<TaskPersist> getAccount(String id) async {
-    List<Map> maps = await db.query(tableAccount,
+  Future<TaskPersist?> getAccount(String id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableAccount,
         columns: [
           columnId,
           columnUserId,
@@ -148,16 +178,20 @@ create table $tableAccount (
   }
 
   Future<List<TaskPersist>> getAllAccount() async {
-    List<Map> maps = await db.query(tableAccount, columns: [
-      columnId,
-      columnUserId,
-      columnIllustId,
-      columnTitle,
-      columnUserName,
-      columnUrl,
-      columnFileName,
-      columnStatus
-    ],orderBy: "${columnId} DESC",);
+    List<Map<String, dynamic>> maps = await db.query(
+      tableAccount,
+      columns: [
+        columnId,
+        columnUserId,
+        columnIllustId,
+        columnTitle,
+        columnUserName,
+        columnUrl,
+        columnFileName,
+        columnStatus
+      ],
+      orderBy: "${columnId} DESC",
+    );
     return maps.map((e) => TaskPersist.fromJson(e)).toList();
   }
 }

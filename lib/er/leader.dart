@@ -32,7 +32,7 @@ class Leader {
       if (link.host.contains("account")) {
         try {
           BotToast.showText(text: "working....");
-          String code = link.queryParameters['code'];
+          String code = link.queryParameters['code']!;
           LPrinter.d("here we go:" + code);
           Response response = await oAuthClient.code2Token(code);
           AccountResponse accountResponse =
@@ -40,25 +40,27 @@ class Leader {
           final user = accountResponse.user;
           AccountProvider accountProvider = new AccountProvider();
           await accountProvider.open();
-          var accountPersist = AccountPersist()
-            ..passWord = ""
-            ..accessToken = accountResponse.accessToken
-            ..deviceToken = accountResponse.deviceToken ?? ""
-            ..refreshToken = accountResponse.refreshToken
-            ..userImage = user.profileImageUrls.px170x170
-            ..userId = user.id
-            ..name = user.name
-            ..isMailAuthorized = user.isMailAuthorized ? 1 : 0
-            ..isPremium = user.isPremium ? 1 : 0
-            ..mailAddress = user.mailAddress
-            ..account = user.account
-            ..xRestrict = user.xRestrict;
+          var accountPersist = AccountPersist(
+              userId: user.id,
+              userImage: user.profileImageUrls.px170x170,
+              accessToken: accountResponse.accessToken ?? "",
+              refreshToken: accountResponse.refreshToken ?? "",
+              deviceToken: accountResponse.deviceToken ?? "",
+              passWord: "no more",
+              name: user.name,
+              account: user.account,
+              mailAddress: user.mailAddress,
+              isPremium: user.isPremium ? 1 : 0,
+              xRestrict: user.xRestrict,
+              isMailAuthorized: user.isMailAuthorized ? 1 : 0,
+              id: 0);
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
         } catch (e) {
           LPrinter.d(e);
         }
-        return;
+      } else if (link.host.contains("illusts") || link.host.contains("user")) {
+        _parseUriContent(context, link);
       }
     } else if (link.scheme.contains("http")) {
       _parseUriContent(context, link);
@@ -126,7 +128,7 @@ class Leader {
       if (link.queryParameters['illust_id'] != null) {
         try {
           var id = link.queryParameters['illust_id'];
-          Leader.push(context, IllustLightingPage(id: int.parse(id)));
+          Leader.push(context, IllustLightingPage(id: int.parse(id!)));
           return;
         } catch (e) {}
       }
@@ -137,14 +139,14 @@ class Leader {
             Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(builder: (context) {
               return UsersPage(
-                id: int.parse(id),
+                id: int.parse(id!),
               );
             }));
           else
             Navigator.of(context, rootNavigator: true)
                 .push(MaterialPageRoute(builder: (context) {
               return NovelViewerPage(
-                id: int.parse(id),
+                id: int.parse(id!),
                 novelStore: null,
               );
             }));

@@ -27,7 +27,7 @@ class PainterCard extends StatelessWidget {
   final UserPreviews user;
   final bool isNovel;
 
-  const PainterCard({Key key, this.user, this.isNovel = false})
+  const PainterCard({Key? key,required this.user, this.isNovel = false})
       : super(key: key);
 
   @override

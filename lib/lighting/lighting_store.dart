@@ -31,9 +31,9 @@ typedef Future<Response> FutureGet();
 
 abstract class _LightingStoreBase with Store {
   FutureGet source;
-  String nextUrl;
-  RefreshController controller;
-  final Function onChange;
+  String? nextUrl;
+  RefreshController? controller;
+  final Function? onChange;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
 
@@ -48,7 +48,7 @@ abstract class _LightingStoreBase with Store {
   }
 
   @observable
-  String errorMessage;
+  String? errorMessage;
 
   _LightingStoreBase(this.source, this.controller, {this.onChange});
 
@@ -86,11 +86,11 @@ abstract class _LightingStoreBase with Store {
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-      controller.refreshCompleted();
+      controller?.refreshCompleted();
       return true;
     } catch (e) {
       errorMessage = e.toString();
-      controller.refreshFailed();
+      controller?.refreshFailed();
       return false;
     }
   }
@@ -105,18 +105,18 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetchNext() async {
     errorMessage = null;
     try {
-      if (nextUrl != null && nextUrl.isNotEmpty) {
-        Response result = await apiClient.getNext(nextUrl);
+      if (nextUrl != null && nextUrl!.isNotEmpty) {
+        Response result = await apiClient.getNext(nextUrl!);
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
         iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-        controller.loadComplete();
+        controller?.loadComplete();
       } else {
-        controller.loadNoData();
+        controller?.loadNoData();
       }
       return true;
     } catch (e) {
-      controller.loadFailed();
+      controller?.loadFailed();
       return false;
     }
   }

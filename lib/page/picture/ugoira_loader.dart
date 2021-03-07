@@ -35,7 +35,7 @@ class UgoiraLoader extends StatefulWidget {
   final int id;
   final Illusts illusts;
 
-  const UgoiraLoader({Key key, @required this.id, @required this.illusts})
+  const UgoiraLoader({Key? key, required this.id, required this.illusts})
       : super(key: key);
 
   @override
@@ -43,7 +43,7 @@ class UgoiraLoader extends StatefulWidget {
 }
 
 class _UgoiraLoaderState extends State<UgoiraLoader> {
-  UgoiraStore _store;
+  late UgoiraStore _store;
 
   @override
   void initState() {
@@ -90,8 +90,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 isEncoding = true;
                 platform.invokeMethod('getBatteryLevel', {
                   "path": _store.drawPool.first.parent.path,
-                  "delay": _store
-                      .ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay,
+                  "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata.frames
+                      .first.delay,
                   "name": userSetting.singleFolder
                       ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
                       : "${widget.id}",
@@ -105,7 +105,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
           },
           child: UgoiraWidget(
               delay: _store
-                  .ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay,
+                  .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
               size: Size(
                   MediaQuery.of(context).size.width.toDouble(),
                   (widget.illusts.height.toDouble() /
@@ -164,14 +164,15 @@ Future<List<int>> encodeGif(Map<int, dynamic> a) async {
   var firstDelay =
       ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay.toDouble() /
           1000.0;
-  GifEncoder encoder = GifEncoder(
-      delay: firstDelay.toInt(), samplingFactor: 10);
+  GifEncoder encoder =
+      GifEncoder(delay: firstDelay.toInt(), samplingFactor: 10);
   for (var i in drawPool) {
     var bytesSync = File(i.path).readAsBytesSync();
-    Image image =
-    i.path.endsWith(".png") ? decodePng(bytesSync) : decodeJpg(bytesSync);
+    Image image = (i.path.endsWith(".png")
+        ? decodePng(bytesSync)
+        : decodeJpg(bytesSync))!;
     encoder.addFrame(image);
   }
-  List<int> result = encoder.finish();
+  List<int> result = encoder.finish()!;
   return result;
 }

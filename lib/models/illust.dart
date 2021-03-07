@@ -13,298 +13,181 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+import 'package:json_annotation/json_annotation.dart';
+part 'illust.g.dart';
 
+@JsonSerializable()
 class MetaPages {
+  @JsonKey(name: 'image_urls')
   MetaPagesImageUrls imageUrls;
 
-  MetaPages({this.imageUrls});
+  MetaPages({required this.imageUrls});
 
-  MetaPages.fromJson(Map<String, dynamic> json) {
-    imageUrls = json['image_urls'] != null
-        ? new MetaPagesImageUrls.fromJson(json['image_urls'])
-        : null;
-  }
+  factory MetaPages.fromJson(Map<String, dynamic> json) =>
+      _$MetaPagesFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.imageUrls != null) {
-      data['image_urls'] = this.imageUrls.toJson();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$MetaPagesToJson(this);
 }
 
+@JsonSerializable()
 class MetaPagesImageUrls {
+  @JsonKey(name: 'square_medium')
   String squareMedium;
   String medium;
   String large;
   String original;
 
   MetaPagesImageUrls(
-      {this.squareMedium, this.medium, this.large, this.original});
+      {required this.squareMedium, required this.medium, required this.large, required this.original});
 
-  MetaPagesImageUrls.fromJson(Map<String, dynamic> json) {
-    squareMedium = json['square_medium'];
-    medium = json['medium'];
-    large = json['large'];
-    original = json['original'];
-  }
+  factory MetaPagesImageUrls.fromJson(Map<String, dynamic> json) =>
+      _$MetaPagesImageUrlsFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['square_medium'] = this.squareMedium;
-    data['medium'] = this.medium;
-    data['large'] = this.large;
-    data['original'] = this.original;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$MetaPagesImageUrlsToJson(this);
 }
 
+@JsonSerializable()
 class Illusts {
   int id;
   String title;
   String type;
+  @JsonKey(name: 'image_urls')
   ImageUrls imageUrls;
   String caption;
   int restrict;
   User user;
   List<Tags> tags;
   List<String> tools;
+  @JsonKey(name: 'create_date')
   String createDate;
+  @JsonKey(name: 'page_count')
   int pageCount;
   int width;
   int height;
+  @JsonKey(name: 'sanity_level')
   int sanityLevel;
+  @JsonKey(name: 'xRestrict')
   int xRestrict;
   Object series;
+  @JsonKey(name: 'meta_single_page')
   MetaSinglePage metaSinglePage;
+  @JsonKey(name: 'meta_pages')
   List<MetaPages> metaPages;
+  @JsonKey(name: 'total_view')
   int totalView;
+  @JsonKey(name: 'total_bookmarks')
   int totalBookmarks;
+  @JsonKey(name: 'is_bookmarked')
   bool isBookmarked;
   bool visible;
+  @JsonKey(name: 'is_muted')
   bool isMuted;
 
-  Illusts(
-      {this.id,
-      this.title,
-      this.type,
-      this.imageUrls,
-      this.caption,
-      this.restrict,
-      this.user,
-      this.tags,
-      this.tools,
-      this.createDate,
-      this.pageCount,
-      this.width,
-      this.height,
-      this.sanityLevel,
-      this.xRestrict,
-      this.series,
-      this.metaSinglePage,
-      this.metaPages,
-      this.totalView,
-      this.totalBookmarks,
-      this.isBookmarked,
-      this.visible,
-      this.isMuted});
-  Illusts.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    type = json['type'];
-    imageUrls = json['image_urls'] != null
-        ? new ImageUrls.fromJson(json['image_urls'])
-        : null;
-    caption = json['caption'];
-    restrict = json['restrict'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    if (json['tags'] != null) {
-      tags = new List<Tags>();
-      json['tags'].forEach((v) {
-        tags.add(new Tags.fromJson(v));
-      });
-    }
-    if (json['tools'] != null) {
-      tools = new List<String>();
-      json['tools'].forEach((v) {
-        tools.add(v);
-      });
-    }
-    createDate = json['create_date'];
-    pageCount = json['page_count'];
-    width = json['width'];
-    height = json['height'];
-    sanityLevel = json['sanity_level'];
-    xRestrict = json['x_restrict'];
-    series = json['series'];
-    metaSinglePage = json['meta_single_page'] != null
-        ? new MetaSinglePage.fromJson(json['meta_single_page'])
-        : null;
-    if (json['meta_pages'] != null) {
-      metaPages = new List<MetaPages>();
-      json['meta_pages'].forEach((v) {
-        metaPages.add(new MetaPages.fromJson(v));
-      });
-    }
-    totalView = json['total_view'];
-    totalBookmarks = json['total_bookmarks'];
-    isBookmarked = json['is_bookmarked'];
-    visible = json['visible'];
-    isMuted = json['is_muted'];
-  }
+  Illusts({required this.id,
+    required this.title,
+    required this.type,
+    required this.imageUrls,
+    required this.caption,
+    required this.restrict,
+    required this.user,
+    required this.tags,
+    required this.tools,
+    required this.createDate,
+    required this.pageCount,
+    required this.width,
+    required this.height,
+    required this.sanityLevel,
+    required this.xRestrict,
+    required this.series,
+    required this.metaSinglePage,
+    required this.metaPages,
+    required this.totalView,
+    required this.totalBookmarks,
+    required this.isBookmarked,
+    required this.visible,
+    required this.isMuted});
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['type'] = this.type;
-    if (this.imageUrls != null) {
-      data['image_urls'] = this.imageUrls.toJson();
-    }
-    data['caption'] = this.caption;
-    data['restrict'] = this.restrict;
-    if (this.user != null) {
-      data['user'] = this.user.toJson();
-    }
-    if (this.tags != null) {
-      data['tags'] = this.tags.map((v) => v.toJson()).toList();
-    }
-    if (this.tools != null) {
-      data['tools'] = this.tools.map((v) => v).toList();
-    }
-    data['create_date'] = this.createDate;
-    data['page_count'] = this.pageCount;
-    data['width'] = this.width;
-    data['height'] = this.height;
-    data['sanity_level'] = this.sanityLevel;
-    data['x_restrict'] = this.xRestrict;
-    data['series'] = this.series;
-    if (this.metaSinglePage != null) {
-      data['meta_single_page'] = this.metaSinglePage.toJson();
-    }
-    if (this.metaPages != null) {
-      data['meta_pages'] = this.metaPages.map((v) => v.toJson()).toList();
-    }
-    data['total_view'] = this.totalView;
-    data['total_bookmarks'] = this.totalBookmarks;
-    data['is_bookmarked'] = this.isBookmarked;
-    data['visible'] = this.visible;
-    data['is_muted'] = this.isMuted;
-    return data;
-  }
+  factory Illusts.fromJson(Map<String, dynamic> json) =>
+      _$IllustsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$IllustsToJson(this);
 }
 
+@JsonSerializable()
 class ImageUrls {
+  @JsonKey(name: 'square_medium')
   String squareMedium;
   String medium;
   String large;
 
-  ImageUrls({this.squareMedium, this.medium, this.large});
+  ImageUrls(
+      {required this.squareMedium, required this.medium, required this.large});
 
-  ImageUrls.fromJson(Map<String, dynamic> json) {
-    squareMedium = json['square_medium'];
-    medium = json['medium'];
-    large = json['large'];
-  }
+  factory ImageUrls.fromJson(Map<String, dynamic> json) =>
+      _$ImageUrlsFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['square_medium'] = this.squareMedium;
-    data['medium'] = this.medium;
-    data['large'] = this.large;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$ImageUrlsToJson(this);
 }
 
+@JsonSerializable()
 class User {
   int id;
   String name;
   String account;
+  @JsonKey(name: 'profile_image_urls')
   ProfileImageUrls profileImageUrls;
   String comment;
+  @JsonKey(name: 'is_followed')
   bool isFollowed;
 
-  User(
-      {this.id,
-      this.name,
-      this.account,
-      this.profileImageUrls,
-      this.comment,
-      this.isFollowed});
+  User({required this.id,
+    required this.name,
+    required this.account,
+    required this.profileImageUrls,
+    required this.comment,
+    required this.isFollowed});
 
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    account = json['account'];
-    profileImageUrls = json['profile_image_urls'] != null
-        ? new ProfileImageUrls.fromJson(json['profile_image_urls'])
-        : null;
-    comment = json['comment'];
-    isFollowed = json['is_followed'];
-  }
+  factory User.fromJson(Map<String, dynamic> json) =>
+      _$UserFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['account'] = this.account;
-    if (this.profileImageUrls != null) {
-      data['profile_image_urls'] = this.profileImageUrls.toJson();
-    }
-    data['comment']= this.comment;
-    data['is_followed'] = this.isFollowed;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
+@JsonSerializable()
 class ProfileImageUrls {
   String medium;
 
-  ProfileImageUrls({this.medium});
+  ProfileImageUrls({required this.medium});
 
-  ProfileImageUrls.fromJson(Map<String, dynamic> json) {
-    medium = json['medium'];
-  }
+  factory ProfileImageUrls.fromJson(Map<String, dynamic> json) =>
+      _$ProfileImageUrlsFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['medium'] = this.medium;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$ProfileImageUrlsToJson(this);
 }
 
+@JsonSerializable()
 class Tags {
   String name;
+  @JsonKey(name: 'translated_name')
   String translatedName;
 
-  Tags({this.name, this.translatedName});
+  Tags({required this.name, required this.translatedName});
 
-  Tags.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    translatedName = json['translated_name'];
-  }
+  factory Tags.fromJson(Map<String, dynamic> json) =>
+      _$TagsFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['translated_name'] = this.translatedName;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$TagsToJson(this);
 }
 
+@JsonSerializable()
 class MetaSinglePage {
+  @JsonKey(name: 'original_image_url')
   String originalImageUrl;
 
-  MetaSinglePage({this.originalImageUrl});
+  MetaSinglePage({required this.originalImageUrl});
 
-  MetaSinglePage.fromJson(Map<String, dynamic> json) {
-    originalImageUrl = json['original_image_url'];
-  }
+  factory MetaSinglePage.fromJson(Map<String, dynamic> json) =>
+      _$MetaSinglePageFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['original_image_url'] = this.originalImageUrl;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$MetaSinglePageToJson(this);
 }

@@ -21,7 +21,7 @@ import 'package:pixez/page/painter/painter_list.dart';
 class SearchResultPainterPage extends StatefulWidget {
   final String word;
 
-  SearchResultPainterPage({Key key, this.word}) : super(key: key);
+  SearchResultPainterPage({Key? key,required this.word}) : super(key: key);
 
   @override
   _SearchResultPainterPageState createState() =>

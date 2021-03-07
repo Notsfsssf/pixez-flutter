@@ -26,7 +26,7 @@ import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 class AccountClient {
-  Dio httpClient;
+  late Dio httpClient;
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static const BASE_API_URL_HOST = 'accounts.pixiv.net';
@@ -56,15 +56,15 @@ class AccountClient {
   }
 
   Future<Response> accountEdit(
-      {String newMailAddress,
-      currentPassword,
+      {String? newMailAddress,
+      String? currentPassword,
       newPassword,
       newUserAccount}) async {
     AccountProvider accountProvider = new AccountProvider();
     await accountProvider.open();
     final allAccount = await accountProvider.getAllAccount();
     AccountPersist accountPersist = allAccount[0];
-    currentPassword=accountPersist.passWord;
+    currentPassword = accountPersist.passWord;
     return httpClient.post("/api/account/edit",
         data: {
           "new_mail_address": newMailAddress,

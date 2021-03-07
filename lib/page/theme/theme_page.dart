@@ -24,7 +24,7 @@ import 'package:pixez/main.dart';
 class ColorPickPage extends HookWidget {
   final Color initialColor;
 
-  ColorPickPage({@required this.initialColor});
+  ColorPickPage({required this.initialColor});
 
   Color _stringToColor(String colorString) {
     String valueString =

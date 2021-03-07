@@ -36,7 +36,7 @@ showPathDialog(BuildContext context, {bool isFirst = false}) async {
 class SaveModeChoicePage extends StatefulWidget {
   bool isFirst;
 
-  SaveModeChoicePage({Key key, this.isFirst}) : super(key: key);
+  SaveModeChoicePage({Key? key,required this.isFirst}) : super(key: key);
 
   @override
   _SaveModeChoicePageState createState() => _SaveModeChoicePageState();
@@ -45,9 +45,8 @@ class SaveModeChoicePage extends StatefulWidget {
 class _SaveModeChoicePageState extends State<SaveModeChoicePage>
     with SingleTickerProviderStateMixin {
   int groupValue = 0;
-  AnimationController _animationController;
-
-  Animation _animation;
+  late AnimationController _animationController;
+  late Animation<Color?> _animation;
 
   @override
   void initState() {
@@ -101,20 +100,20 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                           'SAF',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1
+                              .bodyText1!
                               .copyWith(fontSize: 16.0),
                         ),
                         1: Text(
                           I18n.of(context).old_way,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1
+                              .bodyText1!
                               .copyWith(fontSize: 16.0),
                         )
                       },
                       onValueChanged: (v) {
                         setState(() {
-                          this.groupValue = v;
+                          this.groupValue = v as int;
                         });
                         if (groupValue == 0) {
                           _animationController.reverse();
@@ -226,7 +225,7 @@ Future _saffun(BuildContext context) async {
 
 Future _helplessfun(BuildContext context, {bool isFirst = false}) async {
   await userSetting.setIsHelplessWay(true);
-  String initPath =
+  String? initPath =
       isFirst ? "/storage/emulated/0/Pictures/pixez" : null; //过时api只能硬编码
   final path = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => DirectoryPage(

@@ -13,30 +13,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
+part 'ban_tag.g.dart';
+@JsonSerializable()
 class BanTagPersist {
   int id;
   String name;
+  @JsonKey(name: 'translate_name')
   String translateName;
 
-  BanTagPersist();
+  BanTagPersist(
+      {required this.id, required this.name, required this.translateName});
 
-  BanTagPersist.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json[columnName];
-    translateName = json[columnTranslateName];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data[columnTranslateName] = this.translateName;
-    data[columnName] = this.name;
-    return data;
-  }
+  factory BanTagPersist.fromJson(Map<String, dynamic> json) => _$BanTagPersistFromJson(json);
+  Map<String, dynamic> toJson() => _$BanTagPersistToJson(this);
 }
 
 final String columnId = 'id';
@@ -45,10 +37,10 @@ final String columnName = 'name';
 final String tableBanTag = 'bantag';
 
 class BanTagProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, 'bantag.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -68,8 +60,8 @@ create table $tableBanTag (
     return todo;
   }
 
-  Future<BanTagPersist> getAccount(int id) async {
-    List<Map> maps = await db.query(tableBanTag,
+  Future<BanTagPersist?> getAccount(int id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableBanTag,
         columns: [columnId, columnTranslateName],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -80,8 +72,8 @@ create table $tableBanTag (
   }
 
   Future<List<BanTagPersist>> getAllAccount() async {
-    List result = new List<BanTagPersist>();
-    List<Map> maps = await db.query(tableBanTag,
+    List<BanTagPersist> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableBanTag,
         columns: [columnId, columnTranslateName, columnName]);
 
     if (maps.length > 0) {

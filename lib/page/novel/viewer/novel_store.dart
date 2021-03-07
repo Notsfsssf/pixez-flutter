@@ -31,11 +31,11 @@ abstract class _NovelStoreBase with Store {
   _NovelStoreBase(this.id, this.novel);
 
   @observable
-  Novel novel;
+  Novel? novel;
   @observable
-  NovelTextResponse novelTextResponse;
+  NovelTextResponse? novelTextResponse;
   @observable
-  String errorMessage;
+  String? errorMessage;
 
   @action
   fetch() async {
@@ -47,7 +47,7 @@ abstract class _NovelStoreBase with Store {
         Response response = await apiClient.getNovelDetail(id);
         novel = Novel.fromJson(response.data['novel']);
       }
-      novelHistoryStore.insert(novel);
+      novelHistoryStore.insert(novel!);
     } catch (e) {
       print(e);
       errorMessage = e.toString();

@@ -59,7 +59,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                 ),
                 Observer(builder: (_) {
                   return TabBar(
-                    labelColor: Theme.of(context).textTheme.headline6.color,
+                    labelColor: Theme.of(context).textTheme.headline6!.color,
                     indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
                       Tab(

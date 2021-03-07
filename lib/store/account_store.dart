@@ -25,7 +25,7 @@ class AccountStore = _AccountStoreBase with _$AccountStore;
 abstract class _AccountStoreBase with Store {
   AccountProvider accountProvider = new AccountProvider();
   @observable
-  AccountPersist now;
+  AccountPersist? now;
   @observable
   int index = 0;
 

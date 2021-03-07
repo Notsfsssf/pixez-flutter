@@ -47,9 +47,9 @@ class Contributor {
 }
 
 class AboutPage extends StatefulWidget {
-  final bool newVersion;
+  final bool? newVersion;
 
-  const AboutPage({Key key, this.newVersion}) : super(key: key);
+  const AboutPage({Key? key, this.newVersion}) : super(key: key);
 
   @override
   _AboutPageState createState() => _AboutPageState();
@@ -96,8 +96,8 @@ class _AboutPageState extends State<AboutPage> {
         '💻')
   ];
 
-  bool hasNewVersion;
-  IAPStore iapStore;
+  late bool hasNewVersion;
+  late IAPStore iapStore;
 
   @override
   void initState() {

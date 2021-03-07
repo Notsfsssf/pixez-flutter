@@ -27,10 +27,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class PainterList extends StatefulWidget {
   final FutureGet futureGet;
   final bool isNovel;
-  final Widget header;
+  final Widget? header;
 
   const PainterList(
-      {Key key, this.futureGet, this.isNovel = false, this.header})
+      {Key? key,
+      required this.futureGet,
+      this.isNovel = false,
+      this.header})
       : super(key: key);
 
   @override
@@ -38,9 +41,9 @@ class PainterList extends StatefulWidget {
 }
 
 class _PainterListState extends State<PainterList> {
-  RefreshController _easyRefreshController;
-  PainterListStore _painterListStore;
-  ScrollController _scrollController;
+  late RefreshController _easyRefreshController;
+  late PainterListStore _painterListStore;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -82,7 +85,7 @@ class _PainterListState extends State<PainterList> {
               )
             : ClassicHeader(),
         footer: CustomFooter(
-          builder: (BuildContext context, LoadStatus mode) {
+          builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
             if (mode == LoadStatus.idle) {
               body = Text(I18n.of(context).pull_up_to_load_more);
@@ -109,7 +112,7 @@ class _PainterListState extends State<PainterList> {
                 controller: _scrollController,
                 itemBuilder: (context, index) {
                   if (index == 0 && widget.header != null) {
-                    return widget.header;
+                    return widget.header!;
                   }
 
                   if (widget.header != null) return _itemBuilder(index - 1);

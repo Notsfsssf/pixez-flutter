@@ -33,8 +33,8 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  LightingStore lightingStore;
+  late AnimationController controller;
+  LightingStore? lightingStore;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage>
     controller.forward();
   }
 
-  ReactionDisposer reactionDisposer, userDisposer;
+  late ReactionDisposer reactionDisposer, userDisposer;
 
   initMethod() {
     userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
@@ -67,7 +67,7 @@ class _SplashPageState extends State<SplashPage>
       if (false && !userSetting.disableBypassSni) {
         try {
           if (splashStore.onezeroResponse != null) {
-            var address = splashStore.onezeroResponse.answer.first.data;
+            var address = splashStore.onezeroResponse!.answer.first.data;
             print('address:$address');
             if (address != null && address.isNotEmpty) {
               apiClient.httpClient.options.baseUrl = 'https://$address';

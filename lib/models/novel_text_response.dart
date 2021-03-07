@@ -17,7 +17,6 @@
 // To parse this JSON data, do
 //
 //     final novelTextResponse = novelTextResponseFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:pixez/models/novel_recom_response.dart';
@@ -31,14 +30,14 @@ String novelTextResponseToJson(NovelTextResponse data) =>
 class NovelTextResponse {
   NovelMarker novelMarker;
   String novelText;
-  Novel seriesPrev;
-  Novel seriesNext;
+  Novel? seriesPrev;
+  Novel? seriesNext;
 
   NovelTextResponse({
-    this.novelMarker,
-    this.novelText,
-    this.seriesPrev,
-    this.seriesNext,
+    required this.novelMarker,
+    required this.novelText,
+    required this.seriesPrev,
+    required this.seriesNext,
   });
 
   factory NovelTextResponse.fromJson(Map<String, dynamic> json) =>
@@ -57,11 +56,11 @@ class NovelTextResponse {
             : null,
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic?> toJson() => {
         "novel_marker": novelMarker.toJson(),
         "novel_text": novelText,
-        "series_prev": seriesPrev.toJson(),
-        "series_next": seriesNext.toJson(),
+        "series_prev": seriesPrev?.toJson(),
+        "series_next": seriesNext?.toJson(),
       };
 }
 
@@ -69,7 +68,7 @@ class NovelMarker {
   int page;
 
   NovelMarker({
-    this.page,
+    required this.page,
   });
 
   factory NovelMarker.fromJson(Map<String, dynamic> json) => NovelMarker(

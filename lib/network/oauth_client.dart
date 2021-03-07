@@ -32,7 +32,7 @@ final OAuthClient oAuthClient = OAuthClient();
 class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
-  Dio httpClient;
+  late Dio httpClient;
   static const BASE_OAUTH_URL_HOST = "oauth.secure.pixiv.net";
 
   final String CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
@@ -62,7 +62,7 @@ class OAuthClient {
 
   OAuthClient() {
     String time = getIsoDate();
-    this.httpClient = httpClient ?? Dio()
+    this.httpClient = Dio()
       ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..options.baseUrl = "https://210.140.131.199"
       ..options.headers = {
@@ -145,15 +145,15 @@ class OAuthClient {
 
   static Future<String> generateCodeVerify() async {
     return await CryptoPlugin.getCodeVer();
-  //   var random = Random.secure();
-  //   var values = List<int>.generate(32, (i) => random.nextInt(255));
-  //   String verify = base64
-  //       .encode(values)
-  //  .replaceAll("+", "-")
-  //     ..replaceAll("/", "_")
-  //     ..replaceAll("=", ""));
-  //   LPrinter.d(verify);
-  //   return verify;
+    //   var random = Random.secure();
+    //   var values = List<int>.generate(32, (i) => random.nextInt(255));
+    //   String verify = base64
+    //       .encode(values)
+    //  .replaceAll("+", "-")
+    //     ..replaceAll("/", "_")
+    //     ..replaceAll("=", ""));
+    //   LPrinter.d(verify);
+    //   return verify;
   }
 
   Future<Response> postRefreshAuthToken(

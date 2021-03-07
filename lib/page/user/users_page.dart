@@ -42,9 +42,10 @@ import 'package:pixez/component/pixiv_image.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;
-  final UserStore userStore;
+  final UserStore? userStore;
 
-  const UsersPage({Key key, this.id, this.userStore}) : super(key: key);
+  const UsersPage({Key? key, required this.id, this.userStore})
+      : super(key: key);
 
   @override
   _UsersPageState createState() => _UsersPageState();
@@ -52,9 +53,9 @@ class UsersPage extends StatefulWidget {
 
 class _UsersPageState extends State<UsersPage>
     with SingleTickerProviderStateMixin {
-  UserStore userStore;
-  TabController _tabController;
-  ScrollController _scrollController;
+  late UserStore userStore;
+  late TabController _tabController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -80,7 +81,7 @@ class _UsersPageState extends State<UsersPage>
     return Observer(builder: (_) {
       if (muteStore.banUserIds.isNotEmpty) {
         if (muteStore.banUserIds
-            .map((element) => int.parse(element.userId))
+            .map((element) => int.parse(element.userId!))
             .contains(widget.id)) {
           return Scaffold(
             appBar: AppBar(
@@ -177,7 +178,7 @@ class _UsersPageState extends State<UsersPage>
             NestedScrollViewInnerScrollPositionKeyWidget(
                 Key('Tab2'),
                 userStore.userDetail != null
-                    ? UserDetailPage(userDetail: userStore.userDetail)
+                    ? UserDetailPage(userDetail: userStore.userDetail!)
                     : Container()),
           ]),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -225,7 +226,7 @@ class _UsersPageState extends State<UsersPage>
                             if (result == "OK") {
                               await muteStore.insertBanUserId(
                                   widget.id.toString(),
-                                  userStore.userDetail.user.name);
+                                  userStore.userDetail!.user.name);
                               Navigator.of(context).pop();
                             }
                           }
@@ -270,11 +271,11 @@ class _UsersPageState extends State<UsersPage>
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).padding.top + 160,
                             child: userStore.userDetail != null
-                                ? userStore.userDetail.profile
+                                ? userStore.userDetail!.profile
                                             .background_image_url !=
                                         null
                                     ? ExtendedImage.network(
-                                        userStore.userDetail.profile
+                                        userStore.userDetail!.profile
                                             .background_image_url
                                             .toTrueUrl(),
                                         fit: BoxFit.fitWidth,
@@ -282,8 +283,10 @@ class _UsersPageState extends State<UsersPage>
                                           "referer":
                                               "https://app-api.pixiv.net/",
                                           "User-Agent": "PixivIOSApp/5.8.0",
-                                          "Host": Uri.parse(userStore.userDetail
-                                                  .profile.background_image_url)
+                                          "Host": Uri.parse(userStore
+                                                  .userDetail!
+                                                  .profile
+                                                  .background_image_url)
                                               .host
                                         },
                                         enableMemoryCache: false,
@@ -378,7 +381,7 @@ class _UsersPageState extends State<UsersPage>
                 child: Text(
                   userStore.userDetail == null
                       ? ""
-                      : '${userStore.userDetail.profile.total_follow_users} ${I18n.of(context).follow}',
+                      : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               )
@@ -398,7 +401,7 @@ class _UsersPageState extends State<UsersPage>
           child: Text(
             userStore.userDetail == null
                 ? ""
-                : '${userStore.userDetail.user.comment}',
+                : '${userStore.userDetail!.user.comment}',
             style: Theme.of(context).textTheme.caption,
             overflow: TextOverflow.ellipsis,
           ),
@@ -419,9 +422,9 @@ class _UsersPageState extends State<UsersPage>
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               child: Hero(
-                tag: userStore.user.profileImageUrls.medium,
+                tag: userStore.user!.profileImageUrls.medium,
                 child: PainterAvatar(
-                  url: userStore.user.profileImageUrls.medium,
+                  url: userStore.user!.profileImageUrls.medium,
                   size: Size(80, 80),
                   onTap: () {
                     showDialog(
@@ -445,6 +448,7 @@ class _UsersPageState extends State<UsersPage>
                           );
                         });
                   },
+                  id: userStore.user!.id,
                 ),
               ),
             ),
@@ -464,7 +468,7 @@ class _UsersPageState extends State<UsersPage>
                               color: Theme.of(context).accentColor,
                               onPressed: () {
                                 if (accountStore.now != null) {
-                                  if (int.parse(accountStore.now.userId) !=
+                                  if (int.parse(accountStore.now!.userId) !=
                                       widget.id) {
                                     userStore.follow(needPrivate: false);
                                   } else {
@@ -486,7 +490,7 @@ class _UsersPageState extends State<UsersPage>
                                       BorderRadius.all(Radius.circular(20))),
                               onPressed: () {
                                 if (accountStore.now != null) {
-                                  if (int.parse(accountStore.now.userId) !=
+                                  if (int.parse(accountStore.now!.userId) !=
                                       widget.id) {
                                     userStore.follow(needPrivate: false);
                                   } else {
@@ -527,10 +531,10 @@ class _UsersPageState extends State<UsersPage>
   }
 
   Future _saveUserC() async {
-    var url = userStore.userDetail.user.profileImageUrls.medium;
+    var url = userStore.userDetail!.user.profileImageUrls.medium;
     String meme = url.split(".").last;
     if (meme == null || meme.isEmpty) meme = "jpg";
-    var replaceAll = userStore.userDetail.user.name
+    var replaceAll = userStore.userDetail!.user.name
         .replaceAll("/", "")
         .replaceAll("\\", "")
         .replaceAll(":", "")
@@ -539,7 +543,7 @@ class _UsersPageState extends State<UsersPage>
         .replaceAll(">", "")
         .replaceAll("|", "")
         .replaceAll("<", "");
-    String fileName = "${replaceAll}_${userStore.userDetail.user.id}.${meme}";
+    String fileName = "${replaceAll}_${userStore.userDetail!.user.id}.${meme}";
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: {
@@ -563,7 +567,37 @@ class _UsersPageState extends State<UsersPage>
         await saveStore.saveToGallery(
             file.readAsBytesSync(),
             Illusts(
-                user: User(id: userStore.userDetail.user.id, name: replaceAll)),
+              user: User(
+                id: userStore.userDetail!.user.id,
+                name: replaceAll,
+                profileImageUrls: userStore.userDetail!.user.profileImageUrls,
+                isFollowed: userStore.userDetail!.user.isFollowed,
+                account: userStore.userDetail!.user.account,
+                comment: userStore.userDetail!.user.comment,
+              ),
+              metaPages: [],
+              type: '',
+              width: 0,
+              series: Object(),
+              totalBookmarks: 0,
+              visible: false,
+              isMuted: false,
+              sanityLevel: 0,
+              tags: [],
+              caption: '',
+              pageCount: 0,
+              metaSinglePage: MetaSinglePage(originalImageUrl: ''),
+              tools: [],
+              height: 0,
+              restrict: 0,
+              createDate: '',
+              id: 0,
+              xRestrict: 0,
+              imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
+              title: '',
+              isBookmarked: false,
+              totalView: 0,
+            ),
             fileName);
         BotToast.showText(text: I18n.of(context).complete);
       } else
@@ -577,7 +611,7 @@ class _UsersPageState extends State<UsersPage>
 class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar child;
 
-  StickyTabBarDelegate({@required this.child});
+  StickyTabBarDelegate({required this.child});
 
   @override
   Widget build(

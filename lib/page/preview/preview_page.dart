@@ -30,7 +30,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 class GoToLoginPage extends StatelessWidget {
   final Illusts illust;
 
-  const GoToLoginPage({Key key, @required this.illust}) : super(key: key);
+  const GoToLoginPage({Key? key, required this.illust}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +51,7 @@ class GoToLoginPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: PainterAvatar(
+                      id: illust.user.id,
                       url: illust.user.profileImageUrls.medium,
                       onTap: () {},
                     ),
@@ -115,9 +116,10 @@ class PreviewPage extends StatefulWidget {
 }
 
 class _PreviewPageState extends State<PreviewPage> {
-  LightingStore _lightingStore;
+  late LightingStore _lightingStore;
   RefreshController _easyRefreshController =
       RefreshController(initialRefresh: true);
+
   @override
   void initState() {
     _lightingStore = LightingStore(
@@ -152,12 +154,12 @@ class _PreviewPageState extends State<PreviewPage> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) => GoToLoginPage(
                                 illust:
-                                    _lightingStore.iStores[index].illusts)));
+                                    _lightingStore.iStores[index].illusts!)));
                       },
                       child: Card(
                         child: Container(
                           child: PixivImage(_lightingStore
-                              .iStores[index].illusts.imageUrls.squareMedium),
+                              .iStores[index].illusts!.imageUrls.squareMedium),
                         ),
                       ),
                     );

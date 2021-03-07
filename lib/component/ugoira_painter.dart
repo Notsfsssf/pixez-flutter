@@ -27,10 +27,10 @@ class UgoiraWidget extends StatefulWidget {
   final Size size;
 
   const UgoiraWidget({
-    Key key,
-    @required this.drawPools,
-    @required this.delay,
-    @required this.size,
+    Key? key,
+    required this.drawPools,
+    required this.delay,
+    required this.size,
   }) : super(key: key);
 
   @override
@@ -44,7 +44,7 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
   }
 
   int point = 0;
-  ui.Image image;
+  ui.Image? image;
 
   @override
   void initState() {
@@ -58,12 +58,12 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
     super.dispose();
   }
 
-  Timer _timer;
+  late Timer _timer;
 
   initBind() async {
     _timer =
         Timer.periodic(Duration(milliseconds: widget.delay), (timer) async {
-      File file = widget.drawPools[point];
+      File file = widget.drawPools[point] as File;
       point++;
       if (point >= widget.drawPools.length) point = 0;
       final data = await _loadImage(file);
@@ -79,7 +79,7 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
   Widget build(BuildContext context) {
     return image != null
         ? CustomPaint(
-            painter: UgoiraPainter(image),
+            painter: UgoiraPainter(image!),
             size: widget.size,
           )
         : Container();

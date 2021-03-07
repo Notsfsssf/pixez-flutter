@@ -23,16 +23,18 @@ import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecomUserPage extends StatefulWidget {
-  final RecomUserStore recomUserStore;
+  final RecomUserStore? recomUserStore;
 
-  const RecomUserPage({Key key, this.recomUserStore}) : super(key: key);
+  const RecomUserPage({Key? key, this.recomUserStore}) : super(key: key);
+
   @override
   _RecomUserPageState createState() => _RecomUserPageState();
 }
 
 class _RecomUserPageState extends State<RecomUserPage> {
-  RefreshController _refreshController;
-  RecomUserStore _recomUserStore;
+  late RefreshController _refreshController;
+  late RecomUserStore _recomUserStore;
+
   @override
   void initState() {
     _refreshController =
@@ -71,7 +73,7 @@ class _RecomUserPageState extends State<RecomUserPage> {
           onRefresh: () => _recomUserStore.fetch(),
           onLoading: () => _recomUserStore.next(),
           footer: CustomFooter(
-            builder: (BuildContext context, LoadStatus mode) {
+            builder: (BuildContext context, LoadStatus? mode) {
               Widget body;
               if (mode == LoadStatus.idle) {
                 body = Text(I18n.of(context).pull_up_to_load_more);

@@ -9,7 +9,7 @@ class TagForIllustStore = _TagForIllustStoreBase with _$TagForIllustStore;
 
 abstract class _TagForIllustStoreBase with Store {
   @observable
-  String errorMessage;
+  String? errorMessage;
   final int id;
 
   _TagForIllustStoreBase(this.id);

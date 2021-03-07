@@ -33,16 +33,18 @@ import 'package:share/share.dart';
 class NovelUserPage extends StatefulWidget {
   final int id;
 
-  const NovelUserPage({Key key, @required this.id}) : super(key: key);
+  const NovelUserPage({Key? key, required this.id}) : super(key: key);
+
   @override
   _NovelUserPageState createState() => _NovelUserPageState();
 }
 
 class _NovelUserPageState extends State<NovelUserPage>
     with SingleTickerProviderStateMixin {
-  UserStore userStore;
-  ScrollController _scrollController;
-  TabController _tabController;
+  late UserStore userStore;
+  late ScrollController _scrollController;
+  late TabController _tabController;
+
   @override
   void initState() {
     _scrollController = ScrollController();
@@ -53,12 +55,13 @@ class _NovelUserPageState extends State<NovelUserPage>
 
   @override
   void dispose() {
-    _tabController?.dispose();
-    _scrollController?.dispose();
+    _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   int _tabIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -146,14 +149,13 @@ class _NovelUserPageState extends State<NovelUserPage>
                                               Navigator.of(context).pop("OK");
                                             },
                                           ),
-
                                         ],
                                       );
                                     });
                                 if (result == "OK") {
                                   await muteStore.insertBanUserId(
                                       widget.id.toString(),
-                                      userStore.userDetail.user.name);
+                                      userStore.userDetail!.user.name);
                                   Navigator.of(context).pop();
                                 }
                               }
@@ -198,10 +200,10 @@ class _NovelUserPageState extends State<NovelUserPage>
                                 width: MediaQuery.of(context).size.width,
                                 height:
                                     MediaQuery.of(context).padding.top + 160,
-                                child: userStore.userDetail.profile
+                                child: userStore.userDetail!.profile
                                             .background_image_url !=
                                         null
-                                    ? PixivImage(userStore.userDetail.profile
+                                    ? PixivImage(userStore.userDetail!.profile
                                         .background_image_url)
                                     : Container(
                                         color: Theme.of(context).accentColor,
@@ -239,7 +241,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                           _tabIndex = index;
                         });
                       },
-                      labelColor: Theme.of(context).textTheme.bodyText1.color,
+                      labelColor: Theme.of(context).textTheme.bodyText1!.color,
                       tabs: [
                         Tab(
                           text: I18n.of(context).works,
@@ -283,7 +285,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                     ),
                   ),
                   NestedScrollViewInnerScrollPositionKeyWidget(Key('Tab2'),
-                      UserDetailPage(userDetail: userStore.userDetail)),
+                      UserDetailPage(userDetail: userStore.userDetail!)),
                 ],
               )),
         );
@@ -307,7 +309,7 @@ class _NovelUserPageState extends State<NovelUserPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SelectableText(
-                userStore.userDetail.user.name,
+                userStore.userDetail!.user.name,
                 style: Theme.of(context).textTheme.headline6,
               ),
               InkWell(
@@ -323,7 +325,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                   }));
                 },
                 child: Text(
-                  '${userStore.userDetail.profile.total_follow_users} ${I18n.of(context).follow}',
+                  '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               )
@@ -341,7 +343,7 @@ class _NovelUserPageState extends State<NovelUserPage>
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
         child: SingleChildScrollView(
           child: Text(
-            '${userStore.userDetail.user.comment}',
+            '${userStore.userDetail!.user.comment}',
             style: Theme.of(context).textTheme.caption,
             overflow: TextOverflow.ellipsis,
           ),
@@ -362,9 +364,10 @@ class _NovelUserPageState extends State<NovelUserPage>
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               child: PainterAvatar(
-                url: userStore.userDetail.user.profileImageUrls.medium,
+                url: userStore.userDetail!.user.profileImageUrls.medium,
                 size: Size(80, 80),
                 onTap: () {},
+                id: userStore.userDetail!.user.id,
               ),
             ),
             Padding(
@@ -377,7 +380,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                     : Colors.grey,
                 onPressed: () {
                   if (accountStore.now != null) {
-                    if (int.parse(accountStore.now.userId) != widget.id) {
+                    if (int.parse(accountStore.now!.userId) != widget.id) {
                       userStore.follow(needPrivate: false);
                     } else {
                       Scaffold.of(context).showSnackBar(SnackBar(
@@ -421,7 +424,7 @@ class _NovelUserPageState extends State<NovelUserPage>
 class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar child;
 
-  StickyTabBarDelegate({@required this.child});
+  StickyTabBarDelegate({required this.child});
 
   @override
   Widget build(

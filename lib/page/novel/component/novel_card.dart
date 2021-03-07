@@ -22,7 +22,9 @@ class NovelCard extends StatefulWidget {
   final int id;
   final Novel novel;
 
-  const NovelCard({Key key, this.id, this.novel}) : super(key: key);
+  const NovelCard({Key? key, required this.id, required this.novel})
+      : super(key: key);
+
   @override
   _NovelCardState createState() => _NovelCardState();
 }

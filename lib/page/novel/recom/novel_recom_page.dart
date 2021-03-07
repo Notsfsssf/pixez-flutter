@@ -33,8 +33,8 @@ class NovelRecomPage extends StatefulWidget {
 }
 
 class _NovelRecomPageState extends State<NovelRecomPage> {
-  NovelLightingStore _store;
-  RefreshController _easyRefreshController;
+  late NovelLightingStore _store;
+  late RefreshController _easyRefreshController;
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               child: Text(
                 I18n.of(context).recommend,
                 style: TextStyle(
-                    color: Theme.of(context).textTheme.headline6.color),
+                    color: Theme.of(context).textTheme.headline6!.color),
               ),
               padding: EdgeInsets.only(left: 8.0, bottom: 10.0),
             ),
@@ -80,9 +80,11 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
         onLoading: () => _store.next(),
         enablePullUp: true,
         controller: _easyRefreshController,
-        header: Platform.isAndroid?MaterialClassicHeader(
-          color: Theme.of(context).accentColor,
-        ):ClassicHeader(),
+        header: Platform.isAndroid
+            ? MaterialClassicHeader(
+                color: Theme.of(context).accentColor,
+              )
+            : ClassicHeader(),
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -96,7 +98,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                Novel novel = _store.novels[index].novel;
+                Novel novel = _store.novels[index].novel!;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: InkWell(
@@ -152,7 +154,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                           maxLines: 1,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption
+                                              .caption!
                                               .copyWith(
                                                   color: Theme.of(context)
                                                       .accentColor),

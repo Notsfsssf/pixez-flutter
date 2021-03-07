@@ -32,9 +32,9 @@ import 'package:share/share.dart';
 
 class NovelViewerPage extends StatefulWidget {
   final int id;
-  final NovelStore novelStore;
+  final NovelStore? novelStore;
 
-  const NovelViewerPage({Key key, @required this.id, this.novelStore})
+  const NovelViewerPage({Key? key, required this.id, this.novelStore})
       : super(key: key);
 
   @override
@@ -42,8 +42,8 @@ class NovelViewerPage extends StatefulWidget {
 }
 
 class _NovelViewerPageState extends State<NovelViewerPage> {
-  ScrollController _controller;
-  NovelStore _novelStore;
+  late ScrollController _controller;
+  late NovelStore _novelStore;
 
   @override
   void initState() {
@@ -108,7 +108,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               backgroundColor: Colors.transparent,
               actions: <Widget>[
                 NovelBookmarkButton(
-                  novel: _novelStore.novel,
+                  novel: _novelStore.novel!,
                 ),
                 IconButton(
                     icon: Icon(Icons.share),
@@ -135,11 +135,11 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 Center(
                     child: Container(
                         height: 160,
-                        child: PixivImage(_novelStore.novel.imageUrls.medium))),
+                        child: PixivImage(_novelStore.novel!.imageUrls.medium))),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ExtendedText(
-                    _novelStore.novelTextResponse.novelText,
+                    _novelStore.novelTextResponse!.novelText,
                     textSelectionControls: TranslateTextSelectionControls(),
                     selectionEnabled: true,
                     specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
@@ -180,16 +180,16 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ListTile(
-                  subtitle: Text(_novelStore.novel.user.name),
-                  title: Text(_novelStore.novel.title ?? ""),
+                  subtitle: Text(_novelStore.novel!.user.name),
+                  title: Text(_novelStore.novel!.title ?? ""),
                   leading: PainterAvatar(
-                    url: _novelStore.novel.user.profileImageUrls.medium,
-                    id: _novelStore.novel.user.id,
+                    url: _novelStore.novel!.user.profileImageUrls.medium,
+                    id: _novelStore.novel!.user.id,
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
                         return NovelUserPage(
-                          id: _novelStore.novel.user.id,
+                          id: _novelStore.novel!.user.id,
                         );
                       }));
                     },
@@ -199,20 +199,20 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text('Pre'),
                 ),
-                buildListTile(_novelStore.novelTextResponse.seriesPrev),
+                buildListTile(_novelStore.novelTextResponse!.seriesPrev),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text('Next'),
                 ),
-                buildListTile(_novelStore.novelTextResponse.seriesNext),
+                buildListTile(_novelStore.novelTextResponse!.seriesNext),
               ],
             ),
           );
         });
   }
 
-  Widget buildListTile(Novel series) {
+  Widget buildListTile(Novel? series) {
     if (series == null)
       return ListTile(
         title: Text("no more"),
@@ -222,14 +222,11 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) =>
-                NovelViewerPage(
-                  id: series.id,
-                  novelStore: NovelStore(series.id, series),
-                )));
+                builder: (BuildContext context) => NovelViewerPage(
+                      id: series.id,
+                      novelStore: NovelStore(series.id, series),
+                    )));
       },
     );
   }
 }
-
-

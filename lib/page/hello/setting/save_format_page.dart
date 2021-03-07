@@ -26,7 +26,7 @@ class SaveFormatPage extends StatefulWidget {
 }
 
 class _SaveFormatPageState extends State<SaveFormatPage> {
-  TextEditingController _textEditingController;
+  late TextEditingController _textEditingController;
   final badText = ['/', '\\', ':', ' '];
 
   @override

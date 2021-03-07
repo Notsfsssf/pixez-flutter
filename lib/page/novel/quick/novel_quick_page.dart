@@ -52,7 +52,7 @@ class _NovelQuickPageState extends State<NovelQuickPage> {
           NovelNewPage(),
           NovelBookmarkPage(),
           FollowList(
-            id: int.parse(accountStore.now.userId),
+            id: int.parse(accountStore.now!.userId),
             isNovel: true,
           )
         ]),

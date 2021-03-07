@@ -31,12 +31,12 @@ import 'package:pixez/page/picture/picture_list_page.dart';
 
 class IllustCard extends StatefulWidget {
   final IllustStore store;
-  final List<IllustStore> iStores;
+  final List<IllustStore>? iStores;
   final bool needToBan;
-  final double height;
+  final double? height;
 
   IllustCard({
-    @required this.store,
+    required this.store,
     this.iStores,
     this.needToBan = false,
     this.height,
@@ -47,9 +47,9 @@ class IllustCard extends StatefulWidget {
 }
 
 class _IllustCardState extends State<IllustCard> {
-  IllustStore store;
-  List<IllustStore> iStores;
-  String tag;
+  late IllustStore store;
+  late List<IllustStore>? iStores;
+  late String tag;
 
   @override
   void initState() {
@@ -69,11 +69,11 @@ class _IllustCardState extends State<IllustCard> {
   @override
   Widget build(BuildContext context) {
     if (userSetting.hIsNotAllow)
-      for (int i = 0; i < store.illusts.tags.length; i++) {
-        if (store.illusts.tags[i].name.startsWith('R-18'))
+      for (int i = 0; i < store.illusts!.tags.length; i++) {
+        if (store.illusts!.tags[i].name.startsWith('R-18'))
           return InkWell(
             onTap: () => _buildTap(context),
-            onLongPress: () => saveStore.saveImage(store.illusts),
+            onLongPress: () => saveStore.saveImage(store.illusts!),
             child: Card(
               margin: EdgeInsets.all(8.0),
               elevation: 8.0,
@@ -97,29 +97,29 @@ class _IllustCardState extends State<IllustCard> {
         .push(MaterialPageRoute(builder: (_) {
       if (store != null) {
         return PictureListPage(
-          iStores: iStores,
+          iStores: iStores!,
           store: store,
           heroString: tag,
         );
       }
       return IllustLightingPage(
         store: store,
-        id: store.illusts.id,
+        id: store.illusts!.id,
         heroString: tag,
       );
     }));
   }
 
   Widget cardText() {
-    if (store.illusts.type != "illust") {
+    if (store.illusts!.type != "illust") {
       return Text(
-        store.illusts.type,
+        store.illusts!.type,
         style: TextStyle(color: Colors.white),
       );
     }
-    if (store.illusts.metaPages.isNotEmpty) {
+    if (store.illusts!.metaPages.isNotEmpty) {
       return Text(
-        store.illusts.metaPages.length.toString(),
+        store.illusts!.metaPages.length.toString(),
         style: TextStyle(color: Colors.white),
       );
     }
@@ -127,16 +127,16 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget _buildPic(String tag) {
-    return (store.illusts.height.toDouble() / store.illusts.width.toDouble()) >
+    return (store.illusts!.height.toDouble() / store.illusts!.width.toDouble()) >
             3
         ? NullHero(
             tag: tag,
-            child: PixivImage(store.illusts.imageUrls.squareMedium,
+            child: PixivImage(store.illusts!.imageUrls.squareMedium,
                 fit: BoxFit.fitWidth),
           )
         : NullHero(
             tag: tag,
-            child: PixivImage(store.illusts.imageUrls.medium,
+            child: PixivImage(store.illusts!.imageUrls.medium,
                 fit: BoxFit.fitWidth),
           );
   }
@@ -150,7 +150,7 @@ class _IllustCardState extends State<IllustCard> {
           borderRadius: BorderRadius.all(Radius.circular(8.0))),
       child: InkWell(
         onLongPress: () {
-          saveStore.saveImage(store.illusts);
+          saveStore.saveImage(store.illusts!);
         },
         onTap: () {
           _buildInkTap(context, tag);
@@ -182,11 +182,11 @@ class _IllustCardState extends State<IllustCard> {
         return PictureListPage(
           heroString: heroTag,
           store: store,
-          iStores: iStores,
+          iStores: iStores!,
         );
       }
       return IllustLightingPage(
-        id: store.illusts.id,
+        id: store.illusts!.id,
         heroString: heroTag,
         store: store,
       );
@@ -205,13 +205,13 @@ class _IllustCardState extends State<IllustCard> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                store.illusts.title,
+                store.illusts!.title,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
                 style: Theme.of(context).textTheme.bodyText2,
               ),
               Text(
-                store.illusts.user.name,
+                store.illusts!.user.name,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
                 style: Theme.of(context).textTheme.caption,
@@ -235,7 +235,7 @@ class _IllustCardState extends State<IllustCard> {
                 if (success) {
                   BotToast.showText(
                       text:
-                          "${store.illusts.user.name} ${I18n.of(context).followed}");
+                          "${store.illusts!.user.name} ${I18n.of(context).followed}");
                 }
               },
             ),
@@ -248,7 +248,7 @@ class _IllustCardState extends State<IllustCard> {
   Widget _buildVisibility() {
     return Visibility(
       visible:
-          store.illusts.type != "illust" || store.illusts.metaPages.isNotEmpty,
+          store.illusts!.type != "illust" || store.illusts!.metaPages.isNotEmpty,
       child: Align(
         alignment: Alignment.topRight,
         child: Padding(

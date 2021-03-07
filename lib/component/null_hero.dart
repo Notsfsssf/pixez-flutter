@@ -16,17 +16,17 @@
 import 'package:flutter/widgets.dart';
 
 class NullHero extends StatelessWidget {
-  final String tag;
+  final String? tag;
   final Widget child;
 
-  const NullHero({Key key, this.tag, @required this.child}) : super(key: key);
+  const NullHero({Key? key, this.tag, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return tag == null
         ? child
         : Hero(
-            tag: tag,
+            tag: tag!,
             child: child,
           );
   }

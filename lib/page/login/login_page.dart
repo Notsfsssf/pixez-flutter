@@ -48,11 +48,8 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     userNameController?.dispose();
     passWordController?.dispose();
-    context = null;
     super.dispose();
   }
-
-  BuildContext context;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +80,6 @@ class _LoginPageState extends State<LoginPage> {
         extendBody: true,
         extendBodyBehindAppBar: true,
         body: Builder(builder: (context) {
-          this.context = context;
           return _buildBody(context);
         }));
   }

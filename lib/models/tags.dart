@@ -13,30 +13,28 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert' show json;
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+part 'tags.g.dart';
 
 class AutoWords {
   List<Tags> tags;
 
   AutoWords({
-    this.tags,
+    required this.tags,
   });
 
   factory AutoWords.fromJson(jsonRes) {
-    if (jsonRes == null) return null;
-    List<Tags> tags = jsonRes['tags'] is List ? [] : null;
-    if (tags != null) {
-      for (var item in jsonRes['tags']) {
-        if (item != null) {
-          tags.add(Tags.fromJson(item));
-        }
+    List<Tags> tags = [];
+    for (var item in jsonRes['tags']) {
+      if (item != null) {
+        tags.add(Tags.fromJson(item));
       }
     }
-
     return AutoWords(
       tags: tags,
     );
@@ -57,16 +55,14 @@ class Tags {
   String translated_name;
 
   Tags({
-    this.name,
-    this.translated_name,
+    required this.name,
+    required this.translated_name,
   });
 
-  factory Tags.fromJson(jsonRes) => jsonRes == null
-      ? null
-      : Tags(
-          name: jsonRes['name'],
-          translated_name: jsonRes['translated_name'],
-        );
+  factory Tags.fromJson(jsonRes) => Tags(
+        name: jsonRes['name'],
+        translated_name: jsonRes['translated_name'],
+      );
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -79,28 +75,20 @@ class Tags {
   }
 }
 
+@JsonSerializable()
 class TagsPersist {
-  int id;
+  @JsonKey(name: '_id')
+  int? id;
   String name;
+  @JsonKey(name: 'translated_name')
   String translatedName;
-  TagsPersist() {}
-  Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      columnId: id,
-      columnName: name,
-      columnTranslatedName: translatedName
-    };
-    if (id != null) {
-      map[columnId] = id;
-    }
-    return map;
-  }
 
-  TagsPersist.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    name = map[columnName];
-    translatedName = map[columnTranslatedName];
-  }
+  TagsPersist({this.id, required this.name, required this.translatedName});
+
+  factory TagsPersist.fromJson(Map<String, dynamic> json) =>
+      _$TagsPersistFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TagsPersistToJson(this);
 }
 
 final String tableTag = 'tag';
@@ -109,10 +97,10 @@ final String columnName = 'name';
 final String columnTranslatedName = 'translated_name';
 
 class TagsPersistProvider {
-  Database db;
+  late Database db;
 
   Future open() async {
-    String databasesPath = await getDatabasesPath();
+    String databasesPath = (await getDatabasesPath())!;
     String path = join(databasesPath, '${tableTag}.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -126,29 +114,29 @@ create table $tableTag (
   }
 
   Future<TagsPersist> insert(TagsPersist tag) async {
-    tag.id = await db.insert(tableTag, tag.toMap());
+    tag.id = await db.insert(tableTag, tag.toJson());
     return tag;
   }
 
-  Future<TagsPersist> getTodo(int id) async {
-    List<Map> maps = await db.query(tableTag,
+  Future<TagsPersist?> getTodo(int id) async {
+    List<Map<String, dynamic>> maps = await db.query(tableTag,
         columns: [columnId, columnName, columnTranslatedName],
         where: '$columnId = ?',
         whereArgs: [id]);
     if (maps.length > 0) {
-      return TagsPersist.fromMap(maps.first);
+      return TagsPersist.fromJson(maps.first);
     }
     return null;
   }
 
   Future<List<TagsPersist>> getAllAccount() async {
-    List result = new List<TagsPersist>();
-    List<Map> maps = await db
+    List<TagsPersist> result = [];
+    List<Map<String, dynamic>> maps = await db
         .query(tableTag, columns: [columnId, columnName, columnTranslatedName]);
 
     if (maps.length > 0) {
       maps.forEach((f) {
-        result.add(TagsPersist.fromMap(f));
+        result.add(TagsPersist.fromJson(f));
       });
     }
     return result;
@@ -163,7 +151,7 @@ create table $tableTag (
   }
 
   Future<int> update(TagsPersist todo) async {
-    return await db.update(tableTag, todo.toMap(),
+    return await db.update(tableTag, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
   }
 

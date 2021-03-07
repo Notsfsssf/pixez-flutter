@@ -19,8 +19,8 @@ abstract class _IAPStoreBase with Store {
     _purchaseUpdatedSubscription?.cancel();
   }
 
-  StreamSubscription _purchaseUpdatedSubscription;
-  StreamSubscription _purchaseErrorSubscription;
+  StreamSubscription? _purchaseUpdatedSubscription;
+  StreamSubscription? _purchaseErrorSubscription;
 
   Future<void> initPlatformState() async {
     var result = await FlutterInappPurchase.instance.initConnection;

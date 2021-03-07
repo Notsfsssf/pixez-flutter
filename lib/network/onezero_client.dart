@@ -21,8 +21,9 @@ import 'package:dio/dio.dart';
 import 'package:pixez/models/onezero_response.dart';
 
 class OnezeroClient {
-  Dio httpClient;
+  late Dio httpClient;
   static const String URL_DNS_RESOLVER = "https://cloudflare-dns.com";
+
   OnezeroClient() {
     this.httpClient =
         Dio(BaseOptions(baseUrl: URL_DNS_RESOLVER, connectTimeout: 5000));
@@ -36,6 +37,7 @@ class OnezeroClient {
       return httpClient;
     };
   }
+
   //     @GET("dns-query")
   // fun queryDns(
   //         @Header("accept") accept: String = "application/dns-json",
@@ -47,7 +49,10 @@ class OnezeroClient {
   Future<OnezeroResponse> queryDns(String name) async {
     Response response = await httpClient.get('/dns-query',
         options: Options(
-          headers: {'accept': 'application/dns-json', 'Host': 'cloudflare-dns.com'},
+          headers: {
+            'accept': 'application/dns-json',
+            'Host': 'cloudflare-dns.com'
+          },
         ),
         queryParameters: {
           'name': name,

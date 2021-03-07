@@ -30,7 +30,7 @@ import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key key}) : super(key: key);
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -38,9 +38,10 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   String editString = "";
-  TrendTagsStore _trendTagsStore;
-  AnimationController _animationController;
-  Animation animation;
+  late TrendTagsStore _trendTagsStore;
+  late AnimationController _animationController;
+  late Animation<double> animation;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -80,7 +81,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0,
-                    color: Theme.of(context).textTheme.headline6.color),
+                    color: Theme.of(context).textTheme.headline6!.color),
               ),
               padding: EdgeInsets.only(left: 16.0, bottom: 10.0),
             ),
@@ -119,7 +120,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                   fontSize: 16.0,
                                   color: Theme.of(context)
                                       .textTheme
-                                      .headline5
+                                      .headline5!
                                       .color),
                             ),
                             Visibility(
@@ -129,7 +130,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .caption!
                                         .color),
                               ),
                             ),
@@ -183,18 +184,18 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                   size: 18.0,
                                   color: Theme.of(context)
                                       .textTheme
-                                      .caption
+                                      .caption!
                                       .color,
                                 ),
                                 Text(
                                   I18n.of(context).clear_search_tag_history,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2
+                                      .bodyText2!
                                       .copyWith(
                                           color: Theme.of(context)
                                               .textTheme
-                                              .caption
+                                              .caption!
                                               .color),
                                 )
                               ],
@@ -212,7 +213,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       I18n.of(context).recommand_tag,
                       style: TextStyle(
                           fontSize: 16.0,
-                          color: Theme.of(context).textTheme.headline6.color),
+                          color: Theme.of(context).textTheme.headline6!.color),
                     ),
                   ),
                 ),
@@ -220,8 +221,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   SliverPadding(
                     padding: EdgeInsets.all(8.0),
                     sliver: SliverGrid(
-                        delegate:
-                            SliverChildBuilderDelegate((context, index) {
+                        delegate: SliverChildBuilderDelegate((context, index) {
                           final tags = _trendTagsStore.trendTags;
                           return GestureDetector(
                             onTap: () {
@@ -280,15 +280,13 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                             ),
                           );
                         }, childCount: _trendTagsStore.trendTags.length),
-                        gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3)),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3)),
                   )
               ],
             ),
           ),
-          headerSliverBuilder:
-              (BuildContext context, bool innerBoxIsScrolled) {
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
               SliverAppBar(
                 elevation: 0.0,
@@ -299,7 +297,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   turns: animation,
                   child: IconButton(
                       icon: Icon(Icons.dashboard,
-                          color: Theme.of(context).textTheme.bodyText1.color),
+                          color: Theme.of(context).textTheme.bodyText1!.color),
                       onPressed: () async {
                         if (Platform.isAndroid)
                           Navigator.of(context)
@@ -312,7 +310,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 actions: [
                   IconButton(
                     icon: Icon(Icons.search,
-                        color: Theme.of(context).textTheme.bodyText1.color),
+                        color: Theme.of(context).textTheme.bodyText1!.color),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => SearchSuggestionPage()));
@@ -359,7 +357,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 actions: [
                   FlatButton(
                       onPressed: () {
-                        tagHistoryStore.delete(f.id);
+                        tagHistoryStore.delete(f.id!);
                         Navigator.of(context).pop();
                       },
                       child: Text(I18n.of(context).ok)),
@@ -389,5 +387,5 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
-  TabController _tabController;
+  late TabController _tabController;
 }

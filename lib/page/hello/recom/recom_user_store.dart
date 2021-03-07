@@ -22,9 +22,9 @@ part 'recom_user_store.g.dart';
 class RecomUserStore = _RecomUserStoreBase with _$RecomUserStore;
 
 abstract class _RecomUserStoreBase with Store {
-  String nextUrl;
+  String? nextUrl;
   ObservableList<UserPreviews> users = ObservableList();
-  RefreshController controller;
+  RefreshController? controller;
 
   _RecomUserStoreBase({this.controller});
 
@@ -46,8 +46,8 @@ abstract class _RecomUserStoreBase with Store {
   @action
   next() async {
     try {
-      if (nextUrl != null && nextUrl.isNotEmpty) {
-        final result = await apiClient.getNext(nextUrl);
+      if (nextUrl != null && nextUrl!.isNotEmpty) {
+        final result = await apiClient.getNext(nextUrl!);
         final response = UserPreviewsResponse.fromJson(result.data);
         nextUrl = response.next_url;
         users.addAll(response.user_previews);

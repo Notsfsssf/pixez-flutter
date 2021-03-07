@@ -27,14 +27,16 @@ class UpdatePage extends StatefulWidget {
 
 class _UpdatePageState extends State<UpdatePage> {
   Dio _dio = Dio();
+
   @override
   void initState() {
     super.initState();
     initData();
   }
 
-  LastRelease lastRelease;
+  LastRelease? lastRelease;
   dynamic error;
+
   initData() async {
     try {
       Response response = await _dio.get(
@@ -74,21 +76,21 @@ class _UpdatePageState extends State<UpdatePage> {
               children: <Widget>[
                 ListTile(
                   title: Text(I18n.of(context).latest_version),
-                  subtitle: Text(lastRelease.tagName ?? ''),
+                  subtitle: Text(lastRelease!.tagName),
                 ),
                 ListTile(
                   title: Text(I18n.of(context).download_address),
                   subtitle: SelectableText(
-                      lastRelease.assets.first.browserDownloadUrl ?? ''),
+                      lastRelease!.assets.first.browserDownloadUrl ?? ''),
                   onTap: () {
                     try {
-                      launch(lastRelease.assets.first.browserDownloadUrl);
+                      launch(lastRelease!.assets.first.browserDownloadUrl);
                     } catch (e) {}
                   },
                 ),
                 ListTile(
                   title: Text(I18n.of(context).new_version_update_information),
-                  subtitle: Text(lastRelease.body ?? ''),
+                  subtitle: Text(lastRelease!.body ?? ''),
                 )
               ],
             ),

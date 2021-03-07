@@ -32,13 +32,13 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
   final FutureGet source;
-  final Widget header;
-  final bool isNested;
-  final RefreshController refreshController;
+  final Widget? header;
+  final bool? isNested;
+  final RefreshController? refreshController;
 
   const LightingList({
-    Key key,
-    @required this.source,
+    Key? key,
+    required this.source,
     this.header,
     this.isNested,
     this.refreshController,
@@ -49,8 +49,8 @@ class LightingList extends StatefulWidget {
 }
 
 class _LightingListState extends State<LightingList> {
-  LightingStore _store;
-  bool _isNested;
+  late LightingStore _store;
+  late bool _isNested;
 
   @override
   void didUpdateWidget(LightingList oldWidget) {
@@ -63,7 +63,7 @@ class _LightingListState extends State<LightingList> {
     }
   }
 
-  ReactionDisposer disposer;
+  ReactionDisposer? disposer;
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _LightingListState extends State<LightingList> {
                         size: 24,
                       ),
                       onPressed: () {
-                        _refreshController.position.jumpTo(0);
+                        _refreshController.position?.jumpTo(0);
                       },
                     ),
                   ),
@@ -121,11 +121,11 @@ class _LightingListState extends State<LightingList> {
     });
   }
 
-  RefreshController _refreshController;
+  late RefreshController _refreshController;
 
   CustomFooter _buildCustomFooter() {
     return CustomFooter(
-      builder: (BuildContext context, LoadStatus mode) {
+      builder: (BuildContext context, LoadStatus? mode) {
         Widget body;
         if (mode == LoadStatus.idle) {
           body = Text(I18n.of(context).pull_up_to_load_more);
@@ -149,7 +149,7 @@ class _LightingListState extends State<LightingList> {
   Widget _buildWithoutHeader(context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _store.iStores.removeWhere((element) => element.illusts.hateByUser());
+    _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           ScrollMetrics metrics = notification.metrics;
@@ -285,10 +285,10 @@ class _LightingListState extends State<LightingList> {
       BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
-    _store.iStores.removeWhere((element) => element.illusts.hateByUser());
+    _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return SliverChildBuilderDelegate((BuildContext context, int index) {
-      double radio = _store.iStores[index].illusts.height.toDouble() /
-          _store.iStores[index].illusts.width.toDouble();
+      double radio = _store.iStores[index].illusts!.height.toDouble() /
+          _store.iStores[index].illusts!.width.toDouble();
       double mainAxisExtent;
       if (radio > 3)
         mainAxisExtent = itemWidth;
@@ -308,7 +308,7 @@ class _LightingListState extends State<LightingList> {
       collectGarbage: (List<int> garbages) {
         garbages.forEach((index) {
           final provider = ExtendedNetworkImageProvider(
-            _store.iStores[index].illusts.imageUrls.medium,
+            _store.iStores[index].illusts!.imageUrls.medium,
           );
           provider.evict();
         });
@@ -317,8 +317,8 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildItem(int index, double itemWidth) {
-    double radio = _store.iStores[index].illusts.height.toDouble() /
-        _store.iStores[index].illusts.width.toDouble();
+    double radio = _store.iStores[index].illusts!.height.toDouble() /
+        _store.iStores[index].illusts!.width.toDouble();
     double mainAxisExtent;
     if (radio > 3)
       mainAxisExtent = itemWidth;

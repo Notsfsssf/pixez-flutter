@@ -25,10 +25,10 @@ import 'package:pixez/main.dart';
 class PainterAvatar extends StatefulWidget {
   final String url;
   final int id;
-  final GestureTapCallback onTap;
-  final Size size;
+  final GestureTapCallback? onTap;
+  final Size? size;
 
-  const PainterAvatar({Key key, this.url, this.id, this.onTap, this.size})
+  const PainterAvatar({Key? key,required this.url,required this.id, this.onTap, this.size})
       : super(key: key);
 
   @override
@@ -50,7 +50,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
           if (widget.onTap == null) {
             pushToUserPage();
           } else
-            widget.onTap();
+            widget.onTap!();
         },
         child: widget.size == null
             ? SizedBox(
@@ -62,8 +62,8 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 ),
               )
             : Container(
-                height: widget.size.height,
-                width: widget.size.width,
+                height: widget.size!.height,
+                width: widget.size!.width,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(

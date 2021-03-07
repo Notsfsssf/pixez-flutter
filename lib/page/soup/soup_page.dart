@@ -29,7 +29,8 @@ class SoupPage extends StatefulWidget {
   final String url;
   final SpotlightArticle spotlight;
 
-  SoupPage({Key key, this.url, this.spotlight}) : super(key: key);
+  SoupPage({Key? key, required this.url, required this.spotlight})
+      : super(key: key);
 
   @override
   _SoupPageState createState() => _SoupPageState();
@@ -37,6 +38,7 @@ class SoupPage extends StatefulWidget {
 
 class _SoupPageState extends State<SoupPage> {
   final SoupStore _soupStore = SoupStore();
+
   @override
   void initState() {
     _soupStore.fetch(widget.url);
@@ -93,8 +95,8 @@ class _SoupPageState extends State<SoupPage> {
           AmWork amWork = _soupStore.amWorks[index - 1];
           return InkWell(
             onTap: () {
-              int id = int.parse(Uri.parse(amWork.arworkLink).pathSegments[
-                  Uri.parse(amWork.arworkLink).pathSegments.length - 1]);
+              int id = int.parse(Uri.parse(amWork.arworkLink!).pathSegments[
+                  Uri.parse(amWork.arworkLink!).pathSegments.length - 1]);
               Navigator.of(context, rootNavigator: true)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return IllustLightingPage(
@@ -112,14 +114,14 @@ class _SoupPageState extends State<SoupPage> {
                 children: <Widget>[
                   ListTile(
                     leading: PainterAvatar(
-                      url: amWork.userImage,
-                      id: int.parse(Uri.parse(amWork.userLink).pathSegments[
-                          Uri.parse(amWork.userLink).pathSegments.length - 1]),
+                      url: amWork.userImage!,
+                      id: int.parse(Uri.parse(amWork.userLink!).pathSegments[
+                          Uri.parse(amWork.userLink!).pathSegments.length - 1]),
                     ),
-                    title: Text(amWork.title),
-                    subtitle: Text(amWork.user),
+                    title: Text(amWork.title!),
+                    subtitle: Text(amWork.user!),
                   ),
-                  PixivImage(amWork.showImage),
+                  PixivImage(amWork.showImage!),
                 ],
               ),
             ),

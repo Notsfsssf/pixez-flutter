@@ -5,9 +5,9 @@ class SortGroup extends StatefulWidget {
   final Function onChange;
 
   const SortGroup(
-      {Key key,
-      @required this.children,
-      @required this.onChange})
+      {Key? key,
+      required this.children,
+      required this.onChange})
       : super(key: key);
 
   @override
@@ -36,7 +36,7 @@ class _SortGroupState extends State<SortGroup> {
               style: TextStyle(
                   color: index == widget.children.indexOf(i)
                       ? Colors.white
-                      : Theme.of(context).textTheme.bodyText1.color),
+                      : Theme.of(context).textTheme.bodyText1!.color),
             ),
             backgroundColor: index == widget.children.indexOf(i)
                 ? Theme.of(context).accentColor

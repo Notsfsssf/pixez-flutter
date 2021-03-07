@@ -26,7 +26,7 @@ class CreateUserPage extends StatefulWidget {
 }
 
 class _CreateUserPageState extends State<CreateUserPage> {
-  TextEditingController _userNameController;
+  late TextEditingController _userNameController;
 
   @override
   void initState() {

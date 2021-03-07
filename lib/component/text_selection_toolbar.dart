@@ -27,8 +27,7 @@ const double _kToolbarHeight = 32.0;
 const double _kToolbarContentDistanceBelow = _kHandleSize - 1.0;
 const double _kToolbarContentDistance = 4.0;
 
-class TranslateTextSelectionControls
-    extends ExtendedMaterialTextSelectionControls {
+class TranslateTextSelectionControls extends MaterialTextSelectionControls {
   TranslateTextSelectionControls();
 
   @override
@@ -40,6 +39,7 @@ class TranslateTextSelectionControls
     List<TextSelectionPoint> endpoints,
     TextSelectionDelegate delegate,
     ClipboardStatusNotifier clipboardStatus,
+    Offset? lastSecondaryTapDownPosition,
   ) {
     assert(debugCheckHasMediaQuery(context));
     assert(debugCheckHasMaterialLocalizations(context));
@@ -70,10 +70,9 @@ class TranslateTextSelectionControls
     return Stack(
       children: <Widget>[
         CustomSingleChildLayout(
-          delegate: ExtendedMaterialTextSelectionToolbarLayout(
-            anchor,
-            _kToolbarScreenPadding + paddingTop,
-            fitsAbove,
+          delegate: TextSelectionToolbarLayoutDelegate(
+            anchorBelow: anchor,
+            anchorAbove: anchor,
           ),
           child: TextSelectionToolbar(
             handleCut: canCut(delegate) ? () => handleCut(delegate) : null,
@@ -88,10 +87,7 @@ class TranslateTextSelectionControls
               final TextEditingValue value = delegate.textEditingValue;
               String selectionText = value.selection.textInside(value.text);
               if (Platform.isIOS) {
-                ShareExtend.share(
-                  selectionText,
-                  "text"
-                );
+                ShareExtend.share(selectionText, "text");
                 return;
               }
               await SupportorPlugin.start(selectionText);
@@ -105,7 +101,7 @@ class TranslateTextSelectionControls
 
 class TextSelectionToolbar extends StatelessWidget {
   const TextSelectionToolbar({
-    Key key,
+    Key? key,
     this.handleCopy,
     this.handleSelectAll,
     this.handleCut,
@@ -113,11 +109,11 @@ class TextSelectionToolbar extends StatelessWidget {
     this.handleLike,
   }) : super(key: key);
 
-  final VoidCallback handleCut;
-  final VoidCallback handleCopy;
-  final VoidCallback handlePaste;
-  final VoidCallback handleSelectAll;
-  final VoidCallback handleLike;
+  final VoidCallback? handleCut;
+  final VoidCallback? handleCopy;
+  final VoidCallback? handlePaste;
+  final VoidCallback? handleSelectAll;
+  final VoidCallback? handleLike;
 
   @override
   Widget build(BuildContext context) {

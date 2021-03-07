@@ -30,7 +30,7 @@ class JobPage extends StatefulWidget {
 class _JobPageState extends State<JobPage> {
   List<TaskPersist> _list = [];
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
-  Timer _timer;
+  late Timer _timer;
 
   @override
   void dispose() {
@@ -239,7 +239,7 @@ class _JobPageState extends State<JobPage> {
                             );
                           }));
                         },
-                        subtitle: Text('${toMessage(job.status)}'),
+                        subtitle: Text('${toMessage(job.status!)}'),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -260,11 +260,11 @@ class _JobPageState extends State<JobPage> {
                           ],
                         ),
                       ),
-                      if (job.max / job.min != 1)
+                      if (job.max! / job.min! != 1)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: LinearProgressIndicator(
-                            value: job.min / job.max,
+                            value: job.min! / job.max!,
                             backgroundColor: Colors.grey,
                           ),
                         ),
@@ -327,7 +327,7 @@ class _JobPageState extends State<JobPage> {
                               );
                             }));
                           },
-                          subtitle: Text('${toMessage(job.status)}'),
+                          subtitle: Text('${toMessage(job.status!)}'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -348,12 +348,12 @@ class _JobPageState extends State<JobPage> {
                             ],
                           ),
                         ),
-                        if (job.min / job.max != 1)
+                        if (job.min! / job.max! != 1)
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: LinearProgressIndicator(
-                              value: job.min / job.max,
+                              value: job.min! / job.max!,
                               backgroundColor: Colors.grey,
                             ),
                           ),
@@ -371,7 +371,7 @@ class _JobPageState extends State<JobPage> {
                 "[  ]",
                 style: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headline4!
                     .copyWith(fontStyle: FontStyle.italic),
               ),
             ),
@@ -379,7 +379,7 @@ class _JobPageState extends State<JobPage> {
   }
 
   Future _deleteJob(TaskPersist persist) async {
-    await taskPersistProvider.remove(persist.id);
+    await taskPersistProvider.remove(persist.id!);
     fetcher.jobMaps.remove(persist.url);
   }
 

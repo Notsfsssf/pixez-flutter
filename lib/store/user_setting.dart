@@ -32,7 +32,7 @@ part 'user_setting.g.dart';
 class UserSetting = _UserSettingBase with _$UserSetting;
 
 abstract class _UserSettingBase with Store {
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
   static const String ZOOM_QUALITY_KEY = "zoom_quality";
   static const String SINGLE_FOLDER_KEY = "single_folder";
   static const String SAVE_FORMAT_KEY = "save_format";
@@ -62,7 +62,7 @@ abstract class _UserSettingBase with Store {
   @observable
   bool isAMOLED = false;
   @observable
-  String storePath = null;
+  String? storePath = null;
   @observable
   bool isBangs = false;
   @observable
@@ -78,7 +78,7 @@ abstract class _UserSettingBase with Store {
   @observable
   int crossCount = 2;
   @observable
-  int displayMode;
+  int? displayMode;
   @observable
   bool disableBypassSni = false;
   @observable
@@ -90,10 +90,10 @@ abstract class _UserSettingBase with Store {
   @observable
   bool followAfterStar = false;
   @observable
-  String pictureSource;
+  String? pictureSource;
 
   @observable
-  String format = "";
+  String? format = "";
   static const String intialFormat = "{illust_id}_p{part}";
 
   @action
@@ -201,7 +201,7 @@ abstract class _UserSettingBase with Store {
     pictureSource = disableBypassSni
         ? ImageHost
         : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
-    splashStore.setHost(pictureSource);
+    splashStore.setHost(pictureSource!);
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
@@ -233,14 +233,14 @@ abstract class _UserSettingBase with Store {
     if (Platform.isAndroid) {
       try {
         var modeList = await FlutterDisplayMode.supported;
-        if (displayMode != null && modeList.length > displayMode) {
-          await FlutterDisplayMode.setMode(modeList[displayMode]);
+        if (displayMode != null && modeList.length > displayMode!) {
+          await FlutterDisplayMode.setMode(modeList[displayMode!]);
         }
       } catch (e) {}
     }
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     format = prefs.getString(SAVE_FORMAT_KEY);
-    if (format == null || format.isEmpty) format = intialFormat;
+    if (format == null || format!.isEmpty) format = intialFormat;
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;

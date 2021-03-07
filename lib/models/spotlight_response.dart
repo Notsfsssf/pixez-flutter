@@ -17,8 +17,9 @@
 // To parse this JSON data, do
 //
 //     final spotlightResponse = spotlightResponseFromJson(jsonString);
-
 import 'dart:convert';
+
+import 'package:json_annotation/json_annotation.dart';
 
 SpotlightResponse spotlightResponseFromJson(String str) =>
     SpotlightResponse.fromJson(json.decode(str));
@@ -31,13 +32,13 @@ class SpotlightResponse {
   String nextUrl;
 
   SpotlightResponse({
-    this.spotlightArticles,
-    this.nextUrl,
+    required this.spotlightArticles,
+    required this.nextUrl,
   });
 
   SpotlightResponse copyWith({
-    List<SpotlightArticle> spotlightArticles,
-    String nextUrl,
+    List<SpotlightArticle>? spotlightArticles,
+    String? nextUrl,
   }) =>
       SpotlightResponse(
         spotlightArticles: spotlightArticles ?? this.spotlightArticles,
@@ -66,29 +67,29 @@ class SpotlightArticle {
   String thumbnail;
   String articleUrl;
   DateTime publishDate;
-  Category category;
-  SubcategoryLabel subcategoryLabel;
+  Category? category;
+  SubcategoryLabel? subcategoryLabel;
 
   SpotlightArticle({
-    this.id,
-    this.title,
-    this.pureTitle,
-    this.thumbnail,
-    this.articleUrl,
-    this.publishDate,
-    this.category,
-    this.subcategoryLabel,
+    required this.id,
+    required this.title,
+    required this.pureTitle,
+    required this.thumbnail,
+    required this.articleUrl,
+    required this.publishDate,
+    required this.category,
+    required this.subcategoryLabel,
   });
 
   SpotlightArticle copyWith({
-    int id,
-    String title,
-    String pureTitle,
-    String thumbnail,
-    String articleUrl,
-    DateTime publishDate,
-    Category category,
-    SubcategoryLabel subcategoryLabel,
+    required int id,
+    required String title,
+    required String pureTitle,
+    required String thumbnail,
+    required String articleUrl,
+    required DateTime publishDate,
+    Category? category,
+    SubcategoryLabel? subcategoryLabel,
   }) =>
       SpotlightArticle(
         id: id ?? this.id,
@@ -140,7 +141,8 @@ final subcategoryLabelValues = EnumValues({
 
 class EnumValues<T> {
   Map<String, T> map;
-  Map<T, String> reverseMap;
+
+  Map<T, String>? reverseMap;
 
   EnumValues(this.map);
 
@@ -148,6 +150,6 @@ class EnumValues<T> {
     if (reverseMap == null) {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }
-    return reverseMap;
+    return reverseMap!;
   }
 }

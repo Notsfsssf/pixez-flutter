@@ -17,7 +17,6 @@
 // To parse this JSON data, do
 //
 //     final novelRecomResponse = novelRecomResponseFromJson(jsonString);
-
 import 'dart:convert';
 
 NovelRecomResponse novelRecomResponseFromJson(String str) => NovelRecomResponse.fromJson(json.decode(str));
@@ -30,9 +29,9 @@ class NovelRecomResponse {
   String nextUrl;
 
   NovelRecomResponse({
-    this.novels,
-    // this.privacyPolicy,
-    this.nextUrl,
+    required this.novels,
+    // required this.privacyPolicy,
+    required this.nextUrl,
   });
 
   factory NovelRecomResponse.fromJson(Map<String, dynamic> json) => NovelRecomResponse(
@@ -72,27 +71,27 @@ class Novel {
   bool isXRestricted;
 
   Novel({
-    this.id,
-    this.title,
-    this.caption,
-    this.restrict,
-    this.xRestrict,
-    this.isOriginal,
-    this.imageUrls,
-    this.createDate,
-    this.tags,
-    this.pageCount,
-    this.textLength,
-    this.user,
-    this.series,
-    this.isBookmarked,
-    this.totalBookmarks,
-    this.totalView,
-    this.visible,
-    this.totalComments,
-    this.isMuted,
-    this.isMypixivOnly,
-    this.isXRestricted,
+    required this.id,
+    required this.title,
+    required this.caption,
+    required this.restrict,
+    required this.xRestrict,
+    required this.isOriginal,
+    required this.imageUrls,
+    required this.createDate,
+    required this.tags,
+    required this.pageCount,
+    required this.textLength,
+    required this.user,
+    required this.series,
+    required this.isBookmarked,
+    required this.totalBookmarks,
+    required this.totalView,
+    required this.visible,
+    required this.totalComments,
+    required this.isMuted,
+    required this.isMypixivOnly,
+    required this.isXRestricted,
   });
 
   factory Novel.fromJson(Map<String, dynamic> json) => Novel(
@@ -150,9 +149,9 @@ class ImageUrls {
   String large;
 
   ImageUrls({
-    this.squareMedium,
-    this.medium,
-    this.large,
+    required this.squareMedium,
+    required this.medium,
+    required this.large,
   });
 
   factory ImageUrls.fromJson(Map<String, dynamic> json) => ImageUrls(
@@ -173,8 +172,8 @@ class Series {
   String title;
 
   Series({
-    this.id,
-    this.title,
+    required this.id,
+    required this.title,
   });
 
   factory Series.fromJson(Map<String, dynamic> json) => Series(
@@ -194,9 +193,9 @@ class Tag {
   bool addedByUploadedUser;
 
   Tag({
-    this.name,
-    this.translatedName,
-    this.addedByUploadedUser,
+    required this.name,
+    required this.translatedName,
+    required this.addedByUploadedUser,
   });
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
@@ -220,11 +219,11 @@ class User {
   bool isFollowed;
 
   User({
-    this.id,
-    this.name,
-    this.account,
-    this.profileImageUrls,
-    this.isFollowed,
+    required this.id,
+    required this.name,
+    required this.account,
+    required this.profileImageUrls,
+    required this.isFollowed,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -248,7 +247,7 @@ class ProfileImageUrls {
   String medium;
 
   ProfileImageUrls({
-    this.medium,
+    required this.medium,
   });
 
   factory ProfileImageUrls.fromJson(Map<String, dynamic> json) => ProfileImageUrls(
@@ -266,9 +265,9 @@ class ProfileImageUrls {
 //   String url;
 
 //   PrivacyPolicy({
-//     this.version,
-//     this.message,
-//     this.url,
+//     required this.version,
+//     required this.message,
+//     required this.url,
 //   });
 
 //   factory PrivacyPolicy.fromJson(Map<String, dynamic> json) => PrivacyPolicy(

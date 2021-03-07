@@ -26,7 +26,7 @@ import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 class RankPage extends StatefulWidget {
   RankPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class RankPage extends StatefulWidget {
 
 class _RankPageState extends State<RankPage>
     with AutomaticKeepAliveClientMixin {
-  RankStore rankStore;
+  late RankStore rankStore;
   final modeList = [
     "day",
     "day_male",
@@ -49,15 +49,15 @@ class _RankPageState extends State<RankPage>
     "week_r18g"
   ];
   var boolList = Map<int, bool>();
-  DateTime nowDate;
+  late DateTime nowDate;
+  late StreamSubscription<String> subscription;
+  String? dateTime;
 
   @override
   void dispose() {
     subscription?.cancel();
     super.dispose();
   }
-
-  StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -76,9 +76,7 @@ class _RankPageState extends State<RankPage>
     });
   }
 
-  String dateTime;
-
-  String toRequestDate(DateTime dateTime) {
+  String? toRequestDate(DateTime dateTime) {
     if (dateTime == null) {
       return null;
     }
@@ -118,8 +116,7 @@ class _RankPageState extends State<RankPage>
                   indicator: MD2Indicator(
                       indicatorHeight: 3,
                       indicatorColor: Theme.of(context).accentColor,
-                      indicatorSize: MD2IndicatorSize.normal
-                      ),
+                      indicatorSize: MD2IndicatorSize.normal),
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
                   tabs: <Widget>[

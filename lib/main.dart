@@ -13,7 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+// @dart=2.9
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -29,7 +29,6 @@ import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/kver.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/er/overlayer.dart';
 import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/recommend.dart';
@@ -63,31 +62,6 @@ OnezeroClient onezeroClient = OnezeroClient();
 final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
 final KVer kVer = KVer();
-
-void runTestLogApp() {
-  runZoned(() => runApp(MyApp()),
-      zoneSpecification: ZoneSpecification(
-        print: (
-          Zone self,
-          ZoneDelegate parent,
-          Zone zone,
-          String line,
-        ) {
-          LPrinter.f(line);
-          Zone.current.parent?.print(line);
-        },
-        handleUncaughtError: (
-          Zone self,
-          ZoneDelegate parent,
-          Zone zone,
-          Object error,
-          StackTrace stackTrace,
-        ) {
-          LPrinter.f(error);
-          Zone.current.parent?.print(error);
-        },
-      ));
-}
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -213,7 +187,6 @@ class _MyAppState extends State<MyApp> {
                 Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
               }
             });
-          OverLayer.show(context);
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
               child: SplashPage());

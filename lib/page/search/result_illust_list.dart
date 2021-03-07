@@ -32,17 +32,17 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ResultIllustList extends StatefulWidget {
   final String word;
 
-  const ResultIllustList({Key key, @required this.word}) : super(key: key);
+  const ResultIllustList({Key? key, required this.word}) : super(key: key);
 
   @override
   _ResultIllustListState createState() => _ResultIllustListState();
 }
 
 class _ResultIllustListState extends State<ResultIllustList> {
-  ResultIllustStore resultIllustStore;
-  FutureGet futureGet;
-  RefreshController _refreshController;
-  StreamSubscription<String> listen;
+  late ResultIllustStore resultIllustStore;
+  late FutureGet futureGet;
+  late RefreshController _refreshController;
+  late StreamSubscription<String> listen;
 
   @override
   void initState() {
@@ -266,9 +266,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               1: Text(I18n.of(context).exact_match_for_tag),
                               2: Text(I18n.of(context).title_and_caption),
                             },
-                            onValueChanged: (int index) {
+                            onValueChanged: (int? index) {
                               setS(() {
-                                searchTarget = search_target[index];
+                                searchTarget = search_target[index!];
                               });
                             },
                           ),
@@ -285,9 +285,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               1: Text(I18n.of(context).date_asc),
                               2: Text(I18n.of(context).popular_desc),
                             },
-                            onValueChanged: (int index) {
+                            onValueChanged: (int? index) {
                               if (accountStore.now != null && index == 2) {
-                                if (accountStore.now.isPremium == 0) {
+                                if (accountStore.now!.isPremium == 0) {
                                   BotToast.showText(text: 'not premium');
                                   setState(() {
                                     futureGet = () => apiClient
@@ -298,7 +298,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                 }
                               }
                               setS(() {
-                                selectSort = sort[index];
+                                selectSort = sort[index!];
                               });
                             },
                           ),

@@ -38,31 +38,35 @@ class IsoContactBean {
   final IsoTaskState state;
   final dynamic data;
 
-  IsoContactBean({this.state, this.data});
+  IsoContactBean({required this.state, required this.data});
 }
 
 class IsoProgressBean {
   final int min, total;
   final String url;
 
-  IsoProgressBean({this.min, this.total, this.url});
+  IsoProgressBean({required this.min, required this.total, required this.url});
 }
 
 class TaskBean {
-  final String url;
-  final Illusts illusts;
-  final String fileName;
-  final String savePath;
+  final String? url;
+  final Illusts? illusts;
+  final String? fileName;
+  final String? savePath;
 
-  TaskBean({this.url, this.illusts, this.fileName, this.savePath});
+  TaskBean(
+      {required this.url,
+      required this.illusts,
+      required this.fileName,
+      required this.savePath});
 }
 
 class Fetcher {
-  BuildContext context;
+  BuildContext? context;
   Queue<IsoContactBean> queue = new Queue();
   ReceivePort receivePort = ReceivePort();
-  SendPort sendPortToChild;
-  Isolate isolate;
+  SendPort? sendPortToChild;
+  Isolate? isolate;
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
   LruMap<String, JobEntity> jobMaps = LruMap();
 
@@ -106,8 +110,8 @@ class Fetcher {
             break;
           case IsoTaskState.COMPLETE:
             TaskBean taskBean = isoContactBean.data;
-            _complete(taskBean.url, taskBean.savePath, taskBean.fileName,
-                taskBean.illusts);
+            _complete(taskBean.url!, taskBean.savePath!, taskBean.fileName!,
+                taskBean.illusts!);
             break;
           case IsoTaskState.ERROR:
             _errorD(isoContactBean.data as String);
@@ -162,7 +166,7 @@ class Fetcher {
     File file = File(savePath + Platform.pathSeparator + fileName);
     final uint8list = await file.readAsBytes();
     await saveStore.saveToGallery(uint8list, illusts, fileName);
-    Toaster.downloadOk("${illusts.title} ${I18n.of(context).saved}");
+    Toaster.downloadOk("${illusts.title} ${I18n.of(context!).saved}");
     var job = jobMaps[url];
     if (job != null) {
       job.status = 2;
@@ -220,18 +224,19 @@ entryPoint(SendPort sendPort) {
       TaskBean taskBean = isoContactBean.data;
       switch (isoContactBean.state) {
         case IsoTaskState.NOTIFY:
-          inHost = taskBean.url;
+          inHost = taskBean.url!;
           break;
         case IsoTaskState.ERROR:
           break;
         case IsoTaskState.APPEND:
           try {
             LPrinter.d("append =======" + inHost);
-            var savePath =
-                taskBean.savePath + Platform.pathSeparator + taskBean.fileName;
+            var savePath = taskBean.savePath! +
+                Platform.pathSeparator +
+                taskBean.fileName!;
             String trueUrl = userSetting.disableBypassSni
-                ? taskBean.url
-                : (Uri.parse(taskBean.url).replace(host: inHost)).toString();
+                ? taskBean.url!
+                : (Uri.parse(taskBean.url!).replace(host: inHost)).toString();
             isolateDio.options.headers['Host'] =
                 inHost == ImageCatHost ? inHost : ImageHost;
             isolateDio.download(trueUrl, savePath,
@@ -239,7 +244,7 @@ entryPoint(SendPort sendPort) {
               sendPort.send(IsoContactBean(
                   state: IsoTaskState.PROGRESS,
                   data: IsoProgressBean(
-                      min: min, total: total, url: taskBean.url)));
+                      min: min, total: total, url: taskBean.url!)));
             }).then((value) {
               sendPort.send(
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));

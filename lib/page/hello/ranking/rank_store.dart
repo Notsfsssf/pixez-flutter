@@ -53,12 +53,12 @@ abstract class _RankStoreBase with Store {
     inChoice = v;
   }
 
-  SharedPreferences pre;
+  SharedPreferences? pre;
 
   @action
   Future<void> init() async {
     pre = await SharedPreferences.getInstance();
-    var list = pre.getStringList(MODE_LIST) ?? [];
+    var list = pre!.getStringList(MODE_LIST) ?? [];
     modeList.clear();
     modeList.addAll(list);
   }
@@ -69,7 +69,7 @@ abstract class _RankStoreBase with Store {
     selectMap.forEach((s, b) {
       if (b) saveList.add(intialModeList[s]);
     });
-    await pre.setStringList(MODE_LIST, saveList);
+    await pre!.setStringList(MODE_LIST, saveList);
     modeList.clear();
     modeList.addAll(saveList);
   }

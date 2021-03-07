@@ -26,7 +26,7 @@ import 'package:url_launcher/url_launcher.dart';
 class UserDetailPage extends StatefulWidget {
   final UserDetail userDetail;
 
-  const UserDetailPage({Key key, @required this.userDetail}) : super(key: key);
+  const UserDetailPage({Key? key, required this.userDetail}) : super(key: key);
 
   @override
   _UserDetailPageState createState() => _UserDetailPageState();

@@ -17,7 +17,6 @@
 // To parse this JSON data, do
 //
 //     final createUserResponse = createUserResponseFromJson(jsonString);
-
 import 'dart:convert';
 
 CreateUserResponse createUserResponseFromJson(String str) =>
@@ -32,9 +31,9 @@ class CreateUserResponse {
   Body body;
 
   CreateUserResponse({
-    this.error,
-    this.message,
-    this.body,
+    required this.error,
+    required this.message,
+    required this.body,
   });
 
   factory CreateUserResponse.fromJson(Map<String, dynamic> json) =>
@@ -57,9 +56,9 @@ class Body {
   String deviceToken;
 
   Body({
-    this.userAccount,
-    this.password,
-    this.deviceToken,
+    required this.userAccount,
+    required this.password,
+    required this.deviceToken,
   });
 
   factory Body.fromJson(Map<String, dynamic> json) => Body(

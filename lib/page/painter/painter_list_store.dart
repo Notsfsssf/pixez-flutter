@@ -12,7 +12,7 @@ class PainterListStore = _PainterListStoreBase with _$PainterListStore;
 abstract class _PainterListStoreBase with Store {
   ObservableList<UserPreviews> users = ObservableList();
   FutureGet source;
-  String nextUrl;
+  String? nextUrl;
   final RefreshController _controller;
 
   _PainterListStoreBase(this._controller, this.source);
@@ -38,9 +38,9 @@ abstract class _PainterListStoreBase with Store {
 
   @action
   next() async {
-    if (nextUrl != null && nextUrl.isNotEmpty) {
+    if (nextUrl != null && nextUrl!.isNotEmpty) {
       try {
-        Response response = await apiClient.getNext(nextUrl);
+        Response response = await apiClient.getNext(nextUrl!);
         UserPreviewsResponse userPreviewsResponse =
             UserPreviewsResponse.fromJson(response.data);
         nextUrl = userPreviewsResponse.next_url;

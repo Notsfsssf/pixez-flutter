@@ -26,13 +26,18 @@ import 'package:pixez/page/painter/painter_list.dart';
 class FollowList extends StatefulWidget {
   final int id;
   final bool isNovel;
-  FollowList({Key key, this.id, this.isNovel = false}) : super(key: key);
+
+  FollowList({Key? key, required this.id, this.isNovel = false})
+      : super(key: key);
 
   @override
   _FollowListState createState() => _FollowListState();
 }
 
 class _FollowListState extends State<FollowList> {
+  late FutureGet futureGet;
+  String restrict = 'public';
+
   @override
   void dispose() {
     super.dispose();
@@ -45,15 +50,10 @@ class _FollowListState extends State<FollowList> {
     super.initState();
   }
 
-
-
-  FutureGet futureGet;
-  String restrict = 'public';
-
   Widget buildHeader() {
     return Observer(builder: (_) {
       return Visibility(
-        visible: int.parse(accountStore.now.userId) == widget.id,
+        visible: int.parse(accountStore.now!.userId) == widget.id,
         child: Align(
           alignment: Alignment.topCenter,
           child: SortGroup(

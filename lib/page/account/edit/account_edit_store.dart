@@ -7,7 +7,7 @@ class AccountEditStore = _AccountEditStoreBase with _$AccountEditStore;
 
 abstract class _AccountEditStoreBase with Store {
   @observable
-  String errorString;
+  String? errorString;
 
   @action
  Future<bool> fetch(String newMailAddress, newPassword, oldPassword, newUserAccount) async {
@@ -23,7 +23,7 @@ abstract class _AccountEditStoreBase with Store {
     } catch (e) {
       if (e is DioError) {
         try {
-          var a = e.response.data['body']['validation_errors'].toString();
+          var a = e.response!.data['body']['validation_errors'].toString();
           errorString = a;
         } catch (e) {
           errorString = e.toString();

@@ -21,8 +21,8 @@ class KVer {
     setExp(key, value, 0);
   }
 
-  Future<String> get(String key) async {
-    KVPair kvPair = await kvProvider.getAccount(key);
+  Future<String?> get(String key) async {
+    KVPair kvPair = (await kvProvider.getAccount(key))!;
     if (kvPair == null) return null;
     bool expire = kvPair.expireTime == 0
         ? false

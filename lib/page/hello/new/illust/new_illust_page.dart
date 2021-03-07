@@ -29,16 +29,16 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class NewIllustPage extends StatefulWidget {
   final String restrict;
 
-  const NewIllustPage({Key key, this.restrict = "all"}) : super(key: key);
+  const NewIllustPage({Key? key, this.restrict = "all"}) : super(key: key);
 
   @override
   _NewIllustPageState createState() => _NewIllustPageState();
 }
 
 class _NewIllustPageState extends State<NewIllustPage> {
-  FutureGet futureGet;
-  RefreshController _refreshController;
-  StreamSubscription<String> subscription;
+  late FutureGet futureGet;
+  late RefreshController _refreshController;
+  late StreamSubscription<String> subscription;
 
   @override
   void initState() {

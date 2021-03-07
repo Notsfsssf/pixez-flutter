@@ -29,7 +29,7 @@ class NovelNewPage extends StatefulWidget {
 }
 
 class _NovelNewPageState extends State<NovelNewPage> {
-  FutureGet futureGet;
+  late FutureGet futureGet;
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _NovelNewPageState extends State<NovelNewPage> {
                       Leader.push(
                           context,
                           NovelUserPage(
-                            id: int.parse(accountStore.now.userId),
+                            id: int.parse(accountStore.now!.userId),
                           ));
                   })
             ],

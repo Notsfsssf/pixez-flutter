@@ -28,13 +28,13 @@ const ImageSHost = "s.pximg.net";
 
 class PixivImage extends HookWidget {
   final String url;
-  final Widget placeWidget;
+  final Widget? placeWidget;
   final bool fade;
-  final BoxFit fit;
-  final bool enableMemoryCache;
-  final double height;
-  final double width;
-  final String host;
+  final BoxFit? fit;
+  final bool? enableMemoryCache;
+  final double? height;
+  final double? width;
+  final String? host;
 
   PixivImage(this.url,
       {this.placeWidget,
@@ -125,7 +125,7 @@ class PixivImage extends HookWidget {
 }
 
 class PixivProvider {
-  static ExtendedNetworkImageProvider url(String url, {String host}) {
+  static ExtendedNetworkImageProvider url(String url, {String? host}) {
     return ExtendedNetworkImageProvider(url, headers: {
       "referer": "https://app-api.pixiv.net/",
       "User-Agent": "PixivIOSApp/5.8.0",

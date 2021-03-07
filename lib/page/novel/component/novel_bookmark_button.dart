@@ -21,7 +21,7 @@ import 'package:pixez/network/api_client.dart';
 class NovelBookmarkButton extends StatefulWidget {
   final Novel novel;
 
-  const NovelBookmarkButton({Key key, @required this.novel}) : super(key: key);
+  const NovelBookmarkButton({Key? key, required this.novel}) : super(key: key);
 
   @override
   _NovelBookmarkButtonState createState() => _NovelBookmarkButtonState();
@@ -51,9 +51,9 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
       child: IconButton(
         icon: widget.novel.isBookmarked
             ? Icon(Icons.bookmark,
-                color: Theme.of(context).textTheme.caption.color)
+                color: Theme.of(context).textTheme.caption!.color)
             : Icon(Icons.bookmark_border,
-                color: Theme.of(context).textTheme.caption.color),
+                color: Theme.of(context).textTheme.caption!.color),
         onPressed: () async {
           if (!widget.novel.isBookmarked) {
             try {

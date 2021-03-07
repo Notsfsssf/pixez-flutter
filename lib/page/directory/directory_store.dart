@@ -27,13 +27,13 @@ class DirectoryStore = _DirectoryStoreBase with _$DirectoryStore;
 
 abstract class _DirectoryStoreBase with Store {
   @observable
-  String path;
+  String? path;
   @observable
   bool checkSuccess = false;
 
   @observable
   ObservableList<FileSystemEntity> list = ObservableList();
-  SharedPreferences _preferences;
+  late SharedPreferences _preferences;
 
   @action
   Future<void> enterFolder(Directory fileSystemEntity) async {
@@ -53,22 +53,22 @@ abstract class _DirectoryStoreBase with Store {
   @action
   Future<void> undo() async {
     path = "/storage/emulated/0/Pictures";
-    list = ObservableList.of(Directory(path).listSync());
+    list = ObservableList.of(Directory(path!).listSync());
   }
 
   @action
   Future<void> check() async {
-    if (!path.contains("/storage/emulated/0")) {
+    if (!path!.contains("/storage/emulated/0")) {
       return;
     }
-    await _preferences.setString("store_path", path);
+    await _preferences.setString("store_path", path!);
     checkSuccess = true;
   }
 
   @action
   Future<void> backFolder() async {
     try {
-      final fileSystemEntity = Directory(path).parent;
+      final fileSystemEntity = Directory(path!).parent;
       if (!fileSystemEntity.path.contains("/storage/emulated/0")) {
         return;
       }
@@ -90,17 +90,17 @@ abstract class _DirectoryStoreBase with Store {
   }
 
   @action
-  Future<void> init(String initPath) async {
+  Future<void> init(String? initPath) async {
     _preferences = await SharedPreferences.getInstance();
     try {
       path = initPath ??
           _preferences.getString("store_path") ??
-          (await getExternalStorageDirectory()).path; //绝了
-      final directory = Directory(path);
+          (await getExternalStorageDirectory())!.path; //绝了
+      final directory = Directory(path!);
       if (!directory.existsSync()) {
         directory.createSync();
       }
-      list = ObservableList.of(Directory(path).listSync());
+      list = ObservableList.of(Directory(path!).listSync());
     } on Exception catch (e) {
       print('Exception details:\n $e');
       BotToast.showText(text: e.toString());

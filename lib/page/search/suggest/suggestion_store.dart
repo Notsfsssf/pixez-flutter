@@ -23,7 +23,7 @@ class SuggestionStore = _SuggestionStoreBase with _$SuggestionStore;
 
 abstract class _SuggestionStoreBase with Store {
   @observable
-  AutoWords autoWords;
+  AutoWords? autoWords;
   fetch(String query) async {
     try {
       AutoWords autoWords =

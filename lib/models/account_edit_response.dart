@@ -30,9 +30,9 @@ class AccountEditResponse {
     Body body;
 
     AccountEditResponse({
-        this.error,
-        this.message,
-        this.body,
+        required this.error,
+        required this.message,
+        required this.body,
     });
 
     factory AccountEditResponse.fromJson(Map<String, dynamic> json) => AccountEditResponse(
@@ -53,8 +53,8 @@ class Body {
     ValidationErrors validationErrors;
 
     Body({
-        this.isSucceed,
-        this.validationErrors,
+        required this.isSucceed,
+        required this.validationErrors,
     });
 
     factory Body.fromJson(Map<String, dynamic> json) => Body(

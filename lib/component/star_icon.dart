@@ -20,8 +20,8 @@ class StarIcon extends StatefulWidget {
   final int state;
 
   const StarIcon({
-    Key key,
-    @required this.state,
+    Key? key,
+    required this.state,
   }) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class StarIcon extends StatefulWidget {
 }
 
 class _StarIconState extends State<StarIcon> {
-  int state;
+  late int state;
 
   @override
   void initState() {

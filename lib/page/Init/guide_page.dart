@@ -17,7 +17,7 @@ class GuidePage extends StatefulWidget {
 }
 
 class _GuidePageState extends State<GuidePage> {
-  List<Widget> _pageList;
+  late List<Widget> _pageList;
   int index = 0;
   bool isNext = true;
 

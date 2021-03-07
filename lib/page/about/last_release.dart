@@ -13,7 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 class LastRelease {
   String url;
   String assetsUrl;
@@ -35,50 +34,51 @@ class LastRelease {
   String body;
 
   LastRelease(
-      {this.url,
-      this.assetsUrl,
-      this.uploadUrl,
-      this.htmlUrl,
-      this.id,
-      this.nodeId,
-      this.tagName,
-      this.targetCommitish,
-      this.name,
-      this.draft,
-      this.author,
-      this.prerelease,
-      this.createdAt,
-      this.publishedAt,
-      this.assets,
-      this.tarballUrl,
-      this.zipballUrl,
-      this.body});
+      {required this.url,
+      required this.assetsUrl,
+      required this.uploadUrl,
+      required this.htmlUrl,
+      required this.id,
+      required this.nodeId,
+      required this.tagName,
+      required this.targetCommitish,
+      required this.name,
+      required this.draft,
+      required this.author,
+      required this.prerelease,
+      required this.createdAt,
+      required this.publishedAt,
+      required this.assets,
+      required this.tarballUrl,
+      required this.zipballUrl,
+      required this.body});
 
-  LastRelease.fromJson(Map<String, dynamic> json) {
-    url = json['url'];
-    assetsUrl = json['assets_url'];
-    uploadUrl = json['upload_url'];
-    htmlUrl = json['html_url'];
-    id = json['id'];
-    nodeId = json['node_id'];
-    tagName = json['tag_name'];
-    targetCommitish = json['target_commitish'];
-    name = json['name'];
-    draft = json['draft'];
-    author =
-        json['author'] != null ? new Author.fromJson(json['author']) : null;
-    prerelease = json['prerelease'];
-    createdAt = json['created_at'];
-    publishedAt = json['published_at'];
+  factory LastRelease.fromJson(Map<String, dynamic> json) {
+    List<Assets> assets = [];
     if (json['assets'] != null) {
-      assets = new List<Assets>();
       json['assets'].forEach((v) {
         assets.add(new Assets.fromJson(v));
       });
     }
-    tarballUrl = json['tarball_url'];
-    zipballUrl = json['zipball_url'];
-    body = json['body'];
+    return LastRelease(
+        url: json['url'],
+        assetsUrl: json['assets_url'],
+        uploadUrl: json['upload_url'],
+        htmlUrl: json['html_url'],
+        id: json['id'],
+        nodeId: json['node_id'],
+        tagName: json['tag_name'],
+        targetCommitish: json['target_commitish'],
+        name: json['name'],
+        draft: json['draft'],
+        author: Author.fromJson(json['author']),
+        prerelease: json['prerelease'],
+        createdAt: json['created_at'],
+        publishedAt: json['published_at'],
+        assets: assets,
+        tarballUrl: json['tarball_url'],
+        zipballUrl: json['zipball_url'],
+        body: json['body']);
   }
 
   Map<String, dynamic> toJson() {
@@ -93,15 +93,11 @@ class LastRelease {
     data['target_commitish'] = this.targetCommitish;
     data['name'] = this.name;
     data['draft'] = this.draft;
-    if (this.author != null) {
-      data['author'] = this.author.toJson();
-    }
+    data['author'] = this.author.toJson();
     data['prerelease'] = this.prerelease;
     data['created_at'] = this.createdAt;
     data['published_at'] = this.publishedAt;
-    if (this.assets != null) {
-      data['assets'] = this.assets.map((v) => v.toJson()).toList();
-    }
+    data['assets'] = this.assets.map((v) => v.toJson()).toList();
     data['tarball_url'] = this.tarballUrl;
     data['zipball_url'] = this.zipballUrl;
     data['body'] = this.body;
@@ -130,44 +126,45 @@ class Author {
   bool siteAdmin;
 
   Author(
-      {this.login,
-      this.id,
-      this.nodeId,
-      this.avatarUrl,
-      this.gravatarId,
-      this.url,
-      this.htmlUrl,
-      this.followersUrl,
-      this.followingUrl,
-      this.gistsUrl,
-      this.starredUrl,
-      this.subscriptionsUrl,
-      this.organizationsUrl,
-      this.reposUrl,
-      this.eventsUrl,
-      this.receivedEventsUrl,
-      this.type,
-      this.siteAdmin});
+      {required this.login,
+      required this.id,
+      required this.nodeId,
+      required this.avatarUrl,
+      required this.gravatarId,
+      required this.url,
+      required this.htmlUrl,
+      required this.followersUrl,
+      required this.followingUrl,
+      required this.gistsUrl,
+      required this.starredUrl,
+      required this.subscriptionsUrl,
+      required this.organizationsUrl,
+      required this.reposUrl,
+      required this.eventsUrl,
+      required this.receivedEventsUrl,
+      required this.type,
+      required this.siteAdmin});
 
-  Author.fromJson(Map<String, dynamic> json) {
-    login = json['login'];
-    id = json['id'];
-    nodeId = json['node_id'];
-    avatarUrl = json['avatar_url'];
-    gravatarId = json['gravatar_id'];
-    url = json['url'];
-    htmlUrl = json['html_url'];
-    followersUrl = json['followers_url'];
-    followingUrl = json['following_url'];
-    gistsUrl = json['gists_url'];
-    starredUrl = json['starred_url'];
-    subscriptionsUrl = json['subscriptions_url'];
-    organizationsUrl = json['organizations_url'];
-    reposUrl = json['repos_url'];
-    eventsUrl = json['events_url'];
-    receivedEventsUrl = json['received_events_url'];
-    type = json['type'];
-    siteAdmin = json['site_admin'];
+  factory Author.fromJson(Map<String, dynamic> json) {
+    return Author(
+        login: json['login'],
+        id: json['id'],
+        nodeId: json['node_id'],
+        avatarUrl: json['avatar_url'],
+        gravatarId: json['gravatar_id'],
+        url: json['url'],
+        htmlUrl: json['html_url'],
+        followersUrl: json['followers_url'],
+        followingUrl: json['following_url'],
+        gistsUrl: json['gists_url'],
+        starredUrl: json['starred_url'],
+        subscriptionsUrl: json['subscriptions_url'],
+        organizationsUrl: json['organizations_url'],
+        reposUrl: json['repos_url'],
+        eventsUrl: json['events_url'],
+        receivedEventsUrl: json['received_events_url'],
+        type: json['type'],
+        siteAdmin: json['site_admin']);
   }
 
   Map<String, dynamic> toJson() {
@@ -210,35 +207,36 @@ class Assets {
   String browserDownloadUrl;
 
   Assets(
-      {this.url,
-      this.id,
-      this.nodeId,
-      this.name,
-      this.label,
-      this.uploader,
-      this.contentType,
-      this.state,
-      this.size,
-      this.downloadCount,
-      this.createdAt,
-      this.updatedAt,
-      this.browserDownloadUrl});
+      {required this.url,
+      required this.id,
+      required this.nodeId,
+      required this.name,
+      required this.label,
+      required this.uploader,
+      required this.contentType,
+      required this.state,
+      required this.size,
+      required this.downloadCount,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.browserDownloadUrl});
 
-  Assets.fromJson(Map<String, dynamic> json) {
-    url = json['url'];
-    id = json['id'];
-    nodeId = json['node_id'];
-    name = json['name'];
-    label = json['label'];
-    uploader =
-        json['uploader'] != null ? new Author.fromJson(json['uploader']) : null;
-    contentType = json['content_type'];
-    state = json['state'];
-    size = json['size'];
-    downloadCount = json['download_count'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    browserDownloadUrl = json['browser_download_url'];
+  factory Assets.fromJson(Map<String, dynamic> json) {
+    return Assets(
+      url: json['url'],
+      id: json['id'],
+      nodeId: json['node_id'],
+      name: json['name'],
+      label: json['label'],
+      uploader: new Author.fromJson(json['uploader']),
+      contentType: json['content_type'],
+      state: json['state'],
+      size: json['size'],
+      downloadCount: json['download_count'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      browserDownloadUrl: json['browser_download_url'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -248,9 +246,7 @@ class Assets {
     data['node_id'] = this.nodeId;
     data['name'] = this.name;
     data['label'] = this.label;
-    if (this.uploader != null) {
-      data['uploader'] = this.uploader.toJson();
-    }
+    data['uploader'] = this.uploader.toJson();
     data['content_type'] = this.contentType;
     data['state'] = this.state;
     data['size'] = this.size;

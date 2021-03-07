@@ -17,7 +17,7 @@
 // To parse this JSON data, do
 //
 //     final loginErrorResponse = loginErrorResponseFromJson(jsonString);
-
+// @dart=2.9
 import 'dart:convert';
 
 LoginErrorResponse loginErrorResponseFromJson(String str) => LoginErrorResponse.fromJson(json.decode(str));

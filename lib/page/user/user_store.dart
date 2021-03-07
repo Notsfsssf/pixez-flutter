@@ -30,9 +30,9 @@ abstract class _UserStoreBase with Store {
   final ApiClient client = apiClient;
   final int id;
   @observable
-  UserDetail userDetail;
+  UserDetail? userDetail;
   @observable
-  User user;
+  User? user;
   @observable
   bool isFollow = false;
   @observable
@@ -44,14 +44,14 @@ abstract class _UserStoreBase with Store {
 
   @action
   Future<void> follow({bool needPrivate = false}) async {
-    if (user.isFollowed) {
+    if (user!.isFollowed) {
       try {
         await client.postUnFollowUser(id);
         userDetail?.user?.isFollowed = false;
         isFollow = false;
       } on DioError catch (e) {
         if (e.response != null &&
-            e.response.statusCode == HttpStatus.badRequest) {}
+            e.response!.statusCode == HttpStatus.badRequest) {}
       }
       return;
     }
@@ -62,7 +62,7 @@ abstract class _UserStoreBase with Store {
         isFollow = true;
       } on DioError catch (e) {
         if (e.response != null &&
-            e.response.statusCode == HttpStatus.badRequest) {}
+            e.response!.statusCode == HttpStatus.badRequest) {}
       }
     } else {
       try {
@@ -71,13 +71,13 @@ abstract class _UserStoreBase with Store {
         isFollow = true;
       } on DioError catch (e) {
         if (e.response != null &&
-            e.response.statusCode == HttpStatus.badRequest) {}
+            e.response!.statusCode == HttpStatus.badRequest) {}
       }
     }
   }
 
   @observable
-  String errorMessage;
+  String? errorMessage;
 
   @action
   Future<void> firstFetch() async {
@@ -86,9 +86,9 @@ abstract class _UserStoreBase with Store {
       UserDetail userDetail = UserDetail.fromJson(response.data);
       this.userDetail = userDetail;
       this.user = userDetail.user;
-      this.isFollow = this.userDetail.user.isFollowed;
+      this.isFollow = this.userDetail!.user.isFollowed;
     } on DioError catch (e) {
-      if (e.response != null && e.response.statusCode == HttpStatus.notFound) {
+      if (e.response != null && e.response!.statusCode == HttpStatus.notFound) {
         errorMessage = '404';
       } else {
         errorMessage = e.toString();

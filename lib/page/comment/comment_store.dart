@@ -9,11 +9,11 @@ part 'comment_store.g.dart';
 class CommentStore = _CommentStoreBase with _$CommentStore;
 
 abstract class _CommentStoreBase with Store {
-  String nextUrl;
+  String? nextUrl;
   @observable
   ObservableList<Comment> comments = ObservableList();
   @observable
-  String errorMessage;
+  String? errorMessage;
   @observable
   bool isEmpty = false;
   final RefreshController _controller;
@@ -42,9 +42,9 @@ abstract class _CommentStoreBase with Store {
 
   @action
   next() async {
-    if (nextUrl != null && nextUrl.isNotEmpty) {
+    if (nextUrl != null && nextUrl!.isNotEmpty) {
       try {
-        Response response = await apiClient.getNext(nextUrl);
+        Response response = await apiClient.getNext(nextUrl!);
         CommentResponse commentResponse =
             CommentResponse.fromJson(response.data);
         nextUrl = commentResponse.nextUrl;

@@ -21,13 +21,15 @@ import 'package:pixez/page/picture/illust_about_store.dart';
 class IllustAboutSliver extends StatefulWidget {
   final int id;
 
-  const IllustAboutSliver({Key key, this.id}) : super(key: key);
+  const IllustAboutSliver({Key? key, required this.id}) : super(key: key);
+
   @override
   _IllustAboutSliverState createState() => _IllustAboutSliverState();
 }
 
 class _IllustAboutSliverState extends State<IllustAboutSliver> {
-  IllustAboutStore _aboutStore;
+  late IllustAboutStore _aboutStore;
+
   @override
   void initState() {
     _aboutStore = IllustAboutStore(widget.id)..fetch();
@@ -48,7 +50,8 @@ class _IllustAboutSliverState extends State<IllustAboutSliver> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(':(', style: Theme.of(context).textTheme.headline4),
+                  child:
+                      Text(':(', style: Theme.of(context).textTheme.headline4),
                 ),
                 RaisedButton(
                   onPressed: () {

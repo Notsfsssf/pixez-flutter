@@ -20,18 +20,18 @@ import 'package:flutter/services.dart';
 class DocumentPlugin {
   static const platform = const MethodChannel('com.perol.dev/save');
 
-  static Future<bool> save(Uint8List uint8list, String fileName,
-      {bool clearOld}) async {
+  static Future<bool?> save(Uint8List uint8list, String fileName,
+      {bool clearOld = false}) async {
     return platform.invokeMethod<bool>(
         'save', {"data": uint8list, "name": fileName, "clear_old": clearOld});
   }
 
-  static Future<bool> exist(String fileName) =>
+  static Future<bool?> exist(String fileName) =>
       platform.invokeMethod<bool>("exist", {"name": fileName});
 
-  static Future<String> getPath() => platform.invokeMethod<String>("get_path");
+  static Future<String?> getPath() => platform.invokeMethod<String>("get_path");
 
-  static Future<bool> needChoice() =>
+  static Future<bool?> needChoice() =>
       platform.invokeMethod<bool>("need_choice");
 
   static Future<dynamic> choiceFolder() =>
@@ -39,5 +39,5 @@ class DocumentPlugin {
 
   static Future<dynamic> isHelplessWay() =>
       platform.invokeMethod("ishelplessway");
-  static Future<Uint8List> pickFile() => platform.invokeMethod("pick_file");
+  static Future<Uint8List?> pickFile() => platform.invokeMethod("pick_file");
 }

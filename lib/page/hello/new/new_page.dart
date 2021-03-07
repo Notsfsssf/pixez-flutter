@@ -33,7 +33,7 @@ class NewPage extends StatefulWidget {
   final String newRestrict, bookRestrict, painterRestrict;
 
   const NewPage(
-      {Key key,
+      {Key? key,
       this.newRestrict = "public",
       this.bookRestrict = "public",
       this.painterRestrict = "public"})
@@ -45,8 +45,8 @@ class NewPage extends StatefulWidget {
 
 class _NewPageState extends State<NewPage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  TabController _tabController;
-  StreamSubscription<String> subscription;
+  late TabController _tabController;
+  late StreamSubscription<String> subscription;
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _NewPageState extends State<NewPage>
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => UsersPage(
-                              id: int.parse(accountStore.now.userId),
+                              id: int.parse(accountStore.now!.userId),
                             )));
                   },
                 )
@@ -120,10 +120,10 @@ class _NewPageState extends State<NewPage>
                   NewIllustPage(),
                   BookmarkPage(
                     isNested: false,
-                    id: int.parse(accountStore.now.userId),
+                    id: int.parse(accountStore.now!.userId),
                   ),
                   FollowList(
-                    id: int.parse(accountStore.now.userId),
+                    id: int.parse(accountStore.now!.userId),
                   ),
                 ],
               ),

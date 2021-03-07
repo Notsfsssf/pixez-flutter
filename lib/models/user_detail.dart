@@ -13,11 +13,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 import 'dart:convert' show json;
 
 import 'package:pixez/models/illust.dart';
-
 
 class UserDetail {
   User user;
@@ -26,25 +24,21 @@ class UserDetail {
   Workspace workspace;
 
   UserDetail({
-    this.user,
-    this.profile,
-    this.profile_publicity,
-    this.workspace,
+    required this.user,
+    required this.profile,
+    required this.profile_publicity,
+    required this.workspace,
   });
 
-  factory UserDetail.fromJson(jsonRes) =>
-      jsonRes == null
-          ? null
-          : UserDetail(
+  factory UserDetail.fromJson(jsonRes) => UserDetail(
         user: User.fromJson(jsonRes['user']),
         profile: Profile.fromJson(jsonRes['profile']),
         profile_publicity:
-        Profile_publicity.fromJson(jsonRes['profile_publicity']),
+            Profile_publicity.fromJson(jsonRes['profile_publicity']),
         workspace: Workspace.fromJson(jsonRes['workspace']),
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'user': user,
         'profile': profile,
         'profile_publicity': profile_publicity,
@@ -84,36 +78,33 @@ class Profile {
   bool is_using_custom_profile_image;
 
   Profile({
-    this.webpage,
-    this.gender,
-    this.birth,
-    this.birth_day,
-    this.birth_year,
-    this.region,
-    this.address_id,
-    this.country_code,
-    this.job,
-    this.job_id,
-    this.total_follow_users,
-    this.total_mypixiv_users,
-    this.total_illusts,
-    this.total_manga,
-    this.total_novels,
-    this.total_illust_bookmarks_public,
-    this.total_illust_series,
-    this.total_novel_series,
-    this.background_image_url,
-    this.twitter_account,
-    this.twitter_url,
-    this.pawoo_url,
-    this.is_premium,
-    this.is_using_custom_profile_image,
+    required this.webpage,
+    required this.gender,
+    required this.birth,
+    required this.birth_day,
+    required this.birth_year,
+    required this.region,
+    required this.address_id,
+    required this.country_code,
+    required this.job,
+    required this.job_id,
+    required this.total_follow_users,
+    required this.total_mypixiv_users,
+    required this.total_illusts,
+    required this.total_manga,
+    required this.total_novels,
+    required this.total_illust_bookmarks_public,
+    required this.total_illust_series,
+    required this.total_novel_series,
+    required this.background_image_url,
+    required this.twitter_account,
+    required this.twitter_url,
+    required this.pawoo_url,
+    required this.is_premium,
+    required this.is_using_custom_profile_image,
   });
 
-  factory Profile.fromJson(jsonRes) =>
-      jsonRes == null
-          ? null
-          : Profile(
+  factory Profile.fromJson(jsonRes) => Profile(
         webpage: jsonRes['webpage'],
         gender: jsonRes['gender'],
         birth: jsonRes['birth'],
@@ -129,8 +120,7 @@ class Profile {
         total_illusts: jsonRes['total_illusts'],
         total_manga: jsonRes['total_manga'],
         total_novels: jsonRes['total_novels'],
-        total_illust_bookmarks_public:
-        jsonRes['total_illust_bookmarks_public'],
+        total_illust_bookmarks_public: jsonRes['total_illust_bookmarks_public'],
         total_illust_series: jsonRes['total_illust_series'],
         total_novel_series: jsonRes['total_novel_series'],
         background_image_url: jsonRes['background_image_url'],
@@ -138,12 +128,10 @@ class Profile {
         twitter_url: jsonRes['twitter_url'],
         pawoo_url: jsonRes['pawoo_url'],
         is_premium: jsonRes['is_premium'],
-        is_using_custom_profile_image:
-        jsonRes['is_using_custom_profile_image'],
+        is_using_custom_profile_image: jsonRes['is_using_custom_profile_image'],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'webpage': webpage,
         'gender': gender,
         'birth': birth,
@@ -185,18 +173,15 @@ class Profile_publicity {
   bool pawoo;
 
   Profile_publicity({
-    this.gender,
-    this.region,
-    this.birth_day,
-    this.birth_year,
-    this.job,
-    this.pawoo,
+    required this.gender,
+    required this.region,
+    required this.birth_day,
+    required this.birth_year,
+    required this.job,
+    required this.pawoo,
   });
 
-  factory Profile_publicity.fromJson(jsonRes) =>
-      jsonRes == null
-          ? null
-          : Profile_publicity(
+  factory Profile_publicity.fromJson(jsonRes) => Profile_publicity(
         gender: jsonRes['gender'],
         region: jsonRes['region'],
         birth_day: jsonRes['birth_day'],
@@ -205,8 +190,7 @@ class Profile_publicity {
         pawoo: jsonRes['pawoo'],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'gender': gender,
         'region': region,
         'birth_day': birth_day,
@@ -237,25 +221,22 @@ class Workspace {
   Object workspace_image_url;
 
   Workspace({
-    this.pc,
-    this.monitor,
-    this.tool,
-    this.scanner,
-    this.tablet,
-    this.mouse,
-    this.printer,
-    this.desktop,
-    this.music,
-    this.desk,
-    this.chair,
-    this.comment,
-    this.workspace_image_url,
+    required this.pc,
+    required this.monitor,
+    required this.tool,
+    required this.scanner,
+    required this.tablet,
+    required this.mouse,
+    required this.printer,
+    required this.desktop,
+    required this.music,
+    required this.desk,
+    required this.chair,
+    required this.comment,
+    required this.workspace_image_url,
   });
 
-  factory Workspace.fromJson(jsonRes) =>
-      jsonRes == null
-          ? null
-          : Workspace(
+  factory Workspace.fromJson(jsonRes) => Workspace(
         pc: jsonRes['pc'],
         monitor: jsonRes['monitor'],
         tool: jsonRes['tool'],
@@ -271,8 +252,7 @@ class Workspace {
         workspace_image_url: jsonRes['workspace_image_url'],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'pc': pc,
         'monitor': monitor,
         'tool': tool,

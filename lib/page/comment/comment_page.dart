@@ -28,18 +28,18 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class CommentPage extends StatefulWidget {
   final int id;
 
-  const CommentPage({Key key, this.id}) : super(key: key);
+  const CommentPage({Key? key, required this.id}) : super(key: key);
 
   @override
   _CommentPageState createState() => _CommentPageState();
 }
 
 class _CommentPageState extends State<CommentPage> {
-  TextEditingController _editController;
-  int parentCommentId;
-  String parentCommentName;
-  RefreshController easyRefreshController;
-  CommentStore _store;
+  late TextEditingController _editController;
+  int? parentCommentId;
+  String? parentCommentName;
+  late RefreshController easyRefreshController;
+  late CommentStore _store;
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class _CommentPageState extends State<CommentPage> {
                     if (_store.errorMessage != null) {
                       return Container(
                         child: Center(
-                          child: Text(_store.errorMessage),
+                          child: Text(_store.errorMessage!),
                         ),
                       );
                     }
@@ -111,9 +111,9 @@ class _CommentPageState extends State<CommentPage> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: PainterAvatar(
-                                        url: _store.comments[index].user
+                                        url: _store.comments[index].user!
                                             .profileImageUrls.medium,
-                                        id: _store.comments[index].user.id,
+                                        id: _store.comments[index].user!.id,
                                       ),
                                     ),
                                     Expanded(
@@ -128,7 +128,7 @@ class _CommentPageState extends State<CommentPage> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                comment.user.name,
+                                                comment.user!.name,
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
@@ -137,10 +137,11 @@ class _CommentPageState extends State<CommentPage> {
                                               ),
                                               FlatButton(
                                                   onPressed: () {
-                                                    parentCommentId = comment.id;
+                                                    parentCommentId =
+                                                        comment.id;
                                                     setState(() {
                                                       parentCommentName =
-                                                          comment.user.name;
+                                                          comment.user!.name;
                                                     });
                                                   },
                                                   child: Text(
@@ -151,17 +152,15 @@ class _CommentPageState extends State<CommentPage> {
                                                   ))
                                             ],
                                           ),
-                                          ...comment.parentComment.user != null
-                                              ? [
-                                                  Text(
-                                                      'To ${comment.parentComment.user.name}')
-                                                ]
-                                              : [],
+                                          if (comment.parentComment?.user !=
+                                              null)
+                                            Text(
+                                                'To ${comment.parentComment!.user!.name}'),
                                           Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 4.0),
+                                            padding: const EdgeInsets.only(
+                                                right: 4.0),
                                             child: SelectableText(
-                                              comment.comment,
+                                              comment.comment??"",
                                             ),
                                           ),
                                           Padding(
@@ -178,7 +177,8 @@ class _CommentPageState extends State<CommentPage> {
                                 ),
                               );
                             },
-                            separatorBuilder: (BuildContext context, int index) {
+                            separatorBuilder:
+                                (BuildContext context, int index) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
@@ -233,7 +233,7 @@ class _CommentPageState extends State<CommentPage> {
                                           await client.postIllustComment(
                                               widget.id, txt,
                                               parent_comment_id:
-                                                  parentCommentId);
+                                                  parentCommentId!);
                                         _editController.clear();
                                         _store.fetch();
                                       } catch (e) {
