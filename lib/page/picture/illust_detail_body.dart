@@ -234,7 +234,7 @@ class IllustDetailBody extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(
             word: f.name,
-            translatedName: f.translatedName,
+            translatedName: f.translatedName ?? "~",
           );
         }));
       },
@@ -285,7 +285,7 @@ class IllustDetailBody extends StatelessWidget {
           muteStore.insertBanTag(BanTagPersist(
             id: 0,
             name: f.name,
-            translateName: f.translatedName,
+            translateName: f.translatedName ?? "",
           ));
         }
         break;

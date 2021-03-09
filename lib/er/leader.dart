@@ -45,7 +45,7 @@ class Leader {
               userImage: user.profileImageUrls.px170x170,
               accessToken: accountResponse.accessToken,
               refreshToken: accountResponse.refreshToken,
-              deviceToken: accountResponse.deviceToken,
+              deviceToken: "",
               passWord: "no more",
               name: user.name,
               account: user.account,

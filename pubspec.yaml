@@ -146,7 +146,3 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   generate: true
-flutter_intl:
-  enabled: true
-  class_name: I18n
-  main_locale: en_US

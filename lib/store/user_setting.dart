@@ -338,7 +338,6 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    final local = I18n.supportedLocales[toRealLanguageNum(languageNum)];
     locale = iSupportedLocales[languageNum];
   }
 

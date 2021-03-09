@@ -23,11 +23,13 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/kver.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
@@ -186,16 +188,13 @@ class _MyAppState extends State<MyApp> {
                 Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
               }
             });
-          return Observer(builder: (context) {
-            return Localizations.override(
-              context: context,
-              locale: userSetting.locale,
-              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  value:
-                      SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-                  child: SplashPage()),
-            );
-          });
+          return Localizations.override(
+            context: context,
+            locale: userSetting.locale,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+                child: SplashPage()),
+          );
         }),
         title: 'PixEz',
         builder: BotToastInit(),

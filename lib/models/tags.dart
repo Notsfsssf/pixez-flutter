@@ -52,11 +52,11 @@ class AutoWords {
 
 class Tags {
   String name;
-  String translated_name;
+  String? translated_name;
 
   Tags({
     required this.name,
-    required this.translated_name,
+    this.translated_name,
   });
 
   factory Tags.fromJson(jsonRes) => Tags(

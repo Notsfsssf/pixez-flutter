@@ -122,12 +122,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                           .push(MaterialPageRoute(builder: (context) {
                         return ResultPage(
                           word: tags[index].name,
-                          translatedName: tags[index].translated_name,
+                          translatedName: tags[index].translated_name ?? "",
                         );
                       }));
                     },
                     title: Text(tags[index].name),
-                    subtitle: Text(tags[index].translated_name),
+                    subtitle: Text(tags[index].translated_name ?? ""),
                   );
                 }, childCount: _suggestionStore.autoWords!.tags.length),
               ),
@@ -219,12 +219,12 @@ class _SuggestionsState extends State<Suggestions> {
                             .push(MaterialPageRoute(builder: (context) {
                           return ResultPage(
                             word: tags[index].name,
-                            translatedName: tags[index].translated_name,
+                            translatedName: tags[index].translated_name ?? "",
                           );
                         }));
                       },
                       title: Text(tags[index].name),
-                      subtitle: Text(tags[index].translated_name),
+                      subtitle: Text(tags[index].translated_name ?? ""),
                     );
                   },
                   itemCount: tags.length,

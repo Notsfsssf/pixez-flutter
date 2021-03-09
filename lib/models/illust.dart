@@ -14,6 +14,7 @@
  *
  */
 import 'package:json_annotation/json_annotation.dart';
+
 part 'illust.g.dart';
 
 @JsonSerializable()
@@ -38,7 +39,10 @@ class MetaPagesImageUrls {
   String original;
 
   MetaPagesImageUrls(
-      {required this.squareMedium, required this.medium, required this.large, required this.original});
+      {required this.squareMedium,
+      required this.medium,
+      required this.large,
+      required this.original});
 
   factory MetaPagesImageUrls.fromJson(Map<String, dynamic> json) =>
       _$MetaPagesImageUrlsFromJson(json);
@@ -83,29 +87,30 @@ class Illusts {
   @JsonKey(name: 'is_muted')
   bool isMuted;
 
-  Illusts({required this.id,
-    required this.title,
-    required this.type,
-    required this.imageUrls,
-    required this.caption,
-    required this.restrict,
-    required this.user,
-    required this.tags,
-    required this.tools,
-    required this.createDate,
-    required this.pageCount,
-    required this.width,
-    required this.height,
-    required this.sanityLevel,
-    required this.xRestrict,
-    required this.series,
-    required this.metaSinglePage,
-    required this.metaPages,
-    required this.totalView,
-    required this.totalBookmarks,
-    required this.isBookmarked,
-    required this.visible,
-    required this.isMuted});
+  Illusts(
+      {required this.id,
+      required this.title,
+      required this.type,
+      required this.imageUrls,
+      required this.caption,
+      required this.restrict,
+      required this.user,
+      required this.tags,
+      required this.tools,
+      required this.createDate,
+      required this.pageCount,
+      required this.width,
+      required this.height,
+      required this.sanityLevel,
+      required this.xRestrict,
+      required this.series,
+      required this.metaSinglePage,
+      required this.metaPages,
+      required this.totalView,
+      required this.totalBookmarks,
+      required this.isBookmarked,
+      required this.visible,
+      required this.isMuted});
 
   factory Illusts.fromJson(Map<String, dynamic> json) =>
       _$IllustsFromJson(json);
@@ -140,15 +145,15 @@ class User {
   @JsonKey(name: 'is_followed')
   bool isFollowed;
 
-  User({required this.id,
-    required this.name,
-    required this.account,
-    required this.profileImageUrls,
-    required this.comment,
-    required this.isFollowed});
+  User(
+      {required this.id,
+      required this.name,
+      required this.account,
+      required this.profileImageUrls,
+      required this.comment,
+      required this.isFollowed});
 
-  factory User.fromJson(Map<String, dynamic> json) =>
-      _$UserFromJson(json);
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
@@ -169,12 +174,11 @@ class ProfileImageUrls {
 class Tags {
   String name;
   @JsonKey(name: 'translated_name')
-  String translatedName;
+  String? translatedName;
 
-  Tags({required this.name, required this.translatedName});
+  Tags({required this.name, this.translatedName});
 
-  factory Tags.fromJson(Map<String, dynamic> json) =>
-      _$TagsFromJson(json);
+  factory Tags.fromJson(Map<String, dynamic> json) => _$TagsFromJson(json);
 
   Map<String, dynamic> toJson() => _$TagsToJson(this);
 }

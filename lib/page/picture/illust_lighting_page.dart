@@ -566,7 +566,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
       case 0:
         {
           muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName, id: 0));
+              name: f.name, translateName: f.translatedName ?? "", id: 0));
         }
         break;
       case 1:
@@ -586,7 +586,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(
             word: f.name,
-            translatedName: f.translatedName,
+            translatedName: f.translatedName ?? "",
           );
         }));
       },
