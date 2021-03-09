@@ -44,8 +44,9 @@ import 'package:pixez/component/pixiv_image.dart';
 class UsersPage extends StatefulWidget {
   final int id;
   final UserStore? userStore;
+  final String? heroTag;
 
-  const UsersPage({Key? key, required this.id, this.userStore})
+  const UsersPage({Key? key, required this.id, this.userStore, this.heroTag})
       : super(key: key);
 
   @override
@@ -354,7 +355,7 @@ class _UsersPageState extends State<UsersPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               NullHero(
-                tag: userStore.user?.name,
+                tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
                 child: SelectableText(
                   userStore.user?.name ?? "",
                   style: Theme.of(context).textTheme.headline6,
@@ -415,8 +416,9 @@ class _UsersPageState extends State<UsersPage>
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-              child: Hero(
-                tag: userStore.user!.profileImageUrls.medium,
+              child: NullHero(
+                tag: userStore.user!.profileImageUrls.medium +
+                    widget.heroTag.toString(),
                 child: PainterAvatar(
                   url: userStore.user!.profileImageUrls.medium,
                   size: Size(80, 80),

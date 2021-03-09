@@ -396,8 +396,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               child: Text(
                 I18n.of(context).view_comment,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.bodyText1!.fontSize),
+                style: Theme.of(context).textTheme.bodyText1!,
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -600,7 +599,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                   style: Theme.of(context).textTheme.caption,
                 ),
                 TextSpan(
-                    text: "${f.translatedName}",
+                    text: "${f.translatedName ?? "~"}",
                     style: Theme.of(context).textTheme.caption)
               ],
               style: Theme.of(context)
@@ -649,7 +648,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       ),
                       Center(
                         child: Hero(
-                          tag: illust.user.profileImageUrls.medium,
+                          tag: illust.user.profileImageUrls.medium +
+                              this.hashCode.toString(),
                           child: PainterAvatar(
                             url: illust.user.profileImageUrls.medium,
                             id: illust.user.id,
@@ -659,6 +659,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                                   UsersPage(
                                     id: illust.user.id,
                                     userStore: userStore,
+                                    heroTag: this.hashCode.toString(),
                                   ));
                               _illustStore.illusts!.user.isFollowed =
                                   userStore!.isFollow;
@@ -686,7 +687,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     height: 4.0,
                   ),
                   Hero(
-                    tag: illust.user.name,
+                    tag: illust.user.name + this.hashCode.toString(),
                     child: SelectableText(
                       illust.user.name,
                       style: Theme.of(context).textTheme.bodyText2,
