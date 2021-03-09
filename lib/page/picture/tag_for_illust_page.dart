@@ -25,7 +25,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
 
   @override
   void dispose() {
-    textEditingController?.dispose();
+    textEditingController.dispose();
     super.dispose();
   }
 

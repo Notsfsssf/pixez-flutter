@@ -18,7 +18,7 @@ class _TokenPageState extends State<TokenPage> {
 
   @override
   void dispose() {
-    userNameController?.dispose();
+    userNameController.dispose();
     super.dispose();
   }
 
@@ -40,7 +40,7 @@ class _TokenPageState extends State<TokenPage> {
               controller: userNameController,
               autofillHints: [AutofillHints.username],
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () async {
                 if (userNameController.text.isEmpty) return;
                 try {
@@ -55,9 +55,9 @@ class _TokenPageState extends State<TokenPage> {
                   var accountPersist = AccountPersist(
                       userId: user.id,
                       userImage: user.profileImageUrls.px170x170,
-                      accessToken: accountResponse.accessToken ?? "",
-                      refreshToken: accountResponse.refreshToken ?? "",
-                      deviceToken: accountResponse.deviceToken ?? "",
+                      accessToken: accountResponse.accessToken,
+                      refreshToken: accountResponse.refreshToken,
+                      deviceToken: accountResponse.deviceToken,
                       passWord: "no more",
                       name: user.name,
                       account: user.account,
@@ -93,7 +93,7 @@ class _TokenPageState extends State<TokenPage> {
                   ),
                   padding: EdgeInsets.all(4.0),
                   child: Text(
-                    errorMessage ?? "",
+                    errorMessage,
                     textAlign: TextAlign.start,
                     style: TextStyle(color: Colors.white),
                   ),

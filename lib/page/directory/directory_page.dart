@@ -159,9 +159,8 @@ class _DirectoryPageState extends State<DirectoryPage> {
                           return Visibility(
                             visible: !(fileSystemEntity.path
                                     .split("/")
-                                    ?.last
-                                    ?.startsWith(".") ??
-                                false),
+                                    .last
+                                    .startsWith(".")),
                             child: ListTile(
                               leading: fileSystemEntity is Directory
                                   ? Icon(Icons.folder)

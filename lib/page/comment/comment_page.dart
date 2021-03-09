@@ -51,8 +51,8 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   void dispose() {
-    _editController?.dispose();
-    easyRefreshController?.dispose();
+    _editController.dispose();
+    easyRefreshController.dispose();
     super.dispose();
   }
 

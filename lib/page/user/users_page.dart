@@ -70,8 +70,8 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   void dispose() {
-    _scrollController?.dispose();
-    _tabController?.dispose();
+    _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -96,7 +96,7 @@ class _UsersPageState extends State<UsersPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('X_X'),
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text(I18n.of(context).shielding_settings),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -134,7 +134,7 @@ class _UsersPageState extends State<UsersPage>
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
+                  child: MaterialButton(
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       userStore.errorMessage = null;
@@ -236,7 +236,7 @@ class _UsersPageState extends State<UsersPage>
                           {
                             Clipboard.setData(ClipboardData(
                                 text:
-                                    'painter:${userStore.userDetail?.user?.name ?? ''}\npid:${widget.id}'));
+                                    'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
                             BotToast.showText(
                                 text: I18n.of(context).copied_to_clipboard);
                             break;

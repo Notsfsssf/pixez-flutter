@@ -62,14 +62,14 @@ class _PainterListState extends State<PainterList> {
       _painterListStore.source = widget.futureGet;
       _easyRefreshController.footerMode?.value = LoadStatus.idle;
       _painterListStore.fetch();
-      if (_painterListStore.users.isNotEmpty) _scrollController?.jumpTo(0.0);
+      if (_painterListStore.users.isNotEmpty) _scrollController.jumpTo(0.0);
     }
   }
 
   @override
   void dispose() {
-    _scrollController?.dispose();
-    _easyRefreshController?.dispose();
+    _scrollController.dispose();
+    _easyRefreshController.dispose();
     super.dispose();
   }
 

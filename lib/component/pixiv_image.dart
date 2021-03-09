@@ -63,7 +63,7 @@ class PixivImage extends HookWidget {
       enableMemoryCache: enableMemoryCache ?? true,
       loadStateChanged: (ExtendedImageState state) {
         if (state.extendedImageLoadState == LoadState.loading) {
-          if (!_controller.isCompleted) _controller?.reset();
+          if (!_controller.isCompleted) _controller.reset();
           return placeWidget;
         }
         if (state.extendedImageLoadState == LoadState.completed) {
@@ -71,7 +71,7 @@ class PixivImage extends HookWidget {
             return null;
           }
           already = true;
-          if (!_controller.isCompleted) _controller?.forward();
+          if (!_controller.isCompleted) _controller.forward();
           if (!fade)
             return ExtendedRawImage(
               fit: fit ?? BoxFit.fitWidth,
@@ -86,7 +86,7 @@ class PixivImage extends HookWidget {
           );
         }
         if (state.extendedImageLoadState == LoadState.failed) {
-          if (!_controller.isCompleted) _controller?.reset();
+          if (!_controller.isCompleted) _controller.reset();
           splashStore.maybeFetch();
           return Container(
             height: 150,

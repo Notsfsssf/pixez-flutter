@@ -57,15 +57,15 @@ class _BookmarkPageState extends State<BookmarkPage> {
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "302") {
-        _refreshController?.position?.jumpTo(0);
+        _refreshController.position?.jumpTo(0);
       }
     });
   }
 
   @override
   void dispose() {
-    subscription?.cancel();
-    _refreshController?.dispose();
+    subscription.cancel();
+    _refreshController.dispose();
     super.dispose();
   }
 

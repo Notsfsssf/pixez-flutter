@@ -26,7 +26,7 @@ abstract class _TopStoreBase with Store {
   }
 
   dispose() {
-    _streamController?.close();
+    _streamController.close();
   }
 
   setTop(String name) {

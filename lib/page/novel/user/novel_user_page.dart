@@ -89,7 +89,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
+                  child: MaterialButton(
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       userStore.errorMessage = null;
@@ -164,7 +164,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                               {
                                 Clipboard.setData(ClipboardData(
                                     text:
-                                        'painter:${userStore.userDetail?.user?.name ?? ''}\npid:${widget.id}'));
+                                        'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
                                 BotToast.showText(
                                     text: I18n.of(context).copied_to_clipboard);
                                 break;

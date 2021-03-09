@@ -49,8 +49,8 @@ class _RecomUserPageState extends State<RecomUserPage> {
 
   @override
   void dispose() {
-    _recomUserStore?.controller = null;
-    _refreshController?.dispose();
+    _recomUserStore.controller = null;
+    _refreshController.dispose();
     super.dispose();
   }
 

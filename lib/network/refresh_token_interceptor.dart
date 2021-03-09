@@ -85,9 +85,9 @@ class RefreshTokenInterceptor extends Interceptor {
             accountStore.updateSingle(AccountPersist(
                 userId: user.id,
                 userImage: user.profileImageUrls.px170x170,
-                accessToken: accountResponse.accessToken ?? "",
-                refreshToken: accountResponse.refreshToken ?? "",
-                deviceToken: accountResponse.deviceToken ?? "",
+                accessToken: accountResponse.accessToken,
+                refreshToken: accountResponse.refreshToken,
+                deviceToken: accountResponse.deviceToken,
                 passWord: "no more",
                 name: user.name,
                 account: user.account,

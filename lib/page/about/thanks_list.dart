@@ -392,7 +392,7 @@ class ThanksList extends StatelessWidget {
         ),
         Divider(),
         ...peoples.map((e) => ListTile(
-              title: Text(e ?? ''),
+              title: Text(e),
             )),
       ],
     );

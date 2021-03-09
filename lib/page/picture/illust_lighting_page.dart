@@ -94,8 +94,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
 
   @override
   void dispose() {
-    _illustStore?.dispose();
-    _scrollController?.dispose();
+    _illustStore.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -223,7 +223,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               child: Text(':(', style: Theme.of(context).textTheme.headline4),
             ),
             Text('${_illustStore.errorMessage}'),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 _illustStore.fetch();
               },
@@ -428,7 +428,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     child: Text(':(',
                         style: Theme.of(context).textTheme.headline4),
                   ),
-                  RaisedButton(
+                  ElevatedButton(
                     onPressed: () {
                       _aboutStore.fetch();
                     },
@@ -566,7 +566,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
       case 0:
         {
           muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName ?? '_', id: 0));
+              name: f.name, translateName: f.translatedName, id: 0));
         }
         break;
       case 1:
@@ -586,7 +586,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(
             word: f.name,
-            translatedName: f.translatedName ?? '',
+            translatedName: f.translatedName,
           );
         }));
       },
@@ -600,7 +600,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                   style: Theme.of(context).textTheme.caption,
                 ),
                 TextSpan(
-                    text: "${f.translatedName ?? "~"}",
+                    text: "${f.translatedName}",
                     style: Theme.of(context).textTheme.caption)
               ],
               style: Theme.of(context)

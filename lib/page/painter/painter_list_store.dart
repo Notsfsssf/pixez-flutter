@@ -20,8 +20,8 @@ abstract class _PainterListStoreBase with Store {
   @action
   fetch() async {
     nextUrl = null;
-    _controller?.headerMode?.value = RefreshStatus.refreshing;
-    _controller?.footerMode?.value = LoadStatus.idle;
+    _controller.headerMode?.value = RefreshStatus.refreshing;
+    _controller.footerMode?.value = LoadStatus.idle;
     try {
       Response response = await source();
       UserPreviewsResponse userPreviewsResponse =

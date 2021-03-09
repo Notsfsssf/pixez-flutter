@@ -34,7 +34,7 @@ class _JobPageState extends State<JobPage> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 

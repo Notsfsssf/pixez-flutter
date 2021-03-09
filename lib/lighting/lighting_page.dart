@@ -58,8 +58,8 @@ class _LightingListState extends State<LightingList> {
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
       _store.fetch();
-      if (!_isNested && _store?.errorMessage == null)
-        _refreshController?.position?.jumpTo(0.0);
+      if (!_isNested && _store.errorMessage == null)
+        _refreshController.position?.jumpTo(0.0);
     }
   }
 
@@ -79,7 +79,7 @@ class _LightingListState extends State<LightingList> {
 
   @override
   void dispose() {
-    _store?.dispose();
+    _store.dispose();
     super.dispose();
   }
 

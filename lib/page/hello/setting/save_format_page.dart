@@ -51,7 +51,7 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
 
   @override
   void dispose() {
-    _textEditingController?.dispose();
+    _textEditingController.dispose();
     super.dispose();
   }
 

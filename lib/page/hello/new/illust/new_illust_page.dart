@@ -47,15 +47,15 @@ class _NewIllustPageState extends State<NewIllustPage> {
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "301") {
-        _refreshController?.position?.jumpTo(0);
+        _refreshController.position?.jumpTo(0);
       }
     });
   }
 
   @override
   void dispose() {
-    subscription?.cancel();
-    _refreshController?.dispose();
+    subscription.cancel();
+    _refreshController.dispose();
     super.dispose();
   }
 

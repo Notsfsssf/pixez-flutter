@@ -47,7 +47,7 @@ abstract class SauceStoreBase with Store {
   }
 
   void dispose() async {
-    await _streamController?.close();
+    await _streamController.close();
   }
 
   Future findImage({String? path, bool retry = false}) async {
@@ -57,12 +57,11 @@ abstract class SauceStoreBase with Store {
     final picker = ImagePicker();
     if (path == null) {
       final pickedFile = await picker.getImage(source: ImageSource.gallery);
-      Uint8List uint8list = await pickedFile!.readAsBytes();
-      if (uint8list != null) {
-        path =
-            "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
-        File(path).writeAsBytesSync(uint8list);
-      }
+      if (pickedFile == null) return;
+      Uint8List uint8list = await pickedFile.readAsBytes();
+      path =
+          "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
+      File(path).writeAsBytesSync(uint8list);
     }
     if (path == null) return;
     var formData = FormData();

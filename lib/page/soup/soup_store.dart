@@ -85,10 +85,10 @@ abstract class _SoupStoreBase with Store {
         for (var aa in value.getElementsByTagName('a')) {
           var a = aa.attributes['href'];
           var segments = Uri.parse(a!).pathSegments;
-          if (a!.startsWith('https') &&
+          if (a.startsWith('https') &&
               segments.length > 2 &&
               segments[segments.length - 2] == 'artworks') {
-            amWork.arworkLink = a!;
+            amWork.arworkLink = a;
             amWork.showImage =
                 value.getElementsByTagName('img')[1].attributes['src']!;
             amWork.title = value.getElementsByTagName('h3').first.text;

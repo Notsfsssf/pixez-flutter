@@ -35,8 +35,6 @@ import 'package:pixez/page/task/job_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 
-import 'package:pixez/i18n.dart';
-
 part 'save_store.g.dart';
 
 enum SaveState { JOIN, SUCCESS, ALREADY, INQUEUE }
@@ -73,7 +71,7 @@ abstract class _SaveStoreBase with Store {
   }
 
   void dispose() async {
-    await streamController?.close();
+    await streamController.close();
   }
 
   void listenBehavior(SaveStream stream) {

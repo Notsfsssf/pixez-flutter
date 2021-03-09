@@ -37,7 +37,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
   @override
   void dispose() {
     super.dispose();
-    _userNameController?.dispose();
+    _userNameController.dispose();
   }
 
   @override
@@ -63,7 +63,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   ),
                   controller: _userNameController,
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     try {
                       final name = _userNameController.text.trim();

@@ -108,7 +108,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
                 _imgCheck();
               },
               child: Text("apply")),
-          Text(message ?? ""),
+          Text(message),
         ],
       ),
     );

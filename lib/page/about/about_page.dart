@@ -110,7 +110,7 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   void dispose() {
-    iapStore?.dispose();
+    iapStore.dispose();
     super.dispose();
   }
 

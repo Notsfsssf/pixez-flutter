@@ -46,8 +46,8 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   void dispose() {
-    _sub?.cancel();
-    _pageController?.dispose();
+    _sub.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 

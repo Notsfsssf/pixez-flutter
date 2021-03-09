@@ -54,7 +54,7 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 

@@ -23,14 +23,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
-import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/guide_page.dart';
-import 'package:pixez/page/Init/init_page.dart';
-import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
@@ -199,9 +196,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   void dispose() {
-    _intentDataStreamSubscription?.cancel();
-    _pageController?.dispose();
-    _sub?.cancel();
+    _intentDataStreamSubscription.cancel();
+    _pageController.dispose();
+    _sub.cancel();
     super.dispose();
   }
 

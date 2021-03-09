@@ -45,7 +45,7 @@ class _PictureListPageState extends State<PictureListPage> {
 
   @override
   void dispose() {
-    _pageController?.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 

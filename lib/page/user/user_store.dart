@@ -47,7 +47,7 @@ abstract class _UserStoreBase with Store {
     if (user!.isFollowed) {
       try {
         await client.postUnFollowUser(id);
-        userDetail?.user?.isFollowed = false;
+        userDetail?.user.isFollowed = false;
         isFollow = false;
       } on DioError catch (e) {
         if (e.response != null &&
@@ -58,7 +58,7 @@ abstract class _UserStoreBase with Store {
     if (needPrivate) {
       try {
         await client.postFollowUser(id, 'private');
-        userDetail?.user?.isFollowed = true;
+        userDetail?.user.isFollowed = true;
         isFollow = true;
       } on DioError catch (e) {
         if (e.response != null &&
@@ -67,7 +67,7 @@ abstract class _UserStoreBase with Store {
     } else {
       try {
         await client.postFollowUser(id, 'public');
-        userDetail?.user?.isFollowed = true;
+        userDetail?.user.isFollowed = true;
         isFollow = true;
       } on DioError catch (e) {
         if (e.response != null &&

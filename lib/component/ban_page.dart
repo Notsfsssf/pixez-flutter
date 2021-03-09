@@ -50,7 +50,7 @@ class _BanPageState extends State<BanPage> {
             Text(I18n.of(context).shield_message(widget.name)),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: RaisedButton(
+              child: MaterialButton(
                 color: Theme.of(context).accentColor,
                 textColor: Colors.white,
                 child: Text(I18n.of(context).shielding_settings),

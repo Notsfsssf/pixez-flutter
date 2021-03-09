@@ -66,8 +66,7 @@ class _PlatformPageState extends State<PlatformPage> {
       /// noAPI - No API support. Only Marshmallow and above.
       /// noActivity - Activity is not available. Probably app is in background
     }
-    selected =
-        modes.firstWhere((DisplayMode m) => m.selected);
+    selected = modes.firstWhere((DisplayMode m) => m.selected);
     // if (mounted) {
     //   setState(() {});
     // }
@@ -110,7 +109,7 @@ class _PlatformPageState extends State<PlatformPage> {
                 leading: Icon(Icons.folder),
                 title: Text(
                     '${I18n.of(context).save_path}(${userSetting.isHelplessWay ? I18n.of(context).old_way : 'SAF'})'),
-                subtitle: Text(path ?? ""),
+                subtitle: Text(path),
                 onTap: () async {
                   await showPathDialog(context);
                   final path = await DocumentPlugin.getPath();
@@ -143,7 +142,7 @@ class _PlatformPageState extends State<PlatformPage> {
                     secondary: Icon(Icons.folder_shared),
                     onChanged: (bool value) async {
                       if (value) {
-                        Scaffold.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("可能会造成保存等待时间过长")));
                       }
                       await userSetting.setSingleFolder(value);

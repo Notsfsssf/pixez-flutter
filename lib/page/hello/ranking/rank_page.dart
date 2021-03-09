@@ -55,7 +55,7 @@ class _RankPageState extends State<RankPage>
 
   @override
   void dispose() {
-    subscription?.cancel();
+    subscription.cancel();
     super.dispose();
   }
 

@@ -39,7 +39,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
 
   @override
   void dispose() {
-    _tabController?.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 

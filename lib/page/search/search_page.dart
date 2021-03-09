@@ -63,8 +63,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _animationController?.dispose();
-    _tabController?.dispose();
+    _animationController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -374,7 +374,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (context) => ResultPage(
                   word: f.name,
-                  translatedName: f.translatedName ?? '',
+                  translatedName: f.translatedName,
                 )));
       },
       child: Chip(

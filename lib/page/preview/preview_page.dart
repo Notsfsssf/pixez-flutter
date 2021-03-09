@@ -95,7 +95,7 @@ class LoginInFirst extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(I18n.of(context).login_message),
           )),
-          RaisedButton(
+          ElevatedButton(
             child: Text(I18n.of(context).go_to_login),
             onPressed: () {
               Navigator.push(context,
@@ -129,7 +129,7 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   void dispose() {
-    _easyRefreshController?.dispose();
+    _easyRefreshController.dispose();
     super.dispose();
   }
 

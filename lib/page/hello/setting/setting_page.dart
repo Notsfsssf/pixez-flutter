@@ -295,7 +295,7 @@ class _SettingPageState extends State<SettingPage> {
           return AlertDialog(
             title: Text("Log"),
             content: Container(
-              child: Text(content ?? ""),
+              child: Text(content),
               height: 400,
             ),
             actions: <Widget>[

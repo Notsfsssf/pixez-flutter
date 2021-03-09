@@ -19,8 +19,6 @@
 //     final spotlightResponse = spotlightResponseFromJson(jsonString);
 import 'dart:convert';
 
-import 'package:json_annotation/json_annotation.dart';
-
 SpotlightResponse spotlightResponseFromJson(String str) =>
     SpotlightResponse.fromJson(json.decode(str));
 
@@ -92,12 +90,12 @@ class SpotlightArticle {
     SubcategoryLabel? subcategoryLabel,
   }) =>
       SpotlightArticle(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        pureTitle: pureTitle ?? this.pureTitle,
-        thumbnail: thumbnail ?? this.thumbnail,
-        articleUrl: articleUrl ?? this.articleUrl,
-        publishDate: publishDate ?? this.publishDate,
+        id: id,
+        title: title,
+        pureTitle: pureTitle,
+        thumbnail: thumbnail,
+        articleUrl: articleUrl,
+        publishDate: publishDate,
         category: category ?? this.category,
         subcategoryLabel: subcategoryLabel ?? this.subcategoryLabel,
       );

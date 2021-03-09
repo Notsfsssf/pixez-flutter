@@ -62,8 +62,8 @@ class _NewPageState extends State<NewPage>
 
   @override
   void dispose() {
-    subscription?.cancel();
-    _tabController?.dispose();
+    subscription.cancel();
+    _tabController.dispose();
     super.dispose();
   }
 

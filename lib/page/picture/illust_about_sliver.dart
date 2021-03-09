@@ -53,7 +53,7 @@ class _IllustAboutSliverState extends State<IllustAboutSliver> {
                   child:
                       Text(':(', style: Theme.of(context).textTheme.headline4),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     _aboutStore.fetch();
                   },

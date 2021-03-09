@@ -46,8 +46,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    userNameController?.dispose();
-    passWordController?.dispose();
+    userNameController.dispose();
+    passWordController.dispose();
     super.dispose();
   }
 
@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: EdgeInsets.all(10),
                           ),
-                          RaisedButton(
+                          MaterialButton(
                               color: Theme.of(context).primaryColor,
                               child: Text(
                                 I18n.of(context).login,
@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                                   _launch(url);
                                 } catch (e) {}
                               }),
-                          RaisedButton(
+                          ElevatedButton(
                             onPressed: () async {
                               try {
                                 String url =

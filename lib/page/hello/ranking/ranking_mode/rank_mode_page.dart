@@ -40,8 +40,8 @@ class _RankModePageState extends State<RankModePage> {
 
   @override
   void dispose() {
-    _refreshController?.dispose();
-    subscription?.cancel();
+    _refreshController.dispose();
+    subscription.cancel();
     super.dispose();
   }
 
@@ -51,7 +51,7 @@ class _RankModePageState extends State<RankModePage> {
     _refreshController = RefreshController();
     subscription = topStore.topStream.listen((event) {
       if (event == (201 + widget.index!).toString()) {
-        _refreshController?.position?.jumpTo(0);
+        _refreshController.position?.jumpTo(0);
       }
     });
   }

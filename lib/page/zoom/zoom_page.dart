@@ -105,7 +105,7 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
         onScaleUpdate: _handleScaleUpdate,
         onScaleEnd: _handleScaleEnd,
         child: Stack(
-          overflow: Overflow.clip,
+          clipBehavior: Clip.hardEdge,
           children: <Widget>[
             Opacity(
               opacity: zooming ? 0.0 : 1.0,
@@ -158,17 +158,17 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
 
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     if (reversing || numPointers < 2) return;
-    overlayKey?.currentState
+    overlayKey.currentState
         ?.updatePosition(origin! - (scaleStartPosition! - details.focalPoint));
     if (details.scale >= 1.0)
-      overlayKey?.currentState?.updateScale(details.scale);
+      overlayKey.currentState?.updateScale(details.scale);
   }
 
   void _handleScaleEnd(ScaleEndDetails details) async {
     if (reversing || !zooming) return;
     reversing = true;
     if (widget.onZoomEnd != null) widget.onZoomEnd!();
-    await overlayKey?.currentState?.reverse();
+    await overlayKey.currentState?.reverse();
     overlayEntry?.remove();
     overlayEntry = null;
     origin = null;
@@ -272,7 +272,7 @@ class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
           );
 
           scale = lerpDouble(
-            reverseStartScale!,
+            reverseStartScale,
             1.0,
             Curves.easeInOut.transform(reverseAnimationController!.value),
           )!;

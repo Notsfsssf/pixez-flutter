@@ -46,7 +46,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
 
   @override
   void dispose() {
-    _easyRefreshController?.dispose();
+    _easyRefreshController.dispose();
     super.dispose();
   }
 

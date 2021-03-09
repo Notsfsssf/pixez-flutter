@@ -21,7 +21,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -54,7 +53,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void dispose() {
-    subscription?.cancel();
+    subscription.cancel();
     super.dispose();
   }
 

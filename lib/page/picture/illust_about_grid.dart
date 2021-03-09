@@ -56,7 +56,7 @@ class _IllustAboutGridState extends State<IllustAboutGrid> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(':(', style: Theme.of(context).textTheme.headline4),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   _store.fetch();
                 },

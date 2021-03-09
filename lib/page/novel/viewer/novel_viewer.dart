@@ -55,7 +55,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -181,7 +181,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               children: <Widget>[
                 ListTile(
                   subtitle: Text(_novelStore.novel!.user.name),
-                  title: Text(_novelStore.novel!.title ?? ""),
+                  title: Text(_novelStore.novel!.title),
                   leading: PainterAvatar(
                     url: _novelStore.novel!.user.profileImageUrls.medium,
                     id: _novelStore.novel!.user.id,
@@ -218,7 +218,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         title: Text("no more"),
       );
     return ListTile(
-      title: Text(series.title ?? ""),
+      title: Text(series.title),
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(

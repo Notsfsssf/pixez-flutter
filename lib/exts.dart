@@ -23,7 +23,7 @@ extension TimeExts on String {
       var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
       return formatter.format(DateTime.parse(this));
     } catch (e) {
-      return this ?? '';
+      return this;
     }
   }
 

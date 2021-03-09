@@ -81,7 +81,7 @@ class _UpdatePageState extends State<UpdatePage> {
                 ListTile(
                   title: Text(I18n.of(context).download_address),
                   subtitle: SelectableText(
-                      lastRelease!.assets.first.browserDownloadUrl ?? ''),
+                      lastRelease!.assets.first.browserDownloadUrl),
                   onTap: () {
                     try {
                       launch(lastRelease!.assets.first.browserDownloadUrl);
@@ -90,7 +90,7 @@ class _UpdatePageState extends State<UpdatePage> {
                 ),
                 ListTile(
                   title: Text(I18n.of(context).new_version_update_information),
-                  subtitle: Text(lastRelease!.body ?? ''),
+                  subtitle: Text(lastRelease!.body),
                 )
               ],
             ),

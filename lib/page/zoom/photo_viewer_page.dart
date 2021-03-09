@@ -232,7 +232,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               height: 10.0,
             ),
             Text(
-              '${((progress ?? 0.0) * 100).toInt()}%',
+              '${((progress) * 100).toInt()}%',
               style: TextStyle(color: Colors.white),
             ),
           ],

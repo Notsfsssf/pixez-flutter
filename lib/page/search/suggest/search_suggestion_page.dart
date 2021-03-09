@@ -61,8 +61,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
 
   @override
   void dispose() {
-    _filter?.dispose();
-    _sauceStore?.dispose();
+    _filter.dispose();
+    _sauceStore.dispose();
     super.dispose();
   }
 
@@ -87,7 +87,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                 delegate: SliverChildBuilderDelegate((context, index) {
                   if (index == 0)
                     return ListTile(
-                      title: Text(_filter.text ?? ''),
+                      title: Text(_filter.text),
                       subtitle: Text(I18n.of(context).illust_id),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -97,7 +97,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                       },
                     );
                   return ListTile(
-                    title: Text(_filter.text ?? ''),
+                    title: Text(_filter.text),
                     subtitle: Text(I18n.of(context).painter_id),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -122,12 +122,12 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                           .push(MaterialPageRoute(builder: (context) {
                         return ResultPage(
                           word: tags[index].name,
-                          translatedName: tags[index].translated_name ?? '',
+                          translatedName: tags[index].translated_name,
                         );
                       }));
                     },
                     title: Text(tags[index].name),
-                    subtitle: Text(tags[index].translated_name ?? ""),
+                    subtitle: Text(tags[index].translated_name),
                   );
                 }, childCount: _suggestionStore.autoWords!.tags.length),
               ),
@@ -219,12 +219,12 @@ class _SuggestionsState extends State<Suggestions> {
                             .push(MaterialPageRoute(builder: (context) {
                           return ResultPage(
                             word: tags[index].name,
-                            translatedName: tags[index].translated_name ?? '',
+                            translatedName: tags[index].translated_name,
                           );
                         }));
                       },
                       title: Text(tags[index].name),
-                      subtitle: Text(tags[index].translated_name ?? ""),
+                      subtitle: Text(tags[index].translated_name),
                     );
                   },
                   itemCount: tags.length,

@@ -52,7 +52,7 @@ class _NovelRailState extends State<NovelRail> {
 
   @override
   void dispose() {
-    _pageController?.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 

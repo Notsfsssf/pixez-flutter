@@ -61,14 +61,14 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                 children: [
                   (Platform.isAndroid)
                       ? ExtendedText(
-                          (widget.data ?? "~").toTranslateText(),
+                          (widget.data).toTranslateText(),
                           style: Theme.of(context).textTheme.bodyText1,
                           selectionEnabled: true,
                           textSelectionControls:
                               TranslateTextSelectionControls(),
                         )
                       : ExtendedText(
-                          (widget.data ?? "~").toTranslateText(),
+                          (widget.data).toTranslateText(),
                           style: Theme.of(context).textTheme.bodyText1,
                           selectionEnabled: true,
                         ),
@@ -85,7 +85,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                           ),
                           onTap: () {
                             SupportorPlugin.start(
-                                (widget.data ?? "~").toTranslateText());
+                                (widget.data).toTranslateText());
                           },
                         ),
                       InkWell(
@@ -101,7 +101,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
               ),
             )
           : HtmlWidget(
-              widget.data ?? '~',
+              widget.data,
               customStylesBuilder: (e) {
                 if (e.attributes.containsKey('href')) {
                   final color = userSetting.themeData.accentColor;

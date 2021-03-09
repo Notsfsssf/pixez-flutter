@@ -34,7 +34,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
 
   @override
   void dispose() {
-    _textEditingController?.dispose();
+    _textEditingController.dispose();
     super.dispose();
   }
 

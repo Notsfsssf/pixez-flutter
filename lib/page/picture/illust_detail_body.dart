@@ -234,7 +234,7 @@ class IllustDetailBody extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(
             word: f.name,
-            translatedName: f.translatedName ?? '',
+            translatedName: f.translatedName,
           );
         }));
       },
@@ -248,7 +248,7 @@ class IllustDetailBody extends StatelessWidget {
                   style: Theme.of(context).textTheme.caption,
                 ),
                 TextSpan(
-                    text: "${f.translatedName ?? "~"}",
+                    text: "${f.translatedName}",
                     style: Theme.of(context).textTheme.caption)
               ],
               style: Theme.of(context)
@@ -285,7 +285,7 @@ class IllustDetailBody extends StatelessWidget {
           muteStore.insertBanTag(BanTagPersist(
             id: 0,
             name: f.name,
-            translateName: f.translatedName ?? '_',
+            translateName: f.translatedName,
           ));
         }
         break;

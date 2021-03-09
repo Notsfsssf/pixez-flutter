@@ -51,14 +51,14 @@ class _ResultIllustListState extends State<ResultIllustList> {
     super.initState();
     listen = topStore.topStream.listen((event) {
       if (event == "401") {
-        _refreshController?.position?.jumpTo(0);
+        _refreshController.position?.jumpTo(0);
       }
     });
   }
 
   @override
   void dispose() {
-    listen?.cancel();
+    listen.cancel();
     super.dispose();
   }
 

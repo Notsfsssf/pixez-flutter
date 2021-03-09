@@ -186,13 +186,16 @@ class _MyAppState extends State<MyApp> {
                 Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
               }
             });
-          return Localizations.override(
-            context: context,
-            locale: userSetting.locale,
-            child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-                child: SplashPage()),
-          );
+          return Observer(builder: (context) {
+            return Localizations.override(
+              context: context,
+              locale: userSetting.locale,
+              child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value:
+                      SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+                  child: SplashPage()),
+            );
+          });
         }),
         title: 'PixEz',
         builder: BotToastInit(),
@@ -203,7 +206,6 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
             indicatorColor: userSetting.themeData.accentColor),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
-        // Add this line
         supportedLocales: AppLocalizations.supportedLocales, // Add this line
       );
     });

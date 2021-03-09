@@ -50,7 +50,7 @@ abstract class _IllustStoreBase with Store {
               userSetting.pictureQuality == 0
                   ? i.imageUrls.medium
                   : i.imageUrls.large);
-          provider?.evict();
+          provider.evict();
         }
       }
     }
