@@ -180,6 +180,7 @@ class _MyAppState extends State<MyApp> {
     return Observer(builder: (_) {
       return MaterialApp(
         navigatorObservers: [BotToastNavigatorObserver()],
+        locale: userSetting.locale,
         home: Builder(builder: (context) {
           if (Platform.isIOS || Platform.isAndroid)
             quickActions.initialize((shortcutType) {
@@ -188,13 +189,9 @@ class _MyAppState extends State<MyApp> {
                 Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
               }
             });
-          return Localizations.override(
-            context: context,
-            locale: userSetting.locale,
-            child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-                child: SplashPage()),
-          );
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+              child: SplashPage());
         }),
         title: 'PixEz',
         builder: BotToastInit(),

@@ -19,10 +19,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
-import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -326,9 +327,9 @@ abstract class _UserSettingBase with Store {
   final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
   List<Locale> iSupportedLocales = <Locale>[
     Locale('en', 'US'),
-    Locale('ja'),
     Locale('zh', 'CN'),
-    Locale('zh', 'TW')
+    Locale('zh', 'TW'),
+    Locale('ja'),
   ];
 
   @action

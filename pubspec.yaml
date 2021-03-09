@@ -48,21 +48,16 @@ dependencies:
   pull_to_refresh:
     git:
       url: https://github.com/peng8350/flutter_pulltorefresh
-  extended_image: 
-    git:
-      url: https://github.com/fluttercandies/extended_image
-      ref: nnbd-migrate
+  extended_image: ^3.0.0
   flutter_colorpicker: ^0.4.0-nullsafety.0
   waterfall_flow: ^2.0.5
   animations: ^2.0.0
-  extended_text:
-    git:
-      url: https://github.com/Notsfsssf/extended_text
+  extended_text: ^5.0.0
   font_awesome_flutter: ^9.0.0-nullsafety
   json_annotation: ^4.0.0
-  flutter_staggered_animations: ^0.1.2
+  flutter_staggered_animations: ^1.0.0
   flutter_statusbar_manager: ^2.0.0
-  badges: ^1.1.6
+  badges: ^1.2.0
   quick_actions: ^0.5.0
   image_picker: ^0.7.2
   intl: ^0.17.0
@@ -70,8 +65,7 @@ dependencies:
   quiver: ^3.0.0
   flutter_swiper: ^1.1.6
   image: ^3.0.1
-  flutter_inappwebview: ^5.1.0+1
-  # http_interceptor: ^0.3.3
+  flutter_inappwebview: ^5.1.0+4
   dio_cookie_manager: ^2.0.0-beta1
   dio_http_cache:
     git:

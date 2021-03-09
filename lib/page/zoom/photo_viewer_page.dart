@@ -216,10 +216,14 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         return Center(
           child: CircularProgressIndicator(),
         );
-      final double progress = (loadingProgress.expectedTotalBytes != null
+      final double? progress = (loadingProgress.expectedTotalBytes != null
           ? loadingProgress.cumulativeBytesLoaded /
               loadingProgress.expectedTotalBytes!
-          : null)!;
+          : null);
+      if (progress == null)
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -252,8 +256,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   }
 
   void _doubleTap(ExtendedImageGestureState state) {
-    final Offset pointerDownPosition = state.pointerDownPosition;
-    final double begin = state.gestureDetails!.totalScale;
+    final Offset pointerDownPosition = state.pointerDownPosition!;
+    final double begin = state.gestureDetails!.totalScale!;
     double end;
     _doubleClickAnimation?.removeListener(_doubleClickAnimationListener);
     _doubleClickAnimationController.stop();
@@ -275,7 +279,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   }
 
   void _showOrHideAppbar(GestureDetails ge) {
-    if (ge.totalScale > 1.2) {
+    if (ge.totalScale! > 1.2) {
       if (show == true) {
         if (mounted)
           setState(() {

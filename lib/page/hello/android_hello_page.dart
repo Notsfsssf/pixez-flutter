@@ -110,7 +110,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 ),
                 label: I18n.of(context).rank),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+                icon: Icon(Icons.favorite),
+                label: I18n.of(context).quick_view),
             BottomNavigationBarItem(
                 icon: Icon(Icons.search), label: I18n.of(context).search),
             BottomNavigationBarItem(

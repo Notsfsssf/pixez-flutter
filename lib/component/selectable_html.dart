@@ -64,8 +64,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                           (widget.data).toTranslateText(),
                           style: Theme.of(context).textTheme.bodyText1,
                           selectionEnabled: true,
-                          textSelectionControls:
-                              TranslateTextSelectionControls(),
+                          selectionControls: TranslateTextSelectionControls(),
                         )
                       : ExtendedText(
                           (widget.data).toTranslateText(),

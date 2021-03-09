@@ -287,7 +287,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           ),
           Padding(
             child: TextButton(
-              child: Text(I18n.of(context).more),
+              child: Text(
+                I18n.of(context).more,
+                style: Theme.of(context).textTheme.caption,
+              ),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {

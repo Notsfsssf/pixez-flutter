@@ -204,13 +204,9 @@ class IllustDetailBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextButton(
-                child: Text(
-                  I18n.of(context).view_comment,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.bodyText1!.fontSize),
-                ),
+                child: Text(I18n.of(context).view_comment,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1!),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => CommentPage(
@@ -234,7 +230,7 @@ class IllustDetailBody extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(
             word: f.name,
-            translatedName: f.translatedName ?? "~",
+            translatedName: f.translatedName ?? "",
           );
         }));
       },
@@ -248,7 +244,7 @@ class IllustDetailBody extends StatelessWidget {
                   style: Theme.of(context).textTheme.caption,
                 ),
                 TextSpan(
-                    text: "${f.translatedName}",
+                    text: "${f.translatedName ?? ""}",
                     style: Theme.of(context).textTheme.caption)
               ],
               style: Theme.of(context)

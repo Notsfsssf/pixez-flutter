@@ -49,7 +49,7 @@ packages:
       name: badges
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.6"
+    version: "1.2.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -244,19 +244,17 @@ packages:
   extended_image:
     dependency: "direct main"
     description:
-      path: "."
-      ref: nnbd-migrate
-      resolved-ref: ef3d30dfa9d3b4f0a87e2911cef06478a022d0af
-      url: "https://github.com/fluttercandies/extended_image"
-    source: git
-    version: "2.0.0-nullsafety.1"
+      name: extended_image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.0-nullsafety.2"
+    version: "2.0.2"
   extended_list_library:
     dependency: transitive
     description:
@@ -274,20 +272,16 @@ packages:
   extended_text:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "607cfa6a44e9530df86d8a8079fc3b69875b4aa1"
-      url: "https://github.com/Notsfsssf/extended_text"
-    source: git
+      name: extended_text
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "5.0.0"
   extended_text_library:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "57a980f209579ff2f2d64d2033664eba0b4e347d"
-      url: "https://github.com/fluttercandies/extended_text_library"
-    source: git
+      name: extended_text_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "5.0.0"
   fake_async:
     dependency: transitive
@@ -363,7 +357,7 @@ packages:
       name: flutter_inappwebview
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.1.0+1"
+    version: "5.1.0+4"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -396,7 +390,7 @@ packages:
       name: flutter_staggered_animations
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.2"
+    version: "1.0.0"
   flutter_statusbar_manager:
     dependency: "direct main"
     description:
@@ -469,7 +463,7 @@ packages:
       name: http_client_helper
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.2"
+    version: "2.0.1"
   http_multi_server:
     dependency: transitive
     description:
