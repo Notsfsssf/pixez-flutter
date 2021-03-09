@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/user/bookmark/tag/bookmark_tag_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/models/create_user_response.dart';
 import 'package:pixez/network/account_client.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -101,7 +101,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                 Center(
                   child: Text(I18n.of(context).nickname_can_be_change_anytime),
                 ),
-                FlatButton(
+                TextButton(
                   child: Text(
                     I18n.of(context).terms,
                   ),

@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
 class ColorPickPage extends HookWidget {
@@ -67,7 +67,7 @@ class ColorPickPage extends HookWidget {
                               prefix: Text("color(0xff"), suffix: Text(")")),
                         ),
                         actions: <Widget>[
-                          FlatButton(
+                          TextButton(
                               onPressed: () {
                                 final result = textEditingController.text
                                     .trim()
@@ -79,7 +79,7 @@ class ColorPickPage extends HookWidget {
                                     .pop("color(0xff${result})");
                               },
                               child: Text(I18n.of(context).ok)),
-                          FlatButton(
+                          TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },

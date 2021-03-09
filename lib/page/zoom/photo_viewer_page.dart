@@ -24,8 +24,9 @@ import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:share_extend/share_extend.dart';
@@ -98,21 +99,18 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
 
   Widget _buildContent(BuildContext context) {
     if (widget.illusts.pageCount == 1) {
-      final url = (userSetting.zoomQuality == 1 || _loadSource
-              ? widget.illusts.metaSinglePage.originalImageUrl
-              : widget.illusts.imageUrls.large)
-          .toTrueUrl();
+      var preUrl = userSetting.zoomQuality == 1 || _loadSource
+          ? widget.illusts.metaSinglePage.originalImageUrl
+          : widget.illusts.imageUrls.large;
+      final url = preUrl.toTrueUrl();
       nowUrl = url;
+
       return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: ExtendedImage.network(
           url,
-          headers: {
-            "referer": "https://app-api.pixiv.net/",
-            "User-Agent": "PixivIOSApp/5.8.0",
-            "Host": splashStore.host == ImageCatHost ? ImageCatHost : ImageHost
-          },
+          headers: Hoster.header(url: preUrl),
           handleLoadingProgress: true,
           clearMemoryCacheWhenDispose: true,
           enableLoadState: true,
@@ -144,10 +142,10 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
       );
     } else {
       final metaPages = widget.illusts.metaPages;
-      final url = (userSetting.zoomQuality == 1 || _loadSource
-              ? metaPages[index].imageUrls.original
-              : metaPages[index].imageUrls.large)
-          .toTrueUrl();
+      var preUrl = (userSetting.zoomQuality == 1 || _loadSource
+          ? metaPages[index].imageUrls.original
+          : metaPages[index].imageUrls.large);
+      final url = preUrl.toTrueUrl();
       nowUrl = url;
       return Container(
         height: MediaQuery.of(context).size.height,
@@ -179,12 +177,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                       ? metaPages[index].imageUrls.large
                       : metaPages[index].imageUrls.original)
                   .toTrueUrl(),
-              headers: {
-                "referer": "https://app-api.pixiv.net/",
-                "User-Agent": "PixivIOSApp/5.8.0",
-                "Host":
-                    splashStore.host == ImageCatHost ? ImageCatHost : ImageHost
-              },
+              headers: Hoster.header(url: preUrl),
               handleLoadingProgress: true,
               clearMemoryCacheWhenDispose: true,
               enableLoadState: true,

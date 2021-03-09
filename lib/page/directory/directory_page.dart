@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/page/directory/directory_store.dart';
 
 class DirectoryPage extends StatefulWidget {
@@ -91,13 +91,13 @@ class _DirectoryPageState extends State<DirectoryPage> {
                           decoration: InputDecoration(),
                         ),
                         actions: [
-                          FlatButton(
+                          TextButton(
                             child: Text(I18n.of(context).cancel),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                           ),
-                          FlatButton(
+                          TextButton(
                             child: Text(I18n.of(context).ok),
                             onPressed: () {
                               Navigator.of(context).pop(controller.text);

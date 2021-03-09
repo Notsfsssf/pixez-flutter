@@ -1,5 +1,4 @@
 {
-  "@@locale": "zh-TW",
   "about": "關於",
   "about_picture": "相關圖像",
   "account_change": "變更帳戶",
@@ -84,6 +83,15 @@
   "novel_mode_list":"每日 男性向 女性向 每週 XVIII XVIII_WEEK XVIII_G",
   "more": "更多",
   "more_then_starnum_bookmark": "收藏數超過{starNum}",
+  "@more_then_starnum_bookmark": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "starNum": {
+        "type": "String",
+        "example": "Bob"
+      }
+    }
+  },
   "muti_choice_save": "多選儲存",
   "my": "我的",
   "need_to_restart_app": "需要重新啟動應用程式",
@@ -141,6 +149,15 @@
   "share": "分享",
   "share_this_app_link": "推薦這個APP",
   "shield_message": "{name}已被你屏蔽",
+  "@shield_message": {
+    "description": "A message with a parameter",
+    "placeholders": {
+      "name": {
+          "type": "String",
+          "example": "Bob"
+      }
+    }
+  },
   "shielding_settings": "屏蔽內容",
   "skimige_message": "完成 MarkDown 整理",
   "skin": "主題",
@@ -172,6 +189,15 @@
   "works": "作品",
   "pick_a_color": "選取顏色",
   "tap_to_show_results": "點擊顯示 {length} 個結果",
+  "@tap_to_show_results": {
+      "description": "A message with a single parameter",
+      "placeholders": {
+        "length": {
+          "type": "String",
+          "example": "Bob"
+        }
+      }
+  },
   "saf_hint": "需要使用SAF模式，請選擇一個資料夾以儲存圖像及其他檔案\n雖然不授權仍然能夠繼續使用本軟體，但是這可能會引起閃退或者損壞部分功能\n推薦設定的儲存資料夾為 Picture\\Pixez",
   "what_is_saf": "什麽是SAF?",
   "not_the_correct_link": "非正常連結 >_<",
@@ -191,6 +217,15 @@
   "old_way_message": "以舊版方式儲存圖像，需要取得外部儲存空間的存取權限，並選擇一個資料夾以繼續",
   "return_again_to_exit": "再次點擊返回鍵退出",
   "save_format_lose_part_warning": "儲存格式必須包含{part},否則多P作品會儲存出錯！",
+  "@save_format_lose_part_warning": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "part": {
+        "type": "String",
+        "example": "Bob"
+      }
+    }
+  },
   "save_painter_avatar": "儲存繪師頭貼",
   "favorited_tag": "標籤收藏",
   "legacy_mode_warning": "Android 10 及之後作業系統不推薦使用舊版方式",

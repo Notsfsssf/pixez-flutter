@@ -67,7 +67,6 @@ dependencies:
   image_picker: ^0.7.2
   intl: ^0.17.0
   extended_nested_scroll_view: 2.0.0-dev
-  intl_utils: ^2.0.0
   quiver: ^3.0.0
   flutter_swiper: ^1.1.6
   image: ^3.0.1
@@ -80,17 +79,17 @@ dependencies:
   md2_tab_indicator:
     git:
       url: https://github.com/Notsfsssf/md2_tab_indicator
-
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.5
-#  mobx_codegen:
-#    git:
-#      url: https://github.com/fzyzcjy/mobx.dart
-#      path: mobx_codegen
+  mobx_codegen:
+    git:
+       url: https://github.com/mobxjs/mobx.dart
+       path: mobx_codegen
+       ref: null_safety
   json_serializable: ^4.0.2
 
 
@@ -146,6 +145,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  generate: true
 flutter_intl:
   enabled: true
   class_name: I18n

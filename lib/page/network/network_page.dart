@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
@@ -20,11 +20,21 @@ class NetworkPage extends StatefulWidget {
 
 class _NetworkPageState extends State<NetworkPage> {
   late bool _automaticallyImplyLeading;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {
+    _textEditingController = TextEditingController(
+      text: '',
+    );
     _automaticallyImplyLeading = widget.automaticallyImplyLeading ?? false;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,12 +86,12 @@ class _NetworkPageState extends State<NetworkPage> {
                                 content: Text(
                                     I18n.of(context).please_note_that_content),
                                 actions: <Widget>[
-                                  FlatButton(
+                                  TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                       child: Text(I18n.of(context).cancel)),
-                                  FlatButton(
+                                  TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop('OK');
                                       },
@@ -147,6 +157,33 @@ class _NetworkPageState extends State<NetworkPage> {
                           userSetting.setPictureSource(ImageCatHost);
                           splashStore.setHost(ImageCatHost);
                         },
+                      ),
+                      ListTile(
+                        selected: userSetting.pictureSource != ImageHost &&
+                            userSetting.pictureSource != ImageCatHost,
+                        selectedTileColor: Theme.of(context).accentColor,
+                        title: Theme(
+                          data: Theme.of(context).copyWith(primaryColor: Theme.of(context).accentColor),
+                          child: TextField(
+                            maxLines: 1,
+                            controller: _textEditingController,
+                            decoration: InputDecoration(
+                              hintText: 'Host',
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  if (_textEditingController.text.isEmpty) return;
+                                  userSetting.setPictureSource(
+                                      _textEditingController.text);
+                                },
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              labelText: '自定义Host',
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

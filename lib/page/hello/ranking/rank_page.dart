@@ -18,7 +18,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
@@ -219,8 +219,7 @@ class _RankPageState extends State<RankPage>
     var date = await showDatePicker(
         context: context,
         initialDate: nowDateTime,
-        locale: I18n.delegate.supportedLocales[
-            userSetting.toRealLanguageNum(userSetting.languageNum)],
+        locale: userSetting.locale,
         firstDate: DateTime(2007, 8),
         //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
         lastDate: nowdate);

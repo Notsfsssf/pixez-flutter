@@ -27,8 +27,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/follow/follow_list.dart';
@@ -208,13 +209,13 @@ class _UsersPageState extends State<UsersPage>
                                     title:
                                         Text('${I18n.of(context).block_user}?'),
                                     actions: <Widget>[
-                                      FlatButton(
+                                      TextButton(
                                         child: Text("OK"),
                                         onPressed: () {
                                           Navigator.of(context).pop("OK");
                                         },
                                       ),
-                                      FlatButton(
+                                      TextButton(
                                         child: Text("CANCEL"),
                                         onPressed: () {
                                           Navigator.of(context).pop();
@@ -279,16 +280,9 @@ class _UsersPageState extends State<UsersPage>
                                             .background_image_url
                                             .toTrueUrl(),
                                         fit: BoxFit.fitWidth,
-                                        headers: {
-                                          "referer":
-                                              "https://app-api.pixiv.net/",
-                                          "User-Agent": "PixivIOSApp/5.8.0",
-                                          "Host": Uri.parse(userStore
-                                                  .userDetail!
-                                                  .profile
-                                                  .background_image_url)
-                                              .host
-                                        },
+                                        headers: Hoster.header(
+                                            url: userStore.userDetail!.profile
+                                                .background_image_url),
                                         enableMemoryCache: false,
                                       )
                                     : Container(
@@ -433,12 +427,12 @@ class _UsersPageState extends State<UsersPage>
                           return AlertDialog(
                             title: Text(I18n.of(context).save_painter_avatar),
                             actions: [
-                              FlatButton(
+                              TextButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
                                   },
                                   child: Text(I18n.of(context).cancel)),
-                              FlatButton(
+                              TextButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
                                     await _saveUserC();
@@ -461,7 +455,7 @@ class _UsersPageState extends State<UsersPage>
                   : Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
                       child: userStore.isFollow
-                          ? FlatButton(
+                          ? MaterialButton(
                               textColor: Colors.white,
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20.0, vertical: 0),
@@ -546,11 +540,7 @@ class _UsersPageState extends State<UsersPage>
     String fileName = "${replaceAll}_${userStore.userDetail!.user.id}.${meme}";
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
-      final dio = Dio(BaseOptions(headers: {
-        "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": splashStore.host == ImageCatHost ? ImageCatHost : ImageHost
-      }));
+      final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni)
         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
             (client) {

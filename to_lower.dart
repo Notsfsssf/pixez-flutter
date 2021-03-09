@@ -19,7 +19,7 @@ import 'dart:io';
 
 //给key转小写的工具
 void main(args) {
-  String fileName = 'intl_en_US.arb';
+  String fileName = 'en_US.arb';
   var file = File('./${fileName}');
   Map<String, dynamic> scores = jsonDecode(file.readAsStringSync());
   var keys = scores.keys.toList();

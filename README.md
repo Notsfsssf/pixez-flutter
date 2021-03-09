@@ -49,7 +49,7 @@
 
 如果你是有能人士，愿意为本项目贡献代码，请不要犹豫提交 Pull Request 吧！
 
-本应用也使用了 `flutter_intl` 进行国际化，欢迎贡献[翻译](./lib/l10n/intl_en_US.arb)！
+本应用也使用了 `flutter_intl` 进行国际化，欢迎贡献[翻译](lib/l10n/en_US.arb)！
 
 觉得有些地方设计的不妥？同样欢迎分享设计。
 

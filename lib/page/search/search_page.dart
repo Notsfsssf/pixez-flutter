@@ -19,7 +19,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -355,13 +355,13 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               return AlertDialog(
                 title: Text('${I18n.of(context).delete}?'),
                 actions: [
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         tagHistoryStore.delete(f.id!);
                         Navigator.of(context).pop();
                       },
                       child: Text(I18n.of(context).ok)),
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },

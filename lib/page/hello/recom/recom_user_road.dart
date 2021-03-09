@@ -74,7 +74,7 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
         child: CircleAvatar(
           backgroundImage: PixivProvider.url(
               data.user.profileImageUrls.medium.toTrueUrl(),
-              host: Uri.parse(data.user.profileImageUrls.medium).host),
+              preUrl: data.user.profileImageUrls.medium),
           radius: 100.0,
         ),
       ),

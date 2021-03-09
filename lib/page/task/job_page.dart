@@ -17,7 +17,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pixez/component/sort_group.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';

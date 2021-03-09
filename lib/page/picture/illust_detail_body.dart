@@ -20,7 +20,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/selectable_html.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
@@ -203,7 +203,7 @@ class IllustDetailBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: FlatButton(
+              child: TextButton(
                 child: Text(
                   I18n.of(context).view_comment,
                   textAlign: TextAlign.center,

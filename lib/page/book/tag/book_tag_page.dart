@@ -15,7 +15,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
 
@@ -134,12 +134,12 @@ class _BookTagPageState extends State<BookTagPage>
                             return AlertDialog(
                               title: Text(I18n.of(context).delete + "$i?"),
                               actions: [
-                                FlatButton(
+                                TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                     child: Text(I18n.of(context).cancel)),
-                                FlatButton(
+                                TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       bookTagStore.unBookTag(i);

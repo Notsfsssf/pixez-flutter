@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';

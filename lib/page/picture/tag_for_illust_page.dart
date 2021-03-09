@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/models/bookmark_detail.dart';
 import 'package:pixez/page/picture/tag_for_illust_store.dart';
 
@@ -113,7 +113,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                               child: Text(':(',
                                   style: Theme.of(context).textTheme.headline4),
                             ),
-                            FlatButton(
+                            TextButton(
                                 onPressed: () {
                                   _store.fetch();
                                 },

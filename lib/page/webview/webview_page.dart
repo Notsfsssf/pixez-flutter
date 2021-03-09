@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/weiss_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -82,13 +82,13 @@ class _WebViewPageState extends State<WebViewPage> {
                             title: Text(
                                 "${challenge.protectionSpace.sslError?.message ?? "Ssl Cert Error"},continue?"),
                             actions: [
-                              FlatButton(
+                              TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop("cancel");
                                 },
                                 child: Text(I18n.of(context).cancel),
                               ),
-                              FlatButton(
+                              TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop("ok");
                                 },

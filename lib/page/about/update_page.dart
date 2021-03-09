@@ -16,7 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/page/about/last_release.dart';
 import 'package:url_launcher/url_launcher.dart';
 

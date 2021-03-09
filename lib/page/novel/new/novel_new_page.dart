@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';

@@ -68,18 +68,11 @@ abstract class _SplashStoreBase with Store {
       this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
       helloWord = OK_TEXT;
     } finally {}
-    try {
-      fetcher.notify(this.host);
-    } catch (e) {}
   }
 
   setHost(String value) {
     host = value;
-    if (host != ImageHost) {
-      try {
-        fetcher.notify(this.host);
-      } catch (e) {}
-    } else {
+    if (host == ImageHost) {
       helloWord = ' w(ﾟДﾟ)w ';
       maybeFetch();
     }

@@ -20,6 +20,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
@@ -97,11 +98,9 @@ abstract class _UgoiraStoreBase with Store {
       String zipUrl =
           ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium.toTrueUrl();
       if (!fullPathFile.existsSync()) {
-        var dio = Dio(BaseOptions(headers: {
-          "referer": "https://app-api.pixiv.net/",
-          "User-Agent": "PixivIOSApp/5.8.0",
-          "Host": Uri.parse(zipUrl).host
-        }));
+        var dio = Dio(BaseOptions(
+            headers: Hoster.header(
+                url: ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium)));
         if (!userSetting.disableBypassSni)
           (dio.httpClientAdapter as DefaultHttpClientAdapter)
               .onHttpClientCreate = (client) {

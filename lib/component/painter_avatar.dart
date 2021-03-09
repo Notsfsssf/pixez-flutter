@@ -28,7 +28,8 @@ class PainterAvatar extends StatefulWidget {
   final GestureTapCallback? onTap;
   final Size? size;
 
-  const PainterAvatar({Key? key,required this.url,required this.id, this.onTap, this.size})
+  const PainterAvatar(
+      {Key? key, required this.url, required this.id, this.onTap, this.size})
       : super(key: key);
 
   @override
@@ -57,7 +58,8 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 height: 60,
                 width: 60,
                 child: CircleAvatar(
-                  backgroundImage: PixivProvider.url(widget.url.toTrueUrl()),
+                  backgroundImage: PixivProvider.url(widget.url.toTrueUrl(),
+                      preUrl: widget.url),
                   radius: 100.0,
                 ),
               )
@@ -69,9 +71,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
                   image: DecorationImage(
                       image: PixivProvider.url(
                         widget.url.toTrueUrl(),
-                        host: splashStore.host == ImageCatHost
-                            ? ImageCatHost
-                            : ImageHost,
+                        preUrl: widget.url,
                       ),
                       fit: BoxFit.cover),
                 ),

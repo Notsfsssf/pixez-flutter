@@ -20,7 +20,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             child: Text(I18n.of(context).dont_have_account),
                           ),
-                          FlatButton(
+                          TextButton(
                             child: Text(
                               I18n.of(context).terms,
                             ),

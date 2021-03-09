@@ -190,13 +190,13 @@
   "pick_a_color": "Pick a color",
   "tap_to_show_results": "Tap to show {length} results",
   "@tap_to_show_results": {
-    "description": "A message with a single parameter",
-    "placeholders": {
-      "length": {
-        "type": "String",
-        "example": "Bob"
+      "description": "A message with a single parameter",
+      "placeholders": {
+        "length": {
+          "type": "String",
+          "example": "Bob"
+        }
       }
-    }
   },
   "saf_hint": "In order to use SAF you will need to grant SAF access to Pixiv(e.g. Picture\/Pixez). This allows you to store illusts to SD cards in modern devices.",
   "what_is_saf": "Why?",
@@ -217,15 +217,6 @@
   "old_way_message": "In order to use this method, you will need to allow PixEz to access your files and select a folder",
   "return_again_to_exit": "Return again to exit",
   "save_format_lose_part_warning": "保存格式必须包含{part},否则多p作品会保存出错！",
-  "@save_format_lose_part_warning": {
-    "description": "A message with a parameter",
-    "placeholders": {
-      "part": {
-          "type": "String",
-          "example": "Bob"
-      }
-    }
-  },
   "save_painter_avatar": "save painter avatar",
   "favorited_tag": "favorited tag",
   "legacy_mode_warning": "legacy mode is not available since Android9",

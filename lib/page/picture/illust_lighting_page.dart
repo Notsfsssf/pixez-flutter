@@ -27,7 +27,7 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
@@ -392,7 +392,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: FlatButton(
+            child: TextButton(
               child: Text(
                 I18n.of(context).view_comment,
                 textAlign: TextAlign.center,
@@ -765,13 +765,13 @@ class _IllustLightingPageState extends State<IllustLightingPage>
           return AlertDialog(
             title: Text(I18n.of(context).muti_choice_save),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context, "OK");
                 },
@@ -925,13 +925,13 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                                   content:
                                       Text(I18n.of(context).report_message),
                                   actions: <Widget>[
-                                    FlatButton(
+                                    TextButton(
                                       child: Text(I18n.of(context).cancel),
                                       onPressed: () {
                                         Navigator.of(context).pop("CANCEL");
                                       },
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text(I18n.of(context).ok),
                                       onPressed: () {
                                         Navigator.of(context).pop("OK");

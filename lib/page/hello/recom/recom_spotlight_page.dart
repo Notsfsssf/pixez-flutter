@@ -24,7 +24,7 @@ import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
@@ -287,7 +287,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             ),
           ),
           Padding(
-            child: FlatButton(
+            child: TextButton(
               child: Text(I18n.of(context).more),
               onPressed: () {
                 Navigator.of(context)

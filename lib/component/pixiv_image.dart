@@ -18,8 +18,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
 const ImageHost = "i.pximg.net";
@@ -58,13 +59,7 @@ class PixivImage extends HookWidget {
       height: height,
       width: width,
       fit: fit ?? BoxFit.fitWidth,
-      headers: {
-        "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": splashStore.host == ImageCatHost
-            ? ImageCatHost
-            : Uri.parse(url).host
-      },
+      headers: Hoster.header(url: url),
       enableMemoryCache: enableMemoryCache ?? true,
       loadStateChanged: (ExtendedImageState state) {
         if (state.extendedImageLoadState == LoadState.loading) {
@@ -125,12 +120,9 @@ class PixivImage extends HookWidget {
 }
 
 class PixivProvider {
-  static ExtendedNetworkImageProvider url(String url, {String? host}) {
-    return ExtendedNetworkImageProvider(url, headers: {
-      "referer": "https://app-api.pixiv.net/",
-      "User-Agent": "PixivIOSApp/5.8.0",
-      "Host": (splashStore.host == ImageCatHost ? ImageCatHost : ImageHost)
-    });
+  static ExtendedNetworkImageProvider url(String url, {String? preUrl}) {
+    return ExtendedNetworkImageProvider(url,
+        headers: Hoster.header(url: preUrl));
   }
 }
 

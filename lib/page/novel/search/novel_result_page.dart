@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/search/novel_result_list.dart';
 import 'package:pixez/page/painter/painter_list.dart';

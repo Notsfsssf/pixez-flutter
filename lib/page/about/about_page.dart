@@ -27,7 +27,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';

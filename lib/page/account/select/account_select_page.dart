@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/page/login/login_page.dart';

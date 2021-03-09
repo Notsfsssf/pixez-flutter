@@ -27,7 +27,7 @@ import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
@@ -299,13 +299,13 @@ class _SettingPageState extends State<SettingPage> {
               height: 400,
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
@@ -331,13 +331,13 @@ class _SettingPageState extends State<SettingPage> {
           return AlertDialog(
             title: Text(I18n.of(context).logout),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
@@ -366,13 +366,13 @@ class _SettingPageState extends State<SettingPage> {
           return AlertDialog(
             title: Text(I18n.of(context).clear_all_cache),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");

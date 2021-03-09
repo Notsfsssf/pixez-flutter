@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/exts.dart';
@@ -54,11 +55,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
     try {
       String url =
           "https://i.pximg.net/c/360x360_70/img-master/img/2016/04/29/03/33/27/56585648_p0_square1200.jpg";
-      var dio = Dio(BaseOptions(headers: {
-        "referer": "https://app-api.pixiv.net/",
-        "User-Agent": "PixivIOSApp/5.8.0",
-        "Host": Uri.parse(url).host
-      }));
+      var dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       String trueUrl = url.replaceFirst(ImageHost, host);
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (client) {
@@ -105,7 +102,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
           TextField(
             controller: editingController,
           ),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 host = editingController.text;
                 _imgCheck();

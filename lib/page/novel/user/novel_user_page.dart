@@ -21,7 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/novel/user/novel_user_bookmark_page.dart';
@@ -137,13 +137,13 @@ class _NovelUserPageState extends State<NovelUserPage>
                                         title: Text(
                                             '${I18n.of(context).block_user}?'),
                                         actions: <Widget>[
-                                          FlatButton(
+                                          TextButton(
                                             child: Text("CANCEL"),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
                                           ),
-                                          FlatButton(
+                                          TextButton(
                                             child: Text("OK"),
                                             onPressed: () {
                                               Navigator.of(context).pop("OK");
@@ -372,7 +372,7 @@ class _NovelUserPageState extends State<NovelUserPage>
             ),
             Padding(
               padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-              child: FlatButton(
+              child: MaterialButton(
                 textColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
                 color: userStore.isFollow

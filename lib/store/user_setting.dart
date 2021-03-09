@@ -22,7 +22,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,7 +90,9 @@ abstract class _UserSettingBase with Store {
   @observable
   bool followAfterStar = false;
   @observable
-  String? pictureSource;
+  String? pictureSource = ImageHost;
+  @observable
+  Locale locale = Locale('en', 'US');
 
   @observable
   String? format = "";
@@ -244,20 +246,17 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    I18n.load(I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)]);
+    locale = iSupportedLocales[languageNum];
   }
 
   int toRealLanguageNum(int num) {
     switch (num) {
       case 1:
         return 2;
-        break;
       case 2:
         return 3;
-        break;
       case 3:
         return 1;
-        break;
     }
     return num;
   }
@@ -325,6 +324,12 @@ abstract class _UserSettingBase with Store {
   }
 
   final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
+  List<Locale> iSupportedLocales = <Locale>[
+    Locale('en', 'US'),
+    Locale('ja'),
+    Locale('zh', 'CN'),
+    Locale('zh', 'TW')
+  ];
 
   @action
   setLanguageNum(int value) async {
@@ -333,9 +338,8 @@ abstract class _UserSettingBase with Store {
     ApiClient.Accept_Language = languageList[languageNum];
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
-    final local =
-        I18n.delegate.supportedLocales[toRealLanguageNum(languageNum)];
-    I18n.load(local);
+    final local = I18n.supportedLocales[toRealLanguageNum(languageNum)];
+    locale = iSupportedLocales[languageNum];
   }
 
   @action

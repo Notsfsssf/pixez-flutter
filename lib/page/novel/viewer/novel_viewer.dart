@@ -22,7 +22,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
@@ -86,7 +86,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     child: Text(':(',
                         style: Theme.of(context).textTheme.headline4),
                   ),
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         _novelStore.fetch();
                       },

@@ -25,7 +25,7 @@ import 'package:image/image.dart';
 import 'package:image/image.dart' hide Color;
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -70,13 +70,13 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     title: Text('${I18n.of(context).encode}?'),
                     content: Text(I18n.of(context).encode_message),
                     actions: <Widget>[
-                      FlatButton(
+                      TextButton(
                         child: Text(I18n.of(context).cancel),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
-                      FlatButton(
+                      TextButton(
                         child: Text(I18n.of(context).ok),
                         onPressed: () {
                           Navigator.of(context).pop("OK");

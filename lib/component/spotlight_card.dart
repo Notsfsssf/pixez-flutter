@@ -18,6 +18,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/exts.dart';
@@ -27,7 +28,7 @@ class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;
   static const platform = const MethodChannel('samples.flutter.dev/battery');
 
-  const SpotlightCard({Key? key,required this.spotlight}) : super(key: key);
+  const SpotlightCard({Key? key, required this.spotlight}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +78,7 @@ class SpotlightCard extends StatelessWidget {
                   child: Container(
                     child: ExtendedImage.network(
                       spotlight.thumbnail.toTrueUrl(),
-                      headers: {
-                        "referer": "https://app-api.pixiv.net/",
-                        "User-Agent": "PixivIOSApp/5.8.0",
-                        "Host": splashStore.host == ImageCatHost
-                            ? ImageCatHost
-                            : ImageHost
-                      },
+                      headers: Hoster.header(url: spotlight.thumbnail),
                       fit: BoxFit.cover,
                       height: 150.0,
                       width: 150.0,

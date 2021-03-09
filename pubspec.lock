@@ -512,13 +512,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.17.0"
-  intl_utils:
-    dependency: "direct main"
-    description:
-      name: intl_utils
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.0"
   io:
     dependency: transitive
     description:
@@ -591,6 +584,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0-nullsafety.2"
+  mobx_codegen:
+    dependency: "direct dev"
+    description:
+      path: mobx_codegen
+      ref: null_safety
+      resolved-ref: "2c9b5f69b91aaebde10ac3674c377a81fb476577"
+      url: "https://github.com/mobxjs/mobx.dart"
+    source: git
+    version: "2.0.0-nullsafety.0"
   nested:
     dependency: transitive
     description:

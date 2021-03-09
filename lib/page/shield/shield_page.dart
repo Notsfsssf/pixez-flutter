@@ -17,7 +17,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
@@ -116,13 +116,13 @@ class _ShieldPageState extends State<ShieldPage> {
           title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
               child: Text(I18n.of(context).ok),
             ),
-            FlatButton(
+            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
@@ -149,13 +149,13 @@ class _ShieldPageState extends State<ShieldPage> {
           title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
               child: Text(I18n.of(context).ok),
             ),
-            FlatButton(
+            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
@@ -182,13 +182,13 @@ class _ShieldPageState extends State<ShieldPage> {
           title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
               child: Text(I18n.of(context).ok),
             ),
-            FlatButton(
+            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);

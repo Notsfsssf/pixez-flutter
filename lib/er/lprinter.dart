@@ -32,17 +32,17 @@ class LPrinter {
   static void t(i) {
   }
 
-  static var buffer = StringBuffer();
+  static var _buffer = StringBuffer();
 
   static f(i) async {
-    buffer.write(i.toString());
-    String nowRecord = buffer.toString();
+    _buffer.write(i.toString());
+    String nowRecord = _buffer.toString();
     if (nowRecord.length > 50) {
       var path = await getTemporaryDirectory();
       var filePath = join(path.path, "log.log");
       File file = File(filePath);
       file.writeAsStringSync(nowRecord, mode: FileMode.append);
-      buffer.clear();
+      _buffer.clear();
     }
   }
 
@@ -50,8 +50,8 @@ class LPrinter {
     var path = await getTemporaryDirectory();
     var filePath = join(path.path, "log.log");
     File file = File(filePath);
-    file.writeAsStringSync(buffer.toString());
-    buffer.clear();
+    file.writeAsStringSync(_buffer.toString());
+    _buffer.clear();
     return file;
   }
 }

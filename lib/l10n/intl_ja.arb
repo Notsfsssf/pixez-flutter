@@ -1,5 +1,4 @@
 {
-  "@@locale": "ja",
   "about": "このアプリについて",
   "about_picture": "関連イラスト",
   "account_change": "アカウントの切り替え",
@@ -84,6 +83,15 @@
   "novel_mode_list": "デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G",
   "more": "もっと見る",
   "more_then_starnum_bookmark": "More than {starNum} likes",
+  "@more_then_starnum_bookmark": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "starNum": {
+        "type": "String",
+        "example": "Bob"
+      }
+    }
+  },
   "muti_choice_save": "選択したイラストを保存",
   "my": "Mine",
   "need_to_restart_app": "アプリの再起動が必要です",
@@ -141,6 +149,15 @@
   "share": "共有",
   "share_this_app_link": "",
   "shield_message": "{name} has been muted by you",
+  "@shield_message": {
+    "description": "A message with a parameter",
+    "placeholders": {
+      "name": {
+          "type": "String",
+          "example": "Bob"
+      }
+    }
+  },
   "shielding_settings": "ミュート設定",
   "skimige_message": "The contributor who wrote the wonderful README for us",
   "skin": "テーマ",
@@ -172,6 +189,15 @@
   "works": "投稿",
   "pick_a_color": "色を選択",
   "tap_to_show_results": "Tap to show {length} results",
+  "@tap_to_show_results": {
+      "description": "A message with a single parameter",
+      "placeholders": {
+        "length": {
+          "type": "String",
+          "example": "Bob"
+        }
+      }
+  },
   "saf_hint": "画像をデバイスに保存するにはPixEzがフォルダにアクセスできるようにする必要があります(例: Picture/Pixez)",
   "what_is_saf": "詳しく",
   "not_the_correct_link": "無効なリンク",
@@ -191,6 +217,15 @@
   "old_way_message": "画像を保存するには外部ストレージの読み書きの許可が必要です。続行するにはフォルダを選択します",
   "return_again_to_exit": "もう一度戻って終了",
   "save_format_lose_part_warning": "保存格式必须包含{part},否则多p作品会保存出错！",
+  "@save_format_lose_part_warning": {
+    "description": "A message with a parameter",
+    "placeholders": {
+      "part": {
+          "type": "String",
+          "example": "Bob"
+      }
+    }
+  },
   "save_painter_avatar": "プロフィール画像を保存",
   "favorited_tag": "お気に入りタグ",
   "legacy_mode_warning": "android10以降では推奨しません",

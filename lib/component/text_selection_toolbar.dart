@@ -122,27 +122,27 @@ class TextSelectionToolbar extends StatelessWidget {
         MaterialLocalizations.of(context);
 
     if (handleCut != null) {
-      items.add(FlatButton(
+      items.add(TextButton(
           child: Text(localizations.cutButtonLabel), onPressed: handleCut));
     }
     if (handleCopy != null) {
-      items.add(FlatButton(
+      items.add(TextButton(
           child: Text(localizations.copyButtonLabel), onPressed: handleCopy));
     }
     if (handlePaste != null) {
-      items.add(FlatButton(
+      items.add(TextButton(
         child: Text(localizations.pasteButtonLabel),
         onPressed: handlePaste,
       ));
     }
     if (handleSelectAll != null) {
-      items.add(FlatButton(
+      items.add(TextButton(
           child: Text(localizations.selectAllButtonLabel),
           onPressed: handleSelectAll));
     }
 
     if (handleLike != null) {
-      items.add(FlatButton(
+      items.add(TextButton(
           child: const Icon(Icons.translate), onPressed: handleLike));
     }
 

@@ -20,7 +20,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -174,10 +174,10 @@ class _ResultIllustListState extends State<ResultIllustList> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    FlatButton(
+                    TextButton(
                         onPressed: () {},
                         child: Text(I18n.of(context).date_duration)),
-                    FlatButton(
+                    TextButton(
                         onPressed: () {
                           setState(() {
                             futureGet = () => apiClient.getSearchIllust(
@@ -233,10 +233,10 @@ class _ResultIllustListState extends State<ResultIllustList> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          FlatButton(
+                          TextButton(
                               onPressed: () {},
                               child: Text(I18n.of(context).filter)),
-                          FlatButton(
+                          TextButton(
                               onPressed: () {
                                 setState(() {
                                   if (starValue == 0)
@@ -309,7 +309,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           alignment: Alignment.centerLeft,
                           child: Text(starValue != 0
                               ? I18n.of(context).more_then_starnum_bookmark(
-                                  starNum[starValue.toInt()])
+                                  "${starNum[starValue.toInt()]}")
                               : 'users入り'),
                         ),
                         padding: const EdgeInsets.symmetric(

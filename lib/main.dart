@@ -23,13 +23,11 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/kver.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/generated/l10n.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
@@ -48,6 +46,7 @@ import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
@@ -187,9 +186,13 @@ class _MyAppState extends State<MyApp> {
                 Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
               }
             });
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-              child: SplashPage());
+          return Localizations.override(
+            context: context,
+            locale: userSetting.locale,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+                child: SplashPage()),
+          );
         }),
         title: 'PixEz',
         builder: BotToastInit(),
@@ -199,13 +202,9 @@ class _MyAppState extends State<MyApp> {
             accentColor: userSetting.themeData.accentColor,
             scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
             indicatorColor: userSetting.themeData.accentColor),
-        supportedLocales: I18n.delegate.supportedLocales,
-        localizationsDelegates: [
-          I18n.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate
-        ],
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        // Add this line
+        supportedLocales: AppLocalizations.supportedLocales, // Add this line
       );
     });
   }

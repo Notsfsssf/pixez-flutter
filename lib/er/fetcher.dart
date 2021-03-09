@@ -25,14 +25,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/toaster.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
 
-enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE, NOTIFY }
+enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE }
 
 class IsoContactBean {
   final IsoTaskState state;
@@ -53,12 +53,18 @@ class TaskBean {
   final Illusts? illusts;
   final String? fileName;
   final String? savePath;
+  final String? source;
+  final String? host;
+  final bool? byPass;
 
   TaskBean(
       {required this.url,
       required this.illusts,
       required this.fileName,
-      required this.savePath});
+      required this.savePath,
+      this.byPass,
+      this.host,
+      this.source});
 }
 
 class Fetcher {
@@ -82,16 +88,6 @@ class Fetcher {
         switch (isoContactBean.state) {
           case IsoTaskState.INIT:
             sendPortToChild = isoContactBean.data;
-            if (_presetHost != ImageHost) {
-              IsoContactBean bean = IsoContactBean(
-                  state: IsoTaskState.NOTIFY,
-                  data: TaskBean(
-                      url: _presetHost,
-                      illusts: null,
-                      fileName: null,
-                      savePath: null));
-              sendPortToChild?.send(bean);
-            }
             break;
           case IsoTaskState.PROGRESS:
             IsoProgressBean isoProgressBean = isoContactBean.data;
@@ -116,8 +112,6 @@ class Fetcher {
           case IsoTaskState.ERROR:
             _errorD(isoContactBean.data as String);
             break;
-          case IsoTaskState.NOTIFY:
-            break;
           default:
             break;
         }
@@ -135,19 +129,11 @@ class Fetcher {
             url: url,
             illusts: illusts,
             fileName: fileName,
+            byPass: userSetting.disableBypassSni,
+            source: userSetting.pictureSource,
+            host: splashStore.host,
             savePath: (await getTemporaryDirectory()).path));
     sendPortToChild?.send(isoContactBean);
-  }
-
-  String _presetHost = ImageHost;
-
-  notify(String host) {
-    _presetHost = host;
-    IsoContactBean bean = IsoContactBean(
-        state: IsoTaskState.NOTIFY,
-        data: TaskBean(
-            url: _presetHost, illusts: null, fileName: null, savePath: null));
-    sendPortToChild?.send(bean);
   }
 
   void stop() {
@@ -205,6 +191,8 @@ Dio isolateDio = Dio(BaseOptions(headers: {
 entryPoint(SendPort sendPort) {
   LPrinter.d("entryPoint =======");
   String inHost = splashStore.host;
+  String inSource = userSetting.pictureSource!;
+  bool inBypass = userSetting.disableBypassSni;
   if (!userSetting.disableBypassSni)
     (isolateDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
@@ -223,22 +211,24 @@ entryPoint(SendPort sendPort) {
       IsoContactBean isoContactBean = message;
       TaskBean taskBean = isoContactBean.data;
       switch (isoContactBean.state) {
-        case IsoTaskState.NOTIFY:
-          inHost = taskBean.url!;
-          break;
         case IsoTaskState.ERROR:
           break;
         case IsoTaskState.APPEND:
           try {
-            LPrinter.d("append =======" + inHost);
+            inHost = taskBean.host!;
+            inSource = taskBean.source!;
+            inBypass = taskBean.byPass!;
+            LPrinter.d(
+                "append ======= host:${inHost} source:${inSource} bypass:${inBypass}");
             var savePath = taskBean.savePath! +
                 Platform.pathSeparator +
                 taskBean.fileName!;
-            String trueUrl = userSetting.disableBypassSni
+            String trueUrl = taskBean.byPass == true
                 ? taskBean.url!
                 : (Uri.parse(taskBean.url!).replace(host: inHost)).toString();
-            isolateDio.options.headers['Host'] =
-                inHost == ImageCatHost ? inHost : ImageHost;
+            isolateDio.options.headers['Host'] = taskBean.source == ImageHost
+                ? Uri.parse(taskBean.url!).host
+                : taskBean.source;
             isolateDio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(

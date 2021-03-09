@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -63,13 +63,13 @@ class HistoryPage extends StatelessWidget {
                             return AlertDialog(
                               title: Text("${I18n.of(context).delete}?"),
                               actions: <Widget>[
-                                FlatButton(
+                                TextButton(
                                   child: Text(I18n.of(context).cancel),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
                                 ),
-                                FlatButton(
+                                TextButton(
                                   child: Text(I18n.of(context).ok),
                                   onPressed: () {
                                     Navigator.of(context).pop("OK");
@@ -108,13 +108,13 @@ class HistoryPage extends StatelessWidget {
                       title: Text(
                           "${I18n.of(context).delete} ${I18n.of(context).all}?"),
                       actions: <Widget>[
-                        FlatButton(
+                        TextButton(
                           child: Text(I18n.of(context).cancel),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
-                        FlatButton(
+                        TextButton(
                           child: Text(I18n.of(context).ok),
                           onPressed: () {
                             Navigator.of(context).pop("OK");

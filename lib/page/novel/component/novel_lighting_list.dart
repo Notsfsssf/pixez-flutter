@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/generated/l10n.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
@@ -76,7 +76,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
               padding: const EdgeInsets.all(8.0),
               child: Text(':(', style: Theme.of(context).textTheme.headline4),
             ),
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   _store.fetch();
                 },
