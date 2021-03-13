@@ -108,12 +108,12 @@ class _NovelUserPageState extends State<NovelUserPage>
         return Scaffold(
           body: NestedScrollView(
               headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
+                  (BuildContext context, bool? innerBoxIsScrolled) {
                 return <Widget>[
                   SliverAppBar(
                     pinned: true,
                     elevation: 0.0,
-                    forceElevated: innerBoxIsScrolled,
+                    forceElevated: innerBoxIsScrolled ?? false,
                     expandedHeight: 280,
                     actions: <Widget>[
                       IconButton(

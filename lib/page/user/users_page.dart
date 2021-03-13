@@ -183,12 +183,13 @@ class _UsersPageState extends State<UsersPage>
                     ? UserDetailPage(userDetail: userStore.userDetail!)
                     : Container()),
           ]),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          headerSliverBuilder:
+              (BuildContext context, bool? innerBoxIsScrolled) {
             return [
               SliverAppBar(
                 pinned: true,
                 elevation: 0.0,
-                forceElevated: innerBoxIsScrolled,
+                forceElevated: innerBoxIsScrolled ?? false,
                 expandedHeight: 280,
                 actions: <Widget>[
                   IconButton(

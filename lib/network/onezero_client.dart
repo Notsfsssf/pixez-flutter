@@ -22,11 +22,11 @@ import 'package:pixez/models/onezero_response.dart';
 
 class OnezeroClient {
   late Dio httpClient;
-  static const String URL_DNS_RESOLVER = "https://cloudflare-dns.com";
+  static const String URL_DNS_RESOLVER = "https://1.0.0.1";
 
   OnezeroClient() {
     this.httpClient =
-        Dio(BaseOptions(baseUrl: URL_DNS_RESOLVER, connectTimeout: 5000));
+        Dio(BaseOptions(baseUrl: URL_DNS_RESOLVER, connectTimeout: 10000));
     (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
       HttpClient httpClient = new HttpClient();
@@ -58,6 +58,12 @@ class OnezeroClient {
           'name': name,
           'type': 'A',
         });
-    return onezeroResponseFromJson(response.data);
+    var responseFromJson = onezeroResponseFromJson(response.data);
+    // for (var value in responseFromJson.answer) {
+    //   if(value.name == "app-api.pixiv.net"){
+    //     value.data=""
+    //   }
+    // }
+    return responseFromJson;
   }
 }

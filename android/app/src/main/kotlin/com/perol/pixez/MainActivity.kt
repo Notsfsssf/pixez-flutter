@@ -26,7 +26,6 @@ import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -50,20 +49,14 @@ class MainActivity : FlutterActivity() {
     private val CRYPTO_CHANNEL = "com.perol.dev/crypto"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
-    var isHelplessWay = false
+    var saveMode = 0
     private val OPEN_DOCUMENT_TREE_CODE = 190
     private val PICK_IMAGE_FILE = 2
     var pendingResult: MethodChannel.Result? = null
     var pendingPickResult: MethodChannel.Result? = null
     var helplessPath: String? = null
-
-    private fun pickFile() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "image/*"
-        }
-        startActivityForResult(intent, PICK_IMAGE_FILE)
-    }
+    private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
+    lateinit var sharedPreferences: SharedPreferences
 
     private fun splicingUrl(parentUri: String, fileName: String) = if (parentUri.endsWith(":")) {
         parentUri + fileName
@@ -72,7 +65,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun choiceFolder(needHint: Boolean = true) {
-        if (isHelplessWay) {
+        if (saveMode == 2 || saveMode == 0) {
             pendingPickResult?.success(true)
             return
         }
@@ -84,17 +77,10 @@ class MainActivity : FlutterActivity() {
         startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
     }
 
-    private fun needChoice(): Boolean {
-        if (isHelplessWay) {
-            helplessPath = sharedPreferences.getString("flutter.store_path", null)
-            return helplessPath == null
-        }
-        return contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
-                .isEmpty()
-    }
-
     private fun isFileExist(name: String): Boolean {
-        if (isHelplessWay) {
+        if (saveMode == 0) {
+            return exist(name)
+        } else if (saveMode == 2) {
             return File("$helplessPath/$name").exists()
         }
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }.first().uri)!!
@@ -196,8 +182,8 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
+        saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
         Weiss.bindChannel(this, flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CRYPTO_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "code_verifier") {
@@ -247,10 +233,16 @@ class MainActivity : FlutterActivity() {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
                 var clearOld = call.argument<Boolean>("clear_old")
+                saveMode = call.argument<Int>("save_mode") ?: 0
+
                 if (clearOld == null)
                     clearOld = false
                 GlobalScope.launch(Dispatchers.Main) {
-                    if (isHelplessWay) {
+                    if (saveMode == 0) {
+                        withContext(Dispatchers.IO) {
+                            save(data, name)
+                        }
+                    } else if (saveMode == 2) {
                         if (helplessPath == null) {
                             helplessPath = sharedPreferences.getString("flutter.store_path", null)
                             if (helplessPath == null) {
@@ -287,33 +279,18 @@ class MainActivity : FlutterActivity() {
                         ) { _, _ ->
                         }
 
-                    }
-                    withContext(Dispatchers.IO) {
-                        writeFileUri(name, clearOld)?.let {
-                            wr(data, it)
+                    } else if (saveMode == 1) {
+                        withContext(Dispatchers.IO) {
+                            writeFileUri(name, clearOld)?.let {
+                                wr(data, it)
+                            }
                         }
                     }
                     result.success(true)
                 }
             }
-            if (call.method == "ishelplessway") {
-                isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
-                result.success(true)
-            }
-            if (call.method == "scan") {
-                val path = call.argument<String>("path")!!
-                MediaScannerConnection.scanFile(
-                        this@MainActivity,
-                        arrayOf(path),
-                        arrayOf(
-                                MimeTypeMap.getSingleton()
-                                        .getMimeTypeFromExtension(File(path).extension)
-                        )
-                ) { _, _ ->
-                }
-                result.success(true);
-            }
             if (call.method == "get_path") {
+                saveMode = call.argument<Int>("save_mode") ?: 0
                 GlobalScope.launch(Dispatchers.Main) {
                     val path = withContext(Dispatchers.IO) {
                         getPath()
@@ -323,6 +300,7 @@ class MainActivity : FlutterActivity() {
             }
             if (call.method == "exist") {
                 val name = call.argument<String>("name")!!
+                saveMode = call.argument<Int>("save_mode") ?: 0
                 GlobalScope.launch(Dispatchers.Main) {
                     val isFileExist = withContext(Dispatchers.IO) {
                         isFileExist(name)
@@ -330,25 +308,10 @@ class MainActivity : FlutterActivity() {
                     result.success(isFileExist)
                 }
             }
-            if (call.method == "need_choice") {
-                GlobalScope.launch(Dispatchers.Main) {
-                    val need = withContext(Dispatchers.IO) {
-                        isHelplessWay = sharedPreferences.getBoolean("flutter.is_helplessway", false)
-                        if (isHelplessWay) {
-                            return@withContext false
-                        }
-                        needChoice()
-                    }
-                    result.success(need)
-                }
-            }
             if (call.method == "choice_folder") {
+                saveMode = call.argument<Int>("save_mode") ?: 0
                 choiceFolder()
                 pendingPickResult = result
-            }
-            if (call.method == "pick_file") {
-                pendingResult = result
-                pickFile()
             }
         }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENCODE_CHANNEL).setMethodCallHandler { call, result ->
@@ -422,10 +385,11 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
-    lateinit var sharedPreferences: SharedPreferences
     private fun getPath(): String? {
-        if (isHelplessWay) {
+        if (saveMode == 0) {
+            return "Pictures/PixEz"
+        }
+        if (saveMode == 2) {
             helplessPath = sharedPreferences.getString("flutter.store_path", "")
             return helplessPath
         }
@@ -440,11 +404,11 @@ class MainActivity : FlutterActivity() {
         val file = File(path)
         file.let {
             val tempFile = File(applicationContext.cacheDir, "${
-                if (name.contains("/")) {
-                    name.split("/").last()
-                } else {
-                    name
-                }
+            if (name.contains("/")) {
+                name.split("/").last()
+            } else {
+                name
+            }
             }.gif")
             try {
                 val fileName = "${name}.gif"
@@ -473,7 +437,11 @@ class MainActivity : FlutterActivity() {
                     } else encoder.encodeFrame(bitmap, delay)
                 }
                 encoder.close()
-                if (isHelplessWay) {
+                if (saveMode == 1) {
+                    save(tempFile.readBytes(), fileName)
+                    return
+                }
+                if (saveMode == 2) {
                     val target = File("$helplessPath/$fileName")
                     if (!target.exists()) {
                         target.createNewFile()
@@ -499,5 +467,4 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
-
 }

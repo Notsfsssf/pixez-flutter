@@ -33,7 +33,7 @@ class PlatformPage extends StatefulWidget {
 class _PlatformPageState extends State<PlatformPage> {
   String path = "";
   List<DisplayMode> modes = <DisplayMode>[];
-  late DisplayMode selected;
+  DisplayMode? selected;
 
   @override
   void initState() {
@@ -59,6 +59,7 @@ class _PlatformPageState extends State<PlatformPage> {
       /// #2 1440x3168 @ 120Hz
       /// #3 1440x3168 @ 60Hz
       /// #4 1080x2376 @ 120Hz
+      selected = modes.firstWhere((DisplayMode m) => m.selected);
     } on PlatformException catch (e) {
       print(e);
 
@@ -66,7 +67,6 @@ class _PlatformPageState extends State<PlatformPage> {
       /// noAPI - No API support. Only Marshmallow and above.
       /// noActivity - Activity is not available. Probably app is in background
     }
-    selected = modes.firstWhere((DisplayMode m) => m.selected);
     // if (mounted) {
     //   setState(() {});
     // }
@@ -108,7 +108,7 @@ class _PlatformPageState extends State<PlatformPage> {
               ListTile(
                 leading: Icon(Icons.folder),
                 title: Text(
-                    '${I18n.of(context).save_path}(${userSetting.isHelplessWay ? I18n.of(context).old_way : 'SAF'})'),
+                    '${I18n.of(context).save_path}(${userSetting.saveMode != 0 ? (userSetting.saveMode == 2 ? I18n.of(context).old_way : 'SAF') : "Media"})'),
                 subtitle: Text(path),
                 onTap: () async {
                   await showPathDialog(context);
@@ -209,7 +209,7 @@ class _PlatformPageState extends State<PlatformPage> {
                       });
                 },
                 title: Text(I18n.of(context).display_mode),
-                subtitle: Text(selected.toString() ?? ''),
+                subtitle: Text('${selected ?? ''}'),
               ),
             ],
           );

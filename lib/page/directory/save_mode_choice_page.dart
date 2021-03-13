@@ -36,7 +36,7 @@ showPathDialog(BuildContext context, {bool isFirst = false}) async {
 class SaveModeChoicePage extends StatefulWidget {
   bool isFirst;
 
-  SaveModeChoicePage({Key? key,required this.isFirst}) : super(key: key);
+  SaveModeChoicePage({Key? key, required this.isFirst}) : super(key: key);
 
   @override
   _SaveModeChoicePageState createState() => _SaveModeChoicePageState();
@@ -97,13 +97,20 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                       groupValue: groupValue,
                       children: {
                         0: Text(
-                          'SAF',
+                          'Media',
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1!
                               .copyWith(fontSize: 16.0),
                         ),
                         1: Text(
+                          'SAF',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(fontSize: 16.0),
+                        ),
+                        2: Text(
                           I18n.of(context).old_way,
                           style: Theme.of(context)
                               .textTheme
@@ -115,10 +122,10 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                         setState(() {
                           this.groupValue = v as int;
                         });
-                        if (groupValue == 0) {
+                        if (groupValue == 0 || groupValue == 1) {
                           _animationController.reverse();
                         }
-                        if (groupValue == 1) {
+                        if (groupValue == 2) {
                           _animationController.forward();
                         }
                       }),
@@ -141,6 +148,18 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                   ],
                 ),
                 if (groupValue == 0)
+                  Expanded(
+                      child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [Text("MediaStore"), Text("插画将会保存在相册")],
+                        ),
+                      )
+                    ],
+                  )),
+                if (groupValue == 1)
                   Expanded(
                     child: Stack(
                       children: [
@@ -171,7 +190,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                       ],
                     ),
                   ),
-                if (groupValue == 1)
+                if (groupValue == 2)
                   Expanded(
                       child: ListView(
                     children: [
@@ -196,10 +215,12 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
 
   Future _onPress(BuildContext context) async {
     if (groupValue == 0) {
+      userSetting.setSaveMode(0);
+      Navigator.of(context).pop();
+    } else if (groupValue == 1) {
       await _saffun(context);
       Navigator.of(context).pop();
-    }
-    if (groupValue == 1) {
+    } else if (groupValue == 2) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       print('Running on ${androidInfo.version.sdkInt}');
@@ -209,22 +230,22 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       await _helplessfun(context, isFirst: widget.isFirst);
       Navigator.of(context).pop();
     }
-    if (groupValue == 0) {
+    if (groupValue == 0 || groupValue == 1) {
       _animationController.reverse();
     }
-    if (groupValue == 1) {
+    if (groupValue == 2) {
       _animationController.forward();
     }
   }
 }
 
 Future _saffun(BuildContext context) async {
-  await userSetting.setIsHelplessWay(false);
+  await userSetting.setSaveMode(1);
   await DocumentPlugin.choiceFolder();
 }
 
 Future _helplessfun(BuildContext context, {bool isFirst = false}) async {
-  await userSetting.setIsHelplessWay(true);
+  await userSetting.setSaveMode(2);
   String? initPath =
       isFirst ? "/storage/emulated/0/Pictures/pixez" : null; //过时api只能硬编码
   final path = await Navigator.of(context).push(MaterialPageRoute(

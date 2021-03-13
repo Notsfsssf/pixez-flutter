@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:auto_animated/auto_animated.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,6 +88,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
 
   void _loadAbout() {
     if (mounted &&
+        _scrollController.hasClients &&
         _scrollController.offset + 20 >=
             _scrollController.position.maxScrollExtent &&
         _aboutStore.illusts.isEmpty) _aboutStore.fetch();
@@ -210,6 +212,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         text,
         style: TextStyle(color: Theme.of(context).accentColor),
       );
+
+  ScrollController scrollController = ScrollController();
 
   Widget _buildContent(BuildContext context, Illusts? data) {
     if (_illustStore.errorMessage != null)

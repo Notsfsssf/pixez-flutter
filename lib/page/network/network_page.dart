@@ -25,7 +25,7 @@ class _NetworkPageState extends State<NetworkPage> {
   @override
   void initState() {
     _textEditingController = TextEditingController(
-      text: '',
+      text: userSetting.pictureSource,
     );
     _automaticallyImplyLeading = widget.automaticallyImplyLeading ?? false;
     super.initState();
@@ -163,24 +163,27 @@ class _NetworkPageState extends State<NetworkPage> {
                             userSetting.pictureSource != ImageCatHost,
                         selectedTileColor: Theme.of(context).accentColor,
                         title: Theme(
-                          data: Theme.of(context).copyWith(primaryColor: Theme.of(context).accentColor),
+                          data: Theme.of(context).copyWith(
+                              primaryColor: Theme.of(context).accentColor),
                           child: TextField(
                             maxLines: 1,
                             controller: _textEditingController,
                             decoration: InputDecoration(
                               hintText: 'Host',
                               suffixIcon: IconButton(
-                                onPressed: () {
-                                  if (_textEditingController.text.isEmpty) return;
-                                  userSetting.setPictureSource(
+                                onPressed: () async {
+                                  if (_textEditingController.text.isEmpty)
+                                    return;
+                                  await userSetting.setPictureSource(
                                       _textEditingController.text);
+                                  FocusScope.of(context).requestFocus(FocusNode());
                                 },
                                 icon: Icon(
                                   Icons.check,
                                   color: Colors.black,
                                 ),
                               ),
-                              labelText: '自定义Host',
+                              labelText: 'Custom Host',
                             ),
                           ),
                         ),

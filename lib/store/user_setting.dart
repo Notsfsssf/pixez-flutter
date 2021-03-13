@@ -19,11 +19,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/document_plugin.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +45,7 @@ abstract class _UserSettingBase with Store {
   static const String PICTURE_SOURCE_KEY = "picture_source";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
+  static const String SAVE_MODE_KEY = "save_mode";
   static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
   static const String IS_CLEAR_OLD_FORMAT_FILE_KEY = "is_clear_old_format_file";
   static const String IS_FOLLOW_AFTER_STAR = "is_follow_after_star";
@@ -59,7 +57,9 @@ abstract class _UserSettingBase with Store {
   @observable
   bool isReturnAgainToExit = true;
   @observable
-  bool isHelplessWay = false;
+  bool? isHelplessWay = false;
+  @observable
+  int saveMode = 0;
   @observable
   bool isAMOLED = false;
   @observable
@@ -124,13 +124,6 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
-  setIsHelplessWay(bool value) async {
-    await prefs.setBool(ISHELPLESSWAY_KEY, value);
-    isHelplessWay = value;
-    await DocumentPlugin.isHelplessWay();
-  }
-
-  @action
   setFollowAfterStar(bool value) async {
     await prefs.setBool(IS_FOLLOW_AFTER_STAR, value);
     followAfterStar = value;
@@ -182,6 +175,12 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setSaveMode(int value) async {
+    await prefs.setInt(SAVE_MODE_KEY, value);
+    saveMode = value;
+  }
+
+  @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
@@ -195,12 +194,14 @@ abstract class _UserSettingBase with Store {
     mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
     isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
-    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY) ?? false;
+    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY);
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
+    saveMode = prefs.getInt(SAVE_MODE_KEY) ??
+        (isHelplessWay == null ? 0 : (isHelplessWay! ? 2 : 1));
     pictureSource = disableBypassSni
         ? ImageHost
         : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);

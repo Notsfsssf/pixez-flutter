@@ -41,6 +41,11 @@ extension TimeExts on String {
     if (userSetting.disableBypassSni || this.contains("novel")) {
       return this;
     } else {
+      if (userSetting.pictureSource != ImageHost) {
+        return Uri.parse(this)
+            .replace(host: userSetting.pictureSource)
+            .toString();
+      }
       if (this.contains(ImageHost)) {
         return this.replaceFirst(ImageHost, splashStore.host);
       }

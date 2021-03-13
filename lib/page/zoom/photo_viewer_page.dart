@@ -159,12 +159,12 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               shareShow = false;
               index = i;
             });
-            final url = (userSetting.zoomQuality == 0
-                    ? metaPages[index].imageUrls.large
-                    : metaPages[index].imageUrls.original)
+            final url = (userSetting.zoomQuality == 1 || _loadSource
+                    ? metaPages[index].imageUrls.original
+                    : metaPages[index].imageUrls.large)
                 .toTrueUrl();
             nowUrl = url;
-            File file = (await getCachedImageFile(url))!;
+            File? file = await getCachedImageFile(url);
             if (file != null && mounted)
               setState(() {
                 shareShow = true;
@@ -173,9 +173,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
           itemCount: metaPages.length,
           itemBuilder: (BuildContext context, int index) {
             return ExtendedImage.network(
-              (userSetting.zoomQuality == 0
-                      ? metaPages[index].imageUrls.large
-                      : metaPages[index].imageUrls.original)
+              (userSetting.zoomQuality == 1 || _loadSource
+                      ? metaPages[index].imageUrls.original
+                      : metaPages[index].imageUrls.large)
                   .toTrueUrl(),
               headers: Hoster.header(url: preUrl),
               handleLoadingProgress: true,
@@ -363,7 +363,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                             color: Colors.white,
                           ),
                           onPressed: () async {
-                            File file = (await getCachedImageFile(nowUrl))!;
+                            File? file = await getCachedImageFile(nowUrl);
                             if (file != null) {
                               String targetPath = join(
                                   (await getTemporaryDirectory()).path,

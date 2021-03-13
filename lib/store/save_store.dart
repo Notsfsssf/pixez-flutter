@@ -285,11 +285,6 @@ abstract class _SaveStoreBase with Store {
   @action
   Future<void> saveImage(Illusts illusts,
       {int? index, bool redo = false}) async {
-    try {
-      if (Platform.isAndroid && (await DocumentPlugin.needChoice())!) {
-        await showPathDialog(context!, isFirst: true);
-      }
-    } catch (e) {}
     String memType;
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage.originalImageUrl;

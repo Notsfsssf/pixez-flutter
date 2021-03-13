@@ -16,28 +16,34 @@
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:pixez/main.dart';
 
 class DocumentPlugin {
   static const platform = const MethodChannel('com.perol.dev/save');
 
   static Future<bool?> save(Uint8List uint8list, String fileName,
-      {bool clearOld = false}) async {
-    return platform.invokeMethod<bool>(
-        'save', {"data": uint8list, "name": fileName, "clear_old": clearOld});
+      {bool clearOld = false, int? saveMode}) async {
+    return platform.invokeMethod<bool>('save', {
+      "data": uint8list,
+      "name": fileName,
+      "save_mode": saveMode ?? userSetting.saveMode,
+      "clear_old": clearOld
+    });
   }
 
-  static Future<bool?> exist(String fileName) =>
-      platform.invokeMethod<bool>("exist", {"name": fileName});
+  static Future<bool?> exist(String fileName, {int? saveMode}) =>
+      platform.invokeMethod<bool>("exist", {
+        "name": fileName,
+        "save_mode": saveMode ?? userSetting.saveMode,
+      });
 
-  static Future<String?> getPath() => platform.invokeMethod<String>("get_path");
+  static Future<String?> getPath({int? saveMode}) =>
+      platform.invokeMethod<String>("get_path", {
+        "save_mode": saveMode ?? userSetting.saveMode,
+      });
 
-  static Future<bool?> needChoice() =>
-      platform.invokeMethod<bool>("need_choice");
-
-  static Future<dynamic> choiceFolder() =>
-      platform.invokeMethod("choice_folder");
-
-  static Future<dynamic> isHelplessWay() =>
-      platform.invokeMethod("ishelplessway");
-  static Future<Uint8List?> pickFile() => platform.invokeMethod("pick_file");
+  static Future<dynamic> choiceFolder({int? saveMode}) =>
+      platform.invokeMethod("choice_folder", {
+        "save_mode": saveMode ?? userSetting.saveMode,
+      });
 }

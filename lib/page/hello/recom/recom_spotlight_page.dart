@@ -203,6 +203,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   RenderObjectWidget _buildWaterfall(double itemWidth) {
+    _lightingStore.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return _lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -218,13 +219,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             ),
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-              if (_lightingStore.iStores[index].illusts!.hateByUser()) {
-                return Visibility(
-                    visible: false,
-                    child: Container(
-                      height: 0.0,
-                    ));
-              }
               double radio =
                   _lightingStore.iStores[index].illusts!.height.toDouble() /
                       _lightingStore.iStores[index].illusts!.width.toDouble();
