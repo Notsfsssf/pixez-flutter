@@ -117,8 +117,6 @@ flutter:
     - assets/images/step2.png
     - assets/images/ic_front.png
     - assets/images/fish.gif
-    - assets/raw/ca.pem
-    - assets/raw/key.pem
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
