@@ -84,30 +84,28 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            RotationTransition(
-                child: Image.asset(
-                  'assets/images/icon.png',
-                  height: 80,
-                  width: 80,
-                ),
-                alignment: Alignment.center,
-                turns: controller),
-            Container(
-              child: Text(
-                splashStore.helloWord,
-                textAlign: TextAlign.center,
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          RotationTransition(
+              child: Image.asset(
+                'assets/images/icon.png',
+                height: 80,
+                width: 80,
               ),
-            )
-          ],
-        ),
-      );
-    });
+              alignment: Alignment.center,
+              turns: controller),
+          Container(
+            child: Text(
+              splashStore.helloWord,
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

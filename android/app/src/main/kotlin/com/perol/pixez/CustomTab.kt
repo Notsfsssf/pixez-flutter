@@ -12,21 +12,20 @@ import io.flutter.plugin.common.MethodChannel
 object CustomTab {
     private const val TAG = "CustomTab"
     private const val CUSTOM_TAB_CHANNEL = "com.perol.dev/custom_tab"
-    var methodChannel: MethodChannel? = null
 
     fun bindChannel(context: Context, flutterEngine: FlutterEngine) {
-        methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CUSTOM_TAB_CHANNEL)
-        methodChannel?.setMethodCallHandler { call, result ->
-            when (call.method) {
-                "launch" -> {
-                    val url = call.argument<String>("url")
-                    url?.let {
-                        context.launchUrl(it)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CUSTOM_TAB_CHANNEL)
+                .setMethodCallHandler { call, result ->
+                    when (call.method) {
+                        "launch" -> {
+                            val url = call.argument<String>("url")
+                            url?.let {
+                                context.launchUrl(it)
+                            }
+                        }
                     }
+                    result.success(null)
                 }
-            }
-            result.success(null)
-        }
     }
 
     private fun Context.launchUrl(url: String) {

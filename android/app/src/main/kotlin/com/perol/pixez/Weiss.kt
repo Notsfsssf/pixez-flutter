@@ -21,11 +21,9 @@ object Weiss {
     private const val WEISS_CHANNEL = "com.perol.dev/weiss"
     private const val TAG = "weiss"
     var port = "9876"
-    var methodChannel: MethodChannel? = null
 
-    fun bindChannel(context: Context, flutterEngine: FlutterEngine) {
-        methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WEISS_CHANNEL)
-        methodChannel?.setMethodCallHandler { call, result ->
+    fun bindChannel(flutterEngine: FlutterEngine) {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WEISS_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "start" -> {
                     start()

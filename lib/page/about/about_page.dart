@@ -131,7 +131,7 @@ class _AboutPageState extends State<AboutPage> {
         children: <Widget>[
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/me.jpg'),
+              backgroundImage: AssetImage('assets/images/icon.png'),
             ),
             title: Text('Perol_Notsfsssf'),
             subtitle: Text(I18n.of(context).perol_message),
