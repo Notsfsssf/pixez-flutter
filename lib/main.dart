@@ -143,8 +143,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    accountStore.fetch();
     userSetting.init();
+    accountStore.fetch();
     bookTagStore.init();
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();

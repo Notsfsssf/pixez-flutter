@@ -183,10 +183,10 @@ abstract class _UserSettingBase with Store {
   @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
+    disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
     singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
     displayMode = prefs.getInt('display_mode');
-    disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;

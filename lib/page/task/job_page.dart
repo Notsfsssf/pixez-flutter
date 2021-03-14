@@ -384,6 +384,7 @@ class _JobPageState extends State<JobPage> {
   }
 
   Future _retryJob(TaskPersist persist) async {
+    if (persist.status == 2) return;
     await _deleteJob(persist);
     final taskPersist = persist;
     await taskPersistProvider.insert(taskPersist);

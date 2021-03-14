@@ -32,8 +32,8 @@ class TaskPersist {
       required this.url,
       required this.userId,
       required this.illustId,
-      required this.id,
       required this.fileName,
+      this.id,
       required this.status});
 
   factory TaskPersist.fromJson(Map<String, dynamic> json) {

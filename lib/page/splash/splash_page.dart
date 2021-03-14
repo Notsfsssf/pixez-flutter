@@ -64,25 +64,6 @@ class _SplashPageState extends State<SplashPage>
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
-      if (false && !userSetting.disableBypassSni) {
-        try {
-          if (splashStore.onezeroResponse != null) {
-            var address = splashStore.onezeroResponse!.answer.first.data;
-            print('address:$address');
-            if (address != null && address.isNotEmpty) {
-              apiClient.httpClient.options.baseUrl = 'https://$address';
-              apiClient.httpClient.options.headers['host'] =
-                  'https://${ApiClient.BASE_API_URL_HOST}';
-              oAuthClient.httpClient.options.baseUrl = 'https://$address';
-              oAuthClient.httpClient.options.headers['host'] =
-                  'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-            }
-          }
-        } catch (e) {
-          print(e);
-        }
-      }
-
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

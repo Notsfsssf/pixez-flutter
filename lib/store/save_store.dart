@@ -176,7 +176,6 @@ abstract class _SaveStoreBase with Store {
       return;
     }
     var taskPersist = TaskPersist(
-        id: 0,
         userId: illusts.user.id,
         userName: illusts.user.name,
         illustId: illusts.id,
