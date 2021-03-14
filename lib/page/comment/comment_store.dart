@@ -25,7 +25,9 @@ abstract class _CommentStoreBase with Store {
   fetch() async {
     errorMessage = null;
     nextUrl = null;
-    _controller.footerMode?.value = LoadStatus.idle;
+    if (_controller.footerMode != null)
+      _controller.footerMode?.value = LoadStatus.idle;
+    _controller.headerMode?.value = RefreshStatus.refreshing;
     try {
       Response response = await apiClient.getIllustComments(id);
       CommentResponse commentResponse = CommentResponse.fromJson(response.data);

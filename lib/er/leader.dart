@@ -58,6 +58,7 @@ class Leader {
           await accountStore.fetch();
         } catch (e) {
           LPrinter.d(e);
+          BotToast.showText(text: e.toString());
         }
       } else if (link.host.contains("illusts") || link.host.contains("user")) {
         _parseUriContent(context, link);

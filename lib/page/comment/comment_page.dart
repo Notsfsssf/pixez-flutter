@@ -69,6 +69,7 @@ class _CommentPageState extends State<CommentPage> {
               child: SmartRefresher(
                 controller: easyRefreshController,
                 enablePullUp: true,
+                enablePullDown: true,
                 header: (Platform.isAndroid)
                     ? MaterialClassicHeader(
                         color: Theme.of(context).accentColor,

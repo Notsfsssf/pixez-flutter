@@ -444,7 +444,7 @@ packages:
     source: hosted
     version: "0.15.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.flutter-io.cn"
@@ -817,6 +817,13 @@ packages:
     dependency: transitive
     description:
       name: shelf
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  shelf_proxy:
+    dependency: "direct main"
+    description:
+      name: shelf_proxy
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"

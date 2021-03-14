@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -173,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
           ));
     } else {
       try {
-        launch(url);
+        CustomTabPlugin.launch(url);
       } catch (e) {
         BotToast.showText(text: e.toString());
       }

@@ -240,5 +240,6 @@
   "image_site": "Image Site",
   "network": "Network",
   "select_language": "Select Language",
-  "network_question": "Is your network environment able to access pixiv normally?"
+  "network_question": "Is your network environment able to access pixiv normally?",
+  "media_hint": "Illustrations will be saved to the album"
 }

@@ -63,7 +63,7 @@ class _WebViewPageState extends State<WebViewPage> {
                         useShouldOverrideUrlLoading: true,
                       ),
                       android: AndroidInAppWebViewOptions(
-                        useHybridComposition: !kDebugMode,
+                        useHybridComposition: true,
                       )),
                   onWebViewCreated: (InAppWebViewController controller) {
                     _webViewController = controller;

@@ -185,6 +185,7 @@ class MainActivity : FlutterActivity() {
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
         saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
         Weiss.bindChannel(this, flutterEngine)
+        CustomTab.bindChannel(this, flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CRYPTO_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "code_verifier") {
                 result.success(CodeGen.getCodeVer())

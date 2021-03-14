@@ -67,6 +67,8 @@ dependencies:
   flutter_inappwebview: ^5.1.0+4
   dio_cookie_manager: ^2.0.0-beta1
   auto_animated: ^3.0.0
+  http: ^0.13.0
+  shelf_proxy: ^1.0.0
   dio_http_cache:
     git:
       url: https://github.com/shinayser/dio-http-cache
@@ -115,6 +117,8 @@ flutter:
     - assets/images/step2.png
     - assets/images/ic_front.png
     - assets/images/fish.gif
+    - assets/raw/ca.pem
+    - assets/raw/key.pem
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

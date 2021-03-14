@@ -154,7 +154,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          children: [Text("MediaStore"), Text("插画将会保存在相册")],
+                          children: [Text("MediaStore"), Text(I18n.of(context).media_hint)],
                         ),
                       )
                     ],
