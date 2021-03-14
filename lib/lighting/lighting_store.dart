@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
@@ -86,6 +88,8 @@ abstract class _LightingStoreBase with Store {
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
+      if (userSetting.prefs.getString("app_widget_data") == null)
+        userSetting.prefs.setString("app_widget_data", jsonEncode(recommend));
       controller?.refreshCompleted();
       return true;
     } catch (e) {

@@ -329,15 +329,6 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CardAppWidget.CHANNEL).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "initialize" -> {
-                    if (call.arguments == null) return@setMethodCallHandler
-                    Log.d("native", "initialize widget")
-                    CardAppWidget.setHandle(this, call.arguments as Long)
-                }
-            }
-        }
     }
 
     override fun onActivityResult(

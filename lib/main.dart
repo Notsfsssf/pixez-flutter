@@ -66,65 +66,7 @@ final KVer kVer = KVer();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initAppWidget();
   runApp(MyApp());
-}
-
-initAppWidget() {
-  if (Platform.isAndroid) {
-    const MethodChannel channel = MethodChannel('com.example.app/widget');
-    final CallbackHandle callback =
-        PluginUtilities.getCallbackHandle(onWidgetUpdate);
-    final handle = callback.toRawHandle();
-    channel.invokeMethod('initialize', handle);
-  }
-}
-
-void onWidgetUpdate() {
-  WidgetsFlutterBinding.ensureInitialized();
-  const MethodChannel channel = MethodChannel('com.example.app/widget');
-  ApiClient apiClient = ApiClient();
-  channel.setMethodCallHandler(
-    (call) async {
-      if (call.method == 'update') {
-        try {
-          const NOW_POSITION = 'now_position';
-          LPrinter.d("setMethodCallHandler");
-          final id = call.arguments;
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          int position = pref.getInt(NOW_POSITION) ?? 0; //Position Zero!
-          AccountProvider accountProvider = AccountProvider();
-          await accountProvider.open();
-          List<AccountPersist> accounts =
-              await accountProvider.getAllAccount(); //bug  token refresh
-          Response response;
-          if (accounts.isNotEmpty)
-            response = await apiClient.getIllustRanking("day", null);
-          else
-            response = await apiClient.walkthroughIllusts();
-          Recommend recommend = Recommend.fromJson(response.data);
-          print('on Dart ${call.method}!:${recommend.illusts[position].title}');
-          String url = recommend.illusts[position].imageUrls.squareMedium;
-          int fPosition = position + 1;
-          if (fPosition >= recommend.illusts.length) {
-            fPosition = 0;
-          }
-          await pref.setInt(NOW_POSITION, fPosition);
-          LPrinter.d("setMethodCallHandler:Success");
-          return {
-            'code': 200,
-            'message': 'success',
-            'id': id,
-            'iid': recommend.illusts[position].id,
-            'value': url,
-          };
-        } catch (e) {
-          LPrinter.d("setMethodCallHandler:Fail=$e");
-          return {'code': 400, 'message': e.toString()};
-        }
-      }
-    },
-  );
 }
 
 class MyApp extends StatefulWidget {

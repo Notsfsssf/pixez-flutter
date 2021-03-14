@@ -21,6 +21,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.RemoteViews
@@ -36,45 +37,40 @@ import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.view.FlutterCallbackInformation
 import io.flutter.view.FlutterMain
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 /**
  * Implementation of App Widget functionality.
  */
-class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
+class CardAppWidget : AppWidgetProvider() {
 
-    companion object {
-        private var channel: MethodChannel? = null;
-        private const val WIDGET_PREFERENCES_KEY = "widget_preferences"
-        private const val WIDGET_HANDLE_KEY = "handle"
-
-        const val CHANNEL = "com.example.app/widget"
-        const val NO_HANDLE = -1L
-
-        fun setHandle(context: Context, handle: Long) {
-            context.getSharedPreferences(
-                    WIDGET_PREFERENCES_KEY,
-                    Context.MODE_PRIVATE
-            ).edit().apply {
-                putLong(WIDGET_HANDLE_KEY, handle)
-                apply()
-            }
-        }
-
-        fun getRawHandle(context: Context): Long {
-            return context.getSharedPreferences(
-                    WIDGET_PREFERENCES_KEY,
-                    Context.MODE_PRIVATE
-            ).getLong(WIDGET_HANDLE_KEY, NO_HANDLE)
-        }
-    }
-
-    private lateinit var context: Context
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        this.context = context
-        init()
         for (appWidgetId in appWidgetIds) {
-            channel?.invokeMethod("update", appWidgetId, this)
+            val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
+            val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+            val data = sharedPreferences.getString("flutter.app_widget_data", null)
+            val host = sharedPreferences.getString("flutter.picture_source", null)
+            data?.let {
+                try {
+                    val time = sharedPreferences.getLong("flutter.app_widget_time", 0)
+                    val jsonData = JSONObject(it)
+                    val jsonArray = jsonData.getJSONArray("illusts")
+                    val jsonObject = jsonArray.getJSONObject((0 until jsonArray.length()).random())
+                    updateWidget(context, jsonObject.getJSONObject("image_urls").getString("square_medium"), appWidgetId, jsonObject.getInt("id"), host)
+                    if (time < 10)
+                        sharedPreferences.edit().putLong("flutter.app_widget_time", time + 1).apply()
+                    else {
+                        sharedPreferences.edit().remove("flutter.app_widget_time").apply()
+                        sharedPreferences.edit().remove("flutter.app_widget_data").apply()
+                    }
+                } catch (e: Throwable) {
+                    sharedPreferences.edit().remove("flutter.app_widget_data").apply()
+                    io.flutter.Log.d("Card app widget", e.toString())
+                }
+
+            }
         }
     }
 
@@ -84,54 +80,18 @@ class CardAppWidget : AppWidgetProvider(), MethodChannel.Result {
     override fun onDisabled(context: Context) {
     }
 
-    private fun init() {
-        if (channel == null) {
-            FlutterMain.startInitialization(context)
-            FlutterMain.ensureInitializationComplete(context, arrayOf())
-            val handle = getRawHandle(context)
-            if (handle == NO_HANDLE) {
-                return
-            }
-            val callbackInfo = FlutterCallbackInformation.lookupCallbackInformation(handle)
-            val entryPointFunctionName = callbackInfo.callbackName
-            val engine = FlutterEngine(context.applicationContext)
-            val entryPoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entryPointFunctionName)
-            engine.dartExecutor.executeDartEntrypoint(entryPoint)
-            engine.plugins.add(io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin())
-            engine.plugins.add(com.tekartik.sqflite.SqflitePlugin())
-            channel = MethodChannel(engine.dartExecutor.binaryMessenger, CHANNEL)
-            Log.d("w", "success initializeFlutter")
-        }
-    }
-
-    override fun success(result: Any?) {
-        result ?: return
-        val args = result as HashMap<*, *>
-        val code = args["code"] as Int
-        if (code == 400) {
-            val message = args["message"] as String?
-            Log.d("update error", "message=$message")
-            return
-        }
-        val id = args["id"] as Int
-        val iId = args["iid"] as Int
-        val value = args["value"] as String
-        Log.d("w", "success${iId}")
-        updateWidget(context, value, id, iId)
-    }
-
-    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-    }
-
-    override fun notImplemented() {
-    }
 }
 
-internal fun updateWidget(context: Context, url: String, appWidgetId: Int, iId: Int?) {
+internal fun updateWidget(context: Context, url: String, appWidgetId: Int, iId: Int?, host: String?) {
     val views = RemoteViews(context.packageName, R.layout.card_app_widget)
     val manager = AppWidgetManager.getInstance(context)
     try {
-        val glideUrl = GlideUrl(url, LazyHeaders.Builder()
+        val trueUrl = if (host != null) {
+            url.replace("i.pximg.net", host)
+        } else {
+            url
+        }
+        val glideUrl = GlideUrl(trueUrl, LazyHeaders.Builder()
                 .addHeader("referer", "https://app-api.pixiv.net/")
                 .addHeader("User-Agent", "PixivIOSApp/5.8.0")
                 .build())
@@ -139,7 +99,7 @@ internal fun updateWidget(context: Context, url: String, appWidgetId: Int, iId: 
                 .asBitmap()
                 .load(glideUrl)
                 .apply(RequestOptions.bitmapTransform(RoundedCorners(20)))
-                .into(object :SimpleTarget<Bitmap>() {
+                .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         views.setImageViewBitmap(R.id.appwidget_image, resource)
                         val intent = Intent(context, IntentActivity::class.java).apply {
@@ -151,12 +111,7 @@ internal fun updateWidget(context: Context, url: String, appWidgetId: Int, iId: 
                     }
                 });
     } catch (throwable: Throwable) {
-        Log.d("throw", "Throwable=" + throwable.message)
+        io.flutter.Log.d("Card app widget", throwable.toString())
     }
 
-}
-
-internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-    val views = RemoteViews(context.packageName, R.layout.card_app_widget)
-    appWidgetManager.updateAppWidget(appWidgetId, views)
 }
