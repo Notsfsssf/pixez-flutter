@@ -19,50 +19,70 @@ package com.perol.pixez
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.webkit.MimeTypeMap
+import java.io.File
 import java.io.OutputStream
 
-fun Context.save(byteArray: ByteArray, name: String) {
+fun Context.save(byteArray: ByteArray, name: String): String? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        val dirFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "pixez")
+        if (!dirFile.exists())
+            dirFile.mkdirs()
+        val targetFile = File(dirFile.absolutePath + "/" + name)
+        if (!targetFile.exists())
+            targetFile.createNewFile()
+        else
+            targetFile.delete()
+        targetFile.outputStream().use {
+            it.write(byteArray)
+        }
+        return targetFile.absolutePath
+    }
     val values = ContentValues();
-    values.put(MediaStore.MediaColumns.DISPLAY_NAME, name.split("/").last())
-    values.put(MediaStore.MediaColumns.MIME_TYPE, if (name.endsWith("png")) {
-        "image/png"
-    } else {
-        "image/jpeg"
-    })
+    val displayName = name.split("/").last()
+    values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+    values.put(MediaStore.MediaColumns.MIME_TYPE, MimeTypeMap.getSingleton().getMimeTypeFromExtension(displayName))
 
     val path = if (name.contains("/")) {
-        "${Environment.DIRECTORY_PICTURES}/PixEz/${name.split("/").first()}"
+        "${Environment.DIRECTORY_PICTURES}/pixez/${name.split("/").first()}"
     } else {
-        "${Environment.DIRECTORY_PICTURES}/PixEz"
+        "${Environment.DIRECTORY_PICTURES}/pixez"
     }
     values.put(MediaStore.MediaColumns.RELATIVE_PATH, path);
     var uri: Uri? = null
-    var outputStream: OutputStream? = null
     try {
         uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        outputStream = contentResolver.openOutputStream(uri!!)!!
-        outputStream.write(byteArray)
-        outputStream.flush()
-        outputStream.close()
+        contentResolver.openOutputStream(uri!!)?.use {
+            it.write(byteArray)
+            it.flush()
+        }
     } catch (e: Exception) {
         if (uri != null) {
             contentResolver.delete(uri, null, null);
         }
-    } finally {
-        outputStream?.close()
     }
+    return null
 }
 
 fun Context.exist(name: String): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        //what the hell
+        val dirFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "pixez")
+        if (!dirFile.exists())
+            dirFile.mkdirs()
+        val targetFile = File(dirFile.absolutePath + "/" + name)
+        return targetFile.exists()
+    }
     val projection = arrayOf(
             MediaStore.Images.Media._ID,
     )
     val path = if (name.contains("/")) {
-        "${Environment.DIRECTORY_PICTURES}/PixEz/${name.split("/").first()}"
+        "${Environment.DIRECTORY_PICTURES}/pixez/${name.split("/").first()}"
     } else {
-        "${Environment.DIRECTORY_PICTURES}/PixEz"
+        "${Environment.DIRECTORY_PICTURES}/pixez"
     }
     //想不到吧？居然是这样写？
     //咕噜咕噜，这不翻源码写的出来？

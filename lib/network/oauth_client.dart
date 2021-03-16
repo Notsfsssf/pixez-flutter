@@ -26,6 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/crypto_plugin.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/main.dart';
 
 final OAuthClient oAuthClient = OAuthClient();
 
@@ -76,15 +77,19 @@ class OAuthClient {
         "Host": BASE_OAUTH_URL_HOST
       }
       ..options.contentType = Headers.formUrlEncodedContentType;
-    (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    if (!userSetting.disableBypassSni)
+      (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        HttpClient httpClient = new HttpClient();
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+        return httpClient;
       };
-      return httpClient;
-    };
+    else {
+      httpClient.options.baseUrl = "https://${BASE_OAUTH_URL_HOST}";
+    }
     initA(time);
   }
 

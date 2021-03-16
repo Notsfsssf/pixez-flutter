@@ -25,9 +25,12 @@ import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/account.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
+import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 final ApiClient apiClient = ApiClient();
@@ -83,7 +86,6 @@ class ApiClient {
       }
       // ..options.connectTimeout = 10000
       // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
-      // ..interceptors.add(CacheInterceptor())
       ..interceptors.add(DioCacheManager(
         CacheConfig(
             defaultMaxAge: Duration(days: 1),
@@ -91,15 +93,19 @@ class ApiClient {
             skipMemoryCache: true),
       ).interceptor)
       ..interceptors.add(RefreshTokenInterceptor());
-    (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    if (!userSetting.disableBypassSni)
+      (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        HttpClient httpClient = new HttpClient();
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return true;
+        };
+        return httpClient;
       };
-      return httpClient;
-    };
+    else{
+      httpClient.options.baseUrl = "https://${BASE_API_URL_HOST}";
+    }
     initA(time);
   }
 

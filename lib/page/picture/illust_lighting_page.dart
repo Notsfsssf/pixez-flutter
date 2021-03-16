@@ -761,7 +761,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     List<bool> indexs = [];
     bool allOn = false;
     for (int i = 0; i < illust.metaPages.length; i++) {
-      indexs[i] = false;
+      indexs.add(false);
     }
     final result = await showDialog(
       context: context,

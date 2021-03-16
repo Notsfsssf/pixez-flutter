@@ -154,7 +154,10 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          children: [Text("MediaStore"), Text(I18n.of(context).media_hint)],
+                          children: [
+                            Text("MediaStore"),
+                            Text(I18n.of(context).media_hint)
+                          ],
                         ),
                       )
                     ],
@@ -215,7 +218,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
 
   Future _onPress(BuildContext context) async {
     if (groupValue == 0) {
-      userSetting.setSaveMode(0);
+      await userSetting.setSaveMode(0);
       Navigator.of(context).pop();
     } else if (groupValue == 1) {
       await _saffun(context);

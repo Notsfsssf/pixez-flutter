@@ -240,8 +240,17 @@ class MainActivity : FlutterActivity() {
                     clearOld = false
                 GlobalScope.launch(Dispatchers.Main) {
                     if (saveMode == 0) {
-                        withContext(Dispatchers.IO) {
+                        val path = withContext(Dispatchers.IO) {
                             save(data, name)
+                        }
+                        MediaScannerConnection.scanFile(
+                                this@MainActivity,
+                                arrayOf(path),
+                                arrayOf(
+                                        MimeTypeMap.getSingleton()
+                                                .getMimeTypeFromExtension(File(path).extension)
+                                )
+                        ) { _, _ ->
                         }
                     } else if (saveMode == 2) {
                         if (helplessPath == null) {
@@ -393,6 +402,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun encodeGif(name: String, path: String, delay: Int) {
+
         val file = File(path)
         file.let {
             val tempFile = File(applicationContext.cacheDir, "${
@@ -404,7 +414,10 @@ class MainActivity : FlutterActivity() {
             }.gif")
             try {
                 val fileName = "${name}.gif"
-
+                if (saveMode == 0) {
+                    if (exist(fileName))
+                        return
+                }
 /*                if (!tempFile.exists()) {
                     tempFile.createNewFile()
                 }*/
@@ -429,7 +442,7 @@ class MainActivity : FlutterActivity() {
                     } else encoder.encodeFrame(bitmap, delay)
                 }
                 encoder.close()
-                if (saveMode == 1) {
+                if (saveMode == 0) {
                     save(tempFile.readBytes(), fileName)
                     return
                 }

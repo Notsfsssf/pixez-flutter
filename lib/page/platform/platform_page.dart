@@ -113,7 +113,6 @@ class _PlatformPageState extends State<PlatformPage> {
                 onTap: () async {
                   await showPathDialog(context);
                   final path = await DocumentPlugin.getPath();
-                  debugPrint(path);
                   if (mounted) {
                     setState(() {
                       this.path = path!;

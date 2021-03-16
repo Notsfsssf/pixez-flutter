@@ -21,6 +21,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/leader.dart';
@@ -194,6 +195,21 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
   }
 
+  initPermission() async {
+    try {
+      if (Platform.isAndroid && userSetting.saveMode != 1) {
+        var granted = await Permission.storage.status;
+        if (!granted.isGranted) {
+          var b = await Permission.storage.request();
+          if (!b.isGranted) {
+            BotToast.showText(text: "storage permission denied");
+            return;
+          }
+        }
+      }
+    } catch (e) {}
+  }
+
   @override
   void dispose() {
     _intentDataStreamSubscription.cancel();
@@ -209,6 +225,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         MaterialPageRoute(builder: (context) => GuidePage()),
         (route) => route == null,
       );
+      return;
     }
+    initPermission();
   }
 }
