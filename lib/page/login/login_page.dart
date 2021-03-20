@@ -164,6 +164,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _launch(url) async {
+    if (Platform.isIOS) {
+      launch(url);
+      return;
+    }
     if (!userSetting.disableBypassSni) {
       await WeissPlugin.start();
       await WeissPlugin.proxy();

@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
@@ -64,12 +65,7 @@ class _SplashPageState extends State<SplashPage>
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => Platform.isIOS
-                  ? HelloPage()
-                  : AndroidHelloPage(lightingStore: lightingStore)));
+      Leader.pushUntilHome(context);
     });
     splashStore.hello();
   }

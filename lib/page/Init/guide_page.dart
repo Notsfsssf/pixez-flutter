@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/Init/init_page.dart';
-import 'package:pixez/page/hello/android_hello_page.dart';
-import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/network/network_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,13 +95,7 @@ class _GuidePageState extends State<GuidePage> {
                         if (userSetting.disableBypassSni) {
                           var prefs = await SharedPreferences.getInstance();
                           await prefs.setBool('guide_enable', false);
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => Platform.isIOS
-                                    ? HelloPage()
-                                    : AndroidHelloPage()),
-                            (route) => route == null,
-                          );
+                          Leader.pushUntilHome(context);
                         } else {
                           setState(() {
                             index = nextValue;
@@ -112,13 +105,7 @@ class _GuidePageState extends State<GuidePage> {
                       } else if (nextValue == 3) {
                         var prefs = await SharedPreferences.getInstance();
                         await prefs.setBool('guide_enable', false);
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => Platform.isIOS
-                                  ? HelloPage()
-                                  : AndroidHelloPage()),
-                          (route) => route == null,
-                        );
+                        Leader.pushUntilHome(context);
                       }
                     },
                     child: const Text('NEXT'),

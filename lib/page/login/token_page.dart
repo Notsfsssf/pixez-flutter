@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
@@ -67,12 +68,7 @@ class _TokenPageState extends State<TokenPage> {
                       isMailAuthorized: user.isMailAuthorized ? 1 : 0);
                   await accountProvider.insert(accountPersist);
                   await accountStore.fetch();
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            Platform.isIOS ? HelloPage() : AndroidHelloPage()),
-                    (route) => route == null,
-                  );
+                  Leader.pushUntilHome(context);
                 } catch (e) {
                   setState(() {
                     errorMessage = e.toString();
