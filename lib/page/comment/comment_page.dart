@@ -161,7 +161,7 @@ class _CommentPageState extends State<CommentPage> {
                                             padding: const EdgeInsets.only(
                                                 right: 4.0),
                                             child: SelectableText(
-                                              comment.comment??"",
+                                              comment.comment ?? "",
                                             ),
                                           ),
                                           Padding(
@@ -234,7 +234,7 @@ class _CommentPageState extends State<CommentPage> {
                                           await client.postIllustComment(
                                               widget.id, txt,
                                               parent_comment_id:
-                                                  parentCommentId!);
+                                                  parentCommentId);
                                         _editController.clear();
                                         _store.fetch();
                                       } catch (e) {
