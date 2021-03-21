@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.3+100
+version: 1.4.3+101
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -45,12 +45,12 @@ dependencies:
   flutter_displaymode: ^0.2.0-nullsafety.0
   receive_sharing_intent: ^1.4.4
   flutter_hooks: ^0.16.0
-  pull_to_refresh:
-    git:
+  pull_to_refresh: 
+    git: 
       url: https://github.com/peng8350/flutter_pulltorefresh
   extended_image: ^3.0.0
   flutter_colorpicker: ^0.4.0-nullsafety.0
-  waterfall_flow: ^2.0.5
+  waterfall_flow: ^3.0.1
   animations: ^2.0.0
   extended_text: ^5.0.0
   font_awesome_flutter: ^9.0.0-nullsafety

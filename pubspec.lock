@@ -268,7 +268,7 @@ packages:
       name: extended_list_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "3.0.0"
   extended_nested_scroll_view:
     dependency: "direct main"
     description:
@@ -1006,7 +1006,7 @@ packages:
       name: waterfall_flow
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.5"
+    version: "3.0.1"
   web_socket_channel:
     dependency: transitive
     description:
