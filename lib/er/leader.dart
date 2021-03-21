@@ -13,6 +13,8 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,12 +23,23 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
+import 'package:pixez/page/hello/android_hello_page.dart';
+import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class Leader {
+  static Future<void> pushUntilHome(BuildContext context) async{
+    Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => Platform.isIOS
+                                    ? HelloPage()
+                                    : AndroidHelloPage()),
+                            (route) => route == null,
+                          );
+  }
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
     if (link.scheme == "pixiv") {
       if (link.host.contains("account")) {

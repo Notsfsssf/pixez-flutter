@@ -27,7 +27,7 @@ import java.io.File
 import java.io.OutputStream
 
 fun Context.save(byteArray: ByteArray, name: String): String? {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+    if (true || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
         val dirFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "pixez")
         if (!dirFile.exists())
             dirFile.mkdirs()
@@ -68,7 +68,7 @@ fun Context.save(byteArray: ByteArray, name: String): String? {
 }
 
 fun Context.exist(name: String): Boolean {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+    if (true || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
         //what the hell
         val dirFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "pixez")
         if (!dirFile.exists())

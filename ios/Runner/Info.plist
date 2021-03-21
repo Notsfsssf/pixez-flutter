@@ -33,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>pixiez</string>
+				<string>pixez</string>
 			</array>
 		</dict>
 		<dict>

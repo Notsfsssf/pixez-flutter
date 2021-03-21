@@ -52,7 +52,7 @@ class AndroidHelloPage extends StatefulWidget {
 
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late List<Widget> _pageList;
-  late DateTime _preTime;
+  DateTime? _preTime;
   late QuickActions quickActions;
 
   @override
@@ -63,7 +63,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           return true;
         }
         if (_preTime == null ||
-            DateTime.now().difference(_preTime) > Duration(seconds: 2)) {
+            DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
           _preTime = DateTime.now();
           BotToast.showText(text: I18n.of(context).return_again_to_exit);
           return false;
