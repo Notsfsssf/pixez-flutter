@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/spotlight_card.dart';
@@ -47,6 +49,11 @@ class SpotLightPage extends StatelessWidget {
             onLoading: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
             enablePullDown: true,
+            header: (Platform.isAndroid)
+                ? MaterialClassicHeader(
+                    color: Theme.of(context).accentColor,
+                  )
+                : ClassicHeader(),
             enablePullUp: true,
             controller: _refreshController,
             child: WaterfallFlow.builder(

@@ -191,7 +191,9 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   title: Text(I18n.of(context).network),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => NetworkPage(automaticallyImplyLeading: true,)));
+                        builder: (context) => NetworkPage(
+                              automaticallyImplyLeading: true,
+                            )));
                   },
                 ),
               ),
@@ -210,7 +212,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return Container(
                       child: TabBar(
                         indicatorColor: Theme.of(context).accentColor,
-                        labelColor: Theme.of(context).textTheme.headline6!.color,
+                        labelColor:
+                            Theme.of(context).textTheme.headline6!.color,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: [
                           Tab(
@@ -344,6 +347,9 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         Tab(
                           text: "ja",
                         ),
+                        Tab(
+                          text: "ko",
+                        ),
                       ],
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
@@ -352,7 +358,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         });
                       },
                       controller: TabController(
-                          length: 4,
+                          length: 5,
                           vsync: this,
                           initialIndex: userSetting.languageNum),
                     ),

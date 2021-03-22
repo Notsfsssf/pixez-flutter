@@ -81,7 +81,13 @@ class _GuidePageState extends State<GuidePage> {
                         await prefs.setInt(
                             'language_num', userSetting.languageNum);
                         //有可能用户啥都没选
-                        final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja'];
+                        final languageList = [
+                          'en-US',
+                          'zh-CN',
+                          'zh-TW',
+                          'ja',
+                          'ko'
+                        ];
                         ApiClient.Accept_Language =
                             languageList[userSetting.languageNum];
                         apiClient.httpClient.options
