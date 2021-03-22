@@ -26,6 +26,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
+import 'package:pixez/page/webview/simple_webview_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/server/weiss_server.dart';
 import 'package:pixez/weiss_plugin.dart';
@@ -165,7 +166,14 @@ class _LoginPageState extends State<LoginPage> {
 
   _launch(url) async {
     if (Platform.isIOS) {
-      launch(url);
+      final result = await Leader.push(
+          context,
+          WebViewPage(
+            url: url,
+          ));
+      if (result == "OK") {
+        Leader.pushUntilHome(context);
+      }
       return;
     }
     if (!userSetting.disableBypassSni) {

@@ -31,15 +31,15 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class Leader {
-  static Future<void> pushUntilHome(BuildContext context) async{
+  static Future<void> pushUntilHome(BuildContext context) async {
     Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => Platform.isIOS
-                                    ? HelloPage()
-                                    : AndroidHelloPage()),
-                            (route) => route == null,
-                          );
+      MaterialPageRoute(
+          builder: (context) =>
+              Platform.isIOS ? HelloPage() : AndroidHelloPage()),
+      (route) => route == null,
+    );
   }
+
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
     if (link.scheme == "pixiv") {
       if (link.host.contains("account")) {
@@ -69,6 +69,7 @@ class Leader {
               id: 0);
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
+          if (Platform.isIOS) pushUntilHome(context);
         } catch (e) {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());

@@ -130,7 +130,7 @@ class _WebViewPageState extends State<WebViewPage> {
                     var uri = navigationAction.request.url!;
                     if (uri.scheme == "pixiv") {
                       Leader.pushWithUri(context, uri);
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop("OK");
                       return NavigationActionPolicy.CANCEL;
                     }
                     return NavigationActionPolicy.ALLOW;

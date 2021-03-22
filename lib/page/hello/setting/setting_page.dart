@@ -238,13 +238,14 @@ class _SettingPageState extends State<SettingPage> {
                 Divider(),
                 Column(
                   children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.book),
-                      title: Text('Novel(Beta)'),
-                      onTap: () => Navigator.of(context, rootNavigator: true)
-                          .pushReplacement(MaterialPageRoute(
-                              builder: (context) => NovelRail())),
-                    ),
+                    if (!Platform.isIOS)
+                      ListTile(
+                        leading: Icon(Icons.book),
+                        title: Text('Novel(Beta)'),
+                        onTap: () => Navigator.of(context, rootNavigator: true)
+                            .pushReplacement(MaterialPageRoute(
+                                builder: (context) => NovelRail())),
+                      ),
                     if (kDebugMode)
                       ListTile(
                         title: Text("网络诊断"),
