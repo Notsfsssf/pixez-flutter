@@ -150,6 +150,27 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/RivMt');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars3.githubusercontent.com/u/40086827?s=460&v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('San Kang'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
   ];
 
   @override
@@ -333,6 +354,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                      isScrollable: true,
                       indicatorColor: Theme.of(context).accentColor,
                       tabs: [
                         Tab(
