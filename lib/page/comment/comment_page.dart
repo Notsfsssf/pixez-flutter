@@ -41,6 +41,8 @@ class _CommentPageState extends State<CommentPage> {
   late RefreshController easyRefreshController;
   late CommentStore _store;
 
+  List<String> banList = ["bb8.news","77k.live","7mm.live"];
+
   @override
   void initState() {
     _editController = TextEditingController();
@@ -102,6 +104,15 @@ class _CommentPageState extends State<CommentPage> {
                         ? ListView.separated(
                             itemCount: _store.comments.length,
                             itemBuilder: (context, index) {
+                              if (banList
+                                  .where((element) => _store
+                                      .comments[index].comment!
+                                      .contains(element))
+                                  .isNotEmpty)
+                                return Visibility(
+                                  visible: false,
+                                  child: Container(),
+                                );
                               var comment = _store.comments[index];
                               return Container(
                                 child: Row(
@@ -167,9 +178,14 @@ class _CommentPageState extends State<CommentPage> {
                                           Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 8.0),
-                                            child: Text(comment.date
-                                                .toString()
-                                                .toShortTime()),
+                                            child: Text(
+                                              comment.date
+                                                  .toString()
+                                                  .toShortTime(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            ),
                                           )
                                         ],
                                       ),
@@ -230,11 +246,17 @@ class _CommentPageState extends State<CommentPage> {
                                       final client = apiClient;
                                       String txt = _editController.text.trim();
                                       try {
-                                        if (txt.isNotEmpty)
-                                          await client.postIllustComment(
-                                              widget.id, txt,
-                                              parent_comment_id:
-                                                  parentCommentId);
+                                        if (txt.isNotEmpty) {
+                                          if (banList
+                                              .where((element) =>
+                                                  txt.contains(element))
+                                              .isEmpty)
+                                            await client.postIllustComment(
+                                                widget.id, txt,
+                                                parent_comment_id:
+                                                    parentCommentId);
+                                        }
+
                                         _editController.clear();
                                         _store.fetch();
                                       } catch (e) {

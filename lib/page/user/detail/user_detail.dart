@@ -35,9 +35,6 @@ class UserDetailPage extends StatefulWidget {
 class _UserDetailPageState extends State<UserDetailPage> {
   @override
   Widget build(BuildContext context) {
-    if (widget.userDetail == null) {
-      return Container();
-    }
     var detail = widget.userDetail;
     var profile = widget.userDetail.profile;
     var public = widget.userDetail.profile_publicity;

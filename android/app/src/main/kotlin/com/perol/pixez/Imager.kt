@@ -32,6 +32,9 @@ fun Context.save(byteArray: ByteArray, name: String): String? {
         if (!dirFile.exists())
             dirFile.mkdirs()
         val targetFile = File(dirFile.absolutePath + "/" + name)
+        val parentFile = targetFile.parentFile
+        if (parentFile != null && !parentFile.exists())
+            parentFile.mkdirs();
         if (!targetFile.exists())
             targetFile.createNewFile()
         else
