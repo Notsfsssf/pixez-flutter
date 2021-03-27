@@ -189,6 +189,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget _buildWaterFall() {
     double screanWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
+    _lightingStore.iStores
+        .removeWhere((element) => element.illusts!.hateByUser());
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -202,8 +204,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  RenderObjectWidget _buildWaterfall(double itemWidth) {
-    _lightingStore.iStores.removeWhere((element) => element.illusts!.hateByUser());
+  Widget _buildWaterfall(double itemWidth) {
     return _lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(

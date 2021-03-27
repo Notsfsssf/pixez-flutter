@@ -81,9 +81,8 @@ extension IllustExts on Illusts {
         return true;
       }
     }
-
     for (var i in muteStore.banillusts)
-      if (this.id == i.id) {
+      if (this.id == int.parse(i.illustId)) {
         return true;
       }
     return false;
