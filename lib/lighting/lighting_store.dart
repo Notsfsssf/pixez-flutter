@@ -92,9 +92,8 @@ abstract class _LightingStoreBase with Store {
       if (userSetting.prefs.getString("app_widget_data") == null) {
         await userSetting.prefs
             .setString("app_widget_data", jsonEncode(recommend));
-       
+        WidgetkitPlugin.notify();
       }
-       WidgetkitPlugin.notify();
       controller?.refreshCompleted();
       return true;
     } catch (e) {

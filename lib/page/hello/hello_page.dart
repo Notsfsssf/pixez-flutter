@@ -31,6 +31,7 @@ import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -64,6 +65,7 @@ class _HelloPageState extends State<HelloPage> {
     });
     initLinksStream();
     initPlatformState();
+    WidgetkitPlugin.notify();
   }
 
   Future<void> initPlatformState() async {

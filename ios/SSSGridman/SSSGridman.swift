@@ -13,14 +13,23 @@ struct Recommand: Codable {
     let illusts: [Illust]
 }
 
+struct User: Codable {
+    let name: String
+}
+
 // MARK: - Illust
 struct Illust: Codable {
     let imageUrls: ImageUrls
     let id: Int
+    let title: String
+    let user:User
+    
     
     enum CodingKeys: String, CodingKey {
         case imageUrls = "image_urls"
         case id
+        case title
+        case user
     }
 }
 
@@ -35,11 +44,11 @@ struct ImageUrls: Codable {
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationIntent(), i: UIImage(named: "ic_launcher-playstore"))
+        SimpleEntry(date: Date(), configuration: ConfigurationIntent(), i: UIImage(named: "ic_launcher-playstore"),title: "",userName: "")
     }
     
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), configuration: configuration, i: UIImage(named: "ic_launcher-playstore"))
+        let entry = SimpleEntry(date: Date(), configuration: configuration, i: UIImage(named: "ic_launcher-playstore"),title: "",userName: "")
         completion(entry)
     }
     
@@ -47,8 +56,6 @@ struct Provider: IntentTimelineProvider {
         var entries: [SimpleEntry] = []
         print("time line start")
         let userDefault = UserDefaults(suiteName: "group.pixez")
-        print(userDefault!.string(forKey:  "widgetkit.app_widget_data"))
-        
         if  let data = userDefault!.string(forKey: "widgetkit.app_widget_data") {
             let host = userDefault!.string(forKey: "widgetkit.picture_source") ?? "i.pximg.net"
             let time = userDefault!.integer(forKey: "widgetkit.app_widget_time")
@@ -64,7 +71,7 @@ struct Provider: IntentTimelineProvider {
             URLSession.shared.dataTask(with: request){ (data, response, error) in
                 if let image = UIImage(data: data!){
                     let currentDate = Date()
-                    let entry = SimpleEntry(date: currentDate, configuration: configuration, i: image)
+                    let entry = SimpleEntry(date: currentDate, configuration: configuration, i: image,title:recommand.illusts[randomIndex].title,userName: recommand.illusts[randomIndex].user.name)
                     entries.append(entry)
                     let timeline = Timeline(entries: entries, policy: .atEnd)
                     completion(timeline)
@@ -82,7 +89,7 @@ struct Provider: IntentTimelineProvider {
             }
         }else{
             let currentDate = Date()
-            let entry = SimpleEntry(date: currentDate, configuration: configuration, i: UIImage(named: "ic_launcher-playstore"))
+            let entry = SimpleEntry(date: currentDate, configuration: configuration, i: UIImage(named: "ic_launcher-playstore"),title: "",userName: "")
             entries.append(entry)
             let timeline = Timeline(entries: entries, policy: .atEnd)
             completion(timeline)
@@ -96,13 +103,21 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let configuration: ConfigurationIntent
     let i:UIImage?
+    let title:String
+    let userName:String
 }
 
 struct SSSGridmanEntryView : View {
     var entry: Provider.Entry
     
     var body: some View {
-        Image(uiImage: entry.i!).resizable().scaledToFill()
+        ZStack{
+            Image(uiImage: entry.i!).resizable().scaledToFill()
+            VStack{
+                Text("\(entry.title)")
+                Text("\(entry.userName)")
+            }
+        }
     }
     
 }
@@ -122,7 +137,7 @@ struct SSSGridman: Widget {
 
 struct SSSGridman_Previews: PreviewProvider {
     static var previews: some View {
-        SSSGridmanEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent(), i: UIImage(named: "ic_launcher-playstore")))
+        SSSGridmanEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent(), i: UIImage(named: "ic_launcher-playstore"),title: "Title",userName: "My Load"))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
