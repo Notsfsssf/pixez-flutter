@@ -38,7 +38,7 @@ import Photos
                 result(CodeGen.getCodeChallenge(codeVerifier: code))
             }
         })
-        
+        WidgetkitPlugin.bind(controller: controller)
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

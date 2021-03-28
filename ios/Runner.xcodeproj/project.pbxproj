@@ -17,6 +17,7 @@
 		7C8B5973260F680600098D5C /* SSSGridman.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B596F260F680500098D5C /* SSSGridman.intentdefinition */; };
 		7C8B5974260F680600098D5C /* SSSGridman.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B596F260F680500098D5C /* SSSGridman.intentdefinition */; };
 		7C8B5977260F680600098D5C /* SSSGridmanExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 7C8B5967260F680500098D5C /* SSSGridmanExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -76,6 +77,7 @@
 		7C8B5970260F680600098D5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C8B5972260F680600098D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7CC54C3726103351009033DF /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetkitPlugin.swift; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -187,6 +189,7 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				A70B475625D4D94200AE0717 /* CodeGen.swift */,
+				7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				7C8B5974260F680600098D5C /* SSSGridman.intentdefinition in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				A70B475125D4D74100AE0717 /* Base64URLEncoding.swift in Sources */,
+				7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */,
 				A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
