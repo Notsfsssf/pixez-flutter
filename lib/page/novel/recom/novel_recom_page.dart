@@ -166,6 +166,8 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                         child: Wrap(
                                           crossAxisAlignment:
                                               WrapCrossAlignment.center,
+                                          spacing: 2, // gap between adjacent chips
+                                          runSpacing: 0,
                                           children: [
                                             for (var f in novel.tags)
                                               Text(

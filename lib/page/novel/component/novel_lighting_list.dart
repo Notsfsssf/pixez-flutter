@@ -156,13 +156,18 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                   child: Wrap(
                                     crossAxisAlignment:
                                         WrapCrossAlignment.center,
+                                    spacing: 2,
+                                    runSpacing: 0,
                                     children: [
                                       for (var f in novel.tags)
-                                        Text(
-                                          f.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 1),
+                                          child: Text(
+                                            f.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .caption,
+                                          ),
                                         )
                                     ],
                                   ),

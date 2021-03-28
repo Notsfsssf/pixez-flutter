@@ -23,6 +23,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
@@ -62,11 +63,13 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   final double leading = 0.9;
   final double textLineHeight = 2;
   final double fontSize = 16;
+  TextStyle? _textStyle;
 
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
+        _textStyle = userSetting.novelTextStyle;
         if (_novelStore.errorMessage != null) {
           return Scaffold(
             appBar: AppBar(
@@ -102,6 +105,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         }
         if (_novelStore.novelTextResponse != null &&
             _novelStore.novel != null) {
+          _textStyle =
+              _textStyle ?? Theme.of(context).textTheme.bodyText1!.copyWith();
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
@@ -110,6 +115,56 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 NovelBookmarkButton(
                   novel: _novelStore.novel!,
                 ),
+                IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () async {
+                      await showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
+                          ),
+                          builder: (context) {
+                            return StatefulBuilder(builder: (context, setB) {
+                              return SafeArea(
+                                  child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Container(
+                                        child: Icon(Icons.text_fields),
+                                        margin: EdgeInsets.only(left: 16),
+                                      ),
+                                      Container(
+                                        child: Text(_textStyle!.fontSize!
+                                            .toInt()
+                                            .toString()),
+                                        margin: EdgeInsets.only(left: 16),
+                                      ),
+                                      Expanded(
+                                          child: Slider(
+                                              value: _textStyle!.fontSize! / 32,
+                                              onChanged: (v) {
+                                                setB(() {
+                                                  _textStyle = _textStyle!
+                                                      .copyWith(
+                                                          fontSize: v * 32);
+                                                });
+                                                userSetting
+                                                    .setNovelFontsizeWithoutSave(
+                                                        v * 32);
+                                              })),
+                                    ],
+                                  )
+                                ],
+                              ));
+                            });
+                          });
+                      userSetting.setNovelFontsize(_textStyle!.fontSize!);
+                    }),
                 IconButton(
                     icon: Icon(Icons.share),
                     onPressed: () {
@@ -144,7 +199,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     selectionControls: TranslateTextSelectionControls(),
                     selectionEnabled: true,
                     specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: _textStyle,
                   ),
                 ),
                 Container(

@@ -46,6 +46,7 @@ abstract class _UserSettingBase with Store {
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
   static const String SAVE_MODE_KEY = "save_mode";
+  static const String NOVEL_FONT_SIZE_KEY = "novel_font_size";
   static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
   static const String IS_CLEAR_OLD_FORMAT_FILE_KEY = "is_clear_old_format_file";
   static const String IS_FOLLOW_AFTER_STAR = "is_follow_after_star";
@@ -93,7 +94,11 @@ abstract class _UserSettingBase with Store {
   @observable
   String? pictureSource = ImageHost;
   @observable
+  double novelFontsize = 16.0;
+  @observable
   Locale locale = Locale('en', 'US');
+  @observable
+  TextStyle novelTextStyle = TextStyle();
 
   @observable
   String? format = "";
@@ -181,6 +186,19 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setNovelFontsizeWithoutSave(double v) async {
+    novelFontsize = v;
+    novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
+  }
+
+  @action
+  setNovelFontsize(double v) async {
+    await prefs.setDouble(NOVEL_FONT_SIZE_KEY, v);
+    novelFontsize = v;
+    novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
+  }
+
+  @action
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
@@ -200,6 +218,8 @@ abstract class _UserSettingBase with Store {
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
+    novelFontsize = prefs.getDouble(NOVEL_FONT_SIZE_KEY) ?? 16.0;
+    novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
     saveMode = prefs.getInt(SAVE_MODE_KEY) ??
         (isHelplessWay == null ? 0 : (isHelplessWay! ? 2 : 1));
     pictureSource = disableBypassSni
