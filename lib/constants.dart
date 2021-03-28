@@ -15,7 +15,7 @@
  */
 
 class Constants {
-  static String tagName = "0.4.4";
+  static String tagName = "0.4.5";
 
   // static bool isGooglePlay =
   //     bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);//为何没用啊咕鸽？
