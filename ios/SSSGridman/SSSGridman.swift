@@ -46,12 +46,12 @@ struct Provider: IntentTimelineProvider {
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [SimpleEntry] = []
         print("time line start")
-        UserDefaults.standard.string(forKey: <#T##String#>)
-        print(UserDefaults(suiteName: "com.perol.pixez")!.string(forKey:  "flutter.app_widget_data"))
+        let userDefault = UserDefaults(suiteName: "group.pixez")
+        print(userDefault!.string(forKey:  "widgetkit.app_widget_data"))
         
-        if  let data = UserDefaults(suiteName: "com.perol.pixez")!.string(forKey: "flutter.app_widget_data") {
-            let host = UserDefaults(suiteName: "com.perol.pixez")!.string(forKey: "flutter.picture_source") ?? "i.pximg.net"
-            let time = UserDefaults(suiteName: "com.perol.pixez")!.integer(forKey: "flutter.app_widget_time")
+        if  let data = userDefault!.string(forKey: "widgetkit.app_widget_data") {
+            let host = userDefault!.string(forKey: "widgetkit.picture_source") ?? "i.pximg.net"
+            let time = userDefault!.integer(forKey: "widgetkit.app_widget_time")
             print(host)
             print(time)
             let decoder = JSONDecoder()
@@ -75,10 +75,10 @@ struct Provider: IntentTimelineProvider {
             }.resume()
             if(time<10){
                 let count = time+1
-                UserDefaults(suiteName: "com.perol.pixez")!.setValue(count, forKey: "flutter.app_widget_time")
+                userDefault!.setValue(count, forKey: "widgetkit.app_widget_time")
             }else{
-                UserDefaults(suiteName: "com.perol.pixez")!.removeObject(forKey:  "flutter.app_widget_time")
-                UserDefaults(suiteName: "com.perol.pixez")!.removeObject(forKey:  "flutter.app_widget_data")
+                userDefault!.removeObject(forKey:  "widgetkit.app_widget_time")
+                userDefault!.removeObject(forKey:  "widgetkit.app_widget_data")
             }
         }else{
             let currentDate = Date()

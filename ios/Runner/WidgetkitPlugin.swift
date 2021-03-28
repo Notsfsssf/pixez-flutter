@@ -13,7 +13,7 @@ public class WidgetkitPlugin {
                                                   binaryMessenger: controller.binaryMessenger)
         batteryChannel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            if call.method == "getBatteryLevel"  {
+            if call.method == "notify"  {
                 notify()
                 result(nil)
                 return
@@ -23,10 +23,12 @@ public class WidgetkitPlugin {
     }
     
     private static func notify()  {
-        if let data =  UserDefaults(suiteName: "com.perol.pixez")!.string(forKey:  "flutter.app_widget_data") {
-            let host = UserDefaults(suiteName: "com.perol.pixez")!.string(forKey: "flutter.picture_source") ?? "i.pximg.net"
-            let time = UserDefaults(suiteName: "com.perol.pixez")!.integer(forKey: "flutter.app_widget_time")
-            let userDefault = UserDefaults(suiteName: "com.perol.pixez")
+        if let data =  UserDefaults.standard.string(forKey: "flutter.app_widget_data"){
+            let host = UserDefaults.standard.string(forKey: "flutter.picture_source") ?? "i.pximg.net"
+            let time = UserDefaults.standard.integer(forKey: "flutter.app_widget_time")
+            print(host)
+            print(time)
+            let userDefault = UserDefaults(suiteName: "group.pixez")
             userDefault?.setValue(host, forKey: "widgetkit.picture_source")
             userDefault?.setValue(data, forKey: "widgetkit.app_widget_data")
             userDefault?.setValue(time, forKey: "widgetkit.app_widget_time")

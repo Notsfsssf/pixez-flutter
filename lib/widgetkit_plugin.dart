@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-class WeissPlugin {
+class WidgetkitPlugin {
   static const platform = const MethodChannel('com.perol.dev/widgetkit');
 
   static Future<void> notify() async {

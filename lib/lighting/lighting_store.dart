@@ -23,6 +23,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pixez/widgetkit_plugin.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'lighting_store.g.dart';
@@ -88,8 +89,12 @@ abstract class _LightingStoreBase with Store {
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
-      if (userSetting.prefs.getString("app_widget_data") == null)
-        userSetting.prefs.setString("app_widget_data", jsonEncode(recommend));
+      if (userSetting.prefs.getString("app_widget_data") == null) {
+        await userSetting.prefs
+            .setString("app_widget_data", jsonEncode(recommend));
+       
+      }
+       WidgetkitPlugin.notify();
       controller?.refreshCompleted();
       return true;
     } catch (e) {
