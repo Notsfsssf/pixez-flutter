@@ -39,7 +39,7 @@ import 'package:pixez/page/search/search_page.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:uni_links2/uni_links.dart';
 
 class AndroidHelloPage extends StatefulWidget {
   final LightingStore? lightingStore;
@@ -186,10 +186,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   initPlatform() async {
     try {
-      Uri initialLink = await getInitialUri();
+      Uri? initialLink = await getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = getUriLinksStream()
-          .listen((Uri link) => Leader.pushWithUri(context, link));
+      _sub = uriLinkStream.listen((Uri? link) => Leader.pushWithUri(context, link!));
     } catch (e) {
       print(e);
     }

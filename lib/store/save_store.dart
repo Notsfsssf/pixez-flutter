@@ -24,7 +24,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
@@ -34,7 +33,6 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:save_in_gallery/save_in_gallery.dart';
-import 'package:pixez/page/directory/save_mode_choice_page.dart';
 
 part 'save_store.g.dart';
 

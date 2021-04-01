@@ -59,7 +59,7 @@ class _PlatformPageState extends State<PlatformPage> {
       /// #2 1440x3168 @ 120Hz
       /// #3 1440x3168 @ 60Hz
       /// #4 1080x2376 @ 120Hz
-      selected = modes.firstWhere((DisplayMode m) => m.selected);
+      selected = await FlutterDisplayMode.preferred;
     } on PlatformException catch (e) {
       print(e);
 
@@ -192,7 +192,7 @@ class _PlatformPageState extends State<PlatformPage> {
                                           title:
                                               Text(modes[index - 1].toString()),
                                           onTap: () async {
-                                            await FlutterDisplayMode.setMode(
+                                            await FlutterDisplayMode.setPreferredMode(
                                                 modes[index - 1]);
                                             userSetting
                                                 .setDisplayMode(index - 1);

@@ -26,11 +26,8 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
-import 'package:pixez/page/webview/simple_webview_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
-import 'package:pixez/server/weiss_server.dart';
 import 'package:pixez/weiss_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {

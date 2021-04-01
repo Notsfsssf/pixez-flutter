@@ -77,7 +77,7 @@ abstract class _LightingStoreBase with Store {
   }
 
   @action
-  Future<bool> fetch() async {
+  Future<bool> fetch({String? url}) async {
     nextUrl = null;
     errorMessage = null;
     if (controller?.footerMode != null)
@@ -90,8 +90,18 @@ abstract class _LightingStoreBase with Store {
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
       if (userSetting.prefs.getString("app_widget_data") == null) {
-        await userSetting.prefs
-            .setString("app_widget_data", jsonEncode(recommend));
+        if (url == null || !url.contains("walkthrough"))
+          await userSetting.prefs
+              .setString("app_widget_data", jsonEncode(recommend));
+        else {
+          bool condition =
+              userSetting.prefs.getBool("walkthrough_data_init") ?? false;
+          if (!condition) {
+            await userSetting.prefs
+                .setString("app_widget_data", jsonEncode(recommend));
+            await userSetting.prefs.setBool("walkthrough_data_init", true);
+          }
+        }
         WidgetkitPlugin.notify();
       }
       controller?.refreshCompleted();

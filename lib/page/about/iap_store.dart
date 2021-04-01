@@ -36,7 +36,7 @@ abstract class _IAPStoreBase with Store {
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
       print('purchase-updated: $productItem');
-      if (productItem.transactionStateIOS == TransactionState.purchased) {
+      if (productItem!.transactionStateIOS == TransactionState.purchased) {
         await FlutterInappPurchase.instance.finishTransaction(productItem);
         BotToast.showNotification(title: (_) => Text('Thanks!'));
       }
@@ -70,10 +70,10 @@ abstract class _IAPStoreBase with Store {
     _purchaseUpdatedSubscription =
         FlutterInappPurchase.purchaseUpdated.listen((productItem) {
       print('purchase-updated: $productItem');
-      if (productItem.purchaseStateAndroid == 1) {
-        if (!productItem.isAcknowledgedAndroid) {
+      if (productItem!.purchaseStateAndroid == 1) {
+        if (!productItem.isAcknowledgedAndroid!) {
           FlutterInappPurchase.instance.acknowledgePurchaseAndroid(
-            productItem.purchaseToken,
+            productItem.purchaseToken!,
           );
         }
         print('purchase-acknowledgePurchaseAndroid: ok');

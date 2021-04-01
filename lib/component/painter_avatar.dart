@@ -19,8 +19,6 @@ import 'package:flutter/widgets.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/main.dart';
 
 class PainterAvatar extends StatefulWidget {
   final String url;

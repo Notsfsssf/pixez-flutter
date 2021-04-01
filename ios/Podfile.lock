@@ -33,14 +33,14 @@ PODS:
     - Flutter
   - share (0.0.1):
     - Flutter
-  - share_extend (0.0.1):
+  - share_plus (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - uni_links (0.0.1):
+  - uni_links2 (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
@@ -59,10 +59,10 @@ DEPENDENCIES:
   - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
   - save_in_gallery (from `.symlinks/plugins/save_in_gallery/ios`)
   - share (from `.symlinks/plugins/share/ios`)
-  - share_extend (from `.symlinks/plugins/share_extend/ios`)
+  - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - uni_links (from `.symlinks/plugins/uni_links/ios`)
+  - uni_links2 (from `.symlinks/plugins/uni_links2/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
@@ -97,14 +97,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/save_in_gallery/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
-  share_extend:
-    :path: ".symlinks/plugins/share_extend/ios"
+  share_plus:
+    :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  uni_links:
-    :path: ".symlinks/plugins/uni_links/ios"
+  uni_links2:
+    :path: ".symlinks/plugins/uni_links2/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
 
@@ -124,10 +124,10 @@ SPEC CHECKSUMS:
   receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
   save_in_gallery: 75c1d76566ed1af3a266f25b38c6c19a1d019a66
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  share_extend: b6748dc53695587891126a89533b862b92548c7b
+  share_plus: 2e6276f752c279a84cd68a9fc27dfbbe2a74b072
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
+  uni_links2: fbc37081577fc19c6e0f7e6cdbd3baa150023635
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: 96607efc87b667a7ca02323a324f77e7ecab3417

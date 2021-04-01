@@ -25,7 +25,7 @@ import 'package:pixez/network/oauth_client.dart';
 
 class RefreshTokenInterceptor extends Interceptor {
   Future<String> getToken() async {
-    String? token = accountStore?.now?.accessToken; //可能读的时候没有错的快，导致now为null
+    String? token = accountStore.now?.accessToken; //可能读的时候没有错的快，导致now为null
     String result;
     if (token != null)
       result = "Bearer " + token;

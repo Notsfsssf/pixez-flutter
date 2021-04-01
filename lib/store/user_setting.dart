@@ -258,7 +258,7 @@ abstract class _UserSettingBase with Store {
       try {
         var modeList = await FlutterDisplayMode.supported;
         if (displayMode != null && modeList.length > displayMode!) {
-          await FlutterDisplayMode.setMode(modeList[displayMode!]);
+          await FlutterDisplayMode.setPreferredMode(modeList[displayMode!]);
         }
       } catch (e) {}
     }

@@ -25,25 +25,25 @@ dependencies:
   crypto: ^3.0.0
   sqflite: ^2.0.0+2
   path_provider: ^2.0.1
-  shared_preferences: ^2.0.3
-  share: ^2.0.0
-  share_extend: ^1.1.9
+  shared_preferences: ^2.0.5
+  share: ^2.0.1
+  share_plus: ^2.0.0
   permission_handler: ^6.0.1
   save_in_gallery: ^0.1.3
   archive: ^3.1.2
   url_launcher: ^6.0.2
   bot_toast: ^4.0.0+1
   package_info: ^2.0.0
-  uni_links: ^0.4.0
-  mobx: ^2.0.0-nullsafety.2
-  flutter_mobx: ^2.0.0-nullsafety.0
-  flutter_inapp_purchase: ^4.0.0 
-  flutter_widget_from_html_core: ^0.6.0-rc.2021030401
-  flutter_date_pickers: ^0.2.0
+  uni_links2: ^0.6.0+2
+  mobx: ^2.0.0-nullsafety.6
+  flutter_mobx: ^2.0.0-nullsafety.3
+  flutter_inapp_purchase: ^5.0.0 
+  flutter_widget_from_html_core: ^0.6.0-rc.2021031201
+  flutter_date_pickers: ^0.2.2
   device_info: ^2.0.0
   provider: ^5.0.0
-  flutter_displaymode: ^0.2.0-nullsafety.0
-  receive_sharing_intent: ^1.4.4
+  flutter_displaymode: ^0.3.1-nullsafety.0
+  receive_sharing_intent: ^1.4.5
   flutter_hooks: ^0.16.0
   pull_to_refresh: 
     git: 
@@ -56,15 +56,15 @@ dependencies:
   font_awesome_flutter: ^9.0.0-nullsafety
   json_annotation: ^4.0.0
   flutter_staggered_animations: ^1.0.0
-  flutter_statusbar_manager: ^2.0.0
-  badges: ^1.2.0
+  flutter_statusbar_manager: ^2.0.0-nullsafety.1
+  badges: ^2.0.0-nullsafety.1
   quick_actions: ^0.5.0
   image_picker: ^0.7.2
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.0
   image: ^3.0.1
-  flutter_inappwebview: ^5.1.0+4
+  flutter_inappwebview: ^5.3.0
   dio_cookie_manager: ^2.0.0-beta1
   auto_animated: ^3.0.0
   http: ^0.13.0
@@ -82,11 +82,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.5
-  mobx_codegen:
-    git:
-       url: https://github.com/mobxjs/mobx.dart
-       path: mobx_codegen
-       ref: null_safety
+  mobx_codegen: ^2.0.0-nullsafety.2
   json_serializable: ^4.0.2
 
 

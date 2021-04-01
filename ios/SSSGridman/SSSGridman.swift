@@ -56,11 +56,11 @@ struct Provider: IntentTimelineProvider {
         var entries: [SimpleEntry] = []
         print("time line start")
         let userDefault = UserDefaults(suiteName: "group.pixez")
+        let time = userDefault!.integer(forKey: "widgetkit.app_widget_time")
         if  let data = userDefault!.string(forKey: "widgetkit.app_widget_data") {
             let host = userDefault!.string(forKey: "widgetkit.picture_source") ?? "i.pximg.net"
-            let time = userDefault!.integer(forKey: "widgetkit.app_widget_time")
-            print(host)
-            print(time)
+            userDefault!.set(data, forKey: "widgetkit.pre_app_widget_data")
+            userDefault!.set(data, forKey: "widgetkit.pre_picture_source")
             let decoder = JSONDecoder()
             let recommand = try! decoder.decode(Recommand.self, from: data.data(using: .utf8)!)
             let randomIndex = Int(arc4random() % UInt32(recommand.illusts.count-1))
@@ -74,29 +74,52 @@ struct Provider: IntentTimelineProvider {
                     let entry = SimpleEntry(date: currentDate, configuration: configuration, i: image,title:recommand.illusts[randomIndex].title,userName: recommand.illusts[randomIndex].user.name)
                     entries.append(entry)
                     let timeline = Timeline(entries: entries, policy: .atEnd)
+                    if(time<10){
+                        let count = time+1
+                        userDefault!.setValue(count, forKey: "widgetkit.app_widget_time")
+                    }else{
+                        userDefault!.removeObject(forKey:  "widgetkit.app_widget_time")
+                        userDefault!.removeObject(forKey:  "widgetkit.app_widget_data")
+                    }
                     completion(timeline)
                 }
                 else{
                     print(error ?? "")
                 }
             }.resume()
-            if(time<10){
-                let count = time+1
-                userDefault!.setValue(count, forKey: "widgetkit.app_widget_time")
-            }else{
-                userDefault!.removeObject(forKey:  "widgetkit.app_widget_time")
-                userDefault!.removeObject(forKey:  "widgetkit.app_widget_data")
-            }
+            
         }else{
+            if  let data = userDefault!.string(forKey: "widgetkit.pre_app_widget_data") {
+                let host = userDefault!.string(forKey: "widgetkit.pre_picture_source") ?? "i.pximg.net"
+                let decoder = JSONDecoder()
+                let recommand = try! decoder.decode(Recommand.self, from: data.data(using: .utf8)!)
+                let randomIndex = Int(arc4random() % UInt32(recommand.illusts.count-1))
+                guard let url = URL(string:recommand.illusts[randomIndex].imageUrls.squareMedium.replacingOccurrences(of: "i.pximg.net", with: host) ) else { return }
+                var request = URLRequest(url: url)
+                request.setValue("https://app-api.pixiv.net/", forHTTPHeaderField: "referer")
+                request.setValue("PixivIOSApp/5.8.0", forHTTPHeaderField: "User-Agent")
+                URLSession.shared.dataTask(with: request){ (data, response, error) in
+                    if let image = UIImage(data: data!){
+                        let currentDate = Date()
+                        let entry = SimpleEntry(date: currentDate, configuration: configuration, i: image,title:recommand.illusts[randomIndex].title,userName: recommand.illusts[randomIndex].user.name)
+                        entries.append(entry)
+                        let timeline = Timeline(entries: entries, policy: .atEnd)
+                        completion(timeline)
+                    }
+                    else{
+                        print(error ?? "")
+                    }
+                }.resume()
+                return
+            }
             let currentDate = Date()
             let entry = SimpleEntry(date: currentDate, configuration: configuration, i: UIImage(named: "ic_launcher-playstore"),title: "",userName: "")
             entries.append(entry)
             let timeline = Timeline(entries: entries, policy: .atEnd)
             completion(timeline)
         }
-        
-        
     }
+    
 }
 
 struct SimpleEntry: TimelineEntry {
@@ -109,17 +132,22 @@ struct SimpleEntry: TimelineEntry {
 
 struct SSSGridmanEntryView : View {
     var entry: Provider.Entry
-    
     var body: some View {
-        ZStack{
-            Image(uiImage: entry.i!).resizable().scaledToFill()
-            VStack{
-                Text("\(entry.title)")
-                Text("\(entry.userName)")
+        GeometryReader{ geometry in
+            ZStack{
+                Image(uiImage: entry.i!).resizable().scaledToFill().frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
+                VStack (alignment: .leading, spacing: 10){
+                    Text(entry.title)
+                        .font(.caption)
+                        .foregroundColor(.white)
+                    
+                    Text(entry.userName)
+                        .font(.caption)
+                        .foregroundColor(.white)
+                }.padding(EdgeInsets(top: 3, leading: 15, bottom: 3, trailing: 0))
             }
         }
     }
-    
 }
 
 @main

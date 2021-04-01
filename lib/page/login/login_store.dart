@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
-import 'package:pixez/models/account.dart';
-import 'package:pixez/models/login_error_response.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 part 'login_store.g.dart';

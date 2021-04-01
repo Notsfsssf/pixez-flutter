@@ -139,7 +139,7 @@ class _PreviewPageState extends State<PreviewPage> {
       return SafeArea(
         child: SmartRefresher(
           controller: _easyRefreshController,
-          onRefresh: () => _lightingStore.fetch(),
+          onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
           onLoading: () => _lightingStore.fetchNext(),
           child: _lightingStore.iStores.isNotEmpty
               ? WaterfallFlow.builder(

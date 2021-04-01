@@ -470,10 +470,10 @@ class _AboutPageState extends State<AboutPage> {
                 trailing: Text('12￥'),
                 onTap: () async {
                   BotToast.showText(text: 'try to Purchase');
-                  List<PurchasedItem> items = await FlutterInappPurchase
+                  List<PurchasedItem>? items = await FlutterInappPurchase
                       .instance
                       .getPendingTransactionsIOS();
-                  for (var i in items) {
+                  for (var i in items!) {
                     await FlutterInappPurchase.instance.finishTransaction(i);
                   }
                   await FlutterInappPurchase.instance
@@ -489,9 +489,9 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () async {
                   BotToast.showText(text: 'try to Purchase');
 
-                  List<PurchasedItem> items = await FlutterInappPurchase
+                  List<PurchasedItem> items = (await FlutterInappPurchase
                       .instance
-                      .getPendingTransactionsIOS();
+                      .getPendingTransactionsIOS())!;
                   for (var i in items) {
                     await FlutterInappPurchase.instance.finishTransaction(i);
                   }
@@ -510,10 +510,10 @@ class _AboutPageState extends State<AboutPage> {
                 elevation: 1.0,
                 child: ListTile(
                   leading: Icon(FontAwesomeIcons.coffee),
-                  title: Text(i.description),
-                  subtitle: Text(i.localizedPrice),
+                  title: Text(i.description??""),
+                  subtitle: Text(i.localizedPrice??""),
                   onTap: () {
-                    FlutterInappPurchase.instance.requestPurchase(i.productId);
+                    FlutterInappPurchase.instance.requestPurchase(i.productId??"");
                   },
                 ),
               )

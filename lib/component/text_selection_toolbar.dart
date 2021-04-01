@@ -15,11 +15,10 @@
 
 import 'dart:io';
 
-import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pixez/supportor_plugin.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share/share.dart';
 
 const double _kHandleSize = 20.0;
 const double _kToolbarScreenPadding = 3.0;
@@ -87,7 +86,7 @@ class TranslateTextSelectionControls extends MaterialTextSelectionControls {
               final TextEditingValue value = delegate.textEditingValue;
               String selectionText = value.selection.textInside(value.text);
               if (Platform.isIOS) {
-                ShareExtend.share(selectionText, "text");
+                Share.share(selectionText);
                 return;
               }
               await SupportorPlugin.start(selectionText);

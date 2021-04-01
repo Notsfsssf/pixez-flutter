@@ -17,12 +17,10 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/main.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;

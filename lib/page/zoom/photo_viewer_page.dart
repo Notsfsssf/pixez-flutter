@@ -29,7 +29,7 @@ import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PhotoViewerPage extends StatefulWidget {
   final int index;
@@ -377,7 +377,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                                 targetFile.createSync(recursive: true);
                               }
                               file.copySync(targetPath);
-                              ShareExtend.share(targetPath, 'image');
+                              Share.shareFiles([targetPath],);
                             } else {
                               BotToast.showText(
                                   text: "can not find image cache");

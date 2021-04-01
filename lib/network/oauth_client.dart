@@ -17,7 +17,6 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
@@ -25,7 +24,6 @@ import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/crypto_plugin.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 
 final OAuthClient oAuthClient = OAuthClient();
