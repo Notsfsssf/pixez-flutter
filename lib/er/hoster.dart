@@ -45,14 +45,14 @@ class Hoster {
   }
 
   static final String _hostJsonUrl =
-      "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter/tree/master/assets/json/host.json";
+      "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
 
   static syncRemote() async {
     try {
       LPrinter.d("sync remote =========");
       final dio = Dio(BaseOptions(baseUrl: _hostJsonUrl));
       Response response = await dio.get("");
-      String data = response.data!.toString();
+      String data = json.encode(response.data!);
       final cacheDir = await getApplicationSupportDirectory();
       String fileName = Path.join(cacheDir.path, 'host.json');
       final jsonFile = File(fileName);
@@ -61,9 +61,8 @@ class Hoster {
       }
       jsonFile.createSync();
       jsonFile.writeAsStringSync(data, flush: true);
-      final jsonData = json.decode(data);
       _map.clear();
-      _map.addAll(jsonData);
+      _map.addAll(response.data);
       LPrinter.d(_map);
     } catch (e) {
       LPrinter.d(e);
