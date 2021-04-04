@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/fetcher.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/kver.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -69,14 +70,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
-    saveStore?.dispose();
-    topStore?.dispose();
+    saveStore.dispose();
+    topStore.dispose();
     fetcher.stop();
     super.dispose();
   }
 
   @override
   void initState() {
+    Hoster.init();
+    Hoster.syncRemote();
     userSetting.init();
     accountStore.fetch();
     bookTagStore.init();

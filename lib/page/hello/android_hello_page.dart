@@ -223,6 +223,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => GuidePage()),
         (route) => route == null,
+
       );
       return;
     }
