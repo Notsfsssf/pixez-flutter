@@ -111,7 +111,7 @@ class _UsersPageState extends State<UsersPage>
       }
 
       if (userStore.errorMessage != null) {
-        if (userStore.errorMessage == '404')
+        if (userStore.errorMessage!.contains("404"))
           return Scaffold(
             appBar: AppBar(),
             body: Container(
@@ -130,7 +130,7 @@ class _UsersPageState extends State<UsersPage>
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Http error'),
+                  child: Text('Http error\n${userStore.errorMessage}'),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

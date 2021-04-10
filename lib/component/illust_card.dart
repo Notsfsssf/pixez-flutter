@@ -33,13 +33,11 @@ class IllustCard extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore>? iStores;
   final bool needToBan;
-  final double? height;
 
   IllustCard({
     required this.store,
     this.iStores,
     this.needToBan = false,
-    this.height,
   });
 
   @override
@@ -84,11 +82,6 @@ class _IllustCardState extends State<IllustCard> {
             ),
           );
       }
-    if (widget.height != null)
-      return Container(
-        child: buildInkWell(context),
-        height: widget.height,
-      );
     return buildInkWell(context);
   }
 
@@ -127,7 +120,8 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget _buildPic(String tag) {
-    return (store.illusts!.height.toDouble() / store.illusts!.width.toDouble()) >
+    return (store.illusts!.height.toDouble() /
+                store.illusts!.width.toDouble()) >
             3
         ? NullHero(
             tag: tag,
@@ -142,6 +136,9 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget buildInkWell(BuildContext context) {
+    var radio =
+        store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
+    if (radio > 3) radio = 1.0;
     return Card(
       margin: EdgeInsets.all(8.0),
       elevation: 4.0,
@@ -155,20 +152,17 @@ class _IllustCardState extends State<IllustCard> {
         onTap: () {
           _buildInkTap(context, tag);
         },
-        child: Stack(
+        child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topCenter,
-              child: _buildPic(tag),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: _buildBottom(context),
-            ),
-            Align(
-              child: _buildVisibility(),
-              alignment: Alignment.topRight,
-            )
+            AspectRatio(
+                aspectRatio: radio,
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: _buildPic(tag)),
+                    Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
+                  ],
+                )),
+            _buildBottom(context),
           ],
         ),
       ),
@@ -196,7 +190,6 @@ class _IllustCardState extends State<IllustCard> {
   Widget _buildBottom(BuildContext context) {
     return Container(
       color: Theme.of(context).cardColor,
-      height: 50,
       child: Stack(
         children: <Widget>[
           Padding(
@@ -247,8 +240,8 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildVisibility() {
     return Visibility(
-      visible:
-          store.illusts!.type != "illust" || store.illusts!.metaPages.isNotEmpty,
+      visible: store.illusts!.type != "illust" ||
+          store.illusts!.metaPages.isNotEmpty,
       child: Align(
         alignment: Alignment.topRight,
         child: Padding(

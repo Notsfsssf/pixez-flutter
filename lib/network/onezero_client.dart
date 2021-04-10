@@ -51,7 +51,6 @@ class OnezeroClient {
         options: Options(
           headers: {
             'accept': 'application/dns-json',
-            'Host': 'cloudflare-dns.com'
           },
         ),
         queryParameters: {

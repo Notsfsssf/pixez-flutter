@@ -27,6 +27,7 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
+import 'package:pixez/server/weiss_server.dart';
 import 'package:pixez/weiss_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -174,6 +175,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     if (!userSetting.disableBypassSni) {
+      // await WeissServer.listener();
       await WeissPlugin.start();
       await WeissPlugin.proxy();
       Leader.push(

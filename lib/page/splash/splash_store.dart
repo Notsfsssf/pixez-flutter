@@ -18,6 +18,7 @@ import 'dart:math';
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
@@ -30,7 +31,6 @@ class SplashStore = _SplashStoreBase with _$SplashStore;
 abstract class _SplashStoreBase with Store {
   final OnezeroClient onezeroClient;
   final String OK_TEXT = '♪^∀^●)ノ';
-  List<String> _hardCoreArray = ["210.140.92.143", "210.140.92.145"];
   @observable
   String helloWord = "= w =";
   String host = ImageHost;
@@ -62,10 +62,10 @@ abstract class _SplashStoreBase with Store {
       value.answer.sort((l, r) => r.ttl.compareTo(l.ttl));
       final host = value.answer.first.data;
       LPrinter.d(host);
-      if (host != null && host.isNotEmpty && int.tryParse(host[0]) != null)
-        this.host = host;
+      if (host.startsWith(Hoster.sPximgNet().split(".").first) &&
+          int.tryParse(host[0]) != null) this.host = host;
     } catch (e) {
-      this.host = _hardCoreArray[Random().nextInt(_hardCoreArray.length)];
+      this.host = Hoster.iPximgNet();
       helloWord = OK_TEXT;
     } finally {}
   }

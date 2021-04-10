@@ -61,7 +61,7 @@ class NovelPersistProvider {
   late Database db;
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath())!;
+    String databasesPath = (await getDatabasesPath());
     String path = join(databasesPath, 'Novelpersist.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {

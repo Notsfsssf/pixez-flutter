@@ -187,8 +187,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget _buildWaterFall() {
-    double screanWidth = MediaQuery.of(context).size.width;
-    double itemWidth = (screanWidth / userSetting.crossCount.toDouble()) - 32.0;
     _lightingStore.iStores
         .removeWhere((element) => element.illusts!.hateByUser());
     return CustomScrollView(
@@ -199,12 +197,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         SliverToBoxAdapter(
           child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
         ),
-        _buildWaterfall(itemWidth)
+        _buildWaterfall()
       ],
     );
   }
 
-  Widget _buildWaterfall(double itemWidth) {
+  Widget _buildWaterfall() {
     return _lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -220,18 +218,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             ),
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-              double radio =
-                  _lightingStore.iStores[index].illusts!.height.toDouble() /
-                      _lightingStore.iStores[index].illusts!.width.toDouble();
-              double mainAxisExtent;
-              if (radio > 3)
-                mainAxisExtent = itemWidth;
-              else
-                mainAxisExtent = itemWidth * radio;
               return IllustCard(
                 store: _lightingStore.iStores[index],
                 iStores: _lightingStore.iStores,
-                height: mainAxisExtent + 86.0,
               );
             }, childCount: _lightingStore.iStores.length),
           )

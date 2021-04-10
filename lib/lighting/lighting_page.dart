@@ -147,8 +147,6 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildWithoutHeader(context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
     _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
@@ -181,7 +179,7 @@ class _LightingListState extends State<LightingList> {
             padding: EdgeInsets.all(5.0),
             itemCount: _store.iStores.length,
             itemBuilder: (context, index) {
-              return _buildItem(index, itemWidth);
+              return _buildItem(index);
             },
             gridDelegate: _buildGridDelegate(),
           ),
@@ -283,21 +281,11 @@ class _LightingListState extends State<LightingList> {
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double itemWidth = (screenWidth / userSetting.crossCount.toDouble()) - 32.0;
     _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return SliverChildBuilderDelegate((BuildContext context, int index) {
-      double radio = _store.iStores[index].illusts!.height.toDouble() /
-          _store.iStores[index].illusts!.width.toDouble();
-      double mainAxisExtent;
-      if (radio > 3)
-        mainAxisExtent = itemWidth;
-      else
-        mainAxisExtent = itemWidth * radio;
       return IllustCard(
         store: _store.iStores[index],
         iStores: _store.iStores,
-        height: mainAxisExtent + 86.0,
       );
     }, childCount: _store.iStores.length);
   }
@@ -316,18 +304,10 @@ class _LightingListState extends State<LightingList> {
     );
   }
 
-  Widget _buildItem(int index, double itemWidth) {
-    double radio = _store.iStores[index].illusts!.height.toDouble() /
-        _store.iStores[index].illusts!.width.toDouble();
-    double mainAxisExtent;
-    if (radio > 3)
-      mainAxisExtent = itemWidth;
-    else
-      mainAxisExtent = itemWidth * radio;
+  Widget _buildItem(int index) {
     return IllustCard(
       store: _store.iStores[index],
       iStores: _store.iStores,
-      height: mainAxisExtent + 86.0,
     );
   }
 }

@@ -26,11 +26,9 @@ import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/account.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
-import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 
 final ApiClient apiClient = ApiClient();

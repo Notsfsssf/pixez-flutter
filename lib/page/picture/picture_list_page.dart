@@ -61,7 +61,7 @@ class _PictureListPageState extends State<PictureListPage> {
           else
             result--;
           _pageController.animateToPage(result,
-              duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+              duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
           if (result >= widget.iStores.length)
             result = widget.iStores.length - 1;
           if (result < 0) result = 0;

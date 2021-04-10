@@ -17,7 +17,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/lighting/lighting_store.dart';

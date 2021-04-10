@@ -70,7 +70,7 @@ packages:
       name: bot_toast
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.0+1"
+    version: "4.0.1"
   build:
     dependency: transitive
     description:
@@ -189,7 +189,7 @@ packages:
       name: cookie_jar
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.0-beta2"
+    version: "3.0.1"
   crypto:
     dependency: "direct main"
     description:
@@ -231,23 +231,23 @@ packages:
       name: dio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.0-beta5"
+    version: "4.0.0"
   dio_cookie_manager:
     dependency: "direct main"
     description:
       name: dio_cookie_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-beta1"
+    version: "2.0.0"
   dio_http_cache:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: bf5bcdff0b9013d308a0ce4d189986fd28003410
-      url: "https://github.com/shinayser/dio-http-cache"
+      ref: "feature/nullsafety-dio4"
+      resolved-ref: e4c0ed3a898db2eab2dc98a723d9cb971fc1075d
+      url: "https://github.com/vrtdev/dio-http-cache.git"
     source: git
-    version: "0.3.0"
+    version: "0.3.0-nullsafety.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -364,7 +364,7 @@ packages:
       name: flutter_inappwebview
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -855,13 +855,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
-  shelf_proxy:
-    dependency: "direct main"
-    description:
-      name: shelf_proxy
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.0"
   shelf_web_socket:
     dependency: transitive
     description:
@@ -894,7 +887,7 @@ packages:
       name: sqflite
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0+2"
+    version: "2.0.0+3"
   sqflite_common:
     dependency: transitive
     description:

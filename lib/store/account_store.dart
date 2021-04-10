@@ -30,6 +30,7 @@ abstract class _AccountStoreBase with Store {
   int index = 0;
 
   ObservableList<AccountPersist> accounts = ObservableList();
+
   @action
   select(int index) async {
     var pre = await SharedPreferences.getInstance();
@@ -67,7 +68,7 @@ abstract class _AccountStoreBase with Store {
     accounts.addAll(list);
     var pre = await SharedPreferences.getInstance();
     var i = pre.getInt('account_select_num');
-    if (list != null && list.isNotEmpty) {
+    if (list.isNotEmpty) {
       index = i ?? 0;
       now = list[i ?? 0];
     }

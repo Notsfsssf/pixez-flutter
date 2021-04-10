@@ -23,7 +23,7 @@ import 'package:pixez/models/error_message.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 
-class RefreshTokenInterceptor extends Interceptor {
+class RefreshTokenInterceptor extends InterceptorsWrapper {
   Future<String> getToken() async {
     String? token = accountStore.now?.accessToken; //可能读的时候没有错的快，导致now为null
     String result;
@@ -39,10 +39,11 @@ class RefreshTokenInterceptor extends Interceptor {
   }
 
   @override
-  Future onRequest(RequestOptions options) async {
-    if (options.path.contains('v1/walkthrough/illusts')) return options;
-    options.headers[OAuthClient.AUTHORIZATION] = await getToken();
-    return options; //continue
+  Future<void> onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    if (!options.path.contains('v1/walkthrough/illusts'))
+      options.headers[OAuthClient.AUTHORIZATION] = await getToken();
+    return handler.next(options); //continue
   }
 
   int bti(bool bool) {
@@ -56,15 +57,15 @@ class RefreshTokenInterceptor extends Interceptor {
   int retryNum = 0;
 
   @override
-  Future onResponse(Response response) {
-    retryNum = 0;
-    return super.onResponse(response);
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    retryNum = -2;
+    return handler.next(response);
   }
 
   bool isRefreshing = false;
 
   @override
-  onError(DioError err) async {
+  void onError(DioError err, handler) async {
     if (err.response != null && err.response!.statusCode == 400) {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
@@ -99,37 +100,38 @@ class RefreshTokenInterceptor extends Interceptor {
             lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
           }
           if (errorMessage.error.message.contains("Limit")) {}
+          apiClient.httpClient.interceptors.errorLock.unlock();
+          print("unlock ========================");
         } catch (e) {
           print(e);
           lastRefreshTime = 0;
-          return e;
+          apiClient.httpClient.interceptors.errorLock.unlock();
+          print("unlock ========================");
+          return handler.reject(err);
         }
-        print("unlock ========================");
-        apiClient.httpClient.interceptors.errorLock.unlock();
       }
-      var request = err.response!.request;
-      request.headers[OAuthClient.AUTHORIZATION] = (await getToken());
+      var option = err.requestOptions;
+      option.headers[OAuthClient.AUTHORIZATION] = (await getToken());
       var response = await apiClient.httpClient.request(
-        request.path,
-        data: request.data,
-        queryParameters: request.queryParameters,
-        cancelToken: request.cancelToken,
-        // options: Options(
-        //   method: options.method,
-        //   headers: options.headers,
-        //   contentType: options.contentType,
-        // ),
+        option.path,
+        data: option.data,
+        queryParameters: option.queryParameters,
+        cancelToken: option.cancelToken,
+        options: Options(
+          method: option.method,
+          headers: option.headers,
+          contentType: option.contentType,
+        ),
       );
-      return response;
+      return handler.resolve(response);
     }
-    if (err.message != null &&
-        err.message
+    if (err.message
             .contains("Connection closed before full header was received") &&
         retryNum < 2) {
       print('retry $retryNum =========================');
       retryNum++;
-      RequestOptions options = err.request!;
-      return apiClient.httpClient.request(
+      RequestOptions options = err.requestOptions;
+      var response = await apiClient.httpClient.request(
         options.path,
         options: Options(
           method: options.method,
@@ -139,7 +141,8 @@ class RefreshTokenInterceptor extends Interceptor {
         data: options.data,
         queryParameters: options.queryParameters,
       );
+      return handler.resolve(response);
     }
-    super.onError(err);
+    return handler.reject(err);
   }
 }

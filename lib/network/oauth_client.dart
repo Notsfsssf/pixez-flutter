@@ -133,30 +133,10 @@ class OAuthClient {
         ? "https://app-api.pixiv.net/web/v1/login?code_challenge=${codeChallenge}&code_challenge_method=S256&client=pixiv-android"
         : "https://app-api.pixiv.net/web/v1/provisional-accounts/create?code_challenge=${codeChallenge}&code_challenge_method=S256&client=pixiv-android";
     return url;
-    // String verify = await generateCodeVerify();
-    // AsciiCodec asciiCodec = AsciiCodec();
-    // var f = asciiCodec.encode(verify);
-    // Digest foo = sha256.convert(f);
-    // String code_challenge = base64.encode(foo.bytes).replaceAll("+", "-")
-    //   ..replaceAll("/", "_")
-    //   ..replaceAll("=", "");
-    // LPrinter.d(code_challenge);
-    // String url =
-    //     "https://app-api.pixiv.net/web/v1/login?code_challenge=${code_challenge}&code_challenge_method=S256&client=pixiv-android";
-    // return url;
   }
 
   static Future<String> generateCodeVerify() async {
     return await CryptoPlugin.getCodeVer();
-    //   var random = Random.secure();
-    //   var values = List<int>.generate(32, (i) => random.nextInt(255));
-    //   String verify = base64
-    //       .encode(values)
-    //  .replaceAll("+", "-")
-    //     ..replaceAll("/", "_")
-    //     ..replaceAll("=", ""));
-    //   LPrinter.d(verify);
-    //   return verify;
   }
 
   Future<Response> postRefreshAuthToken(

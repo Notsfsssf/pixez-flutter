@@ -55,7 +55,7 @@ class IllustPersistProvider {
   late Database db;
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath())!;
+    String databasesPath = (await getDatabasesPath());
     String path = join(databasesPath, 'illustpersist.db');
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {

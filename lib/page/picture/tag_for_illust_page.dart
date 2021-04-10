@@ -83,9 +83,14 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                         return Row(
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(_store.tags[index].name),
+                              child: InkWell(
+                                onTap:(){
+                                  _store.check(index, !_store.checkList[index]);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(_store.tags[index].name),
+                                ),
                               ),
                             ),
                             Checkbox(

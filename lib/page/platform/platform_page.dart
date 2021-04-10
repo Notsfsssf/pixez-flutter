@@ -125,11 +125,11 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).save_format),
                 subtitle: Text(userSetting.format ?? ""),
                 onTap: () async {
-                  String result =
+                  final result =
                       await Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(
                               builder: (context) => SaveFormatPage()));
-                  if (result != null) {
+                  if (result is String) {
                     userSetting.setFormat(result);
                   }
                   // if (result != null) userSetting.setPath(result);
@@ -192,8 +192,9 @@ class _PlatformPageState extends State<PlatformPage> {
                                           title:
                                               Text(modes[index - 1].toString()),
                                           onTap: () async {
-                                            await FlutterDisplayMode.setPreferredMode(
-                                                modes[index - 1]);
+                                            await FlutterDisplayMode
+                                                .setPreferredMode(
+                                                    modes[index - 1]);
                                             userSetting
                                                 .setDisplayMode(index - 1);
                                             setState(() {
