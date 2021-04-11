@@ -562,6 +562,12 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 },
                 child: Text(I18n.of(context).bookmark),
               ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 2);
+                },
+                child: Text(I18n.of(context).copy),
+              ),
             ],
           );
         })) {
@@ -576,6 +582,14 @@ class _IllustLightingPageState extends State<IllustLightingPage>
           bookTagStore.bookTag(f.name);
         }
         break;
+      case 2:
+        {
+          await Clipboard.setData(ClipboardData(text: f.name));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text(I18n.of(context).copied_to_clipboard),
+          ));
+        }
     }
   }
 

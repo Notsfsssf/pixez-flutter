@@ -22,7 +22,7 @@ class _GuidePageState extends State<GuidePage> {
 
   @override
   void initState() {
-    _pageList = [InitPage(), NetworkSelectPage(), NetworkPage()];
+    _pageList = [InitPage(), NetworkPage()];
     super.initState();
   }
 
@@ -98,17 +98,6 @@ class _GuidePageState extends State<GuidePage> {
                           isNext = true;
                         });
                       } else if (nextValue == 2) {
-                        if (userSetting.disableBypassSni) {
-                          var prefs = await SharedPreferences.getInstance();
-                          await prefs.setBool('guide_enable', false);
-                          Leader.pushUntilHome(context);
-                        } else {
-                          setState(() {
-                            index = nextValue;
-                            isNext = true;
-                          });
-                        }
-                      } else if (nextValue == 3) {
                         var prefs = await SharedPreferences.getInstance();
                         await prefs.setBool('guide_enable', false);
                         Leader.pushUntilHome(context);

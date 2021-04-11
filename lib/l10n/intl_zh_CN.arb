@@ -241,5 +241,6 @@
   "network": "网络",
   "select_language": "语言选择",
   "network_question": "你的网络环境能够正常访问pixiv吗?",
-  "media_hint": "插画将会被保存到相册"
+  "media_hint": "插画将会被保存到相册",
+  "copy": "复制"
 }

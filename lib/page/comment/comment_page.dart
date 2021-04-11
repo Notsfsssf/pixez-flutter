@@ -41,7 +41,13 @@ class _CommentPageState extends State<CommentPage> {
   late RefreshController easyRefreshController;
   late CommentStore _store;
 
-  List<String> banList = ["bb8.news","77k.live","7mm.live","p26w.com"];
+  List<String> banList = [
+    "bb8.news",
+    "77k.live",
+    "7mm.live",
+    "p26w.com",
+    "33h.live"
+  ];
 
   @override
   void initState() {

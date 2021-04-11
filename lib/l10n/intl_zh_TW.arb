@@ -241,5 +241,6 @@
   "network": "網路",
   "select_language": "選取語言",
   "network_question": "你的網路環境能夠正常訪問 pixiv 嗎？",
-  "media_hint": "插畫將會被儲存到相冊"
+  "media_hint": "插畫將會被儲存到相冊",
+  "copy": "複製"
 }

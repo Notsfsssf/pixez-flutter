@@ -65,7 +65,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         if (_preTime == null ||
             DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
           _preTime = DateTime.now();
-          BotToast.showText(text: I18n.of(context).return_again_to_exit);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text(I18n.of(context).return_again_to_exit),
+          ));
+          // BotToast.showText(text: I18n.of(context).return_again_to_exit);
           return false;
         }
         return true;
@@ -188,7 +192,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       Uri? initialLink = await getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = uriLinkStream.listen((Uri? link) => Leader.pushWithUri(context, link!));
+      _sub = uriLinkStream
+          .listen((Uri? link) => Leader.pushWithUri(context, link!));
     } catch (e) {
       print(e);
     }
@@ -223,7 +228,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => GuidePage()),
         (route) => route == null,
-
       );
       return;
     }

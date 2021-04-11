@@ -123,6 +123,8 @@ class _NetworkPageState extends State<NetworkPage> {
                           onPressed: () async {
                             userSetting.setPictureSource(ImageHost);
                             splashStore.setHost(ImageHost);
+                            splashStore.helloWord = "= w =";
+                            splashStore.maybeFetch();
                           },
                         ),
                       ),
@@ -138,6 +140,8 @@ class _NetworkPageState extends State<NetworkPage> {
                         onTap: () async {
                           userSetting.setPictureSource(ImageHost);
                           splashStore.setHost(ImageHost);
+                          splashStore.helloWord = "= w =";
+                          splashStore.maybeFetch();
                         },
                       ),
                       ListTile(
@@ -172,7 +176,8 @@ class _NetworkPageState extends State<NetworkPage> {
                                     return;
                                   await userSetting.setPictureSource(
                                       _textEditingController.text);
-                                  FocusScope.of(context).requestFocus(FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
                                 },
                                 icon: Icon(
                                   Icons.check,

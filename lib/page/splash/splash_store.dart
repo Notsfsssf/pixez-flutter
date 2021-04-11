@@ -63,7 +63,10 @@ abstract class _SplashStoreBase with Store {
       final host = value.answer.first.data;
       LPrinter.d(host);
       if (host.startsWith(Hoster.sPximgNet().split(".").first) &&
-          int.tryParse(host[0]) != null) this.host = host;
+          int.tryParse(host[0]) != null)
+        this.host = host;
+      else
+        throw 1;
     } catch (e) {
       this.host = Hoster.iPximgNet();
       helloWord = OK_TEXT;
