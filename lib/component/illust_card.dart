@@ -119,10 +119,8 @@ class _IllustCardState extends State<IllustCard> {
     return Text('');
   }
 
-  Widget _buildPic(String tag) {
-    return (store.illusts!.height.toDouble() /
-                store.illusts!.width.toDouble()) >
-            3
+  Widget _buildPic(String tag, bool tooLong) {
+    return tooLong
         ? NullHero(
             tag: tag,
             child: PixivImage(store.illusts!.imageUrls.squareMedium,
@@ -136,9 +134,11 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget buildInkWell(BuildContext context) {
-    var radio =
-        store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
-    if (radio > 3) radio = 1.0;
+    var tooLong =
+        store.illusts!.height.toDouble() / store.illusts!.width.toDouble() > 3;
+    var radio = (tooLong)
+        ? 1.0
+        : store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
     return Card(
       margin: EdgeInsets.all(8.0),
       elevation: 4.0,
@@ -158,7 +158,7 @@ class _IllustCardState extends State<IllustCard> {
                 aspectRatio: radio,
                 child: Stack(
                   children: [
-                    Positioned.fill(child: _buildPic(tag)),
+                    Positioned.fill(child: _buildPic(tag, tooLong)),
                     Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
                   ],
                 )),

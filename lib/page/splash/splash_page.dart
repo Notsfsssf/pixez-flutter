@@ -49,6 +49,8 @@ class _SplashPageState extends State<SplashPage>
 
   late ReactionDisposer reactionDisposer, userDisposer;
 
+  bool isPush = false;
+
   initMethod() {
     userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
       if (userSetting.disableBypassSni) {
@@ -56,15 +58,15 @@ class _SplashPageState extends State<SplashPage>
             'https://${ApiClient.BASE_API_URL_HOST}';
         oAuthClient.httpClient.options.baseUrl =
             'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+        Leader.pushUntilHome(context);
+        isPush = true;
       }
     });
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
-      Leader.pushUntilHome(context);
+      if (mounted && !isPush) {
+        Leader.pushUntilHome(context);
+        isPush = true;
+      }
     });
     splashStore.hello();
   }

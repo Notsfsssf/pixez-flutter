@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -17,7 +16,7 @@ class Hoster {
     "oauth.secure.pixiv.net": "210.140.131.199",
     "i.pximg.net": "210.140.92.143",
     "s.pximg.net": "210.140.92.140",
-    "doh": "1.0.0.1"
+    "doh": "1.0.0.1",
   };
 
   static init() async {
@@ -46,6 +45,10 @@ class Hoster {
 
   static final String _hostJsonUrl =
       "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
+
+  static Map<String, dynamic> hardMap() {
+    return _map;
+  }
 
   static syncRemote() async {
     try {

@@ -26,7 +26,10 @@ object Weiss {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WEISS_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "start" -> {
-                    start()
+                    val p = call.argument<String>("port")
+                    val map = call.argument<String>("map") ?: ""
+                    port = p ?: "9876"
+                    start(map)
                 }
                 "proxy" -> {
                     proxy()
@@ -39,32 +42,9 @@ object Weiss {
         }
     }
 
-    fun ser() {
-        val serverSocket = ServerSocket(port.toInt())
-        while (true) {
-            val client = serverSocket.accept()
-            println("Client connected: ${client.inetAddress.hostAddress}")
-
-            // Run client in it's own thread.
-            thread {
-                val inputStream = client.getInputStream()
-                val readBytes = inputStream.readBytes()
-                inputStream.close()
-                val message = readBytes.toString()
-                Log.d(TAG, "message:\n $message")
-                val serverSocket = SSLSocketFactory.getDefault().createSocket()
-                val outputStream = serverSocket.getOutputStream()
-                outputStream.write(readBytes)
-                outputStream.flush()
-                outputStream.close()
-
-            }
-        }
-    }
-
-    fun start() {
+    fun start(json: String) {
         try {
-            weiss.Weiss.start(port)
+            weiss.Weiss.start(port, json)
         } catch (e: Throwable) {
         }
     }
@@ -73,7 +53,6 @@ object Weiss {
         try {
             weiss.Weiss.close()
         } catch (e: Throwable) {
-
         }
     }
 
