@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "19.0.0"
+    version: "20.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.3.0"
+    version: "1.4.0"
   animations:
     dependency: "direct main"
     description:
@@ -282,7 +282,7 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.5"
   extended_text_library:
     dependency: transitive
     description:
@@ -336,7 +336,7 @@ packages:
       name: flutter_date_pickers
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.2"
+    version: "0.2.3+1"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -376,7 +376,7 @@ packages:
       name: flutter_mobx
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-nullsafety.3"
+    version: "2.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -416,7 +416,7 @@ packages:
       name: flutter_widget_from_html_core
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0-rc.2021031201"
+    version: "0.6.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -458,7 +458,7 @@ packages:
       name: http_client_helper
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   http_multi_server:
     dependency: transitive
     description:
@@ -572,14 +572,14 @@ packages:
       name: mobx
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-nullsafety.6"
+    version: "2.0.1"
   mobx_codegen:
     dependency: "direct dev"
     description:
       name: mobx_codegen
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-nullsafety.2"
+    version: "2.0.1+3"
   nested:
     dependency: transitive
     description:

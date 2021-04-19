@@ -37,11 +37,11 @@ dependencies:
   bot_toast: ^4.0.1
   package_info: ^2.0.0
   uni_links2: ^0.6.0+2
-  mobx: ^2.0.0-nullsafety.6
-  flutter_mobx: ^2.0.0-nullsafety.3
+  mobx: ^2.0.1
+  flutter_mobx: ^2.0.0
   flutter_inapp_purchase: ^5.0.0 
-  flutter_widget_from_html_core: ^0.6.0-rc.2021031201
-  flutter_date_pickers: ^0.2.2
+  flutter_widget_from_html_core: ^0.6.0
+  flutter_date_pickers: ^0.2.3+1
   device_info: ^2.0.0
   provider: ^5.0.0
   flutter_displaymode: ^0.3.1-nullsafety.0
@@ -52,7 +52,7 @@ dependencies:
   flutter_colorpicker: ^0.4.0-nullsafety.0
   waterfall_flow: ^3.0.1
   animations: ^2.0.0
-  extended_text: ^5.0.0
+  extended_text: ^5.0.5
   font_awesome_flutter: ^9.0.0-nullsafety
   json_annotation: ^4.0.0
   flutter_staggered_animations: ^1.0.0
@@ -83,7 +83,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.5
-  mobx_codegen: ^2.0.0-nullsafety.2
+  mobx_codegen: ^2.0.1+3
   json_serializable: ^4.0.2
 
 
