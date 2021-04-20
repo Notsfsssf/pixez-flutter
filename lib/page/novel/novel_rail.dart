@@ -47,7 +47,6 @@ class _NovelRailState extends State<NovelRail> {
     Constants.type = 1;
     fetcher.context = context;
     super.initState();
-    BotToast.showText(text: 'Beta');
   }
 
   @override

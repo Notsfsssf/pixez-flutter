@@ -136,15 +136,15 @@ struct SSSGridmanEntryView : View {
         GeometryReader{ geometry in
             ZStack{
                 Image(uiImage: entry.i!).resizable().scaledToFill().frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
-                VStack (alignment: .leading, spacing: 10){
-                    Text(entry.title)
-                        .font(.caption)
-                        .foregroundColor(.white)
-                    
-                    Text(entry.userName)
-                        .font(.caption)
-                        .foregroundColor(.white)
-                }.padding(EdgeInsets(top: 3, leading: 15, bottom: 3, trailing: 0))
+//                VStack (alignment: .leading, spacing: 10){
+//                    Text(entry.title)
+//                        .font(.caption)
+//                        .foregroundColor(.white)
+//                    
+//                    Text(entry.userName)
+//                        .font(.caption)
+//                        .foregroundColor(.white)
+//                }.padding(EdgeInsets(top: 3, leading: 15, bottom: 3, trailing: 0))
             }
         }
     }
