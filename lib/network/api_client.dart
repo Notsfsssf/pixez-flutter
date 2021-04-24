@@ -91,17 +91,16 @@ class ApiClient {
             skipMemoryCache: true),
       ).interceptor)
       ..interceptors.add(RefreshTokenInterceptor());
-    if (!userSetting.disableBypassSni)
-      (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-          .onHttpClientCreate = (client) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
-        };
-        return httpClient;
+    (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (client) {
+      HttpClient httpClient = new HttpClient();
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return true;
       };
-    else{
+      return httpClient;
+    };
+    if (userSetting.disableBypassSni) {
       httpClient.options.baseUrl = "https://${BASE_API_URL_HOST}";
     }
     initA(time);

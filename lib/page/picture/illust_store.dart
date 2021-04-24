@@ -48,8 +48,8 @@ abstract class _IllustStoreBase with Store {
           if (illusts!.metaPages.indexOf(i) == 0) continue;
           final provider = ExtendedNetworkImageProvider(
               userSetting.pictureQuality == 0
-                  ? i.imageUrls.medium
-                  : i.imageUrls.large);
+                  ? i.imageUrls!.medium
+                  : i.imageUrls!.large);
           provider.evict();
         }
       }

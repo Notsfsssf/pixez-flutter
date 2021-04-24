@@ -13,61 +13,44 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import 'dart:convert' show json;
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:pixez/models/illust.dart';
+part 'trend_tags.g.dart';
 
+@JsonSerializable()
 class TrendingTag {
-  List<Trend_tags> trend_tags;
+  List<TrendTags> trend_tags;
 
   TrendingTag({
     required this.trend_tags,
   });
 
-  factory TrendingTag.fromJson(jsonRes) {
-    List<Trend_tags> trend_tags = [];
-    for (var item in jsonRes['trend_tags']) {
-      if (item != null) {
-        trend_tags.add(Trend_tags.fromJson(item));
-      }
-    }
-
-    return TrendingTag(
-      trend_tags: trend_tags,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'trend_tags': trend_tags,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  factory TrendingTag.fromJson(Map<String, dynamic> json) =>
+      _$TrendingTagFromJson(json);
 }
 
-class Trend_tags {
+@JsonSerializable()
+class TrendTags {
   String tag;
-  Illusts illust;
+  TrendTagsIllust illust;
 
-  Trend_tags({
+  TrendTags({
     required this.tag,
     required this.illust,
   });
 
-  factory Trend_tags.fromJson(jsonRes) => Trend_tags(
-        tag: jsonRes['tag'],
-        illust: Illusts.fromJson(jsonRes['illust']),
-      );
+  factory TrendTags.fromJson(Map<String, dynamic> json) =>
+      _$TrendTagsFromJson(json);
+}
 
-  Map<String, dynamic> toJson() => {
-        'tag': tag,
-        'illust': illust,
-      };
+@JsonSerializable()
+class TrendTagsIllust {
+  int id;
+  @JsonKey(name: 'image_urls')
+  ImageUrls imageUrls;
 
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  TrendTagsIllust({required this.id, required this.imageUrls});
+
+  factory TrendTagsIllust.fromJson(Map<String, dynamic> json) =>
+      _$TrendTagsIllustFromJson(json);
 }

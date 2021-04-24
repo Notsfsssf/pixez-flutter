@@ -98,9 +98,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   Widget _buildContent(BuildContext context) {
     if (widget.illusts.pageCount == 1) {
       var preUrl = userSetting.zoomQuality == 1 || _loadSource
-          ? widget.illusts.metaSinglePage.originalImageUrl
+          ? widget.illusts.metaSinglePage!.originalImageUrl
           : widget.illusts.imageUrls.large;
-      final url = preUrl.toTrueUrl();
+      final url = preUrl!.toTrueUrl();
       nowUrl = url;
 
       return Container(
@@ -141,8 +141,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     } else {
       final metaPages = widget.illusts.metaPages;
       var preUrl = (userSetting.zoomQuality == 1 || _loadSource
-          ? metaPages[index].imageUrls.original
-          : metaPages[index].imageUrls.large);
+          ? metaPages[index].imageUrls!.original
+          : metaPages[index].imageUrls!.large);
       final url = preUrl.toTrueUrl();
       nowUrl = url;
       return Container(
@@ -158,8 +158,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
               index = i;
             });
             final url = (userSetting.zoomQuality == 1 || _loadSource
-                    ? metaPages[index].imageUrls.original
-                    : metaPages[index].imageUrls.large)
+                    ? metaPages[index].imageUrls!.original
+                    : metaPages[index].imageUrls!.large)
                 .toTrueUrl();
             nowUrl = url;
             File? file = await getCachedImageFile(url);
@@ -172,8 +172,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
           itemBuilder: (BuildContext context, int index) {
             return ExtendedImage.network(
               (userSetting.zoomQuality == 1 || _loadSource
-                      ? metaPages[index].imageUrls.original
-                      : metaPages[index].imageUrls.large)
+                      ? metaPages[index].imageUrls!.original
+                      : metaPages[index].imageUrls!.large)
                   .toTrueUrl(),
               headers: Hoster.header(url: preUrl),
               handleLoadingProgress: true,
@@ -375,7 +375,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                                 targetFile.createSync(recursive: true);
                               }
                               file.copySync(targetPath);
-                              Share.shareFiles([targetPath],);
+                              Share.shareFiles(
+                                [targetPath],
+                              );
                             } else {
                               BotToast.showText(
                                   text: "can not find image cache");

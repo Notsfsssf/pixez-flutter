@@ -41,8 +41,7 @@ abstract class _NovelHistoryStoreBase with Store {
         title: novel.title,
         userName: novel.user.name,
         pictureUrl: novel.imageUrls.squareMedium,
-        novelId: novel.id,
-        id: 0));
+        novelId: novel.id));
     await fetch();
   }
 

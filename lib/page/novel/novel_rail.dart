@@ -12,7 +12,6 @@
  *  You should have received a copy of the GNU General Public License along with
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';

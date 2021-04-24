@@ -60,7 +60,7 @@ class _PainterListState extends State<PainterList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.futureGet != widget.futureGet) {
       _painterListStore.source = widget.futureGet;
-      _easyRefreshController.footerMode?.value = LoadStatus.idle;
+      _easyRefreshController.footerMode.value = LoadStatus.idle;
       _painterListStore.fetch();
       if (_painterListStore.users.isNotEmpty) _scrollController.jumpTo(0.0);
     }

@@ -20,7 +20,7 @@ part 'illust.g.dart';
 @JsonSerializable()
 class MetaPages {
   @JsonKey(name: 'image_urls')
-  MetaPagesImageUrls imageUrls;
+  MetaPagesImageUrls? imageUrls;
 
   MetaPages({required this.imageUrls});
 
@@ -70,11 +70,11 @@ class Illusts {
   int height;
   @JsonKey(name: 'sanity_level')
   int sanityLevel;
-  @JsonKey(name: 'xRestrict')
+  @JsonKey(name: 'x_restrict')
   int xRestrict;
-  Object series;
+  Object? series;
   @JsonKey(name: 'meta_single_page')
-  MetaSinglePage metaSinglePage;
+  MetaSinglePage? metaSinglePage;
   @JsonKey(name: 'meta_pages')
   List<MetaPages> metaPages;
   @JsonKey(name: 'total_view')
@@ -103,8 +103,8 @@ class Illusts {
       required this.height,
       required this.sanityLevel,
       required this.xRestrict,
-      required this.series,
-      required this.metaSinglePage,
+      this.series,
+      this.metaSinglePage,
       required this.metaPages,
       required this.totalView,
       required this.totalBookmarks,
@@ -141,7 +141,7 @@ class User {
   String account;
   @JsonKey(name: 'profile_image_urls')
   ProfileImageUrls profileImageUrls;
-  String comment;
+  String? comment;
   @JsonKey(name: 'is_followed')
   bool isFollowed;
 
@@ -150,7 +150,7 @@ class User {
       required this.name,
       required this.account,
       required this.profileImageUrls,
-      required this.comment,
+      this.comment,
       required this.isFollowed});
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -186,9 +186,9 @@ class Tags {
 @JsonSerializable()
 class MetaSinglePage {
   @JsonKey(name: 'original_image_url')
-  String originalImageUrl;
+  String? originalImageUrl;
 
-  MetaSinglePage({required this.originalImageUrl});
+  MetaSinglePage({this.originalImageUrl});
 
   factory MetaSinglePage.fromJson(Map<String, dynamic> json) =>
       _$MetaSinglePageFromJson(json);

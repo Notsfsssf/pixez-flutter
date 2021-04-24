@@ -19,13 +19,13 @@ import 'package:sqflite/sqflite.dart';
 part 'ban_tag.g.dart';
 @JsonSerializable()
 class BanTagPersist {
-  int id;
+  int? id;
   String name;
   @JsonKey(name: 'translate_name')
   String translateName;
 
   BanTagPersist(
-      {required this.id, required this.name, required this.translateName});
+      { this.id, required this.name, required this.translateName});
 
   factory BanTagPersist.fromJson(Map<String, dynamic> json) => _$BanTagPersistFromJson(json);
   Map<String, dynamic> toJson() => _$BanTagPersistToJson(this);

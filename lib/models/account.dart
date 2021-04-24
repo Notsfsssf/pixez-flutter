@@ -209,8 +209,6 @@ class AccountResponse {
   @JsonKey(name: 'refresh_token')
   String refreshToken;
   User user;
-  @JsonKey(name: 'device_token')
-  String deviceToken;
 
   factory AccountResponse.fromJson(Map<String, dynamic> json) =>
       _$AccountResponseFromJson(json);
@@ -223,8 +221,7 @@ class AccountResponse {
       required this.tokenType,
       required this.scope,
       required this.refreshToken,
-      required this.user,
-      required this.deviceToken});
+      required this.user});
 }
 
 @JsonSerializable()
@@ -242,6 +239,8 @@ class User {
   int xRestrict;
   @JsonKey(name: 'is_mail_authorized')
   bool isMailAuthorized;
+  @JsonKey(name: 'require_policy_agreement')
+  bool? requirePolicyAgreement;
 
   User(
       {required this.profileImageUrls,

@@ -80,9 +80,8 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetch({String? url}) async {
     nextUrl = null;
     errorMessage = null;
-    if (controller?.footerMode != null)
-      controller?.footerMode?.value = LoadStatus.idle;
-    controller?.headerMode?.value = RefreshStatus.refreshing;
+    controller?.footerMode.value = LoadStatus.idle;
+    controller?.headerMode.value = RefreshStatus.refreshing;
     try {
       final result = await source();
       Recommend recommend = Recommend.fromJson(result.data);

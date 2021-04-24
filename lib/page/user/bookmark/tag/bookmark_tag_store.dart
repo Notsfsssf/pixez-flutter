@@ -31,8 +31,8 @@ abstract class _BookMarkTagStoreBase with Store {
   @action
   fetch(String restrict) async {
     nextUrl = null;
-    _controller.headerMode?.value = RefreshStatus.idle;
-    _controller.footerMode?.value = LoadStatus.idle;
+    _controller.headerMode.value = RefreshStatus.idle;
+    _controller.footerMode.value = LoadStatus.idle;
     try {
       var result =
           await apiClient.getUserBookmarkTagsIllust(id, restrict: restrict);

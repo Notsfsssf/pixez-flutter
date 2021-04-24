@@ -17,65 +17,68 @@
 // To parse this JSON data, do
 //
 //     final loginErrorResponse = loginErrorResponseFromJson(jsonString);
-// @dart=2.9
+
 import 'dart:convert';
 
-LoginErrorResponse loginErrorResponseFromJson(String str) => LoginErrorResponse.fromJson(json.decode(str));
+LoginErrorResponse loginErrorResponseFromJson(String str) =>
+    LoginErrorResponse.fromJson(json.decode(str));
 
-String loginErrorResponseToJson(LoginErrorResponse data) => json.encode(data.toJson());
+String loginErrorResponseToJson(LoginErrorResponse data) =>
+    json.encode(data.toJson());
 
 class LoginErrorResponse {
-  bool hasError;
-  Errors errors;
+  late bool hasError;
+  late Errors errors;
 
   LoginErrorResponse({
-    this.hasError,
-    this.errors,
+    required this.hasError,
+    required this.errors,
   });
 
-  factory LoginErrorResponse.fromJson(Map<String, dynamic> json) => LoginErrorResponse(
-    hasError: json["has_error"],
-    errors: Errors.fromJson(json["errors"]),
-  );
+  factory LoginErrorResponse.fromJson(Map<String, dynamic> json) =>
+      LoginErrorResponse(
+        hasError: json["has_error"],
+        errors: Errors.fromJson(json["errors"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "has_error": hasError,
-    "errors": errors.toJson(),
-  };
+        "has_error": hasError,
+        "errors": errors.toJson(),
+      };
 }
 
 class Errors {
   System system;
 
   Errors({
-    this.system,
+    required this.system,
   });
 
   factory Errors.fromJson(Map<String, dynamic> json) => Errors(
-    system: System.fromJson(json["system"]),
-  );
+        system: System.fromJson(json["system"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "system": system.toJson(),
-  };
+        "system": system.toJson(),
+      };
 }
 
 class System {
-  String message;
-  int code;
+  late String message;
+  late int code;
 
   System({
-    this.message,
-    this.code,
+    required this.message,
+    required this.code,
   });
 
   factory System.fromJson(Map<String, dynamic> json) => System(
-    message: json["message"],
-    code: json["code"],
-  );
+        message: json["message"],
+        code: json["code"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "message": message,
-    "code": code,
-  };
+        "message": message,
+        "code": code,
+      };
 }

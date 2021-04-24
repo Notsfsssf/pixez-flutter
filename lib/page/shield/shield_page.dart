@@ -135,7 +135,7 @@ class _ShieldPageState extends State<ShieldPage> {
     switch (result) {
       case "OK":
         {
-          muteStore.deleteBanTag(f.id);
+          muteStore.deleteBanTag(f.id!);
         }
         break;
     }

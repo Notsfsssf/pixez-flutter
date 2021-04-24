@@ -41,7 +41,7 @@ abstract class _NovelLightingStoreBase with Store {
   @action
   Future<void> fetch() async {
     nextUrl = null;
-    _controller.headerMode?.value = RefreshStatus.idle;
+    _controller.headerMode.value = RefreshStatus.idle;
     errorMessage = null;
     try {
       Response response = await source();

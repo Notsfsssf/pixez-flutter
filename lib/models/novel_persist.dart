@@ -21,7 +21,7 @@ part 'novel_persist.g.dart';
 
 @JsonSerializable()
 class NovelPersist {
-  int id;
+  int? id;
   @JsonKey(name: 'novel_id')
   int novelId;
   @JsonKey(name: 'user_id')
@@ -34,7 +34,7 @@ class NovelPersist {
   String userName;
 
   NovelPersist(
-      {required this.id,
+      {this.id,
       required this.novelId,
       required this.userId,
       required this.pictureUrl,

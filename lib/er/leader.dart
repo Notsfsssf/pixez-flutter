@@ -65,8 +65,7 @@ class Leader {
               mailAddress: user.mailAddress,
               isPremium: user.isPremium ? 1 : 0,
               xRestrict: user.xRestrict,
-              isMailAuthorized: user.isMailAuthorized ? 1 : 0,
-              id: 0);
+              isMailAuthorized: user.isMailAuthorized ? 1 : 0);
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
           if (Platform.isIOS) pushUntilHome(context);

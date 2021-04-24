@@ -13,7 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-// @dart=2.9
 import 'dart:async';
 import 'dart:io';
 

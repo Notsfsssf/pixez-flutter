@@ -63,16 +63,13 @@ class _StarIconState extends State<StarIcon> {
           Icons.favorite_border,
           color: Colors.grey,
         );
-        break;
       case 1:
         return Icon(Icons.favorite, color: Colors.grey);
-        break;
       default:
         return Icon(
           Icons.favorite,
           color: Colors.red,
         );
-        break;
     }
   }
 }

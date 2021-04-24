@@ -48,9 +48,10 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   child: Card(
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: widget.userDetail.user.comment.isNotEmpty
+                        child: widget.userDetail.user.comment != null &&
+                                widget.userDetail.user.comment!.isNotEmpty
                             ? SelectableHtml(
-                                data: widget.userDetail.user.comment)
+                                data: widget.userDetail.user.comment!)
                             : SelectableHtml(
                                 data: '~',
                               )),
@@ -99,21 +100,21 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       ]),
                       DataRow(cells: [
                         DataCell(Text(I18n.of(context).twitter_account)),
-                        DataCell(Text(profile.twitter_account),
+                        DataCell(Text(profile.twitter_account ?? ""),
                             onTap: () async {
                           final url = profile.twitter_url;
                           try {
-                            await launch(url);
+                            await launch(url!);
                           } catch (e) {}
                         }),
                       ]),
                       DataRow(cells: [
                         DataCell(Text(I18n.of(context).gender)),
-                        DataCell(Text(detail.profile.gender)),
+                        DataCell(Text(detail.profile.gender!)),
                       ]),
                       DataRow(cells: [
                         DataCell(Text(I18n.of(context).job)),
-                        DataCell(Text(detail.profile.job)),
+                        DataCell(Text(detail.profile.job!)),
                       ]),
                       DataRow(cells: [
                         DataCell(Text('Pawoo')),
@@ -122,7 +123,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           if (!public.pawoo) return;
                           var url = detail.profile.pawoo_url;
                           try {
-                            await launch(url);
+                            await launch(url!);
                           } catch (e) {}
                         }),
                       ]),

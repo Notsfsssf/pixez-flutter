@@ -25,7 +25,7 @@ class TrendTagsStore = _TrendTagsStoreBase with _$TrendTagsStore;
 
 abstract class _TrendTagsStoreBase with Store {
   @observable
-  ObservableList<Trend_tags> trendTags = ObservableList();
+  ObservableList<TrendTags> trendTags = ObservableList();
 
   _TrendTagsStoreBase();
 

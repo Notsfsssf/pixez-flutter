@@ -75,17 +75,16 @@ class OAuthClient {
         "Host": BASE_OAUTH_URL_HOST
       }
       ..options.contentType = Headers.formUrlEncodedContentType;
-    if (!userSetting.disableBypassSni)
-      (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-          .onHttpClientCreate = (client) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
-        };
-        return httpClient;
+    (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (client) {
+      HttpClient httpClient = new HttpClient();
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return true;
       };
-    else {
+      return httpClient;
+    };
+    if (userSetting.disableBypassSni) {
       httpClient.options.baseUrl = "https://${BASE_OAUTH_URL_HOST}";
     }
     initA(time);

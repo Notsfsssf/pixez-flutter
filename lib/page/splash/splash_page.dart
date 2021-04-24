@@ -14,8 +14,6 @@
  *
  */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/leader.dart';
@@ -23,8 +21,6 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/hello/android_hello_page.dart';
-import 'package:pixez/page/hello/hello_page.dart';
 
 class SplashPage extends StatefulWidget {
   @override

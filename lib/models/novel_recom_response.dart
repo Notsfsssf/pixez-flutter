@@ -17,57 +17,58 @@
 // To parse this JSON data, do
 //
 //     final novelRecomResponse = novelRecomResponseFromJson(jsonString);
-import 'dart:convert';
 
-NovelRecomResponse novelRecomResponseFromJson(String str) => NovelRecomResponse.fromJson(json.decode(str));
+import 'package:json_annotation/json_annotation.dart';
+part 'novel_recom_response.g.dart';
 
-String novelRecomResponseToJson(NovelRecomResponse data) => json.encode(data.toJson());
-
+@JsonSerializable()
 class NovelRecomResponse {
   List<Novel> novels;
-  // PrivacyPolicy privacyPolicy;
-  String nextUrl;
 
-  NovelRecomResponse({
-    required this.novels,
-    // required this.privacyPolicy,
-    required this.nextUrl,
-  });
+  @JsonKey(name: 'next_url')
+  String? nextUrl;
 
-  factory NovelRecomResponse.fromJson(Map<String, dynamic> json) => NovelRecomResponse(
-    novels: List<Novel>.from(json["novels"].map((x) => Novel.fromJson(x))),
-    // privacyPolicy: PrivacyPolicy.fromJson(json["privacy_policy"]),
-    nextUrl: json["next_url"],
-  );
+  NovelRecomResponse({required this.novels});
 
-  Map<String, dynamic> toJson() => {
-    "novels": List<dynamic>.from(novels.map((x) => x.toJson())),
-    // "privacy_policy": privacyPolicy.toJson(),
-    "next_url": nextUrl,
-  };
+  factory NovelRecomResponse.fromJson(Map<String, dynamic> json) =>
+      _$NovelRecomResponseFromJson(json);
 }
 
+@JsonSerializable()
 class Novel {
   int id;
   String title;
   String caption;
   int restrict;
+  @JsonKey(name: 'x_restrict')
   int xRestrict;
+  @JsonKey(name: 'is_original')
   bool isOriginal;
+  @JsonKey(name: 'image_urls')
   ImageUrls imageUrls;
+  @JsonKey(name: 'create_date')
   DateTime createDate;
   List<Tag> tags;
+  @JsonKey(name: 'page_count')
   int pageCount;
+  @JsonKey(name: 'text_length')
   int textLength;
   User user;
   Series series;
+  @JsonKey(name: 'is_bookmarked')
   bool isBookmarked;
+  @JsonKey(name: 'total_bookmarks')
   int totalBookmarks;
+  @JsonKey(name: 'total_view')
   int totalView;
   bool visible;
+  @JsonKey(name: 'total_comments')
   int totalComments;
+  @JsonKey(name: 'is_muted')
   bool isMuted;
+  @JsonKey(name: 'is_mypixiv_only')
   bool isMypixivOnly;
+  @JsonKey(name: 'is_x_restricted')
   bool isXRestricted;
 
   Novel({
@@ -94,56 +95,12 @@ class Novel {
     required this.isXRestricted,
   });
 
-  factory Novel.fromJson(Map<String, dynamic> json) => Novel(
-    id: json["id"],
-    title: json["title"],
-    caption: json["caption"],
-    restrict: json["restrict"],
-    xRestrict: json["x_restrict"],
-    isOriginal: json["is_original"],
-    imageUrls: ImageUrls.fromJson(json["image_urls"]),
-    createDate: DateTime.parse(json["create_date"]),
-    tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x))),
-    pageCount: json["page_count"],
-    textLength: json["text_length"],
-    user: User.fromJson(json["user"]),
-    series: Series.fromJson(json["series"]),
-    isBookmarked: json["is_bookmarked"],
-    totalBookmarks: json["total_bookmarks"],
-    totalView: json["total_view"],
-    visible: json["visible"],
-    totalComments: json["total_comments"],
-    isMuted: json["is_muted"],
-    isMypixivOnly: json["is_mypixiv_only"],
-    isXRestricted: json["is_x_restricted"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-    "caption": caption,
-    "restrict": restrict,
-    "x_restrict": xRestrict,
-    "is_original": isOriginal,
-    "image_urls": imageUrls.toJson(),
-    "create_date": createDate.toIso8601String(),
-    "tags": List<dynamic>.from(tags.map((x) => x.toJson())),
-    "page_count": pageCount,
-    "text_length": textLength,
-    "user": user.toJson(),
-    "series": series.toJson(),
-    "is_bookmarked": isBookmarked,
-    "total_bookmarks": totalBookmarks,
-    "total_view": totalView,
-    "visible": visible,
-    "total_comments": totalComments,
-    "is_muted": isMuted,
-    "is_mypixiv_only": isMypixivOnly,
-    "is_x_restricted": isXRestricted,
-  };
+  factory Novel.fromJson(Map<String, dynamic> json) => _$NovelFromJson(json);
 }
 
+@JsonSerializable()
 class ImageUrls {
+  @JsonKey(name: 'square_medium')
   String squareMedium;
   String medium;
   String large;
@@ -154,42 +111,29 @@ class ImageUrls {
     required this.large,
   });
 
-  factory ImageUrls.fromJson(Map<String, dynamic> json) => ImageUrls(
-    squareMedium: json["square_medium"],
-    medium: json["medium"],
-    large: json["large"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "square_medium": squareMedium,
-    "medium": medium,
-    "large": large,
-  };
+  factory ImageUrls.fromJson(Map<String, dynamic> json) =>
+      _$ImageUrlsFromJson(json);
 }
 
+@JsonSerializable()
 class Series {
-  int id;
-  String title;
+  int? id;
+  String? title;
 
   Series({
-    required this.id,
-    required this.title,
+    this.id,
+    this.title,
   });
 
-  factory Series.fromJson(Map<String, dynamic> json) => Series(
-    id: json["id"],
-    title: json["title"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-  };
+  factory Series.fromJson(Map<String, dynamic> json) => _$SeriesFromJson(json);
 }
 
+@JsonSerializable()
 class Tag {
   String name;
-  String translatedName;
+  @JsonKey(name: 'translated_name')
+  String? translatedName;
+  @JsonKey(name: 'added_by_uploaded_user')
   bool addedByUploadedUser;
 
   Tag({
@@ -198,24 +142,17 @@ class Tag {
     required this.addedByUploadedUser,
   });
 
-  factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-    name: json["name"],
-    translatedName: json["translated_name"],
-    addedByUploadedUser: json["added_by_uploaded_user"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "name": name,
-    "translated_name": translatedName,
-    "added_by_uploaded_user": addedByUploadedUser,
-  };
+  factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 }
 
+@JsonSerializable()
 class User {
   int id;
   String name;
   String account;
+  @JsonKey(name: 'profile_image_urls')
   ProfileImageUrls profileImageUrls;
+  @JsonKey(name: 'is_followed')
   bool isFollowed;
 
   User({
@@ -226,23 +163,10 @@ class User {
     required this.isFollowed,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    name: json["name"],
-    account: json["account"],
-    profileImageUrls: ProfileImageUrls.fromJson(json["profile_image_urls"]),
-    isFollowed: json["is_followed"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "account": account,
-    "profile_image_urls": profileImageUrls.toJson(),
-    "is_followed": isFollowed,
-  };
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
+@JsonSerializable()
 class ProfileImageUrls {
   String medium;
 
@@ -250,13 +174,8 @@ class ProfileImageUrls {
     required this.medium,
   });
 
-  factory ProfileImageUrls.fromJson(Map<String, dynamic> json) => ProfileImageUrls(
-    medium: json["medium"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "medium": medium,
-  };
+  factory ProfileImageUrls.fromJson(Map<String, dynamic> json) =>
+      _$ProfileImageUrlsFromJson(json);
 }
 
 // class PrivacyPolicy {

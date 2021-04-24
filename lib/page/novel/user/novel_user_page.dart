@@ -204,7 +204,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                                             .background_image_url !=
                                         null
                                     ? PixivImage(userStore.userDetail!.profile
-                                        .background_image_url)
+                                        .background_image_url!)
                                     : Container(
                                         color: Theme.of(context).accentColor,
                                       )),

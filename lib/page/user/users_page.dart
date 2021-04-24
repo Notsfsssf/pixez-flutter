@@ -278,7 +278,7 @@ class _UsersPageState extends State<UsersPage>
                                         null
                                     ? ExtendedImage.network(
                                         userStore.userDetail!.profile
-                                            .background_image_url
+                                            .background_image_url!
                                             .toTrueUrl(),
                                         fit: BoxFit.fitWidth,
                                         headers: Hoster.header(
@@ -529,7 +529,7 @@ class _UsersPageState extends State<UsersPage>
   Future _saveUserC() async {
     var url = userStore.userDetail!.user.profileImageUrls.medium;
     String meme = url.split(".").last;
-    if (meme == null || meme.isEmpty) meme = "jpg";
+    if (meme.isEmpty) meme = "jpg";
     var replaceAll = userStore.userDetail!.user.name
         .replaceAll("/", "")
         .replaceAll("\\", "")

@@ -87,10 +87,8 @@ class ColorPickPage extends HookWidget {
                         ],
                       );
                     });
-                if (result != null) {
-                  Color color = _stringToColor(result); //迅速throw出来
-                  pickerColor.value = color;
-                }
+                Color color = _stringToColor(result); //迅速throw出来
+                pickerColor.value = color;
               }),
           IconButton(
               icon: Icon(Icons.save),

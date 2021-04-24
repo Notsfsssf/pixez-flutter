@@ -285,14 +285,14 @@ abstract class _SaveStoreBase with Store {
       {int? index, bool redo = false}) async {
     String memType;
     if (illusts.pageCount == 1) {
-      String url = illusts.metaSinglePage.originalImageUrl;
+      String url = illusts.metaSinglePage!.originalImageUrl!;
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
       if (redo) {}
       _saveInternal(url, illusts, fileName);
     } else {
       if (index != null) {
-        var url = illusts.metaPages[index].imageUrls.original;
+        var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
         if (redo) {}
@@ -300,7 +300,7 @@ abstract class _SaveStoreBase with Store {
       } else {
         int index = 0;
         illusts.metaPages.forEach((f) {
-          String url = f.imageUrls.original;
+          String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
           if (redo) {}

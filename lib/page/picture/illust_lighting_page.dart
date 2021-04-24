@@ -271,7 +271,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     else if (userSetting.mangaQuality == 1)
                       url = data.imageUrls.large;
                     else
-                      url = data.metaSinglePage.originalImageUrl;
+                      url = data.metaSinglePage!.originalImageUrl!;
                   }
                   Widget placeWidget = Container(
                     height: 150,
@@ -477,20 +477,21 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   }
 
   Widget _buildIllustsItem(int index, Illusts illust) {
+    final radio = illust.height.toDouble() / illust.width.toDouble();
     if (illust.type == "manga") {
       String url;
       if (userSetting.mangaQuality == 0)
-        url = illust.metaPages[index].imageUrls.medium;
+        url = illust.metaPages[index].imageUrls!.medium;
       else if (userSetting.mangaQuality == 1)
-        url = illust.metaPages[index].imageUrls.large;
+        url = illust.metaPages[index].imageUrls!.large;
       else
-        url = illust.metaPages[index].imageUrls.original;
+        url = illust.metaPages[index].imageUrls!.original;
       if (index == 0)
         return NullHero(
           child: PixivImage(
             url,
             placeWidget: PixivImage(
-              illust.metaPages[index].imageUrls.medium,
+              illust.metaPages[index].imageUrls!.medium,
               fade: false,
             ),
             fade: false,
@@ -501,7 +502,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         url,
         fade: false,
         placeWidget: Container(
-          height: 150,
+          height: MediaQuery.of(context).size.width * radio,
           child: Center(
             child: Text('$index', style: Theme.of(context).textTheme.headline4),
           ),
@@ -512,9 +513,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         ? (userSetting.pictureQuality == 1
             ? NullHero(
                 child: PixivImage(
-                  illust.metaPages[index].imageUrls.large,
+                  illust.metaPages[index].imageUrls!.large,
                   placeWidget: PixivImage(
-                    illust.metaPages[index].imageUrls.medium,
+                    illust.metaPages[index].imageUrls!.medium,
                     fade: false,
                   ),
                   fade: false,
@@ -523,15 +524,15 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               )
             : NullHero(
                 child: PixivImage(
-                  illust.metaPages[index].imageUrls.medium,
+                  illust.metaPages[index].imageUrls!.medium,
                   fade: false,
                 ),
                 tag: widget.heroString,
               ))
         : PixivImage(
             userSetting.pictureQuality == 0
-                ? illust.metaPages[index].imageUrls.medium
-                : illust.metaPages[index].imageUrls.large,
+                ? illust.metaPages[index].imageUrls!.medium
+                : illust.metaPages[index].imageUrls!.large,
             fade: false,
             placeWidget: Container(
               height: 150,
@@ -574,7 +575,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
       case 0:
         {
           muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName ?? "", id: 0));
+              name: f.name, translateName: f.translatedName ?? ""));
         }
         break;
       case 1:

@@ -279,7 +279,6 @@ class IllustDetailBody extends StatelessWidget {
       case 0:
         {
           muteStore.insertBanTag(BanTagPersist(
-            id: 0,
             name: f.name,
             translateName: f.translatedName ?? "",
           ));
