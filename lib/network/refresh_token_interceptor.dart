@@ -83,10 +83,6 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
             Response response1 = await client.postRefreshAuthToken(
                 refreshToken: accountPersist.refreshToken,
                 deviceToken: accountPersist.deviceToken);
-            File file = File(
-                (await getExternalStorageDirectory())!.absolute.path +"/"
-                    "1.json");
-            file.writeAsStringSync(jsonEncode(response1.data).toString());
             AccountResponse accountResponse =
                 Account.fromJson(response1.data).response;
             final user = accountResponse.user;
