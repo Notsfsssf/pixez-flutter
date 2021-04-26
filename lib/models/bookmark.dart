@@ -27,11 +27,6 @@ class BookmarkRsp {
 
   factory BookmarkRsp.fromJson(Map<String, dynamic> json) => _$BookmarkRspFromJson(json);
   Map<String, dynamic> toJson() => _$BookmarkRspToJson(this);
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
 }
 
 @JsonSerializable()

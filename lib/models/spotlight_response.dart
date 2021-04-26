@@ -17,56 +17,42 @@
 // To parse this JSON data, do
 //
 //     final spotlightResponse = spotlightResponseFromJson(jsonString);
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
-SpotlightResponse spotlightResponseFromJson(String str) =>
-    SpotlightResponse.fromJson(json.decode(str));
+part 'spotlight_response.g.dart';
 
-String spotlightResponseToJson(SpotlightResponse data) =>
-    json.encode(data.toJson());
-
+@JsonSerializable()
 class SpotlightResponse {
+  @JsonKey(name: 'spotlight_articles')
   List<SpotlightArticle> spotlightArticles;
-  String nextUrl;
+  @JsonKey(name: 'next_url')
+  String? nextUrl;
 
   SpotlightResponse({
     required this.spotlightArticles,
-    required this.nextUrl,
+    this.nextUrl,
   });
-
-  SpotlightResponse copyWith({
-    List<SpotlightArticle>? spotlightArticles,
-    String? nextUrl,
-  }) =>
-      SpotlightResponse(
-        spotlightArticles: spotlightArticles ?? this.spotlightArticles,
-        nextUrl: nextUrl ?? this.nextUrl,
-      );
-
   factory SpotlightResponse.fromJson(Map<String, dynamic> json) =>
-      SpotlightResponse(
-        spotlightArticles: List<SpotlightArticle>.from(
-            json["spotlight_articles"]
-                .map((x) => SpotlightArticle.fromJson(x))),
-        nextUrl: json["next_url"],
-      );
+      _$SpotlightResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "spotlight_articles":
-            List<dynamic>.from(spotlightArticles.map((x) => x.toJson())),
-        "next_url": nextUrl,
-      };
+  Map<String, dynamic> toJson() => _$SpotlightResponseToJson(this);
 }
 
+@JsonSerializable()
 class SpotlightArticle {
   int id;
   String title;
+  @JsonKey(name: 'pure_title')
   String pureTitle;
+  @JsonKey(name: 'thumbnail')
   String thumbnail;
+  @JsonKey(name: 'article_url')
   String articleUrl;
+  @JsonKey(name: 'publish_date')
   DateTime publishDate;
-  Category? category;
-  SubcategoryLabel? subcategoryLabel;
+  // Category? category;
+  // @JsonKey(name: 'subcategory_label')
+  // SubcategoryLabel? subcategoryLabel;
 
   SpotlightArticle({
     required this.id,
@@ -75,79 +61,12 @@ class SpotlightArticle {
     required this.thumbnail,
     required this.articleUrl,
     required this.publishDate,
-    required this.category,
-    required this.subcategoryLabel,
+    // this.category,
+    // required this.subcategoryLabel,
   });
 
-  SpotlightArticle copyWith({
-    required int id,
-    required String title,
-    required String pureTitle,
-    required String thumbnail,
-    required String articleUrl,
-    required DateTime publishDate,
-    Category? category,
-    SubcategoryLabel? subcategoryLabel,
-  }) =>
-      SpotlightArticle(
-        id: id,
-        title: title,
-        pureTitle: pureTitle,
-        thumbnail: thumbnail,
-        articleUrl: articleUrl,
-        publishDate: publishDate,
-        category: category ?? this.category,
-        subcategoryLabel: subcategoryLabel ?? this.subcategoryLabel,
-      );
-
   factory SpotlightArticle.fromJson(Map<String, dynamic> json) =>
-      SpotlightArticle(
-        id: json["id"],
-        title: json["title"],
-        pureTitle: json["pure_title"],
-        thumbnail: json["thumbnail"],
-        articleUrl: json["article_url"],
-        publishDate: DateTime.parse(json["publish_date"]),
-        category: categoryValues.map[json["category"]],
-        subcategoryLabel: subcategoryLabelValues.map[json["subcategory_label"]],
-      );
+      _$SpotlightArticleFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "pure_title": pureTitle,
-        "thumbnail": thumbnail,
-        "article_url": articleUrl,
-        "publish_date": publishDate.toIso8601String(),
-        "category": categoryValues.reverse[category],
-        "subcategory_label": subcategoryLabelValues.reverse[subcategoryLabel],
-      };
-}
-
-enum Category { SPOTLIGHT, INSPIRATION }
-
-final categoryValues = EnumValues(
-    {"inspiration": Category.INSPIRATION, "spotlight": Category.SPOTLIGHT});
-
-enum SubcategoryLabel { EMPTY, SUBCATEGORY_LABEL, PURPLE }
-
-final subcategoryLabelValues = EnumValues({
-  "イラスト": SubcategoryLabel.EMPTY,
-  "おすすめ": SubcategoryLabel.PURPLE,
-  "マンガ": SubcategoryLabel.SUBCATEGORY_LABEL
-});
-
-class EnumValues<T> {
-  Map<String, T> map;
-
-  Map<T, String>? reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    if (reverseMap == null) {
-      reverseMap = map.map((k, v) => new MapEntry(v, k));
-    }
-    return reverseMap!;
-  }
+  Map<String, dynamic> toJson() => _$SpotlightArticleToJson(this);
 }

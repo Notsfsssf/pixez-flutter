@@ -13,7 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import 'dart:convert' show json;
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
@@ -21,6 +20,7 @@ import 'package:sqflite/sqflite.dart';
 
 part 'tags.g.dart';
 
+@JsonSerializable()
 class AutoWords {
   List<Tags> tags;
 
@@ -28,28 +28,13 @@ class AutoWords {
     required this.tags,
   });
 
-  factory AutoWords.fromJson(jsonRes) {
-    List<Tags> tags = [];
-    for (var item in jsonRes['tags']) {
-      if (item != null) {
-        tags.add(Tags.fromJson(item));
-      }
-    }
-    return AutoWords(
-      tags: tags,
-    );
-  }
+  factory AutoWords.fromJson(Map<String, dynamic> json) =>
+      _$AutoWordsFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'tags': tags,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  Map<String, dynamic> toJson() => _$AutoWordsToJson(this);
 }
 
+@JsonSerializable()
 class Tags {
   String name;
   String? translated_name;
@@ -59,20 +44,9 @@ class Tags {
     this.translated_name,
   });
 
-  factory Tags.fromJson(jsonRes) => Tags(
-        name: jsonRes['name'],
-        translated_name: jsonRes['translated_name'],
-      );
+  factory Tags.fromJson(Map<String, dynamic> json) => _$TagsFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'translated_name': translated_name,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  Map<String, dynamic> toJson() => _$TagsToJson(this);
 }
 
 @JsonSerializable()

@@ -15,42 +15,25 @@
  */
 import 'dart:convert' show json;
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:pixez/models/illust.dart';
+part 'user_preview.g.dart';
 
+@JsonSerializable()
 class UserPreviewsResponse {
   List<UserPreviews> user_previews;
-  String next_url;
+  String? next_url;
 
   UserPreviewsResponse({
     required this.user_previews,
-    required this.next_url,
+    this.next_url,
   });
-
-  factory UserPreviewsResponse.fromJson(jsonRes) {
-    List<UserPreviews> user_previews = [];
-    for (var item in jsonRes['user_previews']) {
-      if (item != null) {
-        user_previews.add(UserPreviews.fromJson(item));
-      }
-    }
-
-    return UserPreviewsResponse(
-      user_previews: user_previews,
-      next_url: jsonRes['next_url'],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'user_previews': user_previews,
-        'next_url': next_url,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  factory UserPreviewsResponse.fromJson(Map<String, dynamic> json) =>
+      _$UserPreviewsResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$UserPreviewsResponseToJson(this);
 }
 
+@JsonSerializable()
 class UserPreviews {
   User user;
   List<Illusts> illusts;
@@ -64,38 +47,7 @@ class UserPreviews {
     required this.is_muted,
   });
 
-  factory UserPreviews.fromJson(jsonRes) {
-    List<Illusts> illusts = [];
-    for (var item in jsonRes['illusts']) {
-      if (item != null) {
-        illusts.add(Illusts.fromJson(item));
-      }
-    }
-
-    List<Object> novels = [];
-    for (var item in jsonRes['novels']) {
-      if (item != null) {
-        novels.add(item);
-      }
-    }
-
-    return UserPreviews(
-      user: User.fromJson(jsonRes['user']),
-      illusts: illusts,
-      novels: novels,
-      is_muted: jsonRes['is_muted'],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'user': user,
-        'illusts': illusts,
-        'novels': novels,
-        'is_muted': is_muted,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+    factory UserPreviews.fromJson(Map<String, dynamic> json) =>
+      _$UserPreviewsFromJson(json);
+  Map<String, dynamic> toJson() => _$UserPreviewsToJson(this);
 }

@@ -13,15 +13,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
-UgoiraMetadataResponse ugoiraMetadataResponseFromJson(String str) =>
-    UgoiraMetadataResponse.fromJson(json.decode(str));
+part 'ugoira_metadata_response.g.dart';
 
-String ugoiraMetadataResponseToJson(UgoiraMetadataResponse data) =>
-    json.encode(data.toJson());
-
+@JsonSerializable()
 class UgoiraMetadataResponse {
+  @JsonKey(name: 'ugoira_metadata')
   UgoiraMetadata ugoiraMetadata;
 
   UgoiraMetadataResponse({
@@ -29,16 +27,14 @@ class UgoiraMetadataResponse {
   });
 
   factory UgoiraMetadataResponse.fromJson(Map<String, dynamic> json) =>
-      UgoiraMetadataResponse(
-        ugoiraMetadata: UgoiraMetadata.fromJson(json["ugoira_metadata"]),
-      );
+      _$UgoiraMetadataResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "ugoira_metadata": ugoiraMetadata.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$UgoiraMetadataResponseToJson(this);
 }
 
+@JsonSerializable()
 class UgoiraMetadata {
+  @JsonKey(name: 'zip_urls')
   ZipUrls zipUrls;
   List<Frame> frames;
 
@@ -47,17 +43,13 @@ class UgoiraMetadata {
     required this.frames,
   });
 
-  factory UgoiraMetadata.fromJson(Map<String, dynamic> json) => UgoiraMetadata(
-        zipUrls: ZipUrls.fromJson(json["zip_urls"]),
-        frames: List<Frame>.from(json["frames"].map((x) => Frame.fromJson(x))),
-      );
+  factory UgoiraMetadata.fromJson(Map<String, dynamic> json) =>
+      _$UgoiraMetadataFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "zip_urls": zipUrls.toJson(),
-        "frames": List<dynamic>.from(frames.map((x) => x.toJson())),
-      };
+  Map<String, dynamic> toJson() => _$UgoiraMetadataToJson(this);
 }
 
+@JsonSerializable()
 class Frame {
   String file;
   int delay;
@@ -67,17 +59,12 @@ class Frame {
     required this.delay,
   });
 
-  factory Frame.fromJson(Map<String, dynamic> json) => Frame(
-        file: json["file"],
-        delay: json["delay"],
-      );
+  factory Frame.fromJson(Map<String, dynamic> json) => _$FrameFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "file": file,
-        "delay": delay,
-      };
+  Map<String, dynamic> toJson() => _$FrameToJson(this);
 }
 
+@JsonSerializable()
 class ZipUrls {
   String medium;
 
@@ -85,11 +72,8 @@ class ZipUrls {
     required this.medium,
   });
 
-  factory ZipUrls.fromJson(Map<String, dynamic> json) => ZipUrls(
-        medium: json["medium"],
-      );
+  factory ZipUrls.fromJson(Map<String, dynamic> json) =>
+      _$ZipUrlsFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "medium": medium,
-      };
+  Map<String, dynamic> toJson() => _$ZipUrlsToJson(this);
 }
