@@ -143,7 +143,7 @@ class User {
   ProfileImageUrls profileImageUrls;
   String? comment;
   @JsonKey(name: 'is_followed')
-  bool isFollowed;
+  bool? isFollowed;
 
   User(
       {required this.id,
@@ -151,7 +151,7 @@ class User {
       required this.account,
       required this.profileImageUrls,
       this.comment,
-      required this.isFollowed});
+      this.isFollowed});
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

@@ -44,7 +44,7 @@ abstract class _UserStoreBase with Store {
 
   @action
   Future<void> follow({bool needPrivate = false}) async {
-    if (user!.isFollowed) {
+    if (user!.isFollowed!) {
       try {
         await client.postUnFollowUser(id);
         userDetail?.user.isFollowed = false;
@@ -86,7 +86,7 @@ abstract class _UserStoreBase with Store {
       UserDetail userDetail = UserDetail.fromJson(response.data);
       this.userDetail = userDetail;
       this.user = userDetail.user;
-      this.isFollow = this.userDetail!.user.isFollowed;
+      this.isFollow = this.userDetail!.user.isFollowed ?? false;
     } on DioError catch (e) {
       if (e.response != null && e.response!.statusCode == HttpStatus.notFound) {
         errorMessage = '404';

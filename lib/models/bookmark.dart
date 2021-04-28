@@ -17,6 +17,7 @@ import 'dart:convert' show json;
 
 import 'package:json_annotation/json_annotation.dart';
 part 'bookmark.g.dart';
+
 @JsonSerializable()
 class BookmarkRsp {
   Bookmark_detail bookmark_detail;
@@ -25,7 +26,8 @@ class BookmarkRsp {
     required this.bookmark_detail,
   });
 
-  factory BookmarkRsp.fromJson(Map<String, dynamic> json) => _$BookmarkRspFromJson(json);
+  factory BookmarkRsp.fromJson(Map<String, dynamic> json) =>
+      _$BookmarkRspFromJson(json);
   Map<String, dynamic> toJson() => _$BookmarkRspToJson(this);
 }
 
@@ -41,7 +43,8 @@ class Bookmark_detail {
     required this.restrict,
   });
 
-  factory Bookmark_detail.fromJson(Map<String, dynamic> json) => _$Bookmark_detailFromJson(json);
+  factory Bookmark_detail.fromJson(Map<String, dynamic> json) =>
+      _$Bookmark_detailFromJson(json);
   Map<String, dynamic> toJson() => _$Bookmark_detailToJson(this);
 
   @override
@@ -62,9 +65,4 @@ class Tags {
 
   factory Tags.fromJson(Map<String, dynamic> json) => _$TagsFromJson(json);
   Map<String, dynamic> toJson() => _$TagsToJson(this);
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
 }

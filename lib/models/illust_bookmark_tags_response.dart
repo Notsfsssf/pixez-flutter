@@ -18,37 +18,27 @@
 //
 //     final illustBookmarkTagsResponse = illustBookmarkTagsResponseFromJson(jsonString);
 
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
+part 'illust_bookmark_tags_response.g.dart';
 
-IllustBookmarkTagsResponse illustBookmarkTagsResponseFromJson(String str) =>
-    IllustBookmarkTagsResponse.fromJson(json.decode(str));
-
-String illustBookmarkTagsResponseToJson(IllustBookmarkTagsResponse data) =>
-    json.encode(data.toJson());
-
+@JsonSerializable()
 class IllustBookmarkTagsResponse {
+  @JsonKey(name: "bookmark_tags")
   List<BookmarkTag> bookmarkTags;
-  String nextUrl;
+  @JsonKey(name: "next_url")
+  String? nextUrl;
 
   IllustBookmarkTagsResponse({
     required this.bookmarkTags,
-    required this.nextUrl,
+    this.nextUrl,
   });
-
   factory IllustBookmarkTagsResponse.fromJson(Map<String, dynamic> json) =>
-      IllustBookmarkTagsResponse(
-        bookmarkTags: List<BookmarkTag>.from(
-            json["bookmark_tags"].map((x) => BookmarkTag.fromJson(x))),
-        nextUrl: json["next_url"],
-      );
+      _$IllustBookmarkTagsResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "bookmark_tags":
-            List<dynamic>.from(bookmarkTags.map((x) => x.toJson())),
-        "next_url": nextUrl,
-      };
+  Map<String, dynamic> toJson() => _$IllustBookmarkTagsResponseToJson(this);
 }
 
+@JsonSerializable()
 class BookmarkTag {
   String name;
   int count;
@@ -57,14 +47,8 @@ class BookmarkTag {
     required this.name,
     required this.count,
   });
+  factory BookmarkTag.fromJson(Map<String, dynamic> json) =>
+      _$BookmarkTagFromJson(json);
 
-  factory BookmarkTag.fromJson(Map<String, dynamic> json) => BookmarkTag(
-        name: json["name"],
-        count: json["count"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "count": count,
-      };
+  Map<String, dynamic> toJson() => _$BookmarkTagToJson(this);
 }

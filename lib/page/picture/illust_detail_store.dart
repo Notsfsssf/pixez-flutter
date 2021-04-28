@@ -28,13 +28,13 @@ abstract class _IllustDetailStoreBase with Store {
   bool isFollow = false;
 
   _IllustDetailStoreBase(this.illust) {
-    isFollow = illust.user.isFollowed;
+    isFollow = illust.user.isFollowed ?? false;
   }
 
   @action
   followUser() async {
     try {
-      if (illust.user.isFollowed) {
+      if (illust.user.isFollowed ?? false) {
         await apiClient.postUnFollowUser(illust.user.id);
         illust.user.isFollowed = false;
         isFollow = false;
