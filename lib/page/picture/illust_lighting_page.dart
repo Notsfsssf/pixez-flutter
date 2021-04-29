@@ -984,7 +984,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     if (result is Map) {
       LPrinter.d(result);
       String restrict = result['restrict'];
-      List<String> tags = result['tags'];
+      List<String>? tags = result['tags'];
       _illustStore.star(restrict: restrict, tags: tags);
     }
   }

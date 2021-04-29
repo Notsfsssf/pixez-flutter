@@ -35,7 +35,39 @@ class _NovelHistoryState extends State<NovelHistory> {
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       return Scaffold(
-        appBar: AppBar(title: Text(I18n.of(context).history)),
+        appBar: AppBar(
+          title: Text(I18n.of(context).history),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.delete_forever),
+          onPressed: () async {
+            final result = await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(
+                        "${I18n.of(context).delete} ${I18n.of(context).all}?"),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(I18n.of(context).cancel),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text(I18n.of(context).ok),
+                        onPressed: () {
+                          Navigator.of(context).pop("OK");
+                        },
+                      ),
+                    ],
+                  );
+                });
+            if (result == "OK") {
+              novelHistoryStore.deleteAll();
+            }
+          },
+        ),
         body: novelHistoryStore.data.isNotEmpty
             ? ListView.builder(
                 itemBuilder: (context, index) {
@@ -45,6 +77,11 @@ class _NovelHistoryState extends State<NovelHistory> {
                     subtitle: Text(novel.userName),
                     onTap: () => Leader.push(
                         context, NovelViewerPage(id: novel.novelId)),
+                    trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          novelHistoryStore.delete(novel.novelId);
+                        }),
                   );
                 },
                 itemCount: novelHistoryStore.data.length,
