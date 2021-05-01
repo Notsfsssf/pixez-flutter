@@ -13,8 +13,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import 'dart:convert' show json;
+import 'package:json_annotation/json_annotation.dart';
+part 'error_message.g.dart';
 
+@JsonSerializable()
 class ErrorMessage {
   Error error;
 
@@ -22,49 +24,27 @@ class ErrorMessage {
     required this.error,
   });
 
-  factory ErrorMessage.fromJson(jsonRes) => ErrorMessage(
-        error: Error.fromJson(jsonRes['error']),
-      );
+  factory ErrorMessage.fromJson(Map<String, dynamic> json) =>
+      _$ErrorMessageFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'error': error,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  Map<String, dynamic> toJson() => _$ErrorMessageToJson(this);
 }
 
+@JsonSerializable()
 class Error {
-  String user_message;
-  String message;
-  String reason;
-  Object user_message_details;
+  String? user_message;
+  String? message;
+  String? reason;
+  Object? user_message_details;
 
   Error({
     required this.user_message,
     required this.message,
     required this.reason,
-    required this.user_message_details,
+    this.user_message_details,
   });
 
-  factory Error.fromJson(jsonRes) => Error(
-        user_message: jsonRes['user_message'],
-        message: jsonRes['message'],
-        reason: jsonRes['reason'],
-        user_message_details: jsonRes['user_message_details'],
-      );
+  factory Error.fromJson(Map<String, dynamic> json) => _$ErrorFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'user_message': user_message,
-        'message': message,
-        'reason': reason,
-        'user_message_details': user_message_details,
-      };
-
-  @override
-  String toString() {
-    return json.encode(this);
-  }
+  Map<String, dynamic> toJson() => _$ErrorToJson(this);
 }

@@ -21,9 +21,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.RemoteViews
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
@@ -32,14 +30,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.view.FlutterCallbackInformation
-import io.flutter.view.FlutterMain
-import org.json.JSONArray
 import org.json.JSONObject
-
 
 /**
  * Implementation of App Widget functionality.

@@ -15,11 +15,8 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/models/error_message.dart';
@@ -72,39 +69,51 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
     if (err.response != null && err.response!.statusCode == 400) {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
-        apiClient.httpClient.interceptors.errorLock.lock();
-        print("lock start ========================");
         try {
-          ErrorMessage errorMessage = ErrorMessage.fromJson(err.response!.data);
-          if (errorMessage.error.message.contains("OAuth") &&
-              accountStore.now != null) {
-            final client = OAuthClient();
-            AccountPersist accountPersist = accountStore.now!;
-            Response response1 = await client.postRefreshAuthToken(
-                refreshToken: accountPersist.refreshToken,
-                deviceToken: accountPersist.deviceToken);
-            AccountResponse accountResponse =
-                Account.fromJson(response1.data).response;
-            final user = accountResponse.user;
-            accountStore.updateSingle(AccountPersist(
-                userId: user.id,
-                userImage: user.profileImageUrls.px170x170,
-                accessToken: accountResponse.accessToken,
-                refreshToken: accountResponse.refreshToken,
-                deviceToken: "",
-                passWord: "no more",
-                name: user.name,
-                account: user.account,
-                mailAddress: user.mailAddress,
-                isPremium: bti(user.isPremium),
-                xRestrict: user.xRestrict,
-                isMailAuthorized: bti(user.isMailAuthorized),
-                id: accountPersist.id));
-            lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
+          if (err.response!.statusCode == HttpStatus.badRequest) {
+            apiClient.httpClient.interceptors.errorLock.lock();
+            print("lock start ========================");
+            ErrorMessage errorMessage =
+                ErrorMessage.fromJson(err.response!.data);
+            if (errorMessage.error.message!.contains("OAuth") &&
+                accountStore.now != null) {
+              final client = OAuthClient();
+              AccountPersist accountPersist = accountStore.now!;
+              Response response1 = await client.postRefreshAuthToken(
+                  refreshToken: accountPersist.refreshToken,
+                  deviceToken: accountPersist.deviceToken);
+              AccountResponse accountResponse =
+                  Account.fromJson(response1.data).response;
+              final user = accountResponse.user;
+              accountStore.updateSingle(AccountPersist(
+                  userId: user.id,
+                  userImage: user.profileImageUrls.px170x170,
+                  accessToken: accountResponse.accessToken,
+                  refreshToken: accountResponse.refreshToken,
+                  deviceToken: "",
+                  passWord: "no more",
+                  name: user.name,
+                  account: user.account,
+                  mailAddress: user.mailAddress,
+                  isPremium: bti(user.isPremium),
+                  xRestrict: user.xRestrict,
+                  isMailAuthorized: bti(user.isMailAuthorized),
+                  id: accountPersist.id));
+              lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
+              apiClient.httpClient.interceptors.errorLock.unlock();
+              print("unlock ========================");
+            } else if (errorMessage.error.message!.contains("Limit")) {
+              lastRefreshTime = 0;
+              apiClient.httpClient.interceptors.errorLock.unlock();
+              print("unlock ========================");
+              return handler.reject(err);
+            } else {
+              lastRefreshTime = 0;
+              apiClient.httpClient.interceptors.errorLock.unlock();
+              print("unlock ========================");
+              return handler.reject(err);
+            }
           }
-          if (errorMessage.error.message.contains("Limit")) {}
-          apiClient.httpClient.interceptors.errorLock.unlock();
-          print("unlock ========================");
         } catch (e) {
           print(e);
           lastRefreshTime = 0;

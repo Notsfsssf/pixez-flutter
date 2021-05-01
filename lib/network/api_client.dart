@@ -57,7 +57,7 @@ class ApiClient {
     String time = getIsoDate();
     if (isBookmark) {
       httpClient = Dio(apiClient.httpClient.options)
-        // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+        ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
         ..interceptors.add(RefreshTokenInterceptor());
       (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
           .onHttpClientCreate = (client) {
