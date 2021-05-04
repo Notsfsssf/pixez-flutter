@@ -86,7 +86,8 @@ class _GuidePageState extends State<GuidePage> {
                           'zh-CN',
                           'zh-TW',
                           'ja',
-                          'ko'
+                          'ko',
+                          'ru'
                         ];
                         ApiClient.Accept_Language =
                             languageList[userSetting.languageNum];
