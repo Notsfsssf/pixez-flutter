@@ -65,6 +65,9 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                   text: "ja",
                 ),
                 Tab(
+                  text: "ko",
+                ),
+                Tab(
                   text: "ru",
                 ),
                 Tab(
@@ -75,6 +78,7 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                 labelColor: Theme.of(context).textTheme.headline6!.color,
                 indicatorSize: TabBarIndicatorSize.label,
                 tabs: list,
+                isScrollable: true,
                 onTap: (index) async {
                   await userSetting.setLanguageNum(index);
                   setState(() {});
