@@ -345,13 +345,14 @@ abstract class _UserSettingBase with Store {
     singleFolder = value;
   }
 
-  final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja', 'ko'];
+  final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja', 'ko', 'ru'];
   List<Locale> iSupportedLocales = <Locale>[
     Locale('en', 'US'),
     Locale('zh', 'CN'),
     Locale('zh', 'TW'),
     Locale('ja'),
-    Locale('ko')
+    Locale('ko'),
+    Locale('ru')
   ];
 
   @action
