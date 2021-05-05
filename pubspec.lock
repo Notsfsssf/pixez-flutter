@@ -282,14 +282,14 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.5"
+    version: "6.0.4"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.2"
+    version: "6.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -336,7 +336,7 @@ packages:
       name: flutter_date_pickers
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.3+1"
+    version: "0.2.4"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -416,7 +416,7 @@ packages:
       name: flutter_widget_from_html_core
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.1"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -451,7 +451,7 @@ packages:
       name: http
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.13.1"
+    version: "0.13.3"
   http_client_helper:
     dependency: transitive
     description:
@@ -772,7 +772,7 @@ packages:
       name: share_plus
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.3"
   share_plus_linux:
     dependency: transitive
     description:

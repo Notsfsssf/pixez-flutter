@@ -24,7 +24,6 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';

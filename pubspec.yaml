@@ -22,12 +22,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   dio: ^4.0.0
-  crypto: ^3.0.0
-  sqflite: ^2.0.0+2
+  crypto: ^3.0.1
+  sqflite: ^2.0.0+3
   path_provider: ^2.0.1
   shared_preferences: ^2.0.5
   share: ^2.0.1
-  share_plus: ^2.0.0
+  share_plus: ^2.0.3
   permission_handler: ^6.0.1
   save_in_gallery:
     git:
@@ -39,15 +39,15 @@ dependencies:
   uni_links2: ^0.6.0+2
   mobx: ^2.0.1
   flutter_mobx: ^2.0.0
-  flutter_inapp_purchase: ^5.0.0 
-  flutter_widget_from_html_core: ^0.6.0
-  flutter_date_pickers: ^0.2.3+1
+  flutter_inapp_purchase: ^5.0.1
+  flutter_widget_from_html_core: ^0.6.1
+  flutter_date_pickers: ^0.2.4
   device_info: ^2.0.0
   provider: ^5.0.0
   flutter_displaymode: ^0.3.1-nullsafety.0
   receive_sharing_intent: ^1.4.5
   flutter_hooks: ^0.16.0
-  pull_to_refresh: 
+  pull_to_refresh:
     git:
       url: https://github.com/peng8350/flutter_pulltorefresh
       ref: nullsafety
@@ -55,23 +55,23 @@ dependencies:
   flutter_colorpicker: ^0.4.0-nullsafety.0
   waterfall_flow: ^3.0.1
   animations: ^2.0.0
-  extended_text: ^5.0.5
+  extended_text: ^6.0.4
   font_awesome_flutter: ^9.0.0
-  json_annotation: ^4.0.0
+  json_annotation: ^4.0.1
   flutter_staggered_animations: ^1.0.0
   flutter_statusbar_manager:
     git:
       url: https://github.com/amitkot/flutter_statusbar_manager
   badges: ^2.0.0-nullsafety.1
-  image_picker: ^0.7.2
+  image_picker: ^0.7.4
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
-  quiver: ^3.0.0
-  image: ^3.0.1
-  flutter_inappwebview: ^5.3.1
+  quiver: ^3.0.1
+  image: ^3.0.2
+  flutter_inappwebview: ^5.3.2
   dio_cookie_manager: ^2.0.0
   auto_animated: ^3.0.0
-  http: ^0.13.0
+  http: ^0.13.3
   dio_http_cache:
     git:
       url: https://github.com/vrtdev/dio-http-cache.git
@@ -131,9 +131,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: iconfont
-       fonts:
-         - asset: assets/fonts/iconfont.ttf
+    - family: iconfont
+      fonts:
+        - asset: assets/fonts/iconfont.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
