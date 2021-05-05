@@ -36,7 +36,6 @@ import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
-import 'package:quick_actions/quick_actions.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links2/uni_links.dart';
@@ -53,7 +52,6 @@ class AndroidHelloPage extends StatefulWidget {
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late List<Widget> _pageList;
   DateTime? _preTime;
-  late QuickActions quickActions;
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +75,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       child: Observer(builder: (context) {
         if (accountStore.now != null &&
             (Platform.isIOS || Platform.isAndroid)) {
-          quickActions.setShortcutItems(<ShortcutItem>[
-            ShortcutItem(
-                type: 'action_search',
-                localizedTitle: I18n.of(context).search,
-                icon: 'ic_search'),
-          ]);
           return _buildScaffold(context);
         }
         return LoginPage();
@@ -157,7 +149,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     ];
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: index);
-    quickActions = QuickActions();
     super.initState();
     saveStore.context = this.context;
     saveStore.saveStream.listen((stream) {

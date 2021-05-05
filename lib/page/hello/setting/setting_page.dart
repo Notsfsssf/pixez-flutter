@@ -42,7 +42,6 @@ import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
-import 'package:quick_actions/quick_actions.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -350,8 +349,6 @@ class _SettingPageState extends State<SettingPage> {
       case "OK":
         {
           accountStore.deleteAll();
-          if (Platform.isIOS || Platform.isAndroid)
-            QuickActions().clearShortcutItems();
         }
         break;
       case "CANCEL":

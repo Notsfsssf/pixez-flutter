@@ -171,6 +171,48 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/mytecor');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars.githubusercontent.com/u/20505643?v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Vlad Afonin'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/SugarBlank');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars.githubusercontent.com/u/64178604?v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('SugarBlank'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
   ];
 
   @override
@@ -348,6 +390,29 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {
+                  var list = [
+                    Tab(
+                      text: "en-US",
+                    ),
+                    Tab(
+                      text: "zh-CN",
+                    ),
+                    Tab(
+                      text: "zh-TW",
+                    ),
+                    Tab(
+                      text: "ja",
+                    ),
+                    Tab(
+                      text: "ko",
+                    ),
+                    Tab(
+                      text: "ru",
+                    ),
+                    Tab(
+                      text: "es",
+                    ),
+                  ];
                   return Theme(
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
@@ -356,23 +421,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       indicatorSize: TabBarIndicatorSize.label,
                       isScrollable: true,
                       indicatorColor: Theme.of(context).accentColor,
-                      tabs: [
-                        Tab(
-                          text: "en-US",
-                        ),
-                        Tab(
-                          text: "zh-CN",
-                        ),
-                        Tab(
-                          text: "zh-TW",
-                        ),
-                        Tab(
-                          text: "ja",
-                        ),
-                        Tab(
-                          text: "ko",
-                        ),
-                      ],
+                      tabs: list,
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
                         setState(() {
@@ -380,7 +429,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         });
                       },
                       controller: TabController(
-                          length: 5,
+                          length: list.length,
                           vsync: this,
                           initialIndex: userSetting.languageNum),
                     ),

@@ -39,7 +39,6 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:quick_actions/quick_actions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final UserSetting userSetting = UserSetting();
@@ -109,8 +108,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  final QuickActions quickActions = QuickActions();
-
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -118,13 +115,6 @@ class _MyAppState extends State<MyApp> {
         navigatorObservers: [BotToastNavigatorObserver()],
         locale: userSetting.locale,
         home: Builder(builder: (context) {
-          if (Platform.isIOS || Platform.isAndroid)
-            quickActions.initialize((shortcutType) {
-              if (shortcutType == 'action_search') {
-                LPrinter.d("quick action");
-                Leader.push(context, SearchSuggestionPage()); //感觉迟早会上url路由
-              }
-            });
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
               child: SplashPage());

@@ -56,14 +56,13 @@ dependencies:
   waterfall_flow: ^3.0.1
   animations: ^2.0.0
   extended_text: ^5.0.5
-  font_awesome_flutter: ^9.0.0-nullsafety
+  font_awesome_flutter: ^9.0.0
   json_annotation: ^4.0.0
   flutter_staggered_animations: ^1.0.0
   flutter_statusbar_manager:
     git:
       url: https://github.com/amitkot/flutter_statusbar_manager
   badges: ^2.0.0-nullsafety.1
-  quick_actions: ^0.5.0
   image_picker: ^0.7.2
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
@@ -79,7 +78,7 @@ dependencies:
       ref: feature/nullsafety-dio4
   md2_tab_indicator:
     git:
-      url: https://github.com/Notsfsssf/md2_tab_indicator
+      url: https://github.com/westdabestdb/md2_tab_indicator
 #dependency_overrides:
 #  flutter_svg: ^0.17.4
 dev_dependencies:

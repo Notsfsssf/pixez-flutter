@@ -555,10 +555,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: b31fe8962b3dc3e9fd789b63136fbd95b43878e7
-      url: "https://github.com/Notsfsssf/md2_tab_indicator"
+      resolved-ref: "1097deb4f4018c408fd4745711efb8f0ea9044e7"
+      url: "https://github.com/westdabestdb/md2_tab_indicator"
     source: git
-    version: "1.0.2"
+    version: "2.0.0"
   meta:
     dependency: transitive
     description:
@@ -736,13 +736,6 @@ packages:
       url: "https://github.com/peng8350/flutter_pulltorefresh"
     source: git
     version: "1.6.4-nullsafety.1"
-  quick_actions:
-    dependency: "direct main"
-    description:
-      name: quick_actions
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.5.0+1"
   quiver:
     dependency: "direct main"
     description:

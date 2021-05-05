@@ -29,57 +29,65 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          child: Center(
-            child: ListView(
-              children: <Widget>[
-                AppBar(
-                  backgroundColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  elevation: 0.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    I18n.of(context).select_language,
-                    style: Theme.of(context).textTheme.headline5,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Center(child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください")),
-                ),
-                Observer(builder: (_) {
-                  return TabBar(
-                    labelColor: Theme.of(context).textTheme.headline6!.color,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
-                      Tab(
-                        text: "en-US",
-                      ),
-                      Tab(
-                        text: "zh-CN",
-                      ),
-                      Tab(
-                        text: "zh-TW",
-                      ),
-                      Tab(
-                        text: "ja",
-                      )
-                    ],
-                    onTap: (index) async {
-                      await userSetting.setLanguageNum(index);
-                      setState(() {});
-                    },
-                    controller: TabController(
-                        length: 4,
-                        vsync: this,
-                        initialIndex: userSetting.languageNum),
-                  );
-                })
-              ],
+      child: Center(
+        child: ListView(
+          children: <Widget>[
+            AppBar(
+              backgroundColor: Colors.transparent,
+              automaticallyImplyLeading: false,
+              elevation: 0.0,
             ),
-          ),
-        ));
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                I18n.of(context).select_language,
+                style: Theme.of(context).textTheme.headline5,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Center(
+                  child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください")),
+            ),
+            Observer(builder: (_) {
+              var list = [
+                Tab(
+                  text: "en-US",
+                ),
+                Tab(
+                  text: "zh-CN",
+                ),
+                Tab(
+                  text: "zh-TW",
+                ),
+                Tab(
+                  text: "ja",
+                ),
+                Tab(
+                  text: "ru",
+                ),
+                Tab(
+                  text: "es",
+                )
+              ];
+              return TabBar(
+                labelColor: Theme.of(context).textTheme.headline6!.color,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: list,
+                onTap: (index) async {
+                  await userSetting.setLanguageNum(index);
+                  setState(() {});
+                },
+                controller: TabController(
+                    length: list.length,
+                    vsync: this,
+                    initialIndex: userSetting.languageNum),
+              );
+            })
+          ],
+        ),
+      ),
+    ));
   }
 }

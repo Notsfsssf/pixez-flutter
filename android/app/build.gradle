@@ -84,8 +84,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10004090
-        versionName "0.4.9 Null"
+        versionCode 10005000
+        versionName "0.5.0 Mark"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -115,7 +115,7 @@ flutter {
 }
 
 dependencies {
-//    implementation project(":weiss")
+    implementation project(":weiss")
     implementation 'androidx.webkit:webkit:1.4.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'

@@ -30,7 +30,8 @@ class SoupStore = _SoupStoreBase with _$SoupStore;
 
 abstract class _SoupStoreBase with Store {
   final dio = Dio(BaseOptions(headers: {
-    HttpHeaders.acceptLanguageHeader: ApiClient.Accept_Language,
+    HttpHeaders.acceptLanguageHeader:
+        userSetting.languageNum < 5 ? ApiClient.Accept_Language : "en-US",
     'user-agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.26 Safari/537.36 Edg/85.0.564.13',
     HttpHeaders.refererHeader: 'https://www.pixivision.net/zh/',
@@ -43,7 +44,7 @@ abstract class _SoupStoreBase with Store {
 
   @action
   fetch(String url) async {
-    if (userSetting.languageNum == 0) {
+    if (userSetting.languageNum == 0||userSetting.languageNum>=5) {
       _fetchEn(url);
     } else {
       _fetchCNTW(url);
