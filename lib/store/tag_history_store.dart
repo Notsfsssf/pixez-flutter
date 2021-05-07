@@ -15,6 +15,7 @@
  */
 
 import 'package:mobx/mobx.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/models/tags.dart';
 
 part 'tag_history_store.g.dart';
@@ -39,12 +40,14 @@ abstract class _TagHistoryStoreBase with Store {
         return;
       }
     }
+    tagsPersist.type = Constants.type;
     await tagsPersistProvider.open();
     await tagsPersistProvider.insert(tagsPersist);
     await fetch();
   }
+
   @action
-  delete(int id)async{
+  delete(int id) async {
     await tagsPersistProvider.open();
     await tagsPersistProvider.delete(id);
     await fetch();
@@ -53,7 +56,7 @@ abstract class _TagHistoryStoreBase with Store {
   @action
   deleteAll() async {
     await tagsPersistProvider.open();
-    await tagsPersistProvider.deleteAll();
+    await tagsPersistProvider.deleteAll(type: Constants.type);
     await fetch();
   }
 }

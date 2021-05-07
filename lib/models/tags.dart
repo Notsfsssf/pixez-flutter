@@ -56,6 +56,7 @@ class TagsPersist {
   String name;
   @JsonKey(name: 'translated_name')
   String translatedName;
+  int? type = 0;
 
   TagsPersist({this.id, required this.name, required this.translatedName});
 
@@ -69,6 +70,7 @@ final String tableTag = 'tag';
 final String columnId = '_id';
 final String columnName = 'name';
 final String columnTranslatedName = 'translated_name';
+final String columnType = 'type';
 
 class TagsPersistProvider {
   late Database db;
@@ -76,15 +78,26 @@ class TagsPersistProvider {
   Future open() async {
     String databasesPath = (await getDatabasesPath());
     String path = join(databasesPath, '${tableTag}.db');
-    db = await openDatabase(path, version: 1,
+    db = await openDatabase(path, version: 2,
         onCreate: (Database db, int version) async {
       await db.execute('''
 create table $tableTag ( 
   $columnId integer primary key autoincrement, 
   $columnName text not null,
-  $columnTranslatedName text not null)
+  $columnTranslatedName text not null,
+  $columnType integer)
 ''');
+    }, onUpgrade: (db, oldVer, newVer) async {
+      var batch = db.batch();
+      if (oldVer == 1) {
+        _updateTableCompanyV1toV2(batch);
+      }
+      await batch.commit();
     });
+  }
+
+  void _updateTableCompanyV1toV2(Batch batch) {
+    batch.execute('ALTER TABLE $tableTag ADD $columnType integer');
   }
 
   Future<TagsPersist> insert(TagsPersist tag) async {
@@ -94,7 +107,7 @@ create table $tableTag (
 
   Future<TagsPersist?> getTodo(int id) async {
     List<Map<String, dynamic>> maps = await db.query(tableTag,
-        columns: [columnId, columnName, columnTranslatedName],
+        columns: [columnId, columnName, columnTranslatedName, columnType],
         where: '$columnId = ?',
         whereArgs: [id]);
     if (maps.length > 0) {
@@ -105,8 +118,8 @@ create table $tableTag (
 
   Future<List<TagsPersist>> getAllAccount() async {
     List<TagsPersist> result = [];
-    List<Map<String, dynamic>> maps = await db
-        .query(tableTag, columns: [columnId, columnName, columnTranslatedName]);
+    List<Map<String, dynamic>> maps = await db.query(tableTag,
+        columns: [columnId, columnName, columnTranslatedName, columnType]);
 
     if (maps.length > 0) {
       maps.forEach((f) {
@@ -120,8 +133,9 @@ create table $tableTag (
     return await db.delete(tableTag, where: '$columnId = ?', whereArgs: [id]);
   }
 
-  Future<int> deleteAll() async {
-    return await db.delete(tableTag);
+  Future<int> deleteAll({int type = 0}) async {
+    return await db
+        .delete(tableTag, where: '$columnType = ?', whereArgs: [type]);
   }
 
   Future<int> update(TagsPersist todo) async {

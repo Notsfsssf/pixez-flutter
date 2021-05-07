@@ -152,7 +152,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 const EdgeInsets.symmetric(horizontal: 5.0),
                             child: Wrap(
                               children: [
-                                for (var f in tagHistoryStore.tags)
+                                for (var f in tagHistoryStore.tags.where(
+                                    (element) =>
+                                        element.type == null ||
+                                        element.type == 0))
                                   buildActionChip(f, context),
                               ],
                               runSpacing: 0.0,
