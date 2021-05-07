@@ -63,27 +63,35 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
         return InkWell(
           onLongPress: () async {
             if (isEncoding) return;
-            final result = await showDialog(
+            final result = await showModalBottomSheet(
                 context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                ),
                 builder: (context) {
-                  return AlertDialog(
-                    title: Text('${I18n.of(context).encode}?'),
-                    content: Text(I18n.of(context).encode_message),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text(I18n.of(context).cancel),
-                        onPressed: () {
-                          Navigator.of(context).pop();
+                  return SafeArea(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text(I18n.of(context).encode_message),
+                      ),
+                      ListTile(
+                        title: Text(I18n.of(context).encode),
+                        onTap: () {
+                          Navigator.of(context).pop('OK');
                         },
                       ),
-                      TextButton(
-                        child: Text(I18n.of(context).ok),
-                        onPressed: () {
-                          Navigator.of(context).pop("OK");
+                      ListTile(
+                        title: Text(I18n.of(context).cancel),
+                        onTap: () {
+                          Navigator.of(context).pop('SOURCE');
                         },
                       ),
                     ],
-                  );
+                  ));
                 });
             if (result == "OK") {
               try {
@@ -94,7 +102,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                       .first.delay,
                   "delay_array": _store
                       .ugoiraMetadataResponse!.ugoiraMetadata.frames
-                      .map((e) => e.delay).toList(),
+                      .map((e) => e.delay)
+                      .toList(),
                   "name": userSetting.singleFolder
                       ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
                       : "${widget.id}",
@@ -104,6 +113,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
               } on PlatformException {
                 isEncoding = false;
               }
+            } else if (result == "SOURCE") {
+
             }
           },
           child: UgoiraWidget(
