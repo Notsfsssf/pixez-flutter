@@ -329,9 +329,10 @@ class MainActivity : FlutterActivity() {
                 val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!
+                val delayArray = call.argument<List<Int>>("delay_array")!!
                 GlobalScope.launch(Dispatchers.Main) {
                     withContext(Dispatchers.IO) {
-                        encodeGif(name, path, delay)
+                        encodeGif(name, path, delay, delayArray)
                     }
                     Toast.makeText(this@MainActivity, getString(R.string.encode_success), Toast.LENGTH_SHORT).show()
                     result.success(true)
@@ -401,7 +402,7 @@ class MainActivity : FlutterActivity() {
         return list.first().uri.toString()
     }
 
-    private fun encodeGif(name: String, path: String, delay: Int) {
+    private fun encodeGif(name: String, path: String, delay: Int, delayArray: List<Int>) {
 
         val file = File(path)
         file.let {
@@ -437,13 +438,27 @@ class MainActivity : FlutterActivity() {
                 val encoder = GifEncoder()
                 encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
                 for (i in arrayFile.indices) {
+                    val trueDelay = if (i < delayArray.size) {
+                        delayArray[i]
+                    } else {
+                        delay
+                    }
                     if (i != 0) {
-                        encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), delay)
-                    } else encoder.encodeFrame(bitmap, delay)
+                        encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), trueDelay)
+                    } else encoder.encodeFrame(bitmap, trueDelay)
                 }
                 encoder.close()
                 if (saveMode == 0) {
-                    save(tempFile.readBytes(), fileName)
+                    val path = save(tempFile.readBytes(), fileName)
+                    MediaScannerConnection.scanFile(
+                            this@MainActivity,
+                            arrayOf(path),
+                            arrayOf(
+                                    MimeTypeMap.getSingleton()
+                                            .getMimeTypeFromExtension(File(path).extension)
+                            )
+                    ) { _, _ ->
+                    }
                     return
                 }
                 if (saveMode == 2) {
@@ -454,7 +469,7 @@ class MainActivity : FlutterActivity() {
                     tempFile.copyTo(target, overwrite = true)
                     MediaScannerConnection.scanFile(
                             this@MainActivity,
-                            arrayOf(helplessPath),
+                            arrayOf(target.path),
                             arrayOf(
                                     MimeTypeMap.getSingleton()
                                             .getMimeTypeFromExtension(target.extension)

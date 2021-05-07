@@ -89,7 +89,7 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
       });
     }
     sleep(Duration(milliseconds: duration));
-    start();
+    if (mounted) start();
   }
 
   @override

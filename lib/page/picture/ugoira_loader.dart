@@ -92,6 +92,9 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   "path": _store.drawPool.first.parent.path,
                   "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata.frames
                       .first.delay,
+                  "delay_array": _store
+                      .ugoiraMetadataResponse!.ugoiraMetadata.frames
+                      .map((e) => e.delay).toList(),
                   "name": userSetting.singleFolder
                       ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
                       : "${widget.id}",
@@ -106,7 +109,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
           child: UgoiraWidget(
               delay: _store
                   .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
-                  ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
+              ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
               size: Size(
                   MediaQuery.of(context).size.width.toDouble(),
                   (widget.illusts.height.toDouble() /
