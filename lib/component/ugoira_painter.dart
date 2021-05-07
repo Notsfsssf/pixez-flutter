@@ -20,18 +20,21 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/models/ugoira_metadata_response.dart';
 
 class UgoiraWidget extends StatefulWidget {
   final List<FileSystemEntity> drawPools;
   final int delay;
   final Size size;
+  final UgoiraMetadataResponse ugoiraMetadataResponse;
 
-  const UgoiraWidget({
-    Key? key,
-    required this.drawPools,
-    required this.delay,
-    required this.size,
-  }) : super(key: key);
+  const UgoiraWidget(
+      {Key? key,
+      required this.drawPools,
+      required this.delay,
+      required this.size,
+      required this.ugoiraMetadataResponse})
+      : super(key: key);
 
   @override
   _UgoiraWidgetState createState() => _UgoiraWidgetState();
@@ -54,25 +57,39 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
   }
 
-  late Timer _timer;
-
   initBind() async {
-    _timer =
-        Timer.periodic(Duration(milliseconds: widget.delay), (timer) async {
-      File file = widget.drawPools[point] as File;
-      point++;
-      if (point >= widget.drawPools.length) point = 0;
-      final data = await _loadImage(file);
-      if (mounted) {
-        setState(() {
-          image = data;
-        });
-      }
-    });
+    // _timer =
+    //     Timer.periodic(Duration(milliseconds: widget.delay), (timer) async {
+    //   File file = widget.drawPools[point] as File;
+    //   point++;
+    //   if (point >= widget.drawPools.length) point = 0;
+    //   final data = await _loadImage(file);
+    //   if (mounted) {
+    //     setState(() {
+    //       image = data;
+    //     });
+    //   }
+    // });
+    Future(() => {start()});
+  }
+
+  start() async {
+    File file = widget.drawPools[point] as File;
+    int duration =
+        widget.ugoiraMetadataResponse.ugoiraMetadata.frames[point].delay;
+    point++;
+    if (point >= widget.drawPools.length) point = 0;
+    final data = await _loadImage(file);
+    if (mounted) {
+      setState(() {
+        image = data;
+      });
+    }
+    sleep(Duration(milliseconds: duration));
+    start();
   }
 
   @override

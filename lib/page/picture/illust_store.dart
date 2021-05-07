@@ -102,9 +102,12 @@ abstract class _IllustStoreBase with Store {
   }
 
   @action
-  Future<bool> star({String restrict = 'public', List<String>? tags}) async {
+  Future<bool> star(
+      {String restrict = 'public',
+      List<String>? tags,
+      bool force = false}) async {
     state = 1;
-    if (!illusts!.isBookmarked) {
+    if (force || !illusts!.isBookmarked) {
       try {
         await ApiClient(isBookmark: true)
             .postLikeIllust(illusts!.id, restrict, tags);

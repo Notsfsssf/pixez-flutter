@@ -974,18 +974,13 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   }
 
   Future<void> _showBookMarkTag() async {
-    if (_illustStore.isBookmark) {
-      await _illustStore.star();
-      setState(() {});
-      return;
-    }
     final result =
         await Leader.pushWithScaffold(context, TagForIllustPage(id: widget.id));
     if (result is Map) {
       LPrinter.d(result);
       String restrict = result['restrict'];
       List<String>? tags = result['tags'];
-      _illustStore.star(restrict: restrict, tags: tags);
+      _illustStore.star(restrict: restrict, tags: tags, force: true);
     }
   }
 

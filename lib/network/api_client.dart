@@ -83,7 +83,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
+      ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..interceptors.add(DioCacheManager(
         CacheConfig(
             defaultMaxAge: Duration(days: 1),

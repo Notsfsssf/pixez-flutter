@@ -106,6 +106,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
           child: UgoiraWidget(
               delay: _store
                   .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+                  ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
               size: Size(
                   MediaQuery.of(context).size.width.toDouble(),
                   (widget.illusts.height.toDouble() /
