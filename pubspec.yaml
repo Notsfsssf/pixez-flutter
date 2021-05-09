@@ -28,12 +28,12 @@ dependencies:
   shared_preferences: ^2.0.5
   share: ^2.0.1
   share_plus: ^2.0.3
-  permission_handler: ^6.0.1
+  permission_handler: ^7.1.0
   save_in_gallery:
     git:
       url: https://github.com/Notsfsssf/save_in_gallery
   archive: ^3.1.2
-  url_launcher: ^6.0.2
+  url_launcher: ^6.0.3
   bot_toast: ^4.0.1
   package_info: ^2.0.0
   uni_links2: ^0.6.0+2
@@ -43,19 +43,15 @@ dependencies:
   flutter_widget_from_html_core: ^0.6.1
   flutter_date_pickers: ^0.2.4
   device_info: ^2.0.0
-  provider: ^5.0.0
   flutter_displaymode: ^0.3.1-nullsafety.0
   receive_sharing_intent: ^1.4.5
   flutter_hooks: ^0.16.0
-  pull_to_refresh:
-    git:
-      url: https://github.com/peng8350/flutter_pulltorefresh
-      ref: nullsafety
+  pull_to_refresh: ^2.0.0
   extended_image: ^3.0.0
   flutter_colorpicker: ^0.4.0-nullsafety.0
   waterfall_flow: ^3.0.1
   animations: ^2.0.0
-  extended_text: ^6.0.4
+  extended_text: ^6.0.5
   font_awesome_flutter: ^9.0.0
   json_annotation: ^4.0.1
   flutter_staggered_animations: ^1.0.0
@@ -67,9 +63,7 @@ dependencies:
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.1
-  image: ^3.0.2
   flutter_inappwebview: ^5.3.2
-  dio_cookie_manager: ^2.0.0
   auto_animated: ^3.0.0
   http: ^0.13.3
   dio_http_cache:

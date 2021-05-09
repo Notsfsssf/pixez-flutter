@@ -36,8 +36,8 @@ abstract class _SpotlightStoreBase with Store {
   Future<void> fetch() async {
     nextUrl = null;
     if (_controller != null) {
-      _controller!.headerMode.value = RefreshStatus.idle;
-      _controller!.footerMode.value = LoadStatus.idle;
+      _controller!.headerMode?.value = RefreshStatus.idle;
+      _controller!.footerMode?.value = LoadStatus.idle;
     }
     try {
       Response response = await client.getSpotlightArticles("all");

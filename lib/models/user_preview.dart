@@ -13,8 +13,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import 'dart:convert' show json;
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pixez/models/illust.dart';
 part 'user_preview.g.dart';

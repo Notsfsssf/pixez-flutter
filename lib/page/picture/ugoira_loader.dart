@@ -21,8 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:image/image.dart';
-import 'package:image/image.dart' hide Color;
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
@@ -171,23 +169,4 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
       );
     });
   }
-}
-
-Future<List<int>> encodeGif(Map<int, dynamic> a) async {
-  UgoiraMetadataResponse ugoiraMetadataResponse = a[1];
-  List<FileSystemEntity> drawPool = a[2];
-  var firstDelay =
-      ugoiraMetadataResponse.ugoiraMetadata.frames.first.delay.toDouble() /
-          1000.0;
-  GifEncoder encoder =
-      GifEncoder(delay: firstDelay.toInt(), samplingFactor: 10);
-  for (var i in drawPool) {
-    var bytesSync = File(i.path).readAsBytesSync();
-    Image image = (i.path.endsWith(".png")
-        ? decodePng(bytesSync)
-        : decodeJpg(bytesSync))!;
-    encoder.addFrame(image);
-  }
-  List<int> result = encoder.finish()!;
-  return result;
 }
