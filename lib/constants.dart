@@ -15,11 +15,9 @@
  */
 
 class Constants {
-  static String tagName = "0.5.0";
-
-  // static bool isGooglePlay =
-  //     bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);//为何没用啊咕鸽？
-  static bool isGooglePlay = true;
+  static String tagName = "0.5.1";
+  static const isGooglePlay =
+      bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);
   static int type = 0;
   static String? code_verifier = null;
 }

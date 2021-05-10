@@ -82,6 +82,7 @@ class _NewPageState extends State<NewPage>
               title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
                   controller: _tabController,
+                  isScrollable: true,
                   indicator: MD2Indicator(
                       indicatorHeight: 3,
                       indicatorColor: Theme.of(context).accentColor,

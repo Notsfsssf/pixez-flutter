@@ -84,8 +84,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10005000
-        versionName "0.5.0 Mark"
+        versionCode 10005011
+        versionName "0.5.1 sflag"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -122,6 +122,5 @@ dependencies {
     implementation "androidx.browser:browser:1.3.0"
     implementation('com.waynejo:androidndkgif:0.3.3')
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.android.play:core:1.10.0'
 }

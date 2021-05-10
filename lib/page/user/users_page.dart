@@ -24,6 +24,7 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -318,6 +319,10 @@ class _UsersPageState extends State<UsersPage>
                 delegate: StickyTabBarDelegate(
                     child: TabBar(
                   controller: _tabController,
+                  indicator: MD2Indicator(
+                      indicatorHeight: 3,
+                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorSize: MD2IndicatorSize.normal),
                   onTap: (index) {
                     setState(() {
                       _tabIndex = index;

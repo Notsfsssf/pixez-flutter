@@ -431,7 +431,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
-                      indicatorSize: TabBarIndicatorSize.label,
                       isScrollable: true,
                       indicatorColor: Theme.of(context).accentColor,
                       indicator: MD2Indicator(
