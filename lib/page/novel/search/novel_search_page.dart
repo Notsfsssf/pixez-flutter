@@ -21,7 +21,6 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
-import 'package:pixez/page/search/result_page.dart';
 
 class NovelSearchPage extends StatefulWidget {
   @override
@@ -33,6 +32,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
 
   @override
   void initState() {
+    tagHistoryStore.fetch();
     _textEditingController = TextEditingController();
     super.initState();
   }
