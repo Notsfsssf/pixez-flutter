@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -251,6 +252,7 @@ class _CommentPageState extends State<CommentPage> {
                                     onPressed: () async {
                                       final client = apiClient;
                                       String txt = _editController.text.trim();
+                                      final fun1 = BotToast.showLoading();
                                       try {
                                         if (txt.isNotEmpty) {
                                           if (banList
@@ -262,12 +264,12 @@ class _CommentPageState extends State<CommentPage> {
                                                 parent_comment_id:
                                                     parentCommentId);
                                         }
-
                                         _editController.clear();
                                         _store.fetch();
                                       } catch (e) {
                                         print(e);
                                       }
+                                      fun1();
                                     })),
                           ),
                         ),
