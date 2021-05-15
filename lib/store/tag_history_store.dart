@@ -25,6 +25,7 @@ class TagHistoryStore = _TagHistoryStoreBase with _$TagHistoryStore;
 abstract class _TagHistoryStoreBase with Store {
   TagsPersistProvider tagsPersistProvider = TagsPersistProvider();
   ObservableList<TagsPersist> tags = ObservableList();
+
   @action
   fetch() async {
     await tagsPersistProvider.open();
@@ -35,13 +36,13 @@ abstract class _TagHistoryStoreBase with Store {
 
   @action
   insert(TagsPersist tagsPersist) async {
+    await tagsPersistProvider.open();
     for (int i = 0; i < tags.length; i++) {
-      if (tags[i].name == tagsPersist.name) {
-        return;
+      if (tags[i].name == tagsPersist.name && tags[i].type == Constants.type) {
+        await tagsPersistProvider.delete(tags[i].id!);
       }
     }
     tagsPersist.type = Constants.type;
-    await tagsPersistProvider.open();
     await tagsPersistProvider.insert(tagsPersist);
     await fetch();
   }

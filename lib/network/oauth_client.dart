@@ -21,6 +21,7 @@ import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/crypto_plugin.dart';
@@ -62,7 +63,6 @@ class OAuthClient {
   OAuthClient() {
     String time = getIsoDate();
     this.httpClient = Dio()
-      // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..options.baseUrl = "https://210.140.131.199"
       ..options.headers = {
         "X-Client-Time": time,
@@ -84,6 +84,9 @@ class OAuthClient {
       };
       return httpClient;
     };
+    if (kDebugMode)
+      httpClient.interceptors
+          .add(LogInterceptor(responseBody: true, requestBody: true));
     if (userSetting.disableBypassSni) {
       httpClient.options.baseUrl = "https://${BASE_OAUTH_URL_HOST}";
     }

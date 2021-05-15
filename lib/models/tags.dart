@@ -101,7 +101,8 @@ create table $tableTag (
   }
 
   Future<TagsPersist> insert(TagsPersist tag) async {
-    tag.id = await db.insert(tableTag, tag.toJson());
+    tag.id = await db.insert(tableTag, tag.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return tag;
   }
 
@@ -119,7 +120,8 @@ create table $tableTag (
   Future<List<TagsPersist>> getAllAccount() async {
     List<TagsPersist> result = [];
     List<Map<String, dynamic>> maps = await db.query(tableTag,
-        columns: [columnId, columnName, columnTranslatedName, columnType]);
+        columns: [columnId, columnName, columnTranslatedName, columnType],
+        orderBy: "$columnId DESC");
 
     if (maps.length > 0) {
       maps.forEach((f) {

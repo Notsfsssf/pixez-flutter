@@ -23,6 +23,7 @@ import 'package:device_info/device_info.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
@@ -83,7 +84,6 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
       ..interceptors.add(DioCacheManager(
         CacheConfig(
             defaultMaxAge: Duration(days: 1),
@@ -91,6 +91,9 @@ class ApiClient {
             skipMemoryCache: true),
       ).interceptor)
       ..interceptors.add(RefreshTokenInterceptor());
+    if (kDebugMode)
+      httpClient.interceptors
+          .add(LogInterceptor(responseBody: true, requestBody: true));
     (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (client) {
       HttpClient httpClient = new HttpClient();

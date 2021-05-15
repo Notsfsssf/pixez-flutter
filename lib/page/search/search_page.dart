@@ -18,6 +18,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/anim_expand.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -61,6 +62,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     _trendTagsStore.fetch();
   }
 
+  bool _isExpanded = false;
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -91,6 +94,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
+  bool _tagExpand = false;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
@@ -107,7 +112,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 ),
                 SliverToBoxAdapter(
                   child: Observer(builder: (context) {
-                    if (tagHistoryStore.tags.isNotEmpty)
+                    if (tagHistoryStore.tags
+                        .where((element) =>
+                            element.type == null || element.type == 0)
+                        .isNotEmpty)
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Row(
@@ -123,17 +131,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                       .headline5!
                                       .color),
                             ),
-                            Visibility(
-                              visible: false,
-                              child: Text(
-                                I18n.of(context).clear,
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .caption!
-                                        .color),
-                              ),
-                            ),
                           ],
                         ),
                       );
@@ -147,15 +144,48 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                     child: Observer(
                       builder: (BuildContext context) {
                         if (tagHistoryStore.tags.isNotEmpty) {
+                          final targetTags = tagHistoryStore.tags
+                              .where((element) =>
+                                  element.type == null || element.type == 0)
+                              .toList();
+                          if (targetTags.length > 20) {
+                            final resultTags = targetTags.sublist(0, 12);
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Wrap(
+                                children: [
+                                  for (var f
+                                      in _tagExpand ? targetTags : resultTags)
+                                    buildActionChip(f, context),
+                                  ActionChip(
+                                      label: AnimatedSwitcher(
+                                        duration: Duration(milliseconds: 300),
+                                        transitionBuilder: (child, anim) {
+                                          return ScaleTransition(
+                                              child: child, scale: anim);
+                                        },
+                                        child: Icon(!_tagExpand
+                                            ? Icons.expand_more
+                                            : Icons.expand_less),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _tagExpand = !_tagExpand;
+                                        });
+                                      })
+                                ],
+                                runSpacing: 0.0,
+                                spacing: 5.0,
+                              ),
+                            );
+                          }
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 5.0),
                             child: Wrap(
                               children: [
-                                for (var f in tagHistoryStore.tags.where(
-                                    (element) =>
-                                        element.type == null ||
-                                        element.type == 0))
+                                for (var f in targetTags)
                                   buildActionChip(f, context),
                               ],
                               runSpacing: 0.0,
@@ -170,7 +200,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 ),
                 SliverToBoxAdapter(
                   child: Observer(builder: (context) {
-                    if (tagHistoryStore.tags.isNotEmpty)
+                    if (tagHistoryStore.tags
+                        .where((element) =>
+                            element.type == null || element.type == 0)
+                        .isNotEmpty)
                       return InkWell(
                         onTap: () {
                           tagHistoryStore.deleteAll();
@@ -350,7 +383,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   }
 
   Widget buildActionChip(TagsPersist f, BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onLongPress: () {
         showDialog(
             context: context,
@@ -373,19 +406,19 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               );
             });
       },
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (context) => ResultPage(
-                  word: f.name,
-                  translatedName: f.translatedName,
-                )));
-      },
-      child: Chip(
+      child: ActionChip(
         padding: EdgeInsets.all(0.0),
         label: Text(
           f.name,
           style: TextStyle(fontSize: 12.0),
         ),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+              builder: (context) => ResultPage(
+                    word: f.name,
+                    translatedName: f.translatedName,
+                  )));
+        },
       ),
     );
   }
