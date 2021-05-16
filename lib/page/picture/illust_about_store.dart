@@ -26,6 +26,7 @@ class IllustAboutStore = _IllustAboutStoreBase with _$IllustAboutStore;
 
 abstract class _IllustAboutStoreBase with Store {
   final int id;
+  bool fetching = false;
 
   _IllustAboutStoreBase(this.id);
 
@@ -35,6 +36,8 @@ abstract class _IllustAboutStoreBase with Store {
   ObservableList<Illusts> illusts = ObservableList();
 
   fetch() async {
+    if (fetching) return;
+    fetching = true;
     errorMessage = null;
     try {
       Response response = await apiClient.getIllustRelated(id);
@@ -44,5 +47,6 @@ abstract class _IllustAboutStoreBase with Store {
     } catch (e) {
       errorMessage = e.toString();
     }
+    fetching = false;
   }
 }

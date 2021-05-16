@@ -40,12 +40,12 @@ dependencies:
   mobx: ^2.0.1
   flutter_mobx: ^2.0.0
   flutter_inapp_purchase: ^5.0.1
-  flutter_widget_from_html_core: ^0.6.1
+  flutter_widget_from_html_core: ^0.6.1+1
   flutter_date_pickers: ^0.2.4
   device_info: ^2.0.0
   flutter_displaymode: ^0.3.1-nullsafety.0
   receive_sharing_intent: ^1.4.5
-  flutter_hooks: ^0.16.0
+  flutter_hooks: ^0.17.0
   pull_to_refresh: ^2.0.0
   extended_image: ^3.0.0
   flutter_colorpicker: ^0.4.0-nullsafety.0
@@ -55,11 +55,8 @@ dependencies:
   font_awesome_flutter: ^9.0.0
   json_annotation: ^4.0.1
   flutter_staggered_animations: ^1.0.0
-#  flutter_statusbar_manager:
-#    git:
-#      url: https://github.com/amitkot/flutter_statusbar_manager
-  badges: ^2.0.0-nullsafety.1
-  image_picker: ^0.7.4
+  badges: ^2.0.1
+  image_picker: ^0.7.5
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.1
@@ -73,8 +70,7 @@ dependencies:
   md2_tab_indicator:
     git:
       url: https://github.com/westdabestdb/md2_tab_indicator
-#dependency_overrides:
-#  flutter_svg: ^0.17.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
