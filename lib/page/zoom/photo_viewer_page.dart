@@ -20,7 +20,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/hoster.dart';
@@ -63,7 +63,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   @override
   void dispose() {
     if (Platform.isAndroid || Platform.isIOS)
-      FlutterStatusbarManager.setHidden(false);
+      SystemChrome.setEnabledSystemUIOverlays(
+          [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     _doubleClickAnimationController.dispose();
     rebuildIndex.close();
     rebuildSwiper.close();
@@ -91,8 +92,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     super.initState();
     index = widget.index;
     if (Platform.isAndroid || Platform.isIOS)
-      FlutterStatusbarManager.setHidden(true,
-          animation: StatusBarAnimation.SLIDE);
+      SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   Widget _buildContent(BuildContext context) {
@@ -338,7 +338,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                         ),
                         onPressed: () async {
                           if (Platform.isAndroid || Platform.isIOS)
-                            await FlutterStatusbarManager.setHidden(false);
+                            await SystemChrome.setEnabledSystemUIOverlays(
+                                [SystemUiOverlay.top, SystemUiOverlay.bottom]);
                           Navigator.of(context).pop();
                         }),
                     IconButton(

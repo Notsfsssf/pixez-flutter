@@ -377,15 +377,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
-  flutter_statusbar_manager:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "27b87ce96239fc120563118dbe8e5074a002c912"
-      url: "https://github.com/amitkot/flutter_statusbar_manager"
-    source: git
-    version: "2.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
