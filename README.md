@@ -16,7 +16,7 @@
 
 |系统|应用市场|GitHub|云盘|
 |:---:|:---:|:---:|:---:|
-|Android|[Google Play](https://play.google.com/store/apps/details?id=com.perol.play.pixez)|[Release](https://github.com/Notsfsssf/pixez-flutter/releases)|[蓝奏云](https://wwa.lanzous.com/b0ded45id)<br />**临时，不推荐**|
+|Android|[Google Play](https://play.google.com/store/apps/details?id=com.perol.play.pixez)|[Release](https://github.com/Notsfsssf/pixez-flutter/releases)|[蓝奏云](https://wwa.lanzoui.com/b0ded45id)<br />**临时，不推荐**|
 |iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|/|/|
 
 # 预览
