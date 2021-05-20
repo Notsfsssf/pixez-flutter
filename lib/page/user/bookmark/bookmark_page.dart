@@ -124,7 +124,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 final result = await Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => UserBookmarkTagPage()));
                 if (result != null) {
-                  String tag = result['tag'];
+                  String? tag = result['tag'];
                   String restrict = result['restrict'];
                   setState(() {
                     futureGet = () =>

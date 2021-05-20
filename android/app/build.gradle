@@ -84,12 +84,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10005015
-        versionName "0.5.2 X"
-        ndk {
-            // Filter for architectures supported by Flutter.
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
-        }
+        versionCode 10005020
+        versionName "0.5.2 tinker"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
