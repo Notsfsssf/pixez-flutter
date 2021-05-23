@@ -233,5 +233,6 @@
   "select_language": "Seleccione la idioma",
   "network_question": "¿Su entorno de red puede acceder normalmente a pixiv?",
   "media_hint": "Ilustraciones se guardarán en el álbum",
-  "copy": "copiar"
+  "copy": "copiar",
+  "view_replies": "View reply"
 }

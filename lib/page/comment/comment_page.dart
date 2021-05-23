@@ -214,7 +214,7 @@ class _CommentPageState extends State<CommentPage> {
                                               padding: const EdgeInsets.only(
                                                   right: 4.0),
                                               child: ActionChip(
-                                                label: Text('View reply'),
+                                                label: Text(I18n.of(context).view_replies),
                                                 onPressed: () async {
                                                   Leader.push(
                                                       context,

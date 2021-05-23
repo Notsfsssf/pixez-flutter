@@ -242,5 +242,6 @@
   "select_language": "언어를 선택해주세요",
   "network_question": "픽시브에 정상적으로 접근할 수 있나요?",
   "media_hint": "일러트스가 갤러리 앨범에 저장됩니다",
-  "copy": "copy"
+  "copy": "copy",
+  "view_replies": "View reply"
 }
