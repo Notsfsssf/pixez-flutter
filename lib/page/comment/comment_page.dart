@@ -17,19 +17,28 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CommentPage extends StatefulWidget {
   final int id;
+  final bool isReplay;
+  final int? pId;
+  final String? name;
 
-  const CommentPage({Key? key, required this.id}) : super(key: key);
+  const CommentPage(
+      {Key? key, required this.id, this.isReplay = false, this.pId, this.name})
+      : super(key: key);
 
   @override
   _CommentPageState createState() => _CommentPageState();
@@ -52,9 +61,13 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   void initState() {
+    parentCommentId = widget.isReplay ? widget.pId : null;
+    parentCommentName = widget.isReplay ? widget.name : null;
     _editController = TextEditingController();
     easyRefreshController = RefreshController();
-    _store = CommentStore(easyRefreshController, widget.id)..fetch();
+    _store = CommentStore(
+        easyRefreshController, widget.id, widget.pId, widget.isReplay)
+      ..fetch();
     super.initState();
   }
 
@@ -156,6 +169,7 @@ class _CommentPageState extends State<CommentPage> {
                                               ),
                                               TextButton(
                                                   onPressed: () {
+                                                    if (widget.isReplay) return;
                                                     parentCommentId =
                                                         comment.id;
                                                     setState(() {
@@ -164,7 +178,9 @@ class _CommentPageState extends State<CommentPage> {
                                                     });
                                                   },
                                                   child: Text(
-                                                    "Reply",
+                                                    widget.isReplay
+                                                        ? ""
+                                                        : "Reply",
                                                     style: TextStyle(
                                                         color: Theme.of(context)
                                                             .accentColor),
@@ -175,13 +191,43 @@ class _CommentPageState extends State<CommentPage> {
                                               null)
                                             Text(
                                                 'To ${comment.parentComment!.user!.name}'),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 4.0),
-                                            child: SelectableText(
-                                              comment.comment ?? "",
+                                          if (comment.stamp == null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 4.0),
+                                              child: SelectableText(
+                                                comment.comment ?? "",
+                                              ),
                                             ),
-                                          ),
+                                          if (comment.stamp != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 4.0),
+                                              child: PixivImage(
+                                                comment.stamp!.stamp_url!,
+                                                height: 100,
+                                                width: 100,
+                                              ),
+                                            ),
+                                          if (comment.hasReplies == true)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 4.0),
+                                              child: ActionChip(
+                                                label: Text('View reply'),
+                                                onPressed: () async {
+                                                  Leader.push(
+                                                      context,
+                                                      CommentPage(
+                                                        id: widget.id,
+                                                        isReplay: true,
+                                                        pId: comment.id!,
+                                                        name:
+                                                            comment.user!.name,
+                                                      ));
+                                                },
+                                              ),
+                                            ),
                                           Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 8.0),
@@ -228,6 +274,7 @@ class _CommentPageState extends State<CommentPage> {
                     IconButton(
                       icon: Icon(Icons.book),
                       onPressed: () {
+                        if (widget.isReplay) return;
                         setState(() {
                           parentCommentName = null;
                           parentCommentId = null;

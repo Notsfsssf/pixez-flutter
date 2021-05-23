@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/comment_response.dart';
@@ -18,8 +21,10 @@ abstract class _CommentStoreBase with Store {
   bool isEmpty = false;
   final RefreshController _controller;
   final int id;
+  int? pId;
+  final bool isReplay;
 
-  _CommentStoreBase(this._controller, this.id);
+  _CommentStoreBase(this._controller, this.id,this.pId, this.isReplay);
 
   @action
   fetch() async {
@@ -28,7 +33,9 @@ abstract class _CommentStoreBase with Store {
     _controller.footerMode?.value = LoadStatus.idle;
     _controller.headerMode?.value = RefreshStatus.refreshing;
     try {
-      Response response = await apiClient.getIllustComments(id);
+      Response response = isReplay
+          ? await apiClient.getIllustCommentsReplies(pId!)
+          : await apiClient.getIllustComments(id);
       CommentResponse commentResponse = CommentResponse.fromJson(response.data);
       nextUrl = commentResponse.nextUrl;
       comments.clear();

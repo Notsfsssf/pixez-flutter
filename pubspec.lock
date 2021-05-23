@@ -268,7 +268,7 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.5"
+    version: "6.0.6"
   extended_text_library:
     dependency: transitive
     description:

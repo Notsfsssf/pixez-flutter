@@ -50,14 +50,11 @@ class Comment {
   User? user;
   @JsonKey(name: 'parent_comment')
   Comment? parentComment;
+  @JsonKey(name: 'has_replies')
+  bool? hasReplies;
+  Stamp? stamp;
 
-  Comment({
-    this.id,
-    this.comment,
-    this.date,
-    this.user,
-    this.parentComment,
-  });
+  Comment();
 
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);
@@ -83,6 +80,18 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+
+@JsonSerializable()
+class Stamp {
+  int? stamp_id;
+  String? stamp_url;
+
+  Stamp();
+
+  factory Stamp.fromJson(Map<String, dynamic> json) => _$StampFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StampToJson(this);
 }
 
 class ProfileImageUrls {
