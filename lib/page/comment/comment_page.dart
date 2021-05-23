@@ -145,7 +145,7 @@ class _CommentPageState extends State<CommentPage> {
                                       child: PainterAvatar(
                                         url: _store.comments[index].user!
                                             .profileImageUrls.medium,
-                                        id: _store.comments[index].user!.id,
+                                        id: _store.comments[index].user!.id!,
                                       ),
                                     ),
                                     Expanded(

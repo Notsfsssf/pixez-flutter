@@ -25,7 +25,7 @@ part 'comment_response.g.dart';
 @JsonSerializable()
 class CommentResponse {
   @JsonKey(name: "total_comments")
-  int totalComments;
+  int? totalComments;
   List<Comment> comments;
   @JsonKey(name: "next_url")
   String? nextUrl;
@@ -64,14 +64,13 @@ class Comment {
 
 @JsonSerializable()
 class User {
-  int id;
+  int? id;
   String name;
   String account;
   @JsonKey(name: 'profile_image_urls')
   ProfileImageUrls profileImageUrls;
 
   User({
-    required this.id,
     required this.name,
     required this.account,
     required this.profileImageUrls,
