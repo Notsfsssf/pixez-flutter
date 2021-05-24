@@ -51,7 +51,7 @@ dependencies:
   flutter_colorpicker: ^0.4.0-nullsafety.0
   waterfall_flow: ^3.0.1
   animations: ^2.0.0
-  extended_text: ^6.0.5
+  extended_text: ^6.0.6
   font_awesome_flutter: ^9.0.0
   json_annotation: ^4.0.1
   flutter_staggered_animations: ^1.0.0

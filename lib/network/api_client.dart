@@ -447,9 +447,13 @@ class ApiClient {
 //  fun getIllustComments(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<IllustCommentsResponse>
   Future<Response> getIllustComments(int illust_id) {
     return httpClient
-        .get("/v1/illust/comments", queryParameters: {"illust_id": illust_id});
+        .get("/v3/illust/comments", queryParameters: {"illust_id": illust_id});
   }
 
+  Future<Response> getIllustCommentsReplies(int comment_id) {
+    return httpClient
+        .get("/v2/illust/comment/replies", queryParameters: {"comment_id": comment_id});
+  }
   /* @FormUrlEncoded
   @POST("v1/illust/comment/add")
   fun postIllustComment(@Header("Authorization") paramString1: String, @Field("illust_id") illust_id: Long, @Field("comment") comment: String, @Field("parent_comment_id") parent_comment_id: Int?): Observable<ResponseBody>
