@@ -122,7 +122,7 @@
   "quality_setting": "Настройки",
   "quick_view": "Избранное",
   "quietly_follow": "Следить приватно",
-  "rank": "Rankings",
+  "rank": "Лучшее",
   "rate_message": "Пожалуйста, поставьте нам 5 звёзд!",
   "rate_title": "Если вы считаете, что PixEz потрясающий, пожалуйста, поставьте нам 5-звёздочек!",
   "recommand_tag": "Рекомендованые теги",
@@ -243,5 +243,5 @@
   "network_question": "Имеете ли вы доступ к pixiv?",
   "media_hint": "Иллюстрации будут сохранены в альбоме",
   "copy": "Копировать",
-  "view_replies": "View reply"
+  "view_replies": "Показать ответы"
 }
