@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.vending.BILLING" />
+
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -85,6 +86,18 @@
                     android:scheme="https" />
                 <data
                     android:host="pixiv.net"
+                    android:scheme="http" />
+                <data
+                    android:host="pixiv.me"
+                    android:scheme="https" />
+                <data
+                    android:host="pixiv.me"
+                    android:scheme="http" />
+                <data
+                    android:host="www.pixiv.me"
+                    android:scheme="https" />
+                <data
+                    android:host="www.pixiv.me"
                     android:scheme="http" />
                 <data
                     android:host="users"

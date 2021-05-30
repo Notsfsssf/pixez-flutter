@@ -29,6 +29,7 @@ import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/users_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Leader {
   static Future<void> pushUntilHome(BuildContext context) async {
@@ -41,6 +42,21 @@ class Leader {
   }
 
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
+    if (link.host == "pixiv.me") {
+      try {
+        Response response = await Dio().getUri(link);
+        if (response.isRedirect == true) {
+          Uri source = response.realUri;
+          LPrinter.d("here we go:" + source.toString());
+          pushWithUri(context, link);
+        }
+      } catch (e) {
+        try {
+          launch(link.toString());
+        } catch (e) {}
+      }
+      return;
+    }
     if (link.scheme == "pixiv") {
       if (link.host.contains("account")) {
         try {
