@@ -777,67 +777,95 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     for (int i = 0; i < illust.metaPages.length; i++) {
       indexs.add(false);
     }
-    final result = await showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, setDialogState) {
-          return AlertDialog(
-            title: Text(I18n.of(context).muti_choice_save),
-            actions: <Widget>[
-              TextButton(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, "OK");
-                },
-                child: Text(I18n.of(context).ok),
-              ),
-            ],
-            content: Container(
-              width: double.maxFinite,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) => index == 0
-                    ? ListTile(
-                        title: Text(I18n.of(context).all),
-                        trailing: Checkbox(
-                            value: allOn,
-                            onChanged: (ischeck) {
-                              setDialogState(() {
-                                allOn = ischeck!;
-                                if (ischeck)
-                                  for (int i = 0; i < indexs.length; i++) {
-                                    indexs[i] = true;
-                                  } //这真不是我要这么写的，谁知道这个格式化缩进这么奇怪
-                                else {
-                                  for (int i = 0; i < indexs.length; i++) {
-                                    indexs[i] = false;
-                                  }
-                                }
-                              });
-                            }),
-                      )
-                    : ListTile(
-                        title: Text((index - 1).toString()),
-                        trailing: Checkbox(
-                            value: indexs[index - 1],
-                            onChanged: (ischeck) {
-                              setDialogState(() {
-                                indexs[index - 1] = ischeck!;
-                              });
-                            }),
+    final result = await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setDialogState) {
+            return SafeArea(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text("Preview"),
                       ),
-                itemCount: illust.metaPages.length + 1,
+                    ),
+                    Expanded(
+                      child: GridView.builder(
+                        itemBuilder: (context, index) {
+                          final data = illust.metaPages[index];
+                          return Container(
+                              child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                setDialogState(() {
+                                  indexs[index] = !indexs[index];
+                                });
+                              },
+                              onLongPress: () {
+                                Leader.push(
+                                    context,
+                                    PhotoViewerPage(
+                                        index: index, illusts: illust));
+                              },
+                              child: Stack(
+                                children: [
+                                  PixivImage(
+                                    data.imageUrls!.squareMedium,
+                                    placeWidget: Container(
+                                      child: Center(
+                                        child: Text(index.toString()),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Visibility(
+                                          visible: indexs[index],
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Icon(
+                                              Icons.check_circle,
+                                              color: Colors.green,
+                                            ),
+                                          ))),
+                                ],
+                              ),
+                            ),
+                          ));
+                        },
+                        itemCount: illust.metaPages.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3),
+                      ),
+                    ),
+                    MaterialButton(
+                        onPressed: () {
+                          allOn = !allOn;
+                          for (var i = 0; i < indexs.length; i++) {
+                            indexs[i] = allOn;
+                          }
+                          setDialogState(() {});
+                        },
+                        child: Text(I18n.of(context).all)),
+                    MaterialButton(
+                        onPressed: () {
+                          Navigator.of(context).pop("OK");
+                        },
+                        child: Text(I18n.of(context).ok)),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          });
         });
-      },
-    );
     switch (result) {
       case "OK":
         {

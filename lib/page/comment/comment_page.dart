@@ -214,7 +214,8 @@ class _CommentPageState extends State<CommentPage> {
                                               padding: const EdgeInsets.only(
                                                   right: 4.0),
                                               child: ActionChip(
-                                                label: Text(I18n.of(context).view_replies),
+                                                label: Text(I18n.of(context)
+                                                    .view_replies),
                                                 onPressed: () async {
                                                   Leader.push(
                                                       context,
@@ -249,6 +250,15 @@ class _CommentPageState extends State<CommentPage> {
                             },
                             separatorBuilder:
                                 (BuildContext context, int index) {
+                              if (banList
+                                  .where((element) => _store
+                                      .comments[index].comment!
+                                      .contains(element))
+                                  .isNotEmpty)
+                                return Visibility(
+                                  visible: false,
+                                  child: Container(),
+                                );
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
