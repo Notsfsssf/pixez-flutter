@@ -42,7 +42,7 @@ packages:
       name: async
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   auto_animated:
     dependency: "direct main"
     description:
@@ -268,14 +268,14 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.6"
+    version: "7.0.0"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.0"
+    version: "7.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -829,7 +829,7 @@ packages:
       name: source_span
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   sqflite:
     dependency: "direct main"
     description:
@@ -892,7 +892,7 @@ packages:
       name: test_api
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   timing:
     dependency: transitive
     description:
@@ -1027,5 +1027,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.1"
+  dart: ">=2.13.0 <3.0.0"
+  flutter: ">=2.2.0"

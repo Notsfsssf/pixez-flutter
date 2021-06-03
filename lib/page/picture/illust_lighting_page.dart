@@ -788,7 +788,6 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       child: Padding(
@@ -846,20 +845,22 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                             crossAxisCount: 3),
                       ),
                     ),
-                    MaterialButton(
-                        onPressed: () {
-                          allOn = !allOn;
-                          for (var i = 0; i < indexs.length; i++) {
-                            indexs[i] = allOn;
-                          }
-                          setDialogState(() {});
-                        },
-                        child: Text(I18n.of(context).all)),
-                    MaterialButton(
-                        onPressed: () {
-                          Navigator.of(context).pop("OK");
-                        },
-                        child: Text(I18n.of(context).ok)),
+                    ListTile(
+                      title: Text(I18n.of(context).all),
+                      onTap: () {
+                        allOn = !allOn;
+                        for (var i = 0; i < indexs.length; i++) {
+                          indexs[i] = allOn;
+                        }
+                        setDialogState(() {});
+                      },
+                    ),
+                    ListTile(
+                      title: Text(I18n.of(context).ok),
+                      onTap: () {
+                        Navigator.of(context).pop("OK");
+                      },
+                    ),
                   ],
                 ),
               ),
