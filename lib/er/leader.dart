@@ -16,6 +16,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,11 +45,14 @@ class Leader {
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
     if (link.host == "pixiv.me") {
       try {
-        Response response = await Dio().getUri(link);
+        BotToast.showText(text: "Pixiv me...");
+        var dio = Dio();
+        Response response = await dio.getUri(link);
         if (response.isRedirect == true) {
           Uri source = response.realUri;
-          LPrinter.d("here we go:" + source.toString());
-          pushWithUri(context, link);
+          LPrinter.d("here we go pixiv me:" + source.toString());
+          pushWithUri(context, source);
+          return;
         }
       } catch (e) {
         try {
