@@ -792,7 +792,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     Container(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Text("Preview"),
+                        child: Text(illust.title),
                       ),
                     ),
                     Expanded(
@@ -846,6 +846,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       ),
                     ),
                     ListTile(
+                      leading: Icon(!allOn
+                          ? Icons.check_circle_outline
+                          : Icons.check_circle),
                       title: Text(I18n.of(context).all),
                       onTap: () {
                         allOn = !allOn;
@@ -856,6 +859,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       },
                     ),
                     ListTile(
+                      leading: Icon(Icons.save),
                       title: Text(I18n.of(context).ok),
                       onTap: () {
                         Navigator.of(context).pop("OK");
