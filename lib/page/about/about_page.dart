@@ -156,7 +156,7 @@ class _AboutPageState extends State<AboutPage> {
               else
                 launch(Constants.isGooglePlay
                     ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
-                    : "https://www.bilibili.com/video/BV16J411N7xa");
+                    : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587");
             },
           ),
           ListTile(

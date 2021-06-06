@@ -244,7 +244,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     return CustomScrollView(
       controller: _scrollController,
       slivers: [
-        if (userSetting.isBangs)
+        if (userSetting.isBangs ||
+            ((data.width / data.height) > 5))
           SliverToBoxAdapter(
               child: Container(height: MediaQuery.of(context).padding.top)),
         if (data.type == "ugoira")
@@ -860,7 +861,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     ),
                     ListTile(
                       leading: Icon(Icons.save),
-                      title: Text(I18n.of(context).ok),
+                      title: Text(I18n.of(context).save),
                       onTap: () {
                         Navigator.of(context).pop("OK");
                       },
