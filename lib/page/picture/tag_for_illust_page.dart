@@ -59,18 +59,23 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                   .copyWith(primaryColor: Theme.of(context).accentColor),
               child: Padding(
                 padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      final value = textEditingController.value.text.trim();
-                      if (value.isNotEmpty)
-                        _store.insert(TagsR(isRegistered: true, name: value));
-                      textEditingController.clear();
-                    },
-                  )),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme:  Theme.of(context).colorScheme.copyWith(primary:  Theme.of(context).accentColor),
+                  ),
+                  child: TextField(
+                    controller: textEditingController,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        final value = textEditingController.value.text.trim();
+                        if (value.isNotEmpty)
+                          _store.insert(TagsR(isRegistered: true, name: value));
+                        textEditingController.clear();
+                      },
+                    )),
+                  ),
                 ),
               ),
             ),

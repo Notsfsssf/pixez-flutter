@@ -154,7 +154,9 @@ class _UsersPageState extends State<UsersPage>
           appBar: AppBar(),
           body: Container(
               child: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color:   Theme.of(context).accentColor,
+            ),
           )),
         );
       }
@@ -457,7 +459,9 @@ class _UsersPageState extends State<UsersPage>
               child: userStore.userDetail == null
                   ? Container(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color:   Theme.of(context).accentColor,
+                      ),
                     )
                   : Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),

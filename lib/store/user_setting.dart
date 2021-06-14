@@ -149,8 +149,6 @@ abstract class _UserSettingBase with Store {
       primaryColor: Colors.white,
       appBarTheme: AppBarTheme(
         brightness: Brightness.light,
-        // color: Colors.transparent,
-        // elevation: 0.0,
       ));
   @observable
   ThemeMode themeMode = ThemeMode.system;

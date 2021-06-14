@@ -176,7 +176,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
                   children: <Widget>[
                     TextButton(
                         onPressed: () {},
-                        child: Text(I18n.of(context).date_duration)),
+                        child: Text(
+                          I18n.of(context).date_duration,
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor),
+                        )),
                     TextButton(
                         onPressed: () {
                           setState(() {
@@ -189,7 +193,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           });
                           Navigator.of(context).pop();
                         },
-                        child: Text(I18n.of(context).apply))
+                        child: Text(I18n.of(context).apply,
+                            style: TextStyle(
+                                color: Theme.of(context).accentColor)))
                   ],
                 ),
                 Expanded(
@@ -235,7 +241,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         children: <Widget>[
                           TextButton(
                               onPressed: () {},
-                              child: Text(I18n.of(context).filter)),
+                              child: Text(I18n.of(context).filter,
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor))),
                           TextButton(
                               onPressed: () {
                                 setState(() {
@@ -252,7 +260,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              child: Text(I18n.of(context).apply)),
+                              child: Text(I18n.of(context).apply,
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor))),
                         ],
                       ),
                       Padding(

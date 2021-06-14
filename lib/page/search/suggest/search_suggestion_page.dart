@@ -77,6 +77,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           onPressed: () {
             _sauceStore.findImage();
           },
+          backgroundColor: Theme.of(context).accentColor,
           child: Icon(Icons.add_photo_alternate),
         ),
         body: Container(
@@ -160,6 +161,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         focusNode: node,
         keyboardType: inputType,
         autofocus: true,
+        cursorColor: Theme.of(context).accentColor,
         onTap: () {
           FocusScope.of(context).requestFocus(node);
         },
@@ -187,6 +189,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                   )));
         },
         decoration: InputDecoration(
+          border: InputBorder.none,
           hintText: I18n.of(context).search_word_or_paste_link,
         ));
   }

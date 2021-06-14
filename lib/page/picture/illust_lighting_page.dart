@@ -238,14 +238,15 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     if (data == null)
       return Container(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: Theme.of(context).accentColor,
+          ),
         ),
       );
     return CustomScrollView(
       controller: _scrollController,
       slivers: [
-        if (userSetting.isBangs ||
-            ((data.width / data.height) > 5))
+        if (userSetting.isBangs || ((data.width / data.height) > 5))
           SliverToBoxAdapter(
               child: Container(height: MediaQuery.of(context).padding.top)),
         if (data.type == "ugoira")
@@ -277,7 +278,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                   Widget placeWidget = Container(
                     height: 150,
                     child: Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).accentColor,
+                      ),
                     ),
                   );
                   return InkWell(
@@ -469,7 +472,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 child: Container(
                   height: 200,
                   child: Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).accentColor,
+                    ),
                   ),
                 ),
               )

@@ -268,7 +268,9 @@ class _CommentPageState extends State<CommentPage> {
                           )
                         : Container(
                             child: Center(
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).accentColor,
+                              ),
                             ),
                           );
                   },
@@ -296,7 +298,8 @@ class _CommentPageState extends State<CommentPage> {
                         padding: const EdgeInsets.only(bottom: 2.0, right: 8.0),
                         child: Theme(
                           data: Theme.of(context).copyWith(
-                              primaryColor: Theme.of(context).accentColor),
+                            colorScheme: Theme.of(context).colorScheme.copyWith(primary: Theme.of(context).accentColor),
+                          ),
                           child: TextField(
                             controller: _editController,
                             decoration: InputDecoration(
