@@ -110,6 +110,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
+              title: Text(
+                  _novelStore.novelTextResponse!.novelText.length.toString()),
               backgroundColor: Colors.transparent,
               actions: <Widget>[
                 NovelBookmarkButton(
