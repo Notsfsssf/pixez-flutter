@@ -38,6 +38,7 @@ import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
 final MuteStore muteStore = MuteStore();
@@ -109,7 +110,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       return MaterialApp(
-        navigatorObservers: [BotToastNavigatorObserver()],
+        navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
         locale: userSetting.locale,
         home: Builder(builder: (context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(

@@ -20,6 +20,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 
 class UgoiraWidget extends StatefulWidget {
@@ -40,7 +42,7 @@ class UgoiraWidget extends StatefulWidget {
   _UgoiraWidgetState createState() => _UgoiraWidgetState();
 }
 
-class _UgoiraWidgetState extends State<UgoiraWidget> {
+class _UgoiraWidgetState extends State<UgoiraWidget> with RouteAware {
   Future<ui.Image> _loadImage(File file) async {
     final data = await file.readAsBytes();
     return await decodeImageFromList(data.buffer.asUint8List());
@@ -56,40 +58,52 @@ class _UgoiraWidgetState extends State<UgoiraWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     super.dispose();
   }
 
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    stopPainting = false;
+    initBind();
+  }
+
+  @override
+  void didPushNext() {
+    super.didPushNext();
+    stopPainting = true;
+  }
+
+  bool stopPainting = false;
+
   initBind() async {
-    // _timer =
-    //     Timer.periodic(Duration(milliseconds: widget.delay), (timer) async {
-    //   File file = widget.drawPools[point] as File;
-    //   point++;
-    //   if (point >= widget.drawPools.length) point = 0;
-    //   final data = await _loadImage(file);
-    //   if (mounted) {
-    //     setState(() {
-    //       image = data;
-    //     });
-    //   }
-    // });
     Future(() => {start()});
   }
 
   start() async {
+    if (stopPainting) return;
     File file = widget.drawPools[point] as File;
     int duration =
         widget.ugoiraMetadataResponse.ugoiraMetadata.frames[point].delay;
     point++;
     if (point >= widget.drawPools.length) point = 0;
     final data = await _loadImage(file);
-    if (mounted) {
+    if (mounted && !stopPainting) {
       setState(() {
         image = data;
       });
-    }
+    } else
+      return;
     sleep(Duration(milliseconds: duration));
-    if (mounted) start();
+    if (mounted && !stopPainting) start();
   }
 
   @override
