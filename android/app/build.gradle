@@ -45,7 +45,7 @@ if (project.hasProperty('dart-defines')) {
     dartEnvironmentVariables = dartEnvironmentVariables + project.property('dart-defines')
             .split(',')
             .collectEntries { entry ->
-                def pair = URLDecoder.decode(entry).split('=')
+                def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
                 [(pair.first()): pair.last() == "true"]
             }
 }
@@ -84,7 +84,7 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10005046
+        versionCode 10005051
         versionName "0.5.5 me"
     }
     compileOptions {
