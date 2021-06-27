@@ -167,15 +167,14 @@ import Photos
         print("delay time\(adelay)")
         let delayTime = [kCGImagePropertyGIFUnclampedDelayTime as String:adelay]
         let destDic   = [kCGImagePropertyGIFDictionary as String:delayTime]
+        let gifPropertiesDic:NSMutableDictionary = NSMutableDictionary()
+        gifPropertiesDic.setValue(0, forKey: kCGImagePropertyGIFLoopCount as String)//
+        let gifDictionaryDestDic = [kCGImagePropertyGIFDictionary as String:gifPropertiesDic]
+        CGImageDestinationSetProperties(destion!,gifDictionaryDestDic as CFDictionary?);
         for image in images {
             CGImageDestinationAddImage(destion!, (image as! UIImage).cgImage!, destDic as CFDictionary)
             print("kkkkkkkk\(images.count)")
         }
-        let gifPropertiesDic:NSMutableDictionary = NSMutableDictionary()
-
-       gifPropertiesDic.setValue(0, forKey: kCGImagePropertyGIFLoopCount as String)//
-       let gifDictionaryDestDic = [kCGImagePropertyGIFDictionary as String:gifPropertiesDic]
-       CGImageDestinationSetProperties(destion!,gifDictionaryDestDic as CFDictionary?);
         return CGImageDestinationFinalize(destion!)
     }
 }
