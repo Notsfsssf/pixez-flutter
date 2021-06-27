@@ -243,5 +243,6 @@
   "network_question": "你的網路環境能夠正常訪問 pixiv 嗎？",
   "media_hint": "插畫將會被儲存至相簿",
   "copy": "複製",
-  "view_replies": "預覽回覆"
+  "view_replies": "預覽回覆",
+  "temporarily_visible": "暫時可見"
 }

@@ -243,5 +243,6 @@
   "network_question": "Имеете ли вы доступ к pixiv?",
   "media_hint": "Иллюстрации будут сохранены в альбоме",
   "copy": "Копировать",
-  "view_replies": "Показать ответы"
+  "view_replies": "Показать ответы",
+  "temporarily_visible": "temporarily visible"
 }

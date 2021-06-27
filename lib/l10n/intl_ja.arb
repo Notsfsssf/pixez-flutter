@@ -243,5 +243,6 @@
   "network_question": "使用しているネットワークはPixivに正常にアクセスできますか",
   "media_hint": "イラストはアルバムに保存されます",
   "copy": "コピー",
-  "view_replies": "コメントを見る"
+  "view_replies": "コメントを見る",
+  "temporarily_visible": "temporarily visible"
 }

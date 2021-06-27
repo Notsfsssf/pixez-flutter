@@ -63,6 +63,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   late IllustStore _illustStore;
   late IllustAboutStore _aboutStore;
   late ScrollController _scrollController;
+  bool tempView = false;
 
   @override
   void initState() {
@@ -171,18 +172,29 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         }),
       ),
       body: Observer(builder: (_) {
-        for (var i in muteStore.banillusts) {
-          if (i.illustId == widget.id.toString()) {
-            return BanPage(
-              name: I18n.of(context).illust,
-            );
+        if (!tempView)
+          for (var i in muteStore.banillusts) {
+            if (i.illustId == widget.id.toString()) {
+              return BanPage(
+                name: "${I18n.of(context).illust}\n${i.name}\n",
+                onPressed: () {
+                  setState(() {
+                    tempView = true;
+                  });
+                },
+              );
+            }
           }
-        }
-        if (_illustStore.illusts != null) {
+        if (!tempView && _illustStore.illusts != null) {
           for (var j in muteStore.banUserIds) {
             if (j.userId == _illustStore.illusts!.user.id.toString()) {
               return BanPage(
-                name: I18n.of(context).painter,
+                name: "${I18n.of(context).painter}\n${j.name}\n",
+                onPressed: () {
+                  setState(() {
+                    tempView = true;
+                  });
+                },
               );
             }
           }
@@ -190,7 +202,12 @@ class _IllustLightingPageState extends State<IllustLightingPage>
             for (var t1 in _illustStore.illusts!.tags) {
               if (t.name == t1.name)
                 return BanPage(
-                  name: I18n.of(context).tag,
+                  name: "${I18n.of(context).tag}\n${t.name}\n",
+                  onPressed: () {
+                    setState(() {
+                      tempView = true;
+                    });
+                  },
                 );
             }
           }

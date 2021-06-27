@@ -97,7 +97,10 @@ class _UsersPageState extends State<UsersPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('X_X'),
-                  ElevatedButton(
+                  Text('${widget.id}'),
+                  MaterialButton(
+                    color: Theme.of(context).accentColor,
+                    textColor: Colors.white,
                     child: Text(I18n.of(context).shielding_settings),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(

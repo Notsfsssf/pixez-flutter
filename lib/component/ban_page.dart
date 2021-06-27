@@ -20,8 +20,10 @@ import 'package:pixez/page/shield/shield_page.dart';
 
 class BanPage extends StatefulWidget {
   final String name;
+  final VoidCallback? onPressed;
 
-  const BanPage({Key? key, required this.name}) : super(key: key);
+  const BanPage({Key? key, required this.name, this.onPressed})
+      : super(key: key);
 
   @override
   _BanPageState createState() => _BanPageState();
@@ -47,9 +49,14 @@ class _BanPageState extends State<BanPage> {
                 style: TextStyle(fontSize: 26),
               ),
             ),
-            Text(I18n.of(context).shield_message(widget.name)),
+            Text(
+              I18n.of(context).shield_message(widget.name),
+              textAlign: TextAlign.center,
+            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(
+                top: 8.0,
+              ),
               child: MaterialButton(
                 color: Theme.of(context).accentColor,
                 textColor: Colors.white,
@@ -59,6 +66,17 @@ class _BanPageState extends State<BanPage> {
                       builder: (BuildContext context) => ShieldPage()));
                 },
               ),
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: Theme.of(context)
+                      .colorScheme
+                      .copyWith(primary: Theme.of(context).accentColor)),
+              child: TextButton(
+                  onPressed: () {
+                    if (widget.onPressed != null) widget.onPressed!();
+                  },
+                  child: Text(I18n.of(context).temporarily_visible)),
             )
           ],
           crossAxisAlignment: CrossAxisAlignment.center,
