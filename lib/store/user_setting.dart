@@ -147,9 +147,12 @@ abstract class _UserSettingBase with Store {
       brightness: Brightness.light,
       accentColor: Colors.cyan[400],
       primaryColor: Colors.white,
+      colorScheme:
+          ThemeData().colorScheme.copyWith(secondary: Colors.cyan[400]),
       appBarTheme: AppBarTheme(
         brightness: Brightness.light,
       ));
+
   @observable
   ThemeMode themeMode = ThemeMode.system;
 
@@ -241,10 +244,11 @@ abstract class _UserSettingBase with Store {
             brightness: Brightness.light,
             accentColor: _stringToColor(colors[0]),
             primaryColor: Colors.white,
+            colorScheme: ThemeData()
+                .colorScheme
+                .copyWith(secondary: _stringToColor(colors[0])),
             appBarTheme: AppBarTheme(
               brightness: Brightness.light,
-              // color: Colors.transparent,
-              // elevation: 0.0,
             ),
           );
         } catch (e) {
@@ -290,6 +294,8 @@ abstract class _UserSettingBase with Store {
       appBarTheme: AppBarTheme(
         brightness: Brightness.light,
       ),
+      colorScheme:
+          ThemeData().colorScheme.copyWith(secondary: _stringToColor(data[0])),
       primaryColor: Colors.white,
       accentColor: _stringToColor(data[0]),
     );

@@ -42,6 +42,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                   I18n.of(context).bookmark),
               actions: [
                 Switch(
+                  activeColor: Theme.of(context).colorScheme.secondary,
                   onChanged: (bool value) {
                     _store.setRestrict(value);
                   },
@@ -102,6 +103,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                               onChanged: (bool? value) {
                                 _store.check(index, value!);
                               },
+                              activeColor: Theme.of(context).colorScheme.secondary,
                               value: _store.checkList[index],
                             )
                           ],

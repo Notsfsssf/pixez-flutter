@@ -131,32 +131,35 @@ class _AboutPageState extends State<AboutPage> {
         children: <Widget>[
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/icon.png'),
+              backgroundImage: AssetImage('assets/images/me.jpg'),
             ),
             title: Text('Perol_Notsfsssf'),
             subtitle: Text(I18n.of(context).perol_message),
             onTap: () {
-              if (Platform.isIOS)
-                showModalBottomSheet(
-                  context: context,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16),
-                    ),
+              showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16),
                   ),
-                  builder: (BuildContext context) {
-                    return Container(
+                ),
+                builder: (BuildContext context) {
+                  return InkWell(
+                    onTap: () {
+                      if (Platform.isAndroid)
+                        launch(Constants.isGooglePlay
+                            ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
+                            : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587");
+                    },
+                    child: Container(
                       child: Image.asset(
                         'assets/images/liz.png',
                         fit: BoxFit.cover,
                       ),
-                    );
-                  },
-                );
-              else
-                launch(Constants.isGooglePlay
-                    ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
-                    : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587");
+                    ),
+                  );
+                },
+              );
             },
           ),
           ListTile(
@@ -510,10 +513,11 @@ class _AboutPageState extends State<AboutPage> {
                 elevation: 1.0,
                 child: ListTile(
                   leading: Icon(FontAwesomeIcons.coffee),
-                  title: Text(i.description??""),
-                  subtitle: Text(i.localizedPrice??""),
+                  title: Text(i.description ?? ""),
+                  subtitle: Text(i.localizedPrice ?? ""),
                   onTap: () {
-                    FlutterInappPurchase.instance.requestPurchase(i.productId??"");
+                    FlutterInappPurchase.instance
+                        .requestPurchase(i.productId ?? "");
                   },
                 ),
               )

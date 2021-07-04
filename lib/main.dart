@@ -38,7 +38,8 @@ import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 final UserSetting userSetting = UserSetting();
 final SaveStore saveStore = SaveStore();
 final MuteStore muteStore = MuteStore();
@@ -124,6 +125,9 @@ class _MyAppState extends State<MyApp> {
         darkTheme: ThemeData.dark().copyWith(
             accentColor: userSetting.themeData.accentColor,
             scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
+            colorScheme: ThemeData.dark()
+                .colorScheme
+                .copyWith(secondary: userSetting.themeData.accentColor,primary:userSetting.themeData.accentColor ),
             indicatorColor: userSetting.themeData.accentColor),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales, // Add this line

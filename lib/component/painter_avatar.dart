@@ -59,6 +59,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
                   backgroundImage: PixivProvider.url(widget.url.toTrueUrl(),
                       preUrl: widget.url),
                   radius: 100.0,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
               )
             : Container(
