@@ -242,8 +242,12 @@ abstract class _SaveStoreBase with Store {
     } else {
       final _imageSaver = ImageSaver();
       List<Uint8List> bytesList = [uint8list];
+      String directoryName = 'pxez';
+      if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
+        directoryName = "pxez_sanity";
+      }
       await _imageSaver.saveImages(
-          imageBytes: bytesList, directoryName: 'pxez');
+          imageBytes: bytesList, directoryName: directoryName);
     }
   }
 
