@@ -179,6 +179,7 @@ abstract class _SaveStoreBase with Store {
         userName: illusts.user.name,
         illustId: illusts.id,
         title: illusts.title,
+        sanityLevel: illusts.sanityLevel,
         fileName: fileName,
         status: 0,
         url: url);

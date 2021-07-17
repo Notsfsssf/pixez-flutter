@@ -24,6 +24,7 @@ class TaskPersist {
   String url;
   int userId;
   int illustId;
+  int sanityLevel;
   int status;
 
   TaskPersist(
@@ -33,6 +34,7 @@ class TaskPersist {
       required this.userId,
       required this.illustId,
       required this.fileName,
+      this.sanityLevel = 0,
       this.id,
       required this.status});
 
@@ -43,6 +45,7 @@ class TaskPersist {
         title: json[columnTitle],
         url: json[columnUrl],
         userId: json[columnUserId],
+        sanityLevel: json[columnSanityLevel],
         illustId: json[columnIllustId],
         status: json[columnStatus],
         fileName: json[columnFileName]);
@@ -55,6 +58,7 @@ class TaskPersist {
     data[columnTitle] = this.title;
     data[columnUserName] = this.userName;
     data[columnIllustId] = this.illustId;
+    data[columnSanityLevel] = this.sanityLevel;
     data[columnUserId] = this.userId;
     data[columnStatus] = this.status;
     data[columnFileName] = this.fileName;
@@ -83,7 +87,7 @@ class TaskPersist {
         pageCount: 0,
         width: 0,
         height: 0,
-        sanityLevel: 2,
+        sanityLevel: this.sanityLevel,
         xRestrict: 0,
         series: Object(),
         metaSinglePage: MetaSinglePage(originalImageUrl: ''),
@@ -109,6 +113,7 @@ final String columnIllustId = 'illust_id';
 final String columnUserId = 'user_id';
 final String columnStatus = 'status';
 final String columnFileName = 'file_name';
+final String columnSanityLevel = 'sanity_level';
 
 class TaskPersistProvider {
   late Database db;
@@ -116,14 +121,20 @@ class TaskPersistProvider {
   Future open() async {
     String databasesPath = (await getDatabasesPath());
     String path = join(databasesPath, 'task.db');
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
+    db = await openDatabase(path, version: 2,
+        onUpgrade: (db, oldVersion, newVersion) async {
+      var batch = db.batch();
+      if (oldVersion == 1)
+        batch.execute('ALTER TABLE $tableAccount ADD $columnSanityLevel integer');
+      await batch.commit();
+    }, onCreate: (Database db, int version) async {
       await db.execute('''
 create table $tableAccount ( 
   $columnId integer primary key autoincrement, 
   $columnTitle text not null,
   $columnUserName text not null,
   $columnUrl text not null,
+  $columnSanityLevel integer,
   $columnIllustId integer not null,
   $columnUserId integer not null,
   $columnStatus integer not null,
@@ -147,6 +158,7 @@ create table $tableAccount (
           columnIllustId,
           columnFileName,
           columnTitle,
+          columnSanityLevel,
           columnUserName,
           columnUrl,
           columnStatus
@@ -188,6 +200,7 @@ create table $tableAccount (
         columnUserName,
         columnUrl,
         columnFileName,
+        columnSanityLevel,
         columnStatus
       ],
       orderBy: "${columnId} DESC",
