@@ -244,5 +244,6 @@
   "media_hint": "Illustrations will be saved to the album",
   "copy": "copy",
   "view_replies": "View reply",
-  "temporarily_visible": "temporarily visible"
+  "temporarily_visible": "temporarily visible",
+  "unclassified":"Unclassified"
 }

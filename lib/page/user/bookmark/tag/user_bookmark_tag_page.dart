@@ -92,13 +92,21 @@ class NewWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   if (index == 0)
                     return ListTile(
-                      title: Text("All"),
+                      title: Text(I18n.of(context).all),
                       onTap: () {
                         Navigator.pop(
                             context, {"tag": null, "restrict": restrict});
                       },
                     );
-                  var bookmarkTag = _bookMarkTagStore.bookmarkTags[index - 1];
+                  else if (index == 1)
+                    return ListTile(
+                      title: Text(I18n.of(context).unclassified),
+                      onTap: () {
+                        Navigator.pop(
+                            context, {"tag": "未分類", "restrict": restrict}); //日语
+                      },
+                    );
+                  var bookmarkTag = _bookMarkTagStore.bookmarkTags[index - 2];
                   return ListTile(
                     title: Text(bookmarkTag.name),
                     trailing: Text(bookmarkTag.count.toString()),
@@ -108,7 +116,7 @@ class NewWidget extends StatelessWidget {
                     },
                   );
                 },
-                itemCount: _bookMarkTagStore.bookmarkTags.length + 1,
+                itemCount: _bookMarkTagStore.bookmarkTags.length + 2,
               )
             : Container(),
         onRefresh: () async {

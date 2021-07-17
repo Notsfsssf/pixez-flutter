@@ -244,5 +244,6 @@
   "media_hint": "イラストはアルバムに保存されます",
   "copy": "コピー",
   "view_replies": "コメントを見る",
-  "temporarily_visible": "temporarily visible"
+  "temporarily_visible": "temporarily visible",
+  "unclassified":"Unclassified"
 }

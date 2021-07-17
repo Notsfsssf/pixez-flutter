@@ -244,5 +244,6 @@
   "media_hint": "插畫將會被儲存至相簿",
   "copy": "複製",
   "view_replies": "預覽回覆",
-  "temporarily_visible": "暫時可見"
+  "temporarily_visible": "暫時可見",
+  "unclassified":"未分類"
 }

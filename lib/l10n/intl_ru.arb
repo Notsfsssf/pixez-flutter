@@ -244,5 +244,6 @@
   "media_hint": "Иллюстрации будут сохранены в альбоме",
   "copy": "Копировать",
   "view_replies": "Показать ответы",
-  "temporarily_visible": "temporarily visible"
+  "temporarily_visible": "temporarily visible",
+  "unclassified":"Unclassified"
 }
