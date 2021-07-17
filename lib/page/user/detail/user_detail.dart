@@ -95,8 +95,20 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       ]),
                       DataRow(cells: [
                         DataCell(Text(I18n.of(context).total_mypixiv_users)),
-                        DataCell(Text(
-                            detail.profile.total_mypixiv_users.toString())),
+                        DataCell(
+                            Text(detail.profile.total_mypixiv_users.toString()),
+                            onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return Scaffold(
+                              appBar: AppBar(),
+                              body: FollowList(
+                                id: widget.userDetail.user.id,
+                                isFollowMe: true,
+                              ),
+                            );
+                          }));
+                        }),
                       ]),
                       DataRow(cells: [
                         DataCell(Text(I18n.of(context).twitter_account)),

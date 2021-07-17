@@ -289,10 +289,10 @@ class ApiClient {
 
   // @GET("/v1/user/follower?filter=for_android")
   //   fun getUserFollower(@Header("Authorization") paramString: String, @Query("user_id") paramLong: Long): Observable<SearchUserResponse>
-  Future<Response> getFollowUser(String restrict) {
+  Future<Response> getFollowUser(int userId, String restrict) {
     return httpClient.get(
       "/v1/user/follower?filter=for_android",
-      queryParameters: {"restrict": restrict},
+      queryParameters: {"restrict": restrict, "user_id": userId},
     );
   }
 
@@ -451,9 +451,10 @@ class ApiClient {
   }
 
   Future<Response> getIllustCommentsReplies(int comment_id) {
-    return httpClient
-        .get("/v2/illust/comment/replies", queryParameters: {"comment_id": comment_id});
+    return httpClient.get("/v2/illust/comment/replies",
+        queryParameters: {"comment_id": comment_id});
   }
+
   /* @FormUrlEncoded
   @POST("v1/illust/comment/add")
   fun postIllustComment(@Header("Authorization") paramString1: String, @Field("illust_id") illust_id: Long, @Field("comment") comment: String, @Field("parent_comment_id") parent_comment_id: Int?): Observable<ResponseBody>

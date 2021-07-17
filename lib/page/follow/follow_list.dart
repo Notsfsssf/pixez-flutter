@@ -26,8 +26,13 @@ import 'package:pixez/page/painter/painter_list.dart';
 class FollowList extends StatefulWidget {
   final int id;
   final bool isNovel;
+  final bool isFollowMe;
 
-  FollowList({Key? key, required this.id, this.isNovel = false})
+  FollowList(
+      {Key? key,
+      required this.id,
+      this.isNovel = false,
+      this.isFollowMe = false})
       : super(key: key);
 
   @override
@@ -45,8 +50,9 @@ class _FollowListState extends State<FollowList> {
 
   @override
   void initState() {
-    futureGet = () => apiClient.getUserFollowing(widget.id, restrict);
-
+    futureGet = widget.isFollowMe
+        ? () => apiClient.getFollowUser(widget.id, restrict)
+        : () => apiClient.getUserFollowing(widget.id, restrict);
     super.initState();
   }
 
@@ -79,10 +85,10 @@ class _FollowListState extends State<FollowList> {
           futureGet: futureGet,
           isNovel: widget.isNovel,
           header: Container(
-            height: 45,
+            height: widget.isFollowMe ? 0 : 45,
           ),
         ),
-        buildHeader(),
+        if (!widget.isFollowMe) buildHeader(),
       ],
     );
   }
