@@ -120,14 +120,10 @@ class TaskPersistProvider {
 
   Future open() async {
     String databasesPath = (await getDatabasesPath());
-    String path = join(databasesPath, 'task.db');
-    db = await openDatabase(path, version: 2,
-        onUpgrade: (db, oldVersion, newVersion) async {
-      var batch = db.batch();
-      if (oldVersion == 1)
-        batch.execute('ALTER TABLE $tableAccount ADD $columnSanityLevel integer');
-      await batch.commit();
-    }, onCreate: (Database db, int version) async {
+    String path =
+        join(databasesPath, 'task1.db'); //某个版本出的bug，升级table无法定位问题，只能改了
+    db = await openDatabase(path, version: 1,
+        onCreate: (Database db, int version) async {
       await db.execute('''
 create table $tableAccount ( 
   $columnId integer primary key autoincrement, 
