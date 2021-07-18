@@ -620,7 +620,28 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     });
               }),
             ),
-          )
+          ),
+          if (Platform.isIOS)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Observer(
+                    builder: (context) {
+                      return SwitchListTile(
+                        activeColor: Theme.of(context).accentColor,
+                        onChanged: (bool value) async {
+                          await userSetting.setOverSanityLevelFolder(value);
+                        },
+                        title: Text("Sanity Single Folder"),
+                        value: userSetting.overSanityLevelFolder,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
         ]),
       ),
     );
