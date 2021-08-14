@@ -69,7 +69,8 @@ class TaskBean {
 
 class Fetcher {
   BuildContext? context;
-  Queue<IsoContactBean> queue = new Queue();
+  List<TaskBean> queue = [];
+  List<TaskPersist> localQueue = [];
   ReceivePort receivePort = ReceivePort();
   SendPort? sendPortToChild;
   Isolate? isolate;
@@ -80,7 +81,8 @@ class Fetcher {
 
   start() async {
     if (receivePort.isBroadcast) return;
-    taskPersistProvider.open();
+    await taskPersistProvider.open();
+    await taskPersistProvider.getAllAccount();
     LPrinter.d("Fetcher start");
     receivePort.listen((message) {
       try {
@@ -105,12 +107,27 @@ class Fetcher {
             }
             break;
           case IsoTaskState.COMPLETE:
+            currentRunningNum--;
             TaskBean taskBean = isoContactBean.data;
+            if (queue.isNotEmpty) {
+              LPrinter.d("removeWhere ${queue.length} ${taskBean.url}");
+              queue.removeWhere((element) => element.url == taskBean.url);
+              LPrinter.d("c ${queue.length}");
+            }
+            nextJob();
             _complete(taskBean.url!, taskBean.savePath!, taskBean.fileName!,
                 taskBean.illusts!);
             break;
           case IsoTaskState.ERROR:
-            _errorD(isoContactBean.data as String);
+            currentRunningNum--;
+            TaskBean taskBean = isoContactBean.data;
+            if (queue.isNotEmpty) {
+              LPrinter.d("removeWhere ${queue.length} ${taskBean.url}");
+              queue.removeWhere((element) => element.url == taskBean.url);
+              LPrinter.d("c ${queue.length}");
+            }
+            nextJob();
+            _errorD(taskBean.url!);
             break;
           default:
             break;
@@ -123,17 +140,27 @@ class Fetcher {
 
   save(String url, Illusts illusts, String fileName) async {
     LPrinter.d(sendPortToChild.toString() + url);
-    IsoContactBean isoContactBean = IsoContactBean(
-        state: IsoTaskState.APPEND,
-        data: TaskBean(
-            url: url,
-            illusts: illusts,
-            fileName: fileName,
-            byPass: userSetting.disableBypassSni,
-            source: userSetting.pictureSource,
-            host: splashStore.host,
-            savePath: (await getTemporaryDirectory()).path));
-    sendPortToChild?.send(isoContactBean);
+    var taskBean = TaskBean(
+        url: url,
+        illusts: illusts,
+        fileName: fileName,
+        byPass: userSetting.disableBypassSni,
+        source: userSetting.pictureSource,
+        host: splashStore.host,
+        savePath: (await getTemporaryDirectory()).path);
+    queue.add(taskBean);
+    nextJob();
+  }
+
+  int currentRunningNum = 0;
+
+  nextJob() {
+    if (queue.isNotEmpty && currentRunningNum < 2) {
+      IsoContactBean isoContactBean =
+          IsoContactBean(state: IsoTaskState.APPEND, data: queue.first);
+      sendPortToChild?.send(isoContactBean);
+      currentRunningNum++;
+    }
   }
 
   void stop() {
@@ -242,14 +269,16 @@ entryPoint(SendPort sendPort) {
               LPrinter.d(e);
               try {
                 splashStore.maybeFetch();
-                sendPort.send(IsoContactBean(
-                    state: IsoTaskState.ERROR, data: taskBean.url));
+                sendPort.send(
+                    IsoContactBean(state: IsoTaskState.ERROR, data: taskBean));
               } catch (e) {
                 LPrinter.d(e);
               }
             });
           } catch (e) {
             LPrinter.d(e);
+            sendPort.send(
+                IsoContactBean(state: IsoTaskState.ERROR, data: taskBean));
           }
           break;
         default:

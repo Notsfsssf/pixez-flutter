@@ -13,6 +13,7 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:path/path.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -143,6 +144,7 @@ create table $tableAccount (
   Future<TaskPersist> insert(TaskPersist todo) async {
     todo.id = await db.insert(tableAccount, todo.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    fetcher.localQueue.add(todo);
     return todo;
   }
 
@@ -170,19 +172,34 @@ create table $tableAccount (
   Future<int> remove(int id) async {
     final result =
         await db.delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
-
+    fetcher.localQueue.removeWhere((element) => element.id == id);
     return result;
   }
 
   Future<int> deleteAll() async {
     final result = await db.delete(tableAccount);
-
+    fetcher.localQueue.clear();
     return result;
   }
 
   Future<int> update(TaskPersist todo) async {
-    return await db.update(tableAccount, todo.toJson(),
+    final result = await db.update(tableAccount, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
+    try {
+      var firstWhere =
+          fetcher.localQueue.firstWhere((element) => element.id == todo.id);
+      firstWhere.id = todo.id;
+      firstWhere.title = todo.title;
+      firstWhere.url = todo.url;
+      firstWhere.fileName = todo.fileName;
+      firstWhere.illustId = todo.illustId;
+      firstWhere.sanityLevel = todo.sanityLevel;
+      firstWhere.status = todo.status;
+      firstWhere.userId = todo.userId;
+      firstWhere.userName = todo.userName;
+    } catch (e) {}
+
+    return result;
   }
 
   Future<List<TaskPersist>> getAllAccount() async {
@@ -199,8 +216,11 @@ create table $tableAccount (
         columnSanityLevel,
         columnStatus
       ],
-      orderBy: "${columnId} DESC",
+      orderBy: "${columnId} ASC",
     );
-    return maps.map((e) => TaskPersist.fromJson(e)).toList();
+    var list = maps.map((e) => TaskPersist.fromJson(e)).toList();
+    fetcher.localQueue.clear();
+    fetcher.localQueue.addAll(list);
+    return list;
   }
 }
