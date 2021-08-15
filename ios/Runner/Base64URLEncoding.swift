@@ -7,6 +7,7 @@
 
 import Foundation
 
+//生成code_challenge的辅助类,目前已经用不到了，但是可以给写swift的朋友一些参考，就留着吧，感谢zzy
 fileprivate let base64URLDigits = [UInt8]("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".utf8)
 
 fileprivate let base64URLDecodingIndex: [UInt8] = {

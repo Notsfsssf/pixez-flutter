@@ -107,8 +107,8 @@ class Fetcher {
             }
             break;
           case IsoTaskState.COMPLETE:
-            currentRunningNum--;
             TaskBean taskBean = isoContactBean.data;
+            urlPool.remove(taskBean.url);
             if (queue.isNotEmpty) {
               LPrinter.d("removeWhere ${queue.length} ${taskBean.url}");
               queue.removeWhere((element) => element.url == taskBean.url);
@@ -119,8 +119,8 @@ class Fetcher {
                 taskBean.illusts!);
             break;
           case IsoTaskState.ERROR:
-            currentRunningNum--;
             TaskBean taskBean = isoContactBean.data;
+            urlPool.remove(taskBean.url);
             if (queue.isNotEmpty) {
               LPrinter.d("removeWhere ${queue.length} ${taskBean.url}");
               queue.removeWhere((element) => element.url == taskBean.url);
@@ -152,14 +152,16 @@ class Fetcher {
     nextJob();
   }
 
-  int currentRunningNum = 0;
+  List<String> urlPool = [];
 
   nextJob() {
-    if (queue.isNotEmpty && currentRunningNum < 2) {
+    if (queue.isNotEmpty && urlPool.length < 2) {
+      var first = queue.first;
+      if (urlPool.contains(first)) return;
       IsoContactBean isoContactBean =
-          IsoContactBean(state: IsoTaskState.APPEND, data: queue.first);
+          IsoContactBean(state: IsoTaskState.APPEND, data: first);
       sendPortToChild?.send(isoContactBean);
-      currentRunningNum++;
+      if (first.url != null) urlPool.add(first.url!);
     }
   }
 

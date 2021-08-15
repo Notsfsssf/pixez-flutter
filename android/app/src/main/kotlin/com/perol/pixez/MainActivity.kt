@@ -46,7 +46,6 @@ import kotlin.Comparator
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
-    private val CRYPTO_CHANNEL = "com.perol.dev/crypto"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
     var saveMode = 0
@@ -186,13 +185,6 @@ class MainActivity : FlutterActivity() {
         saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
         Weiss.bindChannel(flutterEngine)
         CustomTab.bindChannel(this, flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CRYPTO_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "code_verifier") {
-                result.success(CodeGen.getCodeVer())
-            } else if (call.method == "code_challenge") {
-                result.success(CodeGen.getCodeChallenge(call.argument<String>("code")!!))
-            }
-        }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SUPPORTER_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "process_text") {
                 try {

@@ -5,6 +5,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 
 object CodeGen {
+
     fun getCodeVer(): String {
         val byteArray = ByteArray(32)
         SecureRandom().nextBytes(byteArray)

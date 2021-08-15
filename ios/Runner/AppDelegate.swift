@@ -26,18 +26,6 @@ import Photos
             self.receiveBatteryLevel(result: result,path: path ,delay: delay)
             
         })
-        let cryptoChannel = FlutterMethodChannel(name: "com.perol.dev/crypto",
-                                                  binaryMessenger: controller.binaryMessenger)
-        cryptoChannel.setMethodCallHandler({
-            (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            if(call.method == "code_verifier"){
-                result(CodeGen.getCodeVer());
-            }else if(call.method == "code_challenge"){
-                let args = call.arguments as? [String:Any]
-                let code:String = args?["code"] as! String
-                result(CodeGen.getCodeChallenge(codeVerifier: code))
-            }
-        })
         WidgetkitPlugin.bind(controller: controller)
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
