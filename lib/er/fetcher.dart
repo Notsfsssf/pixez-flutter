@@ -155,7 +155,7 @@ class Fetcher {
   List<String> urlPool = [];
 
   nextJob() {
-    if (queue.isNotEmpty && urlPool.length < 2) {
+    if (queue.isNotEmpty && urlPool.length < userSetting.maxRunningTask) {
       var first = queue.first;
       if (urlPool.contains(first)) return;
       IsoContactBean isoContactBean =

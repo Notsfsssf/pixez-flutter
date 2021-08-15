@@ -63,10 +63,7 @@ dependencies:
   flutter_inappwebview: ^5.3.2
   auto_animated: ^3.0.0
   http: ^0.13.3
-  dio_http_cache:
-    git:
-      url: https://github.com/vrtdev/dio-http-cache.git
-      ref: feature/nullsafety-dio4
+  dio_http_cache: ^0.3.0
   md2_tab_indicator:
     git:
       url: https://github.com/westdabestdb/md2_tab_indicator

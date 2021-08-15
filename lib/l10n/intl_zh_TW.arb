@@ -245,5 +245,6 @@
   "copy": "複製",
   "view_replies": "預覽回覆",
   "temporarily_visible": "暫時可見",
-  "unclassified":"未分類"
+  "unclassified":"未分類",
+  "max_download_task_running_count": "最大同時下載任務數量"
 }

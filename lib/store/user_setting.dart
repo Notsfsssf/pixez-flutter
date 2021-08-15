@@ -52,6 +52,7 @@ abstract class _UserSettingBase with Store {
   static const String IS_FOLLOW_AFTER_STAR = "is_follow_after_star";
   static const String IS_OVER_SANITY_LEVEL_FOLDER =
       "is_over_sanity_level_folder";
+  static const String MAX_RUNNING_TASK_KEY = "max_running_task";
 
   @observable
   bool isClearOldFormatFile = false;
@@ -99,6 +100,8 @@ abstract class _UserSettingBase with Store {
   Locale locale = Locale('en', 'US');
   @observable
   TextStyle novelTextStyle = TextStyle();
+  @observable
+  int maxRunningTask = 2;
 
   @observable
   String? format = "";
@@ -187,6 +190,12 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setMaxRunningTask(int value) async {
+    await prefs.setInt(MAX_RUNNING_TASK_KEY, value);
+    maxRunningTask = value;
+  }
+
+  @action
   setNovelFontsizeWithoutSave(double v) async {
     novelFontsize = v;
     novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
@@ -215,6 +224,7 @@ abstract class _UserSettingBase with Store {
     isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
     isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY);
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
+    maxRunningTask = prefs.getInt(MAX_RUNNING_TASK_KEY) ?? 2;
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;

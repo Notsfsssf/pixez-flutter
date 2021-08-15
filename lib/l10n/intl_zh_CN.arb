@@ -80,7 +80,7 @@
   "manga": "漫画",
   "medium": "中等",
   "mode_list": "每日 男性向 女性向 原创 新人 每周 每月 XVIII XVIII_WEEK XVIII_G",
-  "novel_mode_list":"每日 男性向 女性向 每周 XVIII XVIII_WEEK XVIII_G",
+  "novel_mode_list": "每日 男性向 女性向 每周 XVIII XVIII_WEEK XVIII_G",
   "more": "更多",
   "more_then_starnum_bookmark": "超过 {starNum} 的收藏",
   "@more_then_starnum_bookmark": {
@@ -153,8 +153,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -190,13 +190,13 @@
   "pick_a_color": "选择颜色",
   "tap_to_show_results": "点击显示 {length} 个结果",
   "@tap_to_show_results": {
-      "description": "A message with a single parameter",
-      "placeholders": {
-        "length": {
-          "type": "String",
-          "example": "Bob"
-        }
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "Bob"
       }
+    }
   },
   "saf_hint": "以 SAF 模式保存图片或其他文件，无需存储权限\n虽然不授权仍然能够继续使用，但可能会导致 app 闪退或者部分功能不可用\n注意：如遇到兼容性问题（无法选择等，常见于国产魔改系统），请使用上方的“传统方式”。\n非常推荐选择 Pictures/PixEz 作为保存位置",
   "what_is_saf": "什么是 SAF?",
@@ -234,8 +234,8 @@
   "login_error_message": "账号或密码错误，或使用了弱密码，将可能导致登录失败",
   "translate": "翻译",
   "retry_seed_task": "重试所有seed任务",
-  "manga_detail_page_quality":"漫画详情页画质",
-  "follow_after_star":"收藏后关注画师",
+  "manga_detail_page_quality": "漫画详情页画质",
+  "follow_after_star": "收藏后关注画师",
   "default_title": "默认",
   "image_site": "图床",
   "network": "网络",
@@ -245,5 +245,6 @@
   "copy": "复制",
   "view_replies": "查看回复",
   "temporarily_visible": "暂时可见",
-  "unclassified":"未分类"
+  "unclassified": "未分类",
+  "max_download_task_running_count": "最大同时下载任务数量"
 }

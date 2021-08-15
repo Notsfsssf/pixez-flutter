@@ -235,12 +235,10 @@ packages:
   dio_http_cache:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feature/nullsafety-dio4"
-      resolved-ref: "19ac02526b64307d95be22e0cd5b21ca75ff26ec"
-      url: "https://github.com/vrtdev/dio-http-cache.git"
-    source: git
-    version: "0.3.0-nullsafety.0"
+      name: dio_http_cache
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -512,7 +510,7 @@ packages:
       name: json_serializable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.4"
   logging:
     dependency: transitive
     description:

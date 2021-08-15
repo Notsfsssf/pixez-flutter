@@ -80,7 +80,7 @@
   "manga": "Manga",
   "medium": "Medium",
   "mode_list": "Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G",
-  "novel_mode_list":"Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G",
+  "novel_mode_list": "Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G",
   "more": "More",
   "more_then_starnum_bookmark": "More than {starNum} like(s)",
   "@more_then_starnum_bookmark": {
@@ -153,8 +153,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -221,8 +221,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "part": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -234,8 +234,8 @@
   "login_error_message": "Incorrect account or password, or using a weak password, may cause login failure",
   "translate": "translate",
   "retry_seed_task": "retry seed task",
-  "manga_detail_page_quality":"Manga quality (Details page)",
-  "follow_after_star":"Follow after star",
+  "manga_detail_page_quality": "Manga quality (Details page)",
+  "follow_after_star": "Follow after star",
   "default_title": "Default",
   "image_site": "Image Site",
   "network": "Network",
@@ -245,5 +245,6 @@
   "copy": "copy",
   "view_replies": "View reply",
   "temporarily_visible": "temporarily visible",
-  "unclassified":"Unclassified"
+  "unclassified": "Unclassified",
+  "max_download_task_running_count": "Max download task running count"
 }

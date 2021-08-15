@@ -93,15 +93,20 @@ class _JobPageState extends State<JobPage> {
   Widget _buildStatusWidget(int i) {
     switch (i) {
       case 0:
-        return Text("seed");
+        return Text("seed",
+            style:
+                Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12));
         break;
       case 1:
-        return Text(I18n.of(context).running);
+        return Text(I18n.of(context).running,
+            style:
+                Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12));
         break;
       case 2:
         return Icon(
           Icons.check_circle,
           color: Colors.green,
+          size: 16,
         );
       case 3:
         return Icon(
@@ -109,7 +114,10 @@ class _JobPageState extends State<JobPage> {
           color: Colors.green,
         );
       default:
-        return Text("seed");
+        return Text(
+          "seed",
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 16),
+        );
     }
   }
 
@@ -255,15 +263,9 @@ class _JobPageState extends State<JobPage> {
                         ? Container(
                             height: 100,
                             width: 100,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  File("${cachePath!}/${taskPersist.fileName}"),
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
+                            child: Image.file(
+                              File("${cachePath!}/${taskPersist.fileName}"),
+                              fit: BoxFit.cover,
                             ),
                           )
                         : (jobEntity != null && jobEntity.status != 2)
@@ -280,7 +282,11 @@ class _JobPageState extends State<JobPage> {
                                 ),
                               )
                             : Container(
-                                height: 0,
+                                height: 100,
+                                width: 100,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
                               ),
                     Expanded(
                       child: Column(
@@ -289,10 +295,9 @@ class _JobPageState extends State<JobPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 200,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     taskPersist.title,
                                     maxLines: 1,
@@ -301,10 +306,11 @@ class _JobPageState extends State<JobPage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
                                 child: _buildStatusWidget(
                                     jobEntity?.status ?? taskPersist.status),
-                              )
+                              ),
                             ],
                           ),
                           Padding(
@@ -324,8 +330,9 @@ class _JobPageState extends State<JobPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(""),
+                              Text(" "),
                               Row(
                                 children: [
                                   IconButton(

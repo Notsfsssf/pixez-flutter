@@ -245,5 +245,6 @@
   "copy": "コピー",
   "view_replies": "コメントを見る",
   "temporarily_visible": "temporarily visible",
-  "unclassified":"Unclassified"
+  "unclassified":"Unclassified",
+  "max_download_task_running_count": "Max download task running count"
 }
