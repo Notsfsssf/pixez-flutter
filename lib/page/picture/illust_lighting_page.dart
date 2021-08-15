@@ -89,7 +89,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   void _loadAbout() {
     if (mounted &&
         _scrollController.hasClients &&
-        _scrollController.offset + 20 >=
+        _scrollController.offset + 180 >=
             _scrollController.position.maxScrollExtent &&
         _aboutStore.illusts.isEmpty) _aboutStore.fetch();
   }
