@@ -231,60 +231,64 @@ class MainActivity : FlutterActivity() {
                 if (clearOld == null)
                     clearOld = false
                 GlobalScope.launch(Dispatchers.Main) {
-                    if (saveMode == 0) {
-                        val path = withContext(Dispatchers.IO) {
-                            save(data, name)
-                        }
-                        MediaScannerConnection.scanFile(
+                    when (saveMode) {
+                        0 -> {
+                            val path = withContext(Dispatchers.IO) {
+                                save(data, name)
+                            }
+                            MediaScannerConnection.scanFile(
                                 this@MainActivity,
                                 arrayOf(path),
                                 arrayOf(
-                                        MimeTypeMap.getSingleton()
-                                                .getMimeTypeFromExtension(File(path).extension)
+                                    MimeTypeMap.getSingleton()
+                                        .getMimeTypeFromExtension(File(path).extension)
                                 )
-                        ) { _, _ ->
+                            ) { _, _ ->
+                            }
                         }
-                    } else if (saveMode == 2) {
-                        if (helplessPath == null) {
-                            helplessPath = sharedPreferences.getString("flutter.store_path", null)
+                        2 -> {
                             if (helplessPath == null) {
-                                helplessPath = "/storage/emulated/0/Pictures/pixez"
-                            }
-                        }
-                        val fullPath = "$helplessPath/$name"
-                        val file = File(fullPath)
-                        withContext(Dispatchers.IO) {
-                            val dirPath = file.parent
-                            val dirFile = File(dirPath)
-                            if (!dirFile.exists()) {
-                                dirFile.mkdirs()
-                            }
-                            if (!file.exists()) {
-                                file.createNewFile()
-                            }
-                            file.outputStream().write(data)
-                            if (clearOld && name.contains("_p0")) {
-                                val oldFileName = name.replace("_p0", "")
-                                val oldFile = File("$helplessPath", oldFileName)
-                                if (oldFile.exists()) {
-                                    oldFile.delete()
+                                helplessPath = sharedPreferences.getString("flutter.store_path", null)
+                                if (helplessPath == null) {
+                                    helplessPath = "/storage/emulated/0/Pictures/pixez"
                                 }
                             }
-                        }
-                        MediaScannerConnection.scanFile(
+                            val fullPath = "$helplessPath/$name"
+                            val file = File(fullPath)
+                            withContext(Dispatchers.IO) {
+                                val dirPath = file.parent
+                                val dirFile = File(dirPath)
+                                if (!dirFile.exists()) {
+                                    dirFile.mkdirs()
+                                }
+                                if (!file.exists()) {
+                                    file.createNewFile()
+                                }
+                                file.outputStream().write(data)
+                                if (clearOld && name.contains("_p0")) {
+                                    val oldFileName = name.replace("_p0", "")
+                                    val oldFile = File("$helplessPath", oldFileName)
+                                    if (oldFile.exists()) {
+                                        oldFile.delete()
+                                    }
+                                }
+                            }
+                            MediaScannerConnection.scanFile(
                                 this@MainActivity,
                                 arrayOf(file.path),
                                 arrayOf(
-                                        MimeTypeMap.getSingleton()
-                                                .getMimeTypeFromExtension(File(file.path).extension)
+                                    MimeTypeMap.getSingleton()
+                                        .getMimeTypeFromExtension(File(file.path).extension)
                                 )
-                        ) { _, _ ->
-                        }
+                            ) { _, _ ->
+                            }
 
-                    } else if (saveMode == 1) {
-                        withContext(Dispatchers.IO) {
-                            writeFileUri(name, clearOld)?.let {
-                                wr(data, it)
+                        }
+                        1 -> {
+                            withContext(Dispatchers.IO) {
+                                writeFileUri(name, clearOld)?.let {
+                                    wr(data, it)
+                                }
                             }
                         }
                     }

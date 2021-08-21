@@ -111,7 +111,7 @@ class _JobPageState extends State<JobPage> {
       case 3:
         return Icon(
           Icons.error,
-          color: Colors.green,
+          size: 16,
         );
       default:
         return Text(

@@ -110,7 +110,6 @@ class Fetcher {
             TaskBean taskBean = isoContactBean.data;
             urlPool.remove(taskBean.url);
             if (queue.isNotEmpty) {
-              LPrinter.d("removeWhere ${queue.length} ${taskBean.url}");
               queue.removeWhere((element) => element.url == taskBean.url);
               LPrinter.d("c ${queue.length}");
             }
@@ -122,7 +121,6 @@ class Fetcher {
             TaskBean taskBean = isoContactBean.data;
             urlPool.remove(taskBean.url);
             if (queue.isNotEmpty) {
-              LPrinter.d("removeWhere ${queue.length} ${taskBean.url}");
               queue.removeWhere((element) => element.url == taskBean.url);
               LPrinter.d("c ${queue.length}");
             }
@@ -268,6 +266,7 @@ entryPoint(SendPort sendPort) {
               sendPort.send(
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
             }).catchError((e) {
+              LPrinter.d("fetcher=======");
               LPrinter.d(e);
               try {
                 splashStore.maybeFetch();
@@ -278,6 +277,7 @@ entryPoint(SendPort sendPort) {
               }
             });
           } catch (e) {
+            LPrinter.d("fetcher=======");
             LPrinter.d(e);
             sendPort.send(
                 IsoContactBean(state: IsoTaskState.ERROR, data: taskBean));
