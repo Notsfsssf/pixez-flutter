@@ -154,8 +154,14 @@ class Fetcher {
 
   nextJob() {
     if (queue.isNotEmpty && urlPool.length < userSetting.maxRunningTask) {
-      var first = queue.first;
-      if (urlPool.contains(first)) return;
+      TaskBean? first = null;
+      for (var i in queue) {
+        if (!urlPool.contains(i.url)) {
+          first = i;
+          break;
+        }
+      }
+      if (first == null) return;
       IsoContactBean isoContactBean =
           IsoContactBean(state: IsoTaskState.APPEND, data: first);
       sendPortToChild?.send(isoContactBean);
