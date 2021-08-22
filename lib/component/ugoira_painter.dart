@@ -43,9 +43,15 @@ class UgoiraWidget extends StatefulWidget {
 }
 
 class _UgoiraWidgetState extends State<UgoiraWidget> with RouteAware {
+  Map<File, ui.Image> _map = Map();
+
   Future<ui.Image> _loadImage(File file) async {
+    if (_map.containsKey(file) && _map[file] != null) return _map[file]!;
     final data = await file.readAsBytes();
-    return await decodeImageFromList(data.buffer.asUint8List());
+    var image = await decodeImageFromList(data.buffer.asUint8List());
+    _map[file] = image;
+    if (_map.length > 10) _map.removeWhere((key, value) => key != file);
+    return image;
   }
 
   int point = 0;
@@ -102,8 +108,9 @@ class _UgoiraWidgetState extends State<UgoiraWidget> with RouteAware {
       });
     } else
       return;
-    sleep(Duration(milliseconds: duration));
-    if (mounted && !stopPainting) start();
+    Future.delayed(Duration(milliseconds: duration), () {
+      if (mounted && !stopPainting) start();
+    });
   }
 
   @override

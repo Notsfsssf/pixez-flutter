@@ -72,50 +72,69 @@ class MainActivity : FlutterActivity() {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
         if (needHint)
-            Toast.makeText(context, getString(R.string.choose_a_suitable_image_storage_directory), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                getString(R.string.choose_a_suitable_image_storage_directory),
+                Toast.LENGTH_SHORT
+            ).show()
         startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
     }
 
     private fun isFileExist(name: String): Boolean {
-        if (saveMode == 0) {
-            return exist(name)
-        } else if (saveMode == 2) {
-            return File("$helplessPath/$name").exists()
-        }
-        val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }.first().uri)!!
-        if (name.contains("/")) {
-            val names = name.split("/")
-            if (names.size >= 2) {
-                val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
-                val folderName = names.first()
-                val fName = names.last()
-                val dirId = splicingUrl(treeId, folderName)
-                val dirUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
-                val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
-                return if (dirDocument == null || !dirDocument.exists()) {
-                    false
-                } else if (dirDocument.isFile) {
-                    dirDocument.delete()
-                    false
-                } else {
-                    val fileId = splicingUrl(dirId, fName)
-                    val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
-                    val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-                    targetFile != null && targetFile.exists()
+        when (saveMode) {
+            0 -> {
+                return exist(name)
+            }
+            2 -> {
+                return File("$helplessPath/$name").exists()
+            }
+            else -> {
+                val treeDocument = DocumentFile.fromTreeUri(
+                    this@MainActivity,
+                    contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+                        .first().uri
+                )!!
+                if (name.contains("/")) {
+                    val names = name.split("/")
+                    if (names.size >= 2) {
+                        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+                        val folderName = names.first()
+                        val fName = names.last()
+                        val dirId = splicingUrl(treeId, folderName)
+                        val dirUri =
+                            DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
+                        val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
+                        return if (dirDocument == null || !dirDocument.exists()) {
+                            false
+                        } else if (dirDocument.isFile) {
+                            dirDocument.delete()
+                            false
+                        } else {
+                            val fileId = splicingUrl(dirId, fName)
+                            val fileUri =
+                                DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+                            val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                            targetFile != null && targetFile.exists()
+                        }
+                    } else {
+                        return false
+                    }
                 }
-            } else {
-                return false
+                val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+                val fileId = splicingUrl(treeId, name)
+                val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+                val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                return targetFile != null && targetFile.exists()
             }
         }
-        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
-        val fileId = splicingUrl(treeId, name)
-        val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
-        val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-        return targetFile != null && targetFile.exists()
     }
 
     private fun writeFileUri(fileName: String, clearOld: Boolean = false): Uri? {
-        val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith("jpeg", ignoreCase = true)) {
+        val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith(
+                "jpeg",
+                ignoreCase = true
+            )
+        ) {
             "image/jpg"
         } else {
             if (fileName.endsWith("png")) {
@@ -125,14 +144,14 @@ class MainActivity : FlutterActivity() {
             }
         }
         val permissions =
-                contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+            contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
         if (permissions.isEmpty()) {
             choiceFolder()
             return null
         }
         val parentUri =
-                permissions
-                        .first().uri
+            permissions
+                .first().uri
         val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
         val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
 
@@ -178,19 +197,26 @@ class MainActivity : FlutterActivity() {
         contentResolver.openOutputStream(uri, "w")?.write(data)
     }
 
+    private val savingPools = Collections.synchronizedList(arrayListOf<String>())
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        sharedPreferences =
+            context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
         saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
         Weiss.bindChannel(flutterEngine)
         CustomTab.bindChannel(this, flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SUPPORTER_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            SUPPORTER_CHANNEL
+        ).setMethodCallHandler { call, result ->
             if (call.method == "process_text") {
                 try {
-                    val queryIntentActivities = packageManager.queryIntentActivities(Intent().apply {
-                        type = "text/plain"
-                    }, 0)
+                    val queryIntentActivities =
+                        packageManager.queryIntentActivities(Intent().apply {
+                            type = "text/plain"
+                        }, 0)
                     for (resolveInfo: ResolveInfo in queryIntentActivities) {
                         if (resolveInfo.activityInfo.packageName.contains("com.google.android.apps.translate")) {
                             result.success(true)
@@ -205,7 +231,7 @@ class MainActivity : FlutterActivity() {
             if (call.method == "process") {
                 val text = call.argument<String>("text")
                 val intent = Intent()
-                        .setType("text/plain")
+                    .setType("text/plain")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     intent.action = Intent.ACTION_PROCESS_TEXT
                     intent.putExtra(Intent.EXTRA_PROCESS_TEXT, text)
@@ -221,78 +247,90 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            CHANNEL
+        ).setMethodCallHandler { call, result ->
             if (call.method == "save") {
                 val data = call.argument<ByteArray>("data")!!
                 val name = call.argument<String>("name")!!
                 var clearOld = call.argument<Boolean>("clear_old")
                 saveMode = call.argument<Int>("save_mode") ?: 0
-
                 if (clearOld == null)
                     clearOld = false
+                if (savingPools.contains(name))
+                    return@setMethodCallHandler;
+                savingPools.add(name)
                 GlobalScope.launch(Dispatchers.Main) {
-                    when (saveMode) {
-                        0 -> {
-                            val path = withContext(Dispatchers.IO) {
-                                save(data, name)
+                    try {
+                        when (saveMode) {
+                            0 -> {
+                                val path = withContext(Dispatchers.IO) {
+                                    save(data, name)
+                                }
+                                MediaScannerConnection.scanFile(
+                                    this@MainActivity,
+                                    arrayOf(path),
+                                    arrayOf(
+                                        MimeTypeMap.getSingleton()
+                                            .getMimeTypeFromExtension(File(path).extension)
+                                    )
+                                ) { _, _ ->
+                                }
                             }
-                            MediaScannerConnection.scanFile(
-                                this@MainActivity,
-                                arrayOf(path),
-                                arrayOf(
-                                    MimeTypeMap.getSingleton()
-                                        .getMimeTypeFromExtension(File(path).extension)
-                                )
-                            ) { _, _ ->
-                            }
-                        }
-                        2 -> {
-                            if (helplessPath == null) {
-                                helplessPath = sharedPreferences.getString("flutter.store_path", null)
+                            2 -> {
                                 if (helplessPath == null) {
-                                    helplessPath = "/storage/emulated/0/Pictures/pixez"
+                                    helplessPath =
+                                        sharedPreferences.getString("flutter.store_path", null)
+                                    if (helplessPath == null) {
+                                        helplessPath = "/storage/emulated/0/Pictures/pixez"
+                                    }
                                 }
+                                val fullPath = "$helplessPath/$name"
+                                val file = File(fullPath)
+                                withContext(Dispatchers.IO) {
+                                    val dirPath = file.parent
+                                    val dirFile = File(dirPath)
+                                    if (!dirFile.exists()) {
+                                        dirFile.mkdirs()
+                                    }
+                                    if (!file.exists()) {
+                                        file.createNewFile()
+                                    }
+                                    file.outputStream().write(data)
+                                    if (clearOld && name.contains("_p0")) {
+                                        val oldFileName = name.replace("_p0", "")
+                                        val oldFile = File("$helplessPath", oldFileName)
+                                        if (oldFile.exists()) {
+                                            oldFile.delete()
+                                        }
+                                    }
+                                }
+                                MediaScannerConnection.scanFile(
+                                    this@MainActivity,
+                                    arrayOf(file.path),
+                                    arrayOf(
+                                        MimeTypeMap.getSingleton()
+                                            .getMimeTypeFromExtension(File(file.path).extension)
+                                    )
+                                ) { _, _ ->
+                                }
+
                             }
-                            val fullPath = "$helplessPath/$name"
-                            val file = File(fullPath)
-                            withContext(Dispatchers.IO) {
-                                val dirPath = file.parent
-                                val dirFile = File(dirPath)
-                                if (!dirFile.exists()) {
-                                    dirFile.mkdirs()
-                                }
-                                if (!file.exists()) {
-                                    file.createNewFile()
-                                }
-                                file.outputStream().write(data)
-                                if (clearOld && name.contains("_p0")) {
-                                    val oldFileName = name.replace("_p0", "")
-                                    val oldFile = File("$helplessPath", oldFileName)
-                                    if (oldFile.exists()) {
-                                        oldFile.delete()
+                            1 -> {
+                                withContext(Dispatchers.IO) {
+                                    writeFileUri(name, clearOld)?.let {
+                                        wr(data, it)
                                     }
                                 }
                             }
-                            MediaScannerConnection.scanFile(
-                                this@MainActivity,
-                                arrayOf(file.path),
-                                arrayOf(
-                                    MimeTypeMap.getSingleton()
-                                        .getMimeTypeFromExtension(File(file.path).extension)
-                                )
-                            ) { _, _ ->
-                            }
-
                         }
-                        1 -> {
-                            withContext(Dispatchers.IO) {
-                                writeFileUri(name, clearOld)?.let {
-                                    wr(data, it)
-                                }
-                            }
-                        }
+                        result.success(true)
+                    } catch (e: Throwable) {
+                        Log.d("x=====", "${e.localizedMessage}")
+                    } finally {
+                        savingPools.remove(name)
                     }
-                    result.success(true)
                 }
             }
             if (call.method == "get_path") {
@@ -309,7 +347,10 @@ class MainActivity : FlutterActivity() {
                 saveMode = call.argument<Int>("save_mode") ?: 0
                 GlobalScope.launch(Dispatchers.Main) {
                     val isFileExist = withContext(Dispatchers.IO) {
-                        isFileExist(name)
+                        try {
+                            return@withContext isFileExist(name)
+                        } catch (e: Throwable) {
+                        }
                     }
                     result.success(isFileExist)
                 }
@@ -320,7 +361,10 @@ class MainActivity : FlutterActivity() {
                 pendingPickResult = result
             }
         }
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENCODE_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            ENCODE_CHANNEL
+        ).setMethodCallHandler { call, result ->
             if (call.method == "getBatteryLevel") {
                 val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
@@ -330,7 +374,11 @@ class MainActivity : FlutterActivity() {
                     withContext(Dispatchers.IO) {
                         encodeGif(name, path, delay, delayArray)
                     }
-                    Toast.makeText(this@MainActivity, getString(R.string.encode_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.encode_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     result.success(true)
                 }
             }
@@ -338,8 +386,8 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onActivityResult(
-            requestCode: Int, resultCode: Int,
-            data: Intent?
+        requestCode: Int, resultCode: Int,
+        data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -359,7 +407,11 @@ class MainActivity : FlutterActivity() {
                     data?.data?.also { uri ->
                         Log.d("flutter.store_path", uri.toString())
                         if (uri.toString().toLowerCase(Locale.ROOT).contains("download")) {
-                            Toast.makeText(applicationContext, getString(R.string.do_not_choice_download_folder_message), Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.do_not_choice_download_folder_message),
+                                Toast.LENGTH_LONG
+                            ).show()
                             choiceFolder(needHint = false)
                             return
                         }
@@ -376,7 +428,11 @@ class MainActivity : FlutterActivity() {
                         pendingPickResult = null
                     }
                 } else {
-                    Toast.makeText(applicationContext, getString(R.string.failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     pendingPickResult?.success(false)
                     pendingPickResult = null
                 }
@@ -391,7 +447,8 @@ class MainActivity : FlutterActivity() {
             helplessPath = sharedPreferences.getString("flutter.store_path", "")
             return helplessPath
         }
-        val list = contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+        val list =
+            contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
         if (list.isEmpty()) {
             return null
         }
@@ -402,13 +459,15 @@ class MainActivity : FlutterActivity() {
 
         val file = File(path)
         file.let {
-            val tempFile = File(applicationContext.cacheDir, "${
-            if (name.contains("/")) {
-                name.split("/").last()
-            } else {
-                name
-            }
-            }.gif")
+            val tempFile = File(
+                applicationContext.cacheDir, "${
+                    if (name.contains("/")) {
+                        name.split("/").last()
+                    } else {
+                        name
+                    }
+                }.gif"
+            )
             try {
                 val fileName = "${name}.gif"
                 if (saveMode == 0) {
@@ -432,7 +491,12 @@ class MainActivity : FlutterActivity() {
                 arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
                 val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
                 val encoder = GifEncoder()
-                encoder.init(bitmap.width, bitmap.height, tempFile.path, GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY)
+                encoder.init(
+                    bitmap.width,
+                    bitmap.height,
+                    tempFile.path,
+                    GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY
+                )
                 for (i in arrayFile.indices) {
                     val trueDelay = if (i < delayArray.size) {
                         delayArray[i]
@@ -447,12 +511,12 @@ class MainActivity : FlutterActivity() {
                 if (saveMode == 0) {
                     val path = save(tempFile.readBytes(), fileName)
                     MediaScannerConnection.scanFile(
-                            this@MainActivity,
-                            arrayOf(path),
-                            arrayOf(
-                                    MimeTypeMap.getSingleton()
-                                            .getMimeTypeFromExtension(File(path).extension)
-                            )
+                        this@MainActivity,
+                        arrayOf(path),
+                        arrayOf(
+                            MimeTypeMap.getSingleton()
+                                .getMimeTypeFromExtension(File(path).extension)
+                        )
                     ) { _, _ ->
                     }
                     return
@@ -464,18 +528,19 @@ class MainActivity : FlutterActivity() {
                     }
                     tempFile.copyTo(target, overwrite = true)
                     MediaScannerConnection.scanFile(
-                            this@MainActivity,
-                            arrayOf(target.path),
-                            arrayOf(
-                                    MimeTypeMap.getSingleton()
-                                            .getMimeTypeFromExtension(target.extension)
-                            )
+                        this@MainActivity,
+                        arrayOf(target.path),
+                        arrayOf(
+                            MimeTypeMap.getSingleton()
+                                .getMimeTypeFromExtension(target.extension)
+                        )
                     ) { _, _ ->
                     }
                     return
                 }
                 val uri = writeFileUri(fileName)
-                contentResolver.openOutputStream(uri!!, "w")?.write(tempFile.inputStream().readBytes())
+                contentResolver.openOutputStream(uri!!, "w")
+                    ?.write(tempFile.inputStream().readBytes())
             } catch (e: Exception) {
                 e.printStackTrace()
                 tempFile.delete()
