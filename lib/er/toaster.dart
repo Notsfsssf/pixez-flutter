@@ -1,9 +1,9 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 
-class Toaster{
-  static downloadOk(String text){
-      BotToast.showCustomText(
+class Toaster {
+  static downloadOk(String text) {
+    BotToast.showCustomText(
         onlyOne: true,
         duration: Duration(seconds: 1),
         toastBuilder: (textCancel) => Align(
@@ -12,23 +12,23 @@ class Toaster{
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8.0),
-                        child: Text(text),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Text(text),
                     )
                   ],
                 ),
               ),
             ));
   }
-  static showText(String text){
-    
-  }
+
+  static showText(String text) {}
 }

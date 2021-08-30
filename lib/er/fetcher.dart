@@ -49,13 +49,13 @@ class IsoProgressBean {
 }
 
 class TaskBean {
-  final String? url;
-  final Illusts? illusts;
-  final String? fileName;
-  final String? savePath;
-  final String? source;
-  final String? host;
-  final bool? byPass;
+  String? url;
+  Illusts? illusts;
+  String? fileName;
+  String? savePath;
+  String? source;
+  String? host;
+  bool? byPass;
 
   TaskBean(
       {required this.url,
@@ -162,6 +162,9 @@ class Fetcher {
         }
       }
       if (first == null) return;
+      first.byPass = userSetting.disableBypassSni;
+      first.source = userSetting.pictureSource;
+      first.host = splashStore.host;
       IsoContactBean isoContactBean =
           IsoContactBean(state: IsoTaskState.APPEND, data: first);
       sendPortToChild?.send(isoContactBean);
@@ -258,7 +261,13 @@ entryPoint(SendPort sendPort) {
                 taskBean.fileName!;
             String trueUrl = taskBean.byPass == true
                 ? taskBean.url!
-                : (Uri.parse(taskBean.url!).replace(host: inHost)).toString();
+                : (Uri.parse(taskBean.url!).replace(
+                        host: inSource == ImageHost || inSource == ImageSHost
+                            ? inHost
+                            : inSource))
+                    .toString();
+            LPrinter.d(
+                "append ======= host:${inHost} source:${inSource} bypass:${inBypass} ${trueUrl}");
             isolateDio.options.headers['Host'] = taskBean.source == ImageHost
                 ? Uri.parse(taskBean.url!).host
                 : taskBean.source;
