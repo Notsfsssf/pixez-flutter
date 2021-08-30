@@ -32,20 +32,24 @@ class JobPage extends StatefulWidget {
   _JobPageState createState() => _JobPageState();
 }
 
-class _JobPageState extends State<JobPage> {
+class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   List<TaskPersist> _list = [];
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
   Timer? _timer;
   String? cachePath;
-
+  late AnimationController rotationController;
   @override
   void dispose() {
+    rotationController.dispose();
     _timer?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
+    rotationController = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
+
     super.initState();
     initMethod();
   }
@@ -121,6 +125,8 @@ class _JobPageState extends State<JobPage> {
     }
   }
 
+  bool asc = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,6 +135,20 @@ class _JobPageState extends State<JobPage> {
         backgroundColor: Colors.transparent,
         title: Text(I18n.of(context).task_progress),
         actions: [
+          RotationTransition(
+            turns: Tween(begin: 0.0, end: 0.5).animate(rotationController),
+            child: IconButton(
+                onPressed: () {
+                  if (asc)
+                    rotationController.forward();
+                  else
+                    rotationController.reverse();
+                  setState(() {
+                    asc = !asc;
+                  });
+                },
+                icon: Icon(Icons.sort)),
+          ),
           buildIconButton(context),
         ],
       ),
@@ -224,7 +244,8 @@ class _JobPageState extends State<JobPage> {
   }
 
   Widget _body() {
-    if (_list.isEmpty)
+    final trueList = asc ? _list.reversed.toList() : _list;
+    if (trueList.isEmpty)
       return Container(
         child: Center(
           child: Text("[ ]"),
@@ -232,7 +253,7 @@ class _JobPageState extends State<JobPage> {
       );
     return ListView.builder(
       itemBuilder: (context, index) {
-        TaskPersist taskPersist = _list[index];
+        TaskPersist taskPersist = trueList[index];
         JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
         if (currentIndex != 0) {
           if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
@@ -359,7 +380,7 @@ class _JobPageState extends State<JobPage> {
           ),
         );
       },
-      itemCount: _list.length,
+      itemCount: trueList.length,
     );
   }
 
