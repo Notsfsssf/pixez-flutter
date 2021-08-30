@@ -22,7 +22,7 @@
   "choose_directory": "Выбрать папку",
   "clear": "Очистить",
   "clear_all_cache": "Очистить весь кэш",
-  "clear_completed_tasks": "Очистить выполненные задачи",
+  "clear_completed_tasks": "Очистить выполненное",
   "clearn_cache": "Очистить кэш",
   "clearn_cache_hint": "Попробуйте это, когда у вас проблемы с воспроизведением гифок",
   "complete": "Завершено",
@@ -134,7 +134,7 @@
   "report": "Пожаловаться",
   "report_message": "Жалоба будет рассмотрена, после чего мы удалим неприятный контент.",
   "retry": "Повторить",
-  "retry_failed_tasks": "Повторить",
+  "retry_failed_tasks": "Повторить проваленное",
   "right_now_message": "Дизайнер, нарисовавший иконку PixEz",
   "running": "В процессе",
   "save": "Сохранить",
@@ -148,7 +148,7 @@
   "setting": "Настройки",
   "share": "Поделиться",
   "share_this_app_link": "Поделиться приложением с друзьями",
-  "shield_message": "{name} был забанен",
+  "shield_message": "{name} был заблокирован",
   "@shield_message": {
     "description": "A message with a parameter",
     "placeholders": {
@@ -158,16 +158,16 @@
       }
     }
   },
-  "shielding_settings": "Настройки банов",
+  "shielding_settings": "Настройки блокировок",
   "skimige_message": "Автор, написавший замечательный README",
   "skin": "Скины",
   "skip": "Пропустить",
   "source": "Источник",
   "spotlight": "Лучшее",
   "support": "Поддержать",
-  "support_message": "Отзывы и содействия приветствуются :)",
+  "support_message": "Отзыв и поддержка приветствуется :)",
   "tag": "Тег",
-  "task_progress": "Прогресс",
+  "task_progress": "Задачи",
   "terms": "Условия использования",
   "thanks": "Спасибо",
   "theme": "Тема",
@@ -205,7 +205,7 @@
   "clear_search_tag_history": "Очистить историю поиска",
   "link": "Ссылка",
   "step": "Шаг",
-  "special_shaped_screen": "Заострить экран",
+  "special_shaped_screen": "Непрозрачный статусбар",
   "platform_special_setting": "Сиситемные настройки",
   "system": "Системный",
   "light": "Светлый",
@@ -215,8 +215,8 @@
   "old_way": "Традиционный",
   "permission_denied": "Разрешение не получено",
   "old_way_message": "Чтобы использовать этот метод, вам нужно разрешить PixEz доступ к вашим файлам и выбрать папку",
-  "return_again_to_exit": "Повторить для выхода",
-  "save_format_lose_part_warning": "Формат сохранения должен содержать{part}, в противном случае картинки будут сохранены неправильно！",
+  "return_again_to_exit": "Подтверждение выхода",
+  "save_format_lose_part_warning": "Формат сохранения должен содержать {part}, в противном случае картинки будут сохранены неправильно!",
   "@save_format_lose_part_warning": {
     "description": "A message with a parameter",
     "placeholders": {
@@ -233,7 +233,7 @@
   "clear_old_format_file_message": "без _p0",
   "login_error_message": "Неверное имя или пароль",
   "translate": "Перевод",
-  "retry_seed_task": "Повторить начальную задачу",
+  "retry_seed_task": "Повторить задачи",
   "manga_detail_page_quality": "Качество манги (Информация)",
   "follow_after_star": "Отслеживать при добавлении в избранное",
   "default_title": "По умолчанию",
@@ -244,7 +244,7 @@
   "media_hint": "Иллюстрации будут сохранены в альбоме",
   "copy": "Копировать",
   "view_replies": "Показать ответы",
-  "temporarily_visible": "temporarily visible",
-  "unclassified":"Unclassified",
-  "max_download_task_running_count": "Max download task running count"
+  "temporarily_visible": "Временно показано",
+  "unclassified":"Неклассифицированный",
+  "max_download_task_running_count": "Максимальное количество запущенных задач"
 }
