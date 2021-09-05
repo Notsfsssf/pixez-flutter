@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/component/sort_group.dart';
@@ -44,7 +45,7 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
-  late FutureGet futureGet;
+  late LightSource futureGet;
   String restrict = 'public';
   late RefreshController _refreshController;
   late StreamSubscription<String> subscription;
@@ -53,7 +54,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
   void initState() {
     _refreshController = RefreshController();
     restrict = widget.restrict;
-    futureGet = () => apiClient.getBookmarksIllust(widget.id, restrict, null);
+    futureGet = ApiForceSource(
+        futureGet: (e) =>
+            apiClient.getBookmarksIllust(widget.id, restrict, null));
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "302") {
@@ -107,13 +110,15 @@ class _BookmarkPageState extends State<BookmarkPage> {
             onChange: (index) {
               if (index == 0)
                 setState(() {
-                  futureGet = () => apiClient.getBookmarksIllust(
-                      widget.id, restrict = 'public', null);
+                  futureGet = ApiForceSource(
+                      futureGet: (bool e) => apiClient.getBookmarksIllust(
+                          widget.id, restrict = 'public', null));
                 });
               if (index == 1)
                 setState(() {
-                  futureGet = () => apiClient.getBookmarksIllust(
-                      widget.id, restrict = 'private', null);
+                  futureGet = ApiForceSource(
+                      futureGet: (bool e) => apiClient.getBookmarksIllust(
+                          widget.id, restrict = 'private', null));
                 });
             },
           ),
@@ -127,8 +132,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   String? tag = result['tag'];
                   String restrict = result['restrict'];
                   setState(() {
-                    futureGet = () =>
-                        apiClient.getBookmarksIllust(widget.id, restrict, tag);
+                    futureGet = ApiForceSource(
+                        futureGet: (bool e) => apiClient.getBookmarksIllust(
+                            widget.id, restrict, tag));
                   });
                 }
               },

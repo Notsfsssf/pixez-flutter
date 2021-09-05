@@ -123,7 +123,8 @@ class _PreviewPageState extends State<PreviewPage> {
   @override
   void initState() {
     _lightingStore = LightingStore(
-        () => apiClient.walkthroughIllusts(), _easyRefreshController);
+        ApiSource(futureGet: () => apiClient.walkthroughIllusts()),
+        _easyRefreshController);
     super.initState();
   }
 

@@ -63,7 +63,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
     _lightingStore = widget.lightingStore ??
-        LightingStore(() => apiClient.getRecommend(), _easyRefreshController);
+        LightingStore(
+            ApiForceSource(futureGet: (e) => apiClient.getRecommend()),
+            _easyRefreshController);
     if (widget.lightingStore != null) {
       _lightingStore.controller = _easyRefreshController;
     }

@@ -36,14 +36,16 @@ class NewIllustPage extends StatefulWidget {
 }
 
 class _NewIllustPageState extends State<NewIllustPage> {
-  late FutureGet futureGet;
+  late ApiForceSource futureGet;
   late RefreshController _refreshController;
   late StreamSubscription<String> subscription;
 
   @override
   void initState() {
     _refreshController = RefreshController();
-    futureGet = () => apiClient.getFollowIllusts(widget.restrict);
+    futureGet = ApiForceSource(
+        futureGet: (e) =>
+            apiClient.getFollowIllusts(widget.restrict, force: e));
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "301") {
@@ -77,15 +79,21 @@ class _NewIllustPageState extends State<NewIllustPage> {
               onChange: (index) {
                 if (index == 0)
                   setState(() {
-                    futureGet = () => apiClient.getFollowIllusts('all');
+                    futureGet = ApiForceSource(
+                        futureGet: (e) =>
+                            apiClient.getFollowIllusts('all', force: e));
                   });
                 if (index == 1)
                   setState(() {
-                    futureGet = () => apiClient.getFollowIllusts('public');
+                    futureGet = ApiForceSource(
+                        futureGet: (e) =>
+                            apiClient.getFollowIllusts('public', force: e));
                   });
                 if (index == 2)
                   setState(() {
-                    futureGet = () => apiClient.getFollowIllusts('private');
+                    futureGet = ApiForceSource(
+                        futureGet: (e) =>
+                            apiClient.getFollowIllusts('private', force: e));
                   });
               },
               children: [
@@ -123,8 +131,9 @@ class _NewIllustPageState extends State<NewIllustPage> {
                             onTap: () {
                               Navigator.of(context).pop();
                               setState(() {
-                                futureGet =
-                                    () => apiClient.getFollowIllusts('all');
+                                futureGet = ApiForceSource(
+                                    futureGet: (e) => apiClient
+                                        .getFollowIllusts('all', force: e));
                               });
                             },
                           ),
@@ -133,8 +142,9 @@ class _NewIllustPageState extends State<NewIllustPage> {
                             onTap: () {
                               Navigator.of(context).pop();
                               setState(() {
-                                futureGet =
-                                    () => apiClient.getFollowIllusts('public');
+                                futureGet = ApiForceSource(
+                                    futureGet: (e) => apiClient
+                                        .getFollowIllusts('public', force: e));
                               });
                             },
                           ),
@@ -143,8 +153,9 @@ class _NewIllustPageState extends State<NewIllustPage> {
                             onTap: () {
                               Navigator.of(context).pop();
                               setState(() {
-                                futureGet =
-                                    () => apiClient.getFollowIllusts('private');
+                                futureGet = ApiForceSource(
+                                    futureGet: (e) => apiClient
+                                        .getFollowIllusts('private', force: e));
                               });
                             },
                           ),

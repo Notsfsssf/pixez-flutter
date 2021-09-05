@@ -175,9 +175,9 @@ class ApiClient {
   //
   // @GET("/v1/user/recommended?filter=for_android")
   // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
-  Future<Response> getUserRecommended() async {
+  Future<Response> getUserRecommended({bool force = false}) async {
     return httpClient.get("/v1/user/recommended?filter=for_android",
-        options: buildCacheOptions(Duration(minutes: 2)));
+        options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force));
   }
 
   Future<Response> getUser(int id) async {
@@ -240,19 +240,21 @@ class ApiClient {
     var a = httpClient.options.baseUrl;
     String finalUrl = url.replaceAll(
         "app-api.pixiv.net", a.replaceAll(a, a.replaceFirst("https://", "")));
-    return httpClient.get(finalUrl);
+    return httpClient.get(finalUrl,
+        options: buildCacheOptions(Duration(seconds: 1), forceRefresh: true));
   }
 
 /*  @GET("/v1/illust/ranking?filter=for_android")
   fun getIllustRanking(@Header("Authorization") paramString1: String, @Query("mode") paramString2: String, @Query("date") paramString3: String?): Observable<IllustNext>*/
-  Future<Response> getIllustRanking(String mode, date) async {
+  Future<Response> getIllustRanking(String mode, date,
+      {bool force = false}) async {
     return httpClient.get(
       "/v1/illust/ranking?filter=for_android",
       queryParameters: notNullMap({
         "mode": mode,
         "date": date,
       }),
-      options: buildCacheOptions(Duration(hours: 1)),
+      options: buildCacheOptions(Duration(hours: 1), forceRefresh: force),
     );
   }
 
@@ -298,11 +300,11 @@ class ApiClient {
 
   //   @GET("/v2/illust/follow")
   // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
-  Future<Response> getFollowIllusts(String restrict) {
+  Future<Response> getFollowIllusts(String restrict, {bool force = false}) {
     return httpClient.get(
       "/v2/illust/follow",
       queryParameters: {"restrict": restrict},
-      options: buildCacheOptions(Duration(minutes: 2)),
+      options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force),
     );
   }
 
@@ -327,10 +329,10 @@ class ApiClient {
 
   //   @GET("/v1/trending-tags/illust?filter=for_android")
   // fun getIllustTrendTags(@Header("Authorization") paramString: String): Observable<TrendingtagResponse>
-  Future<Response> getIllustTrendTags() async {
+  Future<Response> getIllustTrendTags({bool force = false}) async {
     return httpClient.get(
       "/v1/trending-tags/illust?filter=for_android",
-      options: buildCacheOptions(Duration(hours: 1)),
+      options: buildCacheOptions(Duration(hours: 1), forceRefresh: force),
     );
   }
 
@@ -396,9 +398,10 @@ class ApiClient {
   @GET("/v2/illust/related?filter=for_android")
   fun getIllustRecommended(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<RecommendResponse>
 */
-  Future<Response> getIllustRelated(int illust_id) async =>
+  Future<Response> getIllustRelated(int illust_id,
+          {bool force = false}) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
-          options: buildCacheOptions(Duration(days: 1)),
+          options: buildCacheOptions(Duration(days: 1), forceRefresh: force),
           queryParameters: notNullMap({"illust_id": illust_id}));
 
   //          @GET("/v2/illust/bookmark/detail")
@@ -435,11 +438,11 @@ class ApiClient {
 
   //   @GET("/v1/spotlight/articles?filter=for_android")
   // fun getPixivisionArticles(@Header("Authorization") paramString1: String, @Query("category") paramString2: String): Observable<SpotlightResponse>
-  Future<Response> getSpotlightArticles(String category) {
+  Future<Response> getSpotlightArticles(String category, {bool force = false}) {
     return httpClient.get(
       "/v1/spotlight/articles?filter=for_android",
       queryParameters: {"category": category},
-      options: buildCacheOptions(Duration(hours: 23)),
+      options: buildCacheOptions(Duration(hours: 23), forceRefresh: force),
     );
   }
 

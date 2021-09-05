@@ -31,9 +31,32 @@ part 'lighting_store.g.dart';
 class LightingStore = _LightingStoreBase with _$LightingStore;
 
 typedef Future<Response> FutureGet();
+typedef Future<Response> FutureRefreshGet(bool force);
+
+abstract class LightSource {}
+
+class ApiSource extends LightSource {
+  FutureGet futureGet;
+
+  ApiSource({required this.futureGet}) : super();
+
+  Future<Response> fetch() {
+    return futureGet();
+  }
+}
+
+class ApiForceSource extends LightSource {
+  FutureRefreshGet futureGet;
+
+  ApiForceSource({required this.futureGet}) : super();
+
+  Future<Response> fetch(bool force) {
+    return futureGet(force);
+  }
+}
 
 abstract class _LightingStoreBase with Store {
-  FutureGet source;
+  late LightSource source;
   String? nextUrl;
   RefreshController? controller;
   final Function? onChange;
@@ -77,14 +100,20 @@ abstract class _LightingStoreBase with Store {
   }
 
   @action
-  Future<bool> fetch({String? url}) async {
+  Future<bool> fetch({String? url, bool force = false}) async {
     nextUrl = null;
     errorMessage = null;
     controller?.footerMode?.value = LoadStatus.idle;
     controller?.headerMode?.value = RefreshStatus.refreshing;
     try {
-      final result = await source();
-      Recommend recommend = Recommend.fromJson(result.data);
+      Response? result = null;
+      if (source is ApiSource) {
+        result = await (source as ApiSource).fetch();
+      } else if (source is ApiForceSource) {
+        result = await (source as ApiForceSource).fetch(force);
+      }
+
+      Recommend recommend = Recommend.fromJson(result!.data);
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
@@ -113,7 +142,7 @@ abstract class _LightingStoreBase with Store {
   }
 
   @action
-  update(FutureGet futureGet) async {
+  update(LightSource futureGet) async {
     source = futureGet;
     await fetch();
   }

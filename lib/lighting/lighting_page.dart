@@ -31,7 +31,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
-  final FutureGet source;
+  final LightSource source;
   final Widget? header;
   final bool? isNested;
   final RefreshController? refreshController;
@@ -57,7 +57,7 @@ class _LightingListState extends State<LightingList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
-      _store.fetch();
+      _store.fetch(force: true);
       if (!_isNested && _store.errorMessage == null)
         _refreshController.position?.jumpTo(0.0);
     }
@@ -170,7 +170,7 @@ class _LightingListState extends State<LightingList> {
           footer: _buildCustomFooter(),
           controller: _refreshController,
           onRefresh: () {
-            _store.fetch();
+            _store.fetch(force: true);
           },
           onLoading: () {
             _store.fetchNext();
@@ -219,7 +219,7 @@ class _LightingListState extends State<LightingList> {
                 ),
                 TextButton(
                     onPressed: () {
-                      _store.fetch();
+                      _store.fetch(force: true);
                     },
                     child: Text(I18n.of(context).retry)),
                 Padding(
@@ -259,7 +259,7 @@ class _LightingListState extends State<LightingList> {
         footer: _buildCustomFooter(),
         controller: _refreshController,
         onRefresh: () {
-          _store.fetch();
+          _store.fetch(force: true);
         },
         onLoading: () {
           _store.fetchNext();

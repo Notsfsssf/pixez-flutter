@@ -270,6 +270,8 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(12))),
           child: OpenContainer(
+            openElevation: 0.0,
+            closedElevation: 0.0,
             openBuilder: (context, closedContainer) {
               return IllustLightingPage(id: taskPersist.illustId);
             },

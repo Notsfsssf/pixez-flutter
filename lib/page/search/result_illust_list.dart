@@ -40,14 +40,15 @@ class ResultIllustList extends StatefulWidget {
 
 class _ResultIllustListState extends State<ResultIllustList> {
   late ResultIllustStore resultIllustStore;
-  late FutureGet futureGet;
+  late ApiForceSource futureGet;
   late RefreshController _refreshController;
   late StreamSubscription<String> listen;
 
   @override
   void initState() {
     _refreshController = RefreshController();
-    futureGet = () => apiClient.getSearchIllust(widget.word);
+    futureGet = ApiForceSource(
+        futureGet: (e) => apiClient.getSearchIllust(widget.word));
     super.initState();
     listen = topStore.topStream.listen((event) {
       if (event == "401") {
@@ -184,12 +185,13 @@ class _ResultIllustListState extends State<ResultIllustList> {
                     TextButton(
                         onPressed: () {
                           setState(() {
-                            futureGet = () => apiClient.getSearchIllust(
-                                widget.word,
-                                search_target: searchTarget,
-                                sort: selectSort,
-                                start_date: datePeriod.start,
-                                end_date: datePeriod.end);
+                            futureGet = ApiForceSource(
+                                futureGet: (bool e) =>
+                                    apiClient.getSearchIllust(widget.word,
+                                        search_target: searchTarget,
+                                        sort: selectSort,
+                                        start_date: datePeriod.start,
+                                        end_date: datePeriod.end));
                           });
                           Navigator.of(context).pop();
                         },
@@ -248,15 +250,18 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               onPressed: () {
                                 setState(() {
                                   if (starValue == 0)
-                                    futureGet = () => apiClient.getSearchIllust(
-                                        widget.word,
-                                        search_target: searchTarget,
-                                        sort: selectSort);
+                                    futureGet = ApiForceSource(
+                                        futureGet: (bool e) => apiClient
+                                            .getSearchIllust(widget.word,
+                                                search_target: searchTarget,
+                                                sort: selectSort));
                                   else
-                                    futureGet = () => apiClient.getSearchIllust(
-                                        '${widget.word} ${starNum[starValue.toInt()]}users入り',
-                                        search_target: searchTarget,
-                                        sort: selectSort);
+                                    futureGet = ApiForceSource(
+                                        futureGet: (bool e) =>
+                                            apiClient.getSearchIllust(
+                                                '${widget.word} ${starNum[starValue.toInt()]}users入り',
+                                                search_target: searchTarget,
+                                                sort: selectSort));
                                 });
                                 Navigator.of(context).pop();
                               },
@@ -300,8 +305,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                 if (accountStore.now!.isPremium == 0) {
                                   BotToast.showText(text: 'not premium');
                                   setState(() {
-                                    futureGet = () => apiClient
-                                        .getPopularPreview(widget.word);
+                                    futureGet = ApiForceSource(
+                                        futureGet: (bool e) => apiClient
+                                            .getPopularPreview(widget.word));
                                   });
                                   Navigator.of(context).pop();
                                   return;

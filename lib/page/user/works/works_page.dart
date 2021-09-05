@@ -33,11 +33,12 @@ class WorksPage extends StatefulWidget {
 }
 
 class _WorksPageState extends State<WorksPage> {
-  late FutureGet futureGet;
+  late LightSource futureGet;
 
   @override
   void initState() {
-    futureGet = () => apiClient.getUserIllusts(widget.id, 'illust');
+    futureGet = ApiForceSource(
+        futureGet: (bool e) => apiClient.getUserIllusts(widget.id, 'illust'));
     super.initState();
   }
 
@@ -67,7 +68,8 @@ class _WorksPageState extends State<WorksPage> {
       onChange: (index) {
         setState(() {
           now = index == 0 ? 'illust' : 'manga';
-          futureGet = () => apiClient.getUserIllusts(widget.id, now);
+          futureGet = ApiForceSource(
+              futureGet: (bool e) => apiClient.getUserIllusts(widget.id, now));
         });
       },
       children: [
