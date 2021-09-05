@@ -38,6 +38,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   Timer? _timer;
   String? cachePath;
   late AnimationController rotationController;
+
   @override
   void dispose() {
     rotationController.dispose();
@@ -272,22 +273,27 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
           child: OpenContainer(
             openElevation: 0.0,
             closedElevation: 0.0,
+            closedColor: Colors.transparent,
+            openColor: Colors.transparent,
             openBuilder: (context, closedContainer) {
               return IllustLightingPage(id: taskPersist.illustId);
             },
             closedBuilder: (context, openContainer) {
+              File targetFile = File("${cachePath}/${taskPersist.fileName}");
               return InkWell(
                 onTap: () {
                   openContainer();
                 },
                 child: Row(
                   children: [
-                    (taskPersist.status == 2 && cachePath != null)
+                    (taskPersist.status == 2 &&
+                            cachePath != null &&
+                            targetFile.existsSync())
                         ? Container(
                             height: 100,
                             width: 100,
                             child: Image.file(
-                              File("${cachePath!}/${taskPersist.fileName}"),
+                              targetFile,
                               fit: BoxFit.cover,
                             ),
                           )
@@ -308,7 +314,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                                 height: 100,
                                 width: 100,
                                 child: Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CircularProgressIndicator(value: 1.0,),
                                 ),
                               ),
                     Expanded(
