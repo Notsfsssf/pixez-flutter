@@ -25,8 +25,8 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/supportor_plugin.dart';
-import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SelectableHtml extends StatefulWidget {
   final String data;
@@ -119,6 +119,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                 } catch (e) {
                   Share.share(url);
                 }
+                return true;
               },
             ),
     );

@@ -19,7 +19,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';

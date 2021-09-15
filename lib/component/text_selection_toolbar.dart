@@ -18,7 +18,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pixez/supportor_plugin.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 const double _kHandleSize = 20.0;
 const double _kToolbarScreenPadding = 3.0;

@@ -28,7 +28,7 @@ import 'package:pixez/page/novel/user/novel_user_bookmark_page.dart';
 import 'package:pixez/page/novel/user/novel_user_work_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NovelUserPage extends StatefulWidget {
   final int id;

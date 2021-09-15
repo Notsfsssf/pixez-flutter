@@ -39,7 +39,7 @@ import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/works/works_page.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class UsersPage extends StatefulWidget {
   final int id;

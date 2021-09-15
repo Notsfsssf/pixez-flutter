@@ -42,7 +42,7 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class IllustLightingPage extends StatefulWidget {
   final int id;

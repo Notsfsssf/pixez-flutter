@@ -121,7 +121,7 @@ class _MyAppState extends State<MyApp> {
         title: 'PixEz',
         builder: BotToastInit(),
         themeMode: userSetting.themeMode,
-        theme: userSetting.themeData,
+        theme: ThemeData.light(),
         darkTheme: ThemeData.dark().copyWith(
             accentColor: userSetting.themeData.accentColor,
             scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,

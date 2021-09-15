@@ -29,7 +29,7 @@ import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NovelViewerPage extends StatefulWidget {
   final int id;

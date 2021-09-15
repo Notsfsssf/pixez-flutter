@@ -34,7 +34,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/iap_store.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Contributor {

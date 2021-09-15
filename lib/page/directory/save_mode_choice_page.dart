@@ -14,7 +14,7 @@
  */
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/constants.dart';
@@ -227,7 +227,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       print('Running on ${androidInfo.version.sdkInt}');
-      if (androidInfo.version.sdkInt > 29) {
+      if ((androidInfo.version.sdkInt ?? 0) > 29) {
         BotToast.showText(text: I18n.of(context).legacy_mode_warning);
       }
       await _helplessfun(context, isFirst: widget.isFirst);

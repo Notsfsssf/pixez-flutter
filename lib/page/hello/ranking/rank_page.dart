@@ -108,7 +108,6 @@ class _RankPageState extends State<RankPage>
             children: <Widget>[
               AppBar(
                 elevation: 0.0,
-                backgroundColor: Colors.transparent,
                 title: TabBar(
                   onTap: (i) => setState(() {
                     this.index = i;

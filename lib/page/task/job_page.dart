@@ -17,10 +17,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:animations/animations.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/sort_group.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/task_persist.dart';
@@ -292,9 +292,11 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                         ? Container(
                             height: 100,
                             width: 100,
-                            child: Image.file(
+                            child: ExtendedImage.file(
                               targetFile,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.scaleDown,
+                              cacheHeight: 100,
+                              cacheWidth: 100,
                             ),
                           )
                         : (jobEntity != null && jobEntity.status != 2)
@@ -314,7 +316,9 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                                 height: 100,
                                 width: 100,
                                 child: Center(
-                                  child: CircularProgressIndicator(value: 1.0,),
+                                  child: CircularProgressIndicator(
+                                    value: 1.0,
+                                  ),
                                 ),
                               ),
                     Expanded(
