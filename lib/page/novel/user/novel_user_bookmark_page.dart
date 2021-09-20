@@ -15,26 +15,37 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
-class NovelUserBookmarkPage extends HookWidget {
+class NovelUserBookmarkPage extends StatefulWidget {
   final int id;
   NovelUserBookmarkPage({required this.id});
+
+  @override
+  _NovelUserBookmarkPageState createState() => _NovelUserBookmarkPageState();
+}
+
+class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
+  late FutureGet futureGet;
+  String restrict = 'public';
+
+  @override
+  void initState() {
+    futureGet = () => apiClient.getUserBookmarkNovel(widget.id, restrict);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final restrict = useState<String>('public');
-    final futureGet = useState<FutureGet>(
-        () => apiClient.getUserBookmarkNovel(id, restrict.value));
     return Column(
       children: [
         Align(
           alignment: Alignment.centerRight,
-          child: int.parse(accountStore.now!.userId) == id
+          child: int.parse(accountStore.now!.userId) == widget.id
               ? IconButton(
                   icon: Icon(Icons.list),
                   onPressed: () {
@@ -47,15 +58,14 @@ class NovelUserBookmarkPage extends HookWidget {
         ),
         Expanded(
           child: NovelLightingList(
-            futureGet: futureGet.value,
+            futureGet: futureGet,
           ),
         ),
       ],
     );
   }
 
-  Future _buildShowModalBottomSheet(
-      BuildContext context, ValueNotifier<FutureGet> futureGet) {
+  Future _buildShowModalBottomSheet(BuildContext context, FutureGet futureGet) {
     return showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -68,16 +78,20 @@ class NovelUserBookmarkPage extends HookWidget {
                 ListTile(
                   title: Text(I18n.of(context).public),
                   onTap: () {
-                    futureGet.value =
-                        () => apiClient.getUserBookmarkNovel(id, 'public');
+                    setState(() {
+                      futureGet = () =>
+                          apiClient.getUserBookmarkNovel(widget.id, 'public');
+                    });
                     Navigator.of(context).pop();
                   },
                 ),
                 ListTile(
                   title: Text(I18n.of(context).private),
                   onTap: () {
-                    futureGet.value =
-                        () => apiClient.getUserBookmarkNovel(id, 'private');
+                    setState(() {
+                      futureGet = () =>
+                          apiClient.getUserBookmarkNovel(widget.id, 'private');
+                    });
                     Navigator.of(context).pop();
                   },
                 ),

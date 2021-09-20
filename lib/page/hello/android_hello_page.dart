@@ -87,7 +87,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       body: _buildPageContent(context),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).accentColor,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
           currentIndex: index,
           onTap: (index) {
             if (this.index == index) {

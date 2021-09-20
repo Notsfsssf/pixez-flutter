@@ -102,6 +102,12 @@ class _BookTagPageState extends State<BookTagPage>
               word: j,
             )
         ]),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Icon(Icons.close),
+        ),
         endDrawer: Drawer(
           child: ListView(
             children: [

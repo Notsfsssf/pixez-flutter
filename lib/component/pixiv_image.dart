@@ -17,7 +17,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -27,7 +26,7 @@ const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.cat";
 const ImageSHost = "s.pximg.net";
 
-class PixivImage extends HookWidget {
+class PixivImage extends StatefulWidget {
   final String url;
   final Widget? placeWidget;
   final bool fade;
@@ -46,14 +45,47 @@ class PixivImage extends HookWidget {
       this.host,
       this.width});
 
+  @override
+  _PixivImageState createState() => _PixivImageState();
+}
+
+class _PixivImageState extends State<PixivImage>
+    with SingleTickerProviderStateMixin {
+  late String url;
+  late AnimationController _controller;
   bool already = false;
+  bool? enableMemoryCache;
+  double? width;
+  double? height;
+  BoxFit? fit;
+  bool fade = true;
+  Widget? placeWidget;
 
   @override
-  Widget build(BuildContext context) {
-    final _controller = useAnimationController(
+  void initState() {
+    url = widget.url;
+    enableMemoryCache = widget.enableMemoryCache ?? true;
+    width = widget.width;
+    height = widget.height;
+    fit = widget.fit;
+    fade = widget.fade;
+    placeWidget = widget.placeWidget;
+    _controller = AnimationController(
+        vsync: this,
         duration: const Duration(milliseconds: 500),
         lowerBound: 0.2,
         upperBound: 1.0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ExtendedImage.network(
       url.toTrueUrl(),
       height: height,

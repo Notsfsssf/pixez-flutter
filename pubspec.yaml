@@ -44,7 +44,6 @@ dependencies:
   device_info_plus: ^2.1.0
   flutter_displaymode: ^0.3.2
   receive_sharing_intent: ^1.4.5
-  flutter_hooks: ^0.18.0
   pull_to_refresh: ^2.0.0
   extended_image: ^3.0.0
   flutter_colorpicker: ^0.6.0

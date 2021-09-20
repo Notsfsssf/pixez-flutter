@@ -363,13 +363,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
-  flutter_hooks:
-    dependency: "direct main"
-    description:
-      name: flutter_hooks
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.18.0"
   flutter_inapp_purchase:
     dependency: "direct main"
     description:

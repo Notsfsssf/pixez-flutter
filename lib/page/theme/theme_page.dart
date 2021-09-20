@@ -16,27 +16,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
-class ColorPickPage extends HookWidget {
+class ColorPickPage extends StatefulWidget {
   final Color initialColor;
 
   ColorPickPage({required this.initialColor});
 
-  Color _stringToColor(String colorString) {
-    String valueString =
-        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
-    int value = int.parse(valueString, radix: 16);
-    Color otherColor = new Color(value);
-    return otherColor;
+  @override
+  _ColorPickPageState createState() => _ColorPickPageState();
+}
+
+class _ColorPickPageState extends State<ColorPickPage> {
+  late Color pickerColor;
+  @override
+  void initState() {
+    pickerColor = widget.initialColor;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final pickerColor = useState<Color>(initialColor);
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.of(context).pick_a_color),
@@ -88,7 +90,9 @@ class ColorPickPage extends HookWidget {
                       );
                     });
                 Color color = _stringToColor(result); //迅速throw出来
-                pickerColor.value = color;
+                setState(() {
+                  pickerColor = color;
+                });
               }),
           IconButton(
               icon: Icon(Icons.save),
@@ -102,9 +106,11 @@ class ColorPickPage extends HookWidget {
         children: <Widget>[
           ColorPicker(
             enableAlpha: false,
-            pickerColor: pickerColor.value,
+            pickerColor: pickerColor,
             onColorChanged: (Color color) {
-              pickerColor.value = color;
+              setState(() {
+                pickerColor = color;
+              });
             },
             showLabel: true,
             pickerAreaHeightPercent: 0.8,
@@ -112,6 +118,14 @@ class ColorPickPage extends HookWidget {
         ],
       ),
     );
+  }
+
+  Color _stringToColor(String colorString) {
+    String valueString =
+        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
+    int value = int.parse(valueString, radix: 16);
+    Color otherColor = new Color(value);
+    return otherColor;
   }
 }
 
