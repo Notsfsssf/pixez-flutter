@@ -103,7 +103,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
               widget.data,
               customStylesBuilder: (e) {
                 if (e.attributes.containsKey('href')) {
-                  final color = userSetting.themeData.accentColor;
+                  final color = userSetting.themeData.colorScheme.primary;
                   return {
                     'color': '#${color.value.toRadixString(16).substring(2, 8)}'
                   };

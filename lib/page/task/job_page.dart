@@ -133,7 +133,6 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
         title: Text(I18n.of(context).task_progress),
         actions: [
           RotationTransition(

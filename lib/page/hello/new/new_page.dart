@@ -78,14 +78,13 @@ class _NewPageState extends State<NewPage>
             AppBar(
               automaticallyImplyLeading: false,
               elevation: 0.0,
-              backgroundColor: Colors.transparent,
               title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
                   controller: _tabController,
                   isScrollable: true,
                   indicator: MD2Indicator(
                       indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.primary,
                       indicatorSize: MD2IndicatorSize.normal),
                   onTap: (i) {
                     if (_tabController.index == i)

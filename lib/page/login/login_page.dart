@@ -113,8 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: EdgeInsets.all(10),
                           ),
-                          MaterialButton(
-                              color: Theme.of(context).primaryColor,
+                          ElevatedButton(
                               child: Text(
                                 I18n.of(context).login,
                               ),

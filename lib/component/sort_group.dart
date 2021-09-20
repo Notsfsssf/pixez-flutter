@@ -39,7 +39,7 @@ class _SortGroupState extends State<SortGroup> {
                       : Theme.of(context).textTheme.bodyText1!.color),
             ),
             backgroundColor: index == widget.children.indexOf(i)
-                ? Theme.of(context).accentColor
+                ? Theme.of(context).colorScheme.primary
                 : Colors.transparent,
             onPressed: () {
               int ii = widget.children.indexOf(i);

@@ -139,7 +139,7 @@ class _UsersPageState extends State<UsersPage>
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.primary,
                     onPressed: () {
                       userStore.errorMessage = null;
                       userStore.firstFetch();
@@ -158,7 +158,7 @@ class _UsersPageState extends State<UsersPage>
           body: Container(
               child: Center(
             child: CircularProgressIndicator(
-              color:   Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           )),
         );
@@ -326,13 +326,14 @@ class _UsersPageState extends State<UsersPage>
                   controller: _tabController,
                   indicator: MD2Indicator(
                       indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.primary,
                       indicatorSize: MD2IndicatorSize.normal),
                   onTap: (index) {
                     setState(() {
                       _tabIndex = index;
                     });
                   },
+                  labelColor: Theme.of(context).textTheme.bodyText1!.color,
                   indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
                     Tab(
@@ -463,7 +464,7 @@ class _UsersPageState extends State<UsersPage>
                   ? Container(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
                       child: CircularProgressIndicator(
-                        color:   Theme.of(context).accentColor,
+                        color: Theme.of(context).accentColor,
                       ),
                     )
                   : Padding(

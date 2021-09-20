@@ -189,33 +189,27 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
     return Observer(builder: (context) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).skin),
-        ),
+            title: Text(I18n.of(context).skin),
+            bottom: TabBar(
+                controller: TabController(
+                  length: 3,
+                  initialIndex: ThemeMode.values.indexOf(userSetting.themeMode),
+                  vsync: this,
+                ),
+                onTap: (i) {
+                  userSetting.setThemeMode(i);
+                },
+                tabs: [
+                  Tab(
+                    text: I18n.of(context).system,
+                  ),
+                  Tab(
+                    text: I18n.of(context).light,
+                  ),
+                  Tab(text: I18n.of(context).dark)
+                ])),
         body: ListView(
           children: <Widget>[
-            Observer(builder: (context) {
-              return Card(
-                child: TabBar(
-                    controller: TabController(
-                      length: 3,
-                      initialIndex:
-                          ThemeMode.values.indexOf(userSetting.themeMode),
-                      vsync: this,
-                    ),
-                    onTap: (i) {
-                      userSetting.setThemeMode(i);
-                    },
-                    tabs: [
-                      Tab(
-                        text: I18n.of(context).system,
-                      ),
-                      Tab(
-                        text: I18n.of(context).light,
-                      ),
-                      Tab(text: I18n.of(context).dark)
-                    ]),
-              );
-            }),
             Observer(builder: (_) {
               return Card(
                   child: SwitchListTile(

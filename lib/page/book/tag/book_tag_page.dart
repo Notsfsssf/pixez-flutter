@@ -69,14 +69,13 @@ class _BookTagPageState extends State<BookTagPage>
       return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
           title: TabBar(
             isScrollable: true,
             controller: _tabController,
             indicatorSize: TabBarIndicatorSize.label,
             indicator: MD2Indicator(
                 indicatorHeight: 3,
-                indicatorColor: Theme.of(context).accentColor,
+                indicatorColor: Theme.of(context).primaryColor,
                 indicatorSize: MD2IndicatorSize.normal),
             tabs: [
               for (var i in bookTagStore.bookTagList)

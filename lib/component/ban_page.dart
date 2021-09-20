@@ -58,7 +58,7 @@ class _BanPageState extends State<BanPage> {
                 top: 8.0,
               ),
               child: MaterialButton(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.primary,
                 textColor: Colors.white,
                 child: Text(I18n.of(context).shielding_settings),
                 onPressed: () {
@@ -71,7 +71,7 @@ class _BanPageState extends State<BanPage> {
               data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context)
                       .colorScheme
-                      .copyWith(primary: Theme.of(context).accentColor)),
+                      .copyWith(primary: Theme.of(context).colorScheme.primary)),
               child: TextButton(
                   onPressed: () {
                     if (widget.onPressed != null) widget.onPressed!();

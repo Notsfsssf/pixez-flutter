@@ -114,7 +114,7 @@ class _RankPageState extends State<RankPage>
                   }),
                   indicator: MD2Indicator(
                       indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.primary,
                       indicatorSize: MD2IndicatorSize.normal),
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,

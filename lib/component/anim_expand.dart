@@ -44,15 +44,4 @@ class _AnimExpandState extends State<AnimExpand> {
           _expand ? CrossFadeState.showSecond : CrossFadeState.showFirst,
     );
   }
-
-  Widget _buildContainer() {
-    return _expand
-        ? Container(
-            child: widget.child,
-          )
-        : Container(
-            height: 100,
-            child: widget.child,
-          );
-  }
 }
