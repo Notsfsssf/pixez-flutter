@@ -75,7 +75,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       child: Observer(builder: (context) {
         if (accountStore.now != null &&
             (Platform.isIOS || Platform.isAndroid)) {
-          return _buildScaffold(context);
+          return LayoutBuilder(builder: (context, constraint) {
+            if (constraint.maxHeight > constraint.maxWidth)
+              return _buildPadScafford(context, constraint);
+            return _buildScaffold(context);
+          });
         }
         return LoginPage();
       }),
@@ -114,6 +118,26 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
           ]),
     );
+  }
+
+  Widget _buildPadScafford(BuildContext context, BoxConstraints constraint) {
+    double radio = constraint.maxHeight / constraint.maxWidth;
+    double width = radio * constraint.maxHeight;
+    return Stack(children: [
+      _buildScaffold(context),
+      Container(
+        width: width,
+        child: Navigator(
+          onGenerateRoute: (RouteSettings routeSettings) {
+            return PageRouteBuilder(pageBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return Container();
+            });
+          },
+        ),
+      )
+    ]);
   }
 
   Widget _buildPageContent(BuildContext context) {
