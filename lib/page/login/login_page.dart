@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildBody(BuildContext context) {
     return Theme(
       data: ThemeData(
-          primaryColor: Theme.of(context).accentColor,
+          primaryColor: Theme.of(context).colorScheme.secondary,
           brightness: Theme.of(context).brightness),
       child: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

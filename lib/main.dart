@@ -121,14 +121,13 @@ class _MyAppState extends State<MyApp> {
         title: 'PixEz',
         builder: BotToastInit(),
         themeMode: userSetting.themeMode,
-        theme: ThemeData.light(),
+        theme: userSetting.themeData,
         darkTheme: ThemeData.dark().copyWith(
-            accentColor: userSetting.themeData.accentColor,
-            scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
-            colorScheme: ThemeData.dark().colorScheme.copyWith(
-                secondary: userSetting.themeData.accentColor,
-                primary: userSetting.themeData.accentColor),
-            indicatorColor: userSetting.themeData.accentColor),
+          scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
+          colorScheme: ThemeData.dark().colorScheme.copyWith(
+              secondary: userSetting.themeData.colorScheme.secondary,
+              primary: userSetting.themeData.colorScheme.primary),
+        ),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales, // Add this line
       );

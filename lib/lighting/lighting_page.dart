@@ -163,7 +163,7 @@ class _LightingListState extends State<LightingList> {
           enablePullUp: true,
           header: (Platform.isAndroid)
               ? MaterialClassicHeader(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   backgroundColor: Theme.of(context).cardColor,
                 )
               : ClassicHeader(),
@@ -252,7 +252,7 @@ class _LightingListState extends State<LightingList> {
         enablePullUp: true,
         header: (Platform.isAndroid)
             ? MaterialClassicHeader(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 backgroundColor: Theme.of(context).cardColor,
               )
             : ClassicHeader(),

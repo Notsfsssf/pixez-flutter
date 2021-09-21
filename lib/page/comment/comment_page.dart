@@ -94,7 +94,7 @@ class _CommentPageState extends State<CommentPage> {
                 enablePullDown: true,
                 header: (Platform.isAndroid)
                     ? MaterialClassicHeader(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         backgroundColor: Theme.of(context).cardColor,
                       )
                     : ClassicHeader(),
@@ -165,7 +165,7 @@ class _CommentPageState extends State<CommentPage> {
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                     color: Theme.of(context)
-                                                        .accentColor),
+                                                        .colorScheme.secondary),
                                               ),
                                               TextButton(
                                                   onPressed: () {
@@ -183,7 +183,7 @@ class _CommentPageState extends State<CommentPage> {
                                                         : "Reply",
                                                     style: TextStyle(
                                                         color: Theme.of(context)
-                                                            .accentColor),
+                                                            .colorScheme.secondary),
                                                   ))
                                             ],
                                           ),
@@ -269,7 +269,7 @@ class _CommentPageState extends State<CommentPage> {
                         : Container(
                             child: Center(
                               child: CircularProgressIndicator(
-                                color: Theme.of(context).accentColor,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
                           );
@@ -298,7 +298,7 @@ class _CommentPageState extends State<CommentPage> {
                         padding: const EdgeInsets.only(bottom: 2.0, right: 8.0),
                         child: Theme(
                           data: Theme.of(context).copyWith(
-                            colorScheme: Theme.of(context).colorScheme.copyWith(primary: Theme.of(context).accentColor),
+                            colorScheme: Theme.of(context).colorScheme.copyWith(primary: Theme.of(context).colorScheme.secondary),
                           ),
                           child: TextField(
                             controller: _editController,

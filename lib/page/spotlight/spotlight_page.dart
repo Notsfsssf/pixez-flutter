@@ -51,7 +51,7 @@ class SpotLightPage extends StatelessWidget {
             enablePullDown: true,
             header: (Platform.isAndroid)
                 ? MaterialClassicHeader(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   )
                 : ClassicHeader(),
             enablePullUp: true,

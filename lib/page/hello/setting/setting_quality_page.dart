@@ -277,9 +277,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       child: TabBar(
                         indicator: MD2Indicator(
                             indicatorHeight: 3,
-                            indicatorColor: Theme.of(context).accentColor,
+                            indicatorColor:
+                                Theme.of(context).colorScheme.secondary,
                             indicatorSize: MD2IndicatorSize.normal),
-                        indicatorColor: Theme.of(context).accentColor,
+                        indicatorColor: Theme.of(context).colorScheme.secondary,
                         labelColor:
                             Theme.of(context).textTheme.headline6!.color,
                         indicatorSize: TabBarIndicatorSize.label,
@@ -319,10 +320,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
                           indicatorHeight: 3,
-                          indicatorColor: Theme.of(context).accentColor,
+                          indicatorColor: Theme.of(context).colorScheme.secondary,
                           indicatorSize: MD2IndicatorSize.normal),
                       tabs: [
                         Tab(
@@ -358,10 +359,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
                           indicatorHeight: 3,
-                          indicatorColor: Theme.of(context).accentColor,
+                          indicatorColor: Theme.of(context).colorScheme.secondary,
                           indicatorSize: MD2IndicatorSize.normal),
                       tabs: [
                         Tab(
@@ -432,10 +433,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       isScrollable: true,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
                           indicatorHeight: 3,
-                          indicatorColor: Theme.of(context).accentColor,
+                          indicatorColor: Theme.of(context).colorScheme.secondary,
                           indicatorSize: MD2IndicatorSize.normal),
                       tabs: list,
                       onTap: (index) async {
@@ -502,11 +503,11 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       tabs: tablist,
                       indicator: MD2Indicator(
                           indicatorHeight: 3,
-                          indicatorColor: Theme.of(context).accentColor,
+                          indicatorColor: Theme.of(context).colorScheme.secondary,
                           indicatorSize: MD2IndicatorSize.normal),
                       isScrollable: true,
                       onTap: (index) {
@@ -535,10 +536,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
                           indicatorHeight: 3,
-                          indicatorColor: Theme.of(context).accentColor,
+                          indicatorColor: Theme.of(context).colorScheme.secondary,
                           indicatorSize: MD2IndicatorSize.normal),
                       tabs: [
                         Tab(
@@ -577,10 +578,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
                           indicatorHeight: 3,
-                          indicatorColor: Theme.of(context).accentColor,
+                          indicatorColor: Theme.of(context).colorScheme.secondary,
                           indicatorSize: MD2IndicatorSize.normal),
                       tabs: [
                         Tab(
@@ -614,7 +615,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.isBangs,
                     title: Text(I18n.of(context).special_shaped_screen),
                     subtitle: Text('--v--'),
@@ -629,7 +630,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.hIsNotAllow,
                     title: Text('H是不行的！'),
                     onChanged: (value) async {
@@ -644,7 +645,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.isReturnAgainToExit,
                     title: Text(I18n.of(context).return_again_to_exit),
                     onChanged: (value) async {
@@ -658,7 +659,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.followAfterStar,
                     title: Text(I18n.of(context).follow_after_star),
                     onChanged: (value) async {
@@ -676,7 +677,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   child: Observer(
                     builder: (context) {
                       return SwitchListTile(
-                        activeColor: Theme.of(context).accentColor,
+                        activeColor: Theme.of(context).colorScheme.secondary,
                         onChanged: (bool value) async {
                           await userSetting.setOverSanityLevelFolder(value);
                         },

@@ -55,7 +55,7 @@ class _ResultPageState extends State<ResultPage> {
               indicatorSize: TabBarIndicatorSize.label,
               indicator: MD2Indicator(
                   indicatorHeight: 3,
-                  indicatorColor: Theme.of(context).accentColor,
+                  indicatorColor: Theme.of(context).colorScheme.secondary,
                   indicatorSize: MD2IndicatorSize.normal),
               onTap: (i) {
                 if (i == index) {

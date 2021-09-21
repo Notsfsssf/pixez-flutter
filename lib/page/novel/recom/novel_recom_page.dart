@@ -82,7 +82,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
         controller: _easyRefreshController,
         header: Platform.isAndroid
             ? MaterialClassicHeader(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
               )
             : ClassicHeader(),
         child: CustomScrollView(
@@ -157,7 +157,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                               .caption!
                                               .copyWith(
                                                   color: Theme.of(context)
-                                                      .accentColor),
+                                                      .colorScheme.secondary),
                                         ),
                                       ),
                                       Padding(

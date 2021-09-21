@@ -57,7 +57,7 @@ class _NetworkSelectPageState extends State<NetworkSelectPage>
                     controller: tabController,
                     indicator: MD2Indicator(
                         indicatorHeight: 3,
-                        indicatorColor: Theme.of(context).accentColor,
+                        indicatorColor: Theme.of(context).colorScheme.secondary,
                         indicatorSize: MD2IndicatorSize.normal),
                     indicatorSize: TabBarIndicatorSize.label,
                     tabs: [

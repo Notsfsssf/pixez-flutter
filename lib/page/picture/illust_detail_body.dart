@@ -46,7 +46,7 @@ class IllustDetailBody extends StatelessWidget {
 
   Widget colorText(String text, BuildContext context) => SelectableText(
         text,
-        style: TextStyle(color: Theme.of(context).accentColor),
+        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       );
 
   Widget _buildNameAvatar(
@@ -75,7 +75,7 @@ class IllustDetailBody extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   color: _store.isFollow
                                       ? Colors.yellow
-                                      : Theme.of(context).accentColor,
+                                      : Theme.of(context).colorScheme.secondary,
                                 )
                               : BoxDecoration(),
                         ),
@@ -101,7 +101,7 @@ class IllustDetailBody extends StatelessWidget {
               children: <Widget>[
                 SelectableText(
                   illust.title,
-                  style: TextStyle(color: Theme.of(context).accentColor),
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
                 Container(
                   height: 4.0,
@@ -250,7 +250,7 @@ class IllustDetailBody extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .caption!
-                  .copyWith(color: Theme.of(context).accentColor))),
+                  .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
 

@@ -66,7 +66,7 @@ class _NovelRailState extends State<NovelRail> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).accentColor,
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
         currentIndex: selectedIndex,
         items: [
           BottomNavigationBarItem(

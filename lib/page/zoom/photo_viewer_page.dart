@@ -63,8 +63,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
   @override
   void dispose() {
     if (Platform.isAndroid || Platform.isIOS)
-      SystemChrome.setEnabledSystemUIOverlays(
-          [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _doubleClickAnimationController.dispose();
     rebuildIndex.close();
     rebuildSwiper.close();
@@ -92,7 +91,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
     super.initState();
     index = widget.index;
     if (Platform.isAndroid || Platform.isIOS)
-      SystemChrome.setEnabledSystemUIOverlays([]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
   }
 
   Widget _buildContent(BuildContext context) {
@@ -338,8 +337,8 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
                         ),
                         onPressed: () async {
                           if (Platform.isAndroid || Platform.isIOS)
-                            await SystemChrome.setEnabledSystemUIOverlays(
-                                [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+                            await SystemChrome.setEnabledSystemUIMode(
+                                SystemUiMode.edgeToEdge);
                           Navigator.of(context).pop();
                         }),
                     IconButton(

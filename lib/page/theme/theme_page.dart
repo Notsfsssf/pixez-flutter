@@ -185,7 +185,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
         builder: (context) => ColorPickPage(initialColor: pickerColor)));
     if (result != null) {
       var data = <String>[
-        userSetting.themeData.accentColor.toString(),
+        userSetting.themeData.colorScheme.secondary.toString(),
         userSetting.themeData.primaryColor.toString(),
       ];
       data[index] = result;
@@ -239,8 +239,8 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    Theme.of(context).accentColor.toString(),
-                    style: TextStyle(color: Theme.of(context).accentColor),
+                    Theme.of(context).colorScheme.secondary.toString(),
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                 ),
                 Column(
@@ -248,11 +248,11 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                   children: <Widget>[
                     InkWell(
                       onTap: () {
-                        _pickColorData(0, Theme.of(context).accentColor);
+                        _pickColorData(0, Theme.of(context).colorScheme.secondary);
                       },
                       child: Container(
                         height: 30,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         child: Center(child: Text("accentColor")),
                       ),
                     ),
@@ -282,7 +282,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                       child: InkWell(
                     onTap: () {
                       userSetting.setThemeData(<String>[
-                        skin.accentColor.toString(),
+                        skin.colorScheme.secondary.toString(),
                         skin.primaryColor.toString(),
                       ]);
                     },
@@ -292,8 +292,8 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text(
-                            skin.accentColor.toString(),
-                            style: TextStyle(color: skin.accentColor),
+                            skin.colorScheme.secondary.toString(),
+                            style: TextStyle(color: skin.colorScheme.secondary),
                           ),
                         ),
                         Column(
@@ -306,7 +306,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                             ),
                             Container(
                               height: 30,
-                              color: skin.accentColor,
+                              color: skin.colorScheme.secondary,
                               child: Center(child: Text("accentColor")),
                             ),
                           ],

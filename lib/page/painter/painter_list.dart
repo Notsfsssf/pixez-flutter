@@ -81,7 +81,7 @@ class _PainterListState extends State<PainterList> {
         enablePullUp: true,
         header: (Platform.isAndroid)
             ? MaterialClassicHeader(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
               )
             : ClassicHeader(),
         footer: CustomFooter(

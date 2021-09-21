@@ -64,7 +64,7 @@ class _RecomUserPageState extends State<RecomUserPage> {
         body: SmartRefresher(
           header: Platform.isAndroid
               ? MaterialClassicHeader(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 )
               : ClassicHeader(),
           controller: _refreshController,

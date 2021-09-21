@@ -117,7 +117,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
         padding: const EdgeInsets.all(8.0),
         child: Theme(
           data: ThemeData(
-              primaryColor: Theme.of(context).accentColor,
+              primaryColor: Theme.of(context).colorScheme.secondary,
               brightness: Theme.of(context).brightness),
           child: Column(
             children: <Widget>[

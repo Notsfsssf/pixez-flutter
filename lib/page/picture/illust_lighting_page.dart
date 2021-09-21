@@ -226,7 +226,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
 
   Widget colorText(String text, BuildContext context) => SelectableText(
         text,
-        style: TextStyle(color: Theme.of(context).accentColor),
+        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       );
 
   ScrollController scrollController = ScrollController();
@@ -256,7 +256,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
       return Container(
         child: Center(
           child: CircularProgressIndicator(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
       );
@@ -296,7 +296,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     height: 150,
                     child: Center(
                       child: CircularProgressIndicator(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                   );
@@ -490,7 +490,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                   height: 200,
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                 ),
@@ -646,7 +646,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               style: Theme.of(context)
                   .textTheme
                   .caption!
-                  .copyWith(color: Theme.of(context).accentColor))),
+                  .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
 
@@ -681,7 +681,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                                     shape: BoxShape.circle,
                                     color: userStore!.isFollow
                                         ? Colors.yellow
-                                        : Theme.of(context).accentColor,
+                                        : Theme.of(context).colorScheme.secondary,
                                   )
                                 : BoxDecoration(),
                           ),
@@ -722,7 +722,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 children: <Widget>[
                   SelectableText(
                     illust.title,
-                    style: TextStyle(color: Theme.of(context).accentColor),
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                   Container(
                     height: 4.0,

@@ -61,7 +61,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add_photo_alternate),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         onPressed: () {
           _store.findImage();
         },

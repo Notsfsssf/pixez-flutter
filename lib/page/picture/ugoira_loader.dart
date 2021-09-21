@@ -14,7 +14,6 @@
  *
  */
 
-import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
@@ -26,7 +25,6 @@ import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 
 class UgoiraLoader extends StatefulWidget {
@@ -133,7 +131,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
             PixivImage(widget.illusts.imageUrls.medium),
             LinearProgressIndicator(
               backgroundColor: Theme.of(context).cardColor,
-              valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),
+              valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.secondary),
               value: _store.count / _store.total,
             )
           ],

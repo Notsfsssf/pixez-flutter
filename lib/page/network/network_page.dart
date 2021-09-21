@@ -69,7 +69,7 @@ class _NetworkPageState extends State<NetworkPage> {
               child: Observer(builder: (_) {
                 return SwitchListTile(
                     value: userSetting.disableBypassSni,
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     title: Text(I18n.of(context).disable_sni_bypass),
                     subtitle: Text(I18n.of(context).disable_sni_bypass_message),
                     onChanged: (value) async {
@@ -136,7 +136,7 @@ class _NetworkPageState extends State<NetworkPage> {
                                   Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         selected: userSetting.pictureSource == ImageHost,
-                        selectedTileColor: Theme.of(context).accentColor,
+                        selectedTileColor: Theme.of(context).colorScheme.secondary,
                         onTap: () async {
                           userSetting.setPictureSource(ImageHost);
                           splashStore.setHost(ImageHost);
@@ -152,7 +152,7 @@ class _NetworkPageState extends State<NetworkPage> {
                                   Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         selected: userSetting.pictureSource == ImageCatHost,
-                        selectedTileColor: Theme.of(context).accentColor,
+                        selectedTileColor: Theme.of(context).colorScheme.secondary,
                         onTap: () async {
                           userSetting.setPictureSource(ImageCatHost);
                           splashStore.setHost(ImageCatHost);
@@ -161,10 +161,10 @@ class _NetworkPageState extends State<NetworkPage> {
                       ListTile(
                         selected: userSetting.pictureSource != ImageHost &&
                             userSetting.pictureSource != ImageCatHost,
-                        selectedTileColor: Theme.of(context).accentColor,
+                        selectedTileColor: Theme.of(context).colorScheme.secondary,
                         title: Theme(
                           data: Theme.of(context).copyWith(
-                              primaryColor: Theme.of(context).accentColor),
+                              primaryColor: Theme.of(context).colorScheme.secondary),
                           child: TextField(
                             maxLines: 1,
                             controller: _textEditingController,

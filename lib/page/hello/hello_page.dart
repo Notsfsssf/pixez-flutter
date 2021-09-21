@@ -127,7 +127,7 @@ class _HelloPageState extends State<HelloPage> {
           }),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).accentColor,
+          selectedItemColor: Theme.of(context).colorScheme.secondary,
           currentIndex: index,
           onTap: (index) {
             setState(() {

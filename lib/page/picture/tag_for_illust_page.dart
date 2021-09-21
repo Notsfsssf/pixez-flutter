@@ -57,12 +57,12 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
             ),
             Theme(
               data: Theme.of(context)
-                  .copyWith(primaryColor: Theme.of(context).accentColor),
+                  .copyWith(primaryColor: Theme.of(context).colorScheme.secondary),
               child: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Theme(
                   data: Theme.of(context).copyWith(
-                    colorScheme:  Theme.of(context).colorScheme.copyWith(primary:  Theme.of(context).accentColor),
+                    colorScheme:  Theme.of(context).colorScheme.copyWith(primary:  Theme.of(context).colorScheme.secondary),
                   ),
                   child: TextField(
                     controller: textEditingController,

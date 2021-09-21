@@ -90,7 +90,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MaterialButton(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     onPressed: () {
                       userStore.errorMessage = null;
                       userStore.firstFetch();
@@ -206,7 +206,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                                     ? PixivImage(userStore.userDetail!.profile
                                         .background_image_url!)
                                     : Container(
-                                        color: Theme.of(context).accentColor,
+                                        color: Theme.of(context).colorScheme.secondary,
                                       )),
                             Align(
                               alignment: Alignment.bottomCenter,
@@ -376,7 +376,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                 textColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
                 color: userStore.isFollow
-                    ? Theme.of(context).accentColor
+                    ? Theme.of(context).colorScheme.secondary
                     : Colors.grey,
                 onPressed: () {
                   if (accountStore.now != null) {

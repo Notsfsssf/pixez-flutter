@@ -31,7 +31,6 @@ class PixivImageSpan extends ExtendedWidgetSpan {
 
   static Future<Illusts?> _getData(int id) async {
     try {
-      if (id == null) return null;
       Response response = await apiClient.getIllustDetail(id);
       final result = Illusts.fromJson(response.data['illust']);
       return result;

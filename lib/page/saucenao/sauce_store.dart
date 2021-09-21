@@ -56,7 +56,7 @@ abstract class SauceStoreBase with Store {
     MultipartFile? multipartFile;
     final picker = ImagePicker();
     if (path == null) {
-      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
       Uint8List uint8list = await pickedFile.readAsBytes();
       path =

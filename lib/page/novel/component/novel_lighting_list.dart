@@ -147,7 +147,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                         .caption!
                                         .copyWith(
                                             color:
-                                                Theme.of(context).accentColor),
+                                                Theme.of(context).colorScheme.secondary),
                                   ),
                                 ),
                                 Padding(
@@ -212,7 +212,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
         onRefresh: () => _store.fetch(),
         header: Platform.isAndroid
             ? MaterialClassicHeader(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
               )
             : ClassicHeader(),
         enablePullDown: true,

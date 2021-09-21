@@ -112,7 +112,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 enablePullUp: true,
                 header: (Platform.isAndroid)
                     ? MaterialClassicHeader(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       )
                     : ClassicHeader(),
                 footer: _buildCustomFooter(),

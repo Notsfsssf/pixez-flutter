@@ -180,7 +180,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         child: Text(
                           I18n.of(context).date_duration,
                           style:
-                              TextStyle(color: Theme.of(context).accentColor),
+                              TextStyle(color: Theme.of(context).colorScheme.secondary),
                         )),
                     TextButton(
                         onPressed: () {
@@ -197,7 +197,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         },
                         child: Text(I18n.of(context).apply,
                             style: TextStyle(
-                                color: Theme.of(context).accentColor)))
+                                color: Theme.of(context).colorScheme.secondary)))
                   ],
                 ),
                 Expanded(
@@ -245,7 +245,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               onPressed: () {},
                               child: Text(I18n.of(context).filter,
                                   style: TextStyle(
-                                      color: Theme.of(context).accentColor))),
+                                      color: Theme.of(context).colorScheme.secondary))),
                           TextButton(
                               onPressed: () {
                                 setState(() {
@@ -267,7 +267,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               },
                               child: Text(I18n.of(context).apply,
                                   style: TextStyle(
-                                      color: Theme.of(context).accentColor))),
+                                      color: Theme.of(context).colorScheme.secondary))),
                         ],
                       ),
                       Padding(
@@ -337,7 +337,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         child: SizedBox(
                           width: double.infinity,
                           child: Slider(
-                            activeColor: Theme.of(context).accentColor,
+                            activeColor: Theme.of(context).colorScheme.secondary,
                             onChanged: (double value) {
                               int v = value.toInt();
                               setS(() {

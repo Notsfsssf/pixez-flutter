@@ -99,7 +99,7 @@ class _UsersPageState extends State<UsersPage>
                   Text('X_X'),
                   Text('${widget.id}'),
                   MaterialButton(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     textColor: Colors.white,
                     child: Text(I18n.of(context).shielding_settings),
                     onPressed: () {
@@ -293,7 +293,9 @@ class _UsersPageState extends State<UsersPage>
                                         enableMemoryCache: false,
                                       )
                                     : Container(
-                                        color: Theme.of(context).accentColor,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                       )
                                 : Container()),
                         Align(
@@ -464,7 +466,7 @@ class _UsersPageState extends State<UsersPage>
                   ? Container(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
                       child: CircularProgressIndicator(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     )
                   : Padding(
@@ -474,16 +476,17 @@ class _UsersPageState extends State<UsersPage>
                               textColor: Colors.white,
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20.0, vertical: 0),
-                              color: Theme.of(context).accentColor,
+                              color: Theme.of(context).colorScheme.secondary,
                               onPressed: () {
                                 if (accountStore.now != null) {
                                   if (int.parse(accountStore.now!.userId) !=
                                       widget.id) {
                                     userStore.follow(needPrivate: false);
                                   } else {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                        content: Text(
-                                            'Who is the most beautiful person in the world?')));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Who is the most beautiful person in the world?')));
                                   }
                                 }
                               },
@@ -503,9 +506,10 @@ class _UsersPageState extends State<UsersPage>
                                       widget.id) {
                                     userStore.follow(needPrivate: false);
                                   } else {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                        content: Text(
-                                            'Who is the most beautiful person in the world?')));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Who is the most beautiful person in the world?')));
                                   }
                                 }
                               },

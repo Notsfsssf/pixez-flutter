@@ -148,13 +148,9 @@ abstract class _UserSettingBase with Store {
   @observable
   ThemeData themeData = ThemeData(
       brightness: Brightness.light,
-      accentColor: Colors.cyan[400],
-      primaryColor: Colors.white,
       colorScheme:
           ThemeData().colorScheme.copyWith(secondary: Colors.cyan[400]),
-      appBarTheme: AppBarTheme(
-        brightness: Brightness.light,
-      ));
+      primaryColor: Colors.cyan[400]);
 
   @observable
   ThemeMode themeMode = ThemeMode.system;
@@ -251,16 +247,10 @@ abstract class _UserSettingBase with Store {
       } else {
         try {
           themeData = ThemeData(
-            brightness: Brightness.light,
-            accentColor: _stringToColor(colors[0]),
-            primaryColor: Colors.white,
-            colorScheme: ThemeData()
-                .colorScheme
-                .copyWith(secondary: _stringToColor(colors[0])),
-            appBarTheme: AppBarTheme(
               brightness: Brightness.light,
-            ),
-          );
+              colorScheme: ThemeData().colorScheme.copyWith(
+                  secondary: _stringToColor(colors[0]),
+                  primary: _stringToColor(colors[0])));
         } catch (e) {
           print(e);
         }
@@ -301,13 +291,8 @@ abstract class _UserSettingBase with Store {
     await prefs.setStringList(THEME_DATA_KEY, data);
     themeData = ThemeData(
       brightness: Brightness.light,
-      appBarTheme: AppBarTheme(
-        brightness: Brightness.light,
-      ),
-      colorScheme:
-          ThemeData().colorScheme.copyWith(secondary: _stringToColor(data[0])),
-      primaryColor: Colors.white,
-      accentColor: _stringToColor(data[0]),
+      colorScheme: ThemeData().colorScheme.copyWith(
+          secondary: _stringToColor(data[0]), primary: _stringToColor(data[0])),
     );
   }
 
