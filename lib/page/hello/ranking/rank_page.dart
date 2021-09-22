@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -168,7 +169,6 @@ class _RankPageState extends State<RankPage>
         children: <Widget>[
           AppBar(
             elevation: 0.0,
-            backgroundColor: Colors.transparent,
             title: Text(I18n.of(context).choice_you_like),
             actions: <Widget>[
               IconButton(

@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
@@ -130,6 +131,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                   SliverAppBar(
                     elevation: 0.0,
                     titleSpacing: 0.0,
+                    systemOverlayStyle: SystemUiOverlayStyle(
+                        statusBarIconBrightness: Brightness.dark),
                     automaticallyImplyLeading: false,
                     backgroundColor: Colors.transparent,
                     title: _buildFirstRow(context),

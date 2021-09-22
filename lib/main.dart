@@ -121,9 +121,19 @@ class _MyAppState extends State<MyApp> {
         title: 'PixEz',
         builder: BotToastInit(),
         themeMode: userSetting.themeMode,
-        theme: userSetting.themeData,
+        theme: ThemeData.light().copyWith(
+            primaryColor: userSetting.themeData.colorScheme.primary,
+            primaryColorLight: userSetting.themeData.colorScheme.primary,
+            primaryColorDark: userSetting.themeData.colorScheme.primary,
+            colorScheme: ThemeData.light().colorScheme.copyWith(
+                  secondary: userSetting.themeData.colorScheme.secondary,
+                  primary: userSetting.themeData.colorScheme.primary,
+                )),
         darkTheme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
+          primaryColor: userSetting.themeData.colorScheme.primary,
+          primaryColorLight: userSetting.themeData.colorScheme.primary,
+          primaryColorDark: userSetting.themeData.colorScheme.primary,
           colorScheme: ThemeData.dark().colorScheme.copyWith(
               secondary: userSetting.themeData.colorScheme.secondary,
               primary: userSetting.themeData.colorScheme.primary),

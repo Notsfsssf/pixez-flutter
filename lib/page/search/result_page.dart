@@ -50,7 +50,6 @@ class _ResultPageState extends State<ResultPage> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
           title: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
               indicator: MD2Indicator(

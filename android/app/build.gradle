@@ -84,8 +84,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10006020
-        versionName "0.6.2 sketch"
+        versionCode 10006030
+        versionName "0.6.3 elden"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

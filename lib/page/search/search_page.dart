@@ -17,6 +17,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -327,6 +328,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 elevation: 0.0,
                 titleSpacing: 0.0,
                 automaticallyImplyLeading: false,
+                systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarIconBrightness: Brightness.dark),
                 leading: RotationTransition(
                   alignment: Alignment.center,
                   turns: animation,

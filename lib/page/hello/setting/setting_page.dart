@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
@@ -100,6 +101,8 @@ class _SettingPageState extends State<SettingPage> {
                 AppBar(
                   elevation: 0.0,
                   automaticallyImplyLeading: false,
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                      statusBarIconBrightness: Brightness.dark),
                   backgroundColor: Colors.transparent,
                   actions: [
                     if (kDebugMode)
@@ -358,7 +361,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   _showCacheBottomSheet(BuildContext context) async {
-       final result = await showModalBottomSheet(
+    final result = await showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

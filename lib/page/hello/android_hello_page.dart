@@ -75,11 +75,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       child: Observer(builder: (context) {
         if (accountStore.now != null &&
             (Platform.isIOS || Platform.isAndroid)) {
-          return LayoutBuilder(builder: (context, constraint) {
-            if (constraint.maxHeight > constraint.maxWidth)
-              return _buildPadScafford(context, constraint);
-            return _buildScaffold(context);
-          });
+          return _buildScaffold(context);
+          // return LayoutBuilder(builder: (context, constraint) {
+          //   if (constraint.maxHeight > constraint.maxWidth)
+          //     return _buildPadScafford(context, constraint);
+          //   return _buildScaffold(context);
+          // });
         }
         return LoginPage();
       }),
