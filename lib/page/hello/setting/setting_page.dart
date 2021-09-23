@@ -101,9 +101,7 @@ class _SettingPageState extends State<SettingPage> {
                 AppBar(
                   elevation: 0.0,
                   automaticallyImplyLeading: false,
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                      statusBarIconBrightness: Brightness.dark),
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Theme.of(context).canvasColor,
                   actions: [
                     if (kDebugMode)
                       IconButton(

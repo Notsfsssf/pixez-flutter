@@ -16,6 +16,7 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -161,7 +162,11 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         focusNode: node,
         keyboardType: inputType,
         autofocus: true,
-        cursorColor: Theme.of(context).colorScheme.secondary,
+        cursorColor: Theme.of(context).iconTheme.color,
+        style: Theme.of(context)
+            .textTheme
+            .subtitle1!
+            .copyWith(color: Theme.of(context).iconTheme.color),
         onTap: () {
           FocusScope.of(context).requestFocus(node);
         },

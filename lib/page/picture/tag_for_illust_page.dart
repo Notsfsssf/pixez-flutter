@@ -42,7 +42,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                   I18n.of(context).bookmark),
               actions: [
                 Switch(
-                  activeColor: Theme.of(context).colorScheme.secondary,
+                  activeColor: Theme.of(context).canvasColor,
                   onChanged: (bool value) {
                     _store.setRestrict(value);
                   },

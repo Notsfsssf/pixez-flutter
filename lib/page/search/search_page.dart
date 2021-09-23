@@ -328,8 +328,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 elevation: 0.0,
                 titleSpacing: 0.0,
                 automaticallyImplyLeading: false,
-                systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarIconBrightness: Brightness.dark),
                 leading: RotationTransition(
                   alignment: Alignment.center,
                   turns: animation,
@@ -344,7 +342,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           }));
                       }),
                 ),
-                backgroundColor: Colors.transparent,
+                backgroundColor: Theme.of(context).canvasColor,
                 actions: [
                   IconButton(
                     icon: Icon(Icons.search,

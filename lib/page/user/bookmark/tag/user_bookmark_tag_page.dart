@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/user/bookmark/tag/bookmark_tag_store.dart';
@@ -48,8 +49,13 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.of(context).tag),
+        elevation: 0.0,
         bottom: TabBar(
           controller: _tabController,
+          indicator: MD2Indicator(
+              indicatorHeight: 3,
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              indicatorSize: MD2IndicatorSize.normal),
           tabs: <Widget>[
             Tab(
               text: I18n.of(context).public,

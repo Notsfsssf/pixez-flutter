@@ -131,10 +131,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                   SliverAppBar(
                     elevation: 0.0,
                     titleSpacing: 0.0,
-                    systemOverlayStyle: SystemUiOverlayStyle(
-                        statusBarIconBrightness: Brightness.dark),
                     automaticallyImplyLeading: false,
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Theme.of(context).canvasColor,
                     title: _buildFirstRow(context),
                   )
                 ];

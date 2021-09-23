@@ -79,6 +79,16 @@ class _PixivImageState extends State<PixivImage>
   }
 
   @override
+  void didUpdateWidget(covariant PixivImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      setState(() {
+        url = widget.url;
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
