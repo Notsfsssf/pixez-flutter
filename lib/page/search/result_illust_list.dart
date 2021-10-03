@@ -19,7 +19,6 @@ import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -145,12 +144,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
       ),
     );
   }
-
-  DatePeriod datePeriod = DatePeriod(
-      DateTime.fromMillisecondsSinceEpoch(
-          DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 8 * 1000)),
-      DateTime.fromMillisecondsSinceEpoch(
-          DateTime.now().millisecondsSinceEpoch - (24 * 60 * 60 * 1000)));
 
   Future _buildShowDateRange(BuildContext context) async {
     // await showDateRangePicker(
