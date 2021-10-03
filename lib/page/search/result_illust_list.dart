@@ -161,67 +161,25 @@ class _ResultIllustListState extends State<ResultIllustList> {
     //         DateTime.now().millisecondsSinceEpoch -
     //             (24 * 60 * 60 * 365 * 1000 * 8)),
     //     lastDate: DateTime.now());
-    return showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
-          ),
-        ),
-        builder: (context) {
-          return StatefulBuilder(builder: (context, setR) {
-            return Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          I18n.of(context).date_duration,
-                          style:
-                              TextStyle(color: Theme.of(context).colorScheme.secondary),
-                        )),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            futureGet = ApiForceSource(
-                                futureGet: (bool e) =>
-                                    apiClient.getSearchIllust(widget.word,
-                                        search_target: searchTarget,
-                                        sort: selectSort,
-                                        start_date: datePeriod.start,
-                                        end_date: datePeriod.end));
-                          });
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(I18n.of(context).apply,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary)))
-                  ],
-                ),
-                Expanded(
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    child: RangePicker(
-                      datePickerStyles: DatePickerRangeStyles(),
-                      firstDate: DateTime.fromMillisecondsSinceEpoch(
-                          DateTime.now().millisecondsSinceEpoch -
-                              (24 * 60 * 60 * 365 * 1000 * 8)),
-                      lastDate: DateTime.now(),
-                      onChanged: (DatePeriod value) {
-                        setR(() {
-                          datePeriod = value;
-                        });
-                      },
-                      selectedPeriod: datePeriod,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          });
+    if (true) {
+      DateTimeRange? dateTimeRange = await showDateRangePicker(
+          context: context,
+          firstDate: DateTime.fromMillisecondsSinceEpoch(
+              DateTime.now().millisecondsSinceEpoch -
+                  (24 * 60 * 60 * 365 * 1000 * 8)),
+          lastDate: DateTime.now());
+      if (dateTimeRange != null) {
+        setState(() {
+          futureGet = ApiForceSource(
+              futureGet: (bool e) => apiClient.getSearchIllust(widget.word,
+                  search_target: searchTarget,
+                  sort: selectSort,
+                  start_date: dateTimeRange.start,
+                  end_date: dateTimeRange.end));
         });
+      }
+      return;
+    }
   }
 
   void _buildShowBottomSheet(BuildContext context) {
@@ -245,7 +203,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               onPressed: () {},
                               child: Text(I18n.of(context).filter,
                                   style: TextStyle(
-                                      color: Theme.of(context).colorScheme.secondary))),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary))),
                           TextButton(
                               onPressed: () {
                                 setState(() {
@@ -267,7 +227,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               },
                               child: Text(I18n.of(context).apply,
                                   style: TextStyle(
-                                      color: Theme.of(context).colorScheme.secondary))),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary))),
                         ],
                       ),
                       Padding(
@@ -337,7 +299,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         child: SizedBox(
                           width: double.infinity,
                           child: Slider(
-                            activeColor: Theme.of(context).colorScheme.secondary,
+                            activeColor:
+                                Theme.of(context).colorScheme.secondary,
                             onChanged: (double value) {
                               int v = value.toInt();
                               setS(() {

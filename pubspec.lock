@@ -349,13 +349,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.0"
-  flutter_date_pickers:
-    dependency: "direct main"
-    description:
-      name: flutter_date_pickers
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.2.4"
   flutter_displaymode:
     dependency: "direct main"
     description:
