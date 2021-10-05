@@ -1,0 +1,40 @@
+name: Compiling
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+  ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
+  ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '1.8'
+
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      - name: Build
+        run: |
+          flutter doctor -v
+          flutter pub get -v
+          flutter pub run -v build_runner build
+          flutter pub add intl_utils
+          flutter pub run -v intl_utils:generate
+          flutter build -v apk --dart-define=IS_GOOGLEPLAY=false
+
+      - uses: actions/upload-artifact@master
+        name: Upload artifact
+        with:
+          name: app-release.zip
+          path: build/app/outputs/apk/release/app-release.apk
