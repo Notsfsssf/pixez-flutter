@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:html/parser.dart' show parse;
@@ -44,11 +45,15 @@ abstract class _SoupStoreBase with Store {
 
   @action
   fetch(String url) async {
-    if (userSetting.languageNum == 0||userSetting.languageNum>=5) {
-      _fetchEn(url);
-    } else {
-      _fetchCNTW(url);
-    }
+    try {
+      if (userSetting.languageNum == 0 || userSetting.languageNum >= 5) {
+        _fetchEn(url);
+      } else {
+        _fetchCNTW(url);
+      }
+    } on DioError catch (e) {
+      BotToast.showText(text: "404 NOT FOUND");
+    } catch (e) {}
   }
 
   _fetchEn(url) async {

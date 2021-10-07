@@ -18,16 +18,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/fetcher.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
+import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SoupPage extends StatefulWidget {
   final String url;
-  final SpotlightArticle spotlight;
+  final SpotlightArticle? spotlight;
 
   SoupPage({Key? key, required this.url, required this.spotlight})
       : super(key: key);
@@ -53,26 +57,29 @@ class _SoupPageState extends State<SoupPage> {
           body: buildBlocProvider(),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
-              SliverAppBar(
-                pinned: true,
-                expandedHeight: 200.0,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
-                  title: Text(widget.spotlight.pureTitle),
-                  background: PixivImage(
-                    widget.spotlight.thumbnail,
+              if (widget.spotlight != null)
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: 200.0,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: Text(widget.spotlight!.pureTitle),
+                    background: PixivImage(
+                      widget.spotlight!.thumbnail,
+                    ),
                   ),
-                ),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.share),
-                    onPressed: () async {
-                      var url = widget.spotlight.articleUrl;
-                      await launch(url);
-                    },
-                  )
-                ],
-              )
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () async {
+                        var url = widget.spotlight!.articleUrl;
+                        await launch(url);
+                      },
+                    )
+                  ],
+                )
+              else
+                SliverAppBar()
             ];
           },
         ),

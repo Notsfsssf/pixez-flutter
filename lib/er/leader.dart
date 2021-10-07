@@ -28,6 +28,7 @@ import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -58,6 +59,14 @@ class Leader {
           launch(link.toString());
         } catch (e) {}
       }
+      return;
+    }
+    if (link.host.contains("pixivision.net")) {
+      Leader.push(
+          context,
+          SoupPage(
+              url: link.toString().replaceAll("pixez://", "https://"),
+              spotlight: null));
       return;
     }
     if (link.scheme == "pixiv") {

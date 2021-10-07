@@ -20,10 +20,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
+import 'package:pixez/page/soup/soup_page.dart';
+import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
@@ -98,17 +101,31 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                                 )));
                       },
                     );
-                  return ListTile(
-                    title: Text(_filter.text),
-                    subtitle: Text(I18n.of(context).painter_id),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UsersPage(
-                                id: int.tryParse(_filter.text)!,
-                              )));
-                    },
-                  );
-                }, childCount: 2),
+                  if (index == 1)
+                    return ListTile(
+                      title: Text(_filter.text),
+                      subtitle: Text(I18n.of(context).painter_id),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UsersPage(
+                                  id: int.tryParse(_filter.text)!,
+                                )));
+                      },
+                    );
+                  if (index == 2 && _filter.text.length < 5)
+                    return ListTile(
+                      title: Text(_filter.text),
+                      subtitle: Text("Pixivision Id"),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SoupPage(
+                                  url:
+                                      "https://www.pixivision.net/zh/a/${_filter.text.trim()}",
+                                  spotlight: null,
+                                )));
+                      },
+                    );
+                }, childCount: 3),
               ),
               visible: idV,
             ),

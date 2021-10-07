@@ -51,7 +51,21 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
           slivers: [
             SliverAppBar(
               title: TextField(
+                cursorColor: Theme.of(context).iconTheme.color,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1!
+                    .copyWith(color: Theme.of(context).iconTheme.color),
                 controller: _textEditingController,
+                onSubmitted: (v) {
+                  if (v.trim().isEmpty) return;
+                  String value = v.trim();
+                  Leader.push(
+                      context,
+                      NovelResultPage(
+                        word: value,
+                      ));
+                },
               ),
               actions: [
                 IconButton(

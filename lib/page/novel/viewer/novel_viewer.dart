@@ -18,6 +18,7 @@ import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -110,6 +111,15 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).textTheme.bodyText1!.color,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
               title: Text(
                   _novelStore.novelTextResponse!.novelText.length.toString()),
               backgroundColor: Colors.transparent,
@@ -118,7 +128,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   novel: _novelStore.novel!,
                 ),
                 IconButton(
-                    icon: Icon(Icons.settings),
+                    icon: Icon(
+                      Icons.settings,
+                      color: Theme.of(context).textTheme.bodyText1!.color,
+                    ),
                     onPressed: () async {
                       await showModalBottomSheet(
                           context: context,
@@ -168,13 +181,19 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                       userSetting.setNovelFontsize(_textStyle!.fontSize!);
                     }),
                 IconButton(
-                    icon: Icon(Icons.share),
+                    icon: Icon(
+                      Icons.share,
+                      color: Theme.of(context).textTheme.bodyText1!.color,
+                    ),
                     onPressed: () {
                       Share.share(
                           "https://www.pixiv.net/novel/show.php?id=${widget.id}");
                     }),
                 IconButton(
-                  icon: Icon(Icons.more_vert),
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                  ),
                   onPressed: () {
                     _showMessage(context);
                   },

@@ -47,7 +47,7 @@ class Hoster {
       "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
 
   static Map<String, dynamic> hardMap() {
-    return _map;
+    return _map.isEmpty ? _constMap : _map;
   }
 
   static syncRemote() async {
