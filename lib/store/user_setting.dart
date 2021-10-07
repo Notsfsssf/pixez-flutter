@@ -148,9 +148,10 @@ abstract class _UserSettingBase with Store {
   @observable
   ThemeData themeData = ThemeData(
       brightness: Brightness.light,
-      colorScheme:
-          ThemeData().colorScheme.copyWith(secondary: Colors.cyan[400]),
-      primaryColor: Colors.cyan[400]);
+      colorScheme: ThemeData()
+          .colorScheme
+          .copyWith(secondary: Colors.blue[400], primary: Colors.blue[400]),
+      primaryColor: Colors.blue[400]);
 
   @observable
   ThemeMode themeMode = ThemeMode.system;

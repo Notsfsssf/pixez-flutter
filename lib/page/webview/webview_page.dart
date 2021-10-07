@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -42,7 +44,13 @@ class _WebViewPageState extends State<WebViewPage> {
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.open_in_browser),
-              onPressed: () => launch(widget.url)),
+              onPressed: () {
+                try {
+                  CustomTabPlugin.launch(widget.url);
+                } catch (e) {
+                  BotToast.showText(text: e.toString());
+                }
+              }),
           IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () => _webViewController.reload())
@@ -65,7 +73,7 @@ class _WebViewPageState extends State<WebViewPage> {
                         useShouldOverrideUrlLoading: true,
                       ),
                       android: AndroidInAppWebViewOptions(
-                        useHybridComposition: !kDebugMode,
+                        useHybridComposition: true,
                       )),
                   onWebViewCreated: (InAppWebViewController controller) {
                     _webViewController = controller;

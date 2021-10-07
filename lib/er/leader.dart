@@ -87,7 +87,8 @@ class Leader {
               isMailAuthorized: user.isMailAuthorized ? 1 : 0);
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
-          if (Platform.isIOS) pushUntilHome(context);
+          BotToast.showText(text: "Login Success");
+          pushUntilHome(context);
         } catch (e) {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());
