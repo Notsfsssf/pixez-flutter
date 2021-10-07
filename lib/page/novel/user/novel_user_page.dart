@@ -106,7 +106,8 @@ class _NovelUserPageState extends State<NovelUserPage>
 
       if (userStore.userDetail != null)
         return Scaffold(
-          body: NestedScrollView(
+          body: ExtendedNestedScrollView(
+              onlyOneScrollInBody: true,
               headerSliverBuilder:
                   (BuildContext context, bool? innerBoxIsScrolled) {
                 return <Widget>[
@@ -206,7 +207,9 @@ class _NovelUserPageState extends State<NovelUserPage>
                                     ? PixivImage(userStore.userDetail!.profile
                                         .background_image_url!)
                                     : Container(
-                                        color: Theme.of(context).colorScheme.secondary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                       )),
                             Align(
                               alignment: Alignment.bottomCenter,
@@ -264,28 +267,16 @@ class _NovelUserPageState extends State<NovelUserPage>
                     kToolbarHeight +
                     46.0;
               },
-              innerScrollPositionKeyBuilder: () {
-                var index = "Tab";
-                index += _tabController.index.toString();
-                return Key(index);
-              },
               body: IndexedStack(
                 index: _tabIndex,
                 children: [
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab0'),
-                    NovelUserWorkPage(
-                      id: widget.id,
-                    ),
+                  NovelUserWorkPage(
+                    id: widget.id,
                   ),
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab1'),
-                    NovelUserBookmarkPage(
-                      id: widget.id,
-                    ),
+                  NovelUserBookmarkPage(
+                    id: widget.id,
                   ),
-                  NestedScrollViewInnerScrollPositionKeyWidget(Key('Tab2'),
-                      UserDetailPage(userDetail: userStore.userDetail!)),
+                  UserDetailPage(userDetail: userStore.userDetail!),
                 ],
               )),
         );
