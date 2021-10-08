@@ -78,7 +78,7 @@
                 <data
                     android:host="www.pixiv.net"
                     android:scheme="https" />
-                <data
+                <!-- <data
                     android:host="pixivision.net"
                     android:scheme="https" />
                 <data
@@ -95,7 +95,7 @@
                     android:scheme="pixez" />
                 <data
                     android:host="pixivision.net"
-                    android:scheme="pixez" />
+                    android:scheme="pixez" /> -->
                 <data
                     android:host="www.pixiv.net"
                     android:scheme="http" />
