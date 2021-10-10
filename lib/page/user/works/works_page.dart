@@ -25,8 +25,10 @@ import 'package:pixez/network/api_client.dart';
 
 class WorksPage extends StatefulWidget {
   final int id;
+  final bool isNested;
 
-  const WorksPage({Key? key, required this.id}) : super(key: key);
+  const WorksPage({Key? key, required this.id, this.isNested = false})
+      : super(key: key);
 
   @override
   _WorksPageState createState() => _WorksPageState();
@@ -56,7 +58,15 @@ class _WorksPageState extends State<WorksPage> {
           ),
         ),
         Align(
-          child: _buildSortChip(),
+          child: Column(
+            children: [
+              if (widget.isNested)
+                Container(
+                  height: 142,
+                ),
+              _buildSortChip()
+            ],
+          ),
           alignment: Alignment.topCenter,
         ),
       ],

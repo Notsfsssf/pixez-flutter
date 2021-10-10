@@ -20,8 +20,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,6 +38,7 @@ import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/works/works_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
 
 class UsersPage extends StatefulWidget {
@@ -57,13 +57,13 @@ class _UsersPageState extends State<UsersPage>
     with SingleTickerProviderStateMixin {
   late UserStore userStore;
   late TabController _tabController;
-  late ScrollController _scrollController;
+  late RefreshController _refreshController;
 
   @override
   void initState() {
+    _refreshController = RefreshController();
     userStore = widget.userStore ?? UserStore(widget.id);
     _tabController = TabController(length: 3, vsync: this);
-    _scrollController = ScrollController();
     super.initState();
     userStore.firstFetch();
     muteStore.fetchBanUserIds();
@@ -71,7 +71,7 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _refreshController.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -164,191 +164,255 @@ class _UsersPageState extends State<UsersPage>
         );
       }
       return Scaffold(
-        body: ExtendedNestedScrollView(
-          onlyOneScrollInBody: true,
-          pinnedHeaderSliverHeightBuilder: () =>
-              MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
-          controller: _scrollController,
-          body: IndexedStack(index: _tabIndex, children: [
-            WorksPage(
-              id: widget.id,
+        body: NestedScrollView(
+          body: TabBarView(controller: _tabController, children: [
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(builder: (context) {
+                return WorksPage(
+                  key: PageStorageKey<String>("work"),
+                  id: widget.id,
+                  isNested: true,
+                );
+              }),
             ),
-            BookmarkPage(
-              isNested: true,
-              id: widget.id,
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(builder: (context) {
+                return BookmarkPage(
+                  key: PageStorageKey<String>("Book"),
+                  isNested: true,
+                  id: widget.id,
+                );
+              }),
             ),
-            userStore.userDetail != null
-                ? UserDetailPage(userDetail: userStore.userDetail!)
-                : Container(),
-          ]),
-          headerSliverBuilder:
-              (BuildContext context, bool? innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                pinned: true,
-                elevation: 0.0,
-                forceElevated: innerBoxIsScrolled ?? false,
-                expandedHeight: 280,
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () => Share.share(
-                          'https://www.pixiv.net/users/${widget.id}')),
-                  PopupMenuButton<int>(
-                    onSelected: (index) async {
-                      switch (index) {
-                        case 0:
-                          userStore.follow(needPrivate: true);
-                          break;
-                        case 1:
-                          {
-                            final result = await showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title:
-                                        Text('${I18n.of(context).block_user}?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text("OK"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop("OK");
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text("CANCEL"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      )
-                                    ],
-                                  );
-                                });
-                            if (result == "OK") {
-                              await muteStore.insertBanUserId(
-                                  widget.id.toString(),
-                                  userStore.userDetail!.user.name);
-                              Navigator.of(context).pop();
-                            }
-                          }
-                          break;
-                        case 2:
-                          {
-                            Clipboard.setData(ClipboardData(
-                                text:
-                                    'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
-                            BotToast.showText(
-                                text: I18n.of(context).copied_to_clipboard);
-                            break;
-                          }
-                        default:
-                      }
-                    },
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem<int>(
-                          value: 0,
-                          child: Text(I18n.of(context).quietly_follow),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 1,
-                          child: Text(I18n.of(context).block_user),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 2,
-                          child: Text(I18n.of(context).copymessage),
-                        ),
-                      ];
-                    },
-                  )
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.pin,
-                  background: Container(
-                    color: Theme.of(context).cardColor,
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).padding.top + 160,
-                            child: userStore.userDetail != null
-                                ? userStore.userDetail!.profile
-                                            .background_image_url !=
-                                        null
-                                    ? ExtendedImage.network(
-                                        userStore.userDetail!.profile
-                                            .background_image_url!
-                                            .toTrueUrl(),
-                                        fit: BoxFit.fitWidth,
-                                        headers: Hoster.header(
-                                            url: userStore.userDetail!.profile
-                                                .background_image_url),
-                                        enableMemoryCache: false,
-                                      )
-                                    : Container(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )
-                                : Container()),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              _buildHeader(context),
-                              Container(
-                                color: Theme.of(context).cardColor,
-                                child: Column(
-                                  children: <Widget>[
-                                    _buildNameFollow(context),
-                                    _buildComment(context)
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(builder: (context) {
+                return CustomScrollView(
+                  slivers: [
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
                     ),
-                  ),
-                ),
-              ),
-              SliverPersistentHeader(
-                delegate: StickyTabBarDelegate(
-                    child: TabBar(
-                  controller: _tabController,
-                  indicator: MD2Indicator(
-                      indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).colorScheme.primary,
-                      indicatorSize: MD2IndicatorSize.normal),
-                  onTap: (index) {
-                    setState(() {
-                      _tabIndex = index;
-                    });
-                  },
-                  labelColor: Theme.of(context).textTheme.bodyText1!.color,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  tabs: [
-                    Tab(
-                      text: I18n.of(context).works,
-                    ),
-                    Tab(
-                      text: I18n.of(context).bookmark,
-                    ),
-                    Tab(
-                      text: I18n.of(context).detail,
-                    ),
+                    SliverToBoxAdapter(
+                      child: userStore.userDetail != null
+                          ? UserDetailPage(userDetail: userStore.userDetail!)
+                          : Container(),
+                    )
                   ],
-                )),
-                pinned: true,
+                );
+              }),
+            ),
+          ]),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  pinned: true,
+                  elevation: 0.0,
+                  forceElevated: innerBoxIsScrolled,
+                  expandedHeight: 280,
+                  flexibleSpace: spaceBar(context),
+                  actions: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.share),
+                        onPressed: () => Share.share(
+                            'https://www.pixiv.net/users/${widget.id}')),
+                    PopupMenuButton<int>(
+                      onSelected: (index) async {
+                        switch (index) {
+                          case 0:
+                            userStore.follow(needPrivate: true);
+                            break;
+                          case 1:
+                            {
+                              final result = await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          '${I18n.of(context).block_user}?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text("OK"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop("OK");
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text("CANCEL"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  });
+                              if (result == "OK") {
+                                await muteStore.insertBanUserId(
+                                    widget.id.toString(),
+                                    userStore.userDetail!.user.name);
+                                Navigator.of(context).pop();
+                              }
+                            }
+                            break;
+                          case 2:
+                            {
+                              Clipboard.setData(ClipboardData(
+                                  text:
+                                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
+                              BotToast.showText(
+                                  text: I18n.of(context).copied_to_clipboard);
+                              break;
+                            }
+                          default:
+                        }
+                      },
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: Text(I18n.of(context).quietly_follow),
+                          ),
+                          PopupMenuItem<int>(
+                            value: 1,
+                            child: Text(I18n.of(context).block_user),
+                          ),
+                          PopupMenuItem<int>(
+                            value: 2,
+                            child: Text(I18n.of(context).copymessage),
+                          ),
+                        ];
+                      },
+                    )
+                  ],
+                  bottom: buildTabbar(context),
+                ),
               ),
             ];
           },
         ),
       );
     });
+  }
+
+  TabBar buildTabbar(BuildContext context) {
+    return TabBar(
+      controller: _tabController,
+      indicator: MD2Indicator(
+          indicatorHeight: 3,
+          indicatorColor: Theme.of(context).colorScheme.primary,
+          indicatorSize: MD2IndicatorSize.normal),
+      onTap: (index) {
+        setState(() {
+          _tabIndex = index;
+        });
+      },
+      labelColor: Theme.of(context).textTheme.bodyText1!.color,
+      indicatorSize: TabBarIndicatorSize.label,
+      tabs: [
+        Tab(
+          text: I18n.of(context).works,
+        ),
+        Tab(
+          text: I18n.of(context).bookmark,
+        ),
+        Tab(
+          text: I18n.of(context).detail,
+        ),
+      ],
+    );
+  }
+
+  SliverPersistentHeader persistHeader() {
+    return SliverPersistentHeader(
+      delegate: StickyTabBarDelegate(
+          child: TabBar(
+        controller: _tabController,
+        indicator: MD2Indicator(
+            indicatorHeight: 3,
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            indicatorSize: MD2IndicatorSize.normal),
+        onTap: (index) {
+          setState(() {
+            _tabIndex = index;
+          });
+        },
+        labelColor: Theme.of(context).textTheme.bodyText1!.color,
+        indicatorSize: TabBarIndicatorSize.label,
+        tabs: [
+          Tab(
+            text: I18n.of(context).works,
+          ),
+          Tab(
+            text: I18n.of(context).bookmark,
+          ),
+          Tab(
+            text: I18n.of(context).detail,
+          ),
+        ],
+      )),
+      pinned: true,
+    );
+  }
+
+  FlexibleSpaceBar spaceBar(BuildContext context) {
+    return FlexibleSpaceBar(
+      collapseMode: CollapseMode.pin,
+      background: Container(
+        color: Theme.of(context).cardColor,
+        child: Stack(
+          children: <Widget>[
+            Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).padding.top + 160,
+                child: userStore.userDetail != null
+                    ? userStore.userDetail!.profile.background_image_url != null
+                        ? ExtendedImage.network(
+                            userStore.userDetail!.profile.background_image_url!
+                                .toTrueUrl(),
+                            fit: BoxFit.fitWidth,
+                            headers: Hoster.header(
+                                url: userStore
+                                    .userDetail!.profile.background_image_url),
+                            enableMemoryCache: false,
+                          )
+                        : Container(
+                            color: Theme.of(context).colorScheme.secondary,
+                          )
+                    : Container()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildHeader(context),
+                  Container(
+                    color: Theme.of(context).cardColor,
+                    child: Column(
+                      children: <Widget>[
+                        _buildNameFollow(context),
+                        _buildComment(context),
+                        Tab(
+                          text: "",
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildNameFollow(BuildContext context) {

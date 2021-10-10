@@ -36,13 +36,13 @@ class LightingList extends StatefulWidget {
   final bool? isNested;
   final RefreshController? refreshController;
 
-  const LightingList({
-    Key? key,
-    required this.source,
-    this.header,
-    this.isNested,
-    this.refreshController,
-  }) : super(key: key);
+  const LightingList(
+      {Key? key,
+      required this.source,
+      this.header,
+      this.isNested,
+      this.refreshController})
+      : super(key: key);
 
   @override
   _LightingListState createState() => _LightingListState();
@@ -150,40 +150,53 @@ class _LightingListState extends State<LightingList> {
     _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
-          ScrollMetrics metrics = notification.metrics;
-          if (backToTopVisible == metrics.atEdge && mounted) {
-            setState(() {
-              backToTopVisible = !backToTopVisible;
-            });
-          }
-          return true;
+      ScrollMetrics metrics = notification.metrics;
+      if (backToTopVisible == metrics.atEdge && mounted) {
+        setState(() {
+          backToTopVisible = !backToTopVisible;
+        });
+      }
+      return true;
+    }, child: Builder(builder: (context) {
+      if (_isNested)
+        return CustomScrollView(
+          slivers: [
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),
+            SliverWaterfallFlow(
+              gridDelegate: _buildGridDelegate(),
+              delegate: _buildSliverChildBuilderDelegate(context),
+            )
+          ],
+        );
+      return SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: (Platform.isAndroid)
+            ? MaterialClassicHeader(
+                color: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Theme.of(context).cardColor,
+              )
+            : ClassicHeader(),
+        footer: _buildCustomFooter(),
+        controller: _refreshController,
+        onRefresh: () {
+          _store.fetch(force: true);
         },
-        child: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          header: (Platform.isAndroid)
-              ? MaterialClassicHeader(
-                  color: Theme.of(context).colorScheme.secondary,
-                  backgroundColor: Theme.of(context).cardColor,
-                )
-              : ClassicHeader(),
-          footer: _buildCustomFooter(),
-          controller: _refreshController,
-          onRefresh: () {
-            _store.fetch(force: true);
+        onLoading: () {
+          _store.fetchNext();
+        },
+        child: WaterfallFlow.builder(
+          padding: EdgeInsets.all(5.0),
+          itemCount: _store.iStores.length,
+          itemBuilder: (context, index) {
+            return _buildItem(index);
           },
-          onLoading: () {
-            _store.fetchNext();
-          },
-          child: WaterfallFlow.builder(
-            padding: EdgeInsets.all(5.0),
-            itemCount: _store.iStores.length,
-            itemBuilder: (context, index) {
-              return _buildItem(index);
-            },
-            gridDelegate: _buildGridDelegate(),
-          ),
-        ));
+          gridDelegate: _buildGridDelegate(),
+        ),
+      );
+    }));
   }
 
   bool needToBan(Illusts illust) {
@@ -247,35 +260,53 @@ class _LightingListState extends State<LightingList> {
         }
         return true;
       },
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-                color: Theme.of(context).colorScheme.secondary,
-                backgroundColor: Theme.of(context).cardColor,
+      child: Builder(builder: (context) {
+        if (_isNested)
+          return CustomScrollView(
+            slivers: [
+              SliverOverlapInjector(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+              SliverToBoxAdapter(
+                child: Container(child: widget.header),
+              ),
+              SliverWaterfallFlow(
+                gridDelegate: _buildGridDelegate(),
+                delegate: _buildSliverChildBuilderDelegate(context),
               )
-            : ClassicHeader(),
-        footer: _buildCustomFooter(),
-        controller: _refreshController,
-        onRefresh: () {
-          _store.fetch(force: true);
-        },
-        onLoading: () {
-          _store.fetchNext();
-        },
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(child: widget.header),
-            ),
-            SliverWaterfallFlow(
-              gridDelegate: _buildGridDelegate(),
-              delegate: _buildSliverChildBuilderDelegate(context),
-            )
-          ],
-        ),
-      ),
+            ],
+          );
+        return SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: (Platform.isAndroid)
+              ? MaterialClassicHeader(
+                  color: Theme.of(context).colorScheme.secondary,
+                  backgroundColor: Theme.of(context).cardColor,
+                )
+              : ClassicHeader(),
+          footer: _buildCustomFooter(),
+          controller: _refreshController,
+          onRefresh: () {
+            _store.fetch(force: true);
+          },
+          onLoading: () {
+            _store.fetchNext();
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(child: widget.header),
+              ),
+              SliverWaterfallFlow(
+                gridDelegate: _buildGridDelegate(),
+                delegate: _buildSliverChildBuilderDelegate(context),
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 

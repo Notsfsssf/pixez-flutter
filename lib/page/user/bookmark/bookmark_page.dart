@@ -32,12 +32,12 @@ class BookmarkPage extends StatefulWidget {
   final String restrict;
   final bool isNested;
 
-  const BookmarkPage({
-    Key? key,
-    required this.id,
-    this.restrict = "public",
-    this.isNested = false,
-  }) : super(key: key);
+  const BookmarkPage(
+      {Key? key,
+      required this.id,
+      this.restrict = "public",
+      this.isNested = false})
+      : super(key: key);
 
   @override
   _BookmarkPageState createState() => _BookmarkPageState();
