@@ -97,7 +97,7 @@ class Leader {
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
           BotToast.showText(text: "Login Success");
-          pushUntilHome(context);
+          if (Platform.isIOS) pushUntilHome(context);
         } catch (e) {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());
