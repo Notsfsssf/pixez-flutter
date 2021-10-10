@@ -61,9 +61,6 @@ dependencies:
   auto_animated: ^3.0.0
   http: ^0.13.4
   dio_http_cache: ^0.3.0
-  md2_tab_indicator:
-    git:
-      url: https://github.com/westdabestdb/md2_tab_indicator
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:md2_tab_indicator/md2_tab_indicator.dart';
+import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
@@ -49,7 +49,9 @@ class _NetworkSelectPageState extends State<NetworkSelectPage>
                   textAlign: TextAlign.center,
                 ),
               ),
-              Container(height: 24,),
+              Container(
+                height: 24,
+              ),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

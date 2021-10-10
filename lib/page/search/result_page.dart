@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:md2_tab_indicator/md2_tab_indicator.dart';
+import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';

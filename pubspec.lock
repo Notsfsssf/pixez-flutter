@@ -539,15 +539,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.12.10"
-  md2_tab_indicator:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "1097deb4f4018c408fd4745711efb8f0ea9044e7"
-      url: "https://github.com/westdabestdb/md2_tab_indicator"
-    source: git
-    version: "2.0.0"
   meta:
     dependency: transitive
     description:
