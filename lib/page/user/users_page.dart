@@ -164,22 +164,29 @@ class _UsersPageState extends State<UsersPage>
         );
       }
       return Scaffold(
-        body: ExtendedNestedScrollView(
-          onlyOneScrollInBody: true,
+        body: NestedScrollView(
           pinnedHeaderSliverHeightBuilder: () =>
               MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
           controller: _scrollController,
+          innerScrollPositionKeyBuilder: () =>
+              Key("Tab${_tabController.index}"),
           body: IndexedStack(index: _tabIndex, children: [
-            WorksPage(
-              id: widget.id,
-            ),
-            BookmarkPage(
-              isNested: true,
-              id: widget.id,
-            ),
-            userStore.userDetail != null
-                ? UserDetailPage(userDetail: userStore.userDetail!)
-                : Container(),
+            NestedScrollViewInnerScrollPositionKeyWidget(
+                Key('Tab0'),
+                WorksPage(
+                  id: widget.id,
+                )),
+            NestedScrollViewInnerScrollPositionKeyWidget(
+                Key('Tab1'),
+                BookmarkPage(
+                  isNested: true,
+                  id: widget.id,
+                )),
+            NestedScrollViewInnerScrollPositionKeyWidget(
+                Key('Tab2'),
+                userStore.userDetail != null
+                    ? UserDetailPage(userDetail: userStore.userDetail!)
+                    : Container()),
           ]),
           headerSliverBuilder:
               (BuildContext context, bool? innerBoxIsScrolled) {
