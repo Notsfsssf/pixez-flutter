@@ -45,5 +45,6 @@ jobs:
       - uses: actions/upload-artifact@master
         name: Upload artifact
         with:
-          name: app-release.zip
-          path: build/app/outputs/apk/release/app-release.apk
+          path: |
+            build/app/outputs/apk/release/app-release.apk
+            build/app/outputs/flutter-apk/app-release.apk
