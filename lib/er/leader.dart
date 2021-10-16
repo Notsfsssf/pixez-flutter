@@ -112,7 +112,7 @@ class Leader {
     }
   }
 
-  static void _parseUriContent(BuildContext context, Uri link) {
+  static void  _parseUriContent(BuildContext context, Uri link) {
     if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {

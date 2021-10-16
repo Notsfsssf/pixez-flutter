@@ -71,7 +71,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -83,7 +83,7 @@ android {
     defaultConfig {
         applicationId packageName
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 10006060
         versionName "0.6.6 muse"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
