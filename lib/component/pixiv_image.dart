@@ -23,7 +23,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
 const ImageHost = "i.pximg.net";
-const ImageCatHost = "i.pixiv.cat";
+const ImageCatHost = "i.pixiv.re";
 const ImageSHost = "s.pximg.net";
 
 class PixivImage extends StatefulWidget {
