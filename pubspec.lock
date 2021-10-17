@@ -710,12 +710,10 @@ packages:
   save_in_gallery:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "66064b97106387dcb5521ce084e080cfedde6034"
-      url: "https://github.com/Notsfsssf/save_in_gallery"
-    source: git
-    version: "0.1.4"
+      path: "plugins/save_in_gallery"
+      relative: true
+    source: path
+    version: "0.1.5"
   share_plus:
     dependency: "direct main"
     description:

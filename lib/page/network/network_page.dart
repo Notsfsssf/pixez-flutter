@@ -41,6 +41,8 @@ class _NetworkPageState extends State<NetworkPage> {
           children: [
             AppBar(
               backgroundColor: Colors.transparent,
+              iconTheme: IconThemeData(
+                  color: Theme.of(context).textTheme.bodyText1!.color),
               automaticallyImplyLeading: _automaticallyImplyLeading,
               elevation: 0.0,
             ),
