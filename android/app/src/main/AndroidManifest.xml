@@ -28,7 +28,8 @@
             android:name=".IntentActivity"
             android:theme="@style/LaunchTheme"></activity>
 
-        <receiver android:name=".CardAppWidget">
+        <receiver android:name=".CardAppWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -44,7 +45,8 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
             android:theme="@style/NormalTheme"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
 
             <!--
                  Specifies an Android theme to apply to this Activity as soon as

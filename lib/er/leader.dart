@@ -112,7 +112,7 @@ class Leader {
     }
   }
 
-  static void  _parseUriContent(BuildContext context, Uri link) {
+  static void _parseUriContent(BuildContext context, Uri link) {
     if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
@@ -153,7 +153,8 @@ class Leader {
             LPrinter.d(e);
           }
         }
-      } else if (link.path.contains("users")) {
+      }
+      if (link.path.contains("users")) {
         List<String> paths = link.pathSegments;
         int index = paths.indexOf("users");
         if (index != -1) {
