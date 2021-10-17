@@ -42,9 +42,12 @@ extension TimeExts on String {
       return this;
     } else {
       if (userSetting.pictureSource != ImageHost) {
-        return Uri.parse(this)
+        try {
+          return Uri.parse(this)
             .replace(host: userSetting.pictureSource)
             .toString();
+        } catch (e) {
+        }
       }
       if (this.contains(ImageHost)) {
         return this.replaceFirst(ImageHost, splashStore.host);

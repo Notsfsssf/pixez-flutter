@@ -136,7 +136,8 @@ class _NetworkPageState extends State<NetworkPage> {
                                   Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         selected: userSetting.pictureSource == ImageHost,
-                        selectedTileColor: Theme.of(context).colorScheme.secondary,
+                        selectedTileColor:
+                            Theme.of(context).colorScheme.secondary,
                         onTap: () async {
                           userSetting.setPictureSource(ImageHost);
                           splashStore.setHost(ImageHost);
@@ -152,7 +153,8 @@ class _NetworkPageState extends State<NetworkPage> {
                                   Theme.of(context).textTheme.bodyText1!.color),
                         ),
                         selected: userSetting.pictureSource == ImageCatHost,
-                        selectedTileColor: Theme.of(context).colorScheme.secondary,
+                        selectedTileColor:
+                            Theme.of(context).colorScheme.secondary,
                         onTap: () async {
                           userSetting.setPictureSource(ImageCatHost);
                           splashStore.setHost(ImageCatHost);
@@ -161,10 +163,12 @@ class _NetworkPageState extends State<NetworkPage> {
                       ListTile(
                         selected: userSetting.pictureSource != ImageHost &&
                             userSetting.pictureSource != ImageCatHost,
-                        selectedTileColor: Theme.of(context).colorScheme.secondary,
+                        selectedTileColor:
+                            Theme.of(context).colorScheme.secondary,
                         title: Theme(
                           data: Theme.of(context).copyWith(
-                              primaryColor: Theme.of(context).colorScheme.secondary),
+                              primaryColor:
+                                  Theme.of(context).colorScheme.secondary),
                           child: TextField(
                             maxLines: 1,
                             controller: _textEditingController,
@@ -174,8 +178,20 @@ class _NetworkPageState extends State<NetworkPage> {
                                 onPressed: () async {
                                   if (_textEditingController.text.isEmpty)
                                     return;
+                                  if (_textEditingController.text
+                                          .contains("/") ||
+                                      _textEditingController.text
+                                          .trim()
+                                          .contains(" ")) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text("illegal"),
+                                      backgroundColor: Colors.red,
+                                    ));
+                                    return;
+                                  }
                                   await userSetting.setPictureSource(
-                                      _textEditingController.text);
+                                      _textEditingController.text.trim());
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
                                 },
