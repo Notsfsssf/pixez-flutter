@@ -31,7 +31,7 @@ dependencies:
   share_plus: ^3.0.2
   permission_handler: ^8.2.2
   save_in_gallery:
-    path: ./plugins/save_in_gallery
+    git: https://github.com/Notsfsssf/save_in_gallery
   archive: ^3.1.5
   url_launcher: ^6.0.10
   bot_toast: ^4.0.1
