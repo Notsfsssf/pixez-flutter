@@ -201,21 +201,23 @@ class _AboutPageState extends State<AboutPage> {
                         if (index == 0 && accountStore.now != null) {
                           //Tragic Life:輪播凱留TAG 10000+收藏的圖
                           try {
-                            final response = await apiClient
-                                .getSearchIllust("キャル(プリコネ) 10000users入り");
-                            Recommend recommend =
-                                Recommend.fromJson(response.data);
-                            if (recommend.illusts.isEmpty) return;
-                            int i =
-                                Random().nextInt(recommend.illusts.length - 1);
-                            if (i < 0 || i >= recommend.illusts.length) i = 0;
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return SafeArea(
-                                      child: PixivImage(recommend
-                                          .illusts[0].imageUrls.medium));
-                                });
+                            if (Platform.isAndroid) {
+                              final response = await apiClient
+                                  .getSearchIllust("キャル(プリコネ) 10000users入り");
+                              Recommend recommend =
+                                  Recommend.fromJson(response.data);
+                              if (recommend.illusts.isEmpty) return;
+                              int i = Random()
+                                  .nextInt(recommend.illusts.length - 1);
+                              if (i < 0 || i >= recommend.illusts.length) i = 0;
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return SafeArea(
+                                        child: PixivImage(recommend
+                                            .illusts[0].imageUrls.medium));
+                                  });
+                            }
                           } catch (e) {}
                         }
                         if (index == 1) {

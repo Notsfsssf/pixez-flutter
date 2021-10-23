@@ -377,7 +377,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
             )
           ],
         ),
-        Expanded(child: LoginInFirst())
       ]);
     });
   }
