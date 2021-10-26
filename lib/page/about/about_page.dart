@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -21,9 +22,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
@@ -31,7 +32,6 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/about/iap_store.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share_plus/share_plus.dart';
@@ -97,20 +97,52 @@ class _AboutPageState extends State<AboutPage> {
   ];
 
   late bool hasNewVersion;
-  late IAPStore iapStore;
+  StreamSubscription<List<PurchaseDetails>>? _subscription;
+  List<ProductDetails> products = [];
 
   @override
   void initState() {
-    iapStore = IAPStore();
+    initIap();
     hasNewVersion = widget.newVersion ?? false;
     super.initState();
-    if (Platform.isIOS) iapStore.initPlatformState();
-    if (Platform.isAndroid && Constants.isGooglePlay) iapStore.initAndroidIap();
+  }
+
+  initIap() async {
+    final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription?.cancel();
+    }, onError: (error) {
+    }) as StreamSubscription<List<PurchaseDetails>>?;
+    const Set<String> _kIds = <String>{'support', 'support1'};
+    final ProductDetailsResponse response =
+        await InAppPurchase.instance.queryProductDetails(_kIds);
+    if (response.notFoundIDs.isNotEmpty) {
+    }
+    List<ProductDetails> pDetails = response.productDetails;
+    products.clear();
+    products.addAll(pDetails);
+  }
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
-    iapStore.dispose();
     super.dispose();
   }
 
@@ -475,14 +507,15 @@ class _AboutPageState extends State<AboutPage> {
                 trailing: Text('12￥'),
                 onTap: () async {
                   BotToast.showText(text: 'try to Purchase');
-                  List<PurchasedItem>? items = await FlutterInappPurchase
-                      .instance
-                      .getPendingTransactionsIOS();
-                  for (var i in items!) {
-                    await FlutterInappPurchase.instance.finishTransaction(i);
+                  for (var p in products) {
+                    if (p.id == "support") {
+                      final PurchaseParam purchaseParam =
+                          PurchaseParam(productDetails: p);
+                      InAppPurchase.instance
+                          .buyConsumable(purchaseParam: purchaseParam);
+                      break;
+                    }
                   }
-                  await FlutterInappPurchase.instance
-                      .requestPurchase('support');
                 },
               ),
             ),
@@ -493,36 +526,36 @@ class _AboutPageState extends State<AboutPage> {
                 trailing: Text('25￥'),
                 onTap: () async {
                   BotToast.showText(text: 'try to Purchase');
-
-                  List<PurchasedItem> items = (await FlutterInappPurchase
-                      .instance
-                      .getPendingTransactionsIOS())!;
-                  for (var i in items) {
-                    await FlutterInappPurchase.instance.finishTransaction(i);
+                  for (var p in products) {
+                    if (p.id == "support1") {
+                      final PurchaseParam purchaseParam =
+                          PurchaseParam(productDetails: p);
+                      InAppPurchase.instance
+                          .buyConsumable(purchaseParam: purchaseParam);
+                      break;
+                    }
                   }
-                  await FlutterInappPurchase.instance
-                      .requestPurchase('support1');
                 },
               ),
             ),
           ],
-          if (!Platform.isIOS &&
-              iapStore.items.isNotEmpty &&
-              Constants.isGooglePlay)
-            for (var i in iapStore.items)
-              Card(
-                margin: EdgeInsets.all(8.0),
-                elevation: 1.0,
-                child: ListTile(
-                  leading: Icon(FontAwesomeIcons.coffee),
-                  title: Text(i.description ?? ""),
-                  subtitle: Text(i.localizedPrice ?? ""),
-                  onTap: () {
-                    FlutterInappPurchase.instance
-                        .requestPurchase(i.productId ?? "");
-                  },
-                ),
-              )
+          // if (!Platform.isIOS &&
+          //     iapStore.items.isNotEmpty &&
+          //     Constants.isGooglePlay)
+          //   for (var i in iapStore.items)
+          //     Card(
+          //       margin: EdgeInsets.all(8.0),
+          //       elevation: 1.0,
+          //       child: ListTile(
+          //         leading: Icon(FontAwesomeIcons.coffee),
+          //         title: Text(i.description ?? ""),
+          //         subtitle: Text(i.localizedPrice ?? ""),
+          //         onTap: () {
+          //           FlutterInappPurchase.instance
+          //               .requestPurchase(i.productId ?? "");
+          //         },
+          //       ),
+          //     )
         ],
       );
     });

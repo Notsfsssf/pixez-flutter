@@ -356,13 +356,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
-  flutter_inapp_purchase:
-    dependency: "direct main"
-    description:
-      name: flutter_inapp_purchase
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "5.0.3"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -490,6 +483,34 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.1"
+  in_app_purchase:
+    dependency: "direct main"
+    description:
+      name: in_app_purchase
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.9"
+  in_app_purchase_android:
+    dependency: transitive
+    description:
+      name: in_app_purchase_android
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.5+1"
+  in_app_purchase_ios:
+    dependency: transitive
+    description:
+      name: in_app_purchase_ios
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.3+5"
+  in_app_purchase_platform_interface:
+    dependency: transitive
+    description:
+      name: in_app_purchase_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.0"
   intl:
     dependency: "direct main"
     description:
@@ -710,9 +731,11 @@ packages:
   save_in_gallery:
     dependency: "direct main"
     description:
-      path: "plugins/save_in_gallery"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "6dedeb662e22a0380c9fbf1c33ba84100d809bb6"
+      url: "https://github.com/Notsfsssf/save_in_gallery"
+    source: git
     version: "0.1.5"
   share_plus:
     dependency: "direct main"

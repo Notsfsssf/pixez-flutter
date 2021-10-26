@@ -39,7 +39,7 @@ dependencies:
   uni_links2: ^0.6.0+2
   mobx: ^2.0.4
   flutter_mobx: ^2.0.2
-  flutter_inapp_purchase: ^5.0.3
+  in_app_purchase: ^1.0.9
   flutter_widget_from_html_core: ^0.7.0
   device_info_plus: ^3.0.1
   flutter_displaymode: ^0.3.2
