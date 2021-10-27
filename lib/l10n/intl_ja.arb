@@ -82,7 +82,7 @@
   "mode_list": "デイリー 男性に人気 女性に人気 オリジナル ルーキー ウィークリー マンスリー XVIII XVIII_W XVIII_G",
   "novel_mode_list": "デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G",
   "more": "もっと",
-  "more_then_starnum_bookmark": "{starNum} 回以上お気に入り",
+  "more_then_starnum_bookmark": "{starNum} 回以上のお気に入り",
   "@more_then_starnum_bookmark": {
     "description": "A message with a single parameter",
     "placeholders": {
