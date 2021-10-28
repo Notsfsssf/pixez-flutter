@@ -28,6 +28,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
@@ -36,6 +37,7 @@ import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:in_app_purchase_ios/store_kit_wrappers.dart';
 
 class Contributor {
   final String name;
@@ -113,16 +115,23 @@ class _AboutPageState extends State<AboutPage> {
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onDone: () {
       _subscription?.cancel();
-    }, onError: (error) {
-    }) as StreamSubscription<List<PurchaseDetails>>?;
+    }, onError: (error) {}) as StreamSubscription<List<PurchaseDetails>>?;
     const Set<String> _kIds = <String>{'support', 'support1'};
     final ProductDetailsResponse response =
         await InAppPurchase.instance.queryProductDetails(_kIds);
-    if (response.notFoundIDs.isNotEmpty) {
-    }
+    if (response.notFoundIDs.isNotEmpty) {}
     List<ProductDetails> pDetails = response.productDetails;
     products.clear();
     products.addAll(pDetails);
+    if (Platform.isIOS && products.isNotEmpty) {
+      try {
+        var transactions = await SKPaymentQueueWrapper().transactions();
+        transactions.forEach((skPaymentTransactionWrapper) {
+          SKPaymentQueueWrapper()
+              .finishTransaction(skPaymentTransactionWrapper);
+        });
+      } catch (e) {}
+    }
   }
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
@@ -132,7 +141,7 @@ class _AboutPageState extends State<AboutPage> {
         if (purchaseDetails.status == PurchaseStatus.error) {
         } else if (purchaseDetails.status == PurchaseStatus.purchased ||
             purchaseDetails.status == PurchaseStatus.restored) {
-
+          BotToast.showText(text: "Thanks");
         }
         if (purchaseDetails.pendingCompletePurchase) {
           await InAppPurchase.instance.completePurchase(purchaseDetails);
