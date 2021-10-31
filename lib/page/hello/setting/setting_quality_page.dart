@@ -598,48 +598,30 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    child:
-                        Text(I18n.of(context).max_download_task_running_count),
-                    padding: EdgeInsets.all(16),
-                  ),
-                  Observer(builder: (_) {
-                    return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
-                      tabs: [
-                        Tab(
-                          text: '1',
-                        ),
-                        Tab(
-                          text: '2',
-                        ),
-                        Tab(
-                          text: '3',
-                        ),
-                        Tab(
-                          text: '4',
-                        ),
-                      ],
-                      onTap: (index) {
-                        userSetting.setMaxRunningTask(index + 1);
-                      },
-                      controller: TabController(
-                          length: 4,
-                          vsync: this,
-                          initialIndex: userSetting.maxRunningTask - 1),
-                    );
-                  }),
-                ],
-              ),
+              child: Observer(builder: (_) {
+                final targetValue = userSetting.maxRunningTask < 1
+                    ? 1
+                    : userSetting.maxRunningTask;
+                return Column(
+                  children: <Widget>[
+                    Padding(
+                      child: Text(
+                          "${I18n.of(context).max_download_task_running_count} $targetValue"),
+                      padding: EdgeInsets.all(16),
+                    ),
+                    Slider(
+                        value: targetValue.toDouble(),
+                        label: '${targetValue}',
+                        min: 1,
+                        max: 10,
+                        divisions: 10,
+                        onChanged: (v) {
+                          int value = v.toInt();
+                          userSetting.setMaxRunningTask(value);
+                        }),
+                  ],
+                );
+              }),
             ),
           ),
           Padding(
