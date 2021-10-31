@@ -28,12 +28,12 @@ dependencies:
   sqflite: ^2.0.0+4
   path_provider: ^2.0.5
   shared_preferences: ^2.0.8
-  share_plus: ^3.0.2
+  share_plus: ^3.0.4
   permission_handler: ^8.2.2
   save_in_gallery:
     git: https://github.com/Notsfsssf/save_in_gallery
   archive: ^3.1.5
-  url_launcher: ^6.0.10
+  url_launcher: ^6.0.12
   bot_toast: ^4.0.1
   package_info: ^2.0.2
   uni_links2: ^0.6.0+2
