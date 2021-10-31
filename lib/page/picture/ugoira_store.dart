@@ -16,6 +16,7 @@
 
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
@@ -25,6 +26,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/exts.dart';
+import 'package:share_plus/share_plus.dart';
 
 part 'ugoira_store.g.dart';
 
@@ -46,6 +48,25 @@ abstract class _UgoiraStoreBase with Store {
 
   List<FileSystemEntity> drawPool = [];
   UgoiraMetadataResponse? ugoiraMetadataResponse;
+
+  export() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      String fullPath = "$tempPath/${id}.zip";
+      File fullPathFile = File(fullPath);
+      if (fullPathFile.existsSync()) {
+        Directory? directory = await getExternalStorageDirectory();
+        Directory zipFolder = Directory("${directory!.path}/ugoira_zip/");
+        if (!zipFolder.existsSync()) {
+          zipFolder.createSync(recursive: true);
+        }
+        File targetFile = File("${zipFolder.path}/${id}.zip");
+        fullPathFile.copySync(targetFile.path);
+        BotToast.showText(text: "export to ${fullPathFile.path} success");
+      }
+    } catch (e) {}
+  }
 
   @action
   unZip() async {

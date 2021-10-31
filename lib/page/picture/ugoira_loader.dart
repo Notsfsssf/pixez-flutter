@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Image;
@@ -26,6 +25,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
+import 'package:share_plus/share_plus.dart';
 
 class UgoiraLoader extends StatefulWidget {
   final int id;
@@ -81,6 +81,12 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                         },
                       ),
                       ListTile(
+                        title: Text('export'),
+                        onTap: () {
+                          Navigator.of(context).pop('EXPORT');
+                        },
+                      ),
+                      ListTile(
                         title: Text(I18n.of(context).cancel),
                         onTap: () {
                           Navigator.of(context).pop('SOURCE');
@@ -110,7 +116,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 isEncoding = false;
               }
             } else if (result == "SOURCE") {
-
+            } else if (result == "EXPORT") {
+              _store.export();
             }
           },
           child: UgoiraWidget(
@@ -131,7 +138,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
             PixivImage(widget.illusts.imageUrls.medium),
             LinearProgressIndicator(
               backgroundColor: Theme.of(context).cardColor,
-              valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.secondary),
+              valueColor: AlwaysStoppedAnimation(
+                  Theme.of(context).colorScheme.secondary),
               value: _store.count / _store.total,
             )
           ],
