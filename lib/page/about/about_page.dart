@@ -28,7 +28,6 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
@@ -110,6 +109,7 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   initIap() async {
+    if (!Constants.isGooglePlay && !Platform.isIOS) return;
     final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _listenToPurchaseUpdated(purchaseDetailsList);
@@ -548,23 +548,24 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ),
           ],
-          // if (!Platform.isIOS &&
-          //     iapStore.items.isNotEmpty &&
-          //     Constants.isGooglePlay)
-          //   for (var i in iapStore.items)
-          //     Card(
-          //       margin: EdgeInsets.all(8.0),
-          //       elevation: 1.0,
-          //       child: ListTile(
-          //         leading: Icon(FontAwesomeIcons.coffee),
-          //         title: Text(i.description ?? ""),
-          //         subtitle: Text(i.localizedPrice ?? ""),
-          //         onTap: () {
-          //           FlutterInappPurchase.instance
-          //               .requestPurchase(i.productId ?? "");
-          //         },
-          //       ),
-          //     )
+          if (!Platform.isIOS && products.isNotEmpty && Constants.isGooglePlay)
+            for (var i in products)
+              Card(
+                margin: EdgeInsets.all(8.0),
+                elevation: 1.0,
+                child: ListTile(
+                  leading: Icon(FontAwesomeIcons.coffee),
+                  title: Text(i.description ?? ""),
+                  subtitle: Text(i.price ?? ""),
+                  onTap: () {
+                    BotToast.showText(text: 'try to Purchase');
+                    final PurchaseParam purchaseParam =
+                        PurchaseParam(productDetails: i);
+                    InAppPurchase.instance
+                        .buyConsumable(purchaseParam: purchaseParam);
+                  },
+                ),
+              )
         ],
       );
     });

@@ -130,26 +130,52 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/karin722');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars3.githubusercontent.com/u/54385201?s=460&v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('karin722'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
+    Row(
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            try {
+              if (Platform.isAndroid && !Constants.isGooglePlay)
+                launch('https://github.com/karin722');
+            } catch (e) {}
+          },
+          child: Row(children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(
+                  'https://avatars3.githubusercontent.com/u/54385201?s=460&v=4'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                'karin722',
+                style: TextStyle(fontSize: 12),
+              ),
+            )
+          ]),
+        ),
+        InkWell(
+          onTap: () {
+            try {
+              if (Platform.isAndroid && !Constants.isGooglePlay)
+                launch('https://github.com/arrow2nd');
+            } catch (e) {}
+          },
+          child: Row(children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(
+                  'https://avatars.githubusercontent.com/u/44780846?v=4'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                'arrow2nd',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ]),
+        ),
+        Icon(Icons.translate)
+      ],
     ),
     InkWell(
       onTap: () {
