@@ -477,6 +477,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                             store: list[index],
                           ));
                     },
+                    onLongPress: () {
+                      saveStore.saveImage(_aboutStore.illusts[index]);
+                    },
                     child: PixivImage(
                       _aboutStore.illusts[index].imageUrls.squareMedium,
                       enableMemoryCache: false,
@@ -681,7 +684,9 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                                     shape: BoxShape.circle,
                                     color: userStore!.isFollow
                                         ? Colors.yellow
-                                        : Theme.of(context).colorScheme.secondary,
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                   )
                                 : BoxDecoration(),
                           ),
@@ -722,7 +727,8 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                 children: <Widget>[
                   SelectableText(
                     illust.title,
-                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
                   Container(
                     height: 4.0,
