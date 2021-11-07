@@ -246,5 +246,6 @@
   "view_replies": "댓글 보기",
   "temporarily_visible": "일시적으로 보임",
   "unclassified":"분류 없음",
-  "max_download_task_running_count": "최대 다운로드 작업 개수"
+  "max_download_task_running_count": "최대 다운로드 작업 개수",
+  "export": "Export"
 }

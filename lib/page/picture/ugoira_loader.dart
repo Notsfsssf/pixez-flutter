@@ -81,7 +81,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                         },
                       ),
                       ListTile(
-                        title: Text('export'),
+                        title: Text(I18n.of(context).export),
                         onTap: () {
                           Navigator.of(context).pop('EXPORT');
                         },

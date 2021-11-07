@@ -246,5 +246,6 @@
   "view_replies": "View reply",
   "temporarily_visible": "temporarily visible",
   "unclassified": "Unclassified",
-  "max_download_task_running_count": "Max download task running count"
+  "max_download_task_running_count": "Max download task running count",
+  "export": "Export"
 }

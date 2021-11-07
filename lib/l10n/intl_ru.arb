@@ -246,5 +246,6 @@
   "view_replies": "Показать ответы",
   "temporarily_visible": "Временно показано",
   "unclassified":"Неклассифицированный",
-  "max_download_task_running_count": "Максимальное количество запущенных задач"
+  "max_download_task_running_count": "Максимальное количество запущенных задач",
+  "export": "Export"
 }

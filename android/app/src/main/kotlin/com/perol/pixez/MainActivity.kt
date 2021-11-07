@@ -112,7 +112,10 @@ class MainActivity : FlutterActivity() {
                         } else {
                             val fileId = splicingUrl(dirId, fName)
                             val fileUri =
-                                DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+                                DocumentsContract.buildDocumentUriUsingTree(
+                                    treeDocument.uri,
+                                    fileId
+                                )
                             val targetFile = DocumentFile.fromSingleUri(this, fileUri)
                             targetFile != null && targetFile.exists()
                         }
@@ -207,6 +210,7 @@ class MainActivity : FlutterActivity() {
         saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
         Weiss.bindChannel(flutterEngine)
         CustomTab.bindChannel(this, flutterEngine)
+        Safer.bindChannel(this, flutterEngine)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             SUPPORTER_CHANNEL
@@ -390,6 +394,7 @@ class MainActivity : FlutterActivity() {
         data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
+        Safer.bindResult(requestCode, resultCode, data)
         when (requestCode) {
             PICK_IMAGE_FILE -> if (resultCode == Activity.RESULT_OK) {
                 data?.data?.also { uri ->

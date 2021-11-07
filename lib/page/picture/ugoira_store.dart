@@ -22,10 +22,12 @@ import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/saf_plugin.dart';
 import 'package:share_plus/share_plus.dart';
 
 part 'ugoira_store.g.dart';
@@ -56,6 +58,17 @@ abstract class _UgoiraStoreBase with Store {
       String fullPath = "$tempPath/${id}.zip";
       File fullPathFile = File(fullPath);
       if (fullPathFile.existsSync()) {
+        final data = fullPathFile.readAsBytesSync();
+        if (Platform.isAndroid) {
+          try {
+            String? uriString =
+                await SAFPlugin.createFile("${id}.zip", "application/zip");
+            uriString!;
+            await SAFPlugin.writeUri(uriString, data);
+            BotToast.showText(text: "export success");
+            return;
+          } catch (e) {}
+        }
         Directory? directory = await getExternalStorageDirectory();
         Directory zipFolder = Directory("${directory!.path}/ugoira_zip/");
         if (!zipFolder.existsSync()) {
@@ -63,9 +76,11 @@ abstract class _UgoiraStoreBase with Store {
         }
         File targetFile = File("${zipFolder.path}/${id}.zip");
         fullPathFile.copySync(targetFile.path);
-        BotToast.showText(text: "export to ${fullPathFile.path} success");
+        BotToast.showText(text: "export ${targetFile.path} success");
       }
-    } catch (e) {}
+    } catch (e) {
+      LPrinter.d(e);
+    }
   }
 
   @action

@@ -246,5 +246,6 @@
   "view_replies": "コメントを見る",
   "temporarily_visible": "一時的に表示する",
   "unclassified":"未分類",
-  "max_download_task_running_count": "同時ダウンロード数"
+  "max_download_task_running_count": "同時ダウンロード数",
+  "export": "Export"
 }

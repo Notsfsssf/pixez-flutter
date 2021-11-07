@@ -246,5 +246,6 @@
   "view_replies": "查看回复",
   "temporarily_visible": "暂时可见",
   "unclassified": "未分类",
-  "max_download_task_running_count": "最大同时下载任务数量"
+  "max_download_task_running_count": "最大同时下载任务数量",
+  "export": "导出"
 }
