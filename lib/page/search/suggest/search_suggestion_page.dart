@@ -19,8 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
@@ -42,6 +44,9 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   late TextEditingController _filter;
   late SuggestionStore _suggestionStore;
   late SauceStore _sauceStore;
+  FocusNode focusNode = FocusNode();
+  final tagGroup = [];
+  bool idV = false;
 
   @override
   void initState() {
@@ -59,7 +64,13 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         BotToast.showText(text: "0 result");
       }
     });
-    _filter = TextEditingController(text: widget.preword ?? '');
+    var query = widget.preword ?? '';
+    _filter = TextEditingController(text: query);
+    var tags = query
+        .split(" ")
+        .map((e) => e.trim())
+        .takeWhile((value) => value.isNotEmpty);
+    if (tags.length > 1) tagGroup.addAll(tags);
     super.initState();
   }
 
@@ -69,8 +80,6 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
     _sauceStore.dispose();
     super.dispose();
   }
-
-  bool idV = false;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +96,25 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         body: Container(
             child: CustomScrollView(
           slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  spacing: 10,
+                  children: [
+                    for (String i in tagGroup)
+                      ActionChip(
+                          label: Text(i),
+                          onPressed: () {
+                            final start = _filter.text.indexOf(i);
+                            if (start != -1)
+                              _filter.selection = TextSelection.fromPosition(
+                                  TextPosition(offset: start + i.length));
+                          })
+                  ],
+                ),
+              ),
+            ),
             SliverVisibility(
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
@@ -136,14 +164,23 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                   final tags = _suggestionStore.autoWords!.tags;
                   return ListTile(
                     onTap: () {
-                      FocusScope.of(context).unfocus();
-                      Navigator.of(context, rootNavigator: true)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return ResultPage(
-                          word: tags[index].name,
-                          translatedName: tags[index].translated_name ?? "",
-                        );
-                      }));
+                      if (tagGroup.length > 1) {
+                        tagGroup.last = tags[index].name;
+                        var text = tagGroup.join(" ");
+                        _filter.text = text;
+                        _filter.selection = TextSelection.fromPosition(
+                            TextPosition(offset: text.length));
+                        setState(() {});
+                      } else {
+                        FocusScope.of(context).unfocus();
+                        Navigator.of(context, rootNavigator: true)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ResultPage(
+                            word: tags[index].name,
+                            translatedName: tags[index].translated_name ?? "",
+                          );
+                        }));
+                      }
                     },
                     title: Text(tags[index].name),
                     subtitle: Text(tags[index].translated_name ?? ""),
@@ -155,8 +192,6 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
       );
     });
   }
-
-  FocusNode focusNode = FocusNode();
 
   AppBar _buildAppBar(context) {
     return AppBar(
@@ -188,6 +223,13 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           FocusScope.of(context).requestFocus(node);
         },
         onChanged: (query) {
+          tagGroup.clear();
+          var tags = query
+              .split(" ")
+              .map((e) => e.trim())
+              .takeWhile((value) => value.isNotEmpty);
+          if (tags.length > 1) tagGroup.addAll(tags);
+          setState(() {});
           bool isNum = int.tryParse(query) != null;
           setState(() {
             idV = isNum;
@@ -200,6 +242,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           var word = query.trim();
           if (word.isEmpty) return;
           if (isNum && word.length > 5) return; //超过五个数字应该就不需要给建议了吧
+          word = tags.last;
+          if (word.isEmpty) return;
           _suggestionStore.fetch(word);
         },
         onSubmitted: (s) {
@@ -214,53 +258,5 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           border: InputBorder.none,
           hintText: I18n.of(context).search_word_or_paste_link,
         ));
-  }
-}
-
-class Suggestions extends StatefulWidget {
-  final SuggestionStore suggestionStore;
-
-  const Suggestions({Key? key, required this.suggestionStore})
-      : super(key: key);
-
-  @override
-  _SuggestionsState createState() => _SuggestionsState();
-}
-
-class _SuggestionsState extends State<Suggestions> {
-  @override
-  Widget build(BuildContext context) {
-    return Observer(
-      builder: (context) {
-        if (widget.suggestionStore.autoWords != null) {
-          final tags = widget.suggestionStore.autoWords!.tags;
-          return tags.isNotEmpty
-              ? ListView.separated(
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        Navigator.of(context, rootNavigator: true)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return ResultPage(
-                            word: tags[index].name,
-                            translatedName: tags[index].translated_name ?? "",
-                          );
-                        }));
-                      },
-                      title: Text(tags[index].name),
-                      subtitle: Text(tags[index].translated_name ?? ""),
-                    );
-                  },
-                  itemCount: tags.length,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider();
-                  },
-                )
-              : Container();
-        }
-        return Container();
-      },
-    );
   }
 }
