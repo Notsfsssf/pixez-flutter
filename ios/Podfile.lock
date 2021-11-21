@@ -110,8 +110,8 @@ SPEC CHECKSUMS:
   shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   uni_links2: fbc37081577fc19c6e0f7e6cdbd3baa150023635
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
 
 PODFILE CHECKSUM: d8cd733ea64a2d7bccab3b19b43f62c76fa210ad
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

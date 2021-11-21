@@ -21,7 +21,6 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		A70B475125D4D74100AE0717 /* Base64URLEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475025D4D74100AE0717 /* Base64URLEncoding.swift */; };
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
 		D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29C34664529F630B1285C5 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
@@ -86,7 +85,6 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A70B475025D4D74100AE0717 /* Base64URLEncoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Base64URLEncoding.swift; path = ../../../../../Downloads/Base64URLEncoding.swift; sourceTree = "<group>"; };
 		A70B475625D4D94200AE0717 /* CodeGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGen.swift; sourceTree = "<group>"; };
 		A82DBCA23B4168BFE0DADFC0 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		A8EB923A5CE945DB0AE0C8EA /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -181,7 +179,6 @@
 			isa = PBXGroup;
 			children = (
 				7CC54C3726103351009033DF /* Runner.entitlements */,
-				A70B475025D4D74100AE0717 /* Base64URLEncoding.swift */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -386,7 +383,6 @@
 			files = (
 				7C8B5974260F680600098D5C /* SSSGridman.intentdefinition in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
-				A70B475125D4D74100AE0717 /* Base64URLEncoding.swift in Sources */,
 				7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */,
 				A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,

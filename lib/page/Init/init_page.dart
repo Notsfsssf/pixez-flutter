@@ -24,13 +24,16 @@ class InitPage extends StatefulWidget {
   _InitPageState createState() => _InitPageState();
 }
 
-class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
+class _InitPageState extends State<InitPage> {
+  final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja', 'ko', 'ru', 'es'];
+  var currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
       child: Center(
-        child: ListView(
+        child: Column(
           children: <Widget>[
             AppBar(
               backgroundColor: Colors.transparent,
@@ -51,44 +54,35 @@ class _InitPageState extends State<InitPage> with TickerProviderStateMixin {
                   child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください")),
             ),
             Observer(builder: (_) {
-              var list = [
-                Tab(
-                  text: "en-US",
+              return Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      final title = languageList[index];
+                      return AnimatedOpacity(
+                        duration: Duration(milliseconds: 300),
+                        opacity: userSetting.languageNum == index ? 1 : 0.3,
+                        child: ListTile(
+                          title: Text(title),
+                          onTap: () async {
+                            await userSetting.setLanguageNum(index);
+                            setState(() {});
+                          },
+                          trailing: Icon(
+                            Icons.check,
+                            color: userSetting.languageNum == index
+                                ? Theme.of(context).textTheme.bodyText1!.color
+                                : Colors.transparent,
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: languageList.length,
+                  ),
                 ),
-                Tab(
-                  text: "zh-CN",
-                ),
-                Tab(
-                  text: "zh-TW",
-                ),
-                Tab(
-                  text: "ja",
-                ),
-                Tab(
-                  text: "ko",
-                ),
-                Tab(
-                  text: "ru",
-                ),
-                Tab(
-                  text: "es",
-                )
-              ];
-              return TabBar(
-                labelColor: Theme.of(context).textTheme.headline6!.color,
-                indicatorSize: TabBarIndicatorSize.label,
-                tabs: list,
-                isScrollable: true,
-                onTap: (index) async {
-                  await userSetting.setLanguageNum(index);
-                  setState(() {});
-                },
-                controller: TabController(
-                    length: list.length,
-                    vsync: this,
-                    initialIndex: userSetting.languageNum),
               );
-            })
+            }),
           ],
         ),
       ),

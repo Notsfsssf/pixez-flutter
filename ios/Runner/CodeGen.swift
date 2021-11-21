@@ -32,7 +32,7 @@ public class CodeGen {
     }
 
     public static func getCodeChallenge(codeVerifier: String)->String {
-        return codeVerifier.sha256().base64URLEncodedString()
+        return "not need"
     }
     
     public static func updateCodeVerifier(codeVerifier: String) {
