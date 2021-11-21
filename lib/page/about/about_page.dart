@@ -555,8 +555,8 @@ class _AboutPageState extends State<AboutPage> {
                 elevation: 1.0,
                 child: ListTile(
                   leading: Icon(FontAwesomeIcons.coffee),
-                  title: Text(i.description ?? ""),
-                  subtitle: Text(i.price ?? ""),
+                  title: Text(i.description),
+                  subtitle: Text(i.price),
                   onTap: () {
                     BotToast.showText(text: 'try to Purchase');
                     final PurchaseParam purchaseParam =

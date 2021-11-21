@@ -54,7 +54,7 @@ dependencies:
   json_annotation: ^4.1.0
   flutter_staggered_animations: ^1.0.0
   badges: ^2.0.1
-  image_picker: ^0.8.4+2
+  image_picker: ^0.8.4+4
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.1

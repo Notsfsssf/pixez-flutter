@@ -16,7 +16,7 @@ class Hoster {
     "oauth.secure.pixiv.net": "210.140.131.209",
     "i.pximg.net": "210.140.92.144",
     "s.pximg.net": "210.140.92.143",
-    "doh": "1.0.0.1",
+    "doh": "doh.dns.sb",
   };
 
   static init() async {
@@ -47,7 +47,7 @@ class Hoster {
       "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
 
   static Map<String, dynamic> hardMap() {
-    return _map.isEmpty ? _constMap : _map;
+    return _map.isEmpty||true ? _constMap : _map;
   }
 
   static syncRemote() async {
