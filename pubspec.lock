@@ -21,7 +21,7 @@ packages:
       name: animations
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   archive:
     dependency: "direct main"
     description:
@@ -127,6 +127,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "8.0.5"
+  cached_network_image:
+    dependency: "direct main"
+    description:
+      name: cached_network_image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0+1"
+  cached_network_image_platform_interface:
+    dependency: transitive
+    description:
+      name: cached_network_image_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  cached_network_image_web:
+    dependency: transitive
+    description:
+      name: cached_network_image_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   characters:
     dependency: transitive
     description:
@@ -273,14 +294,14 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.0"
+    version: "5.1.3"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.2"
+    version: "3.1.0"
   extended_list_library:
     dependency: transitive
     description:
@@ -342,13 +363,27 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_blurhash:
+    dependency: transitive
+    description:
+      name: flutter_blurhash
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.0"
+  flutter_cache_manager:
+    dependency: "direct main"
+    description:
+      name: flutter_cache_manager
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.3"
   flutter_colorpicker:
     dependency: "direct main"
     description:
       name: flutter_colorpicker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0"
+    version: "1.0.2"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -588,6 +623,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1+3"
+  octo_image:
+    dependency: transitive
+    description:
+      name: octo_image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0+1"
   package_config:
     dependency: transitive
     description:
@@ -728,6 +770,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.4.5"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.27.3"
   save_in_gallery:
     dependency: "direct main"
     description:
@@ -994,6 +1043,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.5"
   vector_math:
     dependency: transitive
     description:

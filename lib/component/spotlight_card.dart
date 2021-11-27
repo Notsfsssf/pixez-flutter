@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,9 +75,9 @@ class SpotlightCard extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   child: Container(
-                    child: ExtendedImage.network(
-                      spotlight.thumbnail.toTrueUrl(),
-                      headers: Hoster.header(url: spotlight.thumbnail),
+                    child: CachedNetworkImage(
+                      imageUrl: spotlight.thumbnail.toTrueUrl(),
+                      httpHeaders: Hoster.header(url: spotlight.thumbnail),
                       fit: BoxFit.cover,
                       height: 150.0,
                       width: 150.0,

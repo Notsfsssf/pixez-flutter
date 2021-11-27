@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -96,6 +97,17 @@ class _PixivImageState extends State<PixivImage>
 
   @override
   Widget build(BuildContext context) {
+    return CachedNetworkImage(
+        placeholder: (context, url) =>
+            widget.placeWidget ??
+            Container(
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        imageUrl: url.toTrueUrl(),
+        height: height,
+        width: width,
+        fit: fit ?? BoxFit.fitWidth,
+        httpHeaders: Hoster.header(url: url));
     return ExtendedImage.network(
       url.toTrueUrl(),
       height: height,
@@ -104,6 +116,7 @@ class _PixivImageState extends State<PixivImage>
       headers: Hoster.header(url: url),
       enableMemoryCache: enableMemoryCache ?? true,
       loadStateChanged: (ExtendedImageState state) {
+        return null;
         if (state.extendedImageLoadState == LoadState.loading) {
           if (!_controller.isCompleted) _controller.reset();
           return placeWidget;
@@ -162,9 +175,8 @@ class _PixivImageState extends State<PixivImage>
 }
 
 class PixivProvider {
-  static ExtendedNetworkImageProvider url(String url, {String? preUrl}) {
-    return ExtendedNetworkImageProvider(url,
-        headers: Hoster.header(url: preUrl));
+  static CachedNetworkImageProvider url(String url, {String? preUrl}) {
+    return CachedNetworkImageProvider(url, headers: Hoster.header(url: preUrl));
   }
 }
 

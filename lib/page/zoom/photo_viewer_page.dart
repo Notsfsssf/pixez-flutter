@@ -149,9 +149,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage>
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: ExtendedImageGesturePageView.builder(
-          controller: PageController(
-            initialPage: index,
-          ),
+          // controller: PageController(
+          //   initialPage: index,
+          // ),
           onPageChanged: (i) async {
             setState(() {
               shareShow = false;

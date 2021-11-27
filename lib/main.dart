@@ -57,7 +57,17 @@ final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
 final KVer kVer = KVer();
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 main() async {
+  HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   if (defaultTargetPlatform == TargetPlatform.android &&
       Constants.isGooglePlay) {

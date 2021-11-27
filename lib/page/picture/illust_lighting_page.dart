@@ -42,6 +42,7 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
+import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -307,7 +308,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     onTap: () {
                       Leader.push(
                           context,
-                          PhotoViewerPage(
+                          PhotoZoomPage(
                             index: 0,
                             illusts: data,
                           ));
@@ -337,7 +338,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       onTap: () {
                         Leader.push(
                             context,
-                            PhotoViewerPage(
+                            PhotoZoomPage(
                               index: index,
                               illusts: data,
                             ));
@@ -840,7 +841,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                               onLongPress: () {
                                 Leader.push(
                                     context,
-                                    PhotoViewerPage(
+                                    PhotoZoomPage(
                                         index: index, illusts: illust));
                               },
                               child: Stack(
