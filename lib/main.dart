@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -108,11 +107,6 @@ class _MyAppState extends State<MyApp> {
 
   initMethod() async {
     if (userSetting.disableBypassSni) return;
-    HttpClient client = ExtendedNetworkImageProvider.httpClient as HttpClient;
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) {
-      return true;
-    };
   }
 
   Future<void> clean() async {

@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:animations/animations.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/sort_group.dart';
@@ -291,7 +290,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                         ? Container(
                             height: 100,
                             width: 100,
-                            child: ExtendedImage.file(
+                            child: Image.file(
                               targetFile,
                               fit: BoxFit.scaleDown,
                               cacheHeight: 100,

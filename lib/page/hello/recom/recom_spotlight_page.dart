@@ -17,7 +17,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -211,12 +210,12 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
               crossAxisCount: userSetting.crossCount,
               collectGarbage: (List<int> garbages) {
-                garbages.forEach((index) {
-                  final provider = ExtendedNetworkImageProvider(
-                    _lightingStore.iStores[index].illusts!.imageUrls.medium,
-                  );
-                  provider.evict();
-                });
+                // garbages.forEach((index) {
+                //   final provider = ExtendedNetworkImageProvider(
+                //     _lightingStore.iStores[index].illusts!.imageUrls.medium,
+                //   );
+                //   provider.evict();
+                // });
               },
             ),
             delegate:

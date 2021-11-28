@@ -18,15 +18,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/er/fetcher.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
-import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SoupPage extends StatefulWidget {

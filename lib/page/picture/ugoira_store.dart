@@ -28,7 +28,6 @@ import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/saf_plugin.dart';
-import 'package:share_plus/share_plus.dart';
 
 part 'ugoira_store.g.dart';
 

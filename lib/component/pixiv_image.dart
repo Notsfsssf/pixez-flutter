@@ -15,14 +15,10 @@
  */
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
 
 const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.re";
@@ -119,69 +115,6 @@ class _PixivImageState extends State<PixivImage>
         width: width,
         fit: fit ?? BoxFit.fitWidth,
         httpHeaders: Hoster.header(url: url));
-    return ExtendedImage.network(
-      url.toTrueUrl(),
-      height: height,
-      width: width,
-      fit: fit ?? BoxFit.fitWidth,
-      headers: Hoster.header(url: url),
-      enableMemoryCache: enableMemoryCache ?? true,
-      loadStateChanged: (ExtendedImageState state) {
-        return null;
-        if (state.extendedImageLoadState == LoadState.loading) {
-          if (!_controller.isCompleted) _controller.reset();
-          return placeWidget;
-        }
-        if (state.extendedImageLoadState == LoadState.completed) {
-          if (already) {
-            return null;
-          }
-          already = true;
-          if (!_controller.isCompleted) _controller.forward();
-          if (!fade)
-            return ExtendedRawImage(
-              fit: fit ?? BoxFit.fitWidth,
-              image: state.extendedImageInfo?.image,
-            );
-          return FadeTransition(
-            opacity: _controller,
-            child: ExtendedRawImage(
-              fit: BoxFit.fitWidth,
-              image: state.extendedImageInfo?.image,
-            ),
-          );
-        }
-        if (state.extendedImageLoadState == LoadState.failed) {
-          if (!_controller.isCompleted) _controller.reset();
-          splashStore.maybeFetch();
-          return Container(
-            height: 150,
-            child: GestureDetector(
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Icon(Icons.error),
-                  Positioned(
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Text(
-                      I18n.of(context).load_image_failed_click_to_reload,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ],
-              ),
-              onTap: () {
-                splashStore.maybeFetch();
-                state.reLoadImage();
-              },
-            ),
-          );
-        }
-        return null;
-      },
-    );
   }
 }
 

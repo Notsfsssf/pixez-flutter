@@ -17,9 +17,9 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
@@ -282,15 +282,14 @@ class _UsersPageState extends State<UsersPage>
                                 ? userStore.userDetail!.profile
                                             .background_image_url !=
                                         null
-                                    ? ExtendedImage.network(
-                                        userStore.userDetail!.profile
+                                    ? CachedNetworkImage(
+                                       imageUrl: userStore.userDetail!.profile
                                             .background_image_url!
                                             .toTrueUrl(),
                                         fit: BoxFit.fitWidth,
-                                        headers: Hoster.header(
+                                        httpHeaders: Hoster.header(
                                             url: userStore.userDetail!.profile
                                                 .background_image_url),
-                                        enableMemoryCache: false,
                                       )
                                     : Container(
                                         color: Theme.of(context)
