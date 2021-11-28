@@ -28,6 +28,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -283,10 +284,10 @@ class _UsersPageState extends State<UsersPage>
                                             .background_image_url !=
                                         null
                                     ? CachedNetworkImage(
-                                       imageUrl: userStore.userDetail!.profile
-                                            .background_image_url!
-                                            .toTrueUrl(),
+                                        imageUrl: userStore.userDetail!.profile
+                                            .background_image_url!,
                                         fit: BoxFit.fitWidth,
+                                        cacheManager: pixivCacheManager,
                                         httpHeaders: Hoster.header(
                                             url: userStore.userDetail!.profile
                                                 .background_image_url),

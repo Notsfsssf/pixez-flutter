@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
@@ -210,7 +211,7 @@ abstract class _SaveStoreBase with Store {
       } catch (e) {}
     }
     streamController.add(SaveStream(SaveState.JOIN, illusts));
-    File? file = (await DefaultCacheManager().getFileFromCache(url))?.file;
+    File? file = (await pixivCacheManager.getFileFromCache(url))?.file;
     if (file == null) {
       _joinQueue(url, illusts, fileName);
     } else {
