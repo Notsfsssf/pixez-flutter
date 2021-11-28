@@ -18,6 +18,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -26,6 +27,16 @@ import 'package:pixez/main.dart';
 const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.re";
 const ImageSHost = "s.pximg.net";
+//
+// class CustomCacheManager {
+//   static const key = 'customCacheKey';
+//   static CacheManager instance = CacheManager(
+//     Config(
+//       key,
+//       fileService: HttpFileService(),
+//     ),
+//   );
+// }
 
 class PixivImage extends StatefulWidget {
   final String url;
@@ -176,7 +187,7 @@ class _PixivImageState extends State<PixivImage>
 
 class PixivProvider {
   static CachedNetworkImageProvider url(String url, {String? preUrl}) {
-    return CachedNetworkImageProvider(url, headers: Hoster.header(url: preUrl));
+    return CachedNetworkImageProvider(url.toTrueUrl(), headers: Hoster.header(url: preUrl));
   }
 }
 

@@ -64,6 +64,7 @@ dependencies:
   auto_animated: ^3.0.0
   http: ^0.13.4
   dio_http_cache: ^0.3.0
+  photo_view: ^0.13.0
 
 dev_dependencies:
   flutter_test:
