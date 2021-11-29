@@ -14,15 +14,20 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:http/http.dart';
+import 'package:http/io_client.dart';
 import 'package:http_interceptor/http/interceptor_contract.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
-import 'package:http/http.dart' as http;
+import 'package:pixez/main.dart';
 
 const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.re";
@@ -32,25 +37,38 @@ class PixivHostInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
     data.baseUrl = data.baseUrl.toTrueUrl();
+    LPrinter.d("i===${data.baseUrl}==i");
     return data;
   }
 
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
+    if (data.statusCode != 200) {
+      splashStore.maybeFetch();
+    }
     return data;
   }
 }
 
-final pixivCacheManager = CacheManager(
-  Config(
-    'picture_cache',
-    fileService: HttpFileService(
-      httpClient: InterceptedClient.build(interceptors: [
+class CustomCacheManager {
+  static const key = 'pixiv_image_cache';
+  static Client client = InterceptedClient.build(
+      interceptors: [
         PixivHostInterceptor(),
-      ]),
+      ],
+      client: IOClient(HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true));
+  static CacheManager instance = CacheManager(
+    Config(
+      key,
+      repo: JsonCacheInfoRepository(databaseName: key),
+      fileService: HttpFileService(httpClient: client),
     ),
-  ),
-);
+  );
+}
+
+CacheManager get pixivCacheManager => CustomCacheManager.instance;
 
 class PixivImage extends StatefulWidget {
   final String url;
@@ -78,7 +96,6 @@ class PixivImage extends StatefulWidget {
 class _PixivImageState extends State<PixivImage>
     with SingleTickerProviderStateMixin {
   late String url;
-  late AnimationController _controller;
   bool already = false;
   bool? enableMemoryCache;
   double? width;
@@ -96,11 +113,6 @@ class _PixivImageState extends State<PixivImage>
     fit = widget.fit;
     fade = widget.fade;
     placeWidget = widget.placeWidget;
-    _controller = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 500),
-        lowerBound: 0.2,
-        upperBound: 1.0);
     super.initState();
   }
 
@@ -116,7 +128,6 @@ class _PixivImageState extends State<PixivImage>
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
