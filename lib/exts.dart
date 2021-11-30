@@ -17,6 +17,26 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 
+extension HostExts on Uri {
+  Uri toTureUri() {
+    if (userSetting.disableBypassSni || this.toString().contains("novel")) {
+      return this;
+    } else {
+      if (userSetting.pictureSource != ImageHost) {
+        try {
+          return this.replace(host: userSetting.pictureSource);
+        } catch (e) {}
+      }
+      if (this.host == ImageHost) {
+        return this.replace(host: splashStore.host);
+      } else if (this.host == ImageSHost) {
+        return this.replace(host: splashStore.host);
+      }
+    }
+    return this;
+  }
+}
+
 extension TimeExts on String {
   String toShortTime() {
     try {
@@ -44,10 +64,9 @@ extension TimeExts on String {
       if (userSetting.pictureSource != ImageHost) {
         try {
           return Uri.parse(this)
-            .replace(host: userSetting.pictureSource)
-            .toString();
-        } catch (e) {
-        }
+              .replace(host: userSetting.pictureSource)
+              .toString();
+        } catch (e) {}
       }
       if (this.contains(ImageHost)) {
         return this.replaceFirst(ImageHost, splashStore.host);

@@ -33,42 +33,47 @@ const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.re";
 const ImageSHost = "s.pximg.net";
 
+// 注意，stable的http_interceptor这里是无效的，因为实现send是todo
+// 实现CacheManager和混入ImageCacheManager缺一不可
+// 如果你恰好看到这个实现方法实例，且对你有些帮助或者启发：
+// 听一首Mili-Salt, Pepper, Birds, And the Thought Police吧 🎵
 class PixivHostInterceptor implements InterceptorContract {
   @override
-  Future<RequestData> interceptRequest({required RequestData data}) async {
-    data.baseUrl = data.baseUrl.toTrueUrl();
-    LPrinter.d("i===${data.baseUrl}==i");
-    return data;
+  Future<BaseRequest> interceptRequest({required BaseRequest request}) async {
+    Uri uri = request.url.toTureUri();
+    return request.copyWith(url: uri);
   }
 
   @override
-  Future<ResponseData> interceptResponse({required ResponseData data}) async {
-    if (data.statusCode != 200) {
+  Future<BaseResponse> interceptResponse(
+      {required BaseResponse response}) async {
+    if (response.statusCode != 200) {
       splashStore.maybeFetch();
     }
-    return data;
+    return response;
   }
 }
 
-class CustomCacheManager {
-  static const key = 'pixiv_image_cache';
-  static Client client = InterceptedClient.build(
-      interceptors: [
-        PixivHostInterceptor(),
-      ],
-      client: IOClient(HttpClient()
-        ..badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true));
-  static CacheManager instance = CacheManager(
-    Config(
-      key,
-      repo: JsonCacheInfoRepository(databaseName: key),
-      fileService: HttpFileService(httpClient: client),
-    ),
-  );
+class PixivCacheManager extends CacheManager with ImageCacheManager {
+  static const key = 'PixezCachedImageData';
+
+  PixivCacheManager()
+      : super(Config(
+          key,
+          repo: JsonCacheInfoRepository(databaseName: key),
+          fileService: HttpFileService(
+              httpClient: InterceptedClient.build(
+                  interceptors: [
+                PixivHostInterceptor(),
+              ],
+                  client: IOClient(HttpClient()
+                    ..badCertificateCallback =
+                        (X509Certificate cert, String host, int port) =>
+                            true))),
+        ));
 }
 
-CacheManager get pixivCacheManager => CustomCacheManager.instance;
+PixivCacheManager pixivCacheManager = PixivCacheManager();
 
 class PixivImage extends StatefulWidget {
   final String url;

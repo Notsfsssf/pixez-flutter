@@ -66,7 +66,7 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 main() async {
-  HttpOverrides.global = new MyHttpOverrides();
+  // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   if (defaultTargetPlatform == TargetPlatform.android &&
       Constants.isGooglePlay) {
