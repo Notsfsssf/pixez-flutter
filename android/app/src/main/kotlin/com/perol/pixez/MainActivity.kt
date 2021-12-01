@@ -26,10 +26,12 @@ import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
@@ -56,6 +58,19 @@ class MainActivity : FlutterActivity() {
     var helplessPath: String? = null
     private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
     lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // Aligns the Flutter view vertically with the window.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Disable the Android splash screen fade out animation to avoid
+            // a flicker before the similar frame is drawn in Flutter.
+            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
+        }
+
+        super.onCreate(savedInstanceState)
+    }
 
     private fun splicingUrl(parentUri: String, fileName: String) = if (parentUri.endsWith(":")) {
         parentUri + fileName

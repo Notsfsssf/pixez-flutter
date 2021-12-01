@@ -44,7 +44,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
-            android:theme="@style/NormalTheme"
+            android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
 

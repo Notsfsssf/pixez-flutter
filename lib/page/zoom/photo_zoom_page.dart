@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
@@ -60,63 +61,69 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_illusts.pageCount == 1) {
-      final url = _loadSource
-          ? _illusts.metaSinglePage!.originalImageUrl!
-          : _illusts.imageUrls.large;
-      return Scaffold(
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.black,
-        bottomNavigationBar: _buildBottom(context),
-        body: Container(
-          child: PhotoView(
-            filterQuality: FilterQuality.high,
-            heroAttributes: PhotoViewHeroAttributes(tag: url),
-            imageProvider: PixivProvider.url(url),
-            loadingBuilder: (context, event) => _buildLoading(event),
-          ),
-        ),
-      );
-    } else {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        extendBody: true,
-        bottomNavigationBar: _buildBottom(context),
-        extendBodyBehindAppBar: true,
-        body: Container(
-            child: PhotoViewGallery.builder(
-          scrollPhysics: const BouncingScrollPhysics(),
-          builder: (BuildContext context, int index) {
-            final url = _loadSource
-                ? _illusts.metaPages[index].imageUrls!.original
-                : _illusts.metaPages[index].imageUrls!.large;
-            return PhotoViewGalleryPageOptions(
-              imageProvider: PixivProvider.url(url),
-              initialScale: PhotoViewComputedScale.contained * 0.8,
-              heroAttributes: PhotoViewHeroAttributes(tag: url),
-              filterQuality: FilterQuality.high,
-            );
-          },
-          itemCount: _illusts.metaPages.length,
-          onPageChanged: (index) async {
-            nowUrl = _loadSource
-                ? _illusts.metaPages[index].imageUrls!.original
-                : _illusts.metaPages[index].imageUrls!.large;
-            setState(() {
-              _index = index;
-              shareShow = false;
-            });
-            var file = await pixivCacheManager.getFileFromCache(nowUrl);
-            if (file != null && mounted)
-              setState(() {
-                shareShow = true;
-              });
-          },
-          loadingBuilder: (context, event) => _buildLoading(event),
-        )),
-      );
-    }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Builder(builder: (context) {
+        if (_illusts.pageCount == 1) {
+          final url = _loadSource
+              ? _illusts.metaSinglePage!.originalImageUrl!
+              : _illusts.imageUrls.large;
+          return Scaffold(
+            extendBody: true,
+            extendBodyBehindAppBar: true,
+            backgroundColor: Colors.black,
+            bottomNavigationBar: _buildBottom(context),
+            body: Container(
+              child: PhotoView(
+                filterQuality: FilterQuality.high,
+                heroAttributes: PhotoViewHeroAttributes(tag: url),
+                imageProvider: PixivProvider.url(url),
+                loadingBuilder: (context, event) => _buildLoading(event),
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            extendBody: true,
+            bottomNavigationBar: _buildBottom(context),
+            extendBodyBehindAppBar: true,
+            body: Container(
+                child: PhotoViewGallery.builder(
+              scrollPhysics: const BouncingScrollPhysics(),
+              pageController: PageController(initialPage: _index),
+              builder: (BuildContext context, int index) {
+                final url = _loadSource
+                    ? _illusts.metaPages[index].imageUrls!.original
+                    : _illusts.metaPages[index].imageUrls!.large;
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: PixivProvider.url(url),
+                  initialScale: PhotoViewComputedScale.contained * 0.8,
+                  heroAttributes: PhotoViewHeroAttributes(tag: url),
+                  filterQuality: FilterQuality.high,
+                );
+              },
+              itemCount: _illusts.metaPages.length,
+              onPageChanged: (index) async {
+                nowUrl = _loadSource
+                    ? _illusts.metaPages[index].imageUrls!.original
+                    : _illusts.metaPages[index].imageUrls!.large;
+                setState(() {
+                  _index = index;
+                  shareShow = false;
+                });
+                var file = await pixivCacheManager.getFileFromCache(nowUrl);
+                if (file != null && mounted)
+                  setState(() {
+                    shareShow = true;
+                  });
+              },
+              loadingBuilder: (context, event) => _buildLoading(event),
+            )),
+          );
+        }
+      }),
+    );
   }
 
   String nowUrl = "";
