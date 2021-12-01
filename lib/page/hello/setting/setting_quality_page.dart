@@ -571,13 +571,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           indicatorHeight: 3,
                           indicatorColor:
                               Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
+                          indicatorSize: MD2IndicatorSize.full),
                       tabs: [
                         Tab(
-                          text: '2',
+                          text: ' 2 ',
                         ),
                         Tab(
-                          text: '4',
+                          text: ' 4 ',
                         )
                       ],
                       onTap: (index) {

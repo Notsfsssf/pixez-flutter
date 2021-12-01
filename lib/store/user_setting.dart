@@ -311,8 +311,8 @@ abstract class _UserSettingBase with Store {
 
   @action
   setCrossCount(int value) async {
-    await prefs.setInt(CROSS_COUNT_KEY, value);
     crossCount = value;
+    await prefs.setInt(CROSS_COUNT_KEY, value);
   }
 
   @action
