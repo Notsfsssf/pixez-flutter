@@ -34,6 +34,7 @@ class LightingList extends StatefulWidget {
   final Widget? header;
   final bool? isNested;
   final RefreshController? refreshController;
+  final String? portal;
 
   const LightingList({
     Key? key,
@@ -41,6 +42,7 @@ class LightingList extends StatefulWidget {
     this.header,
     this.isNested,
     this.refreshController,
+    this.portal
   }) : super(key: key);
 
   @override

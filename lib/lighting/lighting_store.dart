@@ -60,6 +60,7 @@ abstract class _LightingStoreBase with Store {
   String? nextUrl;
   RefreshController? controller;
   final Function? onChange;
+  final String? portal;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
 
@@ -76,7 +77,8 @@ abstract class _LightingStoreBase with Store {
   @observable
   String? errorMessage;
 
-  _LightingStoreBase(this.source, this.controller, {this.onChange});
+  _LightingStoreBase(this.source, this.controller,
+      {this.onChange, this.portal});
 
   bool okForUser(Illusts illust) {
     // if (userSetting.hIsNotAllow)
@@ -155,7 +157,12 @@ abstract class _LightingStoreBase with Store {
         Response result = await apiClient.getNext(nextUrl!);
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
-        iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
+        var map = recommend.illusts.map((e) => IllustStore(e.id, e));
+        if (portal == "new") {
+          var iterable = iStores.map((element) => element.id);
+          map = map.where((element) => !iterable.contains(element.id));
+        }
+        iStores.addAll(map);
         controller?.loadComplete();
       } else {
         controller?.loadNoData();

@@ -71,6 +71,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
           header: Container(
             height: 45.0,
           ),
+          portal: "new",
         ),
         Align(
           alignment: Alignment.topCenter,
