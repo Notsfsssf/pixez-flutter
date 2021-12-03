@@ -318,9 +318,11 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                       child: PixivImage(
                         url,
                         fade: false,
+                        width: MediaQuery.of(context).size.width,
                         placeWidget: (url != data.imageUrls.medium)
                             ? PixivImage(
                                 data.imageUrls.medium,
+                                width: MediaQuery.of(context).size.width,
                                 placeWidget: placeWidget,
                               )
                             : placeWidget,
@@ -519,8 +521,10 @@ class _IllustLightingPageState extends State<IllustLightingPage>
             url,
             placeWidget: PixivImage(
               illust.metaPages[index].imageUrls!.medium,
+              width: MediaQuery.of(context).size.width,
               fade: false,
             ),
+            width: MediaQuery.of(context).size.width,
             fade: false,
           ),
           tag: widget.heroString,
@@ -528,6 +532,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
       return PixivImage(
         url,
         fade: false,
+        width: MediaQuery.of(context).size.width,
         placeWidget: Container(
           height: MediaQuery.of(context).size.width * radio,
           child: Center(

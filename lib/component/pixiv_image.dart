@@ -98,8 +98,7 @@ class PixivImage extends StatefulWidget {
   _PixivImageState createState() => _PixivImageState();
 }
 
-class _PixivImageState extends State<PixivImage>
-    with SingleTickerProviderStateMixin {
+class _PixivImageState extends State<PixivImage> {
   late String url;
   bool already = false;
   bool? enableMemoryCache;
@@ -127,13 +126,10 @@ class _PixivImageState extends State<PixivImage>
     if (oldWidget.url != widget.url) {
       setState(() {
         url = widget.url;
+        width = widget.width;
+        height = widget.height;
       });
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -142,8 +138,22 @@ class _PixivImageState extends State<PixivImage>
         placeholder: (context, url) =>
             widget.placeWidget ??
             Container(
+              height: height,
               child: Center(child: CircularProgressIndicator()),
             ),
+        errorWidget: (context, url, _) => Container(
+              height: height,
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  child: Text(":("),
+                ),
+              ),
+            ),
+        memCacheWidth: width?.toInt(),
+        memCacheHeight: height?.toInt(),
         imageUrl: url,
         cacheManager: pixivCacheManager,
         height: height,
