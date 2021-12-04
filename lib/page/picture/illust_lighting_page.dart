@@ -233,6 +233,10 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   ScrollController scrollController = ScrollController();
 
   Widget _buildContent(BuildContext context, Illusts? data) {
+    final height = data != null
+        ? ((data.height.toDouble() / data.width) *
+            MediaQuery.of(context).size.width)
+        : 150.0;
     if (_illustStore.errorMessage != null)
       return Center(
         child: Column(
@@ -293,14 +297,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                     else
                       url = data.metaSinglePage!.originalImageUrl!;
                   }
-                  Widget placeWidget = Container(
-                    height: 150,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  );
+                  Widget placeWidget = Container(height: height);
                   return InkWell(
                     onLongPress: () {
                       _pressSave(data, 0);
@@ -324,6 +321,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                                 data.imageUrls.medium,
                                 width: MediaQuery.of(context).size.width,
                                 placeWidget: placeWidget,
+                                fade: false,
                               )
                             : placeWidget,
                       ),
@@ -345,7 +343,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
                               illusts: data,
                             ));
                       },
-                      child: _buildIllustsItem(index, data));
+                      child: _buildIllustsItem(index, data, height));
                 }, childCount: data.metaPages.length)),
         SliverToBoxAdapter(
           child: _buildNameAvatar(context, data),
@@ -505,8 +503,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
     );
   }
 
-  Widget _buildIllustsItem(int index, Illusts illust) {
-    final radio = illust.height.toDouble() / illust.width.toDouble();
+  Widget _buildIllustsItem(int index, Illusts illust, double height) {
     if (illust.type == "manga") {
       String url;
       if (userSetting.mangaQuality == 0)
@@ -534,7 +531,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
         fade: false,
         width: MediaQuery.of(context).size.width,
         placeWidget: Container(
-          height: MediaQuery.of(context).size.width * radio,
+          height: height,
           child: Center(
             child: Text('$index', style: Theme.of(context).textTheme.headline4),
           ),

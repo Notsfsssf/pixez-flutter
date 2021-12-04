@@ -136,11 +136,7 @@ class _PixivImageState extends State<PixivImage> {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
         placeholder: (context, url) =>
-            widget.placeWidget ??
-            Container(
-              height: height,
-              child: Center(child: CircularProgressIndicator()),
-            ),
+            widget.placeWidget ?? Container(height: height),
         errorWidget: (context, url, _) => Container(
               height: height,
               child: Center(
@@ -152,8 +148,10 @@ class _PixivImageState extends State<PixivImage> {
                 ),
               ),
             ),
-        memCacheWidth: width?.toInt(),
-        memCacheHeight: height?.toInt(),
+        fadeOutDuration:
+            widget.fade ? const Duration(milliseconds: 1000) : null,
+        // memCacheWidth: width?.toInt(),
+        // memCacheHeight: height?.toInt(),
         imageUrl: url,
         cacheManager: pixivCacheManager,
         height: height,

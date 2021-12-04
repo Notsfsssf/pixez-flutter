@@ -24,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -422,9 +423,6 @@ class _SettingPageState extends State<SettingPage> {
           try {
             Directory tempDir = await getTemporaryDirectory();
             tempDir.deleteSync(recursive: true);
-            Directory directory =
-                Directory((await getApplicationDocumentsDirectory()).path);
-            if (directory.existsSync()) directory.deleteSync(recursive: true);
           } catch (e) {}
         }
         break;
