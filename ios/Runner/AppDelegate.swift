@@ -30,7 +30,7 @@ import Photos
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-
+    
     
     @objc private func saveImage(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: AnyObject) {
         var showMessage = ""
@@ -68,58 +68,58 @@ import Photos
     }
     
     func saveImageInAlbum(albumName: String = "",gifPath:String) {
-           var assetAlbum: PHAssetCollection?
-           if albumName.isEmpty {
-               let list = PHAssetCollection
-                   .fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary,
-                                                  options: nil)
-               assetAlbum = list[0]
-           } else {
-               let list = PHAssetCollection
-                   .fetchAssetCollections(with: .album, subtype: .any, options: nil)
-               list.enumerateObjects({ (album, index, stop) in
-                   let assetCollection = album
-                   if albumName == assetCollection.localizedTitle {
-                       assetAlbum = assetCollection
-                       stop.initialize(to: true)
-                   }
-               })
-               if assetAlbum == nil {
-                   PHPhotoLibrary.shared().performChanges({
-                       PHAssetCollectionChangeRequest
-                           .creationRequestForAssetCollection(withTitle: albumName)
-                   }, completionHandler: { (isSuccess, error) in
-                       self.saveImageInAlbum(albumName: albumName,gifPath: gifPath)
-                   })
-                   return
-               }
-           }
-           PHPhotoLibrary.shared().performChanges({
+        var assetAlbum: PHAssetCollection?
+        if albumName.isEmpty {
+            let list = PHAssetCollection
+                .fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary,
+                                       options: nil)
+            assetAlbum = list[0]
+        } else {
+            let list = PHAssetCollection
+                .fetchAssetCollections(with: .album, subtype: .any, options: nil)
+            list.enumerateObjects({ (album, index, stop) in
+                let assetCollection = album
+                if albumName == assetCollection.localizedTitle {
+                    assetAlbum = assetCollection
+                    stop.initialize(to: true)
+                }
+            })
+            if assetAlbum == nil {
+                PHPhotoLibrary.shared().performChanges({
+                    PHAssetCollectionChangeRequest
+                        .creationRequestForAssetCollection(withTitle: albumName)
+                }, completionHandler: { (isSuccess, error) in
+                    self.saveImageInAlbum(albumName: albumName,gifPath: gifPath)
+                })
+                return
+            }
+        }
+        PHPhotoLibrary.shared().performChanges({
             let url = URL(fileURLWithPath: gifPath)
             let result =   PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: url)
-
             
-               if !albumName.isEmpty {
-                   let assetPlaceholder =   result?.placeholderForCreatedAsset
-                   let albumChangeRequset = PHAssetCollectionChangeRequest(for:
-                       assetAlbum!)
-                   albumChangeRequset!.addAssets([assetPlaceholder!]  as NSArray)
-               }
-           }) { (isSuccess: Bool, error: Error?) in
-               if isSuccess {
-            DispatchQueue.main.async {
-                                      let alertController = UIAlertController(title: "encode success", message: nil, preferredStyle: UIAlertController.Style.alert)
-                               UIApplication.shared.keyWindow?.rootViewController?.self.present(alertController, animated: true, completion: nil)
-                               DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                                   UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)}
-                           }
-                           print("Your image was successfully saved")
-               } else{
-                   print(error!.localizedDescription)
+            
+            if !albumName.isEmpty {
+                let assetPlaceholder =   result?.placeholderForCreatedAsset
+                let albumChangeRequset = PHAssetCollectionChangeRequest(for:
+                                                                            assetAlbum!)
+                albumChangeRequset!.addAssets([assetPlaceholder!]  as NSArray)
+            }
+        }) { (isSuccess: Bool, error: Error?) in
+            if isSuccess {
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: "encode success", message: nil, preferredStyle: UIAlertController.Style.alert)
+                    UIApplication.shared.keyWindow?.rootViewController?.self.present(alertController, animated: true, completion: nil)
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                        UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)}
+                }
+                print("Your image was successfully saved")
+            } else{
+                print(error!.localizedDescription)
                 
-               }
-           }
-       }
+            }
+        }
+    }
     
     private func receiveBatteryLevel(result: FlutterResult,path:String,delay:Int) {
         let docs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -137,7 +137,7 @@ import Photos
         }
         let ok = saveGifToDocument(imageArray: imageArray, gifPath,delay: delay)
         if(ok){
-          saveImageInAlbum(albumName: "pxez", gifPath: gifPath)
+            saveImageInAlbum(albumName: "pxez", gifPath: gifPath)
             
         }
         result(Int(1))
@@ -145,10 +145,10 @@ import Photos
     
     func saveGifToDocument(imageArray images: NSArray, _ gifPath: String,delay:Int) -> Bool {
         guard images.count > 0 &&
-            gifPath.utf8CString.count > 0 else {
-                return false
-        }
-    
+                gifPath.utf8CString.count > 0 else {
+                    return false
+                }
+        
         let url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, gifPath as CFString, .cfurlposixPathStyle, false)
         let destion = CGImageDestinationCreateWithURL(url!, kUTTypeGIF, images.count, nil)
         let adelay = Float(delay)/Float(1000)

@@ -221,7 +221,7 @@ abstract class _SaveStoreBase with Store {
 
   Future<void> saveToGalleryWithUser(Uint8List uint8list, String userName,
       int userId, int sanityLevel, String fileName) async {
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isIOS) {
       try {
         String overFileName = fileName;
         if (userSetting.singleFolder) {

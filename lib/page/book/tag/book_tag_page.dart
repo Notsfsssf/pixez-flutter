@@ -19,6 +19,7 @@ import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
+import 'package:quiver/iterables.dart';
 
 class BookTagPage extends StatefulWidget {
   @override
@@ -29,8 +30,12 @@ class _BookTagPageState extends State<BookTagPage>
     with TickerProviderStateMixin {
   bool edit = false;
 
+  late TabController _tabController;
+
   @override
   void initState() {
+    _tabController =
+        TabController(length: bookTagStore.bookTagList.length, vsync: this);
     super.initState();
   }
 
@@ -42,30 +47,40 @@ class _BookTagPageState extends State<BookTagPage>
   @override
   Widget build(BuildContext context) {
     if (edit)
-      return Container(
-        child: Column(
-          children: [
-            AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.transparent,
-              title: Text(I18n.of(context).choice_you_like),
-              actions: [
-                IconButton(
-                    icon: Icon(Icons.save),
-                    onPressed: () {
-                      setState(() {
-                        edit = false;
-                      });
-                    })
-              ],
-            ),
-            Expanded(child: _buildTagChip())
-          ],
-        ),
-      );
+      return Observer(builder: (context) {
+        return Container(
+          child: Column(
+            children: [
+              AppBar(
+                elevation: 0.0,
+                backgroundColor: Colors.transparent,
+                title: Text(I18n.of(context).choice_you_like),
+                actions: [
+                  IconButton(
+                      icon: Icon(Icons.save),
+                      onPressed: () {
+                        setState(() {
+                          edit = false;
+                        });
+                      })
+                ],
+              ),
+              Expanded(child: _buildTagChip())
+            ],
+          ),
+        );
+      });
     return Observer(builder: (_) {
-      TabController _tabController =
-          TabController(length: bookTagStore.bookTagList.length, vsync: this);
+      if (_tabController.length != bookTagStore.bookTagList.length) {
+        var index = (_tabController.index >= bookTagStore.bookTagList.length)
+            ? bookTagStore.bookTagList.length - 1
+            : _tabController.index;
+        index = (index < 0) ? 0 : index;
+        _tabController = TabController(
+            initialIndex: index,
+            length: bookTagStore.bookTagList.length,
+            vsync: this);
+      }
       return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
