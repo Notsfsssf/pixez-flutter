@@ -54,7 +54,8 @@ class _RankPageState extends State<RankPage>
   String? dateTime;
 
   GlobalKey appBarKey = GlobalKey();
-  double? appBarHeight = null;
+  // double? appBarHeight = null;
+  ValueNotifier<double?> appBarHeightNotifier = ValueNotifier(null);
 
   @override
   void dispose() {
@@ -103,11 +104,10 @@ class _RankPageState extends State<RankPage>
 
   // 切换全屏状态
   void toggleFullscreen() async {
-    if (appBarHeight == null) {
-      appBarHeight = await initAppBarHeight();
-      setState(() {});
-      // 这里比较hack，因为没找到进入这个页面的生命周期，所以干脆在第一次发起全屏请求的时候
-      // 直接等待50ms使组件重渲染完毕。
+    if (appBarHeightNotifier.value == null) {
+      appBarHeightNotifier.value = await initAppBarHeight();
+      // 这里比较hack，因为需要等待appbarHeight从null到固定double类型的重绘
+      // 等待50ms使组件重渲染完毕。
       Timer(const Duration(milliseconds: 50), () {
         toggleFullscreen();
       });
@@ -135,54 +135,60 @@ class _RankPageState extends State<RankPage>
           length: rankStore.modeList.length,
           child: Column(
             children: <Widget>[
-              Observer(
-                  builder: (_) => AnimatedContainer(
-                        key: appBarKey,
-                        duration: const Duration(milliseconds: 400),
-                        height: rankStore.isFullscreen ? 0 : appBarHeight,
-                        child: AppBar(
-                          elevation: 0.0,
-                          title: TabBar(
-                            onTap: (i) => setState(() {
-                              this.index = i;
-                            }),
-                            indicator: MD2Indicator(
-                                indicatorHeight: 3,
-                                indicatorColor:
-                                    Theme.of(context).colorScheme.primary,
-                                indicatorSize: MD2IndicatorSize.normal),
-                            indicatorSize: TabBarIndicatorSize.label,
-                            isScrollable: true,
-                            tabs: <Widget>[
-                              for (var i in titles)
-                                Tab(
-                                  text: i,
+              ValueListenableBuilder<double?>(
+                valueListenable: appBarHeightNotifier,
+                builder: (BuildContext context, double? value, Widget? child) =>
+                    Observer(
+                        builder: (_) => AnimatedContainer(
+                              key: appBarKey,
+                              duration: const Duration(milliseconds: 400),
+                              height: rankStore.isFullscreen
+                                  ? 0
+                                  : appBarHeightNotifier.value,
+                              child: AppBar(
+                                elevation: 0.0,
+                                title: TabBar(
+                                  onTap: (i) => setState(() {
+                                    this.index = i;
+                                  }),
+                                  indicator: MD2Indicator(
+                                      indicatorHeight: 3,
+                                      indicatorColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      indicatorSize: MD2IndicatorSize.normal),
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  isScrollable: true,
+                                  tabs: <Widget>[
+                                    for (var i in titles)
+                                      Tab(
+                                        text: i,
+                                      ),
+                                  ],
                                 ),
-                            ],
-                          ),
-                          actions: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.fullscreen),
-                              onPressed: toggleFullscreen,
-                            ),
-                            Visibility(
-                              visible: index < rankStore.modeList.length,
-                              child: IconButton(
-                                icon: Icon(Icons.date_range),
-                                onPressed: () async {
-                                  await _showTimePicker(context);
-                                },
+                                actions: <Widget>[
+                                  IconButton(
+                                    icon: Icon(Icons.fullscreen),
+                                    onPressed: toggleFullscreen,
+                                  ),
+                                  Visibility(
+                                    visible: index < rankStore.modeList.length,
+                                    child: IconButton(
+                                      icon: Icon(Icons.date_range),
+                                      onPressed: () async {
+                                        await _showTimePicker(context);
+                                      },
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.undo),
+                                    onPressed: () {
+                                      rankStore.reset();
+                                    },
+                                  )
+                                ],
                               ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.undo),
-                              onPressed: () {
-                                rankStore.reset();
-                              },
-                            )
-                          ],
-                        ),
-                      )),
+                            )),
+              ),
               Expanded(
                 child: TabBarView(children: [
                   for (var element in rankStore.modeList)
