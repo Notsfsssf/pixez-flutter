@@ -13,6 +13,7 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class TranslateTextSelectionControls extends MaterialTextSelectionControls {
             anchorAbove: anchor,
           ),
           child: TextSelectionToolbar(
-            handleCut: canCut(delegate) ? () => handleCut(delegate) : null,
+            handleCut: canCut(delegate) ? () => handleCut(delegate,null) : null,
             handleCopy: canCopy(delegate)
                 ? () => handleCopy(delegate, clipboardStatus)
                 : null,
