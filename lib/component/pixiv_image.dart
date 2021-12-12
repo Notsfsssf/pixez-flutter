@@ -41,7 +41,8 @@ class PixivHostInterceptor implements InterceptorContract {
   @override
   Future<BaseRequest> interceptRequest({required BaseRequest request}) async {
     Uri uri = request.url.toTureUri();
-    return request.copyWith(url: uri);
+    request.headers["Host"] = uri.host;
+    return request.copyWith(url: uri, headers: request.headers);
   }
 
   @override
