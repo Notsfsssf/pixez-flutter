@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Flutter
 
 struct DocumentPlugin {
     static func bind(controller : FlutterViewController){
@@ -23,7 +24,7 @@ struct DocumentPlugin {
             let data  = args?["data"] as! FlutterStandardTypedData
             let name = args?["name"] as! String
             let sData = Data(data.data)
-            
+            save(data: sData, name: name)
         })
     }
     
