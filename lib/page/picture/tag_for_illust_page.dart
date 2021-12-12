@@ -83,7 +83,9 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
             Expanded(
               child: _store.errorMessage == null
                   ? ListView.builder(
-                      padding: EdgeInsets.all(2.0),
+                      padding: EdgeInsets.all(2.0).copyWith(
+                        bottom: (MediaQuery.maybeOf(context)?.padding.bottom ?? 0.0) + 2.0,
+                      ),
                       itemCount: _store.checkList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Row(

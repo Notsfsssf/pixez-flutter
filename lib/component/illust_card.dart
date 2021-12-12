@@ -21,11 +21,14 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
+import 'package:pixez/page/picture/tag_for_illust_page.dart';
 
 class IllustCard extends StatefulWidget {
   final IllustStore store;
@@ -211,13 +214,13 @@ class _IllustCardState extends State<IllustCard> {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: IconButton(
-              icon: Observer(builder: (_) {
+            child: GestureDetector(
+              child: Observer(builder: (_) {
                 return StarIcon(
                   state: store.state,
                 );
               }),
-              onPressed: () async {
+              onTap: () async {
                 store.star();
                 if (!userSetting.followAfterStar) {
                   return;
@@ -227,6 +230,24 @@ class _IllustCardState extends State<IllustCard> {
                   BotToast.showText(
                       text:
                           "${store.illusts!.user.name} ${I18n.of(context).followed}");
+                }
+              },
+              onLongPress: () async {
+                final result = await showModalBottomSheet(
+                  context: context,
+                  clipBehavior: Clip.hardEdge,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                  constraints: BoxConstraints.expand(height: MediaQuery.of(context).size.height * .618),
+                  isScrollControlled: true,
+                  builder: (_) => TagForIllustPage(id: store.illusts!.id),
+                );
+                if (result?.isNotEmpty ?? false) {
+                  LPrinter.d(result);
+                  String restrict = result['restrict'];
+                  List<String>? tags = result['tags'];
+                  store.star(restrict: restrict, tags: tags, force: true);
                 }
               },
             ),
