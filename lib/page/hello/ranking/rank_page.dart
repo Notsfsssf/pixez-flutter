@@ -25,9 +25,16 @@ import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
 
 class RankPage extends StatefulWidget {
+  late ValueNotifier<bool> isFullscreen;
+  late Function? toggleFullscreen;
   RankPage({
     Key? key,
-  }) : super(key: key);
+    ValueNotifier<bool>? isFullscreen,
+    this.toggleFullscreen,
+  }) : super(key: key) {
+    this.isFullscreen =
+        isFullscreen == null ? ValueNotifier(false) : isFullscreen;
+  }
 
   @override
   _RankPageState createState() => _RankPageState();
@@ -52,6 +59,9 @@ class _RankPageState extends State<RankPage>
   late DateTime nowDate;
   late StreamSubscription<String> subscription;
   String? dateTime;
+
+  GlobalKey appBarKey = GlobalKey();
+  ValueNotifier<double?> appBarHeightNotifier = ValueNotifier(null);
 
   @override
   void dispose() {
@@ -87,6 +97,31 @@ class _RankPageState extends State<RankPage>
   int index = 0;
   int tapCount = 0;
 
+  // 获取AppBar的高度，方便实现动画
+  Future<double> initAppBarHeight() async {
+    Size? appBarSize =
+        appBarKey.currentContext?.findRenderObject()?.paintBounds.size;
+    if (appBarSize != null) {
+      return appBarSize.height;
+    } else {
+      return 0;
+    }
+  }
+
+  // 切换全屏状态
+  void toggleFullscreen() async {
+    if (appBarHeightNotifier.value == null) {
+      appBarHeightNotifier.value = await initAppBarHeight();
+      // 这里比较hack，因为需要等待appbarHeight从null到固定double类型的重绘
+      // 等待50ms使组件重渲染完毕。
+      Timer(const Duration(milliseconds: 50), () {
+        toggleFullscreen();
+      });
+      return;
+    }
+    widget.toggleFullscreen!();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -106,42 +141,65 @@ class _RankPageState extends State<RankPage>
           length: rankStore.modeList.length,
           child: Column(
             children: <Widget>[
-              AppBar(
-                elevation: 0.0,
-                title: TabBar(
-                  onTap: (i) => setState(() {
-                    this.index = i;
-                  }),
-                  indicator: MD2Indicator(
-                      indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).colorScheme.primary,
-                      indicatorSize: MD2IndicatorSize.normal),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  isScrollable: true,
-                  tabs: <Widget>[
-                    for (var i in titles)
-                      Tab(
-                        text: i,
-                      ),
-                  ],
-                ),
-                actions: <Widget>[
-                  Visibility(
-                    visible: index < rankStore.modeList.length,
-                    child: IconButton(
-                      icon: Icon(Icons.date_range),
-                      onPressed: () async {
-                        await _showTimePicker(context);
-                      },
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.undo),
-                    onPressed: () {
-                      rankStore.reset();
-                    },
-                  )
-                ],
+              ValueListenableBuilder<double?>(
+                valueListenable: appBarHeightNotifier,
+                builder: (BuildContext context, double? value, Widget? child) =>
+                    ValueListenableBuilder<bool>(
+                        valueListenable: widget.isFullscreen,
+                        builder: (BuildContext context, bool? isFullscreen,
+                                Widget? child) =>
+                            AnimatedContainer(
+                              key: appBarKey,
+                              duration: const Duration(milliseconds: 400),
+                              height: isFullscreen != null && isFullscreen
+                                  ? 0
+                                  : appBarHeightNotifier.value,
+                              child: AppBar(
+                                elevation: 0.0,
+                                title: TabBar(
+                                  onTap: (i) => setState(() {
+                                    this.index = i;
+                                  }),
+                                  indicator: MD2Indicator(
+                                      indicatorHeight: 3,
+                                      indicatorColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      indicatorSize: MD2IndicatorSize.normal),
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  isScrollable: true,
+                                  tabs: <Widget>[
+                                    for (var i in titles)
+                                      Tab(
+                                        text: i,
+                                      ),
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  if (widget.toggleFullscreen != null)
+                                    IconButton(
+                                      icon: Icon(Icons.fullscreen),
+                                      onPressed: () {
+                                        toggleFullscreen();
+                                      },
+                                    ),
+                                  Visibility(
+                                    visible: index < rankStore.modeList.length,
+                                    child: IconButton(
+                                      icon: Icon(Icons.date_range),
+                                      onPressed: () async {
+                                        await _showTimePicker(context);
+                                      },
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.undo),
+                                    onPressed: () {
+                                      rankStore.reset();
+                                    },
+                                  )
+                                ],
+                              ),
+                            )),
               ),
               Expanded(
                 child: TabBarView(children: [

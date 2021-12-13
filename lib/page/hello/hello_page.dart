@@ -35,7 +35,6 @@ import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links2/uni_links.dart';
 
-
 class HelloPage extends StatefulWidget {
   @override
   _HelloPageState createState() => _HelloPageState();
@@ -72,8 +71,8 @@ class _HelloPageState extends State<HelloPage> {
   Future<void> initPlatformState() async {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => GuidePage()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => GuidePage()));
     }
   }
 

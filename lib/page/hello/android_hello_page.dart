@@ -18,7 +18,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -40,6 +39,8 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links2/uni_links.dart';
 
+import 'ranking/rank_store.dart';
+
 class AndroidHelloPage extends StatefulWidget {
   final LightingStore? lightingStore;
 
@@ -52,6 +53,28 @@ class AndroidHelloPage extends StatefulWidget {
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late List<Widget> _pageList;
   DateTime? _preTime;
+
+  // key 用来获取高度以实现一些基础的动画
+  GlobalKey bottomNavigatorKey = GlobalKey();
+  double? bottomNavigatorHeight = null;
+
+  ValueNotifier<bool> isFullscreen = ValueNotifier(false);
+  void toggleFullscreen() {
+    isFullscreen.value = !isFullscreen.value;
+  }
+
+  // 获取bottomNavigator的高度，方便实现基础的动画
+  void initBottomNavigatorHeight() {
+    Size? bottomNavigatorSize =
+        bottomNavigatorKey.currentContext?.findRenderObject()?.paintBounds.size;
+    print('bottomNavigatorSize is ' + bottomNavigatorSize.toString());
+    if (bottomNavigatorSize != null) {
+      setState(() {
+        bottomNavigatorHeight = bottomNavigatorSize.height;
+        print('get height is ' + bottomNavigatorSize.height.toString());
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,37 +111,62 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildScaffold(BuildContext context) {
+    // 如果没有获取到底部导航的高度，在重新渲染的时候会尝试获取底部导航的高度
+    if (bottomNavigatorHeight == null) {
+      Timer(const Duration(milliseconds: 0), () {
+        initBottomNavigatorHeight();
+      });
+    }
     return Scaffold(
-      body: _buildPageContent(context),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          currentIndex: index,
-          onTap: (index) {
-            if (this.index == index) {
-              topStore.setTop("${index + 1}00");
-            }
-            setState(() {
-              this.index = index;
-            });
-            if (_pageController.hasClients) _pageController.jumpToPage(index);
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: I18n.of(context).home),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  CustomIcons.leaderboard,
-                ),
-                label: I18n.of(context).rank),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), label: I18n.of(context).search),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
-          ]),
-    );
+        body: _buildPageContent(context),
+        floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: isFullscreen,
+          builder: (context, value, child) => AnimatedToggleFullscreenFAB(
+            isFullscreen: value,
+            toggleFullscreen: toggleFullscreen,
+          ),
+        ),
+        bottomNavigationBar: ValueListenableBuilder<bool>(
+            valueListenable: isFullscreen,
+            builder: (BuildContext context, bool isFullscreen, Widget? child) =>
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  height: isFullscreen ? 0 : bottomNavigatorHeight,
+                  key: bottomNavigatorKey,
+                  child: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      selectedItemColor: Theme.of(context).colorScheme.primary,
+                      currentIndex: index,
+                      onTap: (index) {
+                        if (this.index == index) {
+                          topStore.setTop("${index + 1}00");
+                        }
+                        setState(() {
+                          this.index = index;
+                        });
+                        if (_pageController.hasClients)
+                          _pageController.jumpToPage(index);
+                      },
+                      items: [
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.home),
+                            label: I18n.of(context).home),
+                        BottomNavigationBarItem(
+                            icon: Icon(
+                              CustomIcons.leaderboard,
+                            ),
+                            label: I18n.of(context).rank),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.favorite),
+                            label: I18n.of(context).quick_view),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.search),
+                            label: I18n.of(context).search),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.more_horiz),
+                            label: I18n.of(context).more),
+                      ]),
+                )));
   }
 
   Widget _buildPadScafford(BuildContext context, BoxConstraints constraint) {
@@ -167,7 +215,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     Constants.type = 0;
     _pageList = [
       RecomSpolightPage(lightingStore: widget.lightingStore),
-      RankPage(),
+      RankPage(
+        isFullscreen: isFullscreen,
+        toggleFullscreen: toggleFullscreen,
+      ),
       NewPage(),
       SearchPage(),
       SettingPage()
@@ -200,6 +251,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         }));
     });
     initPlatform();
+    // 利用事件循环的顺序使UI初始化完毕后获取AppBar的高度
+    Timer(const Duration(milliseconds: 0), () {
+      initBottomNavigatorHeight();
+    });
   }
 
   late StreamSubscription _sub;
@@ -248,5 +303,60 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       return;
     }
     initPermission();
+  }
+}
+
+// 用来实现退出全屏功能的FAB
+class AnimatedToggleFullscreenFAB extends StatefulWidget {
+  late bool isFullscreen;
+  late Function toggleFullscreen;
+  AnimatedToggleFullscreenFAB({
+    Key? key,
+    required this.isFullscreen,
+    required this.toggleFullscreen,
+  }) : super(key: key);
+  @override
+  _AnimatedToggleFullscreenFABState createState() =>
+      _AnimatedToggleFullscreenFABState();
+}
+
+class _AnimatedToggleFullscreenFABState
+    extends State<AnimatedToggleFullscreenFAB>
+    with SingleTickerProviderStateMixin {
+  // 用动画实现滑动出现效果
+  late Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: const Offset(0.0, 4.0),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.linear,
+  ));
+  late AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 400),
+    vsync: this,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.isFullscreen) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: SizedBox(
+          height: 65,
+          width: 65,
+          child: FloatingActionButton(
+            onPressed: () {
+              widget.toggleFullscreen();
+            },
+            child: Container(
+                child: Icon(
+              Icons.close_fullscreen,
+            )),
+          )),
+    );
   }
 }
