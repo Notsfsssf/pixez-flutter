@@ -39,14 +39,6 @@ abstract class _RankStoreBase with Store {
   ObservableList<String> modeList = ObservableList();
   @observable
   bool inChoice = false;
-  @observable
-  bool isFullscreen = false;
-
-  @action
-  toggleFullscreen() {
-    print('trigger, fullscreen: ' + isFullscreen.toString());
-    isFullscreen = !isFullscreen;
-  }
 
   @action
   Future<void> reset() async {
@@ -81,10 +73,4 @@ abstract class _RankStoreBase with Store {
     modeList.clear();
     modeList.addAll(saveList);
   }
-}
-
-class RankStoreInstance {
-  static RankStore instance = RankStore();
-
-  static var repaintOutside;
 }

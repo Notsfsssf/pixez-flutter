@@ -25,9 +25,16 @@ import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
 
 class RankPage extends StatefulWidget {
+  late ValueNotifier<bool> isFullscreen;
+  late Function? toggleFullscreen;
   RankPage({
     Key? key,
-  }) : super(key: key);
+    ValueNotifier<bool>? isFullscreen,
+    this.toggleFullscreen,
+  }) : super(key: key) {
+    this.isFullscreen =
+        isFullscreen == null ? ValueNotifier(false) : isFullscreen;
+  }
 
   @override
   _RankPageState createState() => _RankPageState();
@@ -54,7 +61,6 @@ class _RankPageState extends State<RankPage>
   String? dateTime;
 
   GlobalKey appBarKey = GlobalKey();
-  // double? appBarHeight = null;
   ValueNotifier<double?> appBarHeightNotifier = ValueNotifier(null);
 
   @override
@@ -66,7 +72,7 @@ class _RankPageState extends State<RankPage>
   @override
   void initState() {
     nowDate = DateTime.now();
-    rankStore = RankStoreInstance.instance..init();
+    rankStore = RankStore()..init();
     int i = 0;
     modeList.forEach((element) {
       boolList[i] = false;
@@ -113,7 +119,7 @@ class _RankPageState extends State<RankPage>
       });
       return;
     }
-    rankStore.toggleFullscreen();
+    widget.toggleFullscreen!();
   }
 
   @override
@@ -138,11 +144,14 @@ class _RankPageState extends State<RankPage>
               ValueListenableBuilder<double?>(
                 valueListenable: appBarHeightNotifier,
                 builder: (BuildContext context, double? value, Widget? child) =>
-                    Observer(
-                        builder: (_) => AnimatedContainer(
+                    ValueListenableBuilder<bool>(
+                        valueListenable: widget.isFullscreen,
+                        builder: (BuildContext context, bool? isFullscreen,
+                                Widget? child) =>
+                            AnimatedContainer(
                               key: appBarKey,
                               duration: const Duration(milliseconds: 400),
-                              height: rankStore.isFullscreen
+                              height: isFullscreen != null && isFullscreen
                                   ? 0
                                   : appBarHeightNotifier.value,
                               child: AppBar(
@@ -166,10 +175,13 @@ class _RankPageState extends State<RankPage>
                                   ],
                                 ),
                                 actions: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.fullscreen),
-                                    onPressed: toggleFullscreen,
-                                  ),
+                                  if (widget.toggleFullscreen != null)
+                                    IconButton(
+                                      icon: Icon(Icons.fullscreen),
+                                      onPressed: () {
+                                        toggleFullscreen();
+                                      },
+                                    ),
                                   Visibility(
                                     visible: index < rankStore.modeList.length,
                                     child: IconButton(

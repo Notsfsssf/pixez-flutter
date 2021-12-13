@@ -18,7 +18,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -58,6 +57,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   // key 用来获取高度以实现一些基础的动画
   GlobalKey bottomNavigatorKey = GlobalKey();
   double? bottomNavigatorHeight = null;
+
+  ValueNotifier<bool> isFullscreen = ValueNotifier(false);
+  void toggleFullscreen() {
+    isFullscreen.value = !isFullscreen.value;
+  }
 
   // 获取bottomNavigator的高度，方便实现基础的动画
   void initBottomNavigatorHeight() {
@@ -115,44 +119,54 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
     return Scaffold(
         body: _buildPageContent(context),
-        floatingActionButton: AnimatedToggleFullscreenFAB(),
-        bottomNavigationBar: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          height: RankStoreInstance.instance.isFullscreen
-              ? 0
-              : bottomNavigatorHeight,
-          key: bottomNavigatorKey,
-          child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: Theme.of(context).colorScheme.primary,
-              currentIndex: index,
-              onTap: (index) {
-                if (this.index == index) {
-                  topStore.setTop("${index + 1}00");
-                }
-                setState(() {
-                  this.index = index;
-                });
-                if (_pageController.hasClients)
-                  _pageController.jumpToPage(index);
-              },
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), label: I18n.of(context).home),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      CustomIcons.leaderboard,
-                    ),
-                    label: I18n.of(context).rank),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite),
-                    label: I18n.of(context).quick_view),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.search), label: I18n.of(context).search),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.more_horiz), label: I18n.of(context).more),
-              ]),
-        ));
+        floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: isFullscreen,
+          builder: (context, value, child) => AnimatedToggleFullscreenFAB(
+            isFullscreen: value,
+            toggleFullscreen: toggleFullscreen,
+          ),
+        ),
+        bottomNavigationBar: ValueListenableBuilder<bool>(
+            valueListenable: isFullscreen,
+            builder: (BuildContext context, bool isFullscreen, Widget? child) =>
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  height: isFullscreen ? 0 : bottomNavigatorHeight,
+                  key: bottomNavigatorKey,
+                  child: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      selectedItemColor: Theme.of(context).colorScheme.primary,
+                      currentIndex: index,
+                      onTap: (index) {
+                        if (this.index == index) {
+                          topStore.setTop("${index + 1}00");
+                        }
+                        setState(() {
+                          this.index = index;
+                        });
+                        if (_pageController.hasClients)
+                          _pageController.jumpToPage(index);
+                      },
+                      items: [
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.home),
+                            label: I18n.of(context).home),
+                        BottomNavigationBarItem(
+                            icon: Icon(
+                              CustomIcons.leaderboard,
+                            ),
+                            label: I18n.of(context).rank),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.favorite),
+                            label: I18n.of(context).quick_view),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.search),
+                            label: I18n.of(context).search),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.more_horiz),
+                            label: I18n.of(context).more),
+                      ]),
+                )));
   }
 
   Widget _buildPadScafford(BuildContext context, BoxConstraints constraint) {
@@ -201,7 +215,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     Constants.type = 0;
     _pageList = [
       RecomSpolightPage(lightingStore: widget.lightingStore),
-      RankPage(),
+      RankPage(
+        isFullscreen: isFullscreen,
+        toggleFullscreen: toggleFullscreen,
+      ),
       NewPage(),
       SearchPage(),
       SettingPage()
@@ -291,6 +308,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
 // 用来实现退出全屏功能的FAB
 class AnimatedToggleFullscreenFAB extends StatefulWidget {
+  late bool isFullscreen;
+  late Function toggleFullscreen;
+  AnimatedToggleFullscreenFAB({
+    Key? key,
+    required this.isFullscreen,
+    required this.toggleFullscreen,
+  }) : super(key: key);
   @override
   _AnimatedToggleFullscreenFABState createState() =>
       _AnimatedToggleFullscreenFABState();
@@ -314,7 +338,7 @@ class _AnimatedToggleFullscreenFABState
 
   @override
   Widget build(BuildContext context) {
-    if (RankStoreInstance.instance.isFullscreen) {
+    if (widget.isFullscreen) {
       _controller.forward();
     } else {
       _controller.reverse();
@@ -326,7 +350,7 @@ class _AnimatedToggleFullscreenFABState
           width: 65,
           child: FloatingActionButton(
             onPressed: () {
-              RankStoreInstance.instance.toggleFullscreen();
+              widget.toggleFullscreen();
             },
             child: Container(
                 child: Icon(
