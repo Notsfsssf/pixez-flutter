@@ -88,7 +88,12 @@ class HistoryPage extends StatelessWidget {
               });
         }
         return Center(
-          child: Container(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(I18n.of(context).empty_history),
+            ],
+          ),
         );
       });
 

@@ -247,7 +247,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     if (trueList.isEmpty)
       return Container(
         child: Center(
-          child: Text("[ ]"),
+          child: Text(I18n.of(context).empty_download),
         ),
       );
     return ListView.builder(

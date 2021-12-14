@@ -247,5 +247,7 @@
   "temporarily_visible": "暂时可见",
   "unclassified": "未分类",
   "max_download_task_running_count": "最大同时下载任务数量",
-  "export": "导出"
+  "export": "导出",
+  "empty_history": "暂时没有浏览历史哦",
+  "empty_download": "这里空空的"
 }

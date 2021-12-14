@@ -247,5 +247,7 @@
   "temporarily_visible": "temporarily visible",
   "unclassified": "Unclassified",
   "max_download_task_running_count": "Max download task running count",
-  "export": "Export"
+  "export": "Export",
+  "empty_history": "History is empty",
+  "empty_download": "Empty"
 }
