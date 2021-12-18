@@ -14,8 +14,10 @@
  *
  */
 
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -322,6 +324,19 @@ class _SettingPageState extends State<SettingPage> {
       case "CANCEL":
         {}
         break;
+    }
+  }
+
+  _showMessage(BuildContext context) async {
+    final link =
+        "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
+    try {
+      final dio = Dio(BaseOptions(baseUrl: link));
+      Response response = await dio.get("");
+      final data = response.data as Map;
+      print("${data['doh']}");
+    } catch (e) {
+      print(e);
     }
   }
 

@@ -238,5 +238,6 @@
   "temporarily_visible": "temporarily visible",
   "unclassified":"Unclassified",
   "max_download_task_running_count": "Max download task running count",
-  "export": "Export"
+  "export": "Export",
+  "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade"
 }

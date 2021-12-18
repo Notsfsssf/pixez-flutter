@@ -36,14 +36,14 @@ class LightingList extends StatefulWidget {
   final RefreshController? refreshController;
   final String? portal;
 
-  const LightingList({
-    Key? key,
-    required this.source,
-    this.header,
-    this.isNested,
-    this.refreshController,
-    this.portal
-  }) : super(key: key);
+  const LightingList(
+      {Key? key,
+      required this.source,
+      this.header,
+      this.isNested,
+      this.refreshController,
+      this.portal})
+      : super(key: key);
 
   @override
   _LightingListState createState() => _LightingListState();
@@ -224,9 +224,12 @@ class _LightingListState extends State<LightingList> {
                     },
                     child: Text(I18n.of(context).retry)),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('${_store.errorMessage}'),
-                )
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      (_store.errorMessage?.contains("400") == true
+                          ? '${I18n.of(context).error_400_hint}\n ${_store.errorMessage}'
+                          : '${_store.errorMessage}'),
+                    ))
               ],
             ),
           )

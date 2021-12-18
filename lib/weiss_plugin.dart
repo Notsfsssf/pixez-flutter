@@ -8,10 +8,13 @@ class WeissPlugin {
 
   static Future<void> start() async {
     final map = Hoster.hardMap();
+
     String data = "";
     try {
-      if (map.isNotEmpty) {
-        data = json.encode(map);
+      if (map.containsKey("doh")) {
+        final iMap = Map();
+        iMap["doh"] = map["doh"];
+        data = json.encode(iMap);
       }
     } catch (e) {}
     return await platform.invokeMethod("start", {"port": "9876", "map": data});

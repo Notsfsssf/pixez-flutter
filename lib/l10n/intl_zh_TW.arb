@@ -247,5 +247,6 @@
   "temporarily_visible": "暫時可見",
   "unclassified":"未分類",
   "max_download_task_running_count": "最大同時下載工作數",
-  "export": "匯出"
+  "export": "匯出",
+  "error_400_hint" : "错误信息为[400]错误，则可能需要重新登录，这可能是因为更改了密码或者api升级导致的"
 }

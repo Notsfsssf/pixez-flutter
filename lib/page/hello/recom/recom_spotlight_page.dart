@@ -225,11 +225,44 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               );
             }, childCount: _lightingStore.iStores.length),
           )
-        : SliverToBoxAdapter(
-            child: Container(
-              height: 30,
-            ),
-          );
+        : (_lightingStore.errorMessage?.isNotEmpty == true
+            ? SliverToBoxAdapter(
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(':(',
+                            style: Theme.of(context).textTheme.headline4),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            _lightingStore.fetch(force: true);
+                          },
+                          child: Text(I18n.of(context).retry)),
+                      Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            (_lightingStore.errorMessage?.contains("400") ==
+                                    true
+                                ? '${I18n.of(context).error_400_hint}\n ${_lightingStore.errorMessage}'
+                                : '${_lightingStore.errorMessage}'),
+                          ))
+                    ],
+                  ),
+                ),
+              )
+            : SliverToBoxAdapter(
+                child: Container(
+                  height: 30,
+                ),
+              ));
   }
 
   Widget _buildSpotlightContainer() {

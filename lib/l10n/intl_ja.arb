@@ -247,5 +247,6 @@
   "temporarily_visible": "一時的に表示する",
   "unclassified":"未分類",
   "max_download_task_running_count": "同時ダウンロード数",
-  "export": "Export"
+  "export": "Export",
+  "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade"
 }
