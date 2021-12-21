@@ -8,7 +8,7 @@
 
 同样支持中国大陆地区直连。
 
-不适合新手用来学习flutter（折返吧）
+🎵 Mili - In Hell We Live, Lament 🎵 
 
 # 下载
 
