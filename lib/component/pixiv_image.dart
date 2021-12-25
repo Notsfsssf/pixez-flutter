@@ -40,6 +40,9 @@ const ImageSHost = "s.pximg.net";
 class PixivHostInterceptor implements InterceptorContract {
   @override
   Future<BaseRequest> interceptRequest({required BaseRequest request}) async {
+    if (request.url.host == "s.pximg.net") {
+      return request;
+    }
     Uri uri = request.url.toTureUri();
     request.headers["Host"] = uri.host;
     return request.copyWith(url: uri, headers: request.headers);

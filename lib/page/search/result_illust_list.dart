@@ -84,7 +84,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
   String searchTarget = search_target[0];
   String selectSort = "date_desc";
   int selectStarNum = 0;
-  double starValue = 0.0;
+  // double starValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +124,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         onPressed: () {
                           _buildShowDateRange(context);
                         }),
+                    _buildStar(),
                     IconButton(
                         icon: Icon(Icons.sort),
                         onPressed: () {
@@ -202,7 +203,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           TextButton(
                               onPressed: () {
                                 setState(() {
-                                  if (starValue == 0)
+                                  if (_starValue == 0)
                                     futureGet = ApiForceSource(
                                         futureGet: (bool e) => apiClient
                                             .getSearchIllust(widget.word,
@@ -212,7 +213,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                                     futureGet = ApiForceSource(
                                         futureGet: (bool e) =>
                                             apiClient.getSearchIllust(
-                                                '${widget.word} ${starNum[starValue.toInt()]}users入り',
+                                                '${widget.word} ${_starValue}users入り',
                                                 search_target: searchTarget,
                                                 sort: selectSort));
                                 });
@@ -275,36 +276,36 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           ),
                         ),
                       ),
-                      Padding(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(starValue != 0
-                              ? I18n.of(context).more_then_starnum_bookmark(
-                                  "${starNum[starValue.toInt()]}")
-                              : 'users入り'),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0.0, horizontal: 16.0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0.0, horizontal: 8.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Slider(
-                            activeColor:
-                                Theme.of(context).colorScheme.secondary,
-                            onChanged: (double value) {
-                              int v = value.toInt();
-                              setS(() {
-                                starValue = v.toDouble();
-                              });
-                            },
-                            value: starValue,
-                            max: 9.0,
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   child: Container(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: Text(starValue != 0
+                      //         ? I18n.of(context).more_then_starnum_bookmark(
+                      //             "${starNum[starValue.toInt()]}")
+                      //         : 'users入り'),
+                      //   ),
+                      //   padding: const EdgeInsets.symmetric(
+                      //       vertical: 0.0, horizontal: 16.0),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(
+                      //       vertical: 0.0, horizontal: 8.0),
+                      //   child: SizedBox(
+                      //     width: double.infinity,
+                      //     child: Slider(
+                      //       activeColor:
+                      //           Theme.of(context).colorScheme.secondary,
+                      //       onChanged: (double value) {
+                      //         int v = value.toInt();
+                      //         setS(() {
+                      //           starValue = v.toDouble();
+                      //         });
+                      //       },
+                      //       value: starValue,
+                      //       max: 9.0,
+                      //     ),
+                      //   ),
+                      // ),
                       Container(
                         height: 16,
                       )
@@ -313,5 +314,53 @@ class _ResultIllustListState extends State<ResultIllustList> {
             );
           });
         });
+  }
+
+  int _starValue = 0;
+
+  Widget _buildStar() {
+    return PopupMenuButton(
+      initialValue: _starValue,
+      child: Icon(Icons.book),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      itemBuilder: (context) {
+        return starNum.map((int value) {
+          if (value > 0) {
+            return PopupMenuItem(
+              value: value,
+              child: Text("${value} users入り"),
+              onTap: () {
+                setState(() {
+                  _starValue = value;
+                  if (_starValue == 0)
+                    futureGet = ApiForceSource(
+                        futureGet: (bool e) => apiClient.getSearchIllust(
+                            widget.word,
+                            search_target: searchTarget,
+                            sort: selectSort));
+                  else
+                    futureGet = ApiForceSource(
+                        futureGet: (bool e) => apiClient.getSearchIllust(
+                            '${widget.word} ${_starValue}users入り',
+                            search_target: searchTarget,
+                            sort: selectSort));
+                });
+              },
+            );
+          } else {
+            return PopupMenuItem(
+              value: value,
+              child: Text("Default"),
+              onTap: () {
+                setState(() {
+                  _starValue = value;
+                });
+              },
+            );
+          }
+        }).toList();
+      },
+    );
   }
 }
