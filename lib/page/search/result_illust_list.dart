@@ -146,34 +146,40 @@ class _ResultIllustListState extends State<ResultIllustList> {
     );
   }
 
+  DateTimeRange? _dateTimeRange;
+
   Future _buildShowDateRange(BuildContext context) async {
-    // await showDateRangePicker(
-    //     context: context,
-    //     locale: I18n.delegate.supportedLocales[
-    //         userSetting.toRealLanguageNum(userSetting.languageNum)],
-    //     firstDate: DateTime.fromMillisecondsSinceEpoch(
-    //         DateTime.now().millisecondsSinceEpoch -
-    //             (24 * 60 * 60 * 365 * 1000 * 8)),
-    //     lastDate: DateTime.now());
-    if (true) {
-      DateTimeRange? dateTimeRange = await showDateRangePicker(
-          context: context,
-          firstDate: DateTime.fromMillisecondsSinceEpoch(
-              DateTime.now().millisecondsSinceEpoch -
-                  (24 * 60 * 60 * 365 * 1000 * 8)),
-          lastDate: DateTime.now());
-      if (dateTimeRange != null) {
-        setState(() {
-          futureGet = ApiForceSource(
-              futureGet: (bool e) => apiClient.getSearchIllust(widget.word,
-                  search_target: searchTarget,
-                  sort: selectSort,
-                  start_date: dateTimeRange.start,
-                  end_date: dateTimeRange.end));
-        });
-      }
-      return;
+    DateTimeRange? dateTimeRange = await showDateRangePicker(
+        context: context,
+        initialDateRange: _dateTimeRange,
+        firstDate: DateTime.fromMillisecondsSinceEpoch(
+            DateTime.now().millisecondsSinceEpoch -
+                (24 * 60 * 60 * 365 * 1000 * 8)),
+        lastDate: DateTime.now());
+    if (dateTimeRange != null) {
+      _dateTimeRange = dateTimeRange;
+      setState(() {
+        _changeQueryParams();
+      });
     }
+  }
+
+  _changeQueryParams() {
+    if (_starValue == 0)
+      futureGet = ApiForceSource(
+          futureGet: (bool e) => apiClient.getSearchIllust(widget.word,
+              search_target: searchTarget,
+              sort: selectSort,
+              start_date: _dateTimeRange?.start,
+              end_date: _dateTimeRange?.end));
+    else
+      futureGet = ApiForceSource(
+          futureGet: (bool e) => apiClient.getSearchIllust(
+              '${widget.word} ${_starValue}users入り',
+              search_target: searchTarget,
+              sort: selectSort,
+              start_date: _dateTimeRange?.start,
+              end_date: _dateTimeRange?.end));
   }
 
   void _buildShowBottomSheet(BuildContext context) {
@@ -203,19 +209,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           TextButton(
                               onPressed: () {
                                 setState(() {
-                                  if (_starValue == 0)
-                                    futureGet = ApiForceSource(
-                                        futureGet: (bool e) => apiClient
-                                            .getSearchIllust(widget.word,
-                                                search_target: searchTarget,
-                                                sort: selectSort));
-                                  else
-                                    futureGet = ApiForceSource(
-                                        futureGet: (bool e) =>
-                                            apiClient.getSearchIllust(
-                                                '${widget.word} ${_starValue}users入り',
-                                                search_target: searchTarget,
-                                                sort: selectSort));
+                                  _changeQueryParams();
                                 });
                                 Navigator.of(context).pop();
                               },
@@ -335,11 +329,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
               onTap: () {
                 setState(() {
                   _starValue = value;
-                  futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getSearchIllust(
-                          '${widget.word} ${_starValue}users入り',
-                          search_target: searchTarget,
-                          sort: selectSort));
+                  _changeQueryParams();
                 });
               },
             );
@@ -350,11 +340,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
               onTap: () {
                 setState(() {
                   _starValue = value;
-                  futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getSearchIllust(
-                          widget.word,
-                          search_target: searchTarget,
-                          sort: selectSort));
+                  _changeQueryParams();
                 });
               },
             );
