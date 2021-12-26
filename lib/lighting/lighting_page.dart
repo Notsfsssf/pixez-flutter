@@ -58,10 +58,14 @@ class _LightingListState extends State<LightingList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
-      _store.fetch(force: true);
-      if (!_isNested && _store.errorMessage == null)
-        _refreshController.position?.jumpTo(0.0);
+      _fetch();
     }
+  }
+
+  _fetch() async {
+    await _store.fetch(force: true);
+    if (!_isNested && _store.errorMessage == null && !_store.iStores.isEmpty)
+      _refreshController.position?.jumpTo(0.0);
   }
 
   ReactionDisposer? disposer;

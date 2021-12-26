@@ -126,7 +126,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         }),
                     _buildStar(),
                     IconButton(
-                        icon: Icon(Icons.sort),
+                        icon: Icon(Icons.filter_alt_outlined),
                         onPressed: () {
                           _buildShowBottomSheet(context);
                           // _showMaterialBottom();
@@ -321,7 +321,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
   Widget _buildStar() {
     return PopupMenuButton(
       initialValue: _starValue,
-      child: Icon(Icons.book),
+      child: Icon(
+        Icons.sort,
+      ),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16.0))),
       itemBuilder: (context) {
@@ -333,18 +335,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
               onTap: () {
                 setState(() {
                   _starValue = value;
-                  if (_starValue == 0)
-                    futureGet = ApiForceSource(
-                        futureGet: (bool e) => apiClient.getSearchIllust(
-                            widget.word,
-                            search_target: searchTarget,
-                            sort: selectSort));
-                  else
-                    futureGet = ApiForceSource(
-                        futureGet: (bool e) => apiClient.getSearchIllust(
-                            '${widget.word} ${_starValue}users入り',
-                            search_target: searchTarget,
-                            sort: selectSort));
+                  futureGet = ApiForceSource(
+                      futureGet: (bool e) => apiClient.getSearchIllust(
+                          '${widget.word} ${_starValue}users入り',
+                          search_target: searchTarget,
+                          sort: selectSort));
                 });
               },
             );
@@ -355,6 +350,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
               onTap: () {
                 setState(() {
                   _starValue = value;
+                  futureGet = ApiForceSource(
+                      futureGet: (bool e) => apiClient.getSearchIllust(
+                          widget.word,
+                          search_target: searchTarget,
+                          sort: selectSort));
                 });
               },
             );
