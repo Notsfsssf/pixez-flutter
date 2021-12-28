@@ -216,6 +216,7 @@ abstract class _SaveStoreBase with Store {
       _joinQueue(url, illusts, fileName);
     } else {
       saveToGallery(file.readAsBytesSync(), illusts, fileName);
+      streamController.add(SaveStream(SaveState.SUCCESS, illusts));
     }
   }
 
