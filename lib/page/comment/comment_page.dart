@@ -20,6 +20,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/comment_emoji_text.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
@@ -76,6 +77,47 @@ class _CommentPageState extends State<CommentPage> {
     _editController.dispose();
     easyRefreshController.dispose();
     super.dispose();
+  }
+
+  bool _emojiPanelShow = false;
+
+  Widget _buildEmojiPanel(BuildContext context) {
+    return Container(
+      height: 200,
+      child: GridView.count(
+        crossAxisCount: 5,
+        children: [
+          for (var i in emojisMap.keys)
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: InkWell(
+                onTap: () {
+                  String key = i;
+                  String text = _editController.text;
+                  TextSelection textSelection = _editController.selection;
+                  if (!textSelection.isValid) {
+                    _editController.text = "${_editController.text}${key}";
+                    return;
+                  }
+                  String newText = text.replaceRange(
+                      textSelection.start, textSelection.end, key);
+                  final emojiLength = key.length;
+                  _editController.text = newText;
+                  _editController.selection = textSelection.copyWith(
+                    baseOffset: textSelection.start + emojiLength,
+                    extentOffset: textSelection.start + emojiLength,
+                  );
+                },
+                child: Image.asset(
+                  'assets/emojis/${emojisMap[i]}',
+                  width: 32,
+                  height: 32,
+                ),
+              ),
+            )
+        ],
+      ),
+    );
   }
 
   @override
@@ -165,7 +207,8 @@ class _CommentPageState extends State<CommentPage> {
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                     color: Theme.of(context)
-                                                        .colorScheme.secondary),
+                                                        .colorScheme
+                                                        .secondary),
                                               ),
                                               TextButton(
                                                   onPressed: () {
@@ -183,7 +226,8 @@ class _CommentPageState extends State<CommentPage> {
                                                         : "Reply",
                                                     style: TextStyle(
                                                         color: Theme.of(context)
-                                                            .colorScheme.secondary),
+                                                            .colorScheme
+                                                            .secondary),
                                                   ))
                                             ],
                                           ),
@@ -195,8 +239,8 @@ class _CommentPageState extends State<CommentPage> {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   right: 4.0),
-                                              child: SelectableText(
-                                                comment.comment ?? "",
+                                              child: CommentEmojiText(
+                                                text: comment.comment ?? "",
                                               ),
                                             ),
                                           if (comment.stamp != null)
@@ -279,64 +323,89 @@ class _CommentPageState extends State<CommentPage> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                color: Theme.of(context).dialogBackgroundColor,
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.book),
-                      onPressed: () {
-                        if (widget.isReplay) return;
-                        setState(() {
-                          parentCommentName = null;
-                          parentCommentId = null;
-                        });
-                      },
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 2.0, right: 8.0),
-                        child: Theme(
-                          data: Theme.of(context).copyWith(
-                            colorScheme: Theme.of(context).colorScheme.copyWith(primary: Theme.of(context).colorScheme.secondary),
-                          ),
-                          child: TextField(
-                            controller: _editController,
-                            decoration: InputDecoration(
-                                labelText:
-                                    "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
-                                suffixIcon: IconButton(
-                                    icon: Icon(
-                                      Icons.reply,
-                                    ),
-                                    onPressed: () async {
-                                      final client = apiClient;
-                                      String txt = _editController.text.trim();
-                                      final fun1 = BotToast.showLoading();
-                                      try {
-                                        if (txt.isNotEmpty) {
-                                          if (banList
-                                              .where((element) =>
-                                                  txt.contains(element))
-                                              .isEmpty)
-                                            await client.postIllustComment(
-                                                widget.id, txt,
-                                                parent_comment_id:
-                                                    parentCommentId);
-                                        }
-                                        _editController.clear();
-                                        _store.fetch();
-                                      } catch (e) {
-                                        print(e);
-                                      }
-                                      fun1();
-                                    })),
+              child: Column(
+                children: [
+                  Container(
+                    color: Theme.of(context).dialogBackgroundColor,
+                    child: Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.book),
+                          onPressed: () {
+                            if (widget.isReplay) return;
+                            setState(() {
+                              parentCommentName = null;
+                              parentCommentId = null;
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.emoji_emotions_outlined),
+                          onPressed: () {
+                            setState(() {
+                              _emojiPanelShow = !_emojiPanelShow;
+                              if (_emojiPanelShow) {
+                                FocusScope.of(context).unfocus();
+                              }
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 2.0, right: 8.0),
+                            child: Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: Theme.of(context)
+                                    .colorScheme
+                                    .copyWith(
+                                        primary: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                              ),
+                              child: TextField(
+                                controller: _editController,
+                                decoration: InputDecoration(
+                                    labelText:
+                                        "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                    suffixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.reply,
+                                        ),
+                                        onPressed: () async {
+                                          final client = apiClient;
+                                          String txt =
+                                              _editController.text.trim();
+                                          final fun1 = BotToast.showLoading();
+                                          try {
+                                            if (txt.isNotEmpty) {
+                                              if (banList
+                                                  .where((element) =>
+                                                      txt.contains(element))
+                                                  .isEmpty)
+                                                await client.postIllustComment(
+                                                    widget.id, txt,
+                                                    parent_comment_id:
+                                                        parentCommentId);
+                                            }
+                                            _editController.clear();
+                                            _store.fetch();
+                                          } catch (e) {
+                                            print(e);
+                                          }
+                                          fun1();
+                                        })),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  if (MediaQuery.of(context).viewInsets.bottom == 0 &&
+                      _emojiPanelShow)
+                    _buildEmojiPanel(context),
+                ],
               ),
             )
           ],
