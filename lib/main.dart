@@ -80,12 +80,21 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  AppLifecycleState? _appState;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _appState = state;
+    });
+  }
+
   @override
   void dispose() {
     saveStore.dispose();
     topStore.dispose();
     fetcher.stop();
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -103,6 +112,7 @@ class _MyAppState extends State<MyApp> {
     kVer.open();
     fetcher.start();
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   initMethod() async {
@@ -121,6 +131,33 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
+      final botToastBuilder = BotToastInit();
+      final myBuilder = (BuildContext context, Widget? widget) {
+        if (userSetting.nsfwMask) {
+          final needShowMask = (Platform.isAndroid
+              ? (_appState == AppLifecycleState.paused ||
+                  _appState == AppLifecycleState.paused)
+              : _appState == AppLifecycleState.inactive);
+          return Stack(
+            children: [
+              widget ?? Container(),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: needShowMask
+                    ? Container(
+                        color: Theme.of(context).canvasColor,
+                        child: Center(
+                          child: Icon(Icons.privacy_tip_outlined),
+                        ),
+                      )
+                    : null,
+              )
+            ],
+          );
+        } else {
+          return widget;
+        }
+      };
       return MaterialApp(
         navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
         locale: userSetting.locale,
@@ -130,7 +167,11 @@ class _MyAppState extends State<MyApp> {
               child: SplashPage());
         }),
         title: 'PixEz',
-        builder: BotToastInit(),
+        builder: (context, child) {
+          child = myBuilder(context, child); //do something
+          child = botToastBuilder(context, child);
+          return child;
+        },
         themeMode: userSetting.themeMode,
         theme: ThemeData.light().copyWith(
             primaryColor: userSetting.themeData.colorScheme.primary,

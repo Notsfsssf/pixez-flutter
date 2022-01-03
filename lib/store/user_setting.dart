@@ -53,6 +53,7 @@ abstract class _UserSettingBase with Store {
   static const String IS_OVER_SANITY_LEVEL_FOLDER =
       "is_over_sanity_level_folder";
   static const String MAX_RUNNING_TASK_KEY = "max_running_task";
+  static const String NSFW_MASK_KEY = "nsfw_mask";
 
   @observable
   bool isClearOldFormatFile = false;
@@ -102,6 +103,8 @@ abstract class _UserSettingBase with Store {
   TextStyle novelTextStyle = TextStyle();
   @observable
   int maxRunningTask = 2;
+  @observable
+  bool nsfwMask = false;
 
   @observable
   String? format = "";
@@ -226,6 +229,7 @@ abstract class _UserSettingBase with Store {
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
+    nsfwMask = prefs.getBool(NSFW_MASK_KEY) ?? false;
     novelFontsize = prefs.getDouble(NOVEL_FONT_SIZE_KEY) ?? 16.0;
     novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
     saveMode = prefs.getInt(SAVE_MODE_KEY) ??
@@ -377,5 +381,11 @@ abstract class _UserSettingBase with Store {
   Future<void> change(int value) async {
     await prefs.setInt(ZOOM_QUALITY_KEY, value);
     zoomQuality = value;
+  }
+
+  @action
+  Future<void> changeNsfwMask(bool value) async {
+    await prefs.setBool(NSFW_MASK_KEY, value);
+    nsfwMask = value;
   }
 }

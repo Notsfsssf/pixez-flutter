@@ -248,5 +248,6 @@
   "unclassified": "未分类",
   "max_download_task_running_count": "最大同时下载任务数量",
   "export": "导出",
-  "error_400_hint" : "错误信息为[400]错误，则可能需要重新登录，这可能是因为更改了密码或者api升级导致的"
+  "error_400_hint" : "错误信息为[400]错误，则可能需要重新登录，这可能是因为更改了密码或者api升级导致的",
+  "recent_screen_mask" : "最近任务遮罩"
 }
