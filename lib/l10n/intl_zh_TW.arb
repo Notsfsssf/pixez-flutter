@@ -39,7 +39,7 @@
   "disable_sni_bypass_message": "可節省冷啟動時 DNS Over HTTPS 的時間",
   "display_mode": "顯示模式",
   "display_mode_message": "選擇支援的顯示模式（實驗性）",
-  "display_mode_warning": "意在解決部分支援高影格率裝置白名單機制的問題，若沒有問題，請不要隨意改動。如果出現任何問題，請清除程式資料",
+  "display_mode_warning": "意在解決部分支援高影格率裝置的白名單機制問題，若未感受到視覺問題，請不要隨意改動。如果變更導致任何問題，請清除程式資料",
   "donate_message": "支持一下開發者吧!",
   "donate_title": "如果你覺得這個程式還不錯",
   "donation": "贊助",
@@ -216,7 +216,7 @@
   "permission_denied": "未取得授權",
   "old_way_message": "以舊版方式儲存圖像，需要取得內部儲存空間的存取權限，並需要選取一個資料夾以繼續",
   "return_again_to_exit": "連續點按返回鍵兩次以退出",
-  "save_format_lose_part_warning": "儲存格式必須包含{part},否則多P作品會儲存出錯！",
+  "save_format_lose_part_warning": "儲存格式必須包含{part},否則儲存多圖像投稿時會出錯！",
   "@save_format_lose_part_warning": {
     "description": "A message with a single parameter",
     "placeholders": {
@@ -243,11 +243,11 @@
   "network_question": "你的網路環境能夠正常訪問 pixiv 嗎？",
   "media_hint": "插畫將會被儲存至相簿",
   "copy": "複製",
-  "view_replies": "預覽回覆",
+  "view_replies": "檢視回覆",
   "temporarily_visible": "暫時可見",
   "unclassified":"未分類",
   "max_download_task_running_count": "最大同時下載工作數",
   "export": "匯出",
-  "error_400_hint" : "错误信息为[400]错误，则可能需要重新登录，这可能是因为更改了密码或者api升级导致的",
-  "recent_screen_mask" : "最近任務遮罩"
+  "error_400_hint" : "錯誤代碼为[400]，可能需要重新登入，此錯誤可能因變更密碼或 pixiv API 升級導致",
+  "recent_screen_mask" : "最近工作清單遮罩"
 }
