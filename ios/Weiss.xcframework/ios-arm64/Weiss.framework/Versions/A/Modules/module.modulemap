@@ -1,0 +1,8 @@
+framework module "Weiss" {
+	header "ref.h"
+    header "Weiss.objc.h"
+    header "Universe.objc.h"
+    header "Weiss.h"
+
+    export *
+}
