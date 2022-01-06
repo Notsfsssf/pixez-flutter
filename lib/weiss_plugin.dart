@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:pixez/er/hoster.dart';
 
+/// 目前这些调用原生的方法,只在Android端进行了实现,iOS端一点就崩溃,先用try-catch进行守护
 class WeissPlugin {
   static const platform = const MethodChannel('com.perol.dev/weiss');
 
@@ -17,14 +18,27 @@ class WeissPlugin {
         data = json.encode(iMap);
       }
     } catch (e) {}
-    return await platform.invokeMethod("start", {"port": "9876", "map": data});
+
+    try {
+      return await platform.invokeMethod("start", {"port": "9876", "map": data});
+    } catch (error) {
+      return;
+    }
   }
 
   static Future<void> stop() async {
-    return await platform.invokeMethod("stop");
+    try {
+      return await platform.invokeMethod("stop");
+    } catch (error) {
+      return;
+    }
   }
 
   static Future<void> proxy() async {
-    return await platform.invokeMethod("proxy");
+    try {
+      return await platform.invokeMethod("proxy");
+    } catch (error) {
+      return;
+    }
   }
 }

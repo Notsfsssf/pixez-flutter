@@ -31,9 +31,15 @@ abstract class _TrendTagsStoreBase with Store {
 
   @action
   fetch() async {
-    Response response = await apiClient.getIllustTrendTags();
-    TrendingTag trendingTag = TrendingTag.fromJson(response.data);
-    trendTags.clear();
-    trendTags.addAll(trendingTag.trend_tags);
+    /// 因为拿不动token,导致这里请求也报错,所以只能守护一下
+    try {
+      Response response = await apiClient.getIllustTrendTags();
+      TrendingTag trendingTag = TrendingTag.fromJson(response.data);
+      trendTags.clear();
+      trendTags.addAll(trendingTag.trend_tags);
+    }catch (error) {
+
+    }
+
   }
 }

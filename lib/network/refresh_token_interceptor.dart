@@ -26,14 +26,17 @@ import 'package:pixez/network/oauth_client.dart';
 class RefreshTokenInterceptor extends InterceptorsWrapper {
   Future<String> getToken() async {
     String? token = accountStore.now?.accessToken; //可能读的时候没有错的快，导致now为null
-    String result;
+    String result = "";
     if (token != null)
       result = "Bearer " + token;
     else {
       AccountProvider accountProvider = AccountProvider();
       await accountProvider.open();
       final all = await accountProvider.getAllAccount();
-      result = "Bearer " + all[accountStore.index].accessToken;
+      /// 这里在iOS端会数组越界,所以这里判断一下
+      if (all.isNotEmpty) {
+        result = "Bearer " + all[accountStore.index].accessToken;
+      }
     }
     return result;
   }
@@ -41,8 +44,9 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    if (!options.path.contains('v1/walkthrough/illusts'))
+    if (!options.path.contains('v1/walkthrough/illusts')) {
       options.headers[OAuthClient.AUTHORIZATION] = await getToken();
+    }
     return handler.next(options); //continue
   }
 
