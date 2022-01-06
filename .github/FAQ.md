@@ -187,6 +187,55 @@ e.g. {illust_id}_p{part} 即「插画ID\_p第几张」
 
 提问前最好阅读[《提问的智慧》](http://archman.fun/2020/09/24/%E6%8F%90%E9%97%AE%E7%9A%84%E6%99%BA%E6%85%A7/)，拒绝 TCP 三次握手式提问，以及 DDoS 式轰炸提问。大多数群员都是友好的，希望你也能同样友好，互相理解最好啦。
 
+## iOS开发编译问题
+
+### 问题1
+
+`Target of URI hasn't been generated: '****.g.dart'.Try running the generator that will generate the file referenced by the URI.`
+
+这个项目使用的是`json_serializable`进行json转model，所以项目拉取下来后，需要自己执行一下命令行：
+
+```shell
+flutter pub get 
+flutter pub upgrade
+flutter pub upgrade --major-versions
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+### 问题2
+
+`AppLocalization class not found when trying to run the app flutter`
+
+这个问题，我处理起来比较简单，直接关闭VSCode，然后再打开即可。
+
+`After that, I tried to close my IDE(Android studio) and open it again, and the issue was cleared!`
+
+[Stack Overflow的引用](https://stackoverflow.com/questions/64574620/target-of-uri-doesnt-exist-packageflutter-gen-gen-l10n-gallery-localizations)
+
+### 问题3
+
+`Could not run build/ios/iphoneos/Runner.app Try launching Xcode and selecting "Product > Run" to fix the problem: open ios/Runner.xcworkspace`
+
+这个问题我处理了很久，表现的情况也非常奇葩，我使用Xcode进行编译运行没有问题，但是只要通过VSCode进行编辑就报这个错。
+
+然后我就做了这样一件事情：
+
+```shell
+flutter clean
+```
+
+然后进行重新编译，进行尝试就好了，当然我的这个方法并不适合所有的开发者。
+
+最后可能会在VSCode进行编译的时候，`pod install`失败，请尝试直接打开ios这个文件夹，通过命令行工具直接进行`pod install`。
+
+### 问题4
+
+由于是iOS工程，所以项目里面的team和Boundle id可能都需要自己重新配置一下，甚至可能那个子工程都需要进行删除，因为一旦换了team，可能就没有能力去扩展子工程了。
+
+### iOS的问题后续
+
+根据我目前review code的情况看，这个App其实主要还是针对安卓端做了适配，其实针对iOS的优化还是比较薄弱的，我尽可能的进行修复吧。
+
 ### 本FAQ被以下人数阅读,谢谢你们的配合:)
 
 ![:PixezFAQ](https://count.getloli.com/get/@:PixezFAQ?theme=rule34)
