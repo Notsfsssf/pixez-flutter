@@ -119,10 +119,13 @@ class PreviewPage extends StatefulWidget {
   _PreviewPageState createState() => _PreviewPageState();
 }
 
-class _PreviewPageState extends State<PreviewPage> {
+class _PreviewPageState extends State<PreviewPage> with AutomaticKeepAliveClientMixin {
   late LightingStore _lightingStore;
   RefreshController _easyRefreshController =
       RefreshController(initialRefresh: true);
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
