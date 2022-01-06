@@ -111,6 +111,10 @@ class LoginInFirst extends StatelessWidget {
 }
 
 class PreviewPage extends StatefulWidget {
+  final String title;
+
+  const PreviewPage({required this.title, Key? key}) : super(key: key);
+
   @override
   _PreviewPageState createState() => _PreviewPageState();
 }
@@ -136,40 +140,45 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return SafeArea(
-        child: SmartRefresher(
-          controller: _easyRefreshController,
-          onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
-          onLoading: () => _lightingStore.fetchNext(),
-          child: _lightingStore.iStores.isNotEmpty
-              ? WaterfallFlow.builder(
-                  shrinkWrap: true,
-                  gridDelegate:
-                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => GoToLoginPage(
-                                illust:
-                                    _lightingStore.iStores[index].illusts!)));
-                      },
-                      child: Card(
-                        child: Container(
-                          child: PixivImage(_lightingStore
-                              .iStores[index].illusts!.imageUrls.squareMedium),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Observer(builder: (_) {
+        return SafeArea(
+          child: SmartRefresher(
+            controller: _easyRefreshController,
+            onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
+            onLoading: () => _lightingStore.fetchNext(),
+            child: _lightingStore.iStores.isNotEmpty
+                ? WaterfallFlow.builder(
+                    shrinkWrap: true,
+                    gridDelegate:
+                        SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => GoToLoginPage(
+                                  illust:
+                                      _lightingStore.iStores[index].illusts!)));
+                        },
+                        child: Card(
+                          child: Container(
+                            child: PixivImage(_lightingStore.iStores[index]
+                                .illusts!.imageUrls.squareMedium),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  itemCount: _lightingStore.iStores.length,
-                )
-              : Container(),
-        ),
-      );
-    });
+                      );
+                    },
+                    itemCount: _lightingStore.iStores.length,
+                  )
+                : Container(),
+          ),
+        );
+      }),
+    );
   }
 }

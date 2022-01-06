@@ -81,10 +81,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
             child: Padding(
               child: Text(
                 I18n.of(context).search,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30.0,
-                    color: Theme.of(context).textTheme.headline6!.color),
               ),
               padding: EdgeInsets.only(left: 16.0, bottom: 10.0),
             ),
@@ -360,10 +356,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       return Column(children: <Widget>[
         AppBar(
           automaticallyImplyLeading: false,
-          title: Text(
-            I18n.of(context).search,
-            style: Theme.of(context).textTheme.headline6,
-          ),
+          title: Text(I18n.of(context).search,
+              style: TextStyle(color: Colors.white)),
           actions: <Widget>[
             IconButton(
               icon: Icon(

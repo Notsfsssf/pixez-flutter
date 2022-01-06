@@ -92,18 +92,13 @@ class _HelloPageState extends State<HelloPage> {
       if (accountStore.now != null)
         return RecomSpolightPage();
       else
-        return PreviewPage();
+        return PreviewPage(title: I18n.of(context).rank,);
     }),
     Observer(builder: (context) {
       if (accountStore.now != null)
         return RankPage();
       else
-        return Column(children: [
-          AppBar(
-            title: Text('rank(day)'),
-          ),
-          Expanded(child: PreviewPage())
-        ]);
+        return PreviewPage(title:I18n.of(context).search);
     }),
     NewPage(),
     SearchPage(),
