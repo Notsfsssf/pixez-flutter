@@ -82,6 +82,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   AppLifecycleState? _appState;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
@@ -94,7 +95,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     saveStore.dispose();
     topStore.dispose();
     fetcher.stop();
-    WidgetsBinding.instance?.removeObserver(this);
+    if (Platform.isIOS) WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -112,7 +113,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     kVer.open();
     fetcher.start();
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    if (Platform.isIOS) WidgetsBinding.instance?.addObserver(this);
   }
 
   initMethod() async {
@@ -168,7 +169,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         }),
         title: 'PixEz',
         builder: (context, child) {
-          child = myBuilder(context, child); //do something
+          if (Platform.isIOS) child = myBuilder(context, child);
           child = botToastBuilder(context, child);
           return child;
         },

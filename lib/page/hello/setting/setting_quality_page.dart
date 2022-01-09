@@ -682,20 +682,21 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               }),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              child: Observer(builder: (_) {
-                return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
-                    value: userSetting.nsfwMask,
-                    title: Text("最近任务遮罩"),
-                    onChanged: (value) async {
-                      userSetting.changeNsfwMask(value);
-                    });
-              }),
+          if (Platform.isIOS) //TODO android flutter surface view secure
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Observer(builder: (_) {
+                  return SwitchListTile(
+                      activeColor: Theme.of(context).colorScheme.secondary,
+                      value: userSetting.nsfwMask,
+                      title: Text("最近任务遮罩"),
+                      onChanged: (value) async {
+                        userSetting.changeNsfwMask(value);
+                      });
+                }),
+              ),
             ),
-          ),
           if (Platform.isIOS)
             Padding(
               padding: const EdgeInsets.all(8.0),
