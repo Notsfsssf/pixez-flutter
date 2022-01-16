@@ -249,5 +249,7 @@
   "max_download_task_running_count": "Max download task running count",
   "export": "Export",
   "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
-  "recent_screen_mask" : "Recent screen mask"
+  "recent_screen_mask": "Recent screen mask",
+  "open_by_default": "Open by default",
+  "open_by_default_subtitle": "Allow web links to open this app"
 }

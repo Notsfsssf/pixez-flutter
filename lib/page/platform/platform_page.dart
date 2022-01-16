@@ -14,6 +14,9 @@
  *
  */
 
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
@@ -22,6 +25,7 @@ import 'package:package_info/package_info.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/open_setting_plugin.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
 
@@ -84,7 +88,13 @@ class _PlatformPageState extends State<PlatformPage> {
         this.path = path;
       });
     }
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
+    setState(() {
+      _androidInfo = androidInfo;
+    });
   }
+
+  AndroidDeviceInfo? _androidInfo = null;
 
   String version = "";
   bool singleFolder = false;
@@ -211,6 +221,29 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).display_mode),
                 subtitle: Text('${selected ?? ''}'),
               ),
+              if ((_androidInfo?.version.sdkInt ?? 0) > 30)
+                ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text("More for Android 12",style: TextStyle(color: Colors.green),),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.add_link),
+                    title: Text(I18n.of(context).open_by_default),
+                    subtitle: Text(I18n.of(context).open_by_default_subtitle),
+                    onTap: () {
+                      OpenSettingPlugin.open();
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.asset("assets/images/open_by_default_hint.png"),
+                    ),
+                  ),
+                  Container(height: 20,)
+                ]
             ],
           );
         }),

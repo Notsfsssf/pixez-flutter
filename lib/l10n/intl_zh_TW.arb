@@ -249,5 +249,7 @@
   "max_download_task_running_count": "最大同時下載工作數",
   "export": "匯出",
   "error_400_hint" : "錯誤代碼为[400]，可能需要重新登入，此錯誤可能因變更密碼或 pixiv API 升級導致",
-  "recent_screen_mask" : "最近工作清單遮罩"
+  "recent_screen_mask" : "最近工作清單遮罩",
+  "open_by_default":"默認打開",
+  "open_by_default_subtitle":"允許在此應用中打開網絡鏈接"
 }
