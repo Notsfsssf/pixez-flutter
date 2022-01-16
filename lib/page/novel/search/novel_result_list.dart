@@ -19,7 +19,8 @@ class NovelResultList extends StatefulWidget {
 class _NovelResultListState extends State<NovelResultList> {
   @override
   void initState() {
-    futureGet = ApiForceSource(futureGet:(bool e)=> apiClient.getSearchNovel(widget.word));
+    futureGet = ApiForceSource(
+        futureGet: (bool e) => apiClient.getSearchNovel(widget.word));
     super.initState();
   }
 
@@ -32,9 +33,7 @@ class _NovelResultListState extends State<NovelResultList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               InkWell(
-                onTap: () {
-
-                },
+                onTap: () {},
                 child: Container(
                   width: MediaQuery.of(context).size.width * 2 / 3,
                   child: Align(
@@ -70,10 +69,8 @@ class _NovelResultListState extends State<NovelResultList> {
               )
             ],
           ),
-
           Expanded(
-            child: NovelLightingList(
-                futureGet: () => futureGet.fetch(false)),
+            child: NovelLightingList(futureGet: () => futureGet.fetch(false)),
           ),
         ],
       ),
@@ -143,7 +140,6 @@ class _NovelResultListState extends State<NovelResultList> {
               end_date: _dateTimeRange?.end));
   }
 
-
   void _buildShowBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -189,10 +185,22 @@ class _NovelResultListState extends State<NovelResultList> {
                           child: CupertinoSlidingSegmentedControl(
                             groupValue: search_target.indexOf(searchTarget),
                             children: <int, Widget>{
-                              0: Text(I18n.of(context).partial_match_for_tag),
-                              1: Text(I18n.of(context).exact_match_for_tag),
-                              2: Text(I18n.of(context).text),
-                              3: Text(I18n.of(context).key_word),
+                              0: Text(
+                                I18n.of(context).partial_match_for_tag,
+                                maxLines: 1,
+                              ),
+                              1: Text(
+                                I18n.of(context).exact_match_for_tag,
+                                maxLines: 1,
+                              ),
+                              2: Text(
+                                I18n.of(context).text,
+                                maxLines: 1,
+                              ),
+                              3: Text(
+                                I18n.of(context).key_word,
+                                maxLines: 1,
+                              ),
                             },
                             onValueChanged: (int? index) {
                               setS(() {
@@ -209,9 +217,18 @@ class _NovelResultListState extends State<NovelResultList> {
                           child: CupertinoSlidingSegmentedControl(
                             groupValue: sort.indexOf(selectSort),
                             children: <int, Widget>{
-                              0: Text(I18n.of(context).date_desc),
-                              1: Text(I18n.of(context).date_asc),
-                              2: Text(I18n.of(context).popular_desc),
+                              0: Text(
+                                I18n.of(context).date_desc,
+                                maxLines: 1,
+                              ),
+                              1: Text(
+                                I18n.of(context).date_asc,
+                                maxLines: 1,
+                              ),
+                              2: Text(
+                                I18n.of(context).popular_desc,
+                                maxLines: 1,
+                              ),
                             },
                             onValueChanged: (int? index) {
                               if (accountStore.now != null && index == 2) {
