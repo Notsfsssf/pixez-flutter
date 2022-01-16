@@ -270,36 +270,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           ),
                         ),
                       ),
-                      // Padding(
-                      //   child: Container(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(starValue != 0
-                      //         ? I18n.of(context).more_then_starnum_bookmark(
-                      //             "${starNum[starValue.toInt()]}")
-                      //         : 'users入り'),
-                      //   ),
-                      //   padding: const EdgeInsets.symmetric(
-                      //       vertical: 0.0, horizontal: 16.0),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(
-                      //       vertical: 0.0, horizontal: 8.0),
-                      //   child: SizedBox(
-                      //     width: double.infinity,
-                      //     child: Slider(
-                      //       activeColor:
-                      //           Theme.of(context).colorScheme.secondary,
-                      //       onChanged: (double value) {
-                      //         int v = value.toInt();
-                      //         setS(() {
-                      //           starValue = v.toDouble();
-                      //         });
-                      //       },
-                      //       value: starValue,
-                      //       max: 9.0,
-                      //     ),
-                      //   ),
-                      // ),
                       Container(
                         height: 16,
                       )

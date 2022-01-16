@@ -251,5 +251,6 @@
   "error_400_hint" : "错误信息为[400]错误，则可能需要重新登录，这可能是因为更改了密码或者api升级导致的",
   "recent_screen_mask" : "最近任务遮罩",
   "open_by_default":"默认打开",
-  "open_by_default_subtitle":"允许在此应用中打开网络链接"
+  "open_by_default_subtitle":"允许在此应用中打开网络链接",
+  "text":"文本"
 }
