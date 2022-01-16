@@ -14,15 +14,18 @@ object OpenSettinger {
             when (call.method) {
                 "open" -> {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            val intent = Intent().apply {
-                                action =
-                                    android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS
-                                addCategory(Intent.CATEGORY_DEFAULT)
-                                data = android.net.Uri.parse("package:${activity.packageName}")
-                                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-                            }
-                            activity.startActivity(intent)
+                           try {
+                               val intent = Intent().apply {
+                                   action =
+                                       android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS
+                                   addCategory(Intent.CATEGORY_DEFAULT)
+                                   data = android.net.Uri.parse("package:${activity.packageName}")
+                                   addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                                   addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                               }
+                               activity.startActivity(intent)
+                           } catch (ignored:Throwable) {
+                           }
                         }
                 }
             }

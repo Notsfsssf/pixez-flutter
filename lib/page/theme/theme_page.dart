@@ -97,7 +97,7 @@ class _ColorPickPageState extends State<ColorPickPage> {
           IconButton(
               icon: Icon(Icons.save),
               onPressed: () {
-                Navigator.of(context).pop(pickerColor.value.toString());
+                Navigator.of(context).pop(pickerColor);
               })
         ],
       ),
@@ -181,14 +181,14 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   ];
 
   Future<void> _pickColorData(int index, Color pickerColor) async {
-    final result = await Navigator.of(context).push(MaterialPageRoute(
+    Color? result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ColorPickPage(initialColor: pickerColor)));
     if (result != null) {
       var data = <String>[
         userSetting.themeData.colorScheme.secondary.toString(),
         userSetting.themeData.primaryColor.toString(),
       ];
-      data[index] = result;
+      data[index] = "(0x${result.value.toRadixString(16)})";
       userSetting.setThemeData(data);
     }
   }
