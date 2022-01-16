@@ -19,7 +19,7 @@ import 'package:pixez/models/illust.dart';
 
 extension HostExts on Uri {
   Uri toTureUri() {
-    if (userSetting.disableBypassSni || this.toString().contains("novel")) {
+    if (userSetting.disableBypassSni) {
       return this;
     } else {
       if (userSetting.pictureSource != ImageHost) {
