@@ -25,6 +25,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
@@ -214,6 +215,24 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         child:
                             PixivImage(_novelStore.novel!.imageUrls.medium))),
                 Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
+                  child: Text(
+                    "${_novelStore.novel!.title}",
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+                //MARK DETAIL NUM,
+                _buildNumItem(
+                    _novelStore.novelTextResponse!, _novelStore.novel!),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    "${_novelStore.novel!.createDate}",
+                    style: Theme.of(context).textTheme.overline,
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ExtendedText(
                     _novelStore.novelTextResponse!.novelText,
@@ -242,6 +261,32 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNumItem(NovelTextResponse resp, Novel novel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 2,
+        runSpacing: 0,
+        children: [
+          Text(I18n.of(context).total_bookmark),
+          Text(
+            "${novel.totalBookmarks}",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(I18n.of(context).total_view),
+          ),
+          Text(
+            "${novel.totalView}",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
+        ],
+      ),
     );
   }
 
