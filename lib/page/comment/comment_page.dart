@@ -17,7 +17,6 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/comment_emoji_text.dart';
@@ -26,19 +25,26 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+enum CommentArtWorkType { ILLUST, NOVEL }
 
 class CommentPage extends StatefulWidget {
   final int id;
   final bool isReplay;
   final int? pId;
   final String? name;
+  final CommentArtWorkType type;
 
   const CommentPage(
-      {Key? key, required this.id, this.isReplay = false, this.pId, this.name})
+      {Key? key,
+      required this.id,
+      this.isReplay = false,
+      this.pId,
+      this.name,
+      this.type = CommentArtWorkType.ILLUST})
       : super(key: key);
 
   @override
@@ -67,7 +73,7 @@ class _CommentPageState extends State<CommentPage> {
     _editController = TextEditingController();
     easyRefreshController = RefreshController();
     _store = CommentStore(
-        easyRefreshController, widget.id, widget.pId, widget.isReplay)
+        easyRefreshController, widget.id, widget.pId, widget.isReplay, widget.type)
       ..fetch();
     super.initState();
   }
@@ -267,6 +273,7 @@ class _CommentPageState extends State<CommentPage> {
                                                         id: widget.id,
                                                         isReplay: true,
                                                         pId: comment.id!,
+                                                        type: widget.type,
                                                         name:
                                                             comment.user!.name,
                                                       ));

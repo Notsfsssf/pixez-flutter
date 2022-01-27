@@ -21,6 +21,7 @@ import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'comment_store.g.dart';
@@ -78,10 +79,12 @@ abstract class _CommentStoreBase with Store {
   bool isEmpty = false;
   final RefreshController _controller;
   final int id;
+  final CommentArtWorkType type;
   int? pId;
   final bool isReplay;
 
-  _CommentStoreBase(this._controller, this.id, this.pId, this.isReplay);
+  _CommentStoreBase(
+      this._controller, this.id, this.pId, this.isReplay, this.type);
 
   @action
   fetch() async {
@@ -90,9 +93,13 @@ abstract class _CommentStoreBase with Store {
     _controller.footerMode?.value = LoadStatus.idle;
     _controller.headerMode?.value = RefreshStatus.refreshing;
     try {
-      Response response = isReplay
-          ? await apiClient.getIllustCommentsReplies(pId!)
-          : await apiClient.getIllustComments(id);
+      Response response = type == CommentArtWorkType.ILLUST
+          ? (isReplay
+              ? await apiClient.getIllustCommentsReplies(pId!)
+              : await apiClient.getIllustComments(id))
+          : (isReplay
+              ? await apiClient.getNovelCommentsReplies(pId!)
+              : await apiClient.getNovelComments(id));
       CommentResponse commentResponse = CommentResponse.fromJson(response.data);
       nextUrl = commentResponse.nextUrl;
       comments.clear();

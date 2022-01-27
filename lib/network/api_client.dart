@@ -336,6 +336,13 @@ class ApiClient {
     );
   }
 
+  Future<Response> getNovelTrendTags({bool force = false}) async {
+    return httpClient.get(
+      "/v1/trending-tags/novel?filter=for_android",
+      options: buildCacheOptions(Duration(hours: 1), forceRefresh: force),
+    );
+  }
+
   String? getFormatDate(DateTime? dateTime) {
     if (dateTime == null) {
       return null;
@@ -453,11 +460,20 @@ class ApiClient {
         .get("/v3/illust/comments", queryParameters: {"illust_id": illust_id});
   }
 
+  Future<Response> getNovelComments(int illust_id) {
+    return httpClient
+        .get("/v3/novel/comments", queryParameters: {"novel_id": illust_id});
+  }
+
   Future<Response> getIllustCommentsReplies(int comment_id) {
     return httpClient.get("/v2/illust/comment/replies",
         queryParameters: {"comment_id": comment_id});
   }
 
+  Future<Response> getNovelCommentsReplies(int comment_id) {
+    return httpClient.get("/v2/novel/comment/replies",
+        queryParameters: {"comment_id": comment_id});
+  }
   /* @FormUrlEncoded
   @POST("v1/illust/comment/add")
   fun postIllustComment(@Header("Authorization") paramString1: String, @Field("illust_id") illust_id: Long, @Field("comment") comment: String, @Field("parent_comment_id") parent_comment_id: Int?): Observable<ResponseBody>
