@@ -15,6 +15,7 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pixez/models/illust.dart';
+
 part 'trend_tags.g.dart';
 
 @JsonSerializable()
@@ -32,12 +33,12 @@ class TrendingTag {
 @JsonSerializable()
 class TrendTags {
   String tag;
+  @JsonKey(name: 'translated_name')
+  String? translatedName;
   TrendTagsIllust illust;
 
-  TrendTags({
-    required this.tag,
-    required this.illust,
-  });
+  TrendTags(
+      {required this.tag, required this.illust, required this.translatedName});
 
   factory TrendTags.fromJson(Map<String, dynamic> json) =>
       _$TrendTagsFromJson(json);

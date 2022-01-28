@@ -14,13 +14,19 @@
  *
  */
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
+import 'package:pixez/models/trend_tags.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 
 class NovelSearchPage extends StatefulWidget {
   @override
@@ -29,12 +35,26 @@ class NovelSearchPage extends StatefulWidget {
 
 class _NovelSearchPageState extends State<NovelSearchPage> {
   late TextEditingController _textEditingController;
+  List<TrendTags> _tags = [];
 
   @override
   void initState() {
     tagHistoryStore.fetch();
     _textEditingController = TextEditingController();
     super.initState();
+    fetch();
+  }
+
+  fetch() async {
+    try {
+      Response response = await apiClient.getNovelTrendTags();
+      TrendingTag trendingTag = TrendingTag.fromJson(response.data);
+      setState(() {
+        _tags = trendingTag.trend_tags;
+      });
+    } catch (e) {
+      LPrinter.d(e);
+    }
   }
 
   @override
@@ -135,15 +155,80 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                 return Container();
               }),
             ),
-            // SliverGrid(
-            //   gridDelegate:
-            //       SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-            //   delegate: SliverChildBuilderDelegate((context,index){},childCount: ),
-            // )
+            SliverToBoxAdapter(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                child: Text(
+                  I18n.of(context).recommand_tag,
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      color: Theme.of(context).textTheme.headline6!.color),
+                ),
+              ),
+            ),
+            if (_tags.isNotEmpty)
+              SliverPadding(
+                padding: EdgeInsets.all(2.0),
+                sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final tag = _tags[index];
+                      return _buildTagItem(context, tag);
+                    }, childCount: _tags.length),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3)),
+              )
           ],
         ),
       );
     });
+  }
+
+  Widget _buildTagItem(BuildContext context, TrendTags tag) {
+    return Padding(
+      padding: const EdgeInsets.all(1.0),
+      child: GestureDetector(
+        onLongPress: () {
+          Leader.push(context, IllustLightingPage(id: tag.illust.id));
+        },
+        child: InkWell(
+          onTap: () {
+            Leader.push(context, NovelResultPage(word: (tag.tag)));
+          },
+          child: Stack(
+            children: [
+              PixivImage(tag.illust.imageUrls.squareMedium),
+              Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "#${tag.tag}",
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (tag.translatedName != null &&
+                          tag.translatedName!.isNotEmpty)
+                        Text(
+                          "${tag.translatedName}",
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildActionChip(TagsPersist f, BuildContext context) {

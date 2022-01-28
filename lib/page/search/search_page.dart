@@ -300,12 +300,24 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Text(
-                                            tags[index].tag,
+                                            "#${tags[index].tag}",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12),
                                           ),
+                                          if (tags[index].translatedName !=
+                                                  null &&
+                                              tags[index]
+                                                  .translatedName!
+                                                  .isNotEmpty)
+                                            Text(
+                                              tags[index].tag,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10),
+                                            ),
                                         ],
                                       ),
                                     ),
