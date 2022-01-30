@@ -30,6 +30,7 @@ import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
+import 'package:pixez/page/novel/search/novel_result_page.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
@@ -227,6 +228,25 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 //MARK DETAIL NUM,
                 _buildNumItem(
                     _novelStore.novelTextResponse!, _novelStore.novel!),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    "${_novelStore.novel!.createDate}",
+                    style: Theme.of(context).textTheme.overline,
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 2,
+                      runSpacing: 0,
+                      children: [
+                        for (var f in _novelStore.novel!.tags)
+                          buildRow(context, f)
+                      ],
+                    )),
                 TextButton(
                     onPressed: () {
                       Leader.push(
@@ -237,13 +257,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                           ));
                     },
                     child: Text(I18n.of(context).view_comment)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    "${_novelStore.novel!.createDate}",
-                    style: Theme.of(context).textTheme.overline,
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ExtendedText(
@@ -273,6 +286,37 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget buildRow(BuildContext context, Tag f) {
+    return GestureDetector(
+      onLongPress: () async {},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return NovelResultPage(
+            word: f.name,
+            translatedName: f.translatedName ?? "",
+          );
+        }));
+      },
+      child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+              text: "#${f.name}",
+              children: [
+                TextSpan(
+                  text: " ",
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                TextSpan(
+                    text: "${f.translatedName ?? "~"}",
+                    style: Theme.of(context).textTheme.caption)
+              ],
+              style: Theme.of(context)
+                  .textTheme
+                  .caption!
+                  .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
 
