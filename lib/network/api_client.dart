@@ -455,14 +455,16 @@ class ApiClient {
 
 //  @GET("/v1/illust/comments")
 //  fun getIllustComments(@Header("Authorization") paramString: String, @Query("illust_id") paramLong: Long): Observable<IllustCommentsResponse>
-  Future<Response> getIllustComments(int illust_id) {
-    return httpClient
-        .get("/v3/illust/comments", queryParameters: {"illust_id": illust_id});
+  Future<Response> getIllustComments(int illust_id, {bool force = false}) {
+    return httpClient.get("/v3/illust/comments",
+        queryParameters: {"illust_id": illust_id},
+        options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force));
   }
 
-  Future<Response> getNovelComments(int illust_id) {
-    return httpClient
-        .get("/v3/novel/comments", queryParameters: {"novel_id": illust_id});
+  Future<Response> getNovelComments(int illust_id, {bool force = false}) {
+    return httpClient.get("/v3/novel/comments",
+        queryParameters: {"novel_id": illust_id},
+        options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force));
   }
 
   Future<Response> getIllustCommentsReplies(int comment_id) {
@@ -474,6 +476,7 @@ class ApiClient {
     return httpClient.get("/v2/novel/comment/replies",
         queryParameters: {"comment_id": comment_id});
   }
+
   /* @FormUrlEncoded
   @POST("v1/illust/comment/add")
   fun postIllustComment(@Header("Authorization") paramString1: String, @Field("illust_id") illust_id: Long, @Field("comment") comment: String, @Field("parent_comment_id") parent_comment_id: Int?): Observable<ResponseBody>
@@ -483,6 +486,17 @@ class ApiClient {
     return httpClient.post("/v1/illust/comment/add",
         data: notNullMap({
           "illust_id": illust_id,
+          "comment": comment,
+          "parent_comment_id": parent_comment_id
+        }),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<Response> postNovelComment(int illust_id, String comment,
+      {int? parent_comment_id}) {
+    return httpClient.post("/v1/novel/comment/add",
+        data: notNullMap({
+          "novel_id": illust_id,
           "comment": comment,
           "parent_comment_id": parent_comment_id
         }),

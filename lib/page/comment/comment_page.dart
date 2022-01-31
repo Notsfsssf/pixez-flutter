@@ -72,8 +72,8 @@ class _CommentPageState extends State<CommentPage> {
     parentCommentName = widget.isReplay ? widget.name : null;
     _editController = TextEditingController();
     easyRefreshController = RefreshController();
-    _store = CommentStore(
-        easyRefreshController, widget.id, widget.pId, widget.isReplay, widget.type)
+    _store = CommentStore(easyRefreshController, widget.id, widget.pId,
+        widget.isReplay, widget.type)
       ..fetch();
     super.initState();
   }
@@ -389,8 +389,16 @@ class _CommentPageState extends State<CommentPage> {
                                               if (banList
                                                   .where((element) =>
                                                       txt.contains(element))
-                                                  .isEmpty)
+                                                  .isEmpty) if (widget
+                                                      .type ==
+                                                  CommentArtWorkType.ILLUST)
                                                 await client.postIllustComment(
+                                                    widget.id, txt,
+                                                    parent_comment_id:
+                                                        parentCommentId);
+                                              else if (widget.type ==
+                                                  CommentArtWorkType.NOVEL)
+                                                await client.postNovelComment(
                                                     widget.id, txt,
                                                     parent_comment_id:
                                                         parentCommentId);

@@ -96,10 +96,10 @@ abstract class _CommentStoreBase with Store {
       Response response = type == CommentArtWorkType.ILLUST
           ? (isReplay
               ? await apiClient.getIllustCommentsReplies(pId!)
-              : await apiClient.getIllustComments(id))
+              : await apiClient.getIllustComments(id, force: true))
           : (isReplay
               ? await apiClient.getNovelCommentsReplies(pId!)
-              : await apiClient.getNovelComments(id));
+              : await apiClient.getNovelComments(id, force: true));
       CommentResponse commentResponse = CommentResponse.fromJson(response.data);
       nextUrl = commentResponse.nextUrl;
       comments.clear();
