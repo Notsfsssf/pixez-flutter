@@ -24,6 +24,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -59,6 +60,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   double? bottomNavigatorHeight = null;
 
   ValueNotifier<bool> isFullscreen = ValueNotifier(false);
+
   void toggleFullscreen() {
     isFullscreen.value = !isFullscreen.value;
   }
@@ -207,6 +209,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late int index;
   late PageController _pageController;
   late StreamSubscription _intentDataStreamSubscription;
+  late StreamSubscription _textStreamSubscription;
   bool hasNewVersion = false;
 
   @override
@@ -231,6 +234,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
+    _textStreamSubscription =
+        ReceiveSharingIntent.getTextStreamAsUri().listen((uri) {
+      Leader.pushWithUri(context, uri);
+    });
+    ReceiveSharingIntent.getInitialTextAsUri().then((value) {
+      if (value != null) {
+        Leader.pushWithUri(context, value);
+      }
+    });
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
         .listen((List<SharedMediaFile> value) {
       if (value != null)
@@ -288,6 +300,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void dispose() {
     _intentDataStreamSubscription.cancel();
+    _textStreamSubscription.cancel();
     _pageController.dispose();
     _sub.cancel();
     super.dispose();
@@ -310,11 +323,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 class AnimatedToggleFullscreenFAB extends StatefulWidget {
   late bool isFullscreen;
   late Function toggleFullscreen;
+
   AnimatedToggleFullscreenFAB({
     Key? key,
     required this.isFullscreen,
     required this.toggleFullscreen,
   }) : super(key: key);
+
   @override
   _AnimatedToggleFullscreenFABState createState() =>
       _AnimatedToggleFullscreenFABState();

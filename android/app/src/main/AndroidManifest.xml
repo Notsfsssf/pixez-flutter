@@ -28,7 +28,8 @@
             android:name=".IntentActivity"
             android:theme="@style/LaunchTheme"></activity>
 
-        <receiver android:name=".CardAppWidget"
+        <receiver
+            android:name=".CardAppWidget"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -42,11 +43,11 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true">
+            android:windowSoftInputMode="adjustResize">
 
             <!--
                  Specifies an Android theme to apply to this Activity as soon as
@@ -69,6 +70,12 @@
                 android:resource="@drawable/launch_background" />
 
             <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -80,24 +87,6 @@
                 <data
                     android:host="www.pixiv.net"
                     android:scheme="https" />
-                <!-- <data
-                    android:host="pixivision.net"
-                    android:scheme="https" />
-                <data
-                    android:host="pixivision.net"
-                    android:scheme="http" />
-                <data
-                    android:host="www.pixivision.net"
-                    android:scheme="http" />
-                <data
-                    android:host="www.pixivision.net"
-                    android:scheme="https" />
-                <data
-                    android:host="www.pixivision.net"
-                    android:scheme="pixez" />
-                <data
-                    android:host="pixivision.net"
-                    android:scheme="pixez" /> -->
                 <data
                     android:host="www.pixiv.net"
                     android:scheme="http" />
