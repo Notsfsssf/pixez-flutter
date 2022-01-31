@@ -135,7 +135,10 @@ class _UsersPageState extends State<UsersPage>
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Http error\n${userStore.errorMessage}'),
+                  child: Text(
+                    'Http error\n${userStore.errorMessage}',
+                    maxLines: 5,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

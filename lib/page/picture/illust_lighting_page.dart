@@ -247,7 +247,10 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               padding: const EdgeInsets.all(8.0),
               child: Text(':(', style: Theme.of(context).textTheme.headline4),
             ),
-            Text('${_illustStore.errorMessage}'),
+            Text(
+              '${_illustStore.errorMessage}',
+              maxLines: 5,
+            ),
             ElevatedButton(
               onPressed: () {
                 _illustStore.fetch();
