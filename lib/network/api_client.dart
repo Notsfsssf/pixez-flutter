@@ -22,7 +22,7 @@ import 'package:crypto/crypto.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -54,6 +54,16 @@ class ApiClient {
     return digest.toString();
   }
 
+  final options = CacheOptions(
+    store: MemCacheStore(),
+    policy: CachePolicy.request,
+    maxStale: const Duration(days: 1),
+    priority: CachePriority.normal,
+    cipher: null,
+    keyBuilder: CacheOptions.defaultCacheKeyBuilder,
+    allowPostMethod: false,
+  );
+
   ApiClient({bool isBookmark = false}) {
     String time = getIsoDate();
     if (isBookmark) {
@@ -71,6 +81,7 @@ class ApiClient {
       };
       return;
     }
+
     httpClient = Dio()
       ..options.baseUrl = "https://210.140.131.199"
       ..options.headers = {
@@ -84,12 +95,7 @@ class ApiClient {
         "Host": BASE_API_URL_HOST
       }
       // ..options.connectTimeout = 10000
-      ..interceptors.add(DioCacheManager(
-        CacheConfig(
-            defaultMaxAge: Duration(days: 1),
-            defaultRequestMethod: "GET",
-            skipMemoryCache: true),
-      ).interceptor)
+      ..interceptors.add(DioCacheInterceptor(options: options))
       ..interceptors.add(RefreshTokenInterceptor());
     if (kDebugMode)
       httpClient.interceptors
@@ -177,7 +183,11 @@ class ApiClient {
   // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
   Future<Response> getUserRecommended({bool force = false}) async {
     return httpClient.get("/v1/user/recommended?filter=for_android",
-        options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force));
+        options: options
+            .copyWith(
+                policy: force ? CachePolicy.refresh : null,
+                maxStale: Duration(minutes: 2))
+            .toOptions());
   }
 
   Future<Response> getUser(int id) async {
@@ -241,7 +251,7 @@ class ApiClient {
     String finalUrl = url.replaceAll(
         "app-api.pixiv.net", a.replaceAll(a, a.replaceFirst("https://", "")));
     return httpClient.get(finalUrl,
-        options: buildCacheOptions(Duration(seconds: 1), forceRefresh: true));
+        options: options.copyWith(policy: CachePolicy.refresh).toOptions());
   }
 
 /*  @GET("/v1/illust/ranking?filter=for_android")
@@ -254,7 +264,7 @@ class ApiClient {
         "mode": mode,
         "date": date,
       }),
-      options: buildCacheOptions(Duration(hours: 1), forceRefresh: force),
+      options: options.copyWith(policy: CachePolicy.refresh).toOptions(),
     );
   }
 
@@ -301,11 +311,13 @@ class ApiClient {
   //   @GET("/v2/illust/follow")
   // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
   Future<Response> getFollowIllusts(String restrict, {bool force = false}) {
-    return httpClient.get(
-      "/v2/illust/follow",
-      queryParameters: {"restrict": restrict},
-      options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force),
-    );
+    return httpClient.get("/v2/illust/follow",
+        queryParameters: {"restrict": restrict},
+        options: options
+            .copyWith(
+                policy: force ? CachePolicy.refresh : null,
+                maxStale: Duration(minutes: 2))
+            .toOptions());
   }
 
   // @GET("/v1/user/following?filter=for_android")
@@ -332,14 +344,22 @@ class ApiClient {
   Future<Response> getIllustTrendTags({bool force = false}) async {
     return httpClient.get(
       "/v1/trending-tags/illust?filter=for_android",
-      options: buildCacheOptions(Duration(hours: 1), forceRefresh: force),
+      options: options
+          .copyWith(
+              policy: force ? CachePolicy.refresh : null,
+              maxStale: Duration(hours: 1))
+          .toOptions(),
     );
   }
 
   Future<Response> getNovelTrendTags({bool force = false}) async {
     return httpClient.get(
       "/v1/trending-tags/novel?filter=for_android",
-      options: buildCacheOptions(Duration(hours: 1), forceRefresh: force),
+      options: options
+          .copyWith(
+              policy: force ? CachePolicy.refresh : null,
+              maxStale: Duration(hours: 1))
+          .toOptions(),
     );
   }
 
@@ -408,7 +428,11 @@ class ApiClient {
   Future<Response> getIllustRelated(int illust_id,
           {bool force = false}) async =>
       httpClient.get("/v2/illust/related?filter=for_android",
-          options: buildCacheOptions(Duration(days: 1), forceRefresh: force),
+          options: options
+              .copyWith(
+                  policy: force ? CachePolicy.refresh : null,
+                  maxStale: Duration(days: 1))
+              .toOptions(),
           queryParameters: notNullMap({"illust_id": illust_id}));
 
   //          @GET("/v2/illust/bookmark/detail")
@@ -449,7 +473,11 @@ class ApiClient {
     return httpClient.get(
       "/v1/spotlight/articles?filter=for_android",
       queryParameters: {"category": category},
-      options: buildCacheOptions(Duration(hours: 23), forceRefresh: force),
+      options: options
+          .copyWith(
+              policy: force ? CachePolicy.refresh : null,
+              maxStale: Duration(hours: 23))
+          .toOptions(),
     );
   }
 
@@ -458,13 +486,21 @@ class ApiClient {
   Future<Response> getIllustComments(int illust_id, {bool force = false}) {
     return httpClient.get("/v3/illust/comments",
         queryParameters: {"illust_id": illust_id},
-        options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force));
+        options: options
+            .copyWith(
+                policy: force ? CachePolicy.refresh : null,
+                maxStale: Duration(minutes: 2))
+            .toOptions());
   }
 
   Future<Response> getNovelComments(int illust_id, {bool force = false}) {
     return httpClient.get("/v3/novel/comments",
         queryParameters: {"novel_id": illust_id},
-        options: buildCacheOptions(Duration(minutes: 2), forceRefresh: force));
+        options: options
+            .copyWith(
+                policy: force ? CachePolicy.refresh : null,
+                maxStale: Duration(minutes: 2))
+            .toOptions());
   }
 
   Future<Response> getIllustCommentsReplies(int comment_id) {
