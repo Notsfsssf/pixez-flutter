@@ -21,7 +21,6 @@ import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -33,7 +32,6 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
-import 'package:save_in_gallery/save_in_gallery.dart';
 
 part 'save_store.g.dart';
 
@@ -243,14 +241,7 @@ abstract class _SaveStoreBase with Store {
       }
       return;
     } else {
-      final _imageSaver = ImageSaver();
-      List<Uint8List> bytesList = [uint8list];
-      String directoryName = 'pxez';
-      if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
-        directoryName = "pxez_sanity";
-      }
-      await _imageSaver.saveImages(
-          imageBytes: bytesList, directoryName: directoryName);
+      //TODO OTHER PLATFORM
     }
   }
 
