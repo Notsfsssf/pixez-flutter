@@ -74,6 +74,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
             body: Container(
               child: PhotoView(
                 filterQuality: FilterQuality.high,
+                initialScale: PhotoViewComputedScale.contained,
                 heroAttributes: PhotoViewHeroAttributes(tag: url),
                 imageProvider: PixivProvider.url(url),
                 loadingBuilder: (context, event) => _buildLoading(event),
@@ -96,7 +97,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     : _illusts.metaPages[index].imageUrls!.large;
                 return PhotoViewGalleryPageOptions(
                   imageProvider: PixivProvider.url(url),
-                  initialScale: PhotoViewComputedScale.contained * 0.8,
+                  initialScale: PhotoViewComputedScale.contained,
                   heroAttributes: PhotoViewHeroAttributes(tag: url),
                   filterQuality: FilterQuality.high,
                 );
