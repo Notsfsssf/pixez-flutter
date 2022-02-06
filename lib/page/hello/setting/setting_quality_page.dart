@@ -558,6 +558,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Column(
                 children: <Widget>[
+                  IconButton(
+                      onPressed: () {}, icon: Icon(Icons.portable_wifi_off)),
                   Padding(
                     child: Text(I18n.of(context).crosscount),
                     padding: EdgeInsets.all(16),
@@ -577,18 +579,53 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           text: ' 2 ',
                         ),
                         Tab(
+                          text: ' 3 ',
+                        ),
+                        Tab(
                           text: ' 4 ',
                         )
                       ],
                       onTap: (index) {
-                        userSetting.setCrossCount(index == 0 ? 2 : 4);
+                        userSetting.setCrossCount(index + 2);
                         BotToast.showText(
                             text: I18n.of(context).need_to_restart_app);
                       },
                       controller: TabController(
-                          length: 2,
+                          length: 3,
                           vsync: this,
-                          initialIndex: userSetting.crossCount == 2 ? 0 : 1),
+                          initialIndex: userSetting.crossCount - 2),
+                    );
+                  }),
+                  Observer(builder: (_) {
+                    return TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
+                      indicator: MD2Indicator(
+                          indicatorHeight: 3,
+                          indicatorColor:
+                              Theme.of(context).colorScheme.secondary,
+                          indicatorSize: MD2IndicatorSize.full),
+                      tabs: [
+                        Tab(
+                          text: ' 2 ',
+                        ),
+                        Tab(
+                          text: ' 3 ',
+                        ),
+                        Tab(
+                          text: ' 4 ',
+                        )
+                      ],
+                      onTap: (index) {
+                        userSetting.setHCrossCount(index + 2);
+                        BotToast.showText(
+                            text: I18n.of(context).need_to_restart_app);
+                      },
+                      controller: TabController(
+                          length: 3,
+                          vsync: this,
+                          initialIndex: userSetting.hCrossCount - 2),
                     );
                   }),
                 ],

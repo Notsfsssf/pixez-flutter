@@ -36,6 +36,7 @@ abstract class _UserSettingBase with Store {
   static const String SAVE_FORMAT_KEY = "save_format";
   static const String LANGUAGE_NUM_KEY = "language_num";
   static const String CROSS_COUNT_KEY = "cross_count";
+  static const String H_CROSS_COUNT_KEY = "h_cross_count";
   static const String PICTURE_QUALITY_KEY = "picture_quality";
   static const String MANGA_QUALITY_KEY = "manga_quality";
   static const String THEME_DATA_KEY = "theme_data";
@@ -81,6 +82,8 @@ abstract class _UserSettingBase with Store {
   int welcomePageNum = 0;
   @observable
   int crossCount = 2;
+  @observable
+  int hCrossCount = 4;
   @observable
   int? displayMode;
   @observable
@@ -218,6 +221,7 @@ abstract class _UserSettingBase with Store {
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
+    hCrossCount = prefs.getInt(H_CROSS_COUNT_KEY) ?? 4;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
     mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
@@ -317,6 +321,12 @@ abstract class _UserSettingBase with Store {
   setCrossCount(int value) async {
     crossCount = value;
     await prefs.setInt(CROSS_COUNT_KEY, value);
+  }
+
+  @action
+  setHCrossCount(int value) async {
+    hCrossCount = value;
+    await prefs.setInt(H_CROSS_COUNT_KEY, value);
   }
 
   @action

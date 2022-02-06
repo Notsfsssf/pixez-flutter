@@ -300,7 +300,10 @@ class _LightingListState extends State<LightingList> {
 
   SliverWaterfallFlowDelegateWithFixedCrossAxisCount _buildGridDelegate() {
     return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-      crossAxisCount: userSetting.crossCount,
+      crossAxisCount:
+          (MediaQuery.of(context).orientation == Orientation.portrait)
+              ? userSetting.crossCount
+              : userSetting.hCrossCount,
       collectGarbage: (List<int> garbages) {
         // garbages.forEach((index) {
         //   final provider = (
