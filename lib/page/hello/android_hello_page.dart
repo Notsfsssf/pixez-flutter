@@ -235,12 +235,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     });
     initPlatformState();
     _textStreamSubscription =
-        ReceiveSharingIntent.getTextStreamAsUri().listen((uri) {
-      Leader.pushWithUri(context, uri);
+        ReceiveSharingIntent.getTextStream().listen((value) {
+      _showChromeLink(value);
     });
-    ReceiveSharingIntent.getInitialTextAsUri().then((value) {
+    ReceiveSharingIntent.getInitialText().then((value) {
       if (value != null) {
-        Leader.pushWithUri(context, value);
+        _showChromeLink(value);
       }
     });
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
@@ -267,6 +267,55 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     Timer(const Duration(milliseconds: 0), () {
       initBottomNavigatorHeight();
     });
+  }
+
+  VoidCallback? _LinkCloser = null;
+
+  _showChromeLink(String link) {
+    Uri? uri = Uri.tryParse(link);
+    if (uri == null) return;
+    if (uri.scheme == "pixiv") {
+      if (uri.host.contains("account")) return;
+    }
+    _LinkCloser = BotToast.showCustomText(
+        onlyOne: true,
+        duration: Duration(seconds: 4),
+        toastBuilder: (textCancel) => Align(
+              alignment: Alignment(0, 0.8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  child: InkWell(
+                    onTap: () {
+                      if (_LinkCloser != null) _LinkCloser!();
+                      var uri = Uri.tryParse(link);
+                      if (uri != null) {
+                        Leader.pushWithUri(context, uri);
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 8.0),
+                            child: Text(link),
+                          ),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              Icons.link_rounded,
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ));
   }
 
   late StreamSubscription _sub;
