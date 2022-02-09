@@ -27,11 +27,9 @@ dependencies:
   crypto: ^3.0.1
   sqflite: ^2.0.2
   path_provider: ^2.0.8
-  shared_preferences: ^2.0.12
+  shared_preferences: ^2.0.13
   share_plus: ^3.0.4
   permission_handler: ^8.3.0
-#  save_in_gallery:
-#    git: https://github.com/Notsfsssf/save_in_gallery
   archive: ^3.1.11
   url_launcher: ^6.0.18
   bot_toast: ^4.0.1
@@ -50,12 +48,12 @@ dependencies:
   flutter_colorpicker: ^1.0.2
   waterfall_flow: ^3.0.2
   animations: ^2.0.2
-  extended_text: ^8.0.0
+  extended_text: ^9.0.0
   font_awesome_flutter: ^9.1.0
   json_annotation: ^4.4.0
   flutter_staggered_animations: ^1.0.0
   badges: ^2.0.1
-  image_picker: ^0.8.4+5
+  image_picker: ^0.8.4+7
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.1+1
