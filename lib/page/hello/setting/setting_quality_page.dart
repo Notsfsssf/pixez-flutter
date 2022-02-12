@@ -558,12 +558,11 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Column(
                 children: <Widget>[
-                  IconButton(
-                      onPressed: () {}, icon: Icon(Icons.portable_wifi_off)),
                   Padding(
                     child: Text(I18n.of(context).crosscount),
                     padding: EdgeInsets.all(16),
                   ),
+                  Icon(Icons.stay_primary_portrait),
                   Observer(builder: (_) {
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
@@ -596,6 +595,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           initialIndex: userSetting.crossCount - 2),
                     );
                   }),
+                  Icon(Icons.stay_primary_landscape),
                   Observer(builder: (_) {
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
