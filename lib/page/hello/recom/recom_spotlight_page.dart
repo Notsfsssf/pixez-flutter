@@ -198,16 +198,18 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         SliverToBoxAdapter(
           child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
         ),
-        _buildWaterfall()
+        _buildWaterfall(MediaQuery.of(context).orientation)
       ],
     );
   }
 
-  Widget _buildWaterfall() {
+  Widget _buildWaterfall(Orientation orientation) {
     return _lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: userSetting.crossCount,
+              crossAxisCount: (orientation == Orientation.portrait)
+              ? userSetting.crossCount
+              : userSetting.hCrossCount,
               collectGarbage: (List<int> garbages) {
                 // garbages.forEach((index) {
                 //   final provider = ExtendedNetworkImageProvider(
