@@ -26,12 +26,12 @@ dependencies:
   dio: ^4.0.4
   crypto: ^3.0.1
   sqflite: ^2.0.2
-  path_provider: ^2.0.8
+  path_provider: ^2.0.9
   shared_preferences: ^2.0.13
   share_plus: ^3.0.4
   permission_handler: ^8.3.0
   archive: ^3.1.11
-  url_launcher: ^6.0.18
+  url_launcher: ^6.0.20
   bot_toast: ^4.0.1
   package_info: ^2.0.2
   uni_links2: ^0.6.0+2
@@ -39,7 +39,7 @@ dependencies:
   flutter_mobx: ^2.0.4
   in_app_purchase: ^1.0.9
   flutter_widget_from_html_core: ^0.8.4
-  device_info_plus: ^3.0.1
+  device_info_plus: ^3.2.1
   flutter_displaymode: ^0.3.2
   receive_sharing_intent: ^1.4.5
   pull_to_refresh: ^2.0.0
@@ -52,15 +52,14 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   json_annotation: ^4.4.0
   flutter_staggered_animations: ^1.0.0
-  badges: ^2.0.1
-  image_picker: ^0.8.4+7
+  badges: ^2.0.2
+  image_picker: ^0.8.4+8
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.1+1
   flutter_inappwebview: ^5.3.2
   auto_animated: ^3.0.1
   http: ^0.13.4
-#  dio_http_cache: ^0.3.0
   dio_cache_interceptor: ^3.2.2
   photo_view: ^0.13.0
   http_interceptor: 2.0.0-beta.2
