@@ -107,6 +107,12 @@ extension IllustExts on Illusts {
       if (this.id == int.parse(i.illustId)) {
         return true;
       }
+    if (accountStore.now?.mailAddress
+            .toLowerCase()
+            .contains("pxezfeedback@outlook.com") ==
+        true) {
+      if (sanityLevel > 2) return true;
+    }
     return false;
   }
 }
