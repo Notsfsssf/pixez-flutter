@@ -120,10 +120,11 @@ class _WebViewPageState extends State<WebViewPage> {
                       (InAppWebViewController controller, Uri? uri) async {
                     if (uri != null &&
                         !userSetting.disableBypassSni &&
-                        uri.host == "pixiv.net")
+                        uri.host == "accounts.pixiv.net") {
                       controller.evaluateJavascript(
                           source:
                               "javascript:(function() {document.getElementsByClassName('signup-form__sns-btn-area')[0].style.display='none'; })()");
+                    }
                   },
                   onProgressChanged: (controller, progress) {
                     setState(() {
