@@ -312,7 +312,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                                   .translatedName!
                                                   .isNotEmpty)
                                             Text(
-                                              tags[index].tag,
+                                              tags[index].translatedName!,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   color: Colors.white,
