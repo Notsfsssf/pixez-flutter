@@ -29,6 +29,10 @@ class IllustPersist {
   int userId;
   @JsonKey(name: 'picture_url')
   String pictureUrl;
+  @JsonKey(name: 'user_name')
+  String? userName;
+  @JsonKey(name: "title")
+  String? title;
   int time;
 
   IllustPersist(
@@ -36,7 +40,9 @@ class IllustPersist {
       required this.illustId,
       required this.userId,
       required this.pictureUrl,
-      required this.time});
+      required this.time,
+      required this.title,
+      required this.userName});
 
   factory IllustPersist.fromJson(Map<String, dynamic> json) =>
       _$IllustPersistFromJson(json);
@@ -49,26 +55,54 @@ final String cid = "id";
 final String cillust_id = "illust_id";
 final String cuser_id = "user_id";
 final String cpicture_url = "picture_url";
+final String ctitle = "title";
+final String cuser_name = "user_name";
 final String ctime = "time";
 
 class IllustPersistProvider {
   late Database db;
 
-  Future open() async {
-    String databasesPath = (await getDatabasesPath());
-    String path = join(databasesPath, 'illustpersist.db');
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
+  void _createTableV2(Batch batch) {
+    batch.execute('DROP TABLE IF EXISTS $tableIllustPersist');
+    db.execute('''
 create table $tableIllustPersist ( 
   $cid integer primary key autoincrement, 
   $cillust_id integer not null,
   $cuser_id integer not null,
   $cpicture_url text not null,
+  $ctitle text,
+  $cuser_name text,
     $ctime integer not null
   )
 ''');
-    });
+  }
+
+  void _updateTableV1ToV2(Batch batch) {
+    batch.execute(
+        '''
+        ALTER TABLE $tableIllustPersist ADD $ctitle TEXT;
+            ''');
+  }
+
+  Future open() async {
+    String databasesPath = (await getDatabasesPath());
+    String path = join(databasesPath, 'illustpersist.db');
+    db = await openDatabase(
+      path,
+      version: 2,
+      onCreate: (Database db, int version) async {
+        var batch = db.batch();
+        _createTableV2(batch);
+        await batch.commit();
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        var batch = db.batch();
+        if (oldVersion < 2) {
+          _updateTableV1ToV2(batch);
+        }
+        await batch.commit();
+      },
+    );
   }
 
   Future<IllustPersist> insert(IllustPersist todo) async {
@@ -95,7 +129,7 @@ create table $tableIllustPersist (
   Future<List<IllustPersist>> getAllAccount() async {
     List<IllustPersist> result = [];
     List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
-        columns: [cid, cillust_id, cuser_id, cpicture_url, ctime],
+        columns: [cid, cillust_id, cuser_id, cpicture_url, ctime, cuser_name, ctitle],
         orderBy: ctime);
 
     if (maps.length > 0) {

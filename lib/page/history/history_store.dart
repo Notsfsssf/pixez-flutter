@@ -25,7 +25,9 @@ abstract class _HistoryStoreBase with Store {
         illustId: illust.id,
         userId: illust.user.id,
         pictureUrl: illust.imageUrls.squareMedium,
-        time: DateTime.now().millisecondsSinceEpoch);
+        time: DateTime.now().millisecondsSinceEpoch,
+        title: illust.title,
+        userName: illust.user.name);
     await illustPersistProvider.insert(illustPersist);
     await fetch();
   }
