@@ -23,8 +23,17 @@ import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
-class HistoryPage extends StatelessWidget {
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({Key? key}) : super(key: key);
+
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
   final HistoryStore _store = historyStore..fetch();
+  late TextEditingController _textEditingController;
+
   Widget buildAppBarUI(context) => Container(
         child: Padding(
           child: Text(
@@ -38,10 +47,6 @@ class HistoryPage extends StatelessWidget {
   Widget buildBody() => Observer(builder: (context) {
         var reIllust = _store.data.reversed.toList();
         if (reIllust.isNotEmpty) {
-          // return Stepper(steps: [
-          //   for(var i in reIllust)
-          //     Step(title: Text(i.time.toString()), content: PixivImage(i.pictureUrl))
-          // ]);
           return GridView.builder(
               itemCount: reIllust.length,
               gridDelegate:
@@ -93,10 +98,31 @@ class HistoryPage extends StatelessWidget {
       });
 
   @override
+  void initState() {
+    _textEditingController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).history),
+        title: TextField(
+          controller: _textEditingController,
+          onChanged: (word) {
+            if (word.isNotEmpty) {
+              _store.search(word);
+            } else {
+              _store.fetch();
+            }
+          },
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete),

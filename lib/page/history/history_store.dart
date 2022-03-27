@@ -9,11 +9,21 @@ class HistoryStore = _HistoryStoreBase with _$HistoryStore;
 abstract class _HistoryStoreBase with Store {
   IllustPersistProvider illustPersistProvider = IllustPersistProvider();
   ObservableList<IllustPersist> data = ObservableList();
+  @observable
+  var word = "";
 
   @action
   fetch() async {
     await illustPersistProvider.open();
     final result = await illustPersistProvider.getAllAccount();
+    data.clear();
+    data.addAll(result);
+  }
+
+  @action
+  search(String word) async {
+    await illustPersistProvider.open();
+    final result = await illustPersistProvider.getLikeIllusts(word);
     data.clear();
     data.addAll(result);
   }

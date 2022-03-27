@@ -78,8 +78,7 @@ create table $tableIllustPersist (
   }
 
   void _updateTableV1ToV2(Batch batch) {
-    batch.execute(
-        '''
+    batch.execute('''
         ALTER TABLE $tableIllustPersist ADD $ctitle TEXT;
             ''');
   }
@@ -126,10 +125,42 @@ create table $tableIllustPersist (
     return null;
   }
 
+  Future<List<IllustPersist>> getLikeIllusts(String word) async {
+    List<IllustPersist> result = [];
+    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
+        columns: [
+          cid,
+          cillust_id,
+          cuser_id,
+          cpicture_url,
+          ctime,
+          cuser_name,
+          ctitle
+        ],
+        where: '$ctitle like ?',
+        whereArgs: [word],
+        orderBy: ctime);
+
+    if (maps.length > 0) {
+      maps.forEach((f) {
+        result.add(IllustPersist.fromJson(f));
+      });
+    }
+    return result;
+  }
+
   Future<List<IllustPersist>> getAllAccount() async {
     List<IllustPersist> result = [];
     List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
-        columns: [cid, cillust_id, cuser_id, cpicture_url, ctime, cuser_name, ctitle],
+        columns: [
+          cid,
+          cillust_id,
+          cuser_id,
+          cpicture_url,
+          ctime,
+          cuser_name,
+          ctitle
+        ],
         orderBy: ctime);
 
     if (maps.length > 0) {
