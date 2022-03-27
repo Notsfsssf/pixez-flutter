@@ -114,49 +114,61 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          controller: _textEditingController,
-          onChanged: (word) {
-            if (word.isNotEmpty) {
-              _store.search(word);
-            } else {
-              _store.fetch();
-            }
-          },
-        ),
+            controller: _textEditingController,
+            onChanged: (word) {
+              if (word.trim().isNotEmpty) {
+                _store.search(word.trim());
+              } else {
+                _store.fetch();
+              }
+            },
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: I18n.of(context).search_word_hint,
+            )),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () async {
-              final result = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text(
-                          "${I18n.of(context).delete} ${I18n.of(context).all}?"),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text(I18n.of(context).cancel),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: Text(I18n.of(context).ok),
-                          onPressed: () {
-                            Navigator.of(context).pop("OK");
-                          },
-                        ),
-                      ],
-                    );
-                  });
-              if (result == "OK") {
-                _store.deleteAll();
-              }
+            icon: Icon(Icons.close),
+            onPressed: () {
+              _textEditingController.clear();
             },
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.delete),
+        onPressed: () {
+          _cleanAll(context);
+        },
+      ),
       body: buildBody(),
     );
+  }
+
+  Future<void> _cleanAll(BuildContext context) async {
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("${I18n.of(context).delete} ${I18n.of(context).all}?"),
+            actions: <Widget>[
+              TextButton(
+                child: Text(I18n.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(I18n.of(context).ok),
+                onPressed: () {
+                  Navigator.of(context).pop("OK");
+                },
+              ),
+            ],
+          );
+        });
+    if (result == "OK") {
+      _store.deleteAll();
+    }
   }
 }

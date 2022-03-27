@@ -80,6 +80,7 @@ create table $tableIllustPersist (
   void _updateTableV1ToV2(Batch batch) {
     batch.execute('''
         ALTER TABLE $tableIllustPersist ADD $ctitle TEXT;
+        ALTER TABLE $tableIllustPersist ADD $cuser_name TEXT;
             ''');
   }
 
@@ -137,8 +138,8 @@ create table $tableIllustPersist (
           cuser_name,
           ctitle
         ],
-        where: '$ctitle like ?',
-        whereArgs: [word],
+        where: '$ctitle LIKE ? or $cuser_name LIKE ?',
+        whereArgs: ["%${word}%", "%${word}%"],
         orderBy: ctime);
 
     if (maps.length > 0) {

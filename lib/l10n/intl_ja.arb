@@ -252,5 +252,6 @@
   "recent_screen_mask" : "最近のアイテムでの表示を隠す",
   "open_by_default":"デフォルトで開く",
   "open_by_default_subtitle":"このアプリでリンクを開くことを許可する",
-  "text":"テキスト"
+  "text":"テキスト",
+  "search_word_hint": "Search title or name like"
 }

@@ -252,5 +252,6 @@
   "recent_screen_mask" : "最近工作清單遮罩",
   "open_by_default":"預設開啟",
   "open_by_default_subtitle":"允許在此應用中開啟連結",
-  "text":"文本"
+  "text":"文本",
+  "search_word_hint": "搜尋標題或畫師昵稱"
 }

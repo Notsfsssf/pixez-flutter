@@ -243,5 +243,6 @@
   "recent_screen_mask" : "Recent screen mask",
   "open_by_default":"Open by default",
   "open_by_default_subtitle":"Allow web links to open this app",
-  "text":"text"
+  "text":"text",
+  "search_word_hint": "Search title or name like"
 }
