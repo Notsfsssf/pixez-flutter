@@ -80,8 +80,10 @@ create table $tableIllustPersist (
   void _updateTableV1ToV2(Batch batch) {
     batch.execute('''
         ALTER TABLE $tableIllustPersist ADD $ctitle TEXT;
-        ALTER TABLE $tableIllustPersist ADD $cuser_name TEXT;
             ''');
+    batch.execute('''
+        ALTER TABLE $tableIllustPersist ADD $cuser_name TEXT;
+    ''');
   }
 
   Future open() async {
