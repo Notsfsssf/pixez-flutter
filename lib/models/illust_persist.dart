@@ -63,8 +63,7 @@ class IllustPersistProvider {
   late Database db;
 
   void _createTableV2(Batch batch) {
-    batch.execute('DROP TABLE IF EXISTS $tableIllustPersist');
-    db.execute('''
+    batch.execute('''
 create table $tableIllustPersist ( 
   $cid integer primary key autoincrement, 
   $cillust_id integer not null,
