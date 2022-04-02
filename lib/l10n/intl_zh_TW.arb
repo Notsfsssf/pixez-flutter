@@ -251,7 +251,7 @@
   "error_400_hint" : "錯誤代碼为[400]，可能需要重新登入，此錯誤可能因變更密碼或 Pixiv API 升級導致",
   "recent_screen_mask" : "最近工作清單遮罩",
   "open_by_default":"預設開啟",
-  "open_by_default_subtitle":"允許在此應用中開啟連結",
-  "text":"文本",
-  "search_word_hint": "搜尋標題或畫師昵稱"
+  "open_by_default_subtitle":"允許在這個應用程式中開啟網頁連結",
+  "text":"文字",
+  "search_word_hint": "搜尋標題或繪師名稱"
 }
