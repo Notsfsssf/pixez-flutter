@@ -26,6 +26,7 @@ import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/page/comment/comment_page.dart';
@@ -289,9 +290,51 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     );
   }
 
+  Future _longPressTag(BuildContext context, Tag f) async {
+    switch (await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text(f.name),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 0);
+                },
+                child: Text(I18n.of(context).ban),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, 2);
+                },
+                child: Text(I18n.of(context).copy),
+              ),
+            ],
+          );
+        })) {
+      case 0:
+        {
+          await muteStore.insertBanTag(BanTagPersist(
+              name: f.name, translateName: f.translatedName ?? ""));
+          Navigator.of(context).pop();
+        }
+        break;
+      case 2:
+        {
+          await Clipboard.setData(ClipboardData(text: f.name));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text(I18n.of(context).copied_to_clipboard),
+          ));
+        }
+    }
+  }
+
   Widget buildRow(BuildContext context, Tag f) {
     return GestureDetector(
-      onLongPress: () async {},
+      onLongPress: () async {
+        _longPressTag(context, f);
+      },
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NovelResultPage(

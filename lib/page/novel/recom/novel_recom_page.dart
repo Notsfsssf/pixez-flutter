@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:pixez/exts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -95,119 +96,124 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               title: _buildFirstRow(context),
             ),
             if (_store.novels.isNotEmpty)
-              SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                Novel novel = _store.novels[index].novel!;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  NovelViewerPage(
-                                    id: novel.id,
-                                    novelStore: _store.novels[index],
-                                  )));
-                    },
-                    child: Card(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: PixivImage(
-                                    novel.imageUrls.medium,
-                                    width: 80,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 8.0, left: 8.0),
-                                        child: Text(
-                                          novel.title,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                          maxLines: 3,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                          novel.user.name,
-                                          maxLines: 1,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme.secondary),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Wrap(
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          spacing: 2, // gap between adjacent chips
-                                          runSpacing: 0,
-                                          children: [
-                                            for (var f in novel.tags)
-                                              Text(
-                                                f.name,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              )
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 8.0,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                NovelBookmarkButton(novel: novel),
-                                Text('${novel.totalBookmarks}',
-                                    style: Theme.of(context).textTheme.caption)
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }, childCount: _store.novels.length)),
+              _buildSliverList(),
           ],
         ),
       );
     });
+  }
+
+  SliverList _buildSliverList() {
+    _store.novels.removeWhere((element) => element.novel?.hateByUser() == true);
+    return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+              Novel novel = _store.novels[index].novel!;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                NovelViewerPage(
+                                  id: novel.id,
+                                  novelStore: _store.novels[index],
+                                )));
+                  },
+                  child: Card(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: PixivImage(
+                                  novel.imageUrls.medium,
+                                  width: 80,
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, left: 8.0),
+                                      child: Text(
+                                        novel.title,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                        maxLines: 3,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Text(
+                                        novel.user.name,
+                                        maxLines: 1,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .caption!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme.secondary),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Wrap(
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        spacing: 2, // gap between adjacent chips
+                                        runSpacing: 0,
+                                        children: [
+                                          for (var f in novel.tags)
+                                            Text(
+                                              f.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                            )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 8.0,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              NovelBookmarkButton(novel: novel),
+                              Text('${novel.totalBookmarks}',
+                                  style: Theme.of(context).textTheme.caption)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }, childCount: _store.novels.length));
   }
 }

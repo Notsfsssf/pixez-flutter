@@ -16,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/models/novel_recom_response.dart';
 
 extension HostExts on Uri {
   Uri toTureUri() {
@@ -88,6 +89,26 @@ extension TimeExts on String {
         .replaceAll(">", "")
         .replaceAll("|", "")
         .replaceAll("<", "");
+  }
+}
+
+extension NovelExts on Novel {
+  bool hateByUser() {
+    for (var t in muteStore.banTags) {
+      for (var f in this.tags) {
+        if (f.name == t.name) return true;
+      }
+    }
+    for (var j in muteStore.banUserIds) {
+      if (j.userId == this.user.id.toString()) {
+        return true;
+      }
+    }
+    for (var i in muteStore.banillusts)
+      if (this.id == int.parse(i.illustId)) {
+        return true;
+      }
+    return false;
   }
 }
 
