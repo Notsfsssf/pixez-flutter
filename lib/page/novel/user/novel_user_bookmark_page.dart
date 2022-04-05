@@ -49,7 +49,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
               ? IconButton(
                   icon: Icon(Icons.list),
                   onPressed: () {
-                    _buildShowModalBottomSheet(context, futureGet);
+                    _buildShowModalBottomSheet(context);
                   })
               : Visibility(
                   child: Container(height: 0),
@@ -65,7 +65,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
     );
   }
 
-  Future _buildShowModalBottomSheet(BuildContext context, FutureGet futureGet) {
+  Future _buildShowModalBottomSheet(BuildContext context) {
     return showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
