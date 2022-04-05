@@ -19,6 +19,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'illust_about_store.g.dart';
 
@@ -27,14 +28,18 @@ class IllustAboutStore = _IllustAboutStoreBase with _$IllustAboutStore;
 abstract class _IllustAboutStoreBase with Store {
   final int id;
   bool fetching = false;
+  RefreshController? refreshController;
 
-  _IllustAboutStoreBase(this.id);
+  _IllustAboutStoreBase(this.id, {this.refreshController});
 
   @observable
   String? errorMessage;
 
+  String? _nextUrl;
+
   ObservableList<Illusts> illusts = ObservableList();
 
+  @action
   fetch() async {
     if (fetching) return;
     fetching = true;
@@ -42,11 +47,31 @@ abstract class _IllustAboutStoreBase with Store {
     try {
       Response response = await apiClient.getIllustRelated(id);
       Recommend recommend = Recommend.fromJson(response.data);
+      _nextUrl = recommend.nextUrl;
       illusts.clear();
       illusts.addAll(recommend.illusts);
     } catch (e) {
       errorMessage = e.toString();
     }
     fetching = false;
+  }
+
+  @action
+  next() async {
+    try {
+      Response response = _nextUrl == null || _nextUrl!.isEmpty
+          ? await apiClient.getIllustRelated(id)
+          : await apiClient.getNext(_nextUrl!);
+      Recommend recommend = Recommend.fromJson(response.data);
+      _nextUrl = recommend.nextUrl;
+      illusts.addAll(recommend.illusts);
+      if (_nextUrl == null || _nextUrl!.isEmpty || recommend.illusts.isEmpty) {
+        refreshController?.loadNoData();
+      } else {
+        refreshController?.loadComplete();
+      }
+    } catch (e) {
+      refreshController?.loadFailed();
+    }
   }
 }
