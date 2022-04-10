@@ -9,13 +9,6 @@ import Photos
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        if #available(iOS 15.0, *) {
-                    let displayLink = CADisplayLink(target: self, selector: #selector(step))
-                    displayLink.preferredFrameRateRange = CAFrameRateRange(minimum:80, maximum:120, preferred:120)
-                    displayLink.add(to: .current, forMode: .default)
-                                                        
-                }
-
         let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
         let batteryChannel = FlutterMethodChannel(name: "samples.flutter.dev/battery",
                                                   binaryMessenger: controller.binaryMessenger)
@@ -37,11 +30,6 @@ import Photos
         DocumentPlugin.bind(controller:controller)
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-    }
-    
-    
-    @objc func step(displaylink: CADisplayLink) {
-        // Will be called once a frame has been built while matching desired frame rate
     }
     
     @objc private func saveImage(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: AnyObject) {
