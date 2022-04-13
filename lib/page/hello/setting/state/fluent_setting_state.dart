@@ -1,36 +1,14 @@
-/*
- * Copyright (C) 2020. by perol_notsf, All rights reserved
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/er/updater.dart';
 import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -38,6 +16,7 @@ import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/book/tag/book_tag_page.dart';
+import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -48,50 +27,7 @@ import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
 
-class FluentSettingPage extends StatefulWidget {
-  const FluentSettingPage({Key? key}) : super(key: key);
-
-  @override
-  _FluentSettingPageState createState() => _FluentSettingPageState();
-}
-
-class _FluentSettingPageState extends State<FluentSettingPage> {
-  @override
-  void initState() {
-    super.initState();
-    initMethod();
-  }
-
-  bool hasNewVersion = false;
-
-  initMethod() async {
-    if (Constants.isGooglePlay || Platform.isIOS) return;
-    if (Updater.result != Result.timeout) {
-      bool hasNew = Updater.result == Result.yes;
-      if (mounted)
-        setState(() {
-          hasNewVersion = hasNew;
-        });
-      return;
-    }
-    Result result = await Updater.check();
-    switch (result) {
-      case Result.yes:
-        if (mounted) {
-          setState(() {
-            hasNewVersion = true;
-          });
-        }
-        break;
-      default:
-        if (mounted) {
-          setState(() {
-            hasNewVersion = false;
-          });
-        }
-    }
-  }
-
+class FluentSettingPageState extends SettingPageStateBase {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
@@ -361,19 +297,6 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
       case "CANCEL":
         {}
         break;
-    }
-  }
-
-  _showMessage(BuildContext context) async {
-    final link =
-        "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
-    try {
-      final dio = Dio(BaseOptions(baseUrl: link));
-      Response response = await dio.get("");
-      final data = response.data as Map;
-      print("${data['doh']}");
-    } catch (e) {
-      print(e);
     }
   }
 

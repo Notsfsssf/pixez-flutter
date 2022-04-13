@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
@@ -11,7 +10,7 @@ import 'package:pixez/page/Init/guide_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
-import 'package:pixez/page/hello/setting/fluent_setting_page.dart';
+import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -207,7 +206,7 @@ class FluentHelloPageState extends State<FluentHelloPage> {
         children: [
           ..._pageLists,
           ..._history.map((e) => e.widget),
-          FluentSettingPage(),
+          SettingPage(),
         ],
       ),
     );
