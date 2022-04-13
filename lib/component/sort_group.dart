@@ -1,56 +1,29 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:pixez/component/sort_group/fluent_state.dart';
+import 'package:pixez/component/sort_group/material_state.dart';
+import 'package:pixez/constants.dart';
 
 class SortGroup extends StatefulWidget {
   final List<String> children;
   final Function onChange;
 
-  const SortGroup(
-      {Key? key,
-      required this.children,
-      required this.onChange})
+  const SortGroup({Key? key, required this.children, required this.onChange})
       : super(key: key);
 
   @override
-  _SortGroupState createState() => _SortGroupState();
+  SortGroupStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentSortGroupState();
+    else
+      return MaterialSortGroupState();
+  }
 }
 
-class _SortGroupState extends State<SortGroup> {
+abstract class SortGroupStateBase extends State<SortGroup> {
   int index = 0;
 
   @override
   void initState() {
     super.initState();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      children: [
-        for (var i in widget.children)
-          ActionChip(
-            elevation: 4.0,
-            label: Text(
-              i,
-              style: TextStyle(
-                  color: index == widget.children.indexOf(i)
-                      ? Colors.white
-                      : Theme.of(context).textTheme.bodyText1!.color),
-            ),
-            backgroundColor: index == widget.children.indexOf(i)
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
-            onPressed: () {
-              int ii = widget.children.indexOf(i);
-              widget.onChange(ii);
-              if (mounted)
-                setState(() {
-                  this.index = ii;
-                });
-            },
-          )
-      ],
-    );
   }
 }
