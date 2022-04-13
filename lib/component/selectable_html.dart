@@ -16,17 +16,12 @@
 
 import 'dart:io';
 
-import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:pixez/component/text_selection_toolbar.dart';
-import 'package:pixez/er/leader.dart';
-import 'package:pixez/exts.dart';
-import 'package:pixez/main.dart';
+import 'package:pixez/component/selectable_html/fluent_state.dart';
+import 'package:pixez/component/selectable_html/material_state.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/supportor_plugin.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
 
 class SelectableHtml extends StatefulWidget {
   final String data;
@@ -34,10 +29,15 @@ class SelectableHtml extends StatefulWidget {
   const SelectableHtml({Key? key, required this.data}) : super(key: key);
 
   @override
-  _SelectableHtmlState createState() => _SelectableHtmlState();
+  SelectableHtmlStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentSelectableHtmlState();
+    else
+      return MaterialSelectableHtmlState();
+  }
 }
 
-class _SelectableHtmlState extends State<SelectableHtml> {
+abstract class SelectableHtmlStateBase extends State<SelectableHtml> {
   bool l = false;
 
   @override
@@ -47,86 +47,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
     initMethod();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onLongPress: () async {
-        setState(() {
-          l = true;
-        });
-      },
-      child: l
-          ? Container(
-              child: Column(
-                children: [
-                  (Platform.isAndroid)
-                      ? ExtendedText(
-                          (widget.data).toTranslateText(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                          selectionEnabled: true,
-                          selectionControls: TranslateTextSelectionControls(),
-                        )
-                      : ExtendedText(
-                          (widget.data).toTranslateText(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                          selectionEnabled: true,
-                        ),
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (supportTranslate)
-                        InkWell(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.translate),
-                          ),
-                          onTap: () {
-                            SupportorPlugin.start(
-                                (widget.data).toTranslateText());
-                          },
-                        ),
-                      InkWell(
-                          child: Icon(Icons.close),
-                          onTap: () {
-                            setState(() {
-                              l = false;
-                            });
-                          })
-                    ],
-                  )
-                ],
-              ),
-            )
-          : HtmlWidget(
-              widget.data,
-              customStylesBuilder: (e) {
-                if (e.attributes.containsKey('href')) {
-                  final color = userSetting.themeData.colorScheme.primary;
-                  return {
-                    'color': '#${color.value.toRadixString(16).substring(2, 8)}'
-                  };
-                }
-                return null;
-              },
-              onTapUrl: (String url) async {
-                try {
-                  if (url.startsWith("pixiv")) {
-                    Leader.pushWithUri(context, Uri.parse(url));
-                  } else
-                    await launch(url);
-                } catch (e) {
-                  Share.share(url);
-                }
-                return true;
-              },
-            ),
-    );
-  }
-
   bool supportTranslate = false;
-
   Future<void> initMethod() async {
     if (!Platform.isAndroid) return;
     bool results = await SupportorPlugin.processText();
