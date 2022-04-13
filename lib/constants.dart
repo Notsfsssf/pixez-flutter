@@ -22,6 +22,6 @@ class Constants {
       bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);
   static int type = 0;
   static String? code_verifier = null;
-  static bool isFluentUI =
-      Platform.isWindows || Platform.isLinux || Platform.isIOS;
+  static final bool isFluentUI =
+      Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 }
