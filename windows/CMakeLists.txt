@@ -3,6 +3,17 @@ project(pixez LANGUAGES CXX)
 
 set(BINARY_NAME "pixez")
 
+message("")
+message("______ _______   __ _____ ______")
+message("| ___ \\_   _\\ \\ / /|  ___|___  /")
+message("| |_/ / | |  \\ V / | |__    / / ")
+message("|  __/  | |  /   \\ |  __|  / /  ")
+message("| |    _| |_/ /^\\ \\| |___./ /___")
+message("\\_|    \\___/\\/   \\/\\____/\\_____/")
+message("")
+message("")
+message("Pixez for Windows Desktop Application (Win32)")
+
 cmake_policy(SET CMP0063 NEW)
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
