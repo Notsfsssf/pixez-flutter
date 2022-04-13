@@ -25,7 +25,7 @@ dependencies:
     sdk: flutter
   dio: ^4.0.4
   crypto: ^3.0.1
-  sqflite: ^2.0.2
+  # sqflite: ^2.0.2
   path_provider: ^2.0.9
   shared_preferences: ^2.0.13
   share_plus: ^3.0.4
@@ -76,6 +76,7 @@ dev_dependencies:
   mobx_codegen: ^2.0.5+2
   json_serializable: ^6.1.4
   analyzer: ^3.2.0
+  sqflite_common_ffi: ^2.1.0+2 # see https://pub.flutter-io.cn/packages/sqflite_common_ffi#dart
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
