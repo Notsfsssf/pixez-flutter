@@ -94,6 +94,30 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
+      header: PageHeader(
+        title: Text(I18n.of(context).setting),
+        commandBar: CommandBar(
+          overflowBehavior: CommandBarOverflowBehavior.noWrap,
+          primaryItems: [
+            if (kDebugMode)
+              CommandBarButton(
+                icon: Icon(FluentIcons.code),
+                onPressed: () {
+                  _showSavedLogDialog(context);
+                },
+              ),
+            CommandBarButton(
+              icon: Icon(
+                FluentIcons.color,
+                color: FluentTheme.of(context).accentColor,
+              ),
+              onPressed: () {
+                Leader.dialog(context, ThemePage());
+              },
+            ),
+          ],
+        ),
+      ),
       content: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -101,26 +125,6 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                CommandBar(
-                  primaryItems: [
-                    if (kDebugMode)
-                      CommandBarButton(
-                          icon: Icon(FluentIcons.code),
-                          onPressed: () {
-                            _showSavedLogDialog(context);
-                          }),
-                    CommandBarButton(
-                      icon: Icon(
-                        FluentIcons.color,
-                        color: FluentTheme.of(context).accentColor,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                            FluentPageRoute(builder: (context) => ThemePage()));
-                      },
-                    ),
-                  ],
-                ),
                 Observer(builder: (context) {
                   if (accountStore.now != null)
                     return SingleChildScrollView(
@@ -130,10 +134,7 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: TappableListTile(
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(FluentPageRoute(builder: (_) {
-                                  return AccountSelectPage();
-                                }));
+                                Leader.dialog(context, AccountSelectPage());
                               },
                               title: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,9 +179,7 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                             leading: Icon(FluentIcons.account_management),
                             title: Text(I18n.of(context).account_message),
                             onTap: () {
-                              Navigator.of(context).push(FluentPageRoute(
-                                  builder: (BuildContext context) =>
-                                      AccountEditPage()));
+                              Leader.dialog(context, AccountEditPage());
                             },
                           )
                         ],
@@ -195,39 +194,33 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                       leading: Icon(FluentIcons.history),
                       title: Text(I18n.of(context).history_record),
                       onTap: () {
-                        Navigator.of(context).push(
-                            FluentPageRoute(builder: (BuildContext context) {
-                          return Constants.type == 0
-                              ? HistoryPage()
-                              : NovelHistory();
-                        }));
+                        Leader.dialog(
+                          context,
+                          Constants.type == 0 ? HistoryPage() : NovelHistory(),
+                        );
                       },
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.settings),
                       title: Text(I18n.of(context).quality_setting),
                       onTap: () {
-                        Navigator.of(context).push(
-                            FluentPageRoute(builder: (BuildContext context) {
-                          return SettingQualityPage();
-                        }));
+                        Leader.dialog(context, SettingQualityPage());
                       },
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.bookmarks),
                       title: Text(I18n.of(context).favorited_tag),
-                      onTap: () =>
-                          Leader.pushWithScaffold(context, BookTagPage()),
+                      onTap: () => Leader.dialog(context, BookTagPage()),
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.blocked),
                       title: Text(I18n.of(context).shielding_settings),
-                      onTap: () => Leader.push(context, ShieldPage()),
+                      onTap: () => Leader.dialog(context, ShieldPage()),
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.save),
                       title: Text(I18n.of(context).task_progress),
-                      onTap: () => Leader.push(context, JobPage()),
+                      onTap: () => Leader.dialog(context, JobPage()),
                     ),
                     TappableListTile(
                       onTap: () => _showClearCacheDialog(context),
@@ -250,13 +243,13 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                       TappableListTile(
                         title: Text("网络诊断"),
                         onTap: () {
-                          Leader.push(context, NetworkSettingPage());
+                          Leader.dialog(context, NetworkSettingPage());
                         },
                       ),
                     TappableListTile(
                       leading: Icon(FluentIcons.message),
                       title: Text(I18n.of(context).about),
-                      onTap: () => Leader.push(
+                      onTap: () => Leader.dialog(
                           context, AboutPage(newVersion: hasNewVersion)),
                       trailing: Visibility(
                         child: NewVersionChip(),
@@ -274,7 +267,7 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                         return TappableListTile(
                           leading: Icon(FluentIcons.back),
                           title: Text(I18n.of(context).login),
-                          onTap: () => Leader.push(context, LoginPage()),
+                          onTap: () => Leader.dialog(context, LoginPage()),
                         );
                     })
                   ],
