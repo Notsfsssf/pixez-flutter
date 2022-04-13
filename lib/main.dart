@@ -13,22 +13,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import 'dart:async';
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_acrylic/flutter_acrylic.dart' as acrylic;
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/kver.dart';
-import 'package:pixez/fluent_main.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/fluent_app_state.dart';
+import 'package:pixez/material_app_state.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/novel/history/novel_history_store.dart';
-import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/page/splash/splash_store.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/book_tag_store.dart';
@@ -37,10 +35,12 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pixez/win32_utils.dart' as win32_utils;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:win32/win32.dart' as win32;
+import 'package:windows_single_instance/windows_single_instance.dart' as wsi;
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -72,29 +72,85 @@ main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Constants.isFluentUI) {
-    await fluentMain(args);
+    if (Platform.isWindows) {
+      await wsi.WindowsSingleInstance.ensureSingleInstance(
+          args, "pixez-{4db45356-86ec-449e-8d11-dab0feaf41b0}",
+          onSecondWindow: (args) {
+        print(
+            "[WindowsSingleInstance]::Arguments(): \"${args.join("\" \"")}\"");
+        if (args.length == 2 && args[0] == "--uri") {
+          final uri = Uri.tryParse(args[1]);
+          if (uri != null) {
+            print(
+                "[WindowsSingleInstance]::UriParser(): Legal uri: \"${uri}\"");
+            Leader.pushWithUri(routeObserver.navigator!.context, uri);
+          }
+        }
+      });
+
+      final buildNumber = int.parse(win32_utils.getRegistryValue(
+          win32.HKEY_LOCAL_MACHINE,
+          'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\',
+          'CurrentBuildNumber') as String);
+      final isDarkTheme = (win32_utils.getRegistryValue(
+              win32.HKEY_CURRENT_USER,
+              'Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
+              'AppsUseLightTheme') as int) ==
+          0;
+      // See https://alexmercerind.github.io/docs/flutter_acrylic/#available-effects
+      await acrylic.Window.initialize();
+      if (buildNumber >= 22523)
+        await acrylic.Window.setEffect(
+          effect: acrylic.WindowEffect.tabbed,
+          dark: isDarkTheme,
+        );
+      else if (buildNumber >= 22000)
+        await acrylic.Window.setEffect(
+          effect: acrylic.WindowEffect.mica,
+          dark: isDarkTheme,
+        );
+      else if (buildNumber >= 17134)
+        await acrylic.Window.setEffect(
+          effect: acrylic.WindowEffect.acrylic,
+          color: isDarkTheme ? Color(0xCC222222) : Color(0xCCDDDDDD),
+          dark: isDarkTheme,
+        );
+      else
+        await acrylic.Window.setEffect(
+          effect: acrylic.WindowEffect.disabled,
+          color: isDarkTheme ? Color(0xCC222222) : Color(0xCCDDDDDD),
+          dark: isDarkTheme,
+        );
+    }
   } else {
     if (defaultTargetPlatform == TargetPlatform.android &&
         Constants.isGooglePlay) {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
     }
-    sqfliteFfiInit();
-    runApp(MyApp());
+  }
+  sqfliteFfiInit();
+  print(
+      "[databaseFactoryFfi]::getDatabasesPath(): ${await databaseFactoryFfi.getDatabasesPath()}");
+  runApp(App());
+}
+
+class App extends StatefulWidget {
+  @override
+  AppStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentAppState();
+    else
+      return MaterialAppState();
   }
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  AppLifecycleState? _appState;
+abstract class AppStateBase extends State<App> with WidgetsBindingObserver {
+  AppLifecycleState? appState;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
-      _appState = state;
+      appState = state;
     });
   }
 
@@ -135,73 +191,5 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (list.length > 180) {
       directory.deleteSync(recursive: true);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      final botToastBuilder = BotToastInit();
-      final myBuilder = (BuildContext context, Widget? widget) {
-        if (userSetting.nsfwMask) {
-          final needShowMask = (Platform.isAndroid
-              ? (_appState == AppLifecycleState.paused ||
-                  _appState == AppLifecycleState.paused)
-              : _appState == AppLifecycleState.inactive);
-          return Stack(
-            children: [
-              widget ?? Container(),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                child: needShowMask
-                    ? Container(
-                        color: Theme.of(context).canvasColor,
-                        child: Center(
-                          child: Icon(Icons.privacy_tip_outlined),
-                        ),
-                      )
-                    : null,
-              )
-            ],
-          );
-        } else {
-          return widget;
-        }
-      };
-      return MaterialApp(
-        navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-        locale: userSetting.locale,
-        home: Builder(builder: (context) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-              child: SplashPage());
-        }),
-        title: 'PixEz',
-        builder: (context, child) {
-          if (Platform.isIOS) child = myBuilder(context, child);
-          child = botToastBuilder(context, child);
-          return child;
-        },
-        themeMode: userSetting.themeMode,
-        theme: ThemeData.light().copyWith(
-            primaryColor: userSetting.themeData.colorScheme.primary,
-            primaryColorLight: userSetting.themeData.colorScheme.primary,
-            primaryColorDark: userSetting.themeData.colorScheme.primary,
-            colorScheme: ThemeData.light().colorScheme.copyWith(
-                  secondary: userSetting.themeData.colorScheme.secondary,
-                  primary: userSetting.themeData.colorScheme.primary,
-                )),
-        darkTheme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
-          primaryColor: userSetting.themeData.colorScheme.primary,
-          primaryColorLight: userSetting.themeData.colorScheme.primary,
-          primaryColorDark: userSetting.themeData.colorScheme.primary,
-          colorScheme: ThemeData.dark().colorScheme.copyWith(
-              secondary: userSetting.themeData.colorScheme.secondary,
-              primary: userSetting.themeData.colorScheme.primary),
-        ),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales, // Add this line
-      );
-    });
   }
 }

@@ -4,22 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/splash/common_splash_page.dart';
+import 'package:pixez/win32_utils.dart';
 
-import 'page/splash/common_splash_page.dart';
-
-class MyFluentApp extends StatefulWidget {
-  final Color _accentColor;
-
-  MyFluentApp(this._accentColor);
+class FluentAppState extends AppStateBase {
+  late AccentColor _accentColor;
 
   @override
-  _MyFluentAppState createState() => _MyFluentAppState(_accentColor);
-}
-
-class _MyFluentAppState extends State<MyFluentApp> with WidgetsBindingObserver {
-  final Color _accentColor;
-
-  _MyFluentAppState(this._accentColor);
+  void initState() {
+    _accentColor = Color(getAccentColor()).toAccentColor();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +22,7 @@ class _MyFluentAppState extends State<MyFluentApp> with WidgetsBindingObserver {
       final botToastBuilder = BotToastInit();
       final theme = ThemeData(
         visualDensity: VisualDensity.standard,
-        accentColor: _accentColor.toAccentColor(),
+        accentColor: _accentColor,
         focusTheme: FocusThemeData(
           glowFactor: is10footScreen() ? 2.0 : 0.0,
         ),
@@ -61,7 +56,7 @@ class _MyFluentAppState extends State<MyFluentApp> with WidgetsBindingObserver {
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           visualDensity: VisualDensity.standard,
-          accentColor: _accentColor.toAccentColor(),
+          accentColor: _accentColor,
           focusTheme: FocusThemeData(
             glowFactor: is10footScreen() ? 2.0 : 0.0,
           ),
@@ -75,6 +70,7 @@ class _MyFluentAppState extends State<MyFluentApp> with WidgetsBindingObserver {
       );
     });
   }
+
 }
 
 class _FluentLocalizationsDelegate
@@ -96,3 +92,4 @@ class _FluentLocalizationsDelegate
     return false;
   }
 }
+
