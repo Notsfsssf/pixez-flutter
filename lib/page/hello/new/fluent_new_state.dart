@@ -38,7 +38,7 @@ class FluentNewPageState extends NewPageStateBase {
         onPressed: () => Leader.fluentNav(
           context,
           Icon(FluentIcons.account_browser),
-          Text("关注的用户"),
+          Text("我的账户"),
           UsersPage(
             id: int.parse(accountStore.now!.userId),
           ),

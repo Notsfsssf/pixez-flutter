@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
@@ -183,11 +182,9 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
     return lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-              // TODO: 从用户设置中读取列数
-              // (orientation == Orientation.portrait)
-              //     ? userSetting.crossCount
-              //     : userSetting.hCrossCount,
+              crossAxisCount: (orientation == Orientation.portrait)
+                  ? userSetting.crossCount
+                  : userSetting.hCrossCount,
               collectGarbage: (List<int> garbages) {
                 // garbages.forEach((index) {
                 //   final provider = ExtendedNetworkImageProvider(
@@ -265,45 +262,6 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
               scrollDirection: Axis.horizontal,
             )
           : Container(),
-    );
-  }
-
-  Widget _buildFirstRow(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            child: Padding(
-              child: Text(
-                I18n.of(context).spotlight,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.0,
-                  // color: FluentTheme.of(context).textTheme.headline6!.color,
-                ),
-              ),
-              padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
-            ),
-          ),
-          Padding(
-            child: TextButton(
-              child: Text(
-                I18n.of(context).more,
-                // style: FluentTheme.of(context).textTheme.caption,
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(FluentPageRoute(builder: (BuildContext context) {
-                  return SpotLightPage();
-                }));
-              },
-            ),
-            padding: EdgeInsets.all(8.0),
-          )
-        ],
-      ),
     );
   }
 
