@@ -1,29 +1,11 @@
-/*
- * Copyright (C) 2020. by perol_notsf, All rights reserved
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/fluent_illust_card_state.dart';
-import 'package:pixez/component/material_illust_card_state.dart';
+import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
-import 'package:pixez/constants.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -32,27 +14,7 @@ import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 
-class IllustCard extends StatefulWidget {
-  final IllustStore store;
-  final List<IllustStore>? iStores;
-  final bool needToBan;
-
-  IllustCard({
-    required this.store,
-    this.iStores,
-    this.needToBan = false,
-  });
-
-  @override
-  IllustCardStateBase createState() {
-    if (Constants.isFluentUI)
-      return FluentIllustCardState();
-    else
-      return MaterialIllustCardState();
-  }
-}
-
-abstract class IllustCardStateBase extends State<IllustCard> {
+class FluentIllustCardState extends IllustCardStateBase {
   late IllustStore store;
   late List<IllustStore>? iStores;
   late String tag;
@@ -77,25 +39,27 @@ abstract class IllustCardStateBase extends State<IllustCard> {
     if (userSetting.hIsNotAllow)
       for (int i = 0; i < store.illusts!.tags.length; i++) {
         if (store.illusts!.tags[i].name.startsWith('R-18'))
-          return InkWell(
-            onTap: () => _buildTap(context),
-            onLongPress: () => saveStore.saveImage(store.illusts!),
-            child: Card(
-              margin: EdgeInsets.all(8.0),
-              elevation: 8.0,
-              clipBehavior: Clip.antiAlias,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: Image.asset('assets/images/h.jpg'),
-            ),
-          );
+          return HoverButton(
+              onPressed: () => _buildTap(context),
+              onLongPress: () => saveStore.saveImage(store.illusts!),
+              builder: (context, state) {
+                return FocusBorder(
+                    focused: state.isFocused || state.isHovering,
+                    child: Card(
+                      // margin: EdgeInsets.all(8.0),
+                      elevation: 8.0,
+                      // clipBehavior: Clip.antiAlias,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      child: Image.asset('assets/images/h.jpg'),
+                    ));
+              });
       }
     return buildInkWell(context);
   }
 
   Future _buildTap(BuildContext context) {
     return Navigator.of(context, rootNavigator: true)
-        .push(MaterialPageRoute(builder: (_) {
+        .push(FluentPageRoute(builder: (_) {
       if (store != null) {
         return PictureListPage(
           iStores: iStores!,
@@ -147,39 +111,42 @@ abstract class IllustCardStateBase extends State<IllustCard> {
     var radio = (tooLong)
         ? 1.0
         : store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
-    return Card(
+    return HoverButton(
       margin: EdgeInsets.all(8.0),
-      elevation: 4.0,
-      clipBehavior: Clip.antiAlias,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      child: InkWell(
-        onLongPress: () {
-          saveStore.saveImage(store.illusts!);
-        },
-        onTap: () {
-          _buildInkTap(context, tag);
-        },
-        child: Column(
-          children: <Widget>[
-            AspectRatio(
-                aspectRatio: radio,
-                child: Stack(
-                  children: [
-                    Positioned.fill(child: _buildPic(tag, tooLong)),
-                    Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
-                  ],
-                )),
-            _buildBottom(context),
-          ],
-        ),
-      ),
+      onLongPress: () {
+        saveStore.saveImage(store.illusts!);
+      },
+      onPressed: () {
+        _buildInkTap(context, tag);
+      },
+      builder: (context, state) {
+        return FocusBorder(
+          focused: state.isFocused || state.isHovering,
+          child: Acrylic(
+            child: Column(
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: radio,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: _buildPic(tag, tooLong)),
+                      Positioned(
+                          top: 5.0, right: 5.0, child: _buildVisibility()),
+                    ],
+                  ),
+                ),
+                _buildBottom(context),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   Future _buildInkTap(BuildContext context, String heroTag) {
     return Navigator.of(context, rootNavigator: true)
-        .push(MaterialPageRoute(builder: (_) {
+        .push(FluentPageRoute(builder: (_) {
       if (iStores != null) {
         return PictureListPage(
           heroString: heroTag,
@@ -197,7 +164,7 @@ abstract class IllustCardStateBase extends State<IllustCard> {
 
   Widget _buildBottom(BuildContext context) {
     return Container(
-      color: Theme.of(context).cardColor,
+      color: Colors.transparent, //FluentTheme.of(context).cardColor,
       child: Stack(
         children: <Widget>[
           Padding(
@@ -209,13 +176,13 @@ abstract class IllustCardStateBase extends State<IllustCard> {
                 store.illusts!.title,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: FluentTheme.of(context).typography.body,
               ),
               Text(
                 store.illusts!.user.name,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
-                style: Theme.of(context).textTheme.caption,
+                style: FluentTheme.of(context).typography.caption,
               )
             ]),
           ),
@@ -239,26 +206,27 @@ abstract class IllustCardStateBase extends State<IllustCard> {
                           "${store.illusts!.user.name} ${I18n.of(context).followed}");
                 }
               },
-              onLongPress: () async {
-                final result = await showModalBottomSheet(
-                  context: context,
-                  clipBehavior: Clip.hardEdge,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  constraints: BoxConstraints.expand(
-                      height: MediaQuery.of(context).size.height * .618),
-                  isScrollControlled: true,
-                  builder: (_) => TagForIllustPage(id: store.illusts!.id),
-                );
-                if (result?.isNotEmpty ?? false) {
-                  LPrinter.d(result);
-                  String restrict = result['restrict'];
-                  List<String>? tags = result['tags'];
-                  store.star(restrict: restrict, tags: tags, force: true);
-                }
-              },
+              // TODO
+              // onLongPress: () async {
+              //   final result = await showModalBottomSheet(
+              //     context: context,
+              //     clipBehavior: Clip.hardEdge,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius:
+              //           BorderRadius.vertical(top: Radius.circular(16)),
+              //     ),
+              //     constraints: BoxConstraints.expand(
+              //         height: MediaQuery.of(context).size.height * .618),
+              //     isScrollControlled: true,
+              //     builder: (_) => TagForIllustPage(id: store.illusts!.id),
+              //   );
+              //   if (result?.isNotEmpty ?? false) {
+              //     LPrinter.d(result);
+              //     String restrict = result['restrict'];
+              //     List<String>? tags = result['tags'];
+              //     store.star(restrict: restrict, tags: tags, force: true);
+              //   }
+              // },
             ),
           )
         ],
@@ -281,7 +249,7 @@ abstract class IllustCardStateBase extends State<IllustCard> {
               child: cardText(),
             ),
             decoration: BoxDecoration(
-              color: Colors.black26,
+              color: Colors.black,
               borderRadius: BorderRadius.all(Radius.circular(4.0)),
             ),
           ),
