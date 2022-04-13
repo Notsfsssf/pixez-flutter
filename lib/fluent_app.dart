@@ -4,55 +4,59 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/splash/fluent_splash_page.dart';
+
+import 'page/splash/common_splash_page.dart';
 
 class MyFluentApp extends StatefulWidget {
-  late Color _accentColor;
-  late bool _isDarkTheme;
+  final Color _accentColor;
 
-  MyFluentApp(Color accentColor, bool isDarkTheme) {
-    _accentColor = accentColor;
-    _isDarkTheme = isDarkTheme;
-  }
+  MyFluentApp(this._accentColor);
 
   @override
-  _MyFluentAppState createState() =>
-      _MyFluentAppState(_accentColor, _isDarkTheme);
+  _MyFluentAppState createState() => _MyFluentAppState(_accentColor);
 }
 
 class _MyFluentAppState extends State<MyFluentApp> with WidgetsBindingObserver {
-  late Color _accentColor;
-  late bool _isDarkTheme;
+  final Color _accentColor;
 
-  _MyFluentAppState(Color accentColor, bool isDarkTheme) {
-    _accentColor = accentColor;
-    _isDarkTheme = isDarkTheme;
-  }
+  _MyFluentAppState(this._accentColor);
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
+    return Observer(builder: (context) {
       final botToastBuilder = BotToastInit();
+      final theme = ThemeData(
+        visualDensity: VisualDensity.standard,
+        accentColor: _accentColor.toAccentColor(),
+        focusTheme: FocusThemeData(
+          glowFactor: is10footScreen() ? 2.0 : 0.0,
+        ),
+      );
       return FluentApp(
-        navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-        locale: userSetting.locale,
         home: Builder(builder: (context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-              child: FluentSplashPage());
+            value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+            child: SplashPage(),
+          );
         }),
-        title: 'PixEz',
         builder: (context, child) {
           child = botToastBuilder(context, child);
           return Directionality(
             textDirection: TextDirection.ltr,
             child: NavigationPaneTheme(
-              data:
-                  NavigationPaneThemeData(backgroundColor: Colors.transparent),
+              data: NavigationPaneThemeData(
+                backgroundColor: Colors.transparent,
+              ),
               child: child,
             ),
           );
         },
+        title: 'PixEz',
+        locale: userSetting.locale,
+        navigatorObservers: [
+          BotToastNavigatorObserver(),
+          routeObserver,
+        ],
         themeMode: userSetting.themeMode,
         darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -62,13 +66,7 @@ class _MyFluentAppState extends State<MyFluentApp> with WidgetsBindingObserver {
             glowFactor: is10footScreen() ? 2.0 : 0.0,
           ),
         ),
-        theme: ThemeData(
-          visualDensity: VisualDensity.standard,
-          accentColor: _accentColor.toAccentColor(),
-          focusTheme: FocusThemeData(
-            glowFactor: is10footScreen() ? 2.0 : 0.0,
-          ),
-        ),
+        theme: theme,
         localizationsDelegates: [
           _FluentLocalizationsDelegate(),
           ...AppLocalizations.localizationsDelegates
