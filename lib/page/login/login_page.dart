@@ -17,27 +17,29 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/about/about_page.dart';
-import 'package:pixez/page/hello/setting/setting_quality_page.dart';
+import 'package:pixez/page/login/state/fluent.dart';
+import 'package:pixez/page/login/state/material.dart';
 import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/weiss_plugin.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentLoginPageState();
+    else
+      return MaterialLoginPageState();
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController passWordController = TextEditingController();
+abstract class LoginPageStateBase extends State<LoginPage> {
+  // TextEditingController userNameController = TextEditingController();
+  // TextEditingController passWordController = TextEditingController();
 
   @override
   void initState() {
@@ -46,121 +48,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    userNameController.dispose();
-    passWordController.dispose();
+    // userNameController.dispose();
+    // passWordController.dispose();
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SettingQualityPage()));
-                  }),
-              IconButton(
-                  icon: Icon(Icons.message),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => AboutPage()));
-                  })
-            ],
-          ),
-        ),
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-        ),
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        body: Builder(builder: (context) {
-          return _buildBody(context);
-        }));
-  }
-
-  Widget _buildBody(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          primaryColor: Theme.of(context).colorScheme.secondary,
-          brightness: Theme.of(context).brightness),
-      child: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: SingleChildScrollView(
-            padding: EdgeInsets.all(0),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 20,
-                ),
-                Image.asset(
-                  'assets/images/icon.png',
-                  height: 80,
-                  width: 80,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: AutofillGroup(
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                          ),
-                          ElevatedButton(
-                              child: Text(
-                                I18n.of(context).login,
-                              ),
-                              onPressed: () async {
-                                try {
-                                  String url =
-                                      await OAuthClient.generateWebviewUrl();
-                                  _launch(url);
-                                } catch (e) {}
-                              }),
-                          ElevatedButton(
-                            onPressed: () async {
-                              try {
-                                String url =
-                                    await OAuthClient.generateWebviewUrl(
-                                        create: true);
-                                _launch(url);
-                              } catch (e) {}
-                            },
-                            child: Text(I18n.of(context).dont_have_account),
-                          ),
-                          TextButton(
-                            child: Text(
-                              I18n.of(context).terms,
-                            ),
-                            onPressed: () async {
-                              final url =
-                                  'https://www.pixiv.net/terms/?page=term';
-                              try {
-                                await launch(url);
-                              } catch (e) {}
-                            },
-                          ),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-      ),
-    );
-  }
-
-  _launch(url) async {
+  launch(url) async {
     if (Platform.isIOS) {
       final result = await Leader.push(
           context,

@@ -4,7 +4,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/page/login/fluent_login_page.dart';
+import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -23,7 +23,7 @@ class FluentPreviewPageState extends PreviewPageStateBase {
                 icon: Icon(FluentIcons.signin),
                 label: Text("Login"),
                 onPressed: () {
-                  Leader.dialog(context, FluentLoginPage());
+                  Leader.dialog(context, LoginPage());
                 },
               ),
               CommandBarButton(
