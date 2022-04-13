@@ -14,102 +14,32 @@
  *
  */
 
-import 'package:flutter/material.dart';
-import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/component/pixiv_image.dart';
+import 'package:flutter/widgets.dart';
+import 'package:pixez/component/painer_card/fluent.dart';
+import 'package:pixez/component/painer_card/material.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/models/user_preview.dart';
-import 'package:pixez/page/novel/user/novel_user_page.dart';
-import 'package:pixez/page/user/user_store.dart';
-import 'package:pixez/page/user/users_page.dart';
 
-class PainterCard extends StatelessWidget {
+abstract class PainterCardBase extends StatelessWidget {
   final UserPreviews user;
   final bool isNovel;
 
-  const PainterCard({Key? key,required this.user, this.isNovel = false})
+  const PainterCardBase({Key? key, required this.user, this.isNovel = false})
       : super(key: key);
+}
+
+class PainterCard extends PainterCardBase {
+  const PainterCard({
+    Key? key,
+    required UserPreviews user,
+    bool isNovel = false,
+  }) : super(key: key, user: user, isNovel: isNovel);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          if (isNovel) {
-            return NovelUserPage(
-              id: user.user.id,
-            );
-          }
-          return UsersPage(
-            id: user.user.id,
-            userStore: UserStore(user.user.id, user: user.user),
-          );
-        }));
-      },
-      child: Card(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        clipBehavior: Clip.antiAlias,
-        child: Container(
-          height: (MediaQuery.of(context).size.width - 4) / 3 + 80,
-          child: CustomScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            slivers: [
-              SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    if (index >= user.illusts.length) return Container();
-                    return PixivImage(
-                      user.illusts[index].imageUrls.squareMedium,
-                      fit: BoxFit.cover,
-                    );
-                  }, childCount: user.illusts.length)),
-              SliverToBoxAdapter(child: buildPadding(context))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Padding buildPadding(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Hero(
-            tag: user.user.profileImageUrls.medium,
-            child: PainterAvatar(
-              url: user.user.profileImageUrls.medium,
-              id: user.user.id,
-              onTap: () {
-                Navigator.of(context, rootNavigator: true)
-                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                  if (isNovel) {
-                    return NovelUserPage(
-                      id: user.user.id,
-                    );
-                  }
-                  return UsersPage(
-                    id: user.user.id,
-                    userStore: UserStore(user.user.id, user: user.user),
-                  );
-                }));
-              },
-            ),
-          ),
-          Hero(
-            tag: user.user.name,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(user.user.name),
-            ),
-          )
-        ],
-      ),
-    );
+    if (Constants.isFluentUI)
+      return FluentPainterCard(user: user, isNovel: isNovel);
+    else
+      return MaterialPainterCard(user: user, isNovel: isNovel);
   }
 }
