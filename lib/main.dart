@@ -46,6 +46,7 @@ import 'package:pixez/my_fluent_app.dart';
 import 'package:pixez/win32_utils.dart';
 import 'package:win32/win32.dart' as win32;
 import 'package:windows_single_instance/windows_single_instance.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -75,6 +76,8 @@ class MyHttpOverrides extends HttpOverrides {
 main(List<String> args) async {
   // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  
+  sqfliteFfiInit();
 
   if (Constants.isFluentUI) {
     var isDarkTheme;

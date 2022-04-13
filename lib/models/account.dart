@@ -15,7 +15,8 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 part 'account.g.dart';
 
@@ -50,11 +51,13 @@ class AccountProvider {
   late Database db;
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath());
+    String databasesPath = (await databaseFactoryFfi.getDatabasesPath());
     String path = join(databasesPath, 'account.db');
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
+    db = await databaseFactoryFfi.openDatabase(path,
+        options: new OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) async {
+              await db.execute('''
 create table $tableAccount ( 
   $columnId integer primary key autoincrement, 
   $columnAccessToken text not null,
@@ -71,7 +74,7 @@ create table $tableAccount (
   $columnIsMailAuthorized integer not null
   )
 ''');
-    });
+            }));
   }
 
   Future<AccountPersist> insert(AccountPersist todo) async {

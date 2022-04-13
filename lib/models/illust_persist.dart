@@ -16,7 +16,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 part 'illust_persist.g.dart';
 
@@ -86,24 +87,24 @@ create table $tableIllustPersist (
   }
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath());
+    String databasesPath = (await databaseFactoryFfi.getDatabasesPath());
     String path = join(databasesPath, 'illustpersist.db');
-    db = await openDatabase(
-      path,
-      version: 2,
-      onCreate: (Database db, int version) async {
-        var batch = db.batch();
-        _createTableV2(batch);
-        await batch.commit();
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        var batch = db.batch();
-        if (oldVersion < 2) {
-          _updateTableV1ToV2(batch);
-        }
-        await batch.commit();
-      },
-    );
+    db = await databaseFactoryFfi.openDatabase(path,
+        options: new OpenDatabaseOptions(
+          version: 2,
+          onCreate: (Database db, int version) async {
+            var batch = db.batch();
+            _createTableV2(batch);
+            await batch.commit();
+          },
+          onUpgrade: (db, oldVersion, newVersion) async {
+            var batch = db.batch();
+            if (oldVersion < 2) {
+              _updateTableV1ToV2(batch);
+            }
+            await batch.commit();
+          },
+        ));
   }
 
   Future<IllustPersist> insert(IllustPersist todo) async {
