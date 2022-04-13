@@ -132,48 +132,51 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: TappableListTile(
-                              onTap: () {
-                                Leader.dialog(context, AccountSelectPage());
-                              },
-                              title: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  PainterAvatar(
-                                    url: accountStore.now!.userImage,
-                                    id: int.parse(accountStore.now!.userId),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: Text(
-                                              accountStore.now!.name,
-                                              style: FluentTheme.of(context)
-                                                  .tooltipTheme
-                                                  .textStyle,
-                                            )),
-                                        Text(
-                                          accountStore.now!.mailAddress,
-                                          style: FluentTheme.of(context)
-                                              .tooltipTheme
-                                              .textStyle,
-                                        )
-                                      ],
+                            child: HoverButton(onPressed: () {
+                              Leader.dialog(context, AccountSelectPage());
+                            }, builder: (context, state) {
+                              return FocusBorder(
+                                focused: state.isFocused || state.isHovering,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    PainterAvatar(
+                                      url: accountStore.now!.userImage,
+                                      id: int.parse(accountStore.now!.userId),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                accountStore.now!.name,
+                                                style: FluentTheme.of(context)
+                                                    .tooltipTheme
+                                                    .textStyle,
+                                              )),
+                                          Text(
+                                            accountStore.now!.mailAddress,
+                                            style: FluentTheme.of(context)
+                                                .tooltipTheme
+                                                .textStyle,
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
                           ),
                           TappableListTile(
                             leading: Icon(FluentIcons.account_management),
