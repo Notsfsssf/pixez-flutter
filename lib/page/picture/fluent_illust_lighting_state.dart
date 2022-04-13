@@ -76,12 +76,9 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Acrylic(
-      elevation: 2.0,
-      child: ScaffoldPage(
-        header: _buildHeader(),
-        content: _buildContent(),
-      ),
+    return ScaffoldPage(
+      header: _buildHeader(),
+      content: _buildContent(),
     );
   }
 
