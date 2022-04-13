@@ -14,16 +14,19 @@
  *
  */
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_acrylic/flutter_acrylic.dart' as window;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/kver.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/novel/history/novel_history_store.dart';
@@ -39,6 +42,10 @@ import 'package:pixez/store/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pixez/my_fluent_app.dart';
+import 'package:pixez/win32_utils.dart';
+import 'package:win32/win32.dart' as win32;
+import 'package:windows_single_instance/windows_single_instance.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -65,14 +72,57 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-main() async {
+main(List<String> args) async {
   // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  if (defaultTargetPlatform == TargetPlatform.android &&
-      Constants.isGooglePlay) {
-    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+
+  if (Constants.isFluentUI) {
+    var isDarkTheme;
+    var accentColor;
+    await window.Window.initialize();
+    if (Platform.isWindows) {
+      await WindowsSingleInstance.ensureSingleInstance(
+          args, "pixez-{4db45356-86ec-449e-8d11-dab0feaf41b0}",
+          onSecondWindow: (args) {
+        debugPrint("[WindowsSingleInstance]::Arguments(): " + args.join("; "));
+        if (args.length == 1) {
+          final uri = Uri.tryParse(args[0]);
+          if (uri != null) {
+            Leader.pushWithUri(routeObserver.navigator!.context, uri);
+          }
+        }
+      });
+      final buildNumber = int.parse(getRegistryValue(
+          win32.HKEY_LOCAL_MACHINE,
+          'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\',
+          'CurrentBuildNumber') as String);
+      isDarkTheme = (getRegistryValue(
+              win32.HKEY_CURRENT_USER,
+              'Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
+              'AppsUseLightTheme') as int) ==
+          0;
+      accentColor = getAccentColor();
+      if (buildNumber >= 22000)
+        await window.Window.setEffect(
+          effect: window.WindowEffect.mica,
+          dark: isDarkTheme,
+        );
+      else if (buildNumber >= 17134) {
+        await window.Window.setEffect(
+          effect: window.WindowEffect.acrylic,
+          color: Color(accentColor),
+          dark: isDarkTheme,
+        );
+      }
+    }
+    runApp(MyFluentApp(Color(accentColor), isDarkTheme));
+  } else {
+    if (defaultTargetPlatform == TargetPlatform.android &&
+        Constants.isGooglePlay) {
+      InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+    }
+    runApp(MyApp());
   }
-  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
