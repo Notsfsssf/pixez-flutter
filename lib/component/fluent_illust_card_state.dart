@@ -59,8 +59,10 @@ class FluentIllustCardState extends IllustCardStateBase {
 
   _buildTap(BuildContext context) {
     if (store != null)
-      Leader.dialog(
+      Leader.fluentNav(
         context,
+        Icon(FluentIcons.image_pixel),
+        Text("图片预览 ${store.illusts?.id}"),
         PictureListPage(
           iStores: iStores!,
           store: store,
@@ -68,8 +70,10 @@ class FluentIllustCardState extends IllustCardStateBase {
         ),
       );
     else
-      Leader.dialog(
+      Leader.fluentNav(
         context,
+        Icon(FluentIcons.image_pixel),
+        Text("图片预览 ${store.illusts?.id}"),
         IllustLightingPage(
           store: store,
           id: store.illusts!.id,
@@ -192,8 +196,10 @@ class FluentIllustCardState extends IllustCardStateBase {
 
   _buildInkTap(BuildContext context, String heroTag) {
     if (iStores != null)
-      Leader.dialog(
+      Leader.fluentNav(
         context,
+        Icon(FluentIcons.image_pixel),
+        Text("图片预览 ${store.illusts?.id}"),
         PictureListPage(
           iStores: iStores!,
           store: store,
@@ -201,8 +207,10 @@ class FluentIllustCardState extends IllustCardStateBase {
         ),
       );
     else
-      Leader.dialog(
+      Leader.fluentNav(
         context,
+        Icon(FluentIcons.image_pixel),
+        Text("图片预览 ${store.illusts?.id}"),
         IllustLightingPage(
           store: store,
           id: store.illusts!.id,

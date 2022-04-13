@@ -112,7 +112,12 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                 color: FluentTheme.of(context).accentColor,
               ),
               onPressed: () {
-                Leader.dialog(context, ThemePage());
+                Leader.fluentNav(
+                  context,
+                  Icon(FluentIcons.color),
+                  Text("主题设置"),
+                  ThemePage(),
+                );
               },
             ),
           ],
@@ -133,7 +138,12 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: HoverButton(onPressed: () {
-                              Leader.dialog(context, AccountSelectPage());
+                              Leader.fluentNav(
+                                context,
+                                Icon(FluentIcons.account_browser),
+                                Text("账户选择"),
+                                AccountSelectPage(),
+                              );
                             }, builder: (context, state) {
                               return FocusBorder(
                                 focused: state.isFocused || state.isHovering,
@@ -182,7 +192,12 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                             leading: Icon(FluentIcons.account_management),
                             title: Text(I18n.of(context).account_message),
                             onTap: () {
-                              Leader.dialog(context, AccountEditPage());
+                              Leader.fluentNav(
+                                context,
+                                Icon(FluentIcons.account_management),
+                                Text(I18n.of(context).account_message),
+                                AccountEditPage(),
+                              );
                             },
                           )
                         ],
@@ -197,8 +212,10 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                       leading: Icon(FluentIcons.history),
                       title: Text(I18n.of(context).history_record),
                       onTap: () {
-                        Leader.dialog(
+                        Leader.fluentNav(
                           context,
+                          Icon(FluentIcons.history),
+                          Text(I18n.of(context).history_record),
                           Constants.type == 0 ? HistoryPage() : NovelHistory(),
                         );
                       },
@@ -207,23 +224,39 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                       leading: Icon(FluentIcons.settings),
                       title: Text(I18n.of(context).quality_setting),
                       onTap: () {
-                        Leader.dialog(context, SettingQualityPage());
+                        Leader.fluentNav(
+                            context,
+                            Icon(FluentIcons.settings),
+                            Text(I18n.of(context).quality_setting),
+                            SettingQualityPage());
                       },
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.bookmarks),
                       title: Text(I18n.of(context).favorited_tag),
-                      onTap: () => Leader.dialog(context, BookTagPage()),
+                      onTap: () => Leader.fluentNav(
+                          context,
+                          Icon(FluentIcons.bookmarks),
+                          Text(I18n.of(context).favorited_tag),
+                          BookTagPage()),
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.blocked),
                       title: Text(I18n.of(context).shielding_settings),
-                      onTap: () => Leader.dialog(context, ShieldPage()),
+                      onTap: () => Leader.fluentNav(
+                          context,
+                          Icon(FluentIcons.blocked),
+                          Text(I18n.of(context).shielding_settings),
+                          ShieldPage()),
                     ),
                     TappableListTile(
                       leading: Icon(FluentIcons.save),
                       title: Text(I18n.of(context).task_progress),
-                      onTap: () => Leader.dialog(context, JobPage()),
+                      onTap: () => Leader.fluentNav(
+                          context,
+                          Icon(FluentIcons.save),
+                          Text(I18n.of(context).task_progress),
+                          JobPage()),
                     ),
                     TappableListTile(
                       onTap: () => _showClearCacheDialog(context),
@@ -244,16 +277,24 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                     ),
                     if (kDebugMode)
                       TappableListTile(
+                        leading: Icon(FluentIcons.network_device_scanning),
                         title: Text("网络诊断"),
                         onTap: () {
-                          Leader.dialog(context, NetworkSettingPage());
+                          Leader.fluentNav(
+                              context,
+                              Icon(FluentIcons.network_device_scanning),
+                              Text("网络诊断"),
+                              NetworkSettingPage());
                         },
                       ),
                     TappableListTile(
                       leading: Icon(FluentIcons.message),
                       title: Text(I18n.of(context).about),
-                      onTap: () => Leader.dialog(
-                          context, AboutPage(newVersion: hasNewVersion)),
+                      onTap: () => Leader.fluentNav(
+                          context,
+                          Icon(FluentIcons.message),
+                          Text(I18n.of(context).about),
+                          AboutPage(newVersion: hasNewVersion)),
                       trailing: Visibility(
                         child: NewVersionChip(),
                         visible: hasNewVersion,
@@ -268,9 +309,13 @@ class _FluentSettingPageState extends State<FluentSettingPage> {
                         );
                       else
                         return TappableListTile(
-                          leading: Icon(FluentIcons.back),
+                          leading: Icon(FluentIcons.sign_out),
                           title: Text(I18n.of(context).login),
-                          onTap: () => Leader.dialog(context, LoginPage()),
+                          onTap: () => Leader.fluentNav(
+                              context,
+                              Icon(FluentIcons.sign_out),
+                              Text(I18n.of(context).login),
+                              LoginPage()),
                         );
                     })
                   ],

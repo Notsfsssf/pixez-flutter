@@ -216,8 +216,10 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
               pressSave(data, i);
             },
             onPressed: () {
-              Leader.dialog(
+              Leader.fluentNav(
                   context,
+                  Icon(FluentIcons.image_pixel),
+                  Text("图片预览 ${data.id}"),
                   PhotoZoomPage(
                     index: i,
                     illusts: data,

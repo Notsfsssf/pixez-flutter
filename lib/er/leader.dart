@@ -255,4 +255,16 @@ class Leader {
       showDialog(context: context, builder: (context) => widget);
     }
   }
+
+  static fluentNav(
+    BuildContext context,
+    Widget icon,
+    Widget title,
+    Widget child,
+  ) {
+    if (Constants.isFluentUI)
+      FluentHelloPage.of(context).push(icon: icon, title: title, child: child);
+    else
+      throw Exception("It only be used at Fluent UI");
+  }
 }

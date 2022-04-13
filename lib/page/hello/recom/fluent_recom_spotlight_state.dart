@@ -47,7 +47,12 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
               icon: Icon(FluentIcons.more),
               label: Text(I18n.of(context).more),
               onPressed: () async {
-                Leader.dialog(context, SpotLightPage());
+                Leader.fluentNav(
+                  context,
+                  Icon(FluentIcons.more),
+                  Text(I18n.of(context).more),
+                  SpotLightPage(),
+                );
               },
             ),
           ],

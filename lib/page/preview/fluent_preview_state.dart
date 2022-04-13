@@ -91,7 +91,9 @@ class FluentPreviewPageState extends PreviewPageStateBase {
         );
       },
       onTapUp: () {
-        Leader.dialog(context,
+        Leader.fluentNav(context,
+            Icon(FluentIcons.image_pixel),
+            Text("图片预览 ${lightingStore.iStores[index].illusts?.id}"),
             GoToLoginPage(illust: lightingStore.iStores[index].illusts!));
       },
     );

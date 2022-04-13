@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
@@ -17,10 +18,38 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FluentHelloPage extends StatefulWidget {
   @override
-  _FluentHelloPageState createState() => _FluentHelloPageState();
+  FluentHelloPageState createState() => FluentHelloPageState();
+
+  static FluentHelloPageState of(
+    BuildContext context, {
+    bool root = false,
+  }) {
+    FluentHelloPageState? state;
+    if (context is StatefulElement && context.state is FluentHelloPageState) {
+      state = context.state as FluentHelloPageState;
+    }
+    if (root) {
+      state =
+          context.findRootAncestorStateOfType<FluentHelloPageState>() ?? state;
+    } else {
+      state = state ?? context.findAncestorStateOfType<FluentHelloPageState>();
+    }
+
+    assert(() {
+      if (state == null) {
+        throw FlutterError(
+          'FluentHelloPage operation requested with a context that does not include a FluentHelloPage.\n'
+          'The context used to push or pop routes from the FluentHelloPage must be that of a '
+          'widget that is a descendant of a FluentHelloPage widget.',
+        );
+      }
+      return true;
+    }());
+    return state!;
+  }
 }
 
-class _FluentHelloPageState extends State<FluentHelloPage> {
+class FluentHelloPageState extends State<FluentHelloPage> {
   late PageController _pageController;
   late StreamSubscription _sub;
   List<String> _suggestList = List.empty(growable: true);
@@ -40,7 +69,43 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
     NewPage(),
     // SearchPage(),
   ];
+  List<_WidgetHistoryItem> _history =
+      List<_WidgetHistoryItem>.empty(growable: true);
   int pageIndex = 0;
+  int _lastPage = 0;
+
+  push({
+    required Widget icon,
+    required Widget title,
+    required Widget child,
+  }) {
+    setState(
+      () {
+        if (_history.isEmpty) _lastPage = pageIndex;
+        _history.add(_WidgetHistoryItem(icon, title, child));
+        pageIndex = _pageLists.length + _history.length - 1;
+      },
+    );
+  }
+
+  pop() {
+    setState(() {
+      _history.removeLast();
+      if (_history.isEmpty)
+        pageIndex = _lastPage;
+      else
+        pageIndex = _pageLists.length + _history.length - 1;
+    });
+  }
+
+  popAt(int index) => setState(() => _history.removeAt(index));
+  popWith(Widget widget) {
+    setState(
+      () => _history.remove(
+        _history.lastWhere((element) => element.widget == widget),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -68,7 +133,7 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      // TODO: 登录部分
+      // 登录部分
       // if (accountStore.now != null) {
       return _buildNavigationView(context);
       // }
@@ -90,12 +155,36 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
       //     icon: Icon(FluentIcons.search),
       //     title: Text(I18n.of(context).search)),
     ], growable: true);
+
+    if (_history.isNotEmpty) {
+      items.addAll([
+        PaneItemSeparator(),
+        ..._history.map(
+          (e) => PaneItem(
+            icon: e.icon,
+            title: e.title,
+          ),
+        )
+      ]);
+    }
+
     return NavigationView(
       pane: NavigationPane(
-        header: Container(
-          alignment: Alignment.center,
-          child: Text('Pixez'),
-        ),
+        header: Stack(alignment: AlignmentDirectional.centerStart, children: [
+          Container(
+            alignment: Alignment.center,
+            child: Text('Pixez'),
+          ),
+          IconButton(
+            icon: Icon(FluentIcons.back),
+            onPressed: _history.isEmpty ? null : pop,
+            style: ButtonStyle(
+              backgroundColor: _history.isNotEmpty
+                  ? null
+                  : ButtonState.all(Colors.transparent),
+            ),
+          )
+        ]),
         autoSuggestBox: AutoSuggestBox(
           items: _suggestList,
           onChanged: _onAutoSuggestBoxChanged,
@@ -117,6 +206,7 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
         index: pageIndex,
         children: [
           ..._pageLists,
+          ..._history.map((e) => e.widget),
           FluentSettingPage(),
         ],
       ),
@@ -131,4 +221,11 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
     _pageController.dispose();
     super.dispose();
   }
+}
+
+class _WidgetHistoryItem {
+  final Widget icon;
+  final Widget title;
+  final Widget widget;
+  _WidgetHistoryItem(this.icon, this.title, this.widget);
 }
