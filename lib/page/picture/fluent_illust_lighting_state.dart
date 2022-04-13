@@ -1,37 +1,30 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/ban_page.dart';
-import 'package:pixez/component/fluent_pixiv_image.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
-import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
-import 'package:pixez/page/picture/picture_list_page.dart';
-import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:share_plus/share_plus.dart';
 
 class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   UserStore? userStore;
@@ -40,6 +33,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   late ScrollController _scrollController;
   late RefreshController _refreshController;
   bool tempView = false;
+  bool _commentVisiblity = false;
 
   @override
   bool get wantKeepAlive => false;
@@ -112,8 +106,8 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
         ),
       ),
       Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildInfoPane(context, data),
             _buildTagPane(data),
@@ -169,11 +163,11 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
           url = data.metaSinglePage!.originalImageUrl!;
       }
       final placeWidget = Container(width: width);
-      return HoverButton(
+      return InkWell(
         onLongPress: () {
           pressSave(data, 0);
         },
-        onPressed: () {
+        onTap: () {
           Leader.push(
               context,
               PhotoZoomPage(
@@ -181,38 +175,33 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
                 illusts: data,
               ));
         },
-        builder: (context, state) {
-          return FocusBorder(
-            child: NullHero(
-              tag: widget.heroString,
-              child: PixivImage(
-                url,
-                fade: false,
-                width: MediaQuery.of(context).size.width,
-                placeWidget: (url != data.imageUrls.medium)
-                    ? PixivImage(
-                        data.imageUrls.medium,
-                        width: MediaQuery.of(context).size.width,
-                        placeWidget: placeWidget,
-                        fade: false,
-                      )
-                    : placeWidget,
-              ),
-            ),
-            focused: state.isFocused || state.isHovering,
-          );
-        },
+        child: NullHero(
+          tag: widget.heroString,
+          child: PixivImage(
+            url,
+            fade: false,
+            width: MediaQuery.of(context).size.width,
+            placeWidget: (url != data.imageUrls.medium)
+                ? PixivImage(
+                    data.imageUrls.medium,
+                    width: MediaQuery.of(context).size.width,
+                    placeWidget: placeWidget,
+                    fade: false,
+                  )
+                : placeWidget,
+          ),
+        ),
       );
     } else {
       final children = List<Widget>.of([]);
       for (var i = 0; i < data.metaPages.length; i++) {
         children.add(
-          HoverButton(
+          InkWell(
             margin: EdgeInsets.all(4.0),
             onLongPress: () {
               pressSave(data, i);
             },
-            onPressed: () {
+            onTap: () {
               Leader.fluentNav(
                   context,
                   Icon(FluentIcons.image_pixel),
@@ -222,12 +211,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
                     illusts: data,
                   ));
             },
-            builder: (context, state) {
-              return FocusBorder(
-                child: _buildIllustsItem(i, data, width),
-                focused: state.isFocused || state.isHovering,
-              );
-            },
+            child: _buildIllustsItem(i, data, width),
           ),
         );
       }
@@ -309,8 +293,9 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   }
 
   Widget _buildInfoPane(BuildContext context, Illusts data) {
-    return Card(
-      padding: const EdgeInsets.all(8.0),
+    return InkWell(
+      isHoverable: false,
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -353,18 +338,24 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
           ),
         ],
       ),
+      mode: InkWellMode.cardOnly,
     );
   }
 
   Widget _buildTagPane(Illusts data) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 2,
-        runSpacing: 0,
-        children: [for (var f in data.tags) buildRow(context, f)],
+    return InkWell(
+      isHoverable: false,
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 1),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 2,
+          runSpacing: 0,
+          children: [for (var f in data.tags) buildRow(context, f)],
+        ),
       ),
+      mode: InkWellMode.cardOnly,
     );
   }
 
@@ -380,7 +371,8 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-              child: GestureDetector(
+              child: InkWell(
+                mode: InkWellMode.focusBorderOnly,
                 onLongPress: () {
                   userStore!.follow();
                 },
@@ -467,36 +459,30 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   }
 
   Widget _buildCaptionPane(Illusts data) {
-    return Card(
-      padding: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SelectableHtml(
-          data: data.caption.isEmpty ? "~" : data.caption,
-        ),
-      ),
+    return SelectableHtml(
+      data: data.caption.isEmpty ? "~" : data.caption,
     );
   }
 
   Widget _buildCommentPane(Illusts data) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextButton(
-        child: Text(
-          I18n.of(context).view_comment,
-          textAlign: TextAlign.center,
-          style: FluentTheme.of(context).typography.body!,
-        ),
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return CommentPage(
-                  id: data.id,
-                );
-              });
-        },
+    return Expander(
+      header: Text(
+        I18n.of(context).view_comment,
+        textAlign: TextAlign.center,
       ),
+      content: _commentVisiblity
+          ? LimitedBox(
+              maxHeight: 400,
+              child: SafeArea(child: CommentPage(id: data.id)),
+            )
+          : const Text("Hide"),
+      onStateChanged: (state) {
+        SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+          setState(() {
+            _commentVisiblity = state;
+          });
+        });
+      },
     );
   }
 
@@ -542,35 +528,75 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
       );
 
   Widget buildRow(BuildContext context, Tags f) {
-    return GestureDetector(
+    return InkWell(
       onLongPress: () async {
         await _longPressTag(context, f);
       },
       onTap: () {
-        Navigator.of(context).push(FluentPageRoute(builder: (context) {
-          return ResultPage(
-            word: f.name,
-            translatedName: f.translatedName ?? "",
-          );
-        }));
+        Leader.fluentNav(
+            context,
+            Icon(FluentIcons.search),
+            Text("搜索 #${f.name}"),
+            ResultPage(
+              word: f.name,
+              translatedName: f.translatedName ?? "",
+            ));
       },
-      child: RichText(
+      child: ContextMenuArea(
+        child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? "~"}",
-                    style: FluentTheme.of(context).typography.caption)
-              ],
-              style: FluentTheme.of(context)
-                  .typography
-                  .caption!
-                  .copyWith(color: FluentTheme.of(context).accentColor))),
+            text: "#${f.name}",
+            children: [
+              TextSpan(
+                text: " ",
+                style: FluentTheme.of(context).typography.caption,
+              ),
+              TextSpan(
+                  text: "${f.translatedName ?? "~"}",
+                  style: FluentTheme.of(context).typography.caption)
+            ],
+            style: FluentTheme.of(context)
+                .typography
+                .caption!
+                .copyWith(color: FluentTheme.of(context).accentColor),
+          ),
+        ),
+        width: 200,
+        builder: (context) => [
+          TappableListTile(
+            onTap: () {
+              muteStore.insertBanTag(
+                BanTagPersist(
+                    name: f.name, translateName: f.translatedName ?? ""),
+              );
+            },
+            title: Text(I18n.of(context).ban),
+            leading: Icon(FluentIcons.blocked),
+          ),
+          TappableListTile(
+            onTap: () {
+              bookTagStore.bookTag(f.name);
+            },
+            title: Text(I18n.of(context).bookmark),
+            leading: Icon(FluentIcons.add_bookmark),
+          ),
+          TappableListTile(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: f.name));
+              showSnackbar(
+                  context,
+                  Snackbar(
+                    //duration: Duration(seconds: 1),
+                    content: Text(I18n.of(context).copied_to_clipboard),
+                  ));
+            },
+            title: Text(I18n.of(context).copy),
+            leading: Icon(FluentIcons.copy),
+          ),
+        ],
+      ),
+      mode: InkWellMode.focusBorderOnly,
     );
   }
 

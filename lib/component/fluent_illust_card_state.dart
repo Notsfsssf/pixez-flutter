@@ -7,6 +7,7 @@ import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -39,20 +40,17 @@ class FluentIllustCardState extends IllustCardStateBase {
     if (userSetting.hIsNotAllow)
       for (int i = 0; i < store.illusts!.tags.length; i++) {
         if (store.illusts!.tags[i].name.startsWith('R-18'))
-          return HoverButton(
-              onPressed: () => _buildTap(context),
-              onLongPress: () => saveStore.saveImage(store.illusts!),
-              builder: (context, state) {
-                return FocusBorder(
-                    focused: state.isFocused || state.isHovering,
-                    child: Card(
-                      // margin: EdgeInsets.all(8.0),
-                      elevation: 8.0,
-                      // clipBehavior: Clip.antiAlias,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      child: Image.asset('assets/images/h.jpg'),
-                    ));
-              });
+          return InkWell(
+            onTap: () => _buildTap(context),
+            onLongPress: () => saveStore.saveImage(store.illusts!),
+            child: Card(
+              // margin: EdgeInsets.all(8.0),
+              elevation: 8.0,
+              // clipBehavior: Clip.antiAlias,
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              child: Image.asset('assets/images/h.jpg'),
+            ),
+          );
       }
     return buildInkWell(context);
   }
@@ -160,36 +158,28 @@ class FluentIllustCardState extends IllustCardStateBase {
           ),
         ];
       },
-      child: HoverButton(
+      child: InkWell(
         margin: EdgeInsets.all(8.0),
         onLongPress: () {
           saveStore.saveImage(store.illusts!);
         },
-        onPressed: () {
+        onTap: () {
           _buildInkTap(context, tag);
         },
-        builder: (context, state) {
-          return FocusBorder(
-            focused: state.isFocused || state.isHovering,
-            child: Acrylic(
-              child: Column(
-                children: <Widget>[
-                  AspectRatio(
-                    aspectRatio: radio,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(child: _buildPic(tag, tooLong)),
-                        Positioned(
-                            top: 5.0, right: 5.0, child: _buildVisibility()),
-                      ],
-                    ),
-                  ),
-                  _buildBottom(context),
+        child: Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: radio,
+              child: Stack(
+                children: [
+                  Positioned.fill(child: _buildPic(tag, tooLong)),
+                  Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
                 ],
               ),
             ),
-          );
-        },
+            _buildBottom(context),
+          ],
+        ),
       ),
     );
   }

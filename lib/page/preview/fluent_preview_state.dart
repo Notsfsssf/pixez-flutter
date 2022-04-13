@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent_pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/login/fluent_login_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
@@ -57,41 +58,31 @@ class FluentPreviewPageState extends PreviewPageStateBase {
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    return HoverButton(
-      builder: (context, state) {
-        return Card(
-          backgroundColor: Colors.transparent,
-          padding: const EdgeInsets.all(0.0),
-          child: FocusBorder(
-            focused: state.isFocused,
-            child: Tooltip(
-              useMousePosition: true,
-              message: '\nTitle: ${lightingStore.iStores[index].illusts!.title}\n' +
-                  'Author: ${lightingStore.iStores[index].illusts!.user}\n' +
-                  'Page Count: ${lightingStore.iStores[index].illusts!.pageCount}\n',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FluentPixivImage(
-                    lightingStore.iStores[index].illusts!.imageUrls.medium,
-                  ),
-                  Acrylic(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(lightingStore.iStores[index].illusts!.title),
-                        Text(lightingStore.iStores[index].illusts!.user.name),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return InkWell(
+      child: Tooltip(
+        useMousePosition: true,
+        message: '\nTitle: ${lightingStore.iStores[index].illusts!.title}\n' +
+            'Author: ${lightingStore.iStores[index].illusts!.user}\n' +
+            'Page Count: ${lightingStore.iStores[index].illusts!.pageCount}\n',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FluentPixivImage(
+              lightingStore.iStores[index].illusts!.imageUrls.medium,
             ),
-          ),
-        );
-      },
-      onTapUp: () {
-        Leader.fluentNav(context,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(lightingStore.iStores[index].illusts!.title),
+                Text(lightingStore.iStores[index].illusts!.user.name),
+              ],
+            ),
+          ],
+        ),
+      ),
+      onTap: () {
+        Leader.fluentNav(
+            context,
             Icon(FluentIcons.image_pixel),
             Text("图片预览 ${lightingStore.iStores[index].illusts?.id}"),
             GoToLoginPage(illust: lightingStore.iStores[index].illusts!));

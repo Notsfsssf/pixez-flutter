@@ -8,6 +8,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
@@ -26,32 +27,30 @@ class FluentCommentPageState extends CommentPageStateBase {
           for (var i in emojisMap.keys)
             Padding(
               padding: const EdgeInsets.all(4.0),
-              child: HoverButton(onPressed: () {
-                String key = i;
-                String text = editController.text;
-                TextSelection textSelection = editController.selection;
-                if (!textSelection.isValid) {
-                  editController.text = "${editController.text}${key}";
-                  return;
-                }
-                String newText = text.replaceRange(
-                    textSelection.start, textSelection.end, key);
-                final emojiLength = key.length;
-                editController.text = newText;
-                editController.selection = textSelection.copyWith(
-                  baseOffset: textSelection.start + emojiLength,
-                  extentOffset: textSelection.start + emojiLength,
-                );
-              }, builder: (context, state) {
-                return FocusBorder(
-                  child: Image.asset(
-                    'assets/emojis/${emojisMap[i]}',
-                    width: 32,
-                    height: 32,
-                  ),
-                  focused: state.isFocused || state.isHovering,
-                );
-              }),
+              child: InkWell(
+                onTap: () {
+                  String key = i;
+                  String text = editController.text;
+                  TextSelection textSelection = editController.selection;
+                  if (!textSelection.isValid) {
+                    editController.text = "${editController.text}${key}";
+                    return;
+                  }
+                  String newText = text.replaceRange(
+                      textSelection.start, textSelection.end, key);
+                  final emojiLength = key.length;
+                  editController.text = newText;
+                  editController.selection = textSelection.copyWith(
+                    baseOffset: textSelection.start + emojiLength,
+                    extentOffset: textSelection.start + emojiLength,
+                  );
+                },
+                child: Image.asset(
+                  'assets/emojis/${emojisMap[i]}',
+                  width: 32,
+                  height: 32,
+                ),
+              ),
             )
         ],
       ),
