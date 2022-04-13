@@ -16,8 +16,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pixez/component/fluent_spotlight_card.dart';
-import 'package:pixez/component/material_spotlight_card.dart';
+import 'package:pixez/component/spotlight_card/fluent.dart';
+import 'package:pixez/component/spotlight_card/material.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/models/spotlight_response.dart';
 
@@ -25,11 +25,13 @@ abstract class SpotlightCardBase extends StatelessWidget {
   final SpotlightArticle spotlight;
   static const platform = const MethodChannel('samples.flutter.dev/battery');
 
-  const SpotlightCardBase({Key? key, required this.spotlight}) : super(key: key);
+  const SpotlightCardBase({Key? key, required this.spotlight})
+      : super(key: key);
 }
 
 class SpotlightCard extends SpotlightCardBase {
-  SpotlightCard({required SpotlightArticle spotlight}) : super(spotlight: spotlight);
+  SpotlightCard({required SpotlightArticle spotlight})
+      : super(spotlight: spotlight);
 
   @override
   Widget build(BuildContext context) {

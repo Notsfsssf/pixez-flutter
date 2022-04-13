@@ -16,13 +16,11 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
-import 'package:pixez/exts.dart';
 
 class MaterialSpotlightCard extends SpotlightCardBase {
   MaterialSpotlightCard({required SpotlightArticle spotlight}) : super(spotlight: spotlight);
