@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/fluent_pixiv_image.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
@@ -67,7 +67,7 @@ class FluentPreviewPageState extends PreviewPageStateBase {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            FluentPixivImage(
+            PixivImage(
               lightingStore.iStores[index].illusts!.imageUrls.medium,
             ),
             Column(

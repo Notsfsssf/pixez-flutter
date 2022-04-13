@@ -19,64 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 
-
-class FluentPixivImage extends StatefulWidget {
-  final String url;
-  final Widget? placeWidget;
-  final bool fade;
-  final BoxFit? fit;
-  final bool? enableMemoryCache;
-  final double? height;
-  final double? width;
-  final String? host;
-
-  FluentPixivImage(this.url,
-      {this.placeWidget,
-      this.fade = true,
-      this.fit,
-      this.enableMemoryCache,
-      this.height,
-      this.host,
-      this.width});
-
-  @override
-  _FluentPixivImageState createState() => _FluentPixivImageState();
-}
-
-class _FluentPixivImageState extends State<FluentPixivImage> {
-  late String url;
-  bool already = false;
-  bool? enableMemoryCache;
-  double? width;
-  double? height;
-  BoxFit? fit;
-  bool fade = true;
-  Widget? placeWidget;
-
-  @override
-  void initState() {
-    url = widget.url;
-    enableMemoryCache = widget.enableMemoryCache ?? true;
-    width = widget.width;
-    height = widget.height;
-    fit = widget.fit;
-    fade = widget.fade;
-    placeWidget = widget.placeWidget;
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant FluentPixivImage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url) {
-      setState(() {
-        url = widget.url;
-        width = widget.width;
-        height = widget.height;
-      });
-    }
-  }
-
+class MaterialPixivImageState extends PixivImageStateBase {
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(

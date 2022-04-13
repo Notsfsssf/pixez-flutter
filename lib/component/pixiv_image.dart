@@ -17,10 +17,13 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/io_client.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:pixez/component/pixiv_image/fluent_state.dart';
+import 'package:pixez/component/pixiv_image/material_state.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
@@ -96,10 +99,15 @@ class PixivImage extends StatefulWidget {
       this.width});
 
   @override
-  _PixivImageState createState() => _PixivImageState();
+  PixivImageStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentPixivImageState();
+    else
+      return MaterialPixivImageState();
+  }
 }
 
-class _PixivImageState extends State<PixivImage> {
+abstract class PixivImageStateBase extends State<PixivImage> {
   late String url;
   bool already = false;
   bool? enableMemoryCache;
@@ -131,34 +139,6 @@ class _PixivImageState extends State<PixivImage> {
         height = widget.height;
       });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CachedNetworkImage(
-        placeholder: (context, url) =>
-            widget.placeWidget ?? Container(height: height),
-        errorWidget: (context, url, _) => Container(
-              height: height,
-              child: Center(
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {});
-                  },
-                  child: Text(":("),
-                ),
-              ),
-            ),
-        fadeOutDuration:
-            widget.fade ? const Duration(milliseconds: 1000) : null,
-        // memCacheWidth: width?.toInt(),
-        // memCacheHeight: height?.toInt(),
-        imageUrl: url,
-        cacheManager: pixivCacheManager,
-        height: height,
-        width: width,
-        fit: fit ?? BoxFit.fitWidth,
-        httpHeaders: Hoster.header(url: url));
   }
 }
 
