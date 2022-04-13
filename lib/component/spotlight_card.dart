@@ -14,85 +14,28 @@
  *
  */
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/er/hoster.dart';
+import 'package:pixez/component/fluent_spotlight_card.dart';
+import 'package:pixez/component/material_spotlight_card.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/models/spotlight_response.dart';
-import 'package:pixez/page/soup/soup_page.dart';
-import 'package:pixez/exts.dart';
 
-class SpotlightCard extends StatelessWidget {
+abstract class SpotlightCardBase extends StatelessWidget {
   final SpotlightArticle spotlight;
   static const platform = const MethodChannel('samples.flutter.dev/battery');
 
-  const SpotlightCard({Key? key, required this.spotlight}) : super(key: key);
+  const SpotlightCardBase({Key? key, required this.spotlight}) : super(key: key);
+}
+
+class SpotlightCard extends SpotlightCardBase {
+  SpotlightCard({required SpotlightArticle spotlight}) : super(spotlight: spotlight);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(4.0),
-      child: GestureDetector(
-        onTap: () async {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (BuildContext context) {
-            return SoupPage(url: spotlight.articleUrl, spotlight: spotlight);
-          }));
-        },
-        child: Container(
-          height: 230,
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: 160.0,
-                  height: 90.0,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).splashColor,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                  child: Align(
-                    alignment: AlignmentDirectional.bottomCenter,
-                    child: ListTile(
-                        title: Text(
-                          spotlight.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          spotlight.pureTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Card(
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  child: Container(
-                    child: CachedNetworkImage(
-                      imageUrl: spotlight.thumbnail,
-                      httpHeaders: Hoster.header(url: spotlight.thumbnail),
-                      fit: BoxFit.cover,
-                      height: 150.0,
-                      cacheManager: pixivCacheManager,
-                      width: 150.0,
-                    ),
-                    height: 150.0,
-                    width: 150.0,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+    if (Constants.isFluentUI)
+      return FluentSpotlightCard(spotlight: spotlight);
+    else
+      return MaterialSpotlightCard(spotlight: spotlight);
   }
 }
