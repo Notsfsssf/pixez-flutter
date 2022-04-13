@@ -14,14 +14,11 @@
  *
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pixez/component/selectable_html.dart';
-import 'package:pixez/i18n.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/models/user_detail.dart';
-import 'package:pixez/page/follow/follow_list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:pixez/page/user/detail/state/fluent_state.dart';
+import 'package:pixez/page/user/detail/state/material_state.dart';
 
 class UserDetailPage extends StatefulWidget {
   final UserDetail userDetail;
@@ -29,125 +26,12 @@ class UserDetailPage extends StatefulWidget {
   const UserDetailPage({Key? key, required this.userDetail}) : super(key: key);
 
   @override
-  _UserDetailPageState createState() => _UserDetailPageState();
-}
-
-class _UserDetailPageState extends State<UserDetailPage> {
-  @override
-  Widget build(BuildContext context) {
-    var detail = widget.userDetail;
-    var profile = widget.userDetail.profile;
-    var public = widget.userDetail.profile_publicity;
-    return widget.userDetail != null
-        ? SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: widget.userDetail.user.comment != null &&
-                                widget.userDetail.user.comment!.isNotEmpty
-                            ? SelectableHtml(
-                                data: widget.userDetail.user.comment!)
-                            : SelectableHtml(
-                                data: '~',
-                              )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DataTable(
-                    columns: <DataColumn>[
-                      DataColumn(label: Text(I18n.of(context).nickname)),
-                      DataColumn(
-                          label: Expanded(
-                              child: SelectableText(detail.user.name))),
-                    ],
-                    rows: <DataRow>[
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).painter_id)),
-                        DataCell(SelectableText(detail.user.id.toString()),
-                            onTap: () {
-                          try {
-                            Clipboard.setData(
-                                ClipboardData(text: detail.user.id.toString()));
-                          } catch (e) {}
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).total_follow_users)),
-                        DataCell(
-                            Text(detail.profile.total_follow_users.toString()),
-                            onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return Scaffold(
-                              appBar: AppBar(
-                                title: Text(I18n.of(context).followed),
-                              ),
-                              body: FollowList(id: widget.userDetail.user.id),
-                            );
-                          }));
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).total_mypixiv_users)),
-                        DataCell(
-                            Text(detail.profile.total_mypixiv_users.toString()),
-                            onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return Scaffold(
-                              appBar: AppBar(),
-                              body: FollowList(
-                                id: widget.userDetail.user.id,
-                                isFollowMe: true,
-                              ),
-                            );
-                          }));
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).twitter_account)),
-                        DataCell(Text(profile.twitter_account ?? ""),
-                            onTap: () async {
-                          final url = profile.twitter_url;
-                          try {
-                            await launch(url!);
-                          } catch (e) {}
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).gender)),
-                        DataCell(Text(detail.profile.gender!)),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).job)),
-                        DataCell(Text(detail.profile.job!)),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text('Pawoo')),
-                        DataCell(Text(public.pawoo ? 'Link' : 'none'),
-                            onTap: () async {
-                          if (!public.pawoo) return;
-                          var url = detail.profile.pawoo_url;
-                          try {
-                            await launch(url!);
-                          } catch (e) {}
-                        }),
-                      ]),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 200,
-                )
-              ],
-            ),
-          )
-        : Container();
+  UserDetailPageStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentUserDetailPageState();
+    else
+      return MaterialUserDetailPageState();
   }
 }
+
+abstract class UserDetailPageStateBase extends State<UserDetailPage> {}

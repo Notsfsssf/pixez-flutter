@@ -17,9 +17,7 @@ class FluentNewPageState extends NewPageStateBase {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ScaffoldPage(
-      content: _buildContent(context),
-    );
+    return _buildContent(context);
   }
 
   Widget _buildContent(BuildContext context) {
