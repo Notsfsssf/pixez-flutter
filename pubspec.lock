@@ -344,11 +344,32 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  fluent_ui:
+    dependency: "direct main"
+    description:
+      name: fluent_ui
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.10.1"
+  fluentui_system_icons:
+    dependency: "direct main"
+    description:
+      name: fluentui_system_icons
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.165"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_acrylic:
+    dependency: "direct main"
+    description:
+      name: flutter_acrylic
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0+2"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -791,6 +812,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.1+1"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.0"
   receive_sharing_intent:
     dependency: "direct main"
     description:
@@ -805,6 +833,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.27.3"
+  scroll_pos:
+    dependency: transitive
+    description:
+      name: scroll_pos
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.0"
   share_plus:
     dependency: "direct main"
     description:
