@@ -8,6 +8,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "34.0.0"
+  after_layout:
+    dependency: transitive
+    description:
+      name: after_layout
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0"
   analyzer:
     dependency: "direct dev"
     description:
@@ -197,6 +204,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.15.0"
+  contextmenu:
+    dependency: "direct main"
+    description:
+      name: contextmenu
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   convert:
     dependency: transitive
     description:

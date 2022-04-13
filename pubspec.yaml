@@ -68,6 +68,7 @@ dependencies:
   flutter_acrylic: ^1.0.0+2
   win32: ^2.5.1
   windows_single_instance: ^0.1.1
+  contextmenu: ^3.0.0
 
 dev_dependencies:
   flutter_test:
