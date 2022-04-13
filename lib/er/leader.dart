@@ -17,14 +17,17 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/material.dart' as material;
+import 'package:flutter/widgets.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/hello/fluent_hello_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/search/result_page.dart';
@@ -33,11 +36,22 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Leader {
+  static PageRoute _pageRoute(Widget Function(BuildContext) builder) {
+    if (Constants.isFluentUI) {
+      return fluent.FluentPageRoute(builder: builder);
+    } else {
+      return material.MaterialPageRoute(builder: builder);
+    }
+  }
+
   static Future<void> pushUntilHome(BuildContext context) async {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-          builder: (context) =>
-              Platform.isIOS ? HelloPage() : AndroidHelloPage()),
+      _pageRoute((context) {
+        if (Platform.isIOS) return HelloPage();
+        if (Constants.isFluentUI) return FluentHelloPage();
+
+        return AndroidHelloPage();
+      }),
       (route) => route == null,
     );
   }
@@ -117,8 +131,7 @@ class Leader {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
+        Navigator.of(context, rootNavigator: true).push(_pageRoute((context) {
           return IllustLightingPage(
             id: id,
           );
@@ -129,8 +142,7 @@ class Leader {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
+        Navigator.of(context, rootNavigator: true).push(_pageRoute((context) {
           return UsersPage(
             id: id,
           );
@@ -145,7 +157,7 @@ class Leader {
           try {
             int id = int.parse(paths[index + 1]);
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .push(_pageRoute((context) {
               return IllustLightingPage(id: id);
             }));
             return;
@@ -160,8 +172,8 @@ class Leader {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                builder: (context) => UsersPage(
+            Navigator.of(context, rootNavigator: true)
+                .push(_pageRoute((context) => UsersPage(
                       id: id,
                     )));
           } catch (e) {
@@ -181,14 +193,14 @@ class Leader {
           var id = link.queryParameters['id'];
           if (!link.path.contains("novel"))
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .push(_pageRoute((context) {
               return UsersPage(
                 id: int.parse(id!),
               );
             }));
           else
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .push(_pageRoute((context) {
               return NovelViewerPage(
                 id: int.parse(id!),
                 novelStore: null,
@@ -209,7 +221,7 @@ class Leader {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .push(_pageRoute((context) {
               return UsersPage(
                 id: id,
               );
@@ -220,7 +232,7 @@ class Leader {
           try {
             String tag = link.pathSegments[link.pathSegments.length - 1];
             Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+                .push(_pageRoute((context) {
               return ResultPage(
                 word: tag,
               );
@@ -232,16 +244,28 @@ class Leader {
   }
 
   static Future<dynamic> pushWithScaffold(context, Widget widget) {
-    return Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Scaffold(
-              body: widget,
-            )));
+    return Navigator.of(context).push(_pageRoute((context) {
+      if (Constants.isFluentUI)
+        return fluent.ScaffoldPage(
+          content: widget,
+        );
+      else
+        return material.Scaffold(
+          body: widget,
+        );
+    }));
   }
 
   static Future<dynamic> push(context, Widget widget) {
-    return Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Scaffold(
-              body: widget,
-            )));
+    return Navigator.of(context).push(_pageRoute((context) {
+      if (Constants.isFluentUI)
+        return fluent.ScaffoldPage(
+          content: widget,
+        );
+      else
+        return material.Scaffold(
+          body: widget,
+        );
+    }));
   }
 }
