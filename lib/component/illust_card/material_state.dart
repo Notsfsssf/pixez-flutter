@@ -1,38 +1,32 @@
+/*
+ * Copyright (C) 2020. by perol_notsf, All rights reserved
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/component/null_hero.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 
 class MaterialIllustCardState extends IllustCardStateBase {
-  late IllustStore store;
-  late List<IllustStore>? iStores;
-  late String tag;
-
-  @override
-  void initState() {
-    store = widget.store;
-    iStores = widget.iStores;
-    tag = this.hashCode.toString();
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant IllustCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    store = widget.store;
-    iStores = widget.iStores;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,20 +83,6 @@ class MaterialIllustCardState extends IllustCardStateBase {
     return Text('');
   }
 
-  Widget _buildPic(String tag, bool tooLong) {
-    return tooLong
-        ? NullHero(
-            tag: tag,
-            child: PixivImage(store.illusts!.imageUrls.squareMedium,
-                fit: BoxFit.fitWidth),
-          )
-        : NullHero(
-            tag: tag,
-            child: PixivImage(store.illusts!.imageUrls.medium,
-                fit: BoxFit.fitWidth),
-          );
-  }
-
   Widget buildInkWell(BuildContext context) {
     var tooLong =
         store.illusts!.height.toDouble() / store.illusts!.width.toDouble() > 3;
@@ -128,7 +108,7 @@ class MaterialIllustCardState extends IllustCardStateBase {
                 aspectRatio: radio,
                 child: Stack(
                   children: [
-                    Positioned.fill(child: _buildPic(tag, tooLong)),
+                    Positioned.fill(child: buildPic(tag, tooLong)),
                     Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
                   ],
                 )),

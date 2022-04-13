@@ -3,38 +3,15 @@ import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/component/null_hero.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/component/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
-import 'package:pixez/page/picture/tag_for_illust_page.dart';
 
 class FluentIllustCardState extends IllustCardStateBase {
-  late IllustStore store;
-  late List<IllustStore>? iStores;
-  late String tag;
-
-  @override
-  void initState() {
-    store = widget.store;
-    iStores = widget.iStores;
-    tag = this.hashCode.toString();
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant IllustCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    store = widget.store;
-    iStores = widget.iStores;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (userSetting.hIsNotAllow)
@@ -56,6 +33,7 @@ class FluentIllustCardState extends IllustCardStateBase {
   }
 
   _buildTap(BuildContext context) {
+    // ignore: unnecessary_null_comparison
     if (store != null)
       Leader.fluentNav(
         context,
@@ -111,20 +89,6 @@ class FluentIllustCardState extends IllustCardStateBase {
     return Text('');
   }
 
-  Widget _buildPic(String tag, bool tooLong) {
-    return tooLong
-        ? NullHero(
-            tag: tag,
-            child: PixivImage(store.illusts!.imageUrls.squareMedium,
-                fit: BoxFit.fitWidth),
-          )
-        : NullHero(
-            tag: tag,
-            child: PixivImage(store.illusts!.imageUrls.medium,
-                fit: BoxFit.fitWidth),
-          );
-  }
-
   Widget buildInkWell(BuildContext context) {
     var tooLong =
         store.illusts!.height.toDouble() / store.illusts!.width.toDouble() > 3;
@@ -172,7 +136,7 @@ class FluentIllustCardState extends IllustCardStateBase {
               aspectRatio: radio,
               child: Stack(
                 children: [
-                  Positioned.fill(child: _buildPic(tag, tooLong)),
+                  Positioned.fill(child: buildPic(tag, tooLong)),
                   Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
                 ],
               ),
