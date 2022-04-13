@@ -174,9 +174,11 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
     return lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: (orientation == Orientation.portrait)
-                  ? userSetting.crossCount
-                  : userSetting.hCrossCount,
+              crossAxisCount: 5,
+              // TODO: 从用户设置中读取列数
+              // (orientation == Orientation.portrait)
+              //     ? userSetting.crossCount
+              //     : userSetting.hCrossCount,
               collectGarbage: (List<int> garbages) {
                 // garbages.forEach((index) {
                 //   final provider = ExtendedNetworkImageProvider(
@@ -186,13 +188,15 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
                 // });
               },
             ),
-            delegate:
-                SliverChildBuilderDelegate((BuildContext context, int index) {
-              return IllustCard(
-                store: lightingStore.iStores[index],
-                iStores: lightingStore.iStores,
-              );
-            }, childCount: lightingStore.iStores.length),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return IllustCard(
+                  store: lightingStore.iStores[index],
+                  iStores: lightingStore.iStores,
+                );
+              },
+              childCount: lightingStore.iStores.length,
+            ),
           )
         : (lightingStore.errorMessage?.isNotEmpty == true
             ? SliverToBoxAdapter(

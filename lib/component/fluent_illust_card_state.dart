@@ -1,12 +1,11 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -111,36 +110,64 @@ class FluentIllustCardState extends IllustCardStateBase {
     var radio = (tooLong)
         ? 1.0
         : store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
-    return HoverButton(
-      margin: EdgeInsets.all(8.0),
-      onLongPress: () {
-        saveStore.saveImage(store.illusts!);
-      },
-      onPressed: () {
-        _buildInkTap(context, tag);
-      },
-      builder: (context, state) {
-        return FocusBorder(
-          focused: state.isFocused || state.isHovering,
-          child: Acrylic(
-            child: Column(
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: radio,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: _buildPic(tag, tooLong)),
-                      Positioned(
-                          top: 5.0, right: 5.0, child: _buildVisibility()),
-                    ],
-                  ),
-                ),
-                _buildBottom(context),
-              ],
-            ),
+    return ContextMenuArea(
+      width: 120,
+      builder: (context) {
+        return [
+          TappableListTile(
+            title: Text("Star"),
+            onTap: () async {
+              store.star();
+              if (!userSetting.followAfterStar) {
+                return;
+              }
+              bool success = await store.followAfterStar();
+              if (success) {
+                BotToast.showText(
+                    text:
+                        "${store.illusts!.user.name} ${I18n.of(context).followed}");
+              }
+            },
           ),
-        );
+          TappableListTile(
+            title: Text("Save"),
+            onTap: () {
+              saveStore.saveImage(store.illusts!);
+            },
+          ),
+        ];
       },
+      child: HoverButton(
+        margin: EdgeInsets.all(8.0),
+        onLongPress: () {
+          saveStore.saveImage(store.illusts!);
+        },
+        onPressed: () {
+          _buildInkTap(context, tag);
+        },
+        builder: (context, state) {
+          return FocusBorder(
+            focused: state.isFocused || state.isHovering,
+            child: Acrylic(
+              child: Column(
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: radio,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(child: _buildPic(tag, tooLong)),
+                        Positioned(
+                            top: 5.0, right: 5.0, child: _buildVisibility()),
+                      ],
+                    ),
+                  ),
+                  _buildBottom(context),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
