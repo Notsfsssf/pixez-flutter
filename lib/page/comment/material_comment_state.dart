@@ -15,39 +15,6 @@ import 'package:pixez/page/comment/comment_store.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MaterialCommentPageState extends CommentPageStateBase {
-  late TextEditingController _editController;
-  int? parentCommentId;
-  String? parentCommentName;
-  late RefreshController easyRefreshController;
-  late CommentStore _store;
-
-  List<String> banList = [
-    "bb8.news",
-    "77k.live",
-    "7mm.live",
-    "p26w.com",
-    "33h.live"
-  ];
-
-  @override
-  void initState() {
-    parentCommentId = widget.isReplay ? widget.pId : null;
-    parentCommentName = widget.isReplay ? widget.name : null;
-    _editController = TextEditingController();
-    easyRefreshController = RefreshController();
-    _store = CommentStore(easyRefreshController, widget.id, widget.pId,
-        widget.isReplay, widget.type)
-      ..fetch();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _editController.dispose();
-    easyRefreshController.dispose();
-    super.dispose();
-  }
-
   bool _emojiPanelShow = false;
 
   Widget _buildEmojiPanel(BuildContext context) {
@@ -62,17 +29,17 @@ class MaterialCommentPageState extends CommentPageStateBase {
               child: InkWell(
                 onTap: () {
                   String key = i;
-                  String text = _editController.text;
-                  TextSelection textSelection = _editController.selection;
+                  String text = editController.text;
+                  TextSelection textSelection = editController.selection;
                   if (!textSelection.isValid) {
-                    _editController.text = "${_editController.text}${key}";
+                    editController.text = "${editController.text}${key}";
                     return;
                   }
                   String newText = text.replaceRange(
                       textSelection.start, textSelection.end, key);
                   final emojiLength = key.length;
-                  _editController.text = newText;
-                  _editController.selection = textSelection.copyWith(
+                  editController.text = newText;
+                  editController.selection = textSelection.copyWith(
                     baseOffset: textSelection.start + emojiLength,
                     extentOffset: textSelection.start + emojiLength,
                   );
@@ -109,18 +76,18 @@ class MaterialCommentPageState extends CommentPageStateBase {
                         backgroundColor: Theme.of(context).cardColor,
                       )
                     : ClassicHeader(),
-                onRefresh: () => _store.fetch(),
-                onLoading: () => _store.next(),
+                onRefresh: () => store.fetch(),
+                onLoading: () => store.next(),
                 child: Observer(
                   builder: (context) {
-                    if (_store.errorMessage != null) {
+                    if (store.errorMessage != null) {
                       return Container(
                         child: Center(
-                          child: Text(_store.errorMessage!),
+                          child: Text(store.errorMessage!),
                         ),
                       );
                     }
-                    if (_store.isEmpty) {
+                    if (store.isEmpty) {
                       return Container(
                         child: Center(
                           child: Padding(
@@ -131,12 +98,12 @@ class MaterialCommentPageState extends CommentPageStateBase {
                         ),
                       );
                     }
-                    return _store.comments.isNotEmpty
+                    return store.comments.isNotEmpty
                         ? ListView.separated(
-                            itemCount: _store.comments.length,
+                            itemCount: store.comments.length,
                             itemBuilder: (context, index) {
                               if (banList
-                                  .where((element) => _store
+                                  .where((element) => store
                                       .comments[index].comment!
                                       .contains(element))
                                   .isNotEmpty)
@@ -144,7 +111,7 @@ class MaterialCommentPageState extends CommentPageStateBase {
                                   visible: false,
                                   child: Container(),
                                 );
-                              var comment = _store.comments[index];
+                              var comment = store.comments[index];
                               return Container(
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
@@ -154,9 +121,9 @@ class MaterialCommentPageState extends CommentPageStateBase {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: PainterAvatar(
-                                        url: _store.comments[index].user!
+                                        url: store.comments[index].user!
                                             .profileImageUrls.medium,
-                                        id: _store.comments[index].user!.id!,
+                                        id: store.comments[index].user!.id!,
                                       ),
                                     ),
                                     Expanded(
@@ -265,7 +232,7 @@ class MaterialCommentPageState extends CommentPageStateBase {
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               if (banList
-                                  .where((element) => _store
+                                  .where((element) => store
                                       .comments[index].comment!
                                       .contains(element))
                                   .isNotEmpty)
@@ -334,7 +301,7 @@ class MaterialCommentPageState extends CommentPageStateBase {
                                             .secondary),
                               ),
                               child: TextField(
-                                controller: _editController,
+                                controller: editController,
                                 decoration: InputDecoration(
                                     labelText:
                                         "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
@@ -345,7 +312,7 @@ class MaterialCommentPageState extends CommentPageStateBase {
                                         onPressed: () async {
                                           final client = apiClient;
                                           String txt =
-                                              _editController.text.trim();
+                                              editController.text.trim();
                                           final fun1 = BotToast.showLoading();
                                           try {
                                             if (txt.isNotEmpty) {
@@ -366,8 +333,8 @@ class MaterialCommentPageState extends CommentPageStateBase {
                                                     parent_comment_id:
                                                         parentCommentId);
                                             }
-                                            _editController.clear();
-                                            _store.fetch();
+                                            editController.clear();
+                                            store.fetch();
                                           } catch (e) {
                                             print(e);
                                           }
