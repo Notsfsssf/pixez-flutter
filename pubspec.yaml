@@ -67,6 +67,7 @@ dependencies:
   fluentui_system_icons: ^1.1.165
   flutter_acrylic: ^1.0.0+2
   win32: ^2.5.1
+  windows_single_instance: ^0.1.1
 
 dev_dependencies:
   flutter_test:

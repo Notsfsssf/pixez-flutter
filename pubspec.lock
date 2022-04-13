@@ -1181,6 +1181,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.5.1"
+  windows_single_instance:
+    dependency: "direct main"
+    description:
+      name: windows_single_instance
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1"
   xdg_directories:
     dependency: transitive
     description:
@@ -1196,5 +1203,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.15.0 <3.0.0"
+  dart: ">=2.16.2 <3.0.0"
   flutter: ">=2.10.0"
