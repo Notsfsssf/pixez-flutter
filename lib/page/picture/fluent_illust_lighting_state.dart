@@ -19,12 +19,14 @@ import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   UserStore? userStore;
@@ -96,6 +98,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
 
   Widget _buildContent() {
     final data = _illustStore.illusts!;
+    Future.delayed(Duration(seconds: 2), _loadAbout);
 
     return Row(children: [
       Padding(
@@ -117,13 +120,15 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
         ),
       ),
       Expanded(
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(I18n.of(context).about_picture),
-          ),
-          _buildAboutPicturePane(),
-        ]),
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(I18n.of(context).about_picture),
+            ),
+            _buildAboutPicturePane(),
+          ],
+        ),
       )
     ]);
   }
@@ -164,9 +169,6 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
       }
       final placeWidget = Container(width: width);
       return InkWell(
-        onLongPress: () {
-          pressSave(data, 0);
-        },
         onTap: () {
           Leader.push(
               context,
@@ -175,22 +177,35 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
                 illusts: data,
               ));
         },
-        child: NullHero(
-          tag: widget.heroString,
-          child: PixivImage(
-            url,
-            fade: false,
-            width: MediaQuery.of(context).size.width,
-            placeWidget: (url != data.imageUrls.medium)
-                ? PixivImage(
-                    data.imageUrls.medium,
-                    width: MediaQuery.of(context).size.width,
-                    placeWidget: placeWidget,
-                    fade: false,
-                  )
-                : placeWidget,
+        child: ContextMenuArea(
+          width: 200,
+          builder: (context) => [
+            TappableListTile(
+              leading: Icon(FluentIcons.save),
+              title: Text("保存"),
+              onTap: () {
+                pressSave(data, 0);
+              },
+            ),
+          ],
+          child: NullHero(
+            tag: widget.heroString,
+            child: PixivImage(
+              url,
+              fade: false,
+              width: MediaQuery.of(context).size.width,
+              placeWidget: (url != data.imageUrls.medium)
+                  ? PixivImage(
+                      data.imageUrls.medium,
+                      width: MediaQuery.of(context).size.width,
+                      placeWidget: placeWidget,
+                      fade: false,
+                    )
+                  : placeWidget,
+            ),
           ),
         ),
+        mode: InkWellMode.focusBorderOnly,
       );
     } else {
       final children = List<Widget>.of([]);
@@ -198,20 +213,29 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
         children.add(
           InkWell(
             margin: EdgeInsets.all(4.0),
-            onLongPress: () {
-              pressSave(data, i);
-            },
             onTap: () {
-              Leader.fluentNav(
-                  context,
-                  Icon(FluentIcons.image_pixel),
-                  Text("图片预览 ${data.id}"),
-                  PhotoZoomPage(
-                    index: i,
-                    illusts: data,
-                  ));
+              Leader.push(
+                context,
+                PhotoZoomPage(
+                  index: i,
+                  illusts: data,
+                ),
+              );
             },
-            child: _buildIllustsItem(i, data, width),
+            child: ContextMenuArea(
+              width: 200,
+              child: _buildIllustsItem(i, data, width),
+              builder: (context) => [
+                TappableListTile(
+                  leading: Icon(FluentIcons.save),
+                  title: Text("保存"),
+                  onTap: () {
+                    pressSave(data, i);
+                  },
+                ),
+              ],
+            ),
+            mode: InkWellMode.focusBorderOnly,
           ),
         );
       }
@@ -236,10 +260,10 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
             url,
             placeWidget: PixivImage(
               illust.metaPages[index].imageUrls!.medium,
-              height: MediaQuery.of(context).size.height,
+              width: width,
               fade: false,
             ),
-            height: MediaQuery.of(context).size.height,
+            width: width,
             fade: false,
           ),
           tag: widget.heroString,
@@ -247,7 +271,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
       return PixivImage(
         url,
         fade: false,
-        height: MediaQuery.of(context).size.height,
+        width: width,
         placeWidget: Container(
           width: width,
           child: Center(
@@ -363,9 +387,6 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
     if (userStore == null)
       userStore = UserStore(illust.user.id, user: illust.user);
     return Observer(builder: (_) {
-      Future.delayed(Duration(seconds: 2), () {
-        _loadAbout();
-      });
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -373,52 +394,63 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
           Padding(
               child: InkWell(
                 mode: InkWellMode.focusBorderOnly,
-                onLongPress: () {
-                  userStore!.follow();
-                },
-                child: Container(
-                  height: 70,
-                  width: 70,
-                  child: Stack(
-                    children: <Widget>[
-                      Center(
-                        child: SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: Container(
-                            decoration: illust != null
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: userStore!.isFollow
-                                        ? Colors.yellow
-                                        : FluentTheme.of(context).accentColor,
-                                  )
-                                : BoxDecoration(),
+                child: ContextMenuArea(
+                  width: 200,
+                  builder: (context) => [
+                    TappableListTile(
+                      leading: Icon(FluentIcons.follow_user),
+                      title: Text("关注"),
+                      onTap: () {
+                        userStore!.follow();
+                      },
+                    ),
+                  ],
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    child: Stack(
+                      children: <Widget>[
+                        Center(
+                          child: SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: Container(
+                              decoration: illust != null
+                                  ? BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: userStore!.isFollow
+                                          ? Colors.yellow
+                                          : FluentTheme.of(context).accentColor,
+                                    )
+                                  : BoxDecoration(),
+                            ),
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Hero(
-                          tag: illust.user.profileImageUrls.medium +
-                              this.hashCode.toString(),
-                          child: PainterAvatar(
-                            url: illust.user.profileImageUrls.medium,
-                            id: illust.user.id,
-                            onTap: () async {
-                              await Leader.push(
-                                  context,
-                                  UsersPage(
-                                    id: illust.user.id,
-                                    userStore: userStore,
-                                    heroTag: this.hashCode.toString(),
-                                  ));
-                              _illustStore.illusts!.user.isFollowed =
-                                  userStore!.isFollow;
-                            },
+                        Center(
+                          child: Hero(
+                            tag: illust.user.profileImageUrls.medium +
+                                this.hashCode.toString(),
+                            child: PainterAvatar(
+                              url: illust.user.profileImageUrls.medium,
+                              id: illust.user.id,
+                              onTap: () async {
+                                await Leader.fluentNav(
+                                    context,
+                                    Icon(FluentIcons.user_clapper),
+                                    Text("用户 ${illust.user.id}"),
+                                    UsersPage(
+                                      id: illust.user.id,
+                                      userStore: userStore,
+                                      heroTag: this.hashCode.toString(),
+                                    ));
+                                _illustStore.illusts!.user.isFollowed =
+                                    userStore!.isFollow;
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -459,8 +491,11 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   }
 
   Widget _buildCaptionPane(Illusts data) {
-    return SelectableHtml(
-      data: data.caption.isEmpty ? "~" : data.caption,
+    return LimitedBox(
+      maxHeight: 600,
+      child: SelectableHtml(
+        data: data.caption.isEmpty ? "~" : data.caption,
+      ),
     );
   }
 
@@ -487,39 +522,53 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   }
 
   Widget _buildAboutPicturePane() {
-    return Text("TODO");
-    // final list = _aboutStore.illusts
-    //     .map((element) => IllustStore(element.id, element))
-    //     .toList();
-    // return GridView.builder(
-    //   gridDelegate:
-    //       SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-    //   itemBuilder: (context, index) {
-    //     return HoverButton(
-    //       onPressed: () {
-    //         Leader.push(
-    //             context,
-    //             PictureListPage(
-    //               iStores: list,
-    //               store: list[index],
-    //             ));
-    //       },
-    //       onLongPress: () {
-    //         saveStore.saveImage(_aboutStore.illusts[index]);
-    //       },
-    //       builder: (context, state) {
-    //         return FocusBorder(
-    //           focused: state.isFocused || state.isHovering,
-    //           child: PixivImage(
-    //             _aboutStore.illusts[index].imageUrls.squareMedium,
-    //             enableMemoryCache: false,
-    //           ),
-    //         );
-    //       },
-    //     );
-    //   },
-    //   itemCount: _aboutStore.illusts.length,
-    // );
+    if (_aboutStore.illusts.length == 0) {
+      return Center(child: ProgressRing());
+    }
+    return GridView.custom(
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+      ),
+      childrenDelegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          var list = _aboutStore.illusts
+              .map((element) => IllustStore(element.id, element))
+              .toList();
+          return InkWell(
+            margin: EdgeInsets.all(4),
+            onTap: () {
+              Leader.fluentNav(
+                  context,
+                  Icon(FluentIcons.image_pixel),
+                  Text("图片预览 ${_aboutStore.illusts[index].id}"),
+                  PictureListPage(
+                    iStores: list,
+                    store: list[index],
+                  ));
+            },
+            child: ContextMenuArea(
+              width: 200,
+              child: PixivImage(
+                _aboutStore.illusts[index].imageUrls.squareMedium,
+                enableMemoryCache: false,
+              ),
+              builder: (context) => [
+                TappableListTile(
+                  leading: Icon(FluentIcons.save),
+                  title: Text("保存"),
+                  onTap: () {
+                    saveStore.saveImage(_aboutStore.illusts[index]);
+                  },
+                ),
+              ],
+            ),
+            mode: InkWellMode.focusBorderOnly,
+          );
+        },
+        childCount: _aboutStore.illusts.length,
+      ),
+    );
   }
 
   Widget colorText(String text, BuildContext context) => SelectableText(
@@ -529,9 +578,6 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
 
   Widget buildRow(BuildContext context, Tags f) {
     return InkWell(
-      onLongPress: () async {
-        await _longPressTag(context, f);
-      },
       onTap: () {
         Leader.fluentNav(
             context,
@@ -543,6 +589,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
             ));
       },
       child: ContextMenuArea(
+        width: 200,
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
@@ -562,7 +609,6 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
                 .copyWith(color: FluentTheme.of(context).accentColor),
           ),
         ),
-        width: 200,
         builder: (context) => [
           TappableListTile(
             onTap: () {
@@ -653,10 +699,6 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   }
 
   void _loadAbout() {
-    if (mounted &&
-        _scrollController.hasClients &&
-        _scrollController.offset + 180 >=
-            _scrollController.position.maxScrollExtent &&
-        _aboutStore.illusts.isEmpty) _aboutStore.fetch();
+    if (mounted && _aboutStore.illusts.isEmpty) _aboutStore.fetch();
   }
 }
