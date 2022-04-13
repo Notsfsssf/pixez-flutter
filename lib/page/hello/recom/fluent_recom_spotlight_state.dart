@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
@@ -60,8 +61,11 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
                 onNotification: (ScrollNotification notification) {
                   ScrollMetrics metrics = notification.metrics;
                   if (backToTopVisible == metrics.atEdge && mounted) {
-                    setState(() {
-                      backToTopVisible = !backToTopVisible;
+                    SchedulerBinding.instance
+                        ?.addPostFrameCallback((timeStamp) {
+                      setState(() {
+                        backToTopVisible = !backToTopVisible;
+                      });
                     });
                   }
                   return true;

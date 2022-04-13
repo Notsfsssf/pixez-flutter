@@ -6,6 +6,7 @@ import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -56,22 +57,40 @@ class FluentIllustCardState extends IllustCardStateBase {
     return buildInkWell(context);
   }
 
-  Future _buildTap(BuildContext context) {
-    return Navigator.of(context, rootNavigator: true)
-        .push(FluentPageRoute(builder: (_) {
-      if (store != null) {
-        return PictureListPage(
+  _buildTap(BuildContext context) {
+    if (store != null)
+      Leader.dialog(
+        context,
+        PictureListPage(
           iStores: iStores!,
           store: store,
           heroString: tag,
-        );
-      }
-      return IllustLightingPage(
-        store: store,
-        id: store.illusts!.id,
-        heroString: tag,
+        ),
       );
-    }));
+    else
+      Leader.dialog(
+        context,
+        IllustLightingPage(
+          store: store,
+          id: store.illusts!.id,
+          heroString: tag,
+        ),
+      );
+    // return Navigator.of(context, rootNavigator: true)
+    //     .push(FluentPageRoute(builder: (_) {
+    //   if (store != null) {
+    //     return PictureListPage(
+    //       iStores: iStores!,
+    //       store: store,
+    //       heroString: tag,
+    //     );
+    //   }
+    //   return IllustLightingPage(
+    //     store: store,
+    //     id: store.illusts!.id,
+    //     heroString: tag,
+    //   );
+    // }));
   }
 
   Widget cardText() {
@@ -171,22 +190,40 @@ class FluentIllustCardState extends IllustCardStateBase {
     );
   }
 
-  Future _buildInkTap(BuildContext context, String heroTag) {
-    return Navigator.of(context, rootNavigator: true)
-        .push(FluentPageRoute(builder: (_) {
-      if (iStores != null) {
-        return PictureListPage(
-          heroString: heroTag,
-          store: store,
+  _buildInkTap(BuildContext context, String heroTag) {
+    if (iStores != null)
+      Leader.dialog(
+        context,
+        PictureListPage(
           iStores: iStores!,
-        );
-      }
-      return IllustLightingPage(
-        id: store.illusts!.id,
-        heroString: heroTag,
-        store: store,
+          store: store,
+          heroString: heroTag,
+        ),
       );
-    }));
+    else
+      Leader.dialog(
+        context,
+        IllustLightingPage(
+          store: store,
+          id: store.illusts!.id,
+          heroString: heroTag,
+        ),
+      );
+    // return Navigator.of(context, rootNavigator: true)
+    //     .push(FluentPageRoute(builder: (_) {
+    //   if (iStores != null) {
+    //     return PictureListPage(
+    //       heroString: heroTag,
+    //       store: store,
+    //       iStores: iStores!,
+    //     );
+    //   }
+    //   return IllustLightingPage(
+    //     id: store.illusts!.id,
+    //     heroString: heroTag,
+    //     store: store,
+    //   );
+    // }));
   }
 
   Widget _buildBottom(BuildContext context) {
