@@ -11,7 +11,6 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/fluent_setting_page.dart';
-import 'package:pixez/page/preview/fluent_preview_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,17 +29,16 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
       if (accountStore.now != null)
         return RecomSpolightPage();
       else
-        return FluentPreviewPage();
+        return PreviewPage();
     }),
     Observer(builder: (context) {
       if (accountStore.now != null)
         return RankPage();
       else
-        return FluentPreviewPage();
+        return PreviewPage();
     }),
     NewPage(),
     // SearchPage(),
-    FluentSettingPage(),
   ];
   int pageIndex = 0;
 
@@ -93,35 +91,36 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
       //     title: Text(I18n.of(context).search)),
     ], growable: true);
     return NavigationView(
-        pane: NavigationPane(
-          header: Container(
-            alignment: Alignment.center,
-            child: Text('Pixez'),
-          ),
-          autoSuggestBox: AutoSuggestBox(
-            items: _suggestList,
-            onChanged: _onAutoSuggestBoxChanged,
-            placeholder: 'Search...', // TODO: i18n
-            trailingIcon: Icon(FluentIcons.search),
-          ),
-          items: items,
-          footerItems: [
-            PaneItemSeparator(),
-            PaneItem(
-                icon: Icon(FluentIcons.settings),
-                title: Text(I18n.of(context).setting)),
-          ],
-          size: NavigationPaneSize(openMaxWidth: 250.0),
-          selected: pageIndex,
-          onChanged: (i) => setState(() => pageIndex = i),
+      pane: NavigationPane(
+        header: Container(
+          alignment: Alignment.center,
+          child: Text('Pixez'),
         ),
-        content: NavigationBody.builder(
-          index: pageIndex,
-          itemBuilder: (context, index) {
-            print("[NavigationView]:::$index");
-            return _pageLists[index];
-          },
-        ));
+        autoSuggestBox: AutoSuggestBox(
+          items: _suggestList,
+          onChanged: _onAutoSuggestBoxChanged,
+          placeholder: 'Search...', // TODO: i18n
+          trailingIcon: Icon(FluentIcons.search),
+        ),
+        items: items,
+        footerItems: [
+          PaneItemSeparator(),
+          PaneItem(
+              icon: Icon(FluentIcons.settings),
+              title: Text(I18n.of(context).setting)),
+        ],
+        size: NavigationPaneSize(openMaxWidth: 250.0),
+        selected: pageIndex,
+        onChanged: (i) => setState(() => pageIndex = i),
+      ),
+      content: NavigationBody(
+        index: pageIndex,
+        children: [
+          ..._pageLists,
+          FluentSettingPage(),
+        ],
+      ),
+    );
   }
 
   void _onAutoSuggestBoxChanged(String text, TextChangedReason reason) {}
