@@ -76,8 +76,6 @@ class MyHttpOverrides extends HttpOverrides {
 main(List<String> args) async {
   // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  
-  sqfliteFfiInit();
 
   if (Constants.isFluentUI) {
     var isDarkTheme;
@@ -87,10 +85,13 @@ main(List<String> args) async {
       await WindowsSingleInstance.ensureSingleInstance(
           args, "pixez-{4db45356-86ec-449e-8d11-dab0feaf41b0}",
           onSecondWindow: (args) {
-        debugPrint("[WindowsSingleInstance]::Arguments(): " + args.join("; "));
-        if (args.length == 1) {
-          final uri = Uri.tryParse(args[0]);
+        print(
+            "[WindowsSingleInstance]::Arguments(): \"${args.join("\" \"")}\"");
+        if (args.length == 2 && args[0] == "--uri") {
+          final uri = Uri.tryParse(args[1]);
           if (uri != null) {
+            print(
+                "[WindowsSingleInstance]::UriParser(): Legal uri: \"${uri}\"");
             Leader.pushWithUri(routeObserver.navigator!.context, uri);
           }
         }
@@ -118,12 +119,15 @@ main(List<String> args) async {
         );
       }
     }
+    sqfliteFfiInit();
+    print("[databaseFactoryFfi]::getDatabasesPath(): ${await databaseFactoryFfi.getDatabasesPath()}");
     runApp(MyFluentApp(Color(accentColor), isDarkTheme));
   } else {
     if (defaultTargetPlatform == TargetPlatform.android &&
         Constants.isGooglePlay) {
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
     }
+    sqfliteFfiInit();
     runApp(MyApp());
   }
 }

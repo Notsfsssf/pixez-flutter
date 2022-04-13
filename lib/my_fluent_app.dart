@@ -95,6 +95,6 @@ class _FluentLocalizationsDelegate
 
   @override
   bool shouldReload(covariant LocalizationsDelegate<FluentLocalizations> old) {
-    return DefaultFluentLocalizations.delegate.shouldReload(old);
+    return false;
   }
 }

@@ -27,13 +27,11 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/fluent_setting_page.dart';
-import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/fluent_login_page.dart';
+import 'package:pixez/page/preview/fluent_preview_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
-import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links2/uni_links.dart';
 
 class FluentHelloPage extends StatefulWidget {
   @override
@@ -41,9 +39,11 @@ class FluentHelloPage extends StatefulWidget {
 }
 
 class _FluentHelloPageState extends State<FluentHelloPage> {
+  late List<Widget> _pageList;
   late StreamSubscription _sub;
   late int index;
   late PageController _pageController;
+  DateTime? _preTime;
 
   @override
   void dispose() {
@@ -63,7 +63,6 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
     saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });
-    initLinksStream();
     initPlatformState();
     WidgetkitPlugin.notify();
   }
@@ -76,23 +75,12 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
     }
   }
 
-  Future<void> initLinksStream() async {
-    try {
-      Uri? initialLink = await getInitialUri();
-      if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = uriLinkStream
-          .listen((Uri? link) => Leader.pushWithUri(context, link!));
-    } catch (e) {
-      print(e);
-    }
-  }
-
   List<Widget> _lists = <Widget>[
     Observer(builder: (context) {
       if (accountStore.now != null)
         return RecomSpolightPage();
       else
-        return PreviewPage();
+        return FluentPreviewPage();
     }),
     Observer(builder: (context) {
       if (accountStore.now != null)
@@ -104,46 +92,51 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
     NewPage(),
     // SearchPage(),
     FluentSettingPage(),
-    FluentLoginPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return //Text("Hello");
-        NavigationView(
-            appBar: NavigationAppBar(),
-            pane: NavigationPane(
-                selected: index,
-                onChanged: (i) => setState(() => index = i),
-                autoSuggestBox: AutoSuggestBox(
-                  controller: TextEditingController(),
-                  items: const ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
-                  placeholder: "Search...",
-                  trailingIcon: Icon(FluentIcons.search),
-                ),
-                items: <NavigationPaneItem>[
-                  PaneItem(
-                      icon: Icon(FluentIcons.home),
-                      title: Text(I18n.of(context).home)),
-                  PaneItem(
-                      icon: Icon(CustomIcons.leaderboard),
-                      title: Text(I18n.of(context).rank)),
-                  PaneItem(
-                      icon: Icon(FluentIcons.bookmarks),
-                      title: Text(I18n.of(context).quick_view)),
-                  // PaneItem(
-                  //     icon: Icon(FluentIcons.search),
-                  //     title: Text(I18n.of(context).search)),
-                ],
-                footerItems: [
-                  PaneItemSeparator(),
-                  PaneItem(
-                      icon: Icon(FluentIcons.settings),
-                      title: Text(I18n.of(context).setting)),
-                  PaneItem(
-                      icon: Icon(FluentIcons.account_management),
-                      title: Text(I18n.of(context).login)),
-                ]),
-            content: NavigationBody(index: index, children: _lists));
+    return Observer(builder: (context) {
+      // TODO: 登录部分待修复
+      // if (accountStore.now != null) {
+      return _buildNavigationView(context);
+      // }
+      // return FluentLoginPage();
+    });
+  }
+
+  Widget _buildNavigationView(BuildContext context) {
+    return NavigationView(
+        pane: NavigationPane(
+            size: NavigationPaneSize(openMaxWidth: 250.0),
+            selected: index,
+            onChanged: (i) => setState(() => index = i),
+            autoSuggestBox: AutoSuggestBox(
+              controller: TextEditingController(),
+              items: const ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
+              placeholder: "Search...",
+              trailingIcon: Icon(FluentIcons.search),
+            ),
+            items: <NavigationPaneItem>[
+              PaneItem(
+                  icon: Icon(FluentIcons.home),
+                  title: Text(I18n.of(context).home)),
+              PaneItem(
+                  icon: Icon(CustomIcons.leaderboard),
+                  title: Text(I18n.of(context).rank)),
+              PaneItem(
+                  icon: Icon(FluentIcons.bookmarks),
+                  title: Text(I18n.of(context).quick_view)),
+              // PaneItem(
+              //     icon: Icon(FluentIcons.search),
+              //     title: Text(I18n.of(context).search)),
+            ],
+            footerItems: [
+              PaneItemSeparator(),
+              PaneItem(
+                  icon: Icon(FluentIcons.settings),
+                  title: Text(I18n.of(context).setting)),
+            ]),
+        content: NavigationBody(index: index, children: _lists));
   }
 }
