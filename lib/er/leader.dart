@@ -17,13 +17,15 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
+import 'package:pixez/page/hello/fluent_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -34,12 +36,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Leader {
   static Future<void> pushUntilHome(BuildContext context) async {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-          builder: (context) =>
-              Platform.isIOS ? HelloPage() : AndroidHelloPage()),
-      (route) => route == null,
-    );
+    final route = Constants.isFluentUI
+        ? fluent.FluentPageRoute(builder: (context) => FluentHelloPage())
+        : MaterialPageRoute(
+            builder: (context) =>
+                Platform.isIOS ? HelloPage() : AndroidHelloPage());
+    // ignore: unnecessary_null_comparison
+    Navigator.of(context).pushAndRemoveUntil(route, (route) => route == null);
   }
 
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
@@ -243,5 +246,13 @@ class Leader {
         builder: (context) => Scaffold(
               body: widget,
             )));
+  }
+
+  static Future<void> dialog(BuildContext context, Widget widget) async {
+    if (Constants.isFluentUI) {
+      fluent.showDialog(context: context, builder: (context) => widget);
+    } else {
+      showDialog(context: context, builder: (context) => widget);
+    }
   }
 }
