@@ -15,7 +15,8 @@
 import 'package:path/path.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class TaskPersist {
   int? id;
@@ -120,12 +121,14 @@ class TaskPersistProvider {
   late Database db;
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath());
+    String databasesPath = (await databaseFactoryFfi.getDatabasesPath());
     String path =
         join(databasesPath, 'task1.db'); //某个版本出的bug，升级table无法定位问题，只能改了
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
+    db = await databaseFactoryFfi.openDatabase(path,
+        options: new OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) async {
+              await db.execute('''
 create table $tableAccount ( 
   $columnId integer primary key autoincrement, 
   $columnTitle text not null,
@@ -138,7 +141,7 @@ create table $tableAccount (
   $columnFileName text not null
   )
 ''');
-    });
+            }));
   }
 
   Future<TaskPersist> insert(TaskPersist todo) async {

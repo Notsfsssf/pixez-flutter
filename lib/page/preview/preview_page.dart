@@ -14,18 +14,18 @@
  *
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/preview/fluent_preview_state.dart';
+import 'package:pixez/page/preview/material_preview_state.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 
 class GoToLoginPage extends StatelessWidget {
   final Illusts illust;
@@ -112,64 +112,30 @@ class LoginInFirst extends StatelessWidget {
 
 class PreviewPage extends StatefulWidget {
   @override
-  _PreviewPageState createState() => _PreviewPageState();
+  PreviewPageStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentPreviewPageState();
+    else
+      return MaterialPreviewPageState();
+  }
 }
 
-class _PreviewPageState extends State<PreviewPage> {
-  late LightingStore _lightingStore;
-  RefreshController _easyRefreshController =
+abstract class PreviewPageStateBase extends State<PreviewPage> {
+  late LightingStore lightingStore;
+  RefreshController easyRefreshController =
       RefreshController(initialRefresh: true);
 
   @override
   void initState() {
-    _lightingStore = LightingStore(
+    lightingStore = LightingStore(
         ApiSource(futureGet: () => apiClient.walkthroughIllusts()),
-        _easyRefreshController);
+        easyRefreshController);
     super.initState();
   }
 
   @override
   void dispose() {
-    _easyRefreshController.dispose();
+    easyRefreshController.dispose();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return SafeArea(
-        child: SmartRefresher(
-          controller: _easyRefreshController,
-          onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
-          onLoading: () => _lightingStore.fetchNext(),
-          child: _lightingStore.iStores.isNotEmpty
-              ? WaterfallFlow.builder(
-                  shrinkWrap: true,
-                  gridDelegate:
-                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => GoToLoginPage(
-                                illust:
-                                    _lightingStore.iStores[index].illusts!)));
-                      },
-                      child: Card(
-                        child: Container(
-                          child: PixivImage(_lightingStore
-                              .iStores[index].illusts!.imageUrls.squareMedium),
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: _lightingStore.iStores.length,
-                )
-              : Container(),
-        ),
-      );
-    });
   }
 }

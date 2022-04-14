@@ -14,10 +14,14 @@
  *
  */
 
+import 'dart:io';
+
 class Constants {
   static String tagName = "0.8.4";
   static const isGooglePlay =
       bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);
   static int type = 0;
   static String? code_verifier = null;
+  static final bool isFluentUI =
+      Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 }

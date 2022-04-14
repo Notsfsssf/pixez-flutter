@@ -8,6 +8,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "34.0.0"
+  after_layout:
+    dependency: transitive
+    description:
+      name: after_layout
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0"
   analyzer:
     dependency: "direct dev"
     description:
@@ -197,6 +204,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.15.0"
+  contextmenu:
+    dependency: "direct main"
+    description:
+      name: contextmenu
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   convert:
     dependency: transitive
     description:
@@ -344,11 +358,32 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  fluent_ui:
+    dependency: "direct main"
+    description:
+      name: fluent_ui
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.10.1"
+  fluentui_system_icons:
+    dependency: "direct main"
+    description:
+      name: fluentui_system_icons
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.165"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_acrylic:
+    dependency: "direct main"
+    description:
+      name: flutter_acrylic
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0+2"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -791,6 +826,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.1+1"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.0"
   receive_sharing_intent:
     dependency: "direct main"
     description:
@@ -805,6 +847,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.27.3"
+  scroll_pos:
+    dependency: transitive
+    description:
+      name: scroll_pos
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.0"
   share_plus:
     dependency: "direct main"
     description:
@@ -944,7 +993,7 @@ packages:
     source: hosted
     version: "1.8.1"
   sqflite:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: sqflite
       url: "https://pub.flutter-io.cn"
@@ -957,6 +1006,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.0"
+  sqflite_common_ffi:
+    dependency: "direct dev"
+    description:
+      name: sqflite_common_ffi
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0+2"
+  sqlite3:
+    dependency: transitive
+    description:
+      name: sqlite3
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.5.1"
   stack_trace:
     dependency: transitive
     description:
@@ -1140,12 +1203,19 @@ packages:
     source: hosted
     version: "2.1.0"
   win32:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: win32
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.3.10"
+    version: "2.5.1"
+  windows_single_instance:
+    dependency: "direct main"
+    description:
+      name: windows_single_instance
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1"
   xdg_directories:
     dependency: transitive
     description:
@@ -1161,5 +1231,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.15.0 <3.0.0"
+  dart: ">=2.16.2 <3.0.0"
   flutter: ">=2.10.0"

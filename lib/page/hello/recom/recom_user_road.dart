@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/constants.dart';
+import 'package:pixez/page/hello/recom/fluent_recom_user_road_state.dart';
+import 'package:pixez/page/hello/recom/material_recom_user_road_state.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
-import 'package:pixez/exts.dart';
 
 class RecomUserRoad extends StatefulWidget {
   final RecomUserStore? recomUserStore;
@@ -10,15 +12,20 @@ class RecomUserRoad extends StatefulWidget {
   const RecomUserRoad({Key? key, this.recomUserStore}) : super(key: key);
 
   @override
-  _RecomUserRoadState createState() => _RecomUserRoadState();
+  RecomUserRoadStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentRecomUserRoadState();
+    else
+      return MaterialRecomUserRoadState();
+  }
 }
 
-class _RecomUserRoadState extends State<RecomUserRoad> {
-  late RecomUserStore _recomUserStore;
+abstract class RecomUserRoadStateBase extends State<RecomUserRoad> {
+  late RecomUserStore recomUserStore;
 
   @override
   void initState() {
-    _recomUserStore = widget.recomUserStore ?? RecomUserStore()
+    recomUserStore = widget.recomUserStore ?? RecomUserStore()
       ..fetch();
     super.initState();
   }
@@ -29,7 +36,7 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return RecomUserPage(
-            recomUserStore: _recomUserStore,
+            recomUserStore: recomUserStore,
           );
         }));
       },
@@ -47,9 +54,9 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
                         bottomLeft: Radius.circular(16.0),
                         topLeft: Radius.circular(16.0)),
                     color: Colors.transparent),
-                child: _recomUserStore.users.isNotEmpty
+                child: recomUserStore.users.isNotEmpty
                     ? ListView.builder(
-                        itemCount: _recomUserStore.users.length,
+                        itemCount: recomUserStore.users.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return _buildUserList(index);
@@ -65,15 +72,14 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
   }
 
   Padding _buildUserList(int index) {
-    final data = _recomUserStore.users[index];
+    final data = recomUserStore.users[index];
     return Padding(
       padding: const EdgeInsets.all(1.0),
       child: SizedBox(
         height: 40,
         width: 40,
         child: CircleAvatar(
-          backgroundImage: PixivProvider.url(
-              data.user.profileImageUrls.medium,
+          backgroundImage: PixivProvider.url(data.user.profileImageUrls.medium,
               preUrl: data.user.profileImageUrls.medium),
           radius: 100.0,
         ),

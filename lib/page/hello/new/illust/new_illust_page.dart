@@ -16,14 +16,16 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/component/sort_group.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/hello/new/illust/fluent_new_illust_state.dart';
+import 'package:pixez/page/hello/new/illust/material_new_illust_state.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NewIllustPage extends StatefulWidget {
@@ -32,24 +34,29 @@ class NewIllustPage extends StatefulWidget {
   const NewIllustPage({Key? key, this.restrict = "all"}) : super(key: key);
 
   @override
-  _NewIllustPageState createState() => _NewIllustPageState();
+  NewIllustPageStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentNewIllustPageState();
+    else
+      return MaterialNewIllustPageState();
+  }
 }
 
-class _NewIllustPageState extends State<NewIllustPage> {
+abstract class NewIllustPageStateBase extends State<NewIllustPage> {
   late ApiForceSource futureGet;
-  late RefreshController _refreshController;
+  late RefreshController refreshController;
   late StreamSubscription<String> subscription;
 
   @override
   void initState() {
-    _refreshController = RefreshController();
+    refreshController = RefreshController();
     futureGet = ApiForceSource(
         futureGet: (e) =>
             apiClient.getFollowIllusts(widget.restrict, force: e));
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "301") {
-        _refreshController.position?.jumpTo(0);
+        refreshController.position?.jumpTo(0);
       }
     });
   }
@@ -57,113 +64,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
   @override
   void dispose() {
     subscription.cancel();
-    _refreshController.dispose();
+    refreshController.dispose();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        LightingList(
-          source: futureGet,
-          refreshController: _refreshController,
-          header: Container(
-            height: 45.0,
-          ),
-          portal: "new",
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            child: SortGroup(
-              onChange: (index) {
-                if (index == 0)
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (e) =>
-                            apiClient.getFollowIllusts('all', force: e));
-                  });
-                if (index == 1)
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (e) =>
-                            apiClient.getFollowIllusts('public', force: e));
-                  });
-                if (index == 2)
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (e) =>
-                            apiClient.getFollowIllusts('private', force: e));
-                  });
-              },
-              children: [
-                I18n.of(context).all,
-                I18n.of(context).public,
-                I18n.of(context).private
-              ],
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Container buildContainer(BuildContext context) {
-    return Container(
-        child: Align(
-      alignment: Alignment.centerRight,
-      child: IconButton(
-          icon: Icon(Icons.list),
-          onPressed: () {
-            showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                ),
-                context: context,
-                builder: (context) => SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(I18n.of(context).all),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = ApiForceSource(
-                                    futureGet: (e) => apiClient
-                                        .getFollowIllusts('all', force: e));
-                              });
-                            },
-                          ),
-                          ListTile(
-                            title: Text(I18n.of(context).public),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = ApiForceSource(
-                                    futureGet: (e) => apiClient
-                                        .getFollowIllusts('public', force: e));
-                              });
-                            },
-                          ),
-                          ListTile(
-                            title: Text(I18n.of(context).private),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = ApiForceSource(
-                                    futureGet: (e) => apiClient
-                                        .getFollowIllusts('private', force: e));
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ));
-          }),
-    ));
   }
 }

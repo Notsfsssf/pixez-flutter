@@ -14,7 +14,8 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 
 part 'novel_persist.g.dart';
@@ -61,11 +62,13 @@ class NovelPersistProvider {
   late Database db;
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath());
+    String databasesPath = (await databaseFactoryFfi.getDatabasesPath());
     String path = join(databasesPath, 'Novelpersist.db');
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
+    db = await databaseFactoryFfi.openDatabase(path,
+        options: new OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) async {
+              await db.execute('''
 create table $tableNovelPersist ( 
   $cid integer primary key autoincrement, 
   $cNovel_id integer not null,
@@ -76,7 +79,7 @@ create table $tableNovelPersist (
   $ctime integer not null
   )
 ''');
-    });
+            }));
   }
 
   Future<NovelPersist> insert(NovelPersist todo) async {

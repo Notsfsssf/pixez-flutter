@@ -16,14 +16,16 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/lighting/state/fluent_state.dart';
+import 'package:pixez/lighting/state/material_state.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -46,149 +48,52 @@ class LightingList extends StatefulWidget {
       : super(key: key);
 
   @override
-  _LightingListState createState() => _LightingListState();
+  LightingListStateBase createState() {
+    if (Constants.isFluentUI)
+      return FluentLightingListState();
+    else
+      return MaterialLightingListState();
+  }
 }
 
-class _LightingListState extends State<LightingList> {
-  late LightingStore _store;
-  late bool _isNested;
+abstract class LightingListStateBase extends State<LightingList> {
+  late LightingStore store;
+  late bool isNested;
+  ReactionDisposer? disposer;
+  bool backToTopVisible = false;
+  late RefreshController refreshController;
 
   @override
   void didUpdateWidget(LightingList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
-      _store.source = widget.source;
+      store.source = widget.source;
       _fetch();
     }
   }
 
   _fetch() async {
-    await _store.fetch(force: true);
-    if (!_isNested && _store.errorMessage == null && !_store.iStores.isEmpty)
-      _refreshController.position?.jumpTo(0.0);
+    await store.fetch(force: true);
+    if (!isNested && store.errorMessage == null && !store.iStores.isEmpty)
+      refreshController.position?.jumpTo(0.0);
   }
-
-  ReactionDisposer? disposer;
 
   @override
   void initState() {
-    _isNested = widget.isNested ?? false;
-    _refreshController = widget.refreshController ?? RefreshController();
-    _store = LightingStore(
+    isNested = widget.isNested ?? false;
+    refreshController = widget.refreshController ?? RefreshController();
+    store = LightingStore(
       widget.source,
-      _refreshController,
+      refreshController,
     );
     super.initState();
-    _store.fetch();
+    store.fetch();
   }
 
   @override
   void dispose() {
-    _store.dispose();
+    store.dispose();
     super.dispose();
-  }
-
-  bool backToTopVisible = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          Observer(builder: (_) {
-            return Container(child: _buildContent(context));
-          }),
-          Align(
-            child: Visibility(
-              visible: backToTopVisible,
-              child: Opacity(
-                opacity: 0.5,
-                child: Container(
-                  height: 50.0,
-                  width: 50.0,
-                  margin: EdgeInsets.only(bottom: 8.0),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_drop_up_outlined,
-                      size: 24,
-                    ),
-                    onPressed: () {
-                      _refreshController.position?.jumpTo(0);
-                    },
-                  ),
-                ),
-              ),
-            ),
-            alignment: Alignment.bottomCenter,
-          )
-        ],
-      ),
-    );
-  }
-
-  late RefreshController _refreshController;
-
-  CustomFooter _buildCustomFooter() {
-    return CustomFooter(
-      builder: (BuildContext context, LoadStatus? mode) {
-        Widget body;
-        if (mode == LoadStatus.idle) {
-          body = Text(I18n.of(context).pull_up_to_load_more);
-        } else if (mode == LoadStatus.loading) {
-          body = CircularProgressIndicator();
-        } else if (mode == LoadStatus.failed) {
-          body = Text(I18n.of(context).loading_failed_retry_message);
-        } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n.of(context).let_go_and_load_more);
-        } else {
-          body = Text(I18n.of(context).no_more_data);
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
-    );
-  }
-
-  Widget _buildWithoutHeader(context) {
-    _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
-    return NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) {
-          ScrollMetrics metrics = notification.metrics;
-          if (backToTopVisible == metrics.atEdge && mounted) {
-            setState(() {
-              backToTopVisible = !backToTopVisible;
-            });
-          }
-          return true;
-        },
-        child: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          header: (Platform.isAndroid)
-              ? MaterialClassicHeader(
-                  color: Theme.of(context).colorScheme.secondary,
-                  backgroundColor: Theme.of(context).cardColor,
-                )
-              : ClassicHeader(),
-          footer: _buildCustomFooter(),
-          controller: _refreshController,
-          onRefresh: () {
-            _store.fetch(force: true);
-          },
-          onLoading: () {
-            _store.fetchNext();
-          },
-          child: WaterfallFlow.builder(
-            padding: EdgeInsets.all(5.0),
-            itemCount: _store.iStores.length,
-            itemBuilder: (context, index) {
-              return _buildItem(index);
-            },
-            gridDelegate: _buildGridDelegate(),
-          ),
-        ));
   }
 
   bool needToBan(Illusts illust) {
@@ -206,99 +111,18 @@ class _LightingListState extends State<LightingList> {
     return false;
   }
 
-  Widget _buildContent(context) {
-    return _store.errorMessage != null
-        ? Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: 50,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      Text(':(', style: Theme.of(context).textTheme.headline4),
-                ),
-                TextButton(
-                    onPressed: () {
-                      _store.fetch(force: true);
-                    },
-                    child: Text(I18n.of(context).retry)),
-                Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      (_store.errorMessage?.contains("400") == true
-                          ? '${I18n.of(context).error_400_hint}\n ${_store.errorMessage}'
-                          : '${_store.errorMessage}'),
-                    ))
-              ],
-            ),
-          )
-        : _store.iStores.isNotEmpty
-            ? (widget.header != null
-                ? _buildWithHeader(context)
-                : _buildWithoutHeader(context))
-            : Container();
-  }
-
-  Widget _buildWithHeader(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notification) {
-        ScrollMetrics metrics = notification.metrics;
-        if (backToTopVisible == metrics.atEdge && mounted) {
-          setState(() {
-            backToTopVisible = !backToTopVisible;
-          });
-        }
-        return true;
-      },
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-                color: Theme.of(context).colorScheme.secondary,
-                backgroundColor: Theme.of(context).cardColor,
-              )
-            : ClassicHeader(),
-        footer: _buildCustomFooter(),
-        controller: _refreshController,
-        onRefresh: () {
-          _store.fetch(force: true);
-        },
-        onLoading: () {
-          _store.fetchNext();
-        },
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(child: widget.header),
-            ),
-            SliverWaterfallFlow(
-              gridDelegate: _buildGridDelegate(),
-              delegate: _buildSliverChildBuilderDelegate(context),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
+  SliverChildBuilderDelegate buildSliverChildBuilderDelegate(
       BuildContext context) {
-    _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
+    store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       return IllustCard(
-        store: _store.iStores[index],
-        iStores: _store.iStores,
+        store: store.iStores[index],
+        iStores: store.iStores,
       );
-    }, childCount: _store.iStores.length);
+    }, childCount: store.iStores.length);
   }
 
-  SliverWaterfallFlowDelegateWithFixedCrossAxisCount _buildGridDelegate() {
+  SliverWaterfallFlowDelegateWithFixedCrossAxisCount buildGridDelegate() {
     return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
       crossAxisCount:
           (MediaQuery.of(context).orientation == Orientation.portrait)
@@ -315,10 +139,10 @@ class _LightingListState extends State<LightingList> {
     );
   }
 
-  Widget _buildItem(int index) {
+  Widget buildItem(int index) {
     return IllustCard(
-      store: _store.iStores[index],
-      iStores: _store.iStores,
+      store: store.iStores[index],
+      iStores: store.iStores,
     );
   }
 }

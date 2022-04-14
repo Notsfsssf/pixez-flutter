@@ -16,9 +16,12 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/material.dart' as material;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
@@ -30,10 +33,7 @@ class PainterList extends StatefulWidget {
   final Widget? header;
 
   const PainterList(
-      {Key? key,
-      required this.futureGet,
-      this.isNovel = false,
-      this.header})
+      {Key? key, required this.futureGet, this.isNovel = false, this.header})
       : super(key: key);
 
   @override
@@ -79,18 +79,22 @@ class _PainterListState extends State<PainterList> {
       return SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-                color: Theme.of(context).colorScheme.secondary,
-              )
-            : ClassicHeader(),
+        header: (Constants.isFluentUI)
+            ? _buildFluentCustomHeader()
+            : (Platform.isAndroid)
+                ? MaterialClassicHeader(
+                    color: material.Theme.of(context).colorScheme.secondary,
+                  )
+                : ClassicHeader(),
         footer: CustomFooter(
           builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
             if (mode == LoadStatus.idle) {
               body = Text(I18n.of(context).pull_up_to_load_more);
             } else if (mode == LoadStatus.loading) {
-              body = CircularProgressIndicator();
+              body = (Constants.isFluentUI)
+                  ? fluent.ProgressRing()
+                  : material.CircularProgressIndicator();
             } else if (mode == LoadStatus.failed) {
               body = Text(I18n.of(context).loading_failed_retry_message);
             } else if (mode == LoadStatus.canLoading) {
@@ -136,6 +140,27 @@ class _PainterListState extends State<PainterList> {
       );
     return PainterCard(
       user: user,
+    );
+  }
+
+  CustomHeader _buildFluentCustomHeader() {
+    return CustomHeader(
+      builder: (context, mode) {
+        Widget body;
+        if (mode == RefreshStatus.idle) {
+          body = Text("refresh");
+        } else if (mode == RefreshStatus.refreshing) {
+          body = fluent.ProgressRing();
+        } else if (mode == RefreshStatus.failed) {
+          body = Text(I18n.of(context).loading_failed_retry_message);
+        } else {
+          body = Text("Success");
+        }
+        return Container(
+          height: 55.0,
+          child: Center(child: body),
+        );
+      },
     );
   }
 }

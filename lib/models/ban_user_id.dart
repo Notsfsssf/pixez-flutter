@@ -14,7 +14,8 @@
  *
  */
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class BanUserIdPersist {
   String? userId;
@@ -47,18 +48,20 @@ class BanUserIdProvider {
   late Database db;
 
   Future open() async {
-    String databasesPath = (await getDatabasesPath());
+    String databasesPath = (await databaseFactoryFfi.getDatabasesPath());
     String path = join(databasesPath, 'banuserid.db');
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
+    db = await databaseFactoryFfi.openDatabase(path,
+        options: new OpenDatabaseOptions(
+            version: 1,
+            onCreate: (Database db, int version) async {
+              await db.execute('''
 create table $tableBanUserId ( 
   $columnId integer primary key autoincrement, 
   $columnUserId text not null,
   $columnName text not null
   )
 ''');
-    });
+            }));
   }
 
   Future<BanUserIdPersist> insert(BanUserIdPersist todo) async {
