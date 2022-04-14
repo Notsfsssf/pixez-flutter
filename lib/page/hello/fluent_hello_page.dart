@@ -4,6 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/guide_page.dart';
@@ -77,33 +78,36 @@ class FluentHelloPageState extends State<FluentHelloPage> {
     required Widget icon,
     required Widget title,
     required Widget child,
+    bool focus = true,
   }) {
     setState(
       () {
         if (_history.isEmpty) _lastPage = pageIndex;
         _history.add(_WidgetHistoryItem(icon, title, child));
-        pageIndex = _pageLists.length + _history.length - 1;
+        if (focus) pageIndex = _pageLists.length + _history.length - 1;
       },
     );
   }
 
-  pop() {
+  pop({
+    int? index,
+    Widget? content,
+  }) {
     setState(() {
-      _history.removeLast();
-      if (_history.isEmpty)
-        pageIndex = _lastPage;
-      else
-        pageIndex = _pageLists.length + _history.length - 1;
+      if (index != null) {
+        _history.removeAt(index);
+      } else if (content != null) {
+        _history.remove(
+          _history.lastWhere((element) => element.content == content),
+        );
+      } else {
+        _history.removeLast();
+        if (_history.isEmpty)
+          pageIndex = _lastPage;
+        else
+          pageIndex = _pageLists.length + _history.length - 1;
+      }
     });
-  }
-
-  popAt(int index) => setState(() => _history.removeAt(index));
-  popWith(Widget widget) {
-    setState(
-      () => _history.remove(
-        _history.lastWhere((element) => element.widget == widget),
-      ),
-    );
   }
 
   @override
@@ -124,8 +128,7 @@ class FluentHelloPageState extends State<FluentHelloPage> {
   Future<void> initPlatformState() async {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('language_num') == null) {
-      Navigator.of(context)
-          .pushReplacement(FluentPageRoute(builder: (context) => GuidePage()));
+      Leader.dialog(context, GuidePage());
     }
   }
 
@@ -205,7 +208,7 @@ class FluentHelloPageState extends State<FluentHelloPage> {
         index: pageIndex,
         children: [
           ..._pageLists,
-          ..._history.map((e) => e.widget),
+          ..._history.map((e) => e.content),
           SettingPage(),
         ],
       ),
@@ -225,6 +228,6 @@ class FluentHelloPageState extends State<FluentHelloPage> {
 class _WidgetHistoryItem {
   final Widget icon;
   final Widget title;
-  final Widget widget;
-  _WidgetHistoryItem(this.icon, this.title, this.widget);
+  final Widget content;
+  _WidgetHistoryItem(this.icon, this.title, this.content);
 }

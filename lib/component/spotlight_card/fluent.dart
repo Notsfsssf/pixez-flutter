@@ -33,7 +33,7 @@ class FluentSpotlightCard extends SpotlightCardBase {
       padding: EdgeInsets.all(4.0),
       child: InkWell(
         onTap: () async {
-          // TODO: Navigator.of(context).push
+          // TODO: Leader.fluentNav
           Navigator.of(context)
               .push(FluentPageRoute(builder: (BuildContext context) {
             return SoupPage(url: spotlight.articleUrl, spotlight: spotlight);

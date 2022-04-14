@@ -248,11 +248,12 @@ class Leader {
             )));
   }
 
-  static Future<void> dialog(BuildContext context, Widget widget) async {
+  static Future<T?> dialog<T>(BuildContext context, Widget widget) async {
     if (Constants.isFluentUI) {
-      fluent.showDialog(context: context, builder: (context) => widget);
+      return fluent.showDialog<T>(
+          context: context, builder: (context) => widget);
     } else {
-      showDialog(context: context, builder: (context) => widget);
+      return showDialog<T>(context: context, builder: (context) => widget);
     }
   }
 
@@ -260,10 +261,11 @@ class Leader {
     BuildContext context,
     Widget icon,
     Widget title,
-    Widget child,
-  ) {
+    Widget content, {
+    bool focus = true,
+  }) {
     if (Constants.isFluentUI)
-      FluentHelloPage.of(context).push(icon: icon, title: title, child: child);
+      FluentHelloPage.of(context).push(icon: icon, title: title, child: content);
     else
       throw Exception("It only be used at Fluent UI");
   }

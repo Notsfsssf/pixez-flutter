@@ -205,6 +205,7 @@ class FluentSettingPageState extends SettingPageStateBase {
                     TappableListTile(
                       leading: Icon(FluentIcons.book_answers),
                       title: Text('Novel'),
+                      // TODO: Leader.fluentNav
                       onTap: () => Navigator.of(context, rootNavigator: true)
                           .pushReplacement(FluentPageRoute(
                               builder: (context) => NovelRail())),
