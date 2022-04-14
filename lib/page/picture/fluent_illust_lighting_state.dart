@@ -26,7 +26,6 @@ import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 
 class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   UserStore? userStore;
@@ -73,7 +72,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   Widget build(BuildContext context) {
     super.build(context);
     return ScaffoldPage(
-      // header: _buildHeader(),
+      header: _buildHeader(),
       content: _buildContent(),
     );
   }
@@ -89,6 +88,15 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
             label: Text(I18n.of(context).refresh),
             onPressed: () {
               _illustStore.fetch();
+            },
+          ),
+          CommandBarButton(
+            icon: Icon(FluentIcons.refresh),
+            label: Text(
+              I18n.of(context).refresh + I18n.of(context).about_picture,
+            ),
+            onPressed: () {
+              _aboutStore.fetch();
             },
           ),
         ],
@@ -109,29 +117,24 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
         ),
       ),
       Expanded(
-        child: ListView(
-          controller: ScrollController(),
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildInfoPane(context, data),
-            _buildTagPane(data),
-            _buildCaptionPane(data),
-            _buildCommentPane(data),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildInfoPane(context, data),
+              _buildTagPane(data),
+              _buildCaptionPane(data),
+              _buildCommentPane(data),
+              Expander(
+                header: Text(
+                  I18n.of(context).about_picture,
+                  textAlign: TextAlign.center,
+                ),
+                content: _buildAboutPicturePane(),
+              )
+            ],
+          ),
         ),
       ),
-      Expanded(
-        child: ListView(
-          controller: ScrollController(),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(I18n.of(context).about_picture),
-            ),
-            _buildAboutPicturePane(),
-          ],
-        ),
-      )
     ]);
   }
 
@@ -375,14 +378,12 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 1),
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 2,
-            runSpacing: 0,
-            children: [for (var f in data.tags) buildRow(context, f)],
-          ),
+        padding: const EdgeInsets.all(8.0),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 2,
+          runSpacing: 0,
+          children: [for (var f in data.tags) buildRow(context, f)],
         ),
         backgroundColor:
             ExpanderState.backgroundColor(FluentTheme.of(context), const {}),
@@ -500,7 +501,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
 
   Widget _buildCaptionPane(Illusts data) {
     return LimitedBox(
-      maxHeight: 600,
+      maxHeight: 400,
       child: SelectableHtml(
         data: data.caption.isEmpty ? "~" : data.caption,
       ),
@@ -652,58 +653,6 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
       ),
       mode: InkWellMode.focusBorderOnly,
     );
-  }
-
-  Future _longPressTag(BuildContext context, Tags f) async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ContentDialog(
-            title: Text(f.name),
-            actions: [
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Text(I18n.of(context).ban),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Text(I18n.of(context).bookmark),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 2);
-                },
-                child: Text(I18n.of(context).copy),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        {
-          muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName ?? ""));
-        }
-        break;
-      case 1:
-        {
-          bookTagStore.bookTag(f.name);
-        }
-        break;
-      case 2:
-        {
-          await Clipboard.setData(ClipboardData(text: f.name));
-          showSnackbar(
-              context,
-              Snackbar(
-                //duration: Duration(seconds: 1),
-                content: Text(I18n.of(context).copied_to_clipboard),
-              ));
-        }
-    }
   }
 
   void _loadAbout() {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/fluent/fluent_utils.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -83,7 +84,7 @@ class FluentLightingListState extends LightingListStateBase {
         child: SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
-          header: _buildCustomHeader(),
+          header: buildCustomHeader(),
           footer: _buildCustomFooter(),
           controller: refreshController,
           onRefresh: () {
@@ -155,7 +156,7 @@ class FluentLightingListState extends LightingListStateBase {
       child: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: _buildCustomHeader(),
+        header: buildCustomHeader(),
         footer: _buildCustomFooter(),
         controller: refreshController,
         onRefresh: () {
@@ -176,27 +177,6 @@ class FluentLightingListState extends LightingListStateBase {
           ],
         ),
       ),
-    );
-  }
-
-  CustomHeader _buildCustomHeader() {
-    return CustomHeader(
-      builder: (context, mode) {
-        Widget body;
-        if (mode == RefreshStatus.idle) {
-          body = Text("refresh");
-        } else if (mode == RefreshStatus.refreshing) {
-          body = ProgressRing();
-        } else if (mode == RefreshStatus.failed) {
-          body = Text(I18n.of(context).loading_failed_retry_message);
-        } else {
-          body = Text("Success");
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
     );
   }
 }

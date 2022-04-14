@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/fluent/fluent_utils.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/er/leader.dart';
@@ -79,7 +80,7 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
                   enablePullDown: true,
                   enablePullUp: true,
                   footer: _buildCustomFooter(),
-                  header: _buildCustomHeader(),
+                  header: buildCustomHeader(),
                   onRefresh: () async {
                     await fetchT();
                   },
@@ -115,27 +116,6 @@ class FluentRecomSpolightPageState extends RecomSpolightPageStateBase {
           );
         }),
       ),
-    );
-  }
-
-  CustomHeader _buildCustomHeader() {
-    return CustomHeader(
-      builder: (context, mode) {
-        Widget body;
-        if (mode == RefreshStatus.idle) {
-          body = Text("refresh");
-        } else if (mode == RefreshStatus.refreshing) {
-          body = ProgressRing();
-        } else if (mode == RefreshStatus.failed) {
-          body = Text(I18n.of(context).loading_failed_retry_message);
-        } else {
-          body = Text("Success");
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
     );
   }
 
