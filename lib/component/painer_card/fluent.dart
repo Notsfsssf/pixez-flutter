@@ -15,7 +15,7 @@
  */
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:pixez/component/fluent_ink_well.dart';
+import 'package:pixez/component/fluent/fluent_ink_well.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';

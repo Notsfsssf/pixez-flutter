@@ -10,7 +10,7 @@ import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/component/fluent_ink_well.dart';
+import 'package:pixez/component/fluent/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_tag.dart';
@@ -73,7 +73,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   Widget build(BuildContext context) {
     super.build(context);
     return ScaffoldPage(
-      header: _buildHeader(),
+      // header: _buildHeader(),
       content: _buildContent(),
     );
   }
@@ -110,6 +110,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
       ),
       Expanded(
         child: ListView(
+          controller: ScrollController(),
           // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildInfoPane(context, data),
@@ -121,6 +122,7 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
       ),
       Expanded(
         child: ListView(
+          controller: ScrollController(),
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -317,69 +319,75 @@ class FluentIllustLightingPageState extends IllustLightingPageStateBase {
   }
 
   Widget _buildInfoPane(BuildContext context, Illusts data) {
-    return InkWell(
-      isHoverable: false,
+    return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 1),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _buildNameAvatar(context, data),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(I18n.of(context).illust_id),
-              Container(
-                width: 10.0,
-              ),
-              colorText(data.id.toString(), context),
-              Container(
-                width: 20.0,
-              ),
-              Text(I18n.of(context).pixel),
-              Container(
-                width: 10.0,
-              ),
-              colorText("${data.width}x${data.height}", context)
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(I18n.of(context).total_view),
-              Container(
-                width: 10.0,
-              ),
-              colorText(data.totalView.toString(), context),
-              Container(
-                width: 20.0,
-              ),
-              Text(I18n.of(context).total_bookmark),
-              Container(
-                width: 10.0,
-              ),
-              colorText("${data.totalBookmarks}", context)
-            ],
-          ),
-        ],
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _buildNameAvatar(context, data),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(I18n.of(context).illust_id),
+                Container(
+                  width: 10.0,
+                ),
+                colorText(data.id.toString(), context),
+                Container(
+                  width: 20.0,
+                ),
+                Text(I18n.of(context).pixel),
+                Container(
+                  width: 10.0,
+                ),
+                colorText("${data.width}x${data.height}", context)
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(I18n.of(context).total_view),
+                Container(
+                  width: 10.0,
+                ),
+                colorText(data.totalView.toString(), context),
+                Container(
+                  width: 20.0,
+                ),
+                Text(I18n.of(context).total_bookmark),
+                Container(
+                  width: 10.0,
+                ),
+                colorText("${data.totalBookmarks}", context)
+              ],
+            ),
+          ],
+        ),
+        backgroundColor:
+            ExpanderState.backgroundColor(FluentTheme.of(context), const {}),
+        elevation: 0,
       ),
-      mode: InkWellMode.cardOnly,
     );
   }
 
   Widget _buildTagPane(Illusts data) {
-    return InkWell(
-      isHoverable: false,
+    return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 1),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 2,
-          runSpacing: 0,
-          children: [for (var f in data.tags) buildRow(context, f)],
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 2,
+            runSpacing: 0,
+            children: [for (var f in data.tags) buildRow(context, f)],
+          ),
         ),
+        backgroundColor:
+            ExpanderState.backgroundColor(FluentTheme.of(context), const {}),
+        elevation: 0,
       ),
-      mode: InkWellMode.cardOnly,
     );
   }
 

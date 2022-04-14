@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:pixez/component/fluent_ink_well.dart';
+import 'package:pixez/component/fluent/fluent_ink_well.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';

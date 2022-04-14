@@ -1,5 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:pixez/component/fluent_ink_well.dart';
+import 'package:pixez/component/fluent/fluent_ink_well.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';

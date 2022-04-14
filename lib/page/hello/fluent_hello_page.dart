@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
@@ -12,7 +13,14 @@ import 'package:pixez/page/hello/new/new_page.dart';
 import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/saucenao/sauce_store.dart';
+import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/search/suggest/suggestion_store.dart';
+import 'package:pixez/page/soup/soup_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,7 +75,7 @@ class FluentHelloPageState extends State<FluentHelloPage> {
         return PreviewPage();
     }),
     NewPage(),
-    // SearchPage(),
+    SearchPage(),
   ];
   List<_WidgetHistoryItem> _history =
       List<_WidgetHistoryItem>.empty(growable: true);
@@ -101,11 +109,11 @@ class FluentHelloPageState extends State<FluentHelloPage> {
           _history.lastWhere((element) => element.content == content),
         );
       } else {
-        _history.removeLast();
-        if (_history.isEmpty)
+        if (_history.length < 2)
           pageIndex = _lastPage;
         else
-          pageIndex = _pageLists.length + _history.length - 1;
+          pageIndex = _pageLists.length + _history.length - 2;
+        _history.removeLast();
       }
     });
   }
@@ -123,6 +131,7 @@ class FluentHelloPageState extends State<FluentHelloPage> {
     });
     initPlatformState();
     WidgetkitPlugin.notify();
+    _initSearch();
   }
 
   Future<void> initPlatformState() async {
@@ -146,16 +155,20 @@ class FluentHelloPageState extends State<FluentHelloPage> {
   Widget _buildNavigationView(BuildContext context) {
     final items = List<NavigationPaneItem>.from(<NavigationPaneItem>[
       PaneItem(
-          icon: Icon(FluentIcons.home), title: Text(I18n.of(context).home)),
+        icon: Icon(FluentIcons.home),
+        title: Text(I18n.of(context).home),
+      ),
       PaneItem(
           icon: Icon(CustomIcons.leaderboard),
           title: Text(I18n.of(context).rank)),
       PaneItem(
-          icon: Icon(FluentIcons.bookmarks),
-          title: Text(I18n.of(context).quick_view)),
-      // PaneItem(
-      //     icon: Icon(FluentIcons.search),
-      //     title: Text(I18n.of(context).search)),
+        icon: Icon(FluentIcons.bookmarks),
+        title: Text(I18n.of(context).quick_view),
+      ),
+      PaneItem(
+        icon: Icon(FluentIcons.search),
+        title: Text(I18n.of(context).search),
+      ),
     ], growable: true);
 
     if (_history.isNotEmpty) {
@@ -188,11 +201,18 @@ class FluentHelloPageState extends State<FluentHelloPage> {
           )
         ]),
         autoSuggestBox: AutoSuggestBox(
+          key: GlobalKey(debugLabel: 'Search_AutoSuggestBox'),
           items: _suggestList,
+          controller: _filter,
           onChanged: _onAutoSuggestBoxChanged,
-          placeholder: 'Search...', // TODO: i18n
-          trailingIcon: Icon(FluentIcons.search),
+          onSelected: _onAutoSuggestBoxSelected,
+          placeholder: I18n.of(context).search,
+          trailingIcon: IconButton(
+            icon: Icon(FluentIcons.search),
+            onPressed: () {},
+          ),
         ),
+        autoSuggestBoxReplacement: const Icon(FluentIcons.search),
         items: items,
         footerItems: [
           PaneItemSeparator(),
@@ -215,12 +235,133 @@ class FluentHelloPageState extends State<FluentHelloPage> {
     );
   }
 
-  void _onAutoSuggestBoxChanged(String text, TextChangedReason reason) {}
+  _onAutoSuggestBoxChanged(String text, TextChangedReason reason) {
+    if (reason == TextChangedReason.suggestionChosen) {
+      _filter.text = '';
+      return;
+    }
+    _suggestList = List.empty(growable: true);
+    if (text.isEmpty || text == '') return;
+
+    final id = int.tryParse(text);
+    if (id != null) {
+      print('int.tryParse(text)');
+      _suggestList.addAll([
+        "${I18n.of(context).illust_id}: ${id}",
+        "${I18n.of(context).painter_id}: ${id}",
+        "Pixivision Id: ${id}",
+      ]);
+    }
+    if (_suggestionStore.autoWords?.tags.isNotEmpty ?? false) {
+      print('_suggestionStore.autoWords?.tags.isNotEmpty ?? false');
+      _suggestList.addAll(_suggestionStore.autoWords!.tags
+          .map((e) => "${e.name} \n ${e.translated_name}"));
+    }
+    setState(() {});
+  }
+
+  _onAutoSuggestBoxSelected(String text) {
+    if (text.startsWith('${I18n.of(context).illust_id}: ')) {
+      final id = int.tryParse(
+          text.replaceFirst('${I18n.of(context).illust_id}: ', ''));
+      if (id != null)
+        Leader.fluentNav(
+          context,
+          Icon(FluentIcons.image_pixel),
+          Text('图片 ${id}'),
+          IllustLightingPage(
+            id: id,
+          ),
+        );
+    } else if (text.startsWith('${I18n.of(context).painter_id}: ')) {
+      final id = int.tryParse(
+          text.replaceFirst('${I18n.of(context).painter_id}: ', ''));
+      if (id != null)
+        Leader.fluentNav(
+          context,
+          Icon(FluentIcons.image_pixel),
+          Text('用户 ${id}'),
+          UsersPage(
+            id: id,
+          ),
+        );
+    } else if (text.startsWith('Pixivision Id: ')) {
+      final id = int.tryParse(text.replaceFirst('Pixivision Id: ', ''));
+      if (id != null)
+        Leader.fluentNav(
+          context,
+          Icon(FluentIcons.image_pixel),
+          Text('Pixivision ${id}'),
+          SoupPage(
+            url: "https://www.pixivision.net/zh/a/${id}",
+            spotlight: null,
+          ),
+        );
+    } else {
+      final raw = text.split('\n');
+      final query = raw[0].trim();
+      final translated_name = raw.length > 1 ? raw[1].trim() : '';
+      if (tagGroup.length > 1) {
+        tagGroup.last = query;
+        var text = tagGroup.join(" ");
+        _filter.text = text;
+        _filter.selection =
+            TextSelection.fromPosition(TextPosition(offset: text.length));
+        setState(() {});
+      } else {
+        FocusScope.of(context).unfocus();
+        Leader.fluentNav(
+          context,
+          Icon(FluentIcons.search),
+          Text('搜索 ${query}'),
+          ResultPage(
+            word: query,
+            translatedName: translated_name,
+          ),
+        );
+      }
+    }
+  }
+
+  late TextEditingController _filter;
+  late SuggestionStore _suggestionStore;
+  late SauceStore _sauceStore;
+  FocusNode focusNode = FocusNode();
+  final tagGroup = [];
+  bool idV = false;
+  _initSearch() {
+    _suggestionStore = SuggestionStore();
+    _sauceStore = SauceStore();
+    _sauceStore.observableStream.listen((event) {
+      if (event != null && _sauceStore.results.isNotEmpty) {
+        Leader.fluentNav(
+            context,
+            Icon(FluentIcons.search),
+            Text("搜索"),
+            PageView(
+              children: _sauceStore.results
+                  .map((element) => IllustLightingPage(id: element))
+                  .toList(),
+            ));
+      } else {
+        BotToast.showText(text: "0 result");
+      }
+    });
+    var query = '';
+    _filter = TextEditingController(text: query);
+    var tags = query
+        .split(" ")
+        .map((e) => e.trim())
+        .takeWhile((value) => value.isNotEmpty);
+    if (tags.length > 1) tagGroup.addAll(tags);
+  }
 
   @override
   void dispose() {
     _sub.cancel();
     _pageController.dispose();
+    _filter.dispose();
+    _sauceStore.dispose();
     super.dispose();
   }
 }

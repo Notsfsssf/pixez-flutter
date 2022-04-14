@@ -9,7 +9,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/component/fluent_ink_well.dart';
+import 'package:pixez/component/fluent/fluent_ink_well.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/about_page.dart';

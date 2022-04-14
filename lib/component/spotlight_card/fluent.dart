@@ -19,7 +19,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/component/fluent_ink_well.dart';
+import 'package:pixez/component/fluent/fluent_ink_well.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 
