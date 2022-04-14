@@ -1,5 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -17,12 +19,14 @@ class FluentRecomUserRoadState extends RecomUserRoadStateBase {
   @override
   Widget build(BuildContext context) {
     return HoverButton(onPressed: () {
-      // TODO: Leader.fluentNav
-      Navigator.of(context).push(FluentPageRoute(builder: (context) {
-        return RecomUserPage(
+      Leader.fluentNav(
+        context,
+        Icon(FluentIcons.unknown),
+        Text(I18n.of(context).recommend_for_you),
+        RecomUserPage(
           recomUserStore: recomUserStore,
-        );
-      }));
+        ),
+      );
     }, builder: (context, state) {
       return Container(
         height: 60,
