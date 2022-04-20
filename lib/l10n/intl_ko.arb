@@ -247,11 +247,11 @@
   "temporarily_visible": "일시적으로 보임",
   "unclassified":"분류 없음",
   "max_download_task_running_count": "최대 다운로드 작업 개수",
-  "export": "Export",
-  "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
-  "recent_screen_mask" : "Recent screen mask",
-  "open_by_default":"Open by default",
-  "open_by_default_subtitle":"Allow web links to open this app",
-  "text":"text",
-  "search_word_hint": "Search title or name like"
+  "export": "내보내기",
+  "error_400_hint" : "[400] 에러 메시지가 나타날 경우, 다시 로그인할 필요가 있습니다. 이는 API나 비밀번호 변경에 의한 것입니다.",
+  "recent_screen_mask" : "최근 스크린 마스크",
+  "open_by_default":"기본 앱으로 열기",
+  "open_by_default_subtitle":"픽시브 웹페이지를 이 앱에서 열기",
+  "text":"텍스트",
+  "search_word_hint": "제목이나 작가명을 입력하세요"
 }
