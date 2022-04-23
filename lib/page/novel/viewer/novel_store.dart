@@ -16,6 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
@@ -48,6 +49,7 @@ abstract class _NovelStoreBase with Store {
 
   @action
   bookPosition(double offset) async {
+    LPrinter.d("bookPosition $offset");
     await _novelViewerPersistProvider.open();
     await _novelViewerPersistProvider
         .insert(NovelViewerPersist(novelId: id, offset: offset));
@@ -56,6 +58,7 @@ abstract class _NovelStoreBase with Store {
 
   @action
   deleteBookPosition() async {
+    LPrinter.d("deleteBookPosition");
     await _novelViewerPersistProvider.open();
     await _novelViewerPersistProvider.delete(id);
     positionBooked = false;
@@ -65,7 +68,8 @@ abstract class _NovelStoreBase with Store {
   fetch() async {
     errorMessage = null;
     try {
-      var response = await apiClient.getNovelText(id);
+      bookedOffset = 0.0;
+      final response = await apiClient.getNovelText(id);
       novelTextResponse = NovelTextResponse.fromJson(response.data);
       if (novel == null) {
         Response response = await apiClient.getNovelDetail(id);
@@ -85,6 +89,7 @@ abstract class _NovelStoreBase with Store {
       await _novelViewerPersistProvider.open();
       final result = await _novelViewerPersistProvider.getNovelPersistById(id);
       if (result != null) {
+        LPrinter.d("fetchOffset ${result.offset}");
         positionBooked = true;
         bookedOffset = result.offset;
       }

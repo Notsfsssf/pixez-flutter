@@ -25,6 +25,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_tag.dart';
@@ -58,14 +59,11 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   @override
   void initState() {
     _novelStore = widget.novelStore ?? NovelStore(widget.id, null);
-    _controller = ScrollController();
     _offsetDisposer = reaction((_) => _novelStore.bookedOffset, (_) {
-        _controller?.jumpTo(_novelStore.bookedOffset);
+      LPrinter.d("jump to ${_novelStore.bookedOffset}");
+      _controller?.jumpTo(_novelStore.bookedOffset);
     });
     _novelStore.fetch();
-    _controller?.addListener(() {
-        _localOffset = _controller!.offset;
-    });
     super.initState();
   }
 
@@ -127,8 +125,12 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           _textStyle =
               _textStyle ?? Theme.of(context).textTheme.bodyText1!.copyWith();
           if (_controller == null) {
+            LPrinter.d("init Controller ${_novelStore.bookedOffset}");
             _controller =
                 ScrollController(initialScrollOffset: _novelStore.bookedOffset);
+            _controller?.addListener(() {
+              _localOffset = _controller!.offset;
+            });
           }
           return Scaffold(
             appBar: AppBar(
@@ -159,7 +161,11 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                       _novelStore.bookPosition(_controller!.offset);
                   },
                   icon: Icon(Icons.history),
-                  color: Theme.of(context).textTheme.bodyText1!.color!.withAlpha(_novelStore.positionBooked ? 225 : 120),
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .color!
+                      .withAlpha(_novelStore.positionBooked ? 225 : 120),
                 ),
                 IconButton(
                   icon: Icon(
