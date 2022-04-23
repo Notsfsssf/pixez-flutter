@@ -16,17 +16,44 @@
 
 import 'dart:io';
 
-import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+
+mixin SelectableHtmlTextFactory on WidgetFactory {
+  bool get selectableText => true;
+
+  SelectionChangedCallback? get selectableTextOnChanged => null;
+
+  @override
+  Widget? buildText(BuildMetadata meta, TextStyleHtml tsh, InlineSpan text) {
+    if (selectableText &&
+        meta.overflow == TextOverflow.clip &&
+        text is TextSpan) {
+      return SelectableText.rich(
+        text,
+        maxLines: meta.maxLines > 0 ? meta.maxLines : null,
+        textAlign: tsh.textAlign ?? TextAlign.start,
+        textDirection: tsh.textDirection,
+        textScaleFactor: 1.0,
+        selectionControls: TranslateTextSelectionControls(),
+        onSelectionChanged: selectableTextOnChanged,
+      );
+    }
+
+    return super.buildText(meta, tsh, text);
+  }
+}
+
+class SelectableHtmlWidgetFactory extends WidgetFactory with SelectableHtmlTextFactory {
+  @override
+  SelectionChangedCallback? get selectableTextOnChanged => (selection, cause) {};
+}
 
 class SelectableHtml extends StatefulWidget {
   final String data;
@@ -38,91 +65,39 @@ class SelectableHtml extends StatefulWidget {
 }
 
 class _SelectableHtmlState extends State<SelectableHtml> {
-  bool l = false;
-
   @override
   void initState() {
     super.initState();
-
     initMethod();
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onLongPress: () async {
-        setState(() {
-          l = true;
-        });
-      },
-      child: l
-          ? Container(
-              child: Column(
-                children: [
-                  (Platform.isAndroid)
-                      ? ExtendedText(
-                          (widget.data).toTranslateText(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                          selectionEnabled: true,
-                          selectionControls: TranslateTextSelectionControls(),
-                        )
-                      : ExtendedText(
-                          (widget.data).toTranslateText(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                          selectionEnabled: true,
-                        ),
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (supportTranslate)
-                        InkWell(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.translate),
-                          ),
-                          onTap: () {
-                            SupportorPlugin.start(
-                                (widget.data).toTranslateText());
-                          },
-                        ),
-                      InkWell(
-                          child: Icon(Icons.close),
-                          onTap: () {
-                            setState(() {
-                              l = false;
-                            });
-                          })
-                    ],
-                  )
-                ],
-              ),
-            )
-          : HtmlWidget(
-              widget.data,
-              customStylesBuilder: (e) {
-                if (e.attributes.containsKey('href')) {
-                  final color = userSetting.themeData.colorScheme.primary;
-                  return {
-                    'color': '#${color.value.toRadixString(16).substring(2, 8)}'
-                  };
-                }
-                return null;
-              },
-              onTapUrl: (String url) async {
-                try {
-                  if (url.startsWith("pixiv")) {
-                    Leader.pushWithUri(context, Uri.parse(url));
-                  } else
-                    await launch(url);
-                } catch (e) {
-                  Share.share(url);
-                }
-                return true;
-              },
-            ),
-    );
+    return HtmlWidget(
+            widget.data,
+            customStylesBuilder: (e) {
+              if (e.attributes.containsKey('href')) {
+                final color = userSetting.themeData.colorScheme.primary;
+                return {
+                  'color': '#${color.value.toRadixString(16).substring(2, 8)}'
+                };
+              }
+              return null;
+            },
+            factoryBuilder: supportTranslate? () => SelectableHtmlWidgetFactory():(null),
+            isSelectable: true,
+            onTapUrl: (String url) async {
+              try {
+                if (url.startsWith("pixiv")) {
+                  Leader.pushWithUri(context, Uri.parse(url));
+                } else
+                  await launchUrl(Uri.parse(url));
+              } catch (e) {
+                Share.share(url);
+              }
+              return true;
+            },
+          );
   }
 
   bool supportTranslate = false;

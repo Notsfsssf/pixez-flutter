@@ -150,10 +150,8 @@ class TextSelectionToolbar extends StatelessWidget {
       return Container(width: -1.0, height: 0.0);
     }
 
-    return Material(
-      elevation: 0.0,
+    return Card(
       child: Wrap(children: items),
-      borderRadius: const BorderRadius.all(Radius.circular(9.0)),
     );
   }
 }

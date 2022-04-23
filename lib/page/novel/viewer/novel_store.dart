@@ -14,11 +14,13 @@
  *
  */
 
+
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
+import 'package:pixez/models/novel_viewer_persist.dart';
 import 'package:pixez/network/api_client.dart';
 
 part 'novel_store.g.dart';
@@ -36,6 +38,18 @@ abstract class _NovelStoreBase with Store {
   NovelTextResponse? novelTextResponse;
   @observable
   String? errorMessage;
+  @observable
+  bool positionBooked = false;
+
+  NovelViewerPersistProvider _novelViewerPersistProvider =
+      NovelViewerPersistProvider();
+
+  @action
+  bookPosition(double offset) async {
+    _novelViewerPersistProvider.open();
+    _novelViewerPersistProvider
+        .insert(NovelViewerPersist(novelId: id, offset: offset));
+  }
 
   @action
   fetch() async {
