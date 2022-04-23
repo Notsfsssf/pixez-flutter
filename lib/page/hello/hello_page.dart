@@ -59,7 +59,7 @@ class _HelloPageState extends State<HelloPage> {
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: userSetting.welcomePageNum);
     super.initState();
-    saveStore.context = this.context;
+    saveStore.ctx = this.context;
     saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });

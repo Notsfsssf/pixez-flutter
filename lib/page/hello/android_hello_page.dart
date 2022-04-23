@@ -229,7 +229,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: index);
     super.initState();
-    saveStore.context = this.context;
+    saveStore.ctx = this.context;
     saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });
