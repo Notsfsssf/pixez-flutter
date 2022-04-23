@@ -49,8 +49,16 @@ abstract class _NovelStoreBase with Store {
   @action
   bookPosition(double offset) async {
     await _novelViewerPersistProvider.open();
-    _novelViewerPersistProvider
+    await _novelViewerPersistProvider
         .insert(NovelViewerPersist(novelId: id, offset: offset));
+    positionBooked = true;
+  }
+
+  @action
+  deleteBookPosition() async {
+    await _novelViewerPersistProvider.open();
+    await _novelViewerPersistProvider.delete(id);
+    positionBooked = false;
   }
 
   @action
@@ -77,10 +85,8 @@ abstract class _NovelStoreBase with Store {
       await _novelViewerPersistProvider.open();
       final result = await _novelViewerPersistProvider.getNovelPersistById(id);
       if (result != null) {
-        final offset = result.offset;
-        if (offset > 0) {
-          bookedOffset = offset;
-        }
+        positionBooked = true;
+        bookedOffset = result.offset;
       }
     } catch (e) {}
   }

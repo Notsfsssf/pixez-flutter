@@ -60,15 +60,11 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     _novelStore = widget.novelStore ?? NovelStore(widget.id, null);
     _controller = ScrollController();
     _offsetDisposer = reaction((_) => _novelStore.bookedOffset, (_) {
-      if (_novelStore.bookedOffset > 0) {
         _controller?.jumpTo(_novelStore.bookedOffset);
-      }
     });
     _novelStore.fetch();
     _controller?.addListener(() {
-      if (_controller!.offset > 0) {
         _localOffset = _controller!.offset;
-      }
     });
     super.initState();
   }
@@ -76,7 +72,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   @override
   void dispose() {
     _offsetDisposer?.call();
-    if (_localOffset > 0) {
+    if (_novelStore.positionBooked) {
       _novelStore.bookPosition(_localOffset);
     }
     _controller?.dispose();
@@ -154,6 +150,16 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               actions: <Widget>[
                 NovelBookmarkButton(
                   novel: _novelStore.novel!,
+                ),
+                IconButton(
+                  onPressed: () {
+                    if (_novelStore.positionBooked)
+                      _novelStore.deleteBookPosition();
+                    else
+                      _novelStore.bookPosition(_controller!.offset);
+                  },
+                  icon: Icon(Icons.history),
+                  color: Theme.of(context).textTheme.bodyText1!.color!.withAlpha(_novelStore.positionBooked ? 225 : 120),
                 ),
                 IconButton(
                   icon: Icon(
