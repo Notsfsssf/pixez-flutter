@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
@@ -41,12 +40,15 @@ abstract class _NovelStoreBase with Store {
   @observable
   bool positionBooked = false;
 
+  @observable
+  double bookedOffset = 0.0;
+
   NovelViewerPersistProvider _novelViewerPersistProvider =
       NovelViewerPersistProvider();
 
   @action
   bookPosition(double offset) async {
-    _novelViewerPersistProvider.open();
+    await _novelViewerPersistProvider.open();
     _novelViewerPersistProvider
         .insert(NovelViewerPersist(novelId: id, offset: offset));
   }
@@ -62,9 +64,24 @@ abstract class _NovelStoreBase with Store {
         novel = Novel.fromJson(response.data['novel']);
       }
       novelHistoryStore.insert(novel!);
+      fetchOffset();
     } catch (e) {
       print(e);
       errorMessage = e.toString();
     }
+  }
+
+  @action
+  fetchOffset() async {
+    try {
+      await _novelViewerPersistProvider.open();
+      final result = await _novelViewerPersistProvider.getNovelPersistById(id);
+      if (result != null) {
+        final offset = result.offset;
+        if (offset > 0) {
+          bookedOffset = offset;
+        }
+      }
+    } catch (e) {}
   }
 }

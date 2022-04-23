@@ -52,7 +52,7 @@ class NovelViewerPersistProvider {
 create table $tableNovelViewerPersist ( 
   $cid integer primary key autoincrement, 
   $cNovel_id integer not null,
-  $cOffset REAL NOT NULL,
+  $cOffset REAL NOT NULL
   )
 ''');
     });

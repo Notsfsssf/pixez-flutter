@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
@@ -49,20 +50,36 @@ class NovelViewerPage extends StatefulWidget {
 }
 
 class _NovelViewerPageState extends State<NovelViewerPage> {
-  late ScrollController _controller;
+  ScrollController? _controller;
   late NovelStore _novelStore;
+  ReactionDisposer? _offsetDisposer;
+  double _localOffset = 0.0;
 
   @override
   void initState() {
     _novelStore = widget.novelStore ?? NovelStore(widget.id, null);
-    _novelStore.fetch();
     _controller = ScrollController();
+    _offsetDisposer = reaction((_) => _novelStore.bookedOffset, (_) {
+      if (_novelStore.bookedOffset > 0) {
+        _controller?.jumpTo(_novelStore.bookedOffset);
+      }
+    });
+    _novelStore.fetch();
+    _controller?.addListener(() {
+      if (_controller!.offset > 0) {
+        _localOffset = _controller!.offset;
+      }
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _offsetDisposer?.call();
+    if (_localOffset > 0) {
+      _novelStore.bookPosition(_localOffset);
+    }
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -113,6 +130,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             _novelStore.novel != null) {
           _textStyle =
               _textStyle ?? Theme.of(context).textTheme.bodyText1!.copyWith();
+          if (_controller == null) {
+            _controller =
+                ScrollController(initialScrollOffset: _novelStore.bookedOffset);
+          }
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
