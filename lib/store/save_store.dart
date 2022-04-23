@@ -75,7 +75,7 @@ abstract class _SaveStoreBase with Store {
   void listenBehavior(SaveStream stream) {
     switch (stream.state) {
       case SaveState.SUCCESS:
-        Toaster.downloadOk("${stream.data.title} ${I18n.of(context!).saved}");
+        Toaster.downloadOk("${stream.data.title} ${I18n.of(ctx!).saved}");
         break;
       case SaveState.JOIN:
         BotToast.showCustomText(
@@ -90,7 +90,7 @@ abstract class _SaveStoreBase with Store {
                         IconButton(
                             icon: Icon(Icons.arrow_downward),
                             onPressed: () {
-                              Navigator.of(context!, rootNavigator: true)
+                              Navigator.of(ctx!, rootNavigator: true)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return JobPage();
                               }));
@@ -98,7 +98,7 @@ abstract class _SaveStoreBase with Store {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(context!).append_to_query}"),
+                          child: Text("${I18n.of(ctx!).append_to_query}"),
                         )
                       ],
                     ),
@@ -119,7 +119,7 @@ abstract class _SaveStoreBase with Store {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(context!).already_in_query}"),
+                          child: Text("${I18n.of(ctx!).already_in_query}"),
                         )
                       ],
                     ),
@@ -144,7 +144,7 @@ abstract class _SaveStoreBase with Store {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(context!).already_saved}"),
+                          child: Text("${I18n.of(ctx!).already_saved}"),
                         )
                       ],
                     ),
@@ -155,7 +155,7 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
-  BuildContext? context;
+  BuildContext? ctx;
 
   late StreamController<SaveStream> streamController;
   late ObservableStream<SaveStream> saveStream;
