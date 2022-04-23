@@ -126,74 +126,14 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 },
               ),
               title: Text(
-                  _novelStore.novelTextResponse!.novelText.length.toString()),
+                _novelStore.novelTextResponse!.novelText.length.toString(),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               backgroundColor: Colors.transparent,
               actions: <Widget>[
                 NovelBookmarkButton(
                   novel: _novelStore.novel!,
                 ),
-                IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Theme.of(context).textTheme.bodyText1!.color,
-                    ),
-                    onPressed: () async {
-                      await showModalBottomSheet(
-                          context: context,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                          ),
-                          builder: (context) {
-                            return StatefulBuilder(builder: (context, setB) {
-                              return SafeArea(
-                                  child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Container(
-                                        child: Icon(Icons.text_fields),
-                                        margin: EdgeInsets.only(left: 16),
-                                      ),
-                                      Container(
-                                        child: Text(_textStyle!.fontSize!
-                                            .toInt()
-                                            .toString()),
-                                        margin: EdgeInsets.only(left: 16),
-                                      ),
-                                      Expanded(
-                                          child: Slider(
-                                              value: _textStyle!.fontSize! / 32,
-                                              onChanged: (v) {
-                                                setB(() {
-                                                  _textStyle = _textStyle!
-                                                      .copyWith(
-                                                          fontSize: v * 32);
-                                                });
-                                                userSetting
-                                                    .setNovelFontsizeWithoutSave(
-                                                        v * 32);
-                                              })),
-                                    ],
-                                  )
-                                ],
-                              ));
-                            });
-                          });
-                      userSetting.setNovelFontsize(_textStyle!.fontSize!);
-                    }),
-                IconButton(
-                    icon: Icon(
-                      Icons.share,
-                      color: Theme.of(context).textTheme.bodyText1!.color,
-                    ),
-                    onPressed: () {
-                      Share.share(
-                          "https://www.pixiv.net/novel/show.php?id=${widget.id}");
-                    }),
                 IconButton(
                   icon: Icon(
                     Icons.more_vert,
@@ -288,6 +228,50 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         );
       },
     );
+  }
+
+  Future<void> _showSettings(BuildContext context) async {
+    await showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16),
+          ),
+        ),
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setB) {
+            return SafeArea(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      child: Icon(Icons.text_fields),
+                      margin: EdgeInsets.only(left: 16),
+                    ),
+                    Container(
+                      child: Text(_textStyle!.fontSize!.toInt().toString()),
+                      margin: EdgeInsets.only(left: 16),
+                    ),
+                    Expanded(
+                        child: Slider(
+                            value: _textStyle!.fontSize! / 32,
+                            onChanged: (v) {
+                              setB(() {
+                                _textStyle =
+                                    _textStyle!.copyWith(fontSize: v * 32);
+                              });
+                              userSetting.setNovelFontsizeWithoutSave(v * 32);
+                            })),
+                  ],
+                )
+              ],
+            ));
+          });
+        });
+    userSetting.setNovelFontsize(_textStyle!.fontSize!);
   }
 
   Future _longPressTag(BuildContext context, Tag f) async {
@@ -427,6 +411,27 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   child: Text('Next'),
                 ),
                 buildListTile(_novelStore.novelTextResponse!.seriesNext),
+                ListTile(
+                  title: Text(I18n.of(context).setting),
+                  leading: Icon(
+                    Icons.settings,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showSettings(context);
+                  },
+                ),
+                ListTile(
+                  title: Text(I18n.of(context).share),
+                  leading: Icon(
+                    Icons.share,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Share.share(
+                        "https://www.pixiv.net/novel/show.php?id=${widget.id}");
+                  },
+                ),
               ],
             ),
           );
