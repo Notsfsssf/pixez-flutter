@@ -91,7 +91,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
                 if (url.startsWith("pixiv")) {
                   Leader.pushWithUri(context, Uri.parse(url));
                 } else
-                  await launchUrl(Uri.parse(url));
+                  await launchUrl(Uri.parse(url),mode: LaunchMode.externalNonBrowserApplication);
               } catch (e) {
                 Share.share(url);
               }
