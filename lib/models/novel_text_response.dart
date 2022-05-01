@@ -38,6 +38,8 @@ class NovelTextResponse {
     required this.seriesNext,
   });
 
+  Map<String, dynamic> toJson() => _$NovelTextResponseToJson(this);
+
   factory NovelTextResponse.fromJson(Map<String, dynamic> json) =>
       _$NovelTextResponseFromJson(json);
 }

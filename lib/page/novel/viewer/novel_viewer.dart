@@ -14,6 +14,9 @@
  *
  */
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +24,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_tag.dart';
@@ -38,6 +43,7 @@ import 'package:pixez/page/novel/user/novel_user_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:path/path.dart' as Path;
 
 class NovelViewerPage extends StatefulWidget {
   final int id;
@@ -445,6 +451,12 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 ),
                 buildListTile(_novelStore.novelTextResponse!.seriesNext),
                 ListTile(
+                  title: Text(I18n.of(context).export),
+                  onTap: () {
+                    _export();
+                  },
+                ),
+                ListTile(
                   title: Text(I18n.of(context).setting),
                   leading: Icon(
                     Icons.settings,
@@ -487,5 +499,32 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     )));
       },
     );
+  }
+
+  void _export() async {
+    if (_novelStore.novelTextResponse == null) return;
+    if (Platform.isAndroid) {
+      final path = await getExternalStorageDirectory();
+      if (path == null) return;
+      final dirPath = Path.join(path.path, "novel_export");
+      final dir = Directory(dirPath);
+      if (!dir.existsSync()) {
+        dir.createSync(recursive: true);
+      }
+      final novelDirPath =
+          Path.join(dirPath, _novelStore.novel!.title.trim().toLegal());
+      final novelDir = Directory(novelDirPath);
+      if (!novelDir.existsSync()) {
+        novelDir.createSync(recursive: true);
+      }
+      final filePath = Path.join(novelDirPath, "${_novelStore.novel!.id}.txt");
+      final jsonPath = Path.join(novelDirPath, "${_novelStore.novel!.id}.json");
+      final resultFile = File(filePath);
+      final data = _novelStore.novelTextResponse!.novelText;
+      final json = jsonEncode(_novelStore.novelTextResponse!.toJson());
+      resultFile.writeAsStringSync(data);
+      File(jsonPath).writeAsStringSync(json);
+      LPrinter.d("path: $filePath");
+    }
   }
 }
