@@ -259,33 +259,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
   }
 
   Widget _buildContent(BuildContext context, Illusts? data) {
-    final height = data != null
-        ? ((data.height.toDouble() / data.width) *
-            MediaQuery.of(context).size.width)
-        : 150.0;
-    if (_illustStore.errorMessage != null)
-      return Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(':(', style: Theme.of(context).textTheme.headline4),
-            ),
-            Text(
-              '${_illustStore.errorMessage}',
-              maxLines: 5,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _illustStore.fetch();
-              },
-              child: Text(I18n.of(context).refresh),
-            )
-          ],
-        ),
-      );
+    if (_illustStore.errorMessage != null) return _buildErrorContent(context);
     if (data == null)
       return Container(
         child: Center(
@@ -308,80 +282,7 @@ class _IllustLightingPageState extends State<IllustLightingPage>
           if (userSetting.isBangs || ((data.width / data.height) > 5))
             SliverToBoxAdapter(
                 child: Container(height: MediaQuery.of(context).padding.top)),
-          if (data.type == "ugoira")
-            SliverToBoxAdapter(
-              child: NullHero(
-                tag: widget.heroString,
-                child: UgoiraLoader(
-                  id: widget.id,
-                  illusts: data,
-                ),
-              ),
-            ),
-          if (data.type != "ugoira")
-            data.pageCount == 1
-                ? SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                    String url = userSetting.pictureQuality == 1
-                        ? data.imageUrls.large
-                        : data.imageUrls.medium;
-                    if (data.type == "manga") {
-                      if (userSetting.mangaQuality == 0)
-                        url = data.imageUrls.medium;
-                      else if (userSetting.mangaQuality == 1)
-                        url = data.imageUrls.large;
-                      else
-                        url = data.metaSinglePage!.originalImageUrl!;
-                    }
-                    Widget placeWidget = Container(height: height);
-                    return InkWell(
-                      onLongPress: () {
-                        _pressSave(data, 0);
-                      },
-                      onTap: () {
-                        Leader.push(
-                            context,
-                            PhotoZoomPage(
-                              index: 0,
-                              illusts: data,
-                            ));
-                      },
-                      child: NullHero(
-                        tag: widget.heroString,
-                        child: PixivImage(
-                          url,
-                          fade: false,
-                          width: MediaQuery.of(context).size.width,
-                          placeWidget: (url != data.imageUrls.medium)
-                              ? PixivImage(
-                                  data.imageUrls.medium,
-                                  width: MediaQuery.of(context).size.width,
-                                  placeWidget: placeWidget,
-                                  fade: false,
-                                )
-                              : placeWidget,
-                        ),
-                      ),
-                    );
-                  }, childCount: 1))
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                    return InkWell(
-                        onLongPress: () {
-                          _pressSave(data, index);
-                        },
-                        onTap: () {
-                          Leader.push(
-                              context,
-                              PhotoZoomPage(
-                                index: index,
-                                illusts: data,
-                              ));
-                        },
-                        child: _buildIllustsItem(index, data, height));
-                  }, childCount: data.metaPages.length)),
+          ..._buildPhotoList(data),
           SliverToBoxAdapter(
             child: _buildNameAvatar(context, data),
           ),
@@ -501,6 +402,114 @@ class _IllustLightingPageState extends State<IllustLightingPage>
               }, childCount: _aboutStore.illusts.length),
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3))
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildPhotoList(Illusts data) {
+    final height = data != null
+        ? ((data.height.toDouble() / data.width) *
+            MediaQuery.of(context).size.width)
+        : 150.0;
+    return [
+      if (data.type == "ugoira")
+        SliverToBoxAdapter(
+          child: NullHero(
+            tag: widget.heroString,
+            child: UgoiraLoader(
+              id: widget.id,
+              illusts: data,
+            ),
+          ),
+        ),
+      if (data.type != "ugoira")
+        data.pageCount == 1
+            ? SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                String url = userSetting.pictureQuality == 1
+                    ? data.imageUrls.large
+                    : data.imageUrls.medium;
+                if (data.type == "manga") {
+                  if (userSetting.mangaQuality == 0)
+                    url = data.imageUrls.medium;
+                  else if (userSetting.mangaQuality == 1)
+                    url = data.imageUrls.large;
+                  else
+                    url = data.metaSinglePage!.originalImageUrl!;
+                }
+                Widget placeWidget = Container(height: height);
+                return InkWell(
+                  onLongPress: () {
+                    _pressSave(data, 0);
+                  },
+                  onTap: () {
+                    Leader.push(
+                        context,
+                        PhotoZoomPage(
+                          index: 0,
+                          illusts: data,
+                        ));
+                  },
+                  child: NullHero(
+                    tag: widget.heroString,
+                    child: PixivImage(
+                      url,
+                      fade: false,
+                      width: MediaQuery.of(context).size.width,
+                      placeWidget: (url != data.imageUrls.medium)
+                          ? PixivImage(
+                              data.imageUrls.medium,
+                              width: MediaQuery.of(context).size.width,
+                              placeWidget: placeWidget,
+                              fade: false,
+                            )
+                          : placeWidget,
+                    ),
+                  ),
+                );
+              }, childCount: 1))
+            : SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                return InkWell(
+                    onLongPress: () {
+                      _pressSave(data, index);
+                    },
+                    onTap: () {
+                      Leader.push(
+                          context,
+                          PhotoZoomPage(
+                            index: index,
+                            illusts: data,
+                          ));
+                    },
+                    child: _buildIllustsItem(index, data, height));
+              }, childCount: data.metaPages.length)),
+    ];
+  }
+
+  Center _buildErrorContent(BuildContext context) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(':(', style: Theme.of(context).textTheme.headline4),
+          ),
+          Text(
+            '${_illustStore.errorMessage}',
+            maxLines: 5,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _illustStore.fetch();
+            },
+            child: Text(I18n.of(context).refresh),
+          )
         ],
       ),
     );
