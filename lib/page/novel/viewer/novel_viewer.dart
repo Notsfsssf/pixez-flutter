@@ -17,6 +17,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -424,8 +425,14 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ListTile(
-                  subtitle: Text(_novelStore.novel!.user.name),
-                  title: Text(_novelStore.novel!.title),
+                  subtitle: Text(
+                    _novelStore.novel!.user.name,
+                    maxLines: 2,
+                  ),
+                  title: Text(
+                    _novelStore.novel!.title,
+                    maxLines: 2,
+                  ),
                   leading: PainterAvatar(
                     url: _novelStore.novel!.user.profileImageUrls.medium,
                     id: _novelStore.novel!.user.id,
@@ -452,6 +459,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 buildListTile(_novelStore.novelTextResponse!.seriesNext),
                 ListTile(
                   title: Text(I18n.of(context).export),
+                  leading: Icon(Icons.folder_zip),
                   onTap: () {
                     _export();
                   },
@@ -511,20 +519,28 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
       }
+      final allPath = Path.join(dirPath, "All");
+      final allDir = Directory(allPath);
+      if (!allDir.existsSync()) {
+        allDir.createSync(recursive: true);
+      }
       final novelDirPath =
           Path.join(dirPath, _novelStore.novel!.title.trim().toLegal());
       final novelDir = Directory(novelDirPath);
       if (!novelDir.existsSync()) {
         novelDir.createSync(recursive: true);
       }
+      final fileInAllPath = Path.join(allPath,
+          "${_novelStore.novel!.title.trim().toLegal()}.txt");
       final filePath = Path.join(novelDirPath, "${_novelStore.novel!.id}.txt");
-      final jsonPath = Path.join(novelDirPath, "${_novelStore.novel!.id}.json");
       final resultFile = File(filePath);
       final data = _novelStore.novelTextResponse!.novelText;
-      final json = jsonEncode(_novelStore.novelTextResponse!.toJson());
+      // final json = jsonEncode(_novelStore.novelTextResponse!.toJson());
       resultFile.writeAsStringSync(data);
-      File(jsonPath).writeAsStringSync(json);
+      File(fileInAllPath).writeAsStringSync(data);
+      // File(jsonPath).writeAsStringSync(json);
       LPrinter.d("path: $filePath");
+      BotToast.showText(text: "export ${filePath}");
     }
   }
 }
