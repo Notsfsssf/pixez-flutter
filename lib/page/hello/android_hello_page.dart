@@ -121,6 +121,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
     return Scaffold(
         body: _buildPageContent(context),
+        extendBody: true,
         floatingActionButton: ValueListenableBuilder<bool>(
           valueListenable: isFullscreen,
           builder: (context, value, child) => AnimatedToggleFullscreenFAB(

@@ -164,7 +164,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         locale: userSetting.locale,
         home: Builder(builder: (context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+              value: SystemUiOverlayStyle(
+                systemNavigationBarColor: Colors.transparent,
+                systemNavigationBarDividerColor: Colors.transparent,
+                statusBarColor: Colors.transparent,
+              ),
               child: SplashPage());
         }),
         title: 'PixEz',

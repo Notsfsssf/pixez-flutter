@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2020. by perol_notsf, All rights reserved
   ~
   ~ This program is free software: you can redistribute it and/or modify it under
@@ -20,10 +19,10 @@
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when
              Flutter draws its first frame -->
-<!--        <item name="android:windowBackground">@drawable/launch_background</item>-->
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
     <!-- Theme applied to the Android Window as soon as the process has started.
          This theme determines the color of the Android Window while your
@@ -32,10 +31,11 @@
          
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
-<!--        <item name="android:windowBackground">@android:color/background_dark</item>-->
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:windowBackground">@drawable/normal_background</item>-->
+        <!--        <item name="android:windowBackground">@android:color/background_dark</item>-->
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
 
 </resources>

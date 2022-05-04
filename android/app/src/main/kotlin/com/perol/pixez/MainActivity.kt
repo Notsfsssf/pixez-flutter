@@ -59,18 +59,18 @@ class MainActivity : FlutterActivity() {
     private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
     lateinit var sharedPreferences: SharedPreferences
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        // Aligns the Flutter view vertically with the window.
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            // Disable the Android splash screen fade out animation to avoid
-//            // a flicker before the similar frame is drawn in Flutter.
-//            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
-//        }
-//
-//        super.onCreate(savedInstanceState)
-//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // Aligns the Flutter view vertically with the window.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Disable the Android splash screen fade out animation to avoid
+            // a flicker before the similar frame is drawn in Flutter.
+            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
+        }
+
+        super.onCreate(savedInstanceState)
+    }
 
     private fun splicingUrl(parentUri: String, fileName: String) = if (parentUri.endsWith(":")) {
         parentUri + fileName
