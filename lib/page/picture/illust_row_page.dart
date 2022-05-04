@@ -14,8 +14,9 @@
  *
  */
 
+import 'dart:ui';
+
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -35,7 +36,6 @@ import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
-import 'package:pixez/page/picture/illust_row_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
@@ -48,50 +48,19 @@ import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
 
-class IllustLightingPage extends StatefulWidget {
+class IllustRowPage extends StatefulWidget {
   final int id;
   final String? heroString;
   final IllustStore? store;
 
-  const IllustLightingPage(
-      {Key? key, required this.id, this.heroString, this.store})
+  const IllustRowPage({Key? key, required this.id, this.heroString, this.store})
       : super(key: key);
 
   @override
-  State<IllustLightingPage> createState() => _IllustLightingPageState();
+  _IllustRowPageState createState() => _IllustRowPageState();
 }
 
-class _IllustLightingPageState extends State<IllustLightingPage> {
-  @override
-  Widget build(BuildContext context) {
-    if (kDebugMode) //TODO 
-      return IllustRowPage(
-        id: widget.id,
-        store: widget.store,
-        heroString: widget.heroString,
-      );
-    return IllustVerticalPage(
-      id: widget.id,
-      store: widget.store,
-      heroString: widget.heroString,
-    );
-  }
-}
-
-class IllustVerticalPage extends StatefulWidget {
-  final int id;
-  final String? heroString;
-  final IllustStore? store;
-
-  const IllustVerticalPage(
-      {Key? key, required this.id, this.heroString, this.store})
-      : super(key: key);
-
-  @override
-  _IllustVerticalPageState createState() => _IllustVerticalPageState();
-}
-
-class _IllustVerticalPageState extends State<IllustVerticalPage>
+class _IllustRowPageState extends State<IllustRowPage>
     with AutomaticKeepAliveClientMixin {
   UserStore? userStore;
   late IllustStore _illustStore;
@@ -112,7 +81,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   @override
-  void didUpdateWidget(covariant IllustVerticalPage oldWidget) {
+  void didUpdateWidget(covariant IllustRowPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.store != widget.store) {
       _illustStore = widget.store ?? IllustStore(widget.id, null);
@@ -157,15 +126,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                      icon: Icon(Icons.expand_less),
-                      onPressed: () {
-                        double p = _scrollController.position.maxScrollExtent -
-                            (_aboutStore.illusts.length / 3.0) *
-                                (MediaQuery.of(context).size.width / 3.0);
-                        if (p < 0) p = 0;
-                        _scrollController.position.jumpTo(p);
-                      }),
                   IconButton(
                       icon: Icon(Icons.more_vert),
                       onPressed: () {
@@ -300,143 +260,179 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
         ),
       );
-    return SmartRefresher(
-      controller: _refreshController,
-      enablePullDown: false,
-      enablePullUp: true,
-      footer: _buildCustomFooter(),
-      onLoading: () {
-        _aboutStore.next();
-      },
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          if (userSetting.isBangs || ((data.width / data.height) > 5))
-            SliverToBoxAdapter(
-                child: Container(height: MediaQuery.of(context).padding.top)),
-          ..._buildPhotoList(data),
-          SliverToBoxAdapter(
-            child: _buildNameAvatar(context, data),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(I18n.of(context).illust_id),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText(data.id.toString(), context),
-                      Container(
-                        width: 20.0,
-                      ),
-                      Text(I18n.of(context).pixel),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText("${data.width}x${data.height}", context)
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(I18n.of(context).total_view),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText(data.totalView.toString(), context),
-                      Container(
-                        width: 20.0,
-                      ),
-                      Text(I18n.of(context).total_bookmark),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText("${data.totalBookmarks}", context)
-                    ],
-                  ),
-                ],
-              ),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: PixivProvider.url(data!.imageUrls.medium),
+            fit: BoxFit.cover),
+      ),
+      child: Stack(
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
+            child: Container(
+              color: Colors.black.withOpacity(0.1),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 2,
-                runSpacing: 0,
-                children: [for (var f in data.tags) buildRow(context, f)],
+          Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.height,
+                child: CustomScrollView(
+                    slivers: [..._buildPhotoList(data), _buildRecom()]),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SelectableHtml(
-                  data: data.caption.isEmpty ? "~" : data.caption,
+              Expanded(
+                child: Card(
+                  child: SmartRefresher(
+                    controller: _refreshController,
+                    enablePullDown: false,
+                    enablePullUp: true,
+                    footer: _buildCustomFooter(),
+                    onLoading: () {
+                      _aboutStore.next();
+                    },
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      slivers: [
+                        SliverToBoxAdapter(
+                            child: Container(
+                                height: MediaQuery.of(context).padding.top)),
+                        SliverToBoxAdapter(
+                          child: _buildNameAvatar(context, data),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(I18n.of(context).illust_id),
+                                    Container(
+                                      width: 10.0,
+                                    ),
+                                    colorText(data.id.toString(), context),
+                                    Container(
+                                      width: 20.0,
+                                    ),
+                                    Text(I18n.of(context).pixel),
+                                    Container(
+                                      width: 10.0,
+                                    ),
+                                    colorText(
+                                        "${data.width}x${data.height}", context)
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(I18n.of(context).total_view),
+                                    Container(
+                                      width: 10.0,
+                                    ),
+                                    colorText(
+                                        data.totalView.toString(), context),
+                                    Container(
+                                      width: 20.0,
+                                    ),
+                                    Text(I18n.of(context).total_bookmark),
+                                    Container(
+                                      width: 10.0,
+                                    ),
+                                    colorText("${data.totalBookmarks}", context)
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 2,
+                              runSpacing: 0,
+                              children: [
+                                for (var f in data.tags) buildRow(context, f)
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SelectableHtml(
+                                data: data.caption.isEmpty ? "~" : data.caption,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextButton(
+                              child: Text(
+                                I18n.of(context).view_comment,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodyText1!,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CommentPage(
+                                          id: data.id,
+                                        )));
+                              },
+                            ),
+                          ),
+                        ),
+                        // SliverToBoxAdapter(
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.all(8.0),
+                        //     child: Text(I18n.of(context).about_picture),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextButton(
-                child: Text(
-                  I18n.of(context).view_comment,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1!,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => CommentPage(
-                            id: data.id,
-                          )));
-                },
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(I18n.of(context).about_picture),
-            ),
-          ),
-          SliverGrid(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                var list = _aboutStore.illusts
-                    .map((element) => IllustStore(element.id, element))
-                    .toList();
-                return InkWell(
-                  onTap: () {
-                    Leader.push(
-                        context,
-                        PictureListPage(
-                          iStores: list,
-                          store: list[index],
-                        ));
-                  },
-                  onLongPress: () {
-                    saveStore.saveImage(_aboutStore.illusts[index]);
-                  },
-                  child: PixivImage(
-                    _aboutStore.illusts[index].imageUrls.squareMedium,
-                    enableMemoryCache: false,
-                  ),
-                );
-              }, childCount: _aboutStore.illusts.length),
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3))
         ],
       ),
     );
+  }
+
+  SliverGrid _buildRecom() {
+    return SliverGrid(
+        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+          var list = _aboutStore.illusts
+              .map((element) => IllustStore(element.id, element))
+              .toList();
+          return InkWell(
+            onTap: () {
+              Leader.push(
+                  context,
+                  PictureListPage(
+                    iStores: list,
+                    store: list[index],
+                  ));
+            },
+            onLongPress: () {
+              saveStore.saveImage(_aboutStore.illusts[index]);
+            },
+            child: PixivImage(
+              _aboutStore.illusts[index].imageUrls.squareMedium,
+              enableMemoryCache: false,
+            ),
+          );
+        }, childCount: _aboutStore.illusts.length),
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3));
   }
 
   List<Widget> _buildPhotoList(Illusts data) {
