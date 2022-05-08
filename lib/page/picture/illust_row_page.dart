@@ -46,6 +46,7 @@ import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:quiver/strings.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustRowPage extends StatefulWidget {
@@ -260,6 +261,7 @@ class _IllustRowPageState extends State<IllustRowPage>
           ),
         ),
       );
+    final expectWidth = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -277,12 +279,13 @@ class _IllustRowPageState extends State<IllustRowPage>
           Row(
             children: [
               Container(
-                width: MediaQuery.of(context).size.height,
+                width: expectWidth,
                 child: CustomScrollView(
-                    slivers: [..._buildPhotoList(data), _buildRecom()]),
+                    slivers: [..._buildPhotoList(data, expectWidth)]),
               ),
               Expanded(
-                child: Card(
+                child: Container(
+                  color: Theme.of(context).cardColor,
                   child: SmartRefresher(
                     controller: _refreshController,
                     enablePullDown: false,
@@ -389,12 +392,13 @@ class _IllustRowPageState extends State<IllustRowPage>
                             ),
                           ),
                         ),
-                        // SliverToBoxAdapter(
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.all(8.0),
-                        //     child: Text(I18n.of(context).about_picture),
-                        //   ),
-                        // ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(I18n.of(context).about_picture),
+                          ),
+                        ),
+                        _buildRecom()
                       ],
                     ),
                   ),
@@ -435,11 +439,12 @@ class _IllustRowPageState extends State<IllustRowPage>
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3));
   }
 
-  List<Widget> _buildPhotoList(Illusts data) {
-    final height = data != null
-        ? ((data.height.toDouble() / data.width) *
-            MediaQuery.of(context).size.width)
-        : 150.0;
+  List<Widget> _buildPhotoList(Illusts data, double expectWidth) {
+    final radio = (data.height.toDouble() / data.width);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final height =
+        data != null ? (radio * MediaQuery.of(context).size.width) : 150.0;
+    final centerType = height <= screenHeight;
     return [
       if (data.type == "ugoira")
         SliverToBoxAdapter(
@@ -453,51 +458,14 @@ class _IllustRowPageState extends State<IllustRowPage>
         ),
       if (data.type != "ugoira")
         data.pageCount == 1
-            ? SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                String url = userSetting.pictureQuality == 1
-                    ? data.imageUrls.large
-                    : data.imageUrls.medium;
-                if (data.type == "manga") {
-                  if (userSetting.mangaQuality == 0)
-                    url = data.imageUrls.medium;
-                  else if (userSetting.mangaQuality == 1)
-                    url = data.imageUrls.large;
-                  else
-                    url = data.metaSinglePage!.originalImageUrl!;
-                }
-                Widget placeWidget = Container(height: height);
-                return InkWell(
-                  onLongPress: () {
-                    _pressSave(data, 0);
-                  },
-                  onTap: () {
-                    Leader.push(
-                        context,
-                        PhotoZoomPage(
-                          index: 0,
-                          illusts: data,
-                        ));
-                  },
-                  child: NullHero(
-                    tag: widget.heroString,
-                    child: PixivImage(
-                      url,
-                      fade: false,
-                      width: MediaQuery.of(context).size.width,
-                      placeWidget: (url != data.imageUrls.medium)
-                          ? PixivImage(
-                              data.imageUrls.medium,
-                              width: MediaQuery.of(context).size.width,
-                              placeWidget: placeWidget,
-                              fade: false,
-                            )
-                          : placeWidget,
-                    ),
-                  ),
-                );
-              }, childCount: 1))
+            ? (centerType
+                ? SliverFillRemaining(
+                    child: _buildPicture(data, height),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                    return _buildPicture(data, height);
+                  }, childCount: 1)))
             : SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
@@ -516,6 +484,54 @@ class _IllustRowPageState extends State<IllustRowPage>
                     child: _buildIllustsItem(index, data, height));
               }, childCount: data.metaPages.length)),
     ];
+  }
+
+  Widget _buildPicture(Illusts data, double height) {
+    return Center(child: Builder(
+      builder: (BuildContext context) {
+        String url = userSetting.pictureQuality == 1
+            ? data.imageUrls.large
+            : data.imageUrls.medium;
+        if (data.type == "manga") {
+          if (userSetting.mangaQuality == 0)
+            url = data.imageUrls.medium;
+          else if (userSetting.mangaQuality == 1)
+            url = data.imageUrls.large;
+          else
+            url = data.metaSinglePage!.originalImageUrl!;
+        }
+        Widget placeWidget = Container(height: height);
+        return InkWell(
+          onLongPress: () {
+            _pressSave(data, 0);
+          },
+          onTap: () {
+            Leader.push(
+                context,
+                PhotoZoomPage(
+                  index: 0,
+                  illusts: data,
+                ));
+          },
+          child: NullHero(
+            tag: widget.heroString,
+            child: PixivImage(
+              url,
+              fade: false,
+              width: MediaQuery.of(context).size.width,
+              placeWidget: (url != data.imageUrls.medium)
+                  ? PixivImage(
+                      data.imageUrls.medium,
+                      width: MediaQuery.of(context).size.width,
+                      placeWidget: placeWidget,
+                      fade: false,
+                    )
+                  : placeWidget,
+            ),
+          ),
+        );
+      },
+    ));
   }
 
   Center _buildErrorContent(BuildContext context) {
