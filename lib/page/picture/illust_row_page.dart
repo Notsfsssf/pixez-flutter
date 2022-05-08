@@ -43,10 +43,8 @@ import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:quiver/strings.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustRowPage extends StatefulWidget {
@@ -147,6 +145,18 @@ class _IllustRowPageState extends State<IllustRowPage>
     super.build(context);
     return Scaffold(
       extendBody: true,
+      // appBar: AppBar(
+      //   elevation: 0.0,
+      //   // iconTheme: IconTheme.of(context).copyWith(color: Theme.of(context).textTheme!.bodyText1!.color),
+      //   backgroundColor: Colors.transparent,
+      //   actions: [
+      //     IconButton(
+      //         icon: Icon(Icons.more_vert),
+      //         onPressed: () {
+      //           buildShowModalBottomSheet(context, _illustStore.illusts!);
+      //         })
+      //   ],
+      // ),
       extendBodyBehindAppBar: true,
       floatingActionButton: GestureDetector(
         onLongPress: () {
@@ -262,6 +272,10 @@ class _IllustRowPageState extends State<IllustRowPage>
         ),
       );
     final expectWidth = MediaQuery.of(context).size.height;
+    final radio = (data.height.toDouble() / data.width);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final height = (radio * expectWidth);
+    final centerType = height <= screenHeight;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -281,7 +295,7 @@ class _IllustRowPageState extends State<IllustRowPage>
               Container(
                 width: expectWidth,
                 child: CustomScrollView(
-                    slivers: [..._buildPhotoList(data, expectWidth)]),
+                    slivers: [..._buildPhotoList(data, centerType, height)]),
               ),
               Expanded(
                 child: Container(
@@ -439,12 +453,7 @@ class _IllustRowPageState extends State<IllustRowPage>
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3));
   }
 
-  List<Widget> _buildPhotoList(Illusts data, double expectWidth) {
-    final radio = (data.height.toDouble() / data.width);
-    final screenHeight = MediaQuery.of(context).size.height;
-    final height =
-        data != null ? (radio * MediaQuery.of(context).size.width) : 150.0;
-    final centerType = height <= screenHeight;
+  List<Widget> _buildPhotoList(Illusts data, bool centerType, double height) {
     return [
       if (data.type == "ugoira")
         SliverToBoxAdapter(

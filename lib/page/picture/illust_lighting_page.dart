@@ -64,7 +64,7 @@ class IllustLightingPage extends StatefulWidget {
 class _IllustLightingPageState extends State<IllustLightingPage> {
   @override
   Widget build(BuildContext context) {
-    if (false) //TODO
+    if (MediaQuery.of(context).orientation == Orientation.landscape) //TODO
       return IllustRowPage(
         id: widget.id,
         store: widget.store,
