@@ -106,7 +106,7 @@ class _LightingListState extends State<LightingList> {
                 child: Container(
                   height: 50.0,
                   width: 50.0,
-                  margin: EdgeInsets.only(bottom: 8.0),
+                  margin: EdgeInsets.only(bottom: 8.0 + MediaQuery.of(context).padding.bottom),
                   child: IconButton(
                     icon: Icon(
                       Icons.arrow_drop_up_outlined,
