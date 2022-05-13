@@ -51,7 +51,7 @@ class _StarIconState extends State<StarIcon> {
   Widget build(BuildContext context) {
     return Container(
       width: 36,
-      height: 36,
+      height: 40,
       child: _buildData(state),
     );
   }
