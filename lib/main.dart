@@ -95,7 +95,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     saveStore.dispose();
     topStore.dispose();
     fetcher.stop();
-    if (Platform.isIOS) WidgetsBinding.instance?.removeObserver(this);
+    if (Platform.isIOS) WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -113,7 +113,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     kVer.open();
     fetcher.start();
     super.initState();
-    if (Platform.isIOS) WidgetsBinding.instance?.addObserver(this);
+    if (Platform.isIOS) WidgetsBinding.instance.addObserver(this);
   }
 
   initMethod() async {

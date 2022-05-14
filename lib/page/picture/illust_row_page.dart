@@ -271,7 +271,7 @@ class _IllustRowPageState extends State<IllustRowPage>
           ),
         ),
       );
-    final expectWidth = MediaQuery.of(context).size.height;
+    final expectWidth = MediaQuery.of(context).size.width * 0.7;
     final radio = (data.height.toDouble() / data.width);
     final screenHeight = MediaQuery.of(context).size.height;
     final height = (radio * expectWidth);
@@ -279,8 +279,7 @@ class _IllustRowPageState extends State<IllustRowPage>
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: PixivProvider.url(data!.imageUrls.medium),
-            fit: BoxFit.cover),
+            image: PixivProvider.url(data.imageUrls.medium), fit: BoxFit.cover),
       ),
       child: Stack(
         children: [

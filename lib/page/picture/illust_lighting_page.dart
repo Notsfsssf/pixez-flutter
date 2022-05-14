@@ -64,7 +64,8 @@ class IllustLightingPage extends StatefulWidget {
 class _IllustLightingPageState extends State<IllustLightingPage> {
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).orientation == Orientation.landscape) //TODO
+    final size = MediaQuery.of(context).size;
+    if (size.width * 0.3 >= 340)
       return IllustRowPage(
         id: widget.id,
         store: widget.store,

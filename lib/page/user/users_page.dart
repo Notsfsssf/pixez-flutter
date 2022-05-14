@@ -498,11 +498,11 @@ class _UsersPageState extends State<UsersPage>
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20))),
                             )
-                          : OutlineButton(
-                              borderSide: BorderSide(),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
+                          : OutlinedButton(
+                              // borderSide: BorderSide(),
+                              // shape: RoundedRectangleBorder(
+                              //     borderRadius:
+                              //         BorderRadius.all(Radius.circular(20))),
                               onPressed: () {
                                 if (accountStore.now != null) {
                                   if (int.parse(accountStore.now!.userId) !=
@@ -517,8 +517,8 @@ class _UsersPageState extends State<UsersPage>
                                 }
                               },
                               child: Text(I18n.of(context).follow),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 0),
+                              // padding: EdgeInsets.symmetric(
+                              //     horizontal: 20.0, vertical: 0),
                             ),
                     ),
             )
