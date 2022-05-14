@@ -24,7 +24,9 @@ import 'package:html/parser.dart' show parse;
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 part 'sauce_store.g.dart';
 
@@ -58,18 +60,21 @@ abstract class SauceStoreBase with Store {
     if (path == null) {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
-      Uint8List uint8list = await pickedFile.readAsBytes();
+      Uint8List originImage = await pickedFile.readAsBytes();
+      Uint8List compressedImage = await FlutterImageCompress.compressWithList(
+          originImage,
+          minWidth: 720,
+          minHeight: 720,
+          quality: 75);
+      LPrinter.d(
+          "Uncompressed image size: ${originImage.lengthInBytes}, compressed image size: ${compressedImage.lengthInBytes}");
       path =
           "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
-      File(path).writeAsBytesSync(uint8list);
+      await File(path).writeAsBytes(compressedImage);
     }
-    if (path == null) return;
     var formData = FormData();
     formData.files.addAll([
-      MapEntry(
-        "file",
-        multipartFile ?? MultipartFile.fromFileSync(path),
-      ),
+      MapEntry("file", multipartFile ?? await MultipartFile.fromFile(path)),
     ]);
     try {
       BotToast.showText(text: "uploading");
