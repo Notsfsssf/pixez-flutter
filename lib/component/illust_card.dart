@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -203,12 +202,14 @@ class _IllustCardState extends State<IllustCard> {
                 maxLines: 1,
                 overflow: TextOverflow.clip,
                 style: Theme.of(context).textTheme.bodyText2,
+                strutStyle: StrutStyle(forceStrutHeight: true, leading: 0),
               ),
               Text(
                 store.illusts!.user.name,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
                 style: Theme.of(context).textTheme.caption,
+                strutStyle: StrutStyle(forceStrutHeight: true, leading: 0),
               )
             ]),
           ),
@@ -237,9 +238,11 @@ class _IllustCardState extends State<IllustCard> {
                   context: context,
                   clipBehavior: Clip.hardEdge,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(16)),
                   ),
-                  constraints: BoxConstraints.expand(height: MediaQuery.of(context).size.height * .618),
+                  constraints: BoxConstraints.expand(
+                      height: MediaQuery.of(context).size.height * .618),
                   isScrollControlled: true,
                   builder: (_) => TagForIllustPage(id: store.illusts!.id),
                 );
