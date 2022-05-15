@@ -755,6 +755,20 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 ),
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).colorScheme.secondary,
+                    value: userSetting.antiHashCheck,
+                    title: Text("Anti IM Hash Check"),
+                    onChanged: (value) async {
+                      userSetting.setAntiHashCheck(value);
+                    });
+              }),
+            ),
+          ),
         ]),
       ),
     );

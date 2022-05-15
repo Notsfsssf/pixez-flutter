@@ -15,7 +15,9 @@
  */
 
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -75,7 +77,8 @@ abstract class _SaveStoreBase with Store {
   void listenBehavior(SaveStream stream) {
     switch (stream.state) {
       case SaveState.SUCCESS:
-        Toaster.downloadOk("${stream.data.title} ${I18n.of(ctx!).saved}");
+        Toaster.downloadOk(
+            "${stream.data.title} (p${stream.index ?? 0}) ${I18n.of(ctx!).saved}");
         break;
       case SaveState.JOIN:
         BotToast.showCustomText(
@@ -139,12 +142,13 @@ abstract class _SaveStoreBase with Store {
                         IconButton(
                             icon: Icon(Icons.refresh),
                             onPressed: () {
-                              saveStore.redo(stream.data, stream.index!);
+                              saveStore.redo(stream.data, stream.index ?? 0);
                             }),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(ctx!).already_saved}"),
+                          child: Text(
+                              "${stream.data.title} (p${stream.index ?? 0}) ${I18n.of(ctx!).already_saved}"),
                         )
                       ],
                     ),
@@ -193,7 +197,8 @@ abstract class _SaveStoreBase with Store {
     return;
   }
 
-  _saveInternal(String url, Illusts illusts, String fileName) async {
+  _saveInternal(String url, Illusts illusts, String fileName, int index,
+      {bool redo = false, bool antiHashCheck = false}) async {
     if (Platform.isAndroid) {
       try {
         String targetFileName = fileName;
@@ -202,24 +207,28 @@ abstract class _SaveStoreBase with Store {
               "${illusts.user.name.toLegal()}_${illusts.user.id}/$fileName";
         }
         final isExist = await DocumentPlugin.exist(targetFileName);
-        if (isExist!) {
-          streamController.add(SaveStream(SaveState.ALREADY, illusts));
+        if (isExist! && !redo) {
+          streamController
+              .add(SaveStream(SaveState.ALREADY, illusts, index: index));
           return;
         }
       } catch (e) {}
     }
-    streamController.add(SaveStream(SaveState.JOIN, illusts));
+    streamController.add(SaveStream(SaveState.JOIN, illusts, index: index));
     File? file = (await pixivCacheManager.getFileFromCache(url))?.file;
     if (file == null) {
       _joinQueue(url, illusts, fileName);
     } else {
-      saveToGallery(file.readAsBytesSync(), illusts, fileName);
-      streamController.add(SaveStream(SaveState.SUCCESS, illusts));
+      saveToGallery(file.readAsBytesSync(), illusts, fileName,
+          antiHashCheck: antiHashCheck);
+      streamController
+          .add(SaveStream(SaveState.SUCCESS, illusts, index: index));
     }
   }
 
   Future<void> saveToGalleryWithUser(Uint8List uint8list, String userName,
-      int userId, int sanityLevel, String fileName) async {
+      int userId, int sanityLevel, String fileName,
+      {bool antiHashCheck = false}) async {
     if (Platform.isAndroid || Platform.isIOS) {
       try {
         String overFileName = fileName;
@@ -230,6 +239,13 @@ abstract class _SaveStoreBase with Store {
         }
         if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
           fileName = "sanity/$overFileName";
+        }
+        // Attach 64 random bytes to the end of image file.
+        if (antiHashCheck) {
+          var random = Random(DateTime.now().millisecondsSinceEpoch);
+          var randomList =
+              List<int>.generate(8, (x) => random.nextInt(9223372036854775807));
+          uint8list.addAll(randomList);
         }
         if (userSetting.isClearOldFormatFile)
           DocumentPlugin.save(uint8list, fileName,
@@ -246,9 +262,15 @@ abstract class _SaveStoreBase with Store {
   }
 
   Future<void> saveToGallery(
-      Uint8List uint8list, Illusts illusts, String fileName) async {
+      Uint8List uint8list, Illusts illusts, String fileName,
+      {bool antiHashCheck = false}) async {
+    // Attach random bytes to image file while:
+    // for a specific image manually;
+    // for all R-18 images when setting "anti_hash_check" is enable.
     saveToGalleryWithUser(uint8list, illusts.user.name, illusts.user.id,
-        illusts.sanityLevel, fileName);
+        illusts.sanityLevel, fileName,
+        antiHashCheck: antiHashCheck |
+            ((illusts.xRestrict > 0) & userSetting.antiHashCheck));
   }
 
   @action
@@ -280,29 +302,30 @@ abstract class _SaveStoreBase with Store {
 
   @action
   Future<void> saveImage(Illusts illusts,
-      {int? index, bool redo = false}) async {
+      {int? index, bool redo = false, bool antiHashCheck = false}) async {
     String memType;
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage!.originalImageUrl!;
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
-      if (redo) {}
-      _saveInternal(url, illusts, fileName);
+      // If enable antiHashCheck, force re-save image.
+      _saveInternal(url, illusts, fileName, 0,
+          redo: redo | antiHashCheck, antiHashCheck: antiHashCheck);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
-        if (redo) {}
-        _saveInternal(url, illusts, fileName);
+        _saveInternal(url, illusts, fileName, index,
+            redo: redo | antiHashCheck, antiHashCheck: antiHashCheck);
       } else {
         int index = 0;
         illusts.metaPages.forEach((f) {
           String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
-          if (redo) {}
-          _saveInternal(url, illusts, fileName);
+          _saveInternal(url, illusts, fileName, index,
+              redo: redo | antiHashCheck, antiHashCheck: antiHashCheck);
           index++;
         });
       }
