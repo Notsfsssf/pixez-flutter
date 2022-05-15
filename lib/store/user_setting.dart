@@ -55,6 +55,7 @@ abstract class _UserSettingBase with Store {
       "is_over_sanity_level_folder";
   static const String MAX_RUNNING_TASK_KEY = "max_running_task";
   static const String NSFW_MASK_KEY = "nsfw_mask";
+  static const String ANTI_HASH_CHECK_KEY = "anti_hash_check";
 
   @observable
   bool isClearOldFormatFile = false;
@@ -108,6 +109,8 @@ abstract class _UserSettingBase with Store {
   int maxRunningTask = 2;
   @observable
   bool nsfwMask = false;
+  @observable
+  bool antiHashCheck = false;
 
   @observable
   String? format = "";
@@ -242,6 +245,7 @@ abstract class _UserSettingBase with Store {
         ? ImageHost
         : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
     splashStore.setHost(pictureSource!);
+    antiHashCheck = prefs.getBool(ANTI_HASH_CHECK_KEY) ?? false;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
@@ -397,5 +401,11 @@ abstract class _UserSettingBase with Store {
   Future<void> changeNsfwMask(bool value) async {
     await prefs.setBool(NSFW_MASK_KEY, value);
     nsfwMask = value;
+  }
+
+  @action
+  Future<void> setAntiHashCheck(bool value) async {
+    await prefs.setBool(ANTI_HASH_CHECK_KEY, value);
+    antiHashCheck = value;
   }
 }

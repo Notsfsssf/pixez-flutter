@@ -851,6 +851,11 @@ class _IllustRowPageState extends State<IllustRowPage>
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
                   },
+                  onLongPress: () async {
+                    Navigator.of(context).pop();
+                    saveStore.saveImage(illust,
+                        index: index, antiHashCheck: true);
+                  },
                   title: Text(I18n.of(context).save),
                 ),
                 ListTile(

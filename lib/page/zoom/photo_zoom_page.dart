@@ -167,16 +167,25 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                     }),
-                IconButton(
-                    icon: Icon(
-                      Icons.save_alt,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
+                GestureDetector(
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.save_alt,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (_illusts.metaPages.isNotEmpty)
+                            saveStore.saveImage(widget.illusts, index: _index);
+                          else
+                            saveStore.saveImage(widget.illusts);
+                        }),
+                    onLongPress: () async {
                       if (_illusts.metaPages.isNotEmpty)
-                        saveStore.saveImage(widget.illusts, index: _index);
+                        saveStore.saveImage(widget.illusts,
+                            index: _index, antiHashCheck: true);
                       else
-                        saveStore.saveImage(widget.illusts);
+                        saveStore.saveImage(widget.illusts,
+                            antiHashCheck: true);
                     }),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,
