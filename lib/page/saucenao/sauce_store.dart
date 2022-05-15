@@ -24,7 +24,9 @@ import 'package:html/parser.dart' show parse;
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
+import 'package:image/image.dart';
 
 part 'sauce_store.g.dart';
 
@@ -58,18 +60,33 @@ abstract class SauceStoreBase with Store {
     if (path == null) {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
-      Uint8List uint8list = await pickedFile.readAsBytes();
+      Uint8List originImageBytes = await pickedFile.readAsBytes();
+      var originImage = decodeImage(originImageBytes);
+      var originWidth = originImage!.width;
+      var originHeight = originImage.height;
+      int newWidth, newHeight;
+      if (originWidth < 720 || originHeight < 720) {
+        newWidth = originWidth;
+        newHeight = originHeight;
+      } else if (originWidth > originHeight) {
+        newHeight = 720;
+        newWidth = originWidth * newHeight ~/ originHeight;
+      } else {
+        newWidth = 720;
+        newHeight = originHeight * newWidth ~/ originWidth;
+      }
+      var newImage =
+          copyResize(originImage, width: newWidth, height: newHeight);
+      var newImageBytes = encodeJpg(newImage, quality: 75);
+      LPrinter.d(
+          "Uncompressed image size: ${originImageBytes.length}, compressed image size: ${newImageBytes.length}");
       path =
           "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
-      File(path).writeAsBytesSync(uint8list);
+      await File(path).writeAsBytes(newImageBytes);
     }
-    if (path == null) return;
     var formData = FormData();
     formData.files.addAll([
-      MapEntry(
-        "file",
-        multipartFile ?? MultipartFile.fromFileSync(path),
-      ),
+      MapEntry("file", multipartFile ?? await MultipartFile.fromFile(path)),
     ]);
     try {
       BotToast.showText(text: "uploading");
