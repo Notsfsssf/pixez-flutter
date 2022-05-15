@@ -75,7 +75,8 @@ abstract class _SaveStoreBase with Store {
   void listenBehavior(SaveStream stream) {
     switch (stream.state) {
       case SaveState.SUCCESS:
-        Toaster.downloadOk("${stream.data.title} ${I18n.of(ctx!).saved}");
+        Toaster.downloadOk(
+            "${stream.data.title} (p${stream.index ?? 0}) ${I18n.of(ctx!).saved}");
         break;
       case SaveState.JOIN:
         BotToast.showCustomText(
@@ -139,12 +140,13 @@ abstract class _SaveStoreBase with Store {
                         IconButton(
                             icon: Icon(Icons.refresh),
                             onPressed: () {
-                              saveStore.redo(stream.data, stream.index!);
+                              saveStore.redo(stream.data, stream.index ?? 0);
                             }),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
-                          child: Text("${I18n.of(ctx!).already_saved}"),
+                          child: Text(
+                              "${stream.data.title} (p${stream.index ?? 0}) ${I18n.of(ctx!).already_saved}"),
                         )
                       ],
                     ),
@@ -193,7 +195,8 @@ abstract class _SaveStoreBase with Store {
     return;
   }
 
-  _saveInternal(String url, Illusts illusts, String fileName) async {
+  _saveInternal(String url, Illusts illusts, String fileName, int index,
+      {bool redo = false}) async {
     if (Platform.isAndroid) {
       try {
         String targetFileName = fileName;
@@ -202,19 +205,21 @@ abstract class _SaveStoreBase with Store {
               "${illusts.user.name.toLegal()}_${illusts.user.id}/$fileName";
         }
         final isExist = await DocumentPlugin.exist(targetFileName);
-        if (isExist!) {
-          streamController.add(SaveStream(SaveState.ALREADY, illusts));
+        if (isExist! && !redo) {
+          streamController
+              .add(SaveStream(SaveState.ALREADY, illusts, index: index));
           return;
         }
       } catch (e) {}
     }
-    streamController.add(SaveStream(SaveState.JOIN, illusts));
+    streamController.add(SaveStream(SaveState.JOIN, illusts, index: index));
     File? file = (await pixivCacheManager.getFileFromCache(url))?.file;
     if (file == null) {
       _joinQueue(url, illusts, fileName);
     } else {
       saveToGallery(file.readAsBytesSync(), illusts, fileName);
-      streamController.add(SaveStream(SaveState.SUCCESS, illusts));
+      streamController
+          .add(SaveStream(SaveState.SUCCESS, illusts, index: index));
     }
   }
 
@@ -286,23 +291,20 @@ abstract class _SaveStoreBase with Store {
       String url = illusts.metaSinglePage!.originalImageUrl!;
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
-      if (redo) {}
-      _saveInternal(url, illusts, fileName);
+      _saveInternal(url, illusts, fileName, 0, redo: redo);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
-        if (redo) {}
-        _saveInternal(url, illusts, fileName);
+        _saveInternal(url, illusts, fileName, index, redo: redo);
       } else {
         int index = 0;
         illusts.metaPages.forEach((f) {
           String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
-          if (redo) {}
-          _saveInternal(url, illusts, fileName);
+          _saveInternal(url, illusts, fileName, index, redo: redo);
           index++;
         });
       }
