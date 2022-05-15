@@ -26,7 +26,7 @@ import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image/image.dart';
 
 part 'sauce_store.g.dart';
 
@@ -60,17 +60,29 @@ abstract class SauceStoreBase with Store {
     if (path == null) {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
-      Uint8List originImage = await pickedFile.readAsBytes();
-      Uint8List compressedImage = await FlutterImageCompress.compressWithList(
-          originImage,
-          minWidth: 720,
-          minHeight: 720,
-          quality: 75);
+      Uint8List originImageBytes = await pickedFile.readAsBytes();
+      var originImage = decodeImage(originImageBytes);
+      var originWidth = originImage!.width;
+      var originHeight = originImage.height;
+      int newWidth, newHeight;
+      if (originWidth < 720 || originHeight < 720) {
+        newWidth = originWidth;
+        newHeight = originHeight;
+      } else if (originWidth > originHeight) {
+        newHeight = 720;
+        newWidth = originWidth * newHeight ~/ originHeight;
+      } else {
+        newWidth = 720;
+        newHeight = originHeight * newWidth ~/ originWidth;
+      }
+      var newImage =
+          copyResize(originImage, width: newWidth, height: newHeight);
+      var newImageBytes = encodeJpg(newImage, quality: 75);
       LPrinter.d(
-          "Uncompressed image size: ${originImage.lengthInBytes}, compressed image size: ${compressedImage.lengthInBytes}");
+          "Uncompressed image size: ${originImageBytes.length}, compressed image size: ${newImageBytes.length}");
       path =
           "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
-      await File(path).writeAsBytes(compressedImage);
+      await File(path).writeAsBytes(newImageBytes);
     }
     var formData = FormData();
     formData.files.addAll([
