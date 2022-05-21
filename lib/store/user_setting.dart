@@ -55,7 +55,8 @@ abstract class _UserSettingBase with Store {
       "is_over_sanity_level_folder";
   static const String MAX_RUNNING_TASK_KEY = "max_running_task";
   static const String NSFW_MASK_KEY = "nsfw_mask";
-  static const String ANTI_HASH_CHECK_KEY = "anti_hash_check";
+  static const String SAVE_EFFECT_KEY = "save_effect";
+  static const String SAVE_EFFECT_ENABLE_KEY = "save_effect_enable";
 
   @observable
   bool isClearOldFormatFile = false;
@@ -110,7 +111,9 @@ abstract class _UserSettingBase with Store {
   @observable
   bool nsfwMask = false;
   @observable
-  bool antiHashCheck = false;
+  int saveEffect = 0;
+  @observable
+  bool saveEffectEnable = false;
 
   @observable
   String? format = "";
@@ -245,7 +248,8 @@ abstract class _UserSettingBase with Store {
         ? ImageHost
         : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
     splashStore.setHost(pictureSource!);
-    antiHashCheck = prefs.getBool(ANTI_HASH_CHECK_KEY) ?? false;
+    saveEffect = prefs.getInt(SAVE_EFFECT_KEY) ?? 0;
+    saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
@@ -404,8 +408,14 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
-  Future<void> setAntiHashCheck(bool value) async {
-    await prefs.setBool(ANTI_HASH_CHECK_KEY, value);
-    antiHashCheck = value;
+  Future<void> setSaveEffectEnable(bool value) async {
+    await prefs.setBool(SAVE_EFFECT_ENABLE_KEY, value);
+    saveEffectEnable = value;
+  }
+
+  @action
+  Future<void> setSaveEffect(int value) async {
+    await prefs.setInt(SAVE_EFFECT_KEY, value);
+    saveEffect = value;
   }
 }

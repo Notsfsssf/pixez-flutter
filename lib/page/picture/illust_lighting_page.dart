@@ -834,10 +834,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   },
                   onLongPress: () async {
                     Navigator.of(context).pop();
-                    saveStore.saveImage(illust,
-                        index: index, antiHashCheck: true);
+                    saveStore.saveImage(illust, index: index);
                   },
                   title: Text(I18n.of(context).save),
+                  trailing: _saveModeSwitch(),
                 ),
                 ListTile(
                   leading: Icon(Icons.cancel),
@@ -851,6 +851,23 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ),
           );
         });
+  }
+
+  Widget _saveModeSwitch() {
+    return Observer(builder: (_) {
+      return TextButton(
+        onPressed: () {
+          userSetting.setSaveEffectEnable(!userSetting.saveEffectEnable);
+        },
+        child: Text(
+          "Effect",
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(color: userSetting.saveEffectEnable ? Colors.blue : Colors.grey),
+        ),
+      );
+    });
   }
 
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
@@ -946,6 +963,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       onTap: () {
                         Navigator.of(context).pop("OK");
                       },
+                      trailing: _saveModeSwitch(),
                     ),
                   ],
                 ),

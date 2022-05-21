@@ -854,7 +854,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                   onLongPress: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust,
-                        index: index, antiHashCheck: true);
+                        index: index);
                   },
                   title: Text(I18n.of(context).save),
                 ),

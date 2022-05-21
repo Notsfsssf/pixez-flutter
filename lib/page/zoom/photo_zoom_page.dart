@@ -181,11 +181,9 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                         }),
                     onLongPress: () async {
                       if (_illusts.metaPages.isNotEmpty)
-                        saveStore.saveImage(widget.illusts,
-                            index: _index, antiHashCheck: true);
+                        saveStore.saveImage(widget.illusts, index: _index);
                       else
-                        saveStore.saveImage(widget.illusts,
-                            antiHashCheck: true);
+                        saveStore.saveImage(widget.illusts);
                     }),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,

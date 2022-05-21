@@ -198,7 +198,7 @@ abstract class _SaveStoreBase with Store {
   }
 
   _saveInternal(String url, Illusts illusts, String fileName, int index,
-      {bool redo = false, bool antiHashCheck = false}) async {
+      {bool redo = false}) async {
     if (Platform.isAndroid) {
       try {
         String targetFileName = fileName;
@@ -219,8 +219,7 @@ abstract class _SaveStoreBase with Store {
     if (file == null) {
       _joinQueue(url, illusts, fileName);
     } else {
-      saveToGallery(file.readAsBytesSync(), illusts, fileName,
-          antiHashCheck: antiHashCheck);
+      saveToGallery(file.readAsBytesSync(), illusts, fileName);
       streamController
           .add(SaveStream(SaveState.SUCCESS, illusts, index: index));
     }
@@ -240,13 +239,11 @@ abstract class _SaveStoreBase with Store {
         if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
           fileName = "sanity/$overFileName";
         }
-        // Attach 64 random bytes to the end of image file.
-        if (antiHashCheck) {
-          var random = Random(DateTime.now().millisecondsSinceEpoch);
-          var randomList =
-              List<int>.generate(8, (x) => random.nextInt(9223372036854775807));
-          uint8list.addAll(randomList);
+
+        if (userSetting.saveEffectEnable && antiHashCheck) {
+          uint8ListProcess(uint8list);
         }
+
         if (userSetting.isClearOldFormatFile)
           DocumentPlugin.save(uint8list, fileName,
               clearOld: userSetting.isClearOldFormatFile);
@@ -261,16 +258,22 @@ abstract class _SaveStoreBase with Store {
     }
   }
 
+  void uint8ListProcess(Uint8List uint8list) {
+    var random = Random(DateTime.now().millisecondsSinceEpoch);
+    var randomList =
+        List<int>.generate(8, (x) => random.nextInt(9223372036854775807));
+    uint8list.addAll(randomList);
+  }
+
   Future<void> saveToGallery(
-      Uint8List uint8list, Illusts illusts, String fileName,
-      {bool antiHashCheck = false}) async {
+      Uint8List uint8list, Illusts illusts, String fileName) async {
     // Attach random bytes to image file while:
     // for a specific image manually;
     // for all R-18 images when setting "anti_hash_check" is enable.
+    bool antiHashCheck = userSetting.saveEffect == 0;
     saveToGalleryWithUser(uint8list, illusts.user.name, illusts.user.id,
         illusts.sanityLevel, fileName,
-        antiHashCheck: antiHashCheck |
-            ((illusts.xRestrict > 0) & userSetting.antiHashCheck));
+        antiHashCheck: ((illusts.xRestrict > 0) & antiHashCheck));
   }
 
   @action
@@ -302,7 +305,7 @@ abstract class _SaveStoreBase with Store {
 
   @action
   Future<void> saveImage(Illusts illusts,
-      {int? index, bool redo = false, bool antiHashCheck = false}) async {
+      {int? index, bool redo = false}) async {
     String memType;
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage!.originalImageUrl!;
@@ -310,14 +313,14 @@ abstract class _SaveStoreBase with Store {
       String fileName = _handleFileName(illusts, 0, memType);
       // If enable antiHashCheck, force re-save image.
       _saveInternal(url, illusts, fileName, 0,
-          redo: redo | antiHashCheck, antiHashCheck: antiHashCheck);
+          redo: redo | (userSetting.saveEffectEnable));
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
         _saveInternal(url, illusts, fileName, index,
-            redo: redo | antiHashCheck, antiHashCheck: antiHashCheck);
+            redo: redo | (userSetting.saveEffectEnable));
       } else {
         int index = 0;
         illusts.metaPages.forEach((f) {
@@ -325,7 +328,7 @@ abstract class _SaveStoreBase with Store {
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
           _saveInternal(url, illusts, fileName, index,
-              redo: redo | antiHashCheck, antiHashCheck: antiHashCheck);
+              redo: redo | (userSetting.saveEffectEnable));
           index++;
         });
       }
