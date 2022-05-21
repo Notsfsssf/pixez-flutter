@@ -253,5 +253,6 @@
   "open_by_default":"デフォルトで開く",
   "open_by_default_subtitle":"このアプリでリンクを開くことを許可する",
   "text":"テキスト",
-  "search_word_hint": "Search title or name like"
+  "search_word_hint": "Search title or name like",
+  "save_effect": "Save effect"
 }

@@ -253,5 +253,6 @@
   "open_by_default":"기본 앱으로 열기",
   "open_by_default_subtitle":"픽시브 웹페이지를 이 앱에서 열기",
   "text":"텍스트",
-  "search_word_hint": "제목이나 작가명을 입력하세요"
+  "search_word_hint": "제목이나 작가명을 입력하세요",
+  "save_effect": "Save effect"
 }

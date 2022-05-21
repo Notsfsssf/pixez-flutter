@@ -253,5 +253,6 @@
   "open_by_default":"默认打开",
   "open_by_default_subtitle":"允许在此应用中打开网络链接",
   "text":"文本",
-  "search_word_hint": "搜索标题或画师昵称"
+  "search_word_hint": "搜索标题或画师昵称",
+  "save_effect": "保存效果"
 }

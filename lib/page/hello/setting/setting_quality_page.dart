@@ -759,7 +759,34 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             padding: const EdgeInsets.all(8.0),
             child: Card(
               child: Observer(builder: (_) {
-                return Container();
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(I18n.of(context).save_effect),
+                    ),
+                    ListTile(
+                      title: Text("None"),
+                      trailing: userSetting.saveEffectEnable
+                          ? null
+                          : Icon(Icons.check),
+                      onTap: () {
+                        userSetting.setSaveEffectEnable(false);
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Anti hash"),
+                      trailing: userSetting.saveEffectEnable &&
+                              userSetting.saveEffect == 0
+                          ? Icon(Icons.check)
+                          : null,
+                      onTap: () {
+                        userSetting.setSaveEffectEnable(true);
+                        userSetting.setSaveEffect(0);
+                      },
+                    )
+                  ],
+                );
               }),
             ),
           ),
