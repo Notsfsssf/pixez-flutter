@@ -554,6 +554,54 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             )),
           ),
           Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(
+                child: Column(
+              children: <Widget>[
+                Padding(
+                  child: Text(I18n.of(context).layout_mode),
+                  padding: EdgeInsets.all(16),
+                ),
+                Observer(builder: (_) {
+                  var tablist = [
+                    Tab(
+                      text: "V:R",
+                    ),
+                    Tab(
+                      text: "V:V",
+                    ),
+                    Tab(
+                      text: "R:R",
+                    ),
+                  ];
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                        tabBarTheme: TabBarTheme(labelColor: Colors.black)),
+                    child: TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
+                      tabs: tablist,
+                      indicator: MD2Indicator(
+                          indicatorHeight: 3,
+                          indicatorColor:
+                              Theme.of(context).colorScheme.secondary,
+                          indicatorSize: MD2IndicatorSize.normal),
+                      isScrollable: true,
+                      onTap: (index) {
+                        userSetting.setPadMode(index);
+                      },
+                      controller: TabController(
+                          length: tablist.length,
+                          vsync: this,
+                          initialIndex: userSetting.padMode),
+                    ),
+                  );
+                })
+              ],
+            )),
+          ),
+          Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
               child: Column(

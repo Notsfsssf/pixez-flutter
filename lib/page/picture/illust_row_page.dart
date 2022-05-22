@@ -271,7 +271,13 @@ class _IllustRowPageState extends State<IllustRowPage>
           ),
         ),
       );
-    final expectWidth = MediaQuery.of(context).size.width * 0.7;
+    var expectWidth = MediaQuery.of(context).size.width * 0.7;
+    var leftWidth = MediaQuery.of(context).size.width - expectWidth;
+    final atLeastWidth = 320.0;
+    if (leftWidth < atLeastWidth) {
+      leftWidth = atLeastWidth;
+      expectWidth = MediaQuery.of(context).size.width - leftWidth;
+    }
     final radio = (data.height.toDouble() / data.width);
     final screenHeight = MediaQuery.of(context).size.height;
     final height = (radio * expectWidth);
@@ -853,8 +859,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                   },
                   onLongPress: () async {
                     Navigator.of(context).pop();
-                    saveStore.saveImage(illust,
-                        index: index);
+                    saveStore.saveImage(illust, index: index);
                   },
                   title: Text(I18n.of(context).save),
                 ),

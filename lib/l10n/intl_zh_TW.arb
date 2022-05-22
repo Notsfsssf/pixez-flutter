@@ -254,5 +254,6 @@
   "open_by_default_subtitle":"允許在這個應用程式中開啟網頁連結",
   "text":"文字",
   "search_word_hint": "搜尋標題或繪師名稱",
-  "save_effect": "儲存效果"
+  "save_effect": "儲存效果",
+  "layout_mode": "布局方式"
 }

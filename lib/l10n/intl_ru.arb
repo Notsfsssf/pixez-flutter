@@ -254,5 +254,6 @@
   "open_by_default_subtitle":"Allow web links to open this app",
   "text":"text",
   "search_word_hint": "Search title or name like",
-  "save_effect": "Save effect"
+  "save_effect": "Save effect",
+  "layout_mode": "Layout mode"
 }
