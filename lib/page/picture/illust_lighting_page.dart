@@ -65,14 +65,33 @@ class IllustLightingPage extends StatefulWidget {
 class _IllustLightingPageState extends State<IllustLightingPage> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    if (size.width * 0.3 >= 340)
-      return IllustRowPage(
-        id: widget.id,
-        store: widget.store,
-        heroString: widget.heroString,
-      );
+    switch (userSetting.padMode) {
+      case 0:
+        MediaQueryData mediaQuery = MediaQuery.of(context);
+        final ori = mediaQuery.size.width > mediaQuery.size.height;
+        if (ori)
+          return _buildRow();
+        else
+          return _buildVertical();
+      case 1:
+        return _buildVertical();
+      case 2:
+        return _buildRow();
+      default:
+        return Container();
+    }
+  }
+
+  _buildVertical() {
     return IllustVerticalPage(
+      id: widget.id,
+      store: widget.store,
+      heroString: widget.heroString,
+    );
+  }
+
+  _buildRow() {
+    return IllustRowPage(
       id: widget.id,
       store: widget.store,
       heroString: widget.heroString,

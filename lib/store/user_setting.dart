@@ -57,6 +57,7 @@ abstract class _UserSettingBase with Store {
   static const String NSFW_MASK_KEY = "nsfw_mask";
   static const String SAVE_EFFECT_KEY = "save_effect";
   static const String SAVE_EFFECT_ENABLE_KEY = "save_effect_enable";
+  static const String PAD_MODE_KEY = "pad_mode";
 
   @observable
   bool isClearOldFormatFile = false;
@@ -114,6 +115,8 @@ abstract class _UserSettingBase with Store {
   int saveEffect = 0;
   @observable
   bool saveEffectEnable = false;
+  @observable
+  int padMode = 0;
 
   @observable
   String? format = "";
@@ -250,6 +253,7 @@ abstract class _UserSettingBase with Store {
     splashStore.setHost(pictureSource!);
     saveEffect = prefs.getInt(SAVE_EFFECT_KEY) ?? 0;
     saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
+    padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
@@ -417,5 +421,11 @@ abstract class _UserSettingBase with Store {
   Future<void> setSaveEffect(int value) async {
     await prefs.setInt(SAVE_EFFECT_KEY, value);
     saveEffect = value;
+  }
+
+  @action
+  Future<void> setPadMode(int value) async {
+    await prefs.setInt(PAD_MODE_KEY, value);
+    padMode = value;
   }
 }
