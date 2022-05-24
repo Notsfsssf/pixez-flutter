@@ -222,7 +222,8 @@ class _IllustCardState extends State<IllustCard> {
                 );
               }),
               onTap: () async {
-                store.star();
+                store.star(
+                    tags: store.illusts?.tags.map((e) => e.name).toList());
                 if (!userSetting.followAfterStar) {
                   return;
                 }
