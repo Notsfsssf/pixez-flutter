@@ -60,6 +60,8 @@ abstract class _UserSettingBase with Store {
   static const String PAD_MODE_KEY = "pad_mode";
 
   @observable
+  bool animContainer = true;
+  @observable
   bool isClearOldFormatFile = false;
   @observable
   bool isReturnAgainToExit = true;
@@ -427,5 +429,10 @@ abstract class _UserSettingBase with Store {
   Future<void> setPadMode(int value) async {
     await prefs.setInt(PAD_MODE_KEY, value);
     padMode = value;
+  }
+
+  @action
+  Future<void> setAnimContainer(bool anim) async {
+    animContainer = anim;
   }
 }

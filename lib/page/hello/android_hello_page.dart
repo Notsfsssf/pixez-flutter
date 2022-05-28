@@ -82,6 +82,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        userSetting.setAnimContainer(!userSetting.animContainer);
         if (!userSetting.isReturnAgainToExit) {
           return true;
         }

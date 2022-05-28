@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:animations/animations.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -145,14 +146,9 @@ class _IllustCardState extends State<IllustCard> {
       clipBehavior: Clip.antiAlias,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      child: InkWell(
-        onLongPress: () {
-          saveStore.saveImage(store.illusts!);
-        },
-        onTap: () {
-          _buildInkTap(context, tag);
-        },
-        child: Column(
+      child: _buildAnimationWraper(
+        context,
+        Column(
           children: <Widget>[
             AspectRatio(
                 aspectRatio: radio,
@@ -166,6 +162,43 @@ class _IllustCardState extends State<IllustCard> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAnimationWraper(BuildContext context, Widget child) {
+    if (true)
+      return OpenContainer(
+        closedBuilder: (context, action) {
+          return child;
+        },
+        openBuilder: (context, action) {
+          if (iStores != null) {
+            return PictureListPage(
+              store: store,
+              iStores: iStores!,
+            );
+          }
+          return IllustLightingPage(
+            id: store.illusts!.id,
+            store: store,
+          );
+        },
+        openColor: Theme.of(context).cardColor,
+        closedShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        openShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+      );
+    return InkWell(
+      onLongPress: () {
+        saveStore.saveImage(store.illusts!);
+      },
+      onTap: () {
+        _buildInkTap(context, tag);
+      },
+      child: child,
     );
   }
 
