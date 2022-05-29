@@ -56,7 +56,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   @override
   void initState() {
     _animationController = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this);
+        duration: const Duration(milliseconds: 1500), vsync: this);
     animation = Tween(begin: 0.0, end: 0.25).animate(_animationController);
 
     _trendTagsStore = TrendTagsStore();

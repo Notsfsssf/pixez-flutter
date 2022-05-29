@@ -170,7 +170,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             children: [
               widget ?? Container(),
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 1300),
+                duration: const Duration(milliseconds: 1500),
                 child: needShowMask
                     ? Container(
                         color: Theme.of(context).canvasColor,
