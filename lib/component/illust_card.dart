@@ -141,54 +141,61 @@ class _IllustCardState extends State<IllustCard> {
         ? 1.0
         : store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
     return Card(
-      margin: EdgeInsets.all(8.0),
-      elevation: 4.0,
-      clipBehavior: Clip.antiAlias,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      child: _buildAnimationWraper(
-        context,
-        Column(
-          children: <Widget>[
-            AspectRatio(
-                aspectRatio: radio,
-                child: Stack(
-                  children: [
-                    Positioned.fill(child: _buildPic(tag, tooLong)),
-                    Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
-                  ],
-                )),
-            _buildBottom(context),
-          ],
-        ),
-      ),
-    );
+        margin: EdgeInsets.all(8.0),
+        elevation: 4.0,
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        child: _buildAnimationWraper(
+          context,
+          Column(
+            children: <Widget>[
+              AspectRatio(
+                  aspectRatio: radio,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: _buildPic(tag, tooLong)),
+                      Positioned(
+                          top: 5.0, right: 5.0, child: _buildVisibility()),
+                    ],
+                  )),
+              _buildBottom(context),
+            ],
+          ),
+        ));
   }
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
-    if (true)
-      return OpenContainer(
-        closedBuilder: (context, action) {
-          return child;
+    if (false)
+      return GestureDetector(
+        onLongPress: () {
+          saveStore.saveImage(store.illusts!);
         },
-        openBuilder: (context, action) {
-          if (iStores != null) {
-            return PictureListPage(
+        child: OpenContainer(
+          closedBuilder: (context, action) {
+            return child;
+          },
+          openBuilder: (context, action) {
+            if (iStores != null) {
+              return PictureListPage(
+                store: store,
+                iStores: iStores!,
+              );
+            }
+            return IllustLightingPage(
+              id: store.illusts!.id,
               store: store,
-              iStores: iStores!,
             );
-          }
-          return IllustLightingPage(
-            id: store.illusts!.id,
-            store: store,
-          );
-        },
-        openColor: Theme.of(context).cardColor,
-        closedShape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        openShape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+          },
+          openColor: Colors.transparent,
+          closedColor: Colors.transparent,
+          closedShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          transitionType: ContainerTransitionType.fade,
+          openShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
         ),
       );
     return InkWell(

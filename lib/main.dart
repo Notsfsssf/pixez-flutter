@@ -179,6 +179,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         },
         themeMode: userSetting.themeMode,
         theme: ThemeData.light().copyWith(
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+            }),
             primaryColor: userSetting.themeData.colorScheme.primary,
             primaryColorLight: userSetting.themeData.colorScheme.primary,
             primaryColorDark: userSetting.themeData.colorScheme.primary,
@@ -187,6 +192,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   primary: userSetting.themeData.colorScheme.primary,
                 )),
         darkTheme: ThemeData.dark().copyWith(
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          }),
           scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
           primaryColor: userSetting.themeData.colorScheme.primary,
           primaryColorLight: userSetting.themeData.colorScheme.primary,
