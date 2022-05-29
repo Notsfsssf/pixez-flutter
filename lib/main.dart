@@ -170,7 +170,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             children: [
               widget ?? Container(),
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 1300),
                 child: needShowMask
                     ? Container(
                         color: Theme.of(context).canvasColor,
@@ -192,9 +192,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         home: Builder(builder: (context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
-                systemNavigationBarColor: Colors.transparent,
-                systemNavigationBarDividerColor: Colors.transparent,
-                statusBarColor: Colors.transparent,
+                systemNavigationBarColor: Colors.black.withOpacity(0.3),
+                systemNavigationBarDividerColor: Colors.black.withOpacity(0.3),
+                statusBarColor: Colors.black.withOpacity(0.3),
+                statusBarBrightness: Brightness.dark,
               ),
               child: SplashPage());
         }),
