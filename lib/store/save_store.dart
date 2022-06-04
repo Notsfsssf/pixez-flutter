@@ -226,8 +226,7 @@ abstract class _SaveStoreBase with Store {
   }
 
   Future<void> saveToGalleryWithUser(Uint8List uint8list, String userName,
-      int userId, int sanityLevel, String fileName,
-      {bool antiHashCheck = false}) async {
+      int userId, int sanityLevel, String fileName) async {
     if (Platform.isAndroid || Platform.isIOS) {
       try {
         String overFileName = fileName;
@@ -238,10 +237,6 @@ abstract class _SaveStoreBase with Store {
         }
         if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
           fileName = "sanity/$overFileName";
-        }
-
-        if (userSetting.saveEffectEnable && antiHashCheck) {
-          uint8ListProcess(uint8list);
         }
 
         if (userSetting.isClearOldFormatFile)
@@ -267,13 +262,8 @@ abstract class _SaveStoreBase with Store {
 
   Future<void> saveToGallery(
       Uint8List uint8list, Illusts illusts, String fileName) async {
-    // Attach random bytes to image file while:
-    // for a specific image manually;
-    // for all R-18 images when setting "anti_hash_check" is enable.
-    bool antiHashCheck = userSetting.saveEffect == 0;
     saveToGalleryWithUser(uint8list, illusts.user.name, illusts.user.id,
-        illusts.sanityLevel, fileName,
-        antiHashCheck: ((illusts.xRestrict > 0) & antiHashCheck));
+        illusts.sanityLevel, fileName);
   }
 
   @action
@@ -311,24 +301,20 @@ abstract class _SaveStoreBase with Store {
       String url = illusts.metaSinglePage!.originalImageUrl!;
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = _handleFileName(illusts, 0, memType);
-      // If enable antiHashCheck, force re-save image.
-      _saveInternal(url, illusts, fileName, 0,
-          redo: redo | (userSetting.saveEffectEnable));
+      _saveInternal(url, illusts, fileName, 0, redo: redo);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = _handleFileName(illusts, index, memType);
-        _saveInternal(url, illusts, fileName, index,
-            redo: redo | (userSetting.saveEffectEnable));
+        _saveInternal(url, illusts, fileName, index, redo: redo);
       } else {
         int index = 0;
         illusts.metaPages.forEach((f) {
           String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = _handleFileName(illusts, index, memType);
-          _saveInternal(url, illusts, fileName, index,
-              redo: redo | (userSetting.saveEffectEnable));
+          _saveInternal(url, illusts, fileName, index, redo: redo);
           index++;
         });
       }

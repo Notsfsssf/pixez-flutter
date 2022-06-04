@@ -38,7 +38,6 @@ import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
-import 'package:pixez/page/picture/save_effect_trailing.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
@@ -863,7 +862,6 @@ class _IllustRowPageState extends State<IllustRowPage>
                     saveStore.saveImage(illust, index: index);
                   },
                   title: Text(I18n.of(context).save),
-                  trailing: SaveEffectTrailing(),
                 ),
                 ListTile(
                   leading: Icon(Icons.cancel),
@@ -972,7 +970,6 @@ class _IllustRowPageState extends State<IllustRowPage>
                       onTap: () {
                         Navigator.of(context).pop("OK");
                       },
-                      trailing: SaveEffectTrailing(),
                     ),
                   ],
                 ),

@@ -38,13 +38,11 @@ import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_row_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
-import 'package:pixez/page/picture/save_effect_trailing.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:pixez/page/zoom/photo_viewer_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
@@ -857,7 +855,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     saveStore.saveImage(illust, index: index);
                   },
                   title: Text(I18n.of(context).save),
-                  trailing: SaveEffectTrailing(),
                 ),
                 ListTile(
                   leading: Icon(Icons.cancel),
@@ -966,7 +963,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       onTap: () {
                         Navigator.of(context).pop("OK");
                       },
-                      trailing: SaveEffectTrailing(),
                     ),
                   ],
                 ),
