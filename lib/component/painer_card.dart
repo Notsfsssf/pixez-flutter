@@ -26,7 +26,7 @@ class PainterCard extends StatelessWidget {
   final UserPreviews user;
   final bool isNovel;
 
-  const PainterCard({Key? key,required this.user, this.isNovel = false})
+  const PainterCard({Key? key, required this.user, this.isNovel = false})
       : super(key: key);
 
   @override
@@ -81,7 +81,7 @@ class PainterCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Hero(
-            tag: user.user.profileImageUrls.medium,
+            tag: user.user.profileImageUrls.medium + this.hashCode.toString(),
             child: PainterAvatar(
               url: user.user.profileImageUrls.medium,
               id: user.user.id,
@@ -96,18 +96,16 @@ class PainterCard extends StatelessWidget {
                   return UsersPage(
                     id: user.user.id,
                     userStore: UserStore(user.user.id, user: user.user),
+                    heroTag: this.hashCode.toString(),
                   );
                 }));
               },
             ),
           ),
-          Hero(
-            tag: user.user.name,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(user.user.name),
-            ),
-          )
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(user.user.name),
+          ),
         ],
       ),
     );
