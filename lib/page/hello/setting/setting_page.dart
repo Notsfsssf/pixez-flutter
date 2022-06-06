@@ -37,6 +37,7 @@ import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/book/tag/book_tag_page.dart';
+import 'package:pixez/page/hello/recom/recom_manga_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -241,6 +242,12 @@ class _SettingPageState extends State<SettingPage> {
                 Divider(),
                 Column(
                   children: <Widget>[
+                    if (false) //TODO
+                      ListTile(
+                        leading: Icon(Icons.library_books),
+                        title: Text('Manga'),
+                        onTap: () => Leader.push(context, RecomMangaPage()),
+                      ),
                     ListTile(
                       leading: Icon(Icons.book),
                       title: Text('Novel'),
