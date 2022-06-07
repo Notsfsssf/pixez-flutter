@@ -229,7 +229,6 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildBottom(BuildContext context) {
     return Container(
-      color: Theme.of(context).cardColor,
       child: Stack(
         children: <Widget>[
           Padding(

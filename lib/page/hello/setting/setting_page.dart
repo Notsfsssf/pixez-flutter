@@ -242,11 +242,12 @@ class _SettingPageState extends State<SettingPage> {
                 Divider(),
                 Column(
                   children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.library_books),
-                      title: Text('Manga'),
-                      onTap: () => Leader.push(context, RecomMangaPage()),
-                    ),
+                    if (false)
+                      ListTile(
+                        leading: Icon(Icons.library_books),
+                        title: Text('Manga'),
+                        onTap: () => Leader.push(context, RecomMangaPage()),
+                      ),
                     ListTile(
                       leading: Icon(Icons.book),
                       title: Text('Novel'),

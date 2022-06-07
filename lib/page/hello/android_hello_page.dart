@@ -137,11 +137,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                   duration: const Duration(milliseconds: 400),
                   height: isFullscreen ? 0 : bottomNavigatorHeight,
                   key: bottomNavigatorKey,
-                  child: BottomNavigationBar(
-                      type: BottomNavigationBarType.fixed,
-                      selectedItemColor: Theme.of(context).colorScheme.primary,
-                      currentIndex: index,
-                      onTap: (index) {
+                  child: NavigationBar(
+                      onDestinationSelected: (int index) {
                         if (this.index == index) {
                           topStore.setTop("${index + 1}00");
                         }
@@ -151,22 +148,23 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                         if (_pageController.hasClients)
                           _pageController.jumpToPage(index);
                       },
-                      items: [
-                        BottomNavigationBarItem(
+                      selectedIndex: index,
+                      destinations: [
+                        NavigationDestination(
                             icon: Icon(Icons.home),
                             label: I18n.of(context).home),
-                        BottomNavigationBarItem(
+                        NavigationDestination(
                             icon: Icon(
                               CustomIcons.leaderboard,
                             ),
                             label: I18n.of(context).rank),
-                        BottomNavigationBarItem(
+                        NavigationDestination(
                             icon: Icon(Icons.favorite),
                             label: I18n.of(context).quick_view),
-                        BottomNavigationBarItem(
+                        NavigationDestination(
                             icon: Icon(Icons.search),
                             label: I18n.of(context).search),
-                        BottomNavigationBarItem(
+                        NavigationDestination(
                             icon: Icon(Icons.more_horiz),
                             label: I18n.of(context).more),
                       ]),
