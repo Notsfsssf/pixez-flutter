@@ -75,33 +75,36 @@ class _NewPageState extends State<NewPage>
         return Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            AppBar(
-              automaticallyImplyLeading: false,
-              elevation: 0.0,
-              title: TabBar(
-                  indicatorSize: TabBarIndicatorSize.label,
-                  controller: _tabController,
-                  isScrollable: true,
-                  indicator: MD2Indicator(
-                      indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).colorScheme.primary,
-                      indicatorSize: MD2IndicatorSize.normal),
-                  onTap: (i) {
-                    if (_tabController.index == i)
-                      topStore.setTop((301 + i).toString());
-                  },
-                  tabs: [
-                    Tab(
-                      text: I18n.of(context).news,
-                    ),
-                    Tab(
-                      text: I18n.of(context).bookmark,
-                    ),
-                    Tab(
-                      text: I18n.of(context).followed,
-                    ),
-                  ]),
-              actions: <Widget>[
+            Container(
+              height: MediaQuery.of(context).padding.top,
+            ),
+            Switch(value: true, onChanged: (v) {}),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    controller: _tabController,
+                    isScrollable: true,
+                    indicator: MD2Indicator(
+                        indicatorHeight: 3,
+                        indicatorColor: Theme.of(context).colorScheme.primary,
+                        indicatorSize: MD2IndicatorSize.normal),
+                    onTap: (i) {
+                      if (_tabController.index == i)
+                        topStore.setTop((301 + i).toString());
+                    },
+                    tabs: [
+                      Tab(
+                        text: I18n.of(context).news,
+                      ),
+                      Tab(
+                        text: I18n.of(context).bookmark,
+                      ),
+                      Tab(
+                        text: I18n.of(context).followed,
+                      ),
+                    ]),
                 IconButton(
                   icon: Icon(Icons.account_circle),
                   onPressed: () {

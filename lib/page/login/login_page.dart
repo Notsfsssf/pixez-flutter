@@ -85,78 +85,73 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          primaryColor: Theme.of(context).colorScheme.secondary,
-          brightness: Theme.of(context).brightness),
-      child: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: SingleChildScrollView(
-            padding: EdgeInsets.all(0),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 20,
-                ),
-                Image.asset(
-                  'assets/images/icon.png',
-                  height: 80,
-                  width: 80,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: AutofillGroup(
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                          ),
-                          ElevatedButton(
-                              child: Text(
-                                I18n.of(context).login,
-                              ),
-                              onPressed: () async {
-                                try {
-                                  String url =
-                                      await OAuthClient.generateWebviewUrl();
-                                  _launch(url);
-                                } catch (e) {}
-                              }),
-                          ElevatedButton(
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      child: SingleChildScrollView(
+          padding: EdgeInsets.all(0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 20,
+              ),
+              Image.asset(
+                'assets/images/icon.png',
+                height: 80,
+                width: 80,
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: AutofillGroup(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                        ),
+                        ElevatedButton(
+                            child: Text(
+                              I18n.of(context).login,
+                            ),
                             onPressed: () async {
                               try {
                                 String url =
-                                    await OAuthClient.generateWebviewUrl(
-                                        create: true);
+                                    await OAuthClient.generateWebviewUrl();
                                 _launch(url);
                               } catch (e) {}
-                            },
-                            child: Text(I18n.of(context).dont_have_account),
+                            }),
+                        ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              String url =
+                                  await OAuthClient.generateWebviewUrl(
+                                      create: true);
+                              _launch(url);
+                            } catch (e) {}
+                          },
+                          child: Text(I18n.of(context).dont_have_account),
+                        ),
+                        TextButton(
+                          child: Text(
+                            I18n.of(context).terms,
                           ),
-                          TextButton(
-                            child: Text(
-                              I18n.of(context).terms,
-                            ),
-                            onPressed: () async {
-                              final url =
-                                  'https://www.pixiv.net/terms/?page=term';
-                              try {
-                                await launch(url);
-                              } catch (e) {}
-                            },
-                          ),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                      ),
+                          onPressed: () async {
+                            final url =
+                                'https://www.pixiv.net/terms/?page=term';
+                            try {
+                              await launch(url);
+                            } catch (e) {}
+                          },
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                     ),
                   ),
                 ),
-              ],
-            )),
-      ),
+              ),
+            ],
+          )),
     );
   }
 
