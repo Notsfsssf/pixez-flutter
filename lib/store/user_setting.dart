@@ -58,7 +58,10 @@ abstract class _UserSettingBase with Store {
   static const String SAVE_EFFECT_KEY = "save_effect";
   static const String SAVE_EFFECT_ENABLE_KEY = "save_effect_enable";
   static const String PAD_MODE_KEY = "pad_mode";
+  static const String COPY_INFO_TEXT_KEY = "copy_info_text";
 
+  @observable
+  String copyInfoText = "title:{title}\npainter:{userName}\nillust id:{id}";
   @observable
   bool animContainer = true;
   @observable
@@ -434,5 +437,11 @@ abstract class _UserSettingBase with Store {
   @action
   Future<void> setAnimContainer(bool anim) async {
     animContainer = anim;
+  }
+
+  @action
+  Future<void> setCopyInfoText(String text) async {
+    copyInfoText = text;
+    await prefs.setString(COPY_INFO_TEXT_KEY, text);
   }
 }

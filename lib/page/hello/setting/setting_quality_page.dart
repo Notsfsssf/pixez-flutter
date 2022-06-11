@@ -806,36 +806,21 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: Observer(builder: (_) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(I18n.of(context).save_effect),
-                    ),
-                    ListTile(
-                      title: Text("None"),
-                      trailing: userSetting.saveEffectEnable
-                          ? null
-                          : Icon(Icons.check),
-                      onTap: () {
-                        userSetting.setSaveEffectEnable(false);
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Observer(
+                  builder: (context) {
+                    return SwitchListTile(
+                      activeColor: Theme.of(context).colorScheme.secondary,
+                      onChanged: (bool value) async {
+                        await userSetting.setOverSanityLevelFolder(value);
                       },
-                    ),
-                    ListTile(
-                      title: Text("Anti hash"),
-                      trailing: userSetting.saveEffectEnable &&
-                              userSetting.saveEffect == 0
-                          ? Icon(Icons.check)
-                          : null,
-                      onTap: () {
-                        userSetting.setSaveEffectEnable(true);
-                        userSetting.setSaveEffect(0);
-                      },
-                    )
-                  ],
-                );
-              }),
+                      title: Text("Text"),
+                      value: userSetting.overSanityLevelFolder,
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ]),
