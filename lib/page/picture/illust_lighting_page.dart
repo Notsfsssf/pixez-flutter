@@ -1021,9 +1021,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           Icons.local_library,
                         ),
                         onTap: () async {
-                          await Clipboard.setData(ClipboardData(
-                              text:
-                                  'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
+                          final str =
+                              userSetting.illustToShareInfoText(illusts);
+                          await Clipboard.setData(ClipboardData(text: str));
                           BotToast.showText(
                               text: I18n.of(context).copied_to_clipboard);
                           Navigator.of(context).pop();

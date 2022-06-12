@@ -22,6 +22,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,7 +62,8 @@ abstract class _UserSettingBase with Store {
   static const String COPY_INFO_TEXT_KEY = "copy_info_text";
 
   @observable
-  String copyInfoText = "title:{title}\npainter:{userName}\nillust id:{id}";
+  String copyInfoText =
+      "title:{title}\npainter:{user_name}\nillust id:{illust_id}";
   @observable
   bool animContainer = true;
   @observable
@@ -443,5 +445,15 @@ abstract class _UserSettingBase with Store {
   Future<void> setCopyInfoText(String text) async {
     copyInfoText = text;
     await prefs.setString(COPY_INFO_TEXT_KEY, text);
+  }
+
+  String illustToShareInfoText(Illusts illusts) {
+    final str = copyInfoText
+        .replaceAll('{illust_id}', illusts.id.toString())
+        .replaceAll("{user_name}", illusts.user.name)
+        .replaceAll("{tags}", illusts.tags.map((e) => e.name).join(', '))
+        .replaceAll("{user_id}", illusts.user.id.toString())
+        .replaceAll("{title}", illusts.title);
+    return str;
   }
 }

@@ -21,8 +21,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -810,13 +812,11 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Observer(
                   builder: (context) {
-                    return SwitchListTile(
-                      activeColor: Theme.of(context).colorScheme.secondary,
-                      onChanged: (bool value) async {
-                        await userSetting.setOverSanityLevelFolder(value);
+                    return ListTile(
+                      onTap: () {
+                        Leader.push(context, CopyTextPage());
                       },
-                      title: Text("Text"),
-                      value: userSetting.overSanityLevelFolder,
+                      title: Text("Copy text setting"),
                     );
                   },
                 ),
