@@ -255,5 +255,6 @@
   "text":"文本",
   "search_word_hint": "搜索标题或画师昵称",
   "save_effect": "保存效果",
-  "layout_mode": "布局方式"
+  "layout_mode": "布局方式",
+  "share_info_format": "分享信息格式"
 }

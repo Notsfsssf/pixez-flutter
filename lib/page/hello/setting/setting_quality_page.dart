@@ -784,6 +784,25 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 }),
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Observer(
+                  builder: (context) {
+                    return ListTile(
+                      onTap: () {
+                        Leader.push(context, CopyTextPage());
+                      },
+                      title: Text(I18n.of(context).share_info_format),
+                      trailing: Icon(Icons.arrow_forward),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
           if (Platform.isIOS)
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -805,24 +824,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 ),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: Observer(
-                  builder: (context) {
-                    return ListTile(
-                      onTap: () {
-                        Leader.push(context, CopyTextPage());
-                      },
-                      title: Text("Copy text setting"),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
         ]),
       ),
     );

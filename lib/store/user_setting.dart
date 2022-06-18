@@ -261,6 +261,7 @@ abstract class _UserSettingBase with Store {
     saveEffect = prefs.getInt(SAVE_EFFECT_KEY) ?? 0;
     saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
     padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
+    copyInfoText = prefs.getString(COPY_INFO_TEXT_KEY) ?? copyInfoText;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {

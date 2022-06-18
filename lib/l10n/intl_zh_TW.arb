@@ -255,5 +255,6 @@
   "text":"文字",
   "search_word_hint": "搜尋標題或繪師名稱",
   "save_effect": "儲存效果",
-  "layout_mode": "布局方式"
+  "layout_mode": "布局方式",
+  "share_info_format": "分享信息格式"
 }

@@ -246,5 +246,6 @@
   "text":"text",
   "search_word_hint": "Search title or name like",
   "save_effect": "Save effect",
-  "layout_mode": "Layout mode"
+  "layout_mode": "Layout mode",
+  "share_info_format": "Share info format"
 }

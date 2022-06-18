@@ -80,7 +80,7 @@ class _CopyTextPageState extends State<CopyTextPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Share info format"),
+        title: Text(I18n.of(context).share_info_format),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.refresh),
@@ -106,8 +106,7 @@ class _CopyTextPageState extends State<CopyTextPage> {
                 maxLines: null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Input share info format',
-                  labelText: 'Share info format',
+                  labelText: I18n.of(context).share_info_format,
                 )),
           ),
           Padding(
