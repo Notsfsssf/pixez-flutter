@@ -283,18 +283,8 @@ class _IllustRowPageState extends State<IllustRowPage>
     final height = (radio * expectWidth);
     final centerType = height <= screenHeight;
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: PixivProvider.url(data.imageUrls.medium), fit: BoxFit.cover),
-      ),
       child: Stack(
         children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
-            child: Container(
-              color: Colors.black.withOpacity(0.1),
-            ),
-          ),
           Row(
             children: [
               Container(
