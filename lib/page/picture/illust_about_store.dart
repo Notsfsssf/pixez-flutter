@@ -16,6 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
@@ -49,7 +50,7 @@ abstract class _IllustAboutStoreBase with Store {
       Recommend recommend = Recommend.fromJson(response.data);
       _nextUrl = recommend.nextUrl;
       illusts.clear();
-      illusts.addAll(recommend.illusts);
+      illusts.addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
     } catch (e) {
       errorMessage = e.toString();
     }
@@ -64,7 +65,7 @@ abstract class _IllustAboutStoreBase with Store {
           : await apiClient.getNext(_nextUrl!);
       Recommend recommend = Recommend.fromJson(response.data);
       _nextUrl = recommend.nextUrl;
-      illusts.addAll(recommend.illusts);
+      illusts.addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
       if (_nextUrl == null || _nextUrl!.isEmpty || recommend.illusts.isEmpty) {
         refreshController?.loadNoData();
       } else {

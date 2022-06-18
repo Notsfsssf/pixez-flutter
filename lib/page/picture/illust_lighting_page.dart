@@ -144,7 +144,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   void _loadAbout() {
     if (mounted &&
         _scrollController.hasClients &&
-        _scrollController.offset + 180 >=
+        _scrollController.offset + 220 >=
             _scrollController.position.maxScrollExtent &&
         _aboutStore.illusts.isEmpty) _aboutStore.fetch();
   }
