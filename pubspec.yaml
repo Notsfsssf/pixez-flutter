@@ -35,8 +35,8 @@ dependencies:
   bot_toast: ^4.0.1
   package_info: ^2.0.2
   uni_links2: ^0.6.0+2
-  mobx: ^2.0.7
-  flutter_mobx: ^2.0.5
+  mobx: 2.0.7
+  flutter_mobx: 2.0.5
   in_app_purchase: ^1.0.9
   flutter_widget_from_html: ^0.8.5
   device_info_plus: ^3.2.3
