@@ -29,6 +29,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
+import 'package:pixez/page/search/search_bar.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -126,12 +127,19 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return [
-                  SliverAppBar(
-                    elevation: 0.0,
-                    titleSpacing: 0.0,
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Theme.of(context).canvasColor,
-                    title: _buildFirstRow(context),
+                  SliverToBoxAdapter(
+                    child:
+                        Container(height: MediaQuery.of(context).padding.top),
+                  ),
+                  // SliverAppBar(
+                  //   elevation: 0.0,
+                  //   titleSpacing: 0.0,
+                  //   automaticallyImplyLeading: false,
+                  //   backgroundColor: Theme.of(context).canvasColor,
+                  //   title: _buildFirstRow(context),
+                  // )
+                  SliverToBoxAdapter(
+                    child: SearchBar(),
                   )
                 ];
               },
@@ -193,6 +201,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
+          child: _buildFirstRow(context),
+        ),
+        SliverToBoxAdapter(
           child: _buildSpotlightContainer(),
         ),
         SliverToBoxAdapter(
@@ -208,8 +219,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
               crossAxisCount: (orientation == Orientation.portrait)
-              ? userSetting.crossCount
-              : userSetting.hCrossCount,
+                  ? userSetting.crossCount
+                  : userSetting.hCrossCount,
               collectGarbage: (List<int> garbages) {
                 // garbages.forEach((index) {
                 //   final provider = ExtendedNetworkImageProvider(
@@ -289,7 +300,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   Widget _buildFirstRow(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(top: 0.0),
+      // padding: const EdgeInsets.only(top: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
