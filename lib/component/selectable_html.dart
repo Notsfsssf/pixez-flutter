@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -88,6 +89,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
             isSelectable: true,
             onTapUrl: (String url) async {
               try {
+                LPrinter.d("html tap url: $url");
                 if (url.startsWith("pixiv")) {
                   Leader.pushWithUri(context, Uri.parse(url));
                 } else

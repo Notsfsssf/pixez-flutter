@@ -102,7 +102,9 @@ class Leader {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());
         }
-      } else if (link.host.contains("illusts") || link.host.contains("user")) {
+      } else if (link.host.contains("illusts") ||
+          link.host.contains("user") ||
+          link.host.contains("novel")) {
         _parseUriContent(context, link);
       }
     } else if (link.scheme.contains("http")) {
@@ -137,6 +139,17 @@ class Leader {
         }));
       } catch (e) {}
       return;
+    } else if (link.host.contains("novel")) {
+      try {
+        int id = int.parse(link.pathSegments.last);
+        Navigator.of(context, rootNavigator: true)
+            .push(MaterialPageRoute(builder: (context) {
+          return NovelViewerPage(id: id);
+        }));
+        return;
+      } catch (e) {
+        LPrinter.d(e);
+      }
     } else if (link.host.contains('pixiv')) {
       if (link.path.contains("artworks")) {
         List<String> paths = link.pathSegments;

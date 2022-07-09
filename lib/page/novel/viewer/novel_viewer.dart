@@ -27,6 +27,7 @@ import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -232,7 +233,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: HtmlWidget(_novelStore.novel?.caption ?? ""),
+                      child: SelectableHtml(
+                          data: _novelStore.novel?.caption ?? ""),
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0)),
