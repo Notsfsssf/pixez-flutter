@@ -22,6 +22,7 @@ import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -226,6 +227,17 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                           buildRow(context, f)
                       ],
                     )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: HtmlWidget(_novelStore.novel?.caption ?? ""),
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                ),
                 TextButton(
                     onPressed: () {
                       Leader.push(

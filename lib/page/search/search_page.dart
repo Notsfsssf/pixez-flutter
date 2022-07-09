@@ -16,6 +16,7 @@
 
 import 'dart:io';
 import 'dart:ui';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -25,6 +26,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/search_bar.dart';
@@ -43,6 +45,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   late TrendTagsStore _trendTagsStore;
   late AnimationController _animationController;
   late Animation<double> animation;
+  late SauceStore _sauceStore;
 
   @override
   void didChangeDependencies() {
@@ -58,6 +61,19 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
     _trendTagsStore = TrendTagsStore();
     _tabController = TabController(length: 3, vsync: this);
+    _sauceStore = SauceStore();
+    _sauceStore.observableStream.listen((event) {
+      if (event != null && _sauceStore.results.isNotEmpty) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PageView(
+                  children: _sauceStore.results
+                      .map((element) => IllustLightingPage(id: element))
+                      .toList(),
+                )));
+      } else {
+        BotToast.showText(text: "0 result");
+      }
+    });
     super.initState();
     tagHistoryStore.fetch();
     _trendTagsStore.fetch();
@@ -69,6 +85,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   void dispose() {
     _animationController.dispose();
     _tabController.dispose();
+    _sauceStore.dispose();
     super.dispose();
   }
 
@@ -109,7 +126,11 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 child: Container(height: MediaQuery.of(context).padding.top),
               ),
               SliverToBoxAdapter(
-                child: SearchBar(),
+                child: SearchBar(
+                  onSaucenao: () {
+                    _sauceStore.findImage();
+                  },
+                ),
               )
             ];
           },

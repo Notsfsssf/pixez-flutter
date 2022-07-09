@@ -8,7 +8,8 @@ import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class SearchBar extends StatefulWidget {
-  const SearchBar({Key? key}) : super(key: key);
+  final VoidCallback? onSaucenao;
+  const SearchBar({Key? key, this.onSaucenao}) : super(key: key);
 
   @override
   State<SearchBar> createState() => _SearchBarState();
@@ -71,7 +72,7 @@ class _SearchBarState extends State<SearchBar> {
               child: IconButton(
                 icon: Icon(Icons.image_search),
                 onPressed: () {
-                  Leader.push(context, SauceNaoPage());
+                  if (widget.onSaucenao != null) widget.onSaucenao!();
                 },
               ),
             ),
