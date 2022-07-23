@@ -20,6 +20,11 @@ class _SettingPrefsPageState extends State<SettingPrefsPage> {
         appBar: AppBar(title: Text(I18n.of(context).setting)),
         body: CustomScrollView(slivers: [
           SliverToBoxAdapter(
+            child: Container(
+              height: 30,
+            ),
+          ),
+          SliverToBoxAdapter(
               child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Card(
@@ -28,6 +33,40 @@ class _SettingPrefsPageState extends State<SettingPrefsPage> {
                   borderRadius: BorderRadius.circular(16)),
               child: Column(children: [
                 _buildRow(I18n.of(context).select_language,
+                    subtitle: userSetting.languageList[userSetting.languageNum],
+                    onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingLanguagePage()));
+                }),
+              ]),
+            ),
+          )),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Column(children: [
+                _buildRow(I18n.of(context).illustration_detail_page_quality,
+                    subtitle: userSetting.languageList[userSetting.languageNum],
+                    onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingLanguagePage()));
+                }),
+                _buildRow(I18n.of(context).manga_detail_page_quality,
+                    subtitle: userSetting.languageList[userSetting.languageNum],
+                    onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingLanguagePage()));
+                }),
+                _buildRow(I18n.of(context).large_preview_zoom_quality,
                     subtitle: userSetting.languageList[userSetting.languageNum],
                     onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -85,6 +124,11 @@ class _SettingLanguagePageState extends State<SettingLanguagePage> {
     return Scaffold(
       appBar: AppBar(title: Text(I18n.of(context).select_language)),
       body: CustomScrollView(slivers: [
+        SliverToBoxAdapter(
+          child: Container(
+            height: 30,
+          ),
+        ),
         SliverToBoxAdapter(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
