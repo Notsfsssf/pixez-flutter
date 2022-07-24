@@ -26,6 +26,8 @@ import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
+import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 
 class NovelSearchPage extends StatefulWidget {
@@ -63,6 +65,8 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
     super.dispose();
   }
 
+  int? _id;
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -77,6 +81,18 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                     .subtitle1!
                     .copyWith(color: Theme.of(context).iconTheme.color),
                 controller: _textEditingController,
+                onChanged: (v) {
+                  final i = int.tryParse(v);
+                  if (i == null) {
+                    setState(() {
+                      _id = null;
+                    });
+                  } else {
+                    setState(() {
+                      _id = i;
+                    });
+                  }
+                },
                 onSubmitted: (v) {
                   if (v.trim().isEmpty) return;
                   String value = v.trim();
@@ -102,6 +118,49 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                 )
               ],
             ),
+            if (_id != null)
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                InkWell(
+                    onTap: () {
+                      Leader.push(context, NovelViewerPage(id: _id!));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("$_id"),
+                          Text(
+                            "Novel Id",
+                            style: Theme.of(context).textTheme.caption,
+                          )
+                        ],
+                      ),
+                    )),
+                Divider(
+                  height: 1,
+                ),
+                InkWell(
+                    onTap: () {
+                      Leader.push(context, NovelUserPage(id: _id!));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("$_id"),
+                          Text(
+                            "Author Id",
+                            style: Theme.of(context).textTheme.caption,
+                          )
+                        ],
+                      ),
+                    )),
+              ])),
             SliverToBoxAdapter(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

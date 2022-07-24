@@ -98,7 +98,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
-              backgroundColor: Colors.transparent,
             ),
             extendBody: true,
             extendBodyBehindAppBar: true,
