@@ -213,7 +213,7 @@ class _SettingPageState extends State<SettingPage> {
                       onTap: () {
                         Navigator.of(context).push(
                             MaterialPageRoute(builder: (BuildContext context) {
-                          return SettingPrefsPage();
+                          return SettingQualityPage();
                         }));
                       },
                     ),
