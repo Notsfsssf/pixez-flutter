@@ -257,7 +257,26 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   .isNotEmpty)
                 return InkWell(
                   onTap: () {
-                    tagHistoryStore.deleteAll();
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("Clean history?"),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(I18n.of(context).cancel)),
+                              TextButton(
+                                  onPressed: () {
+                                    tagHistoryStore.deleteAll();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(I18n.of(context).ok))
+                            ],
+                          );
+                        });
                   },
                   child: Center(
                     child: Padding(
