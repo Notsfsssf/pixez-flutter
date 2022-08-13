@@ -256,5 +256,7 @@
   "search_word_hint": "搜索标题或画师昵称",
   "save_effect": "保存效果",
   "layout_mode": "布局方式",
-  "share_info_format": "分享信息格式"
+  "share_info_format": "分享信息格式",
+  "account_deletion": "注销账号",
+  "account_deletion_subtitle": "这将会登出账号然后前往网页进行账号注销"
 }

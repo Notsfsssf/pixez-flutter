@@ -256,5 +256,7 @@
   "search_word_hint": "搜尋標題或繪師名稱",
   "save_effect": "儲存效果",
   "layout_mode": "佈局模式",
-  "share_info_format": "資訊分享格式"
+  "share_info_format": "資訊分享格式",
+  "account_deletion": "註銷帳號",
+  "account_deletion_subtitle": "這將會登出賬號並前往網頁進行賬號註銷"
 }

@@ -256,5 +256,7 @@
   "search_word_hint": "Search title or name like",
   "save_effect": "Save effect",
   "layout_mode": "Layout mode",
-  "share_info_format": "Share info format"
+  "share_info_format": "Share info format",
+  "account_deletion": "account_deletion",
+  "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account"
 }

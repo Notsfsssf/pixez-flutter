@@ -16,9 +16,11 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/account/edit/account_edit_store.dart';
+import 'package:pixez/page/webview/account_deletion_webview_page.dart';
 
 class AccountEditPage extends StatefulWidget {
   @override
@@ -157,6 +159,48 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   labelText: 'Email',
                 ),
               ),
+              InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return AlertDialog(
+                          title: Text("${I18n.of(ctx).account_deletion}?"),
+                          content:
+                              Text("${I18n.of(ctx).account_deletion_subtitle}"),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop();
+                                  await accountStore.deleteAll();
+                                  final result = await Leader.push(
+                                      context, AccountDeletionPage());
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(I18n.of(ctx).ok)),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Text(I18n.of(ctx).cancel)),
+                          ],
+                        );
+                      });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        I18n.of(context).account_deletion,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),
