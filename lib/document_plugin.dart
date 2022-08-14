@@ -13,6 +13,7 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
@@ -29,6 +30,14 @@ class DocumentPlugin {
       "save_mode": saveMode ?? userSetting.saveMode,
       "clear_old": clearOld
     });
+  }
+
+  static Future<bool?> permissionStatus() async {
+    return platform.invokeMethod<bool>('permissionStatus');
+  }
+
+  static Future<bool?> requestPermission() async {
+    return platform.invokeMethod<bool>('requestPermission');
   }
 
   static Future<bool?> exist(String fileName, {int? saveMode}) =>

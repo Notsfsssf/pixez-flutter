@@ -14,13 +14,17 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:animations/animations.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
@@ -200,13 +204,48 @@ class _IllustCardState extends State<IllustCard> {
       );
     return InkWell(
       onLongPress: () {
-        saveStore.saveImage(store.illusts!);
+        _buildLongPressToSaveHint();
       },
       onTap: () {
         _buildInkTap(context, tag);
       },
       child: child,
     );
+  }
+
+  _buildLongPressToSaveHint() async {
+    if (Platform.isIOS) {
+      var auth = await DocumentPlugin
+          .permissionStatus(); //Permission handler not working
+      if (auth ?? false) {
+        await saveStore.saveImage(store.illusts!);
+      } else {
+        final result = await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('长按保存'),
+                content: Text('长按卡片将会保存插画到相册'),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).ok))
+                ],
+              );
+            });
+        final auth = await DocumentPlugin
+            .requestPermission(); //Permission handler not working
+        if (auth ?? false) {
+          await saveStore.saveImage(store.illusts!);
+        } else {
+          BotToast.showText(text: "请允许APP访问相册以创建用以保存图片的相册");
+        }
+      }
+    } else {
+      await saveStore.saveImage(store.illusts!);
+    }
   }
 
   Future _buildInkTap(BuildContext context, String heroTag) {

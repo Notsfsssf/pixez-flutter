@@ -16,18 +16,33 @@ struct DocumentPlugin {
                                            binaryMessenger: controller.binaryMessenger)
         channel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            guard call.method == "save" else {
-                result(false)
+            if call.method == "save"  {
+                let args = call.arguments as? [String:Any]
+                let data  = args?["data"] as! FlutterStandardTypedData
+                let name = args?["name"] as! String
+                let sData = Data(data.data)
+                save(sData, name: name, in: name.contains("sanity") ? "pxez_sanity" : "pxez")
+                result(true)
+                return
+            } else if call.method == "permissionStatus" {
+                if #available(iOS 14, *) {
+                    let readWriteStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+                    result(readWriteStatus == .authorized)
+                } else {
+                    result(true)
+                }
+                return
+            } else if call.method == "requestPermission" {
+                if #available(iOS 14, *) {
+                    PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+                        result(status == .authorized)
+                    }
+                } else {
+                    result(true)
+                }
                 return
             }
-            let args = call.arguments as? [String:Any]
-            
-            
-            let data  = args?["data"] as! FlutterStandardTypedData
-            let name = args?["name"] as! String
-            let sData = Data(data.data)
-            save(sData, name: name, in: name.contains("sanity") ? "pxez_sanity" : "pxez")
-            result(true)
+            result(false)
         })
     }
     
