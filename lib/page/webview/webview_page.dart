@@ -121,9 +121,21 @@ class _WebViewPageState extends State<WebViewPage> {
                     if (uri != null &&
                         !userSetting.disableBypassSni &&
                         uri.host == "accounts.pixiv.net") {
-                      controller.evaluateJavascript(
-                          source:
-                              "javascript:(function() {document.getElementsByClassName('signup-form__sns-btn-area')[0].style.display='none'; })()");
+                      controller.evaluateJavascript(source: """
+javascript:(function() {
+ let forms = document.getElementsByTagName('form'); 
+ for (let name of forms) {
+    if (name['method'] === 'post' || name['method'] === 'POST') {
+        name.style.display = 'none';
+    }
+  
+}
+ let list = document.getElementsByClassName("sns-button-list");
+ for (let name of list) {
+        name.style.display = 'none';
+} 
+  })()
+""");
                     }
                   },
                   onProgressChanged: (controller, progress) {
