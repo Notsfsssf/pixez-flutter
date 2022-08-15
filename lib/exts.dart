@@ -41,7 +41,7 @@ extension HostExts on Uri {
 extension TimeExts on String {
   String toShortTime() {
     try {
-      var formatter = new DateFormat('yyyy-MM-dd HH:mm:ss');
+      var formatter = new DateFormat('yyyy-MM-dd HH:mm');
       return formatter.format(DateTime.parse(this));
     } catch (e) {
       return this;
