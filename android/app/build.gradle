@@ -77,9 +77,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-    }
     defaultConfig {
         applicationId packageName
         minSdkVersion 21
@@ -138,6 +135,9 @@ android {
                 universalApk true
             }
         }
+    }
+    lint {
+        disable 'InvalidPackage'
     }
 }
 
