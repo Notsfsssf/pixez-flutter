@@ -71,7 +71,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -83,7 +83,7 @@ android {
     defaultConfig {
         applicationId packageName
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 10009030
         versionName "0.9.3 Coil"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
@@ -91,6 +91,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.0-beta03"
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
@@ -140,12 +146,13 @@ flutter {
 }
 
 dependencies {
+    implementation("androidx.glance:glance-appwidget:1.0.0-alpha04")
     implementation project(":weiss")
+    implementation("io.coil-kt:coil:2.1.0")
+    implementation("io.coil-kt:coil-compose:2.1.0")
     implementation 'androidx.webkit:webkit:1.4.0'
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation "androidx.browser:browser:1.4.0"
     implementation('com.waynejo:androidndkgif:0.3.3')
-    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.google.android.play:core:1.10.3'
 }
