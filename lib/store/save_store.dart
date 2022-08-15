@@ -296,6 +296,12 @@ abstract class _SaveStoreBase with Store {
   @action
   Future<void> saveImage(Illusts illusts,
       {int? index, bool redo = false}) async {
+    if (Platform.isIOS) { //IOS APP STORE REVIEW 
+      final status = await DocumentPlugin.permissionStatus() ?? false;
+      if (!status) {
+        final auth = await DocumentPlugin.requestPermission();
+      }
+    }
     String memType;
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage!.originalImageUrl!;

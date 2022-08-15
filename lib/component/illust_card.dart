@@ -33,6 +33,7 @@ import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IllustCard extends StatefulWidget {
   final IllustStore store;
@@ -215,11 +216,10 @@ class _IllustCardState extends State<IllustCard> {
 
   _buildLongPressToSaveHint() async {
     if (Platform.isIOS) {
-      var auth = await DocumentPlugin
-          .permissionStatus(); //Permission handler not working
-      if (auth ?? false) {
-        await saveStore.saveImage(store.illusts!);
-      } else {
+      final pref = await SharedPreferences.getInstance();
+      final firstLongPress = await pref.getBool("first_long_press") ?? true;
+      if (firstLongPress) {
+        await pref.setBool("first_long_press", false);
         final result = await showDialog(
             context: context,
             builder: (context) {
@@ -235,14 +235,8 @@ class _IllustCardState extends State<IllustCard> {
                 ],
               );
             });
-        final auth = await DocumentPlugin
-            .requestPermission(); //Permission handler not working
-        if (auth ?? false) {
-          await saveStore.saveImage(store.illusts!);
-        } else {
-          BotToast.showText(text: "请允许APP访问相册以创建用以保存图片的相册");
-        }
       }
+      await saveStore.saveImage(store.illusts!);
     } else {
       await saveStore.saveImage(store.illusts!);
     }

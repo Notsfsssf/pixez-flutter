@@ -56,7 +56,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>请允许APP保存图片到相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>请允许APP访问相册以创建用以保存图片的相册</string>
+	<string>请允许APP访问相册，用以创建保存图片的相册、保存图片</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
