@@ -74,7 +74,7 @@
   "load_image_failed_click_to_reload": "読み込みに失敗しました。ここをタップして再試行してください",
   "loading_failed_retry_message": "読み込みに失敗しました。ここをタップして再試行してください",
   "login": "ログイン",
-  "login_message": "ログインして新しい世界を見つけに行きましょう",
+  "login_message": "ログインして新たな世界を見つけに行きましょう！",
   "logout": "ログアウト",
   "logout_message": "このアプリに記録されたアカウント情報が消去され、ログインページに戻ります",
   "manga": "マンガ",
@@ -253,10 +253,10 @@
   "open_by_default":"デフォルトで開く",
   "open_by_default_subtitle":"このアプリでリンクを開くことを許可する",
   "text":"テキスト",
-  "search_word_hint": "Search title or name like",
-  "save_effect": "Save effect",
-  "layout_mode": "Layout mode",
-  "share_info_format": "Share info format",
-  "account_deletion": "account_deletion",
-  "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account"
+  "search_word_hint": "作品名またはユーザ名で検索",
+  "save_effect": "保存エフェクト",
+  "layout_mode": "レイアウト方式",
+  "share_info_format": "シェアする詳細情報の形式",
+  "account_deletion": "アカウントの削除",
+  "account_deletion_subtitle": "アカウントからログアウトし、Pixivの退会ページに移動します。"
 }
