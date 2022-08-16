@@ -15,7 +15,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.7.10'
 
     repositories {
         maven { url 'https://maven.aliyun.com/repository/public/' }
