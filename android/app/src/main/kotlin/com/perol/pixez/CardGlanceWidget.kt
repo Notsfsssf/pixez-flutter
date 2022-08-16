@@ -10,9 +10,8 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.background
 import androidx.glance.layout.Box
-import androidx.glance.layout.Column
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxWidth
-import androidx.glance.layout.height
 
 class CardGlanceWidget : GlanceAppWidget() {
     companion object {
@@ -29,15 +28,12 @@ class CardGlanceWidget : GlanceAppWidget() {
     @Composable
     override fun Content() {
         val size = LocalSize.current
-        Column {
-            Box(
-                GlanceModifier
-                    .fillMaxWidth()
-                    .height(50.0.dp)
-                    .background(Color.Yellow)
-            ) {
-
-            }
+        Box(
+            GlanceModifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color.Yellow)
+        ) {
         }
     }
 }
