@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/inline_span.dart';
 import 'package:flutter/src/painting/text_style.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -75,6 +76,27 @@ class SpecialImageText extends SpecialText {
       trueId = int.tryParse(now.split('-').first)!;
     }
     if (int == null) return TextSpan(text: key, style: textStyle);
+    return PixivImageSpan(trueId, key);
+  }
+}
+
+class JumpImageText extends SpecialText {
+  static const String flag = '[[jumpuri';
+  final int? start;
+
+  JumpImageText(TextStyle textStyle, {this.start})
+      : super(JumpImageText.flag, ']', textStyle);
+
+  @override
+  InlineSpan finishText() {
+    final String key = toString();
+    LPrinter.d(key);
+    String now = key.substring(flag.length + 1, key.indexOf("]"));
+    int? trueId = 0;
+    if (now.contains('>')) {
+      trueId = int.tryParse(now.split('>').last);
+    }
+    if (trueId == null) return TextSpan(text: key, style: textStyle);
     return PixivImageSpan(trueId, key);
   }
 }
@@ -169,6 +191,10 @@ class NovelSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     if (isStart(flag, SpecialImageText.flag)) {
       return SpecialImageText(textStyle!,
           start: index! - (SpecialImageText.flag.length - 1));
+    }
+    if (isStart(flag, JumpImageText.flag)) {
+      return JumpImageText(textStyle!,
+          start: index! - (JumpImageText.flag.length - 1));
     }
     if (isStart(flag, RbText.flag)) {
       return RbText(textStyle!, start: index! - (RbText.flag.length - 1));

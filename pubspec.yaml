@@ -50,7 +50,7 @@ dependencies:
   animations: ^2.0.3
   extended_text: ^9.1.1
   font_awesome_flutter: ^10.1.0
-  json_annotation: ^4.4.0
+  json_annotation: ^4.6.0
   flutter_staggered_animations: ^1.0.0
   badges: ^2.0.2
   image_picker: ^0.8.5
@@ -70,7 +70,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.1.10
   mobx_codegen: ^2.0.6
-  json_serializable: ^6.1.6
+  json_serializable: ^6.3.1
   analyzer: ^3.2.0
 
 # For information on the generic Dart part of this file, see the
