@@ -19,6 +19,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
@@ -33,10 +34,14 @@ class LightingStore = _LightingStoreBase with _$LightingStore;
 typedef Future<Response> FutureGet();
 typedef Future<Response> FutureRefreshGet(bool force);
 
-abstract class LightSource {}
+abstract class LightSource {
+  String? glanceKey;
+}
 
 class ApiSource extends LightSource {
   FutureGet futureGet;
+
+  String? g;
 
   ApiSource({required this.futureGet}) : super();
 
@@ -48,7 +53,10 @@ class ApiSource extends LightSource {
 class ApiForceSource extends LightSource {
   FutureRefreshGet futureGet;
 
-  ApiForceSource({required this.futureGet}) : super();
+  ApiForceSource({required this.futureGet, String? glanceKey = null})
+      : super() {
+    this.glanceKey = glanceKey;
+  }
 
   Future<Response> fetch(bool force) {
     return futureGet(force);
@@ -63,6 +71,9 @@ abstract class _LightingStoreBase with Store {
   final String? portal;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
+
+  GlanceIllustPersistProvider glanceIllustPersistProvider =
+      GlanceIllustPersistProvider();
 
   dispose() {
     // iStores.forEach((element) {
@@ -103,6 +114,9 @@ abstract class _LightingStoreBase with Store {
 
   @action
   Future<bool> fetch({String? url, bool force = false}) async {
+    if (!glanceIllustPersistProvider.db.isOpen) {
+      await glanceIllustPersistProvider.open();
+    }
     nextUrl = null;
     errorMessage = null;
     controller?.footerMode?.value = LoadStatus.idle;
@@ -119,6 +133,14 @@ abstract class _LightingStoreBase with Store {
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
+      String? glanceKey = source.glanceKey;
+      if (glanceKey != null && glanceKey.isNotEmpty) {
+        Future.microtask(() async => {
+              await glanceIllustPersistProvider.insertAll(recommend.illusts
+                  .toGlancePersist(
+                      glanceKey, DateTime.now().microsecondsSinceEpoch))
+            });
+      }
       if (userSetting.prefs.getString("app_widget_data") == null) {
         if (url == null || !url.contains("walkthrough"))
           await userSetting.prefs

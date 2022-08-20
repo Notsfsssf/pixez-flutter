@@ -63,7 +63,8 @@ class _RankModePageState extends State<RankModePage> {
       refreshController: _refreshController,
       source: ApiForceSource(
           futureGet: (e) =>
-              apiClient.getIllustRanking(widget.mode!, widget.date, force: e)),
+              apiClient.getIllustRanking(widget.mode!, widget.date, force: e),
+          glanceKey: "rank"),
     );
   }
 }
