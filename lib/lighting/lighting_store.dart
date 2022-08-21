@@ -114,9 +114,7 @@ abstract class _LightingStoreBase with Store {
 
   @action
   Future<bool> fetch({String? url, bool force = false}) async {
-    if (!glanceIllustPersistProvider.db.isOpen) {
-      await glanceIllustPersistProvider.open();
-    }
+    await glanceIllustPersistProvider.open();
     nextUrl = null;
     errorMessage = null;
     controller?.footerMode?.value = LoadStatus.idle;

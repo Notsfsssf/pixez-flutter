@@ -33,6 +33,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
+import com.perol.pixez.glance.GlanceDBManager
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
@@ -223,7 +224,7 @@ class MainActivity : FlutterActivity() {
             context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
         saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
-        OpenSettinger.bindChannel(flutterEngine,this)
+        OpenSettinger.bindChannel(flutterEngine, this)
         Weiss.bindChannel(flutterEngine)
         CustomTab.bindChannel(this, flutterEngine)
         Safer.bindChannel(this, flutterEngine)

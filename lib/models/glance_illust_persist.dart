@@ -31,7 +31,6 @@ extension ListGlanceIllustExt on List<Illusts> {
 extension GlanceIllustExt on Illusts {
   GlanceIllustPersist toGlanceIllustPersist(String type, int time) {
     return GlanceIllustPersist(
-        id: id,
         illustId: id,
         userId: user.id,
         pictureUrl: imageUrls.medium,
@@ -173,31 +172,6 @@ create table $tableIllustPersist (
     return result;
   }
 
-  Future<List<GlanceIllustPersist>> getLikeIllusts(String word) async {
-    List<GlanceIllustPersist> result = [];
-    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
-        columns: [
-          cid,
-          cillust_id,
-          cuser_id,
-          cpicture_url,
-          ctime,
-          ctype,
-          cuser_name,
-          ctitle
-        ],
-        where: '$ctitle LIKE ? or $cuser_name LIKE ?',
-        whereArgs: ["%${word}%", "%${word}%"],
-        orderBy: ctime);
-
-    if (maps.length > 0) {
-      maps.forEach((f) {
-        result.add(GlanceIllustPersist.fromJson(f));
-      });
-    }
-    return result;
-  }
-
   Future<List<GlanceIllustPersist>> getAllAccount() async {
     List<GlanceIllustPersist> result = [];
     List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
@@ -215,7 +189,7 @@ create table $tableIllustPersist (
 
     if (maps.length > 0) {
       maps.forEach((f) {
-        result.add(IllustPersist.fromJson(f));
+        result.add(GlanceIllustPersist.fromJson(f));
       });
     }
     return result;

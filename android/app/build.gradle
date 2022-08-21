@@ -81,8 +81,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 10009030
-        versionName "0.9.3 Coil"
+        versionCode 10009039
+        versionName "0.9.4 AppWidget"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {
@@ -148,6 +148,10 @@ flutter {
 dependencies {
     implementation("androidx.glance:glance-appwidget:1.0.0-alpha04")
     implementation project(":weiss")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    def work_version = "2.7.1"
+    implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation("com.google.android.material:material:1.7.0-beta01")
     implementation("io.coil-kt:coil:2.1.0")
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation 'androidx.webkit:webkit:1.4.0'
@@ -155,5 +159,5 @@ dependencies {
     implementation('com.waynejo:androidndkgif:0.3.3')
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.google.android.play:core:1.10.3'
-    implementation 'androidx.documentfile:documentfile:1.0.1'
+    implementation("androidx.documentfile:documentfile:1.0.1")
 }

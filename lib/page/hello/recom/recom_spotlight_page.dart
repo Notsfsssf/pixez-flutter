@@ -15,11 +15,13 @@
  */
 
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -29,6 +31,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
+import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -111,8 +114,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 enablePullUp: true,
                 header: (Platform.isAndroid)
                     ? MaterialClassicHeader(
-                  color: Theme.of(context).colorScheme.secondary,
-                )
+                        color: Theme.of(context).colorScheme.secondary,
+                      )
                     : ClassicHeader(),
                 footer: _buildCustomFooter(),
                 onRefresh: () async {
@@ -193,7 +196,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: _buildSpotlightContainer(),
+          child: _buidTagSpotlightRow(),
         ),
         SliverToBoxAdapter(
           child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
@@ -206,65 +209,140 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget _buildWaterfall(Orientation orientation) {
     return _lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
-      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-        crossAxisCount: (orientation == Orientation.portrait)
-            ? userSetting.crossCount
-            : userSetting.hCrossCount,
-        collectGarbage: (List<int> garbages) {
-          // garbages.forEach((index) {
-          //   final provider = ExtendedNetworkImageProvider(
-          //     _lightingStore.iStores[index].illusts!.imageUrls.medium,
-          //   );
-          //   provider.evict();
-          // });
-        },
-      ),
-      delegate:
-      SliverChildBuilderDelegate((BuildContext context, int index) {
-        return IllustCard(
-          store: _lightingStore.iStores[index],
-          iStores: _lightingStore.iStores,
-        );
-      }, childCount: _lightingStore.iStores.length),
-    )
+            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+              crossAxisCount: (orientation == Orientation.portrait)
+                  ? userSetting.crossCount
+                  : userSetting.hCrossCount,
+              collectGarbage: (List<int> garbages) {
+                // garbages.forEach((index) {
+                //   final provider = ExtendedNetworkImageProvider(
+                //     _lightingStore.iStores[index].illusts!.imageUrls.medium,
+                //   );
+                //   provider.evict();
+                // });
+              },
+            ),
+            delegate:
+                SliverChildBuilderDelegate((BuildContext context, int index) {
+              return IllustCard(
+                store: _lightingStore.iStores[index],
+                iStores: _lightingStore.iStores,
+              );
+            }, childCount: _lightingStore.iStores.length),
+          )
         : (_lightingStore.errorMessage?.isNotEmpty == true
-        ? SliverToBoxAdapter(
-      child: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(':(',
-                  style: Theme.of(context).textTheme.headline4),
-            ),
-            TextButton(
-                onPressed: () {
-                  _lightingStore.fetch(force: true);
-                },
-                child: Text(I18n.of(context).retry)),
-            Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  (_lightingStore.errorMessage?.contains("400") ==
-                      true
-                      ? '${I18n.of(context).error_400_hint}\n ${_lightingStore.errorMessage}'
-                      : '${_lightingStore.errorMessage}'),
-                ))
-          ],
-        ),
-      ),
-    )
-        : SliverToBoxAdapter(
-      child: Container(
-        height: 30,
-      ),
-    ));
+            ? SliverToBoxAdapter(
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(':(',
+                            style: Theme.of(context).textTheme.headline4),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            _lightingStore.fetch(force: true);
+                          },
+                          child: Text(I18n.of(context).retry)),
+                      Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            (_lightingStore.errorMessage?.contains("400") ==
+                                    true
+                                ? '${I18n.of(context).error_400_hint}\n ${_lightingStore.errorMessage}'
+                                : '${_lightingStore.errorMessage}'),
+                          ))
+                    ],
+                  ),
+                ),
+              )
+            : SliverToBoxAdapter(
+                child: Container(
+                  height: 30,
+                ),
+              ));
+  }
+
+  Widget _buidTagSpotlightRow() {
+    return Container(
+      height: 128,
+      padding: EdgeInsets.only(left: 8.0),
+      child: spotlightStore.articles.isNotEmpty
+          ? ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final spotlight = spotlightStore.articles[index];
+                return Card(
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return SoupPage(
+                            url: spotlight.articleUrl, spotlight: spotlight);
+                      }));
+                    },
+                    child: Container(
+                      width: 244,
+                      height: 128,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: PixivProvider.url(spotlight.thumbnail))),
+                      child: Stack(children: [
+                        Expanded(
+                            child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.0),
+                                Colors.black.withOpacity(0.5),
+                              ],
+                            )),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 8),
+                              child: Text(
+                                "${spotlight.title}",
+                                maxLines: 2,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  // shadows: [
+                                  //   Shadow(
+                                  //       color: Colors.black,
+                                  //       offset: Offset(0.5, 0.5),
+                                  //       blurRadius: 1.0)
+                                  // ]
+                                ),
+                              ),
+                            ),
+                          ),
+                        ))
+                      ]),
+                    ),
+                  ),
+                );
+              },
+              itemCount: spotlightStore.articles.length,
+              scrollDirection: Axis.horizontal,
+            )
+          : Container(),
+    );
   }
 
   Widget _buildSpotlightContainer() {
@@ -273,16 +351,16 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       padding: EdgeInsets.only(left: 5.0),
       child: spotlightStore.articles.isNotEmpty
           ? ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final spotlight = spotlightStore.articles[index];
-          return SpotlightCard(
-            spotlight: spotlight,
-          );
-        },
-        itemCount: spotlightStore.articles.length,
-        scrollDirection: Axis.horizontal,
-      )
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final spotlight = spotlightStore.articles[index];
+                return SpotlightCard(
+                  spotlight: spotlight,
+                );
+              },
+              itemCount: spotlightStore.articles.length,
+              scrollDirection: Axis.horizontal,
+            )
           : Container(),
     );
   }
