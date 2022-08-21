@@ -21,7 +21,6 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/soup/soup_page.dart';
-import 'package:pixez/exts.dart';
 
 class SpotlightCard extends StatelessWidget {
   final SpotlightArticle spotlight;

@@ -62,6 +62,8 @@ class _SoupPageState extends State<SoupPage> {
                     title: Text(widget.spotlight!.pureTitle),
                     background: PixivImage(
                       widget.spotlight!.thumbnail,
+                      fit: BoxFit.cover,
+                      height: 200,
                     ),
                   ),
                   actions: <Widget>[

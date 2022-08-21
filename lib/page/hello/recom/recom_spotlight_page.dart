@@ -292,14 +292,13 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                       }));
                     },
                     child: Container(
-                      width: 244,
-                      height: 128,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: PixivProvider.url(spotlight.thumbnail))),
-                      child: Stack(children: [
-                        Expanded(
+                        width: 244,
+                        height: 128,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: PixivProvider.url(spotlight.thumbnail))),
+                        child: Container(
                             child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
@@ -314,27 +313,32 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                             )),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 8),
-                              child: Text(
-                                "${spotlight.title}",
-                                maxLines: 2,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  // shadows: [
-                                  //   Shadow(
-                                  //       color: Colors.black,
-                                  //       offset: Offset(0.5, 0.5),
-                                  //       blurRadius: 1.0)
-                                  // ]
-                                ),
+                                  horizontal: 8.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "${spotlight.title}",
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                        // shadows: [
+                                        //   Shadow(
+                                        //       color: Colors.black,
+                                        //       offset: Offset(0.5, 0.5),
+                                        //       blurRadius: 1.0)
+                                        // ]
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ))
-                      ]),
-                    ),
+                        ))),
                   ),
                 );
               },

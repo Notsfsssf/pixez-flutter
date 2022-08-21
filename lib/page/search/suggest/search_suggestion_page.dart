@@ -19,16 +19,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
-import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/soup/soup_page.dart';
-import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
@@ -212,11 +208,11 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           systemNavigationBarDividerColor: Colors.transparent,
           statusBarColor: Colors.transparent),
       iconTheme:
-          IconThemeData(color: Theme.of(context).textTheme!.bodyText1!.color),
+          IconThemeData(color: Theme.of(context).textTheme.bodyText1!.color),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.close,
-              color: Theme.of(context).textTheme!.bodyText1!.color),
+              color: Theme.of(context).textTheme.bodyText1!.color),
           onPressed: () {
             _filter.clear();
           },
