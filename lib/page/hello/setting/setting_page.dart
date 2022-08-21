@@ -33,6 +33,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
@@ -445,6 +446,11 @@ class _SettingPageState extends State<SettingPage> {
           try {
             Directory tempDir = await getTemporaryDirectory();
             tempDir.deleteSync(recursive: true);
+            GlanceIllustPersistProvider glanceIllustPersistProvider =
+                GlanceIllustPersistProvider();
+            await glanceIllustPersistProvider.open();
+            await glanceIllustPersistProvider.deleteAll();
+            await glanceIllustPersistProvider.close();
           } catch (e) {}
         }
         break;
