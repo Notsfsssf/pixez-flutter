@@ -37,7 +37,7 @@ class GlanceDBManager {
             "${path}/${TABLE_FILE_NAME}", null,
             SQLiteDatabase.OPEN_READONLY
         )
-        val cursor = database.rawQuery("select * from ${TABLE_NAME}", arrayOf())
+        val cursor = database.rawQuery("select * from ${TABLE_NAME} ORDER BY RANDOM() LIMIT 1", arrayOf())
         cursor.moveToFirst()
         val result = arrayListOf<GlanceIllust>()
         do {
