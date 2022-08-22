@@ -25,7 +25,16 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-  final languageList = ['en-US', 'zh-CN', 'zh-TW', 'ja', 'ko', 'ru', 'es'];
+  final languageList = [
+    'en-US',
+    'zh-CN',
+    'zh-TW',
+    'ja',
+    'ko',
+    'ru',
+    'es',
+    'tr'
+  ];
   var currentIndex = 0;
 
   @override

@@ -242,6 +242,27 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ],
       ),
     ),
+    InkWell(
+      onTap: () {
+        try {
+          if (Platform.isAndroid && !Constants.isGooglePlay)
+            launch('https://github.com/kyoyacchi');
+        } catch (e) {}
+      },
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                'https://avatars.githubusercontent.com/u/63583961?v=4'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('KYOYA'),
+          ),
+          Icon(Icons.translate)
+        ],
+      ),
+    ),
   ];
 
   @override
@@ -456,6 +477,9 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     Tab(
                       text: "es",
                     ),
+                    Tab(
+                      text: "tr",
+                    )
                   ];
                   return Theme(
                     data: Theme.of(context).copyWith(

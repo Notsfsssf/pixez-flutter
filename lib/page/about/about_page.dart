@@ -94,7 +94,19 @@ class _AboutPageState extends State<AboutPage> {
         'ChsBuffer',
         'https://avatars3.githubusercontent.com/u/33744752?s=64&v=4',
         'https://github.com/chsbuffer',
-        '💻')
+        '💻'),
+    Contributor("媛天徵", "https://avatars.githubusercontent.com/u/64569368?v=4",
+        'https://github.com/YooTynChi', '🌍'),
+    Contributor(
+        "Scighost",
+        "https://avatars.githubusercontent.com/u/61003590?v=4",
+        'https://github.com/Scighost',
+        '💻'),
+    Contributor(
+        "sheason2019",
+        "https://avatars.githubusercontent.com/u/73812146?v=4",
+        'https://github.com/sheason2019',
+        '💻'),
   ];
 
   late bool hasNewVersion;
