@@ -114,7 +114,6 @@ abstract class _LightingStoreBase with Store {
 
   @action
   Future<bool> fetch({String? url, bool force = false}) async {
-    await glanceIllustPersistProvider.open();
     nextUrl = null;
     errorMessage = null;
     controller?.footerMode?.value = LoadStatus.idle;
@@ -133,6 +132,7 @@ abstract class _LightingStoreBase with Store {
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
       String? glanceKey = source.glanceKey;
       if (glanceKey != null && glanceKey.isNotEmpty) {
+        await glanceIllustPersistProvider.open();
         Future.microtask(() async => {
               await glanceIllustPersistProvider.insertAll(recommend.illusts
                   .toGlancePersist(
