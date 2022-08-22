@@ -89,7 +89,17 @@ class ImageGlanceWidget : GlanceAppWidget() {
                         )
                     }
                 } else {
-                    CircularProgressIndicator()
+                    Column(
+                        GlanceModifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                        Text(
+                            text = "Please view more illusts in app",
+                            modifier = GlanceModifier.padding(16.dp),
+                            style = TextStyle(textAlign = TextAlign.Center)
+                        )
+                    }
                     val glanceId = LocalGlanceId.current
                     SideEffect {
                         ImageWorker.enqueue(context, size, glanceId)
