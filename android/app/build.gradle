@@ -108,30 +108,16 @@ android {
     }
     buildTypes {
         release {
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
         }
     }
 
     android {
         splits {
-
-            // Configures multiple APKs based on ABI.
             abi {
-
-                // Enables building multiple APKs per ABI.
                 enable true
-
-                // By default all ABIs are included, so use reset() and include to specify that we only
-                // want APKs for x86 and x86_64.
-
-                // Resets the list of ABIs that Gradle should create APKs for to none.
                 reset()
-
-                // Specifies a list of ABIs that Gradle should create APKs for.
                 include 'armeabi-v7a', 'arm64-v8a', 'x86_64'
-
-                // Specifies that we do not want to also generate a universal APK that includes all ABIs.
                 universalApk true
             }
         }
@@ -146,7 +132,16 @@ flutter {
 }
 
 dependencies {
-    implementation("androidx.glance:glance-appwidget:1.0.0-alpha04")
+    implementation("androidx.core:core-remoteviews:1.0.0-beta02")
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("androidx.datastore:datastore-core:1.0.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.annotation:annotation:1.4.0")
+    implementation("androidx.compose.runtime:runtime:1.3.0-beta01")
+    implementation("androidx.compose.ui:ui-graphics:1.3.0-alpha03")
+    implementation("androidx.compose.ui:ui-unit:1.3.0-alpha03")
+    implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(":weiss")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     def work_version = "2.7.1"
