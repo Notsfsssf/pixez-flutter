@@ -71,14 +71,19 @@ class ImageWorker(
     override suspend fun doWork(): Result {
         return try {
             val widgetId = inputData.getInt("widget_id", -1)
+            val width = inputData.getFloat("width", 100f)
+            val height = inputData.getFloat("height", 100f)
+            val sharedPreferences =
+                context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            val type = sharedPreferences.getString("flutter.widget_illust_type", "rank") ?: "rank"
             if (widgetId == -1)
                 return Result.failure()
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)
-            val list = GlanceDBManager().fetch(context)
+            val list = GlanceDBManager().fetch(context, type)
             if (list.isEmpty())
                 return Result.failure()
             val glanceIllust = list.random()
-            val uri = getPictureUrl(glanceIllust.pictureUrl)
+            val uri = getPictureUrl(glanceIllust.pictureUrl, width, height)
             updateImageWidget(glanceAppWidgetManager.getGlanceIdBy(widgetId), glanceIllust, uri)
             Result.success()
         } catch (e: Exception) {
@@ -98,7 +103,8 @@ class ImageWorker(
     ) {
         updateAppWidgetState(context, glanceId) { prefs ->
             prefs[ImageGlanceWidget.sourceUrlKey] = url
-            prefs[ImageGlanceWidget.illustIdKey] = "pixez://pixiv.net/artworks/${glanceIllust.illustId}"
+            prefs[ImageGlanceWidget.illustIdKey] =
+                "pixez://pixiv.net/artworks/${glanceIllust.illustId}"
             prefs[ImageGlanceWidget.userLinkKey] = "pixez://pixiv.net/users/${glanceIllust.userId}"
             prefs[ImageGlanceWidget.titleKey] = glanceIllust.title
             prefs[ImageGlanceWidget.userNameKey] = glanceIllust.userName
@@ -107,7 +113,7 @@ class ImageWorker(
     }
 
     @OptIn(ExperimentalCoilApi::class)
-    private suspend fun getPictureUrl(url: String): String {
+    private suspend fun getPictureUrl(url: String, width: Float, height: Float): String {
         val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
         val sharedPreferences =
             context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -115,6 +121,7 @@ class ImageWorker(
         val request = ImageRequest.Builder(context)
             .setHeader("referer", "https://app-api.pixiv.net/")
             .setHeader("User-Agent", "PixivIOSApp/5.8.0")
+            .size(width.toInt(), height.toInt())
             .data(url)
             .build()
 

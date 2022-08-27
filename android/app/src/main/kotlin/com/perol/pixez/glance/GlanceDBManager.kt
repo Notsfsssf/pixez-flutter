@@ -27,9 +27,10 @@ class GlanceDBManager {
         const val COLUMN_USER_ID = "user_id"
         const val COLUMN_PICTURE_URL = "picture_url"
         const val COLUMN_USER_NAME = "user_name"
+        const val COLUMN_TYPE = "type"
     }
 
-    fun fetch(context: Context): ArrayList<GlanceIllust> {
+    fun fetch(context: Context, type: String = "rank"): ArrayList<GlanceIllust> {
         val dummyDatabaseName = "tekartik_sqflite.db"
         val file: File = context.getDatabasePath(dummyDatabaseName)
         val path = file.parent
@@ -37,7 +38,11 @@ class GlanceDBManager {
             "${path}/${TABLE_FILE_NAME}", null,
             SQLiteDatabase.OPEN_READONLY
         )
-        val cursor = database.rawQuery("select * from ${TABLE_NAME} ORDER BY RANDOM() LIMIT 1", arrayOf())
+        val cursor =
+            database.rawQuery(
+                "select * from $TABLE_NAME WHERE $COLUMN_TYPE = ? ORDER BY RANDOM() LIMIT 1",
+                arrayOf(type)
+            )
         cursor.moveToFirst()
         val result = arrayListOf<GlanceIllust>()
         do {

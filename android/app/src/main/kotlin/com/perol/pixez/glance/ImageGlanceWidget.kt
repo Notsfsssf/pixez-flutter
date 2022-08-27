@@ -68,24 +68,45 @@ class ImageGlanceWidget : GlanceAppWidget() {
                                 actionRunCallback<RefreshAction>()
                             )
                     )
-                    Column(GlanceModifier.fillMaxWidth().padding(16.dp)) {
-                        Text(
-                            text = "${currentState(titleKey)}",
-                            maxLines = 1,
-                            modifier = GlanceModifier.clickable(
-                                actionStartActivity(
-                                    Intent(Intent.ACTION_VIEW, Uri.parse(illustLink))
+
+                    Row(
+                        GlanceModifier.fillMaxWidth().padding(16.dp)
+                            .background(ImageProvider(R.drawable.widget_gradient)),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(GlanceModifier.defaultWeight()) {
+                            Text(
+                                text = "${currentState(titleKey)}",
+                                maxLines = 1,
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.textColorPrimary,
+                                    fontSize = 16.sp
+                                ),
+                                modifier = GlanceModifier.clickable(
+                                    actionStartActivity(
+                                        Intent(Intent.ACTION_VIEW, Uri.parse(illustLink))
+                                    )
                                 )
                             )
-                        )
-                        Text(
-                            text = "${currentState(userNameKey)}",
-                            maxLines = 1,
-                            modifier = GlanceModifier.clickable(
-                                actionStartActivity(
-                                    Intent(Intent.ACTION_VIEW, Uri.parse(userLink))
+                            Text(
+                                text = "${currentState(userNameKey)}",
+                                maxLines = 1,
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.textColorPrimary,
+                                    fontSize = 14.sp
+                                ),
+                                modifier = GlanceModifier.clickable(
+                                    actionStartActivity(
+                                        Intent(Intent.ACTION_VIEW, Uri.parse(userLink))
+                                    )
                                 )
                             )
+                        }
+                        Image(
+                            provider = ImageProvider(R.drawable.ic_baseline_refresh),
+                            contentDescription = "refresh",
+                            modifier = GlanceModifier.size(21.dp)
+                                .clickable(actionRunCallback<RefreshAction>())
                         )
                     }
                 } else {
