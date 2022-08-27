@@ -27,6 +27,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingQualityPage extends StatefulWidget {
@@ -827,7 +828,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               ),
             ),
           ),
-          if (Platform.isIOS)
+          if (Platform.isIOS && false)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -848,6 +849,56 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 ),
               ),
             ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Card(
+                child: Column(
+              children: <Widget>[
+                Padding(
+                  child: Text("App widget type"),
+                  padding: EdgeInsets.all(16),
+                ),
+                Observer(builder: (_) {
+                  var tablist = [
+                    Tab(
+                      text: I18n.of(context).rank,
+                    ),
+                    Tab(
+                      text: I18n.of(context).news,
+                    ),
+                    Tab(
+                      text: I18n.of(context).recommend,
+                    ),
+                  ];
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                        tabBarTheme: TabBarTheme(labelColor: Colors.black)),
+                    child: TabBar(
+                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Theme.of(context).colorScheme.secondary,
+                      tabs: tablist,
+                      indicator: MD2Indicator(
+                          indicatorHeight: 3,
+                          indicatorColor:
+                              Theme.of(context).colorScheme.secondary,
+                          indicatorSize: MD2IndicatorSize.normal),
+                      isScrollable: true,
+                      onTap: (index) async {
+                        final pre = await SharedPreferences.getInstance();
+                        final type = ["rank", "follow_illust", "recom"][index];
+                        await pre.setString("widget_illust_type", type);
+                      },
+                      controller: TabController(
+                          length: tablist.length,
+                          vsync: this,
+                          initialIndex: userSetting.padMode),
+                    ),
+                  );
+                })
+              ],
+            )),
+          ),
         ]),
       ),
     );

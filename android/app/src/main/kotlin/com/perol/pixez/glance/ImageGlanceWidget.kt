@@ -65,7 +65,9 @@ class ImageGlanceWidget : GlanceAppWidget() {
                         modifier = GlanceModifier
                             .fillMaxSize()
                             .clickable(
-                                actionRunCallback<RefreshAction>()
+                                actionStartActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(illustLink))
+                                )
                             )
                     )
 

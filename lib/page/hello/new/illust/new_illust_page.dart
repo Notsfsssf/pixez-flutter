@@ -44,8 +44,8 @@ class _NewIllustPageState extends State<NewIllustPage> {
   void initState() {
     _refreshController = RefreshController();
     futureGet = ApiForceSource(
-        futureGet: (e) =>
-            apiClient.getFollowIllusts(widget.restrict, force: e));
+        futureGet: (e) => apiClient.getFollowIllusts(widget.restrict, force: e),
+        glanceKey: "follow_illust");
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "301") {
@@ -82,19 +82,22 @@ class _NewIllustPageState extends State<NewIllustPage> {
                   setState(() {
                     futureGet = ApiForceSource(
                         futureGet: (e) =>
-                            apiClient.getFollowIllusts('all', force: e));
+                            apiClient.getFollowIllusts('all', force: e),
+                        glanceKey: "follow_illust");
                   });
                 if (index == 1)
                   setState(() {
                     futureGet = ApiForceSource(
                         futureGet: (e) =>
-                            apiClient.getFollowIllusts('public', force: e));
+                            apiClient.getFollowIllusts('public', force: e),
+                        glanceKey: "follow_illust");
                   });
                 if (index == 2)
                   setState(() {
                     futureGet = ApiForceSource(
                         futureGet: (e) =>
-                            apiClient.getFollowIllusts('private', force: e));
+                            apiClient.getFollowIllusts('private', force: e),
+                        glanceKey: "follow_illust");
                   });
               },
               children: [
@@ -134,7 +137,8 @@ class _NewIllustPageState extends State<NewIllustPage> {
                               setState(() {
                                 futureGet = ApiForceSource(
                                     futureGet: (e) => apiClient
-                                        .getFollowIllusts('all', force: e));
+                                        .getFollowIllusts('all', force: e),
+                                    glanceKey: "follow_illust");
                               });
                             },
                           ),
@@ -145,7 +149,8 @@ class _NewIllustPageState extends State<NewIllustPage> {
                               setState(() {
                                 futureGet = ApiForceSource(
                                     futureGet: (e) => apiClient
-                                        .getFollowIllusts('public', force: e));
+                                        .getFollowIllusts('public', force: e),
+                                    glanceKey: "follow_illust");
                               });
                             },
                           ),
@@ -156,7 +161,8 @@ class _NewIllustPageState extends State<NewIllustPage> {
                               setState(() {
                                 futureGet = ApiForceSource(
                                     futureGet: (e) => apiClient
-                                        .getFollowIllusts('private', force: e));
+                                        .getFollowIllusts('private', force: e),
+                                    glanceKey: "follow_illust");
                               });
                             },
                           ),

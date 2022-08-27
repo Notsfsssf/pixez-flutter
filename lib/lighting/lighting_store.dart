@@ -14,7 +14,6 @@
  *
  */
 
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
@@ -24,7 +23,6 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
-import 'package:pixez/widgetkit_plugin.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'lighting_store.g.dart';
@@ -138,21 +136,6 @@ abstract class _LightingStoreBase with Store {
                   .toGlancePersist(
                       glanceKey, DateTime.now().microsecondsSinceEpoch))
             });
-      }
-      if (userSetting.prefs.getString("app_widget_data") == null) {
-        if (url == null || !url.contains("walkthrough"))
-          await userSetting.prefs
-              .setString("app_widget_data", jsonEncode(recommend));
-        else {
-          bool condition =
-              userSetting.prefs.getBool("walkthrough_data_init") ?? false;
-          if (!condition) {
-            await userSetting.prefs
-                .setString("app_widget_data", jsonEncode(recommend));
-            await userSetting.prefs.setBool("walkthrough_data_init", true);
-          }
-        }
-        WidgetkitPlugin.notify();
       }
       controller?.refreshCompleted();
       return true;
