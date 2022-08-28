@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/amwork.dart';
@@ -28,8 +29,9 @@ import 'package:url_launcher/url_launcher.dart';
 class SoupPage extends StatefulWidget {
   final String url;
   final SpotlightArticle? spotlight;
+  final String? heroTag;
 
-  SoupPage({Key? key, required this.url, required this.spotlight})
+  SoupPage({Key? key, required this.url, required this.spotlight, this.heroTag})
       : super(key: key);
 
   @override
@@ -47,9 +49,9 @@ class _SoupPageState extends State<SoupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return Scaffold(
-        body: NestedScrollView(
+    return Scaffold(
+      body: Observer(builder: (context) {
+        return NestedScrollView(
           body: buildBlocProvider(),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
@@ -60,10 +62,13 @@ class _SoupPageState extends State<SoupPage> {
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(widget.spotlight!.pureTitle),
-                    background: PixivImage(
-                      widget.spotlight!.thumbnail,
-                      fit: BoxFit.cover,
-                      height: 200,
+                    background: NullHero(
+                      tag: widget.heroTag,
+                      child: PixivImage(
+                        widget.spotlight!.thumbnail,
+                        fit: BoxFit.cover,
+                        height: 200,
+                      ),
                     ),
                   ),
                   actions: <Widget>[
@@ -80,9 +85,9 @@ class _SoupPageState extends State<SoupPage> {
                 SliverAppBar()
             ];
           },
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 
   Widget buildBlocProvider() {

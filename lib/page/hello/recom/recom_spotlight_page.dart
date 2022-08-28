@@ -272,74 +272,86 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget _buidTagSpotlightRow() {
+    final expectCardWidget = MediaQuery.of(context).size.width * 0.7;
+    final expectCardHeight = expectCardWidget * 0.525;
     return Container(
-      height: 128,
-      padding: EdgeInsets.only(left: 8.0),
+      height: expectCardHeight,
+      padding: EdgeInsets.only(left: 0.0),
       child: spotlightStore.articles.isNotEmpty
           ? ListView.builder(
-              shrinkWrap: true,
               itemBuilder: (context, index) {
                 final spotlight = spotlightStore.articles[index];
                 return Card(
                   clipBehavior: Clip.antiAlias,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return SoupPage(
-                            url: spotlight.articleUrl, spotlight: spotlight);
-                      }));
-                    },
-                    child: Container(
-                        width: 244,
-                        height: 128,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: PixivProvider.url(spotlight.thumbnail))),
+                  child: Hero(
+                    tag: "spotlight_image_${spotlight.hashCode}",
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return SoupPage(
+                              url: spotlight.articleUrl,
+                              spotlight: spotlight,
+                              heroTag: 'spotlight_image_${spotlight.hashCode}',
+                            );
+                          }));
+                        },
                         child: Container(
-                            child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
+                            width: 244,
+                            height: 128,
                             decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.0),
-                                Colors.black.withOpacity(0.5),
-                              ],
-                            )),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 8.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "${spotlight.title}",
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                        // shadows: [
-                                        //   Shadow(
-                                        //       color: Colors.black,
-                                        //       offset: Offset(0.5, 0.5),
-                                        //       blurRadius: 1.0)
-                                        // ]
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: PixivProvider.url(
+                                        spotlight.thumbnail))),
+                            child: Container(
+                                child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.5),
+                                  ],
+                                )),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "${spotlight.title}",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal,
+                                            // shadows: [
+                                            //   Shadow(
+                                            //       color: Colors.black,
+                                            //       offset: Offset(0.5, 0.5),
+                                            //       blurRadius: 1.0)
+                                            // ]
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ))),
+                            ))),
+                      ),
+                    ),
                   ),
                 );
               },
