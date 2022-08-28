@@ -1,14 +1,13 @@
 package com.perol.pixez.glance
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradient
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -19,11 +18,13 @@ import androidx.glance.appwidget.*
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.action.actionStartActivity
-import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.layout.*
-import androidx.glance.text.*
-import androidx.glance.unit.ColorProvider
+import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
 import com.perol.pixez.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ImageGlanceWidget : GlanceAppWidget() {
 
@@ -161,4 +162,23 @@ class RefreshAction : ActionCallback {
 
 class ImageGlanceWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = ImageGlanceWidget()
+/*
+
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
+        for (i in appWidgetIds) {
+            val glanceAppWidgetManager = GlanceAppWidgetManager(context)
+            val glanceIdBy = glanceAppWidgetManager.getGlanceIdBy(i)
+            GlobalScope.launch {
+                glanceAppWidgetManager.getAppWidgetSizes(glanceIdBy).forEach { size ->
+                    ImageWorker.enqueue(context, size, glanceIdBy, force = false)
+                }
+            }
+        }
+    }
+*/
 }

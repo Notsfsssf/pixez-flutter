@@ -48,9 +48,9 @@ class _DirectoryPageState extends State<DirectoryPage> {
   }
 
   Future<void> _initMethod() async {
-    Map<Permission, PermissionStatus> statuses =
-        await [Permission.storage].request();
-    if (statuses[0] == PermissionStatus.denied) {
+    PermissionStatus statuses =
+        await Permission.storage.request();
+    if (statuses == PermissionStatus.denied) {
       BotToast.showText(text: I18n.of(context).permission_denied);
       Navigator.of(context).pop();
     }

@@ -2,6 +2,7 @@ package com.perol.pixez.glance
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.compose.ui.unit.DpSize
 import androidx.glance.GlanceId
@@ -14,6 +15,7 @@ import coil.imageLoader
 import coil.memory.MemoryCache
 import coil.request.ErrorResult
 import coil.request.ImageRequest
+import java.time.Duration
 import kotlin.math.roundToInt
 
 class ImageWorker(
@@ -75,7 +77,7 @@ class ImageWorker(
             val height = inputData.getFloat("height", 100f)
             val sharedPreferences =
                 context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-            val type = sharedPreferences.getString("flutter.widget_illust_type", "rank") ?: "rank"
+            val type = sharedPreferences.getString("flutter.widget_illust_type", "recom") ?: "recom"
             if (widgetId == -1)
                 return Result.failure()
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)

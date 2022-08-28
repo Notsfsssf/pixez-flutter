@@ -15,7 +15,6 @@
  */
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -700,7 +699,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         }));
       },
       child: RichText(
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
           text: TextSpan(
               text: "#${f.name}",
               children: [

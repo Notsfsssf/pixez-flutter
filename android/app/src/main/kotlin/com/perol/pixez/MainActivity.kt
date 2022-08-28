@@ -16,10 +16,12 @@
 
 package com.perol.pixez
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -30,13 +32,14 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
-import com.perol.pixez.glance.GlanceDBManager
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.Dispatchers
@@ -45,9 +48,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
-import kotlin.Comparator
 
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
@@ -59,6 +61,14 @@ class MainActivity : FlutterActivity() {
     var helplessPath: String? = null
     private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
     lateinit var sharedPreferences: SharedPreferences
+
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            pendingPickResult?.success(isGranted)
+            pendingPickResult = null
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Aligns the Flutter view vertically with the window.
@@ -89,7 +99,7 @@ class MainActivity : FlutterActivity() {
         }
         if (needHint)
             Toast.makeText(
-                context,
+                this,
                 getString(R.string.choose_a_suitable_image_storage_directory),
                 Toast.LENGTH_SHORT
             ).show()
@@ -221,7 +231,7 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         sharedPreferences =
-            context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+            this.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         helplessPath = sharedPreferences.getString("flutter.store_path", null)
         saveMode = sharedPreferences.getLong("flutter.save_mode", 0).toInt()
         OpenSettinger.bindChannel(flutterEngine, this)
@@ -272,114 +282,134 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL
         ).setMethodCallHandler { call, result ->
-            if (call.method == "save") {
-                val data = call.argument<ByteArray>("data")!!
-                val name = call.argument<String>("name")!!
-                var clearOld = call.argument<Boolean>("clear_old")
-                saveMode = call.argument<Int>("save_mode") ?: 0
-                if (clearOld == null)
-                    clearOld = false
-                if (savingPools.contains(name))
-                    return@setMethodCallHandler;
-                savingPools.add(name)
-                GlobalScope.launch(Dispatchers.Main) {
-                    try {
-                        when (saveMode) {
-                            0 -> {
-                                val path = withContext(Dispatchers.IO) {
-                                    save(data, name)
+            when (call.method) {
+                "requestPermission" -> {
+                    //TODO wait permission handler plugin
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        requestPermissionLauncher.launch(
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        )
+                        pendingPickResult = result
+                    }
+                }
+                "permissionStatus" -> {
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        val checkSelfPermission = ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        )
+                        result.success(checkSelfPermission == PackageManager.PERMISSION_GRANTED)
+                    }
+                }
+                "save" -> {
+                    val data = call.argument<ByteArray>("data")!!
+                    val name = call.argument<String>("name")!!
+                    var clearOld = call.argument<Boolean>("clear_old")
+                    saveMode = call.argument<Int>("save_mode") ?: 0
+                    if (clearOld == null)
+                        clearOld = false
+                    if (savingPools.contains(name))
+                        return@setMethodCallHandler;
+                    savingPools.add(name)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        try {
+                            when (saveMode) {
+                                0 -> {
+                                    val path = withContext(Dispatchers.IO) {
+                                        save(data, name)
+                                    }
+                                    MediaScannerConnection.scanFile(
+                                        this@MainActivity,
+                                        arrayOf(path),
+                                        arrayOf(
+                                            MimeTypeMap.getSingleton()
+                                                .getMimeTypeFromExtension(File(path).extension)
+                                        )
+                                    ) { _, _ ->
+                                    }
                                 }
-                                MediaScannerConnection.scanFile(
-                                    this@MainActivity,
-                                    arrayOf(path),
-                                    arrayOf(
-                                        MimeTypeMap.getSingleton()
-                                            .getMimeTypeFromExtension(File(path).extension)
-                                    )
-                                ) { _, _ ->
-                                }
-                            }
-                            2 -> {
-                                if (helplessPath == null) {
-                                    helplessPath =
-                                        sharedPreferences.getString("flutter.store_path", null)
+                                2 -> {
                                     if (helplessPath == null) {
-                                        helplessPath = "/storage/emulated/0/Pictures/pixez"
+                                        helplessPath =
+                                            sharedPreferences.getString("flutter.store_path", null)
+                                        if (helplessPath == null) {
+                                            helplessPath = "/storage/emulated/0/Pictures/pixez"
+                                        }
                                     }
+                                    val fullPath = "$helplessPath/$name"
+                                    val file = File(fullPath)
+                                    withContext(Dispatchers.IO) {
+                                        val dirPath = file.parent
+                                        val dirFile = File(dirPath)
+                                        if (!dirFile.exists()) {
+                                            dirFile.mkdirs()
+                                        }
+                                        if (!file.exists()) {
+                                            file.createNewFile()
+                                        }
+                                        file.outputStream().write(data)
+                                        if (clearOld && name.contains("_p0")) {
+                                            val oldFileName = name.replace("_p0", "")
+                                            val oldFile = File("$helplessPath", oldFileName)
+                                            if (oldFile.exists()) {
+                                                oldFile.delete()
+                                            }
+                                        }
+                                    }
+                                    MediaScannerConnection.scanFile(
+                                        this@MainActivity,
+                                        arrayOf(file.path),
+                                        arrayOf(
+                                            MimeTypeMap.getSingleton()
+                                                .getMimeTypeFromExtension(File(file.path).extension)
+                                        )
+                                    ) { _, _ ->
+                                    }
+
                                 }
-                                val fullPath = "$helplessPath/$name"
-                                val file = File(fullPath)
-                                withContext(Dispatchers.IO) {
-                                    val dirPath = file.parent
-                                    val dirFile = File(dirPath)
-                                    if (!dirFile.exists()) {
-                                        dirFile.mkdirs()
-                                    }
-                                    if (!file.exists()) {
-                                        file.createNewFile()
-                                    }
-                                    file.outputStream().write(data)
-                                    if (clearOld && name.contains("_p0")) {
-                                        val oldFileName = name.replace("_p0", "")
-                                        val oldFile = File("$helplessPath", oldFileName)
-                                        if (oldFile.exists()) {
-                                            oldFile.delete()
+                                1 -> {
+                                    withContext(Dispatchers.IO) {
+                                        writeFileUri(name, clearOld)?.let {
+                                            wr(data, it)
                                         }
                                     }
                                 }
-                                MediaScannerConnection.scanFile(
-                                    this@MainActivity,
-                                    arrayOf(file.path),
-                                    arrayOf(
-                                        MimeTypeMap.getSingleton()
-                                            .getMimeTypeFromExtension(File(file.path).extension)
-                                    )
-                                ) { _, _ ->
-                                }
-
                             }
-                            1 -> {
-                                withContext(Dispatchers.IO) {
-                                    writeFileUri(name, clearOld)?.let {
-                                        wr(data, it)
-                                    }
-                                }
-                            }
-                        }
-                        result.success(true)
-                    } catch (e: Throwable) {
-                        Log.d("x=====", "${e.localizedMessage}")
-                    } finally {
-                        savingPools.remove(name)
-                    }
-                }
-            }
-            if (call.method == "get_path") {
-                saveMode = call.argument<Int>("save_mode") ?: 0
-                GlobalScope.launch(Dispatchers.Main) {
-                    val path = withContext(Dispatchers.IO) {
-                        getPath()
-                    }
-                    result.success(path)
-                }
-            }
-            if (call.method == "exist") {
-                val name = call.argument<String>("name")!!
-                saveMode = call.argument<Int>("save_mode") ?: 0
-                GlobalScope.launch(Dispatchers.Main) {
-                    val isFileExist = withContext(Dispatchers.IO) {
-                        try {
-                            return@withContext isFileExist(name)
+                            result.success(true)
                         } catch (e: Throwable) {
+                            Log.d("x=====", "${e.localizedMessage}")
+                        } finally {
+                            savingPools.remove(name)
                         }
                     }
-                    result.success(isFileExist)
                 }
-            }
-            if (call.method == "choice_folder") {
-                saveMode = call.argument<Int>("save_mode") ?: 0
-                choiceFolder()
-                pendingPickResult = result
+                "get_path" -> {
+                    saveMode = call.argument<Int>("save_mode") ?: 0
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val path = withContext(Dispatchers.IO) {
+                            getPath()
+                        }
+                        result.success(path)
+                    }
+                }
+                "exist" -> {
+                    val name = call.argument<String>("name")!!
+                    saveMode = call.argument<Int>("save_mode") ?: 0
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val isFileExist = withContext(Dispatchers.IO) {
+                            try {
+                                return@withContext isFileExist(name)
+                            } catch (e: Throwable) {
+                            }
+                        }
+                        result.success(isFileExist)
+                    }
+                }
+                "choice_folder" -> {
+                    saveMode = call.argument<Int>("save_mode") ?: 0
+                    choiceFolder()
+                    pendingPickResult = result
+                }
             }
         }
         MethodChannel(

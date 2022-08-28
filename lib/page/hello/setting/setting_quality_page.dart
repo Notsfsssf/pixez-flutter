@@ -39,10 +39,26 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
   late Widget _languageTranlator;
 
+  final _typeList = ["rank", "follow_illust", "recom"];
+  SharedPreferences? _pref;
+  int _widgetTypeIndex = -1;
+
   @override
   void initState() {
     _languageTranlator = _group[userSetting.languageNum];
+    _initData();
     super.initState();
+  }
+
+  _initData() async {
+    _pref = await SharedPreferences.getInstance();
+    final type = await _pref?.getString("widget_illust_type") ?? "recom";
+    int index = _typeList.indexOf(type);
+    if (index == -1) {
+      setState(() {
+        _widgetTypeIndex = index;
+      });
+    }
   }
 
   var _group = [
@@ -849,56 +865,57 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 ),
               ),
             ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Card(
-                child: Column(
-              children: <Widget>[
-                Padding(
-                  child: Text("App widget type"),
-                  padding: EdgeInsets.all(16),
-                ),
-                Observer(builder: (_) {
-                  var tablist = [
-                    Tab(
-                      text: I18n.of(context).rank,
-                    ),
-                    Tab(
-                      text: I18n.of(context).news,
-                    ),
-                    Tab(
-                      text: I18n.of(context).recommend,
-                    ),
-                  ];
-                  return Theme(
-                    data: Theme.of(context).copyWith(
-                        tabBarTheme: TabBarTheme(labelColor: Colors.black)),
-                    child: TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      tabs: tablist,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
-                      isScrollable: true,
-                      onTap: (index) async {
-                        final pre = await SharedPreferences.getInstance();
-                        final type = ["rank", "follow_illust", "recom"][index];
-                        await pre.setString("widget_illust_type", type);
-                      },
-                      controller: TabController(
-                          length: tablist.length,
-                          vsync: this,
-                          initialIndex: userSetting.padMode),
-                    ),
-                  );
-                })
-              ],
-            )),
-          ),
+          if (_widgetTypeIndex != -1)
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Card(
+                  child: Column(
+                children: <Widget>[
+                  Padding(
+                    child: Text("App widget type"),
+                    padding: EdgeInsets.all(16),
+                  ),
+                  Observer(builder: (_) {
+                    var tablist = [
+                      Tab(
+                        text: I18n.of(context).rank,
+                      ),
+                      Tab(
+                        text: I18n.of(context).news,
+                      ),
+                      Tab(
+                        text: I18n.of(context).recommend,
+                      ),
+                    ];
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                          tabBarTheme: TabBarTheme(labelColor: Colors.black)),
+                      child: TabBar(
+                        labelColor:
+                            Theme.of(context).textTheme.headline6!.color,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        indicatorColor: Theme.of(context).colorScheme.secondary,
+                        tabs: tablist,
+                        indicator: MD2Indicator(
+                            indicatorHeight: 3,
+                            indicatorColor:
+                                Theme.of(context).colorScheme.secondary,
+                            indicatorSize: MD2IndicatorSize.normal),
+                        isScrollable: true,
+                        onTap: (index) async {
+                          final type = _typeList[index];
+                          await _pref?.setString("widget_illust_type", type);
+                        },
+                        controller: TabController(
+                            length: tablist.length,
+                            vsync: this,
+                            initialIndex: _widgetTypeIndex),
+                      ),
+                    );
+                  })
+                ],
+              )),
+            ),
         ]),
       ),
     );
