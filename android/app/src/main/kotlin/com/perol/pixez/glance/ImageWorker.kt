@@ -1,22 +1,22 @@
 package com.perol.pixez.glance
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.compose.ui.unit.DpSize
+import androidx.core.app.NotificationCompat
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.appwidget.updateAll
 import androidx.work.*
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import coil.memory.MemoryCache
 import coil.request.ErrorResult
 import coil.request.ImageRequest
-import java.time.Duration
-import kotlin.math.roundToInt
+import com.perol.pixez.R
 
 class ImageWorker(
     private val context: Context,
@@ -112,6 +112,40 @@ class ImageWorker(
             prefs[ImageGlanceWidget.userNameKey] = glanceIllust.userName
         }
 //        ImageGlanceWidget().updateAll(context)
+    }
+
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        val CHANNEL_ID = "AppWidget"
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, CHANNEL_ID)
+        builder.setContentTitle("Fetching")
+        builder.setSmallIcon(R.drawable.ic_stat_name)
+        builder.setContentText("Fetching widget illust")
+        builder.setWhen(System.currentTimeMillis())
+        val notifyManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            genNotificationChannel(CHANNEL_ID, "AppWidget")?.let {
+                notifyManager.createNotificationChannel(it)
+            }
+        }
+        return ForegroundInfo(
+            randomRange(0, 1000), builder.build()
+        )
+    }
+
+    private fun genNotificationChannel(id: String?, name: String?): NotificationChannel? {
+        var channel: NotificationChannel? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH)
+            channel.enableLights(true)
+            channel.setShowBadge(true)
+        }
+        return channel
+    }
+
+    private fun randomRange(start: Int, end: Int): Int {
+        val range = end - start
+        return (Math.random() * range).toInt() + start
     }
 
     @OptIn(ExperimentalCoilApi::class)

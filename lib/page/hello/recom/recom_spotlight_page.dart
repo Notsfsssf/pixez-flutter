@@ -34,6 +34,7 @@ import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:quiver/iterables.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
@@ -197,7 +198,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: _buidTagSpotlightRow(),
+          child: _buidTagSpotlightRow(context),
         ),
         SliverToBoxAdapter(
           child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
@@ -271,8 +272,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               ));
   }
 
-  Widget _buidTagSpotlightRow() {
-    final expectCardWidget = MediaQuery.of(context).size.width * 0.7;
+  Widget _buidTagSpotlightRow(BuildContext context) {
+    var expectCardWidget = MediaQuery.of(context).size.width * 0.7;
+    expectCardWidget = expectCardWidget > 244 ? 244 : expectCardWidget;
     final expectCardHeight = expectCardWidget * 0.525;
     return Container(
       height: expectCardHeight,
@@ -302,8 +304,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                           }));
                         },
                         child: Container(
-                            width: 244,
-                            height: 128,
+                            width: expectCardWidget,
+                            height: expectCardHeight,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
