@@ -13,7 +13,6 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:pixez/main.dart';

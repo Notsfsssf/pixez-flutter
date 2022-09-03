@@ -92,7 +92,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                           ..account = user.account
                           ..xRestrict = user.xRestrict);*/
                     } catch (e) {
-                      Scaffold.of(context)
+                      ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(content: Text("创建次数过多")));
                     }
                   },

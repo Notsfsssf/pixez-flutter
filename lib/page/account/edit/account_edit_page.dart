@@ -106,7 +106,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   accountStore.updateSingle(accountStore.now!);
                 }
               } else {
-                Scaffold.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('${_accountEditStore.errorString}'),
                   backgroundColor: Colors.red,
                 ));

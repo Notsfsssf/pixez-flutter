@@ -14,7 +14,7 @@ class Hoster {
   static Map<String, dynamic> _constMap = {
     "app-api.pixiv.net": "210.140.131.199",
     "oauth.secure.pixiv.net": "210.140.131.219",
-    "i.pximg.net": "210.140.92.144",
+    "i.pximg.net": "210.140.92.149",
     "s.pximg.net": "210.140.92.143",
     "doh": "doh.dns.sb",
   };

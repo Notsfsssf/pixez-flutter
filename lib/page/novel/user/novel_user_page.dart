@@ -206,7 +206,9 @@ class _NovelUserPageState extends State<NovelUserPage>
                                     ? PixivImage(userStore.userDetail!.profile
                                         .background_image_url!)
                                     : Container(
-                                        color: Theme.of(context).colorScheme.secondary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                       )),
                             Align(
                               alignment: Alignment.bottomCenter,
@@ -383,7 +385,7 @@ class _NovelUserPageState extends State<NovelUserPage>
                     if (int.parse(accountStore.now!.userId) != widget.id) {
                       userStore.follow(needPrivate: false);
                     } else {
-                      Scaffold.of(context).showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
                               'Who is the most beautiful person in the world?')));
                     }
