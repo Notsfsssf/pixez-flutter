@@ -343,7 +343,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           if (!status) {
             final grant = await DocumentPlugin.requestPermission();
             if (grant != true) {
-              BotToast.showText(text: "read image permission denied");
+              _showPermissionDenied();
             }
           }
         } else {
@@ -351,13 +351,27 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           if (!granted.isGranted) {
             var b = await Permission.storage.request();
             if (!b.isGranted) {
-              BotToast.showText(text: "storage permission denied");
+              _showPermissionDenied();
               return;
             }
           }
         }
       }
     } catch (e) {}
+  }
+
+  _showPermissionDenied() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("permission_denied") == true) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("storage permission denied"),
+      action: SnackBarAction(
+        label: "Don't show again",
+        onPressed: () {
+          prefs.setBool("storaget_denied_confirm", true);
+        },
+      ),
+    ));
   }
 
   @override
