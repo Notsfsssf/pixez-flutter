@@ -18,6 +18,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
+		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
 		D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29C34664529F630B1285C5 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,7 @@
 		CF0E66D727BAA7B000DF1121 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CF0E66D827BAA7F200DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		CF0E66D927BAA7F300DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 				A70B475625D4D94200AE0717 /* CodeGen.swift */,
 				7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */,
 				7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */,
+				CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C8B5974260F680600098D5C /* SSSGridman.intentdefinition in Sources */,
+				CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */,
 				7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */,
