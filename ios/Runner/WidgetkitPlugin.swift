@@ -23,15 +23,6 @@ public class WidgetkitPlugin {
     }
     
     private static func notify()  {
-        if let data =  UserDefaults.standard.string(forKey: "flutter.app_widget_data"){
-            let host = UserDefaults.standard.string(forKey: "flutter.picture_source") ?? "i.pximg.net"
-            let time = UserDefaults.standard.integer(forKey: "flutter.app_widget_time")
-            print(host)
-            print(time)
-            let userDefault = UserDefaults(suiteName: "group.pixez")
-            userDefault?.setValue(host, forKey: "widgetkit.picture_source")
-            userDefault?.setValue(data, forKey: "widgetkit.app_widget_data")
-            userDefault?.setValue(time, forKey: "widgetkit.app_widget_time")
-        }
+        AppWidgetDBManager.copyDb()
     }
 }

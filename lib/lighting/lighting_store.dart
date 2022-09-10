@@ -14,8 +14,8 @@
  *
  */
 
-
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
@@ -23,6 +23,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pixez/widgetkit_plugin.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'lighting_store.g.dart';
@@ -131,11 +132,12 @@ abstract class _LightingStoreBase with Store {
       String? glanceKey = source.glanceKey;
       if (glanceKey != null && glanceKey.isNotEmpty) {
         await glanceIllustPersistProvider.open();
-        Future.microtask(() async => {
-              await glanceIllustPersistProvider.insertAll(recommend.illusts
-                  .toGlancePersist(
-                      glanceKey, DateTime.now().microsecondsSinceEpoch))
-            });
+        Future.microtask(() async {
+          await glanceIllustPersistProvider.insertAll(recommend.illusts
+              .toGlancePersist(
+                  glanceKey, DateTime.now().microsecondsSinceEpoch));
+          await WidgetkitPlugin.notify();
+        });
       }
       controller?.refreshCompleted();
       return true;

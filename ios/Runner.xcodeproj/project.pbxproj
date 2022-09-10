@@ -7,20 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B332F2167E0DBF8EDFBB480 /* Pods_Runner_SsssGridManExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11918CE1C2E5F7897BD2AE90 /* Pods_Runner_SsssGridManExtension.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */; };
 		7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6A8A2427870CFF0048656E /* Weiss.xcframework */; };
-		7C8B5974260F680600098D5C /* SSSGridman.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B596F260F680500098D5C /* SSSGridman.intentdefinition */; };
 		7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
+		CF24B04D28CB42C600AE445E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
+		CFB8EE9328C49E8900B8D74E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
+		CFB8EE9428C49E8900B8D74E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B596A260F680500098D5C /* SwiftUI.framework */; };
+		CFB8EE9728C49E8900B8D74E /* SsssGridMan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */; };
+		CFB8EE9A28C49E8900B8D74E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFB8EE9928C49E8900B8D74E /* Assets.xcassets */; };
+		CFB8EE9C28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */; };
+		CFB8EE9D28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */; };
+		CFB8EEA028C49E8900B8D74E /* SsssGridManExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29C34664529F630B1285C5 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CFB8EE9E28C49E8900B8D74E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CFB8EE9128C49E8900B8D74E;
+			remoteInfo = SsssGridManExtension;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		7C8B5978260F680600098D5C /* Embed App Extensions */ = {
@@ -29,6 +47,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				CFB8EEA028C49E8900B8D74E /* SsssGridManExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,25 +65,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		11918CE1C2E5F7897BD2AE90 /* Pods_Runner_SsssGridManExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner_SsssGridManExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		4B29C34664529F630B1285C5 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.debug.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		72107C32486D58305CA4E067 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		7B6D6D9EB122407894F34F16 /* Pods-Runner-SsssGridManExtension.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.profile.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.profile.xcconfig"; sourceTree = "<group>"; };
 		7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPlugin.swift; sourceTree = "<group>"; };
 		7C6A8A2427870CFF0048656E /* Weiss.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Weiss.xcframework; sourceTree = "<group>"; };
 		7C8B5968260F680500098D5C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		7C8B596A260F680500098D5C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		7C8B596D260F680500098D5C /* SSSGridman.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSSGridman.swift; sourceTree = "<group>"; };
-		7C8B596F260F680500098D5C /* SSSGridman.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SSSGridman.intentdefinition; sourceTree = "<group>"; };
-		7C8B5970260F680600098D5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7C8B5972260F680600098D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7CC54C3726103351009033DF /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetkitPlugin.swift; sourceTree = "<group>"; };
-		7CD2074626107D5600677759 /* SSSGridmanExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SSSGridmanExtension.entitlements; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +89,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9992441226891BA2863C9B63 /* Pods-Runner-SsssGridManExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.release.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.release.xcconfig"; sourceTree = "<group>"; };
 		A70B475625D4D94200AE0717 /* CodeGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGen.swift; sourceTree = "<group>"; };
 		A82DBCA23B4168BFE0DADFC0 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		A8EB923A5CE945DB0AE0C8EA /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -87,7 +105,18 @@
 		CF0E66D727BAA7B000DF1121 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CF0E66D827BAA7F200DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		CF0E66D927BAA7F300DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
 		CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
+		CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SsssGridManExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SsssGridMan.swift; sourceTree = "<group>"; };
+		CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SsssGridMan.intentdefinition; sourceTree = "<group>"; };
+		CFB8EE9928C49E8900B8D74E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CFB8EE9B28C49E8900B8D74E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CFB8EEA528C49FA500B8D74E /* SsssGridManExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SsssGridManExtension.entitlements; sourceTree = "<group>"; };
+		CFB8EEA628C4B32900B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFB8EEAA28C4B34400B8D74E /* sqflite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = sqflite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFB8EEAE28C4B50800B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFB8EEB228C4B86B00B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +129,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFB8EE8F28C49E8900B8D74E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFB8EE9428C49E8900B8D74E /* SwiftUI.framework in Frameworks */,
+				CFB8EE9328C49E8900B8D74E /* WidgetKit.framework in Frameworks */,
+				0B332F2167E0DBF8EDFBB480 /* Pods_Runner_SsssGridManExtension.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -109,6 +148,9 @@
 				A8EB923A5CE945DB0AE0C8EA /* Pods-Runner.debug.xcconfig */,
 				A82DBCA23B4168BFE0DADFC0 /* Pods-Runner.release.xcconfig */,
 				72107C32486D58305CA4E067 /* Pods-Runner.profile.xcconfig */,
+				60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */,
+				9992441226891BA2863C9B63 /* Pods-Runner-SsssGridManExtension.release.xcconfig */,
+				7B6D6D9EB122407894F34F16 /* Pods-Runner-SsssGridManExtension.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -116,22 +158,16 @@
 		66193F2780F8195CEF68B3C0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CFB8EEB228C4B86B00B8D74E /* FMDB.framework */,
+				CFB8EEAE28C4B50800B8D74E /* FMDB.framework */,
+				CFB8EEAA28C4B34400B8D74E /* sqflite.framework */,
+				CFB8EEA628C4B32900B8D74E /* FMDB.framework */,
 				4B29C34664529F630B1285C5 /* Pods_Runner.framework */,
 				7C8B5968260F680500098D5C /* WidgetKit.framework */,
 				7C8B596A260F680500098D5C /* SwiftUI.framework */,
+				11918CE1C2E5F7897BD2AE90 /* Pods_Runner_SsssGridManExtension.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		7C8B596C260F680500098D5C /* SSSGridman */ = {
-			isa = PBXGroup;
-			children = (
-				7C8B596D260F680500098D5C /* SSSGridman.swift */,
-				7C8B596F260F680500098D5C /* SSSGridman.intentdefinition */,
-				7C8B5970260F680600098D5C /* Assets.xcassets */,
-				7C8B5972260F680600098D5C /* Info.plist */,
-			);
-			path = SSSGridman;
 			sourceTree = "<group>";
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -148,11 +184,11 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				CFB8EEA528C49FA500B8D74E /* SsssGridManExtension.entitlements */,
 				7C6A8A2427870CFF0048656E /* Weiss.xcframework */,
-				7CD2074626107D5600677759 /* SSSGridmanExtension.entitlements */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
-				7C8B596C260F680500098D5C /* SSSGridman */,
+				CFB8EE9528C49E8900B8D74E /* SsssGridMan */,
 				97C146EF1CF9000F007C117D /* Products */,
 				0490929A04F6A838565A4B4B /* Pods */,
 				66193F2780F8195CEF68B3C0 /* Frameworks */,
@@ -163,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,10 +218,22 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				A70B475625D4D94200AE0717 /* CodeGen.swift */,
 				7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */,
-				7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */,
 				CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */,
+				7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		CFB8EE9528C49E8900B8D74E /* SsssGridMan */ = {
+			isa = PBXGroup;
+			children = (
+				CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */,
+				CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */,
+				CFB8EE9928C49E8900B8D74E /* Assets.xcassets */,
+				CFB8EE9B28C49E8900B8D74E /* Info.plist */,
+				CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */,
+			);
+			path = SsssGridMan;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,11 +256,30 @@
 			buildRules = (
 			);
 			dependencies = (
+				CFB8EE9F28C49E8900B8D74E /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CFB8EE9128C49E8900B8D74E /* SsssGridManExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFB8EEA128C49E8900B8D74E /* Build configuration list for PBXNativeTarget "SsssGridManExtension" */;
+			buildPhases = (
+				ABBA5ED33FCD1583A2E18386 /* [CP] Check Pods Manifest.lock */,
+				CFB8EE8E28C49E8900B8D74E /* Sources */,
+				CFB8EE8F28C49E8900B8D74E /* Frameworks */,
+				CFB8EE9028C49E8900B8D74E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SsssGridManExtension;
+			productName = SsssGridManExtension;
+			productReference = CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -219,13 +287,16 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
+					};
+					CFB8EE9128C49E8900B8D74E = {
+						CreatedOnToolsVersion = 13.4.1;
 					};
 				};
 			};
@@ -249,6 +320,7 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				CFB8EE9128C49E8900B8D74E /* SsssGridManExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -262,6 +334,14 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFB8EE9028C49E8900B8D74E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFB8EE9A28C49E8900B8D74E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +393,28 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
+		ABBA5ED33FCD1583A2E18386 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Runner-SsssGridManExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		E8285C1374D9FDD29887C33E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -342,17 +444,35 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C8B5974260F680600098D5C /* SSSGridman.intentdefinition in Sources */,
 				CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */,
 				7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */,
 				A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */,
+				CFB8EE9D28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFB8EE8E28C49E8900B8D74E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFB8EE9728C49E8900B8D74E /* SsssGridMan.swift in Sources */,
+				CF24B04D28CB42C600AE445E /* AppWidgetDBManager.swift in Sources */,
+				CFB8EE9C28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CFB8EE9F28C49E8900B8D74E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CFB8EE9128C49E8900B8D74E /* SsssGridManExtension */;
+			targetProxy = CFB8EE9E28C49E8900B8D74E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -646,6 +766,123 @@
 			};
 			name = Release;
 		};
+		CFB8EEA228C49E8900B8D74E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SsssGridManExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SsssGridMan/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SsssGridMan;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.SsssGridMan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CFB8EEA328C49E8900B8D74E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9992441226891BA2863C9B63 /* Pods-Runner-SsssGridManExtension.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SsssGridManExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SsssGridMan/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SsssGridMan;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.SsssGridMan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CFB8EEA428C49E8900B8D74E /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7B6D6D9EB122407894F34F16 /* Pods-Runner-SsssGridManExtension.profile.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SsssGridManExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SsssGridMan/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SsssGridMan;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.SsssGridMan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -665,6 +902,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFB8EEA128C49E8900B8D74E /* Build configuration list for PBXNativeTarget "SsssGridManExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFB8EEA228C49E8900B8D74E /* Debug */,
+				CFB8EEA328C49E8900B8D74E /* Release */,
+				CFB8EEA428C49E8900B8D74E /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
