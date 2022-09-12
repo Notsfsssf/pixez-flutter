@@ -30,9 +30,10 @@ struct Provider: IntentTimelineProvider {
         DispatchQueue.global(qos: .background).async {
             let illusts = AppWidgetDBManager.fetch()
             do {
-                if let folder = AppWidgetDBManager.illustFolder(),
-                   let first = illusts.randomElement()
-                {
+                if let folder = AppWidgetDBManager.illustFolder() {
+                    guard let first = illusts.randomElement() else {
+                        throw SimpleError(message: "No data")
+                    }
                     let pictureURL = folder.appendingPathComponent("\(first.id).\(first.pictureUrl.split(separator: ".").last ?? "png")")
                     if FileManager.default.fileExists(atPath: pictureURL.path) {
                     } else {
@@ -65,7 +66,7 @@ struct Provider: IntentTimelineProvider {
                     imageRequestGroup.leave()
                 }
             } catch {
-                entries.append(SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "", userName: nil, time: 0, type: ""))
+                entries.append(SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "No content available", userName: ":(", time: 0, type: "empty"))
                 print("Error:\(error)")
                 imageRequestGroup.leave()
             }
@@ -108,7 +109,7 @@ struct SsssGridManEntryView: View {
     var body: some View {
         GeometryReader { red in
             ZStack {
-                if let uiImage = entry.uiImage {
+                if entry.type != "empty", let uiImage = entry.uiImage {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
@@ -116,22 +117,28 @@ struct SsssGridManEntryView: View {
                 }
                 VStack {
                     Spacer()
-                    Button {
-                        WidgetCenter.shared.reloadAllTimelines()
-                    } label: {
-                        VStack(alignment:.leading) {
+                    HStack {
+                        VStack(alignment: .leading) {
                             Text("\(entry.title ?? "")")
                                 .font(.title3)
+                                .foregroundColor(.white)
                                 .lineLimit(1)
+                                .shadow(radius: 5, x: 0, y: 5)
                             Text("@\(entry.userName ?? "")")
                                 .font(.caption2)
+                                .foregroundColor(.white)
                                 .lineLimit(1)
-                        }.frame(maxWidth:.infinity)
-                    }.buttonStyle(.plain)
-                        .frame(maxWidth:.infinity)
-                }.padding()
+                                .shadow(radius: 5, x: 0, y: 5)
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        LinearGradient(gradient: Gradient(colors: [.black.opacity(0.0), .black.opacity(0.4)]), startPoint: .top, endPoint: .bottom)
+                    )
+                }
             }.frame(width: red.size.width, height: red.size.height, alignment: .center)
-        }
+        }.widgetURL(URL(string: entry.type == "empty" ? "pixez://pixiv.net" : "pixez://pixiv.net/artworks/\(entry.illustId)"))
     }
 }
 

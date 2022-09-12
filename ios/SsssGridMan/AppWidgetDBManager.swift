@@ -36,7 +36,7 @@ enum AppWidgetDBManager {
         var illusts = [AppWidgetIllust]()
         do {
             db.open()
-            let qSet = try db.executeQuery("select * from glanceillustpersist", values: nil)
+            let qSet = try db.executeQuery("select * from \(tableIllustPersist) where type = ? ORDER BY RANDOM() LIMIT 1", values: ["recom"])
             while qSet.next() {
                 let id = qSet.int(forColumn: cid)
                 let illustId = qSet.int(forColumn: cillust_id)
@@ -52,7 +52,9 @@ enum AppWidgetDBManager {
             }
             db.close()
             return illusts
-        } catch {}
+        } catch {
+            print("db query error === \(error.localizedDescription)")
+        }
         return []
     }
 
