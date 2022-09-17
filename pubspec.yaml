@@ -57,7 +57,7 @@ dependencies:
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
   quiver: ^3.0.1+1
-  flutter_inappwebview: ^5.4.3+7
+  flutter_inappwebview_quill: ^5.4.6
   auto_animated: ^3.0.1
   http: ^0.13.4
   dio_cache_interceptor: 3.2.7

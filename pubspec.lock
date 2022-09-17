@@ -384,13 +384,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.4.0"
-  flutter_inappwebview:
+  flutter_inappwebview_quill:
     dependency: "direct main"
     description:
-      name: flutter_inappwebview
+      name: flutter_inappwebview_quill
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.4.3+7"
+    version: "5.4.6"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
