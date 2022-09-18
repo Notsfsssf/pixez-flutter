@@ -25,6 +25,7 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
+import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -608,13 +609,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 Observer(builder: (_) {
                   var tablist = [
                     Tab(
-                      text: "V:R",
+                      text: "V:H",
                     ),
                     Tab(
                       text: "V:V",
                     ),
                     Tab(
-                      text: "R:R",
+                      text: "H:H",
                     ),
                   ];
                   return Theme(
@@ -673,17 +674,32 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         ),
                         Tab(
                           text: ' 4 ',
-                        )
+                        ),
+                        Tab(
+                          text: "Adapt",
+                        ),
                       ],
-                      onTap: (index) {
-                        userSetting.setCrossCount(index + 2);
+                      onTap: (index) async {
+                        if (index == 3) {
+                          await userSetting.setCrossAdapt(true);
+                          Leader.push(
+                              context,
+                              SettingCrossAdpaterPage(
+                                h: true,
+                              ));
+                          return;
+                        }
+                        await userSetting.setCrossAdapt(false);
+                        await userSetting.setCrossCount(index + 2);
                         BotToast.showText(
                             text: I18n.of(context).need_to_restart_app);
                       },
                       controller: TabController(
-                          length: 3,
+                          length: 4,
                           vsync: this,
-                          initialIndex: userSetting.crossCount - 2),
+                          initialIndex: userSetting.crossAdapt
+                              ? 3
+                              : userSetting.crossCount - 2),
                     );
                   }),
                   Icon(Icons.stay_primary_landscape),
@@ -706,17 +722,31 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         ),
                         Tab(
                           text: ' 4 ',
-                        )
+                        ),
+                        Tab(
+                          text: "Adapt",
+                        ),
                       ],
-                      onTap: (index) {
+                      onTap: (index) async {
+                        if (index == 3) {
+                          await userSetting.setHCrossAdapt(true);
+                          Leader.push(
+                              context,
+                              SettingCrossAdpaterPage(
+                                h: true,
+                              ));
+                          return;
+                        }
                         userSetting.setHCrossCount(index + 2);
                         BotToast.showText(
                             text: I18n.of(context).need_to_restart_app);
                       },
                       controller: TabController(
-                          length: 3,
+                          length: 4,
                           vsync: this,
-                          initialIndex: userSetting.hCrossCount - 2),
+                          initialIndex: userSetting.hCrossAdapt
+                              ? 3
+                              : userSetting.hCrossCount - 2),
                     );
                   }),
                 ],

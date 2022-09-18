@@ -209,12 +209,23 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   }
 
   Widget _buildWaterfall(Orientation orientation) {
+    var count = 0;
+    if (userSetting.crossAdapt) {
+      if (orientation == Orientation.portrait) {
+        count =
+            MediaQuery.of(context).size.width ~/ userSetting.crossAdapterWidth;
+      } else
+        count =
+            MediaQuery.of(context).size.width ~/ userSetting.hCrossAdapterWidth;
+    } else {
+      count = (MediaQuery.of(context).orientation == Orientation.portrait)
+          ? userSetting.crossCount
+          : userSetting.hCrossCount;
+    }
     return _lightingStore.iStores.isNotEmpty
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: (orientation == Orientation.portrait)
-                  ? userSetting.crossCount
-                  : userSetting.hCrossCount,
+              crossAxisCount: count,
               collectGarbage: (List<int> garbages) {
                 // garbages.forEach((index) {
                 //   final provider = ExtendedNetworkImageProvider(
