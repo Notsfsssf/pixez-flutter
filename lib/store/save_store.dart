@@ -20,8 +20,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dart_eval/dart_eval.dart';
-import 'package:dart_eval/stdlib/core.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -307,54 +305,55 @@ abstract class _SaveStoreBase with Store {
     final tag = illust.tags.isEmpty
         ? ""
         : illust.tags.map((e) => e.name).toList().join(",");
-    final result = eval(text, function: "main", args: [
-      index,
-      $String(memType),
-      illust.id,
-      $String(illust.title),
-      $String(illust.type),
-      $String(illust.caption),
-      $String(illust.createDate),
-      illust.pageCount,
-      illust.width,
-      illust.height,
-      illust.totalView,
-      illust.totalBookmarks,
-      $String(illust.user.name),
-      illust.user.id,
-      $String(tag)
-    ]);
-    print("object === ${result}");
-    return result;
+    // final result = eval(text, function: "main", args: [
+    //   index,
+    //   $String(memType),
+    //   illust.id,
+    //   $String(illust.title),
+    //   $String(illust.type),
+    //   $String(illust.caption),
+    //   $String(illust.createDate),
+    //   illust.pageCount,
+    //   illust.width,
+    //   illust.height,
+    //   illust.totalView,
+    //   illust.totalBookmarks,
+    //   $String(illust.user.name),
+    //   illust.user.id,
+    //   $String(tag)
+    // ]);
+    // print("object === ${result}");
+    throw UnsupportedError("eval");
+    return "";
   }
 
   String? _handleEvalName(
       String text, Illusts illust, int index, String memType) {
-    final tag = illust.tags.isEmpty
-        ? ""
-        : illust.tags.map((e) => e.name).toList().join(",");
-    try {
-      final result = eval(text, function: "main", args: [
-        index,
-        $String(memType),
-        illust.id,
-        $String(illust.title),
-        $String(illust.type),
-        $String(illust.caption),
-        $String(illust.createDate),
-        illust.pageCount,
-        illust.width,
-        illust.height,
-        illust.totalView,
-        illust.totalBookmarks,
-        $String(illust.user.name),
-        illust.user.id,
-        $String(tag)
-      ]);
-      return result;
-    } catch (e) {
-      print(e);
-    }
+    // final tag = illust.tags.isEmpty
+    //     ? ""
+    //     : illust.tags.map((e) => e.name).toList().join(",");
+    // try {
+    //   final result = eval(text, function: "main", args: [
+    //     index,
+    //     $String(memType),
+    //     illust.id,
+    //     $String(illust.title),
+    //     $String(illust.type),
+    //     $String(illust.caption),
+    //     $String(illust.createDate),
+    //     illust.pageCount,
+    //     illust.width,
+    //     illust.height,
+    //     illust.totalView,
+    //     illust.totalBookmarks,
+    //     $String(illust.user.name),
+    //     illust.user.id,
+    //     $String(tag)
+    //   ]);
+    //   return result;
+    // } catch (e) {
+    //   print(e);
+    // }
     return null;
   }
 

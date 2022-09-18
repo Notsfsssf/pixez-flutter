@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dart_eval/dart_eval.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/main.dart';
