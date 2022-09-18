@@ -15,13 +15,13 @@
  */
 
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dart_eval/dart_eval.dart';
+import 'package:dart_eval/stdlib/core.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -283,7 +283,87 @@ abstract class _SaveStoreBase with Store {
     saveImage(illusts, index: index, redo: true);
   }
 
+  String main(
+      int index,
+      String memType,
+      int id,
+      String title,
+      String type,
+      String caption,
+      String createDate,
+      int pageCount,
+      int width,
+      int height,
+      int totalView,
+      int totalBookmarks,
+      String userName,
+      int userId,
+      String tags) {
+    return "${id}_p${index}_${tags.isEmpty}.$memType";
+  }
+
+  Future<String> testEvalName(
+      String text, Illusts illust, int index, String memType) async {
+    final tag = illust.tags.isEmpty
+        ? ""
+        : illust.tags.map((e) => e.name).toList().join(",");
+    final result = eval(text, function: "main", args: [
+      index,
+      $String(memType),
+      illust.id,
+      $String(illust.title),
+      $String(illust.type),
+      $String(illust.caption),
+      $String(illust.createDate),
+      illust.pageCount,
+      illust.width,
+      illust.height,
+      illust.totalView,
+      illust.totalBookmarks,
+      $String(illust.user.name),
+      illust.user.id,
+      $String(tag)
+    ]);
+    print("object === ${result}");
+    return result;
+  }
+
+  String? _handleEvalName(
+      String text, Illusts illust, int index, String memType) {
+    final tag = illust.tags.isEmpty
+        ? ""
+        : illust.tags.map((e) => e.name).toList().join(",");
+    try {
+      final result = eval(text, function: "main", args: [
+        index,
+        $String(memType),
+        illust.id,
+        $String(illust.title),
+        $String(illust.type),
+        $String(illust.caption),
+        $String(illust.createDate),
+        illust.pageCount,
+        illust.width,
+        illust.height,
+        illust.totalView,
+        illust.totalBookmarks,
+        $String(illust.user.name),
+        illust.user.id,
+        $String(tag)
+      ]);
+      return result;
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   String _handleFileName(Illusts illust, int index, String memType) {
+    if (userSetting.fileNameEval == 1) {
+      final result =
+          _handleEvalName(userSetting.nameEval!, illust, index, memType);
+      if (result != null) return result;
+    }
     final result = userSetting.format!
         .replaceAll("{illust_id}", illust.id.toString())
         .replaceAll("{user_id}", illust.user.id.toString())
@@ -296,7 +376,8 @@ abstract class _SaveStoreBase with Store {
   @action
   Future<void> saveImage(Illusts illusts,
       {int? index, bool redo = false}) async {
-    if (Platform.isIOS) { //IOS APP STORE REVIEW 
+    if (Platform.isIOS) {
+      //IOS APP STORE REVIEW
       final status = await DocumentPlugin.permissionStatus() ?? false;
       if (!status) {
         final auth = await DocumentPlugin.requestPermission();

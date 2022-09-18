@@ -60,6 +60,7 @@ abstract class _UserSettingBase with Store {
   static const String SAVE_EFFECT_ENABLE_KEY = "save_effect_enable";
   static const String PAD_MODE_KEY = "pad_mode";
   static const String COPY_INFO_TEXT_KEY = "copy_info_text";
+  static const String NAME_EVAL_KEY = "name_eval";
 
   @observable
   String copyInfoText =
@@ -124,10 +125,20 @@ abstract class _UserSettingBase with Store {
   bool saveEffectEnable = false;
   @observable
   int padMode = 0;
+  @observable
+  int fileNameEval = 0;
+  @observable
+  String? nameEval;
 
   @observable
   String? format = "";
   static const String intialFormat = "{illust_id}_p{part}";
+
+  @action
+  setNameEval(String value) async {
+    await prefs.setString(NAME_EVAL_KEY, value);
+    nameEval = value;
+  }
 
   @action
   setIsClearnOldFormatFile(bool v) async {
@@ -157,6 +168,12 @@ abstract class _UserSettingBase with Store {
   setFollowAfterStar(bool value) async {
     await prefs.setBool(IS_FOLLOW_AFTER_STAR, value);
     followAfterStar = value;
+  }
+
+  @action
+  setFileNameEval(int value) async {
+    await prefs.setInt("file_name_eval", value);
+    fileNameEval = value;
   }
 
   Color _stringToColor(String colorString) {
@@ -262,6 +279,8 @@ abstract class _UserSettingBase with Store {
     saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
     padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
     copyInfoText = prefs.getString(COPY_INFO_TEXT_KEY) ?? copyInfoText;
+    fileNameEval = prefs.getInt("file_name_eval") ?? 0;
+    nameEval = prefs.getString(NAME_EVAL_KEY);
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {

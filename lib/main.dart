@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dart_eval/stdlib/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -39,6 +40,7 @@ import 'package:pixez/store/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:flutter/foundation.dart';
+import 'package:dart_eval/dart_eval.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -73,6 +75,24 @@ main() async {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
   runApp(MyApp());
+  final program = '''
+      class Cat {
+        Cat(this.name);
+        final String name;
+        String speak() {
+          return name;
+        }
+      }
+      String main(String name) {
+        if(true) {
+          return "Hello, " + name;
+        }
+        final cat = Cat('Fluffy' + name);
+        return cat.speak();
+      }
+  ''';
+
+  print(eval(program, function: 'main', args: [$String("hello")]));
 }
 
 class MyApp extends StatefulWidget {

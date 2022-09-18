@@ -17,8 +17,10 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/hello/setting/save_eval_page.dart';
 
 class SaveFormatPage extends StatefulWidget {
   @override
@@ -104,6 +106,13 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
       ),
       body: Container(
         child: ListView(children: [
+          ListTile(
+            onTap: () {
+              Leader.push(context, SaveEvalPage());
+            },
+            title: Text("EVAL"),
+            subtitle: Text("Eval"),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
