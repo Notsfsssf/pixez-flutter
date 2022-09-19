@@ -67,11 +67,11 @@ abstract class _UserSettingBase with Store {
   static const String H_CROSS_ADAPT_WIDTH_KEY = "cross_adapt_width";
 
   @observable
-  int crossAdapterWidth = 200;
+  int crossAdapterWidth = 100;
   @observable
   bool crossAdapt = false;
   @observable
-  int hCrossAdapterWidth = 200;
+  int hCrossAdapterWidth = 100;
   @observable
   bool hCrossAdapt = false;
   @observable
@@ -325,8 +325,8 @@ abstract class _UserSettingBase with Store {
     nameEval = prefs.getString(NAME_EVAL_KEY);
     crossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
     hCrossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
-    crossAdapterWidth = prefs.getInt(CROSS_ADAPT_WIDTH_KEY) ?? 200;
-    hCrossAdapterWidth = prefs.getInt(H_CROSS_ADAPT_WIDTH_KEY) ?? 200;
+    crossAdapterWidth = prefs.getInt(CROSS_ADAPT_WIDTH_KEY) ?? 100;
+    hCrossAdapterWidth = prefs.getInt(H_CROSS_ADAPT_WIDTH_KEY) ?? 100;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {

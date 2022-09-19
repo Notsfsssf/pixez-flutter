@@ -24,20 +24,21 @@ class _SettingCrossAdpaterPageState extends State<SettingCrossAdpaterPage> {
         title: const Text('Cross Adapter'),
       ),
       body: Observer(builder: (_) {
+        final min = MediaQuery.of(context).size.width / 6;
         final screenWidth = MediaQuery.of(context).size.width;
         final nowAdaptWidth = max(
             (!widget.h
                     ? userSetting.crossAdapterWidth
                     : userSetting.hCrossAdapterWidth)
                 .toDouble(),
-            100);
+            min);
         return Container(
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Slider(
                   value: nowAdaptWidth.toDouble(),
-                  min: 100,
+                  min: min,
                   max: MediaQuery.of(context).size.width,
                   onChanged: (value) {
                     if (widget.h)
