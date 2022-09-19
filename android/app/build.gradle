@@ -81,8 +81,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 10009059
-        versionName "0.9.6 X"
+        versionCode 10009060
+        versionName "0.9.6 Adapt"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {
