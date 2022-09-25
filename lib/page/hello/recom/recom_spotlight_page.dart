@@ -125,7 +125,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 onLoading: () async {
                   await _lightingStore.fetchNext();
                 },
-                child: _buildWaterFall(),
+                child: _buildWaterFall(context),
               ),
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
@@ -191,40 +191,41 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  Widget _buildWaterFall() {
+  Widget _buildWaterFall(BuildContext context) {
     _lightingStore.iStores
         .removeWhere((element) => element.illusts!.hateByUser());
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: _buidTagSpotlightRow(context),
-        ),
-        SliverToBoxAdapter(
-          child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
-        ),
-        _buildWaterfall(MediaQuery.of(context).orientation)
-      ],
-    );
+    return Observer(builder: (context) {
+      return CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: _buidTagSpotlightRow(context),
+          ),
+          SliverToBoxAdapter(
+            child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
+          ),
+          _buildWaterfall(context, MediaQuery.of(context).orientation)
+        ],
+      );
+    });
   }
 
-  int _buildSliderValue() {
-    final currentValue =
-        (MediaQuery.of(context).orientation == Orientation.portrait
-                ? userSetting.crossAdapterWidth
-                : userSetting.hCrossAdapterWidth)
-            .toDouble();
+  int _buildSliderValue(BuildContext context, Orientation orientation) {
+    final currentValue = (orientation == Orientation.portrait
+            ? userSetting.crossAdapterWidth
+            : userSetting.hCrossAdapterWidth)
+        .toDouble();
     var nowAdaptWidth = max(currentValue, 50.0);
-    nowAdaptWidth = min(nowAdaptWidth, 4096);
+    nowAdaptWidth = min(nowAdaptWidth, 2160);
     return max((MediaQuery.of(context).size.width / nowAdaptWidth), 1.0)
         .toInt();
   }
 
-  Widget _buildWaterfall(Orientation orientation) {
-    var count = 0;
+  Widget _buildWaterfall(BuildContext context, Orientation orientation) {
+    var count = 2;
     if (userSetting.crossAdapt) {
-      count = _buildSliderValue();
+      count = _buildSliderValue(context, orientation);
     } else {
-      count = (MediaQuery.of(context).orientation == Orientation.portrait)
+      count = (orientation == Orientation.portrait)
           ? userSetting.crossCount
           : userSetting.hCrossCount;
     }
@@ -232,14 +233,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         ? SliverWaterfallFlow(
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
               crossAxisCount: count,
-              collectGarbage: (List<int> garbages) {
-                // garbages.forEach((index) {
-                //   final provider = ExtendedNetworkImageProvider(
-                //     _lightingStore.iStores[index].illusts!.imageUrls.medium,
-                //   );
-                //   provider.evict();
-                // });
-              },
             ),
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {

@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/main.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -63,7 +60,7 @@ class _SettingCrossAdpaterPageState extends State<SettingCrossAdpaterPage> {
                 child: Slider(
                   value: _sliderValue,
                   min: 50,
-                  max: 4096,
+                  max: 2160,
                   onChanged: (value) {
                     setState(() {
                       _sliderValue = value;

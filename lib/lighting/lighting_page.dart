@@ -301,7 +301,7 @@ class _LightingListState extends State<LightingList> {
   }
 
   SliverWaterfallFlowDelegate _buildGridDelegate() {
-    var count = 1;
+    var count = 2;
     if (userSetting.crossAdapt) {
       count = _buildSliderValue();
     } else {
@@ -315,13 +315,15 @@ class _LightingListState extends State<LightingList> {
   }
 
   int _buildSliderValue() {
-    final currentValue = userSetting.crossAdapterWidth.toDouble();
+    final currentValue =
+        (MediaQuery.of(context).orientation == Orientation.portrait
+                ? userSetting.crossAdapterWidth
+                : userSetting.hCrossAdapterWidth)
+            .toDouble();
     var nowAdaptWidth = max(currentValue, 50.0);
-    nowAdaptWidth = min(nowAdaptWidth, 4096);
+    nowAdaptWidth = min(nowAdaptWidth, 2160.0);
     final screenWidth = MediaQuery.of(context).size.width;
     final result = max(screenWidth / nowAdaptWidth, 1.0).toInt();
-    print(
-        "object:====$currentValue====$screenWidth $result; $nowAdaptWidth; $result");
     return result;
   }
 
