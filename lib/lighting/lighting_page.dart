@@ -15,6 +15,7 @@
  */
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -299,15 +300,10 @@ class _LightingListState extends State<LightingList> {
     }, childCount: _store.iStores.length);
   }
 
-  SliverWaterfallFlowDelegateWithFixedCrossAxisCount _buildGridDelegate() {
-    var count = 0;
+  SliverWaterfallFlowDelegate _buildGridDelegate() {
+    var count = 1;
     if (userSetting.crossAdapt) {
-      if (MediaQuery.of(context).orientation == Orientation.portrait) {
-        count =
-            MediaQuery.of(context).size.width ~/ userSetting.crossAdapterWidth;
-      } else
-        count =
-            MediaQuery.of(context).size.width ~/ userSetting.hCrossAdapterWidth;
+      count = _buildSliderValue();
     } else {
       count = (MediaQuery.of(context).orientation == Orientation.portrait)
           ? userSetting.crossCount
@@ -315,15 +311,18 @@ class _LightingListState extends State<LightingList> {
     }
     return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
       crossAxisCount: count,
-      collectGarbage: (List<int> garbages) {
-        // garbages.forEach((index) {
-        //   final provider = (
-        //     _store.iStores[index].illusts!.imageUrls.medium,
-        //   );
-        //   provider.evict();
-        // });
-      },
     );
+  }
+
+  int _buildSliderValue() {
+    final currentValue = userSetting.crossAdapterWidth.toDouble();
+    var nowAdaptWidth = max(currentValue, 50.0);
+    nowAdaptWidth = min(nowAdaptWidth, 4096);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final result = max(screenWidth / nowAdaptWidth, 1.0).toInt();
+    print(
+        "object:====$currentValue====$screenWidth $result; $nowAdaptWidth; $result");
+    return result;
   }
 
   Widget _buildItem(int index) {

@@ -15,8 +15,8 @@
  */
 
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,7 +34,6 @@ import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:quiver/iterables.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
@@ -208,15 +207,22 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
+  int _buildSliderValue() {
+    final currentValue =
+        (MediaQuery.of(context).orientation == Orientation.portrait
+                ? userSetting.crossAdapterWidth
+                : userSetting.hCrossAdapterWidth)
+            .toDouble();
+    var nowAdaptWidth = max(currentValue, 50.0);
+    nowAdaptWidth = min(nowAdaptWidth, 4096);
+    return max((MediaQuery.of(context).size.width / nowAdaptWidth), 1.0)
+        .toInt();
+  }
+
   Widget _buildWaterfall(Orientation orientation) {
     var count = 0;
     if (userSetting.crossAdapt) {
-      if (orientation == Orientation.portrait) {
-        count =
-            MediaQuery.of(context).size.width ~/ userSetting.crossAdapterWidth;
-      } else
-        count =
-            MediaQuery.of(context).size.width ~/ userSetting.hCrossAdapterWidth;
+      count = _buildSliderValue();
     } else {
       count = (MediaQuery.of(context).orientation == Orientation.portrait)
           ? userSetting.crossCount

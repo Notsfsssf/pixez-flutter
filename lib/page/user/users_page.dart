@@ -62,6 +62,9 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   void initState() {
+    BotToast.showText(
+        text:
+            "${widget.id}\n${muteStore.banUserIds.map((element) => int.parse(element.userId!))}\n");
     userStore = widget.userStore ?? UserStore(widget.id);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();

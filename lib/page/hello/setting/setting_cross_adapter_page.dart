@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/main.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class SettingCrossAdpaterPage extends StatefulWidget {
   final bool h;
@@ -16,61 +17,103 @@ class SettingCrossAdpaterPage extends StatefulWidget {
 }
 
 class _SettingCrossAdpaterPageState extends State<SettingCrossAdpaterPage> {
-  final _list = List.generate(100, (index) => index);
+  var _sliderValue = 100.0;
+  @override
+  void initState() {
+    super.initState();
+    _initMethod();
+  }
+
+  _initMethod() {
+    final currentValue = _buildSliderValue();
+    setState(() {
+      _sliderValue = currentValue;
+    });
+  }
+
+  @override
+  void dispose() {
+    _disposeMethod();
+    super.dispose();
+  }
+
+  _disposeMethod() {
+    final value = _sliderValue;
+    if (widget.h) {
+      userSetting.persisitHCrossAdapterWidth(value.toInt());
+      userSetting.setHCrossAdapterWidth(value.toInt());
+    } else {
+      userSetting.persisitCrossAdapterWidth(value.toInt());
+      userSetting.setCrossAdapterWidth(value.toInt());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cross Adapter'),
       ),
-      body: Observer(builder: (_) {
-        final min = MediaQuery.of(context).size.width / 6;
+      body: Builder(builder: (_) {
         final screenWidth = MediaQuery.of(context).size.width;
-        final nowAdaptWidth = max(
-            (!widget.h
-                    ? userSetting.crossAdapterWidth
-                    : userSetting.hCrossAdapterWidth)
-                .toDouble(),
-            min);
         return Container(
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Slider(
-                  value: nowAdaptWidth.toDouble(),
-                  min: min,
-                  max: MediaQuery.of(context).size.width,
+                  value: _sliderValue,
+                  min: 50,
+                  max: 4096,
                   onChanged: (value) {
-                    if (widget.h)
-                      userSetting.setHCrossAdapterWidth(value.toInt());
-                    else
-                      userSetting.setCrossAdapterWidth(value.toInt());
+                    setState(() {
+                      _sliderValue = value;
+                    });
                   },
-                  onChangeEnd: (value) async {
-                    if (widget.h)
-                      userSetting.persisitHCrossAdapterWidth(value.toInt());
-                    else
-                      userSetting.persisitCrossAdapterWidth(value.toInt());
-                  },
+                  onChangeEnd: (value) async {},
                 ),
               ),
-              SliverGrid.count(
-                crossAxisCount: screenWidth ~/ nowAdaptWidth,
-                children: [
-                  for (final i in _list)
-                    Container(
-                      color: Colors.grey,
-                      margin: EdgeInsets.all(16),
-                      child: Center(
-                        child: Text(i.toString()),
-                      ),
-                    )
-                ],
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                      "current:${_sliderValue} screen width:$screenWidth count:${screenWidth ~/ _sliderValue}"),
+                ),
               ),
+              SliverWaterfallFlow(
+                gridDelegate: _buildGridDelegate(_sliderValue),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return AspectRatio(
+                    aspectRatio: 1.0,
+                    child: Container(
+                        color: Colors.grey,
+                        margin: EdgeInsets.all(16),
+                        child: Center(
+                          child: Text(index.toString()),
+                        )),
+                  );
+                }, childCount: 100),
+              )
             ],
           ),
         );
       }),
+    );
+  }
+
+  double _buildSliderValue() {
+    final currentValue = (!widget.h
+            ? userSetting.crossAdapterWidth
+            : userSetting.hCrossAdapterWidth)
+        .toDouble();
+    var nowAdaptWidth = max(currentValue, 50.0);
+    nowAdaptWidth = min(nowAdaptWidth, 4096);
+    return nowAdaptWidth;
+  }
+
+  _buildGridDelegate(double value) {
+    final count = max((MediaQuery.of(context).size.width / value), 1.0).toInt();
+    return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+      crossAxisCount: count,
     );
   }
 }

@@ -173,7 +173,7 @@ abstract class _UserSettingBase with Store {
   }
 
   persisitHCrossAdapterWidth(int value) async {
-    await prefs.setInt(H_CROSS_COUNT_KEY, value);
+    await prefs.setInt(H_CROSS_ADAPT_WIDTH_KEY, value);
   }
 
   @action

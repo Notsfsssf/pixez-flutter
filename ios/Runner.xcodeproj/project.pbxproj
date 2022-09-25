@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B332F2167E0DBF8EDFBB480 /* Pods_Runner_SsssGridManExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11918CE1C2E5F7897BD2AE90 /* Pods_Runner_SsssGridManExtension.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -18,6 +17,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
+		C4E5B69C45BB8805F3E930A4 /* Pods_SsssGridManExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B21E80AFA3AD042A95F94C9F /* Pods_SsssGridManExtension.framework */; };
 		CF24B04D28CB42C600AE445E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
 		CFB8EE9328C49E8900B8D74E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
@@ -65,10 +65,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		11918CE1C2E5F7897BD2AE90 /* Pods_Runner_SsssGridManExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner_SsssGridManExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		38124249E5183C66C43E2B7D /* Pods-SsssGridManExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SsssGridManExtension.release.xcconfig"; path = "Target Support Files/Pods-SsssGridManExtension/Pods-SsssGridManExtension.release.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		3E4DDACA2D1EFD551F6D02ED /* Pods-SsssGridManExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SsssGridManExtension.debug.xcconfig"; path = "Target Support Files/Pods-SsssGridManExtension/Pods-SsssGridManExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		4B29C34664529F630B1285C5 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.debug.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		72107C32486D58305CA4E067 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -90,9 +91,11 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9992441226891BA2863C9B63 /* Pods-Runner-SsssGridManExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.release.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.release.xcconfig"; sourceTree = "<group>"; };
+		9F2719FA904FF0441CF55D77 /* Pods-SsssGridManExtension.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SsssGridManExtension.profile.xcconfig"; path = "Target Support Files/Pods-SsssGridManExtension/Pods-SsssGridManExtension.profile.xcconfig"; sourceTree = "<group>"; };
 		A70B475625D4D94200AE0717 /* CodeGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGen.swift; sourceTree = "<group>"; };
 		A82DBCA23B4168BFE0DADFC0 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		A8EB923A5CE945DB0AE0C8EA /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		B21E80AFA3AD042A95F94C9F /* Pods_SsssGridManExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SsssGridManExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF0E66CE27BAA69400DF1121 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		CF0E66CF27BAA69400DF1121 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CF0E66D027BAA71C00DF1121 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
@@ -135,7 +138,7 @@
 			files = (
 				CFB8EE9428C49E8900B8D74E /* SwiftUI.framework in Frameworks */,
 				CFB8EE9328C49E8900B8D74E /* WidgetKit.framework in Frameworks */,
-				0B332F2167E0DBF8EDFBB480 /* Pods_Runner_SsssGridManExtension.framework in Frameworks */,
+				C4E5B69C45BB8805F3E930A4 /* Pods_SsssGridManExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +154,9 @@
 				60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */,
 				9992441226891BA2863C9B63 /* Pods-Runner-SsssGridManExtension.release.xcconfig */,
 				7B6D6D9EB122407894F34F16 /* Pods-Runner-SsssGridManExtension.profile.xcconfig */,
+				3E4DDACA2D1EFD551F6D02ED /* Pods-SsssGridManExtension.debug.xcconfig */,
+				38124249E5183C66C43E2B7D /* Pods-SsssGridManExtension.release.xcconfig */,
+				9F2719FA904FF0441CF55D77 /* Pods-SsssGridManExtension.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -165,7 +171,7 @@
 				4B29C34664529F630B1285C5 /* Pods_Runner.framework */,
 				7C8B5968260F680500098D5C /* WidgetKit.framework */,
 				7C8B596A260F680500098D5C /* SwiftUI.framework */,
-				11918CE1C2E5F7897BD2AE90 /* Pods_Runner_SsssGridManExtension.framework */,
+				B21E80AFA3AD042A95F94C9F /* Pods_SsssGridManExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -408,7 +414,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Runner-SsssGridManExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SsssGridManExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -768,7 +774,7 @@
 		};
 		CFB8EEA228C49E8900B8D74E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */;
+			baseConfigurationReference = 3E4DDACA2D1EFD551F6D02ED /* Pods-SsssGridManExtension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -810,7 +816,7 @@
 		};
 		CFB8EEA328C49E8900B8D74E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9992441226891BA2863C9B63 /* Pods-Runner-SsssGridManExtension.release.xcconfig */;
+			baseConfigurationReference = 38124249E5183C66C43E2B7D /* Pods-SsssGridManExtension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -849,7 +855,7 @@
 		};
 		CFB8EEA428C49E8900B8D74E /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7B6D6D9EB122407894F34F16 /* Pods-Runner-SsssGridManExtension.profile.xcconfig */;
+			baseConfigurationReference = 9F2719FA904FF0441CF55D77 /* Pods-SsssGridManExtension.profile.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;

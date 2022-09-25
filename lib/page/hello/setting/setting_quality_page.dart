@@ -733,7 +733,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           Leader.push(
                               context,
                               SettingCrossAdpaterPage(
-                                h: true,
+                                h: false,
                               ));
                           return;
                         }

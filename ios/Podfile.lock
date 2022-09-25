@@ -52,7 +52,6 @@ DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview_quill (from `.symlinks/plugins/flutter_inappwebview_quill/ios`)
-  - FMDB (= 2.7.5)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
@@ -137,6 +136,6 @@ SPEC CHECKSUMS:
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: 0765a83708ac5d3a2c88efe78b0c1b4dd9febacd
+PODFILE CHECKSUM: 0bf458cf9ad114a17ff06530b57e9c2798c054b8
 
 COCOAPODS: 1.11.3
