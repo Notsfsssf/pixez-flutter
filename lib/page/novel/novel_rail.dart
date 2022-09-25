@@ -34,6 +34,7 @@ class NovelRail extends StatefulWidget {
 
 class _NovelRailState extends State<NovelRail> {
   int selectedIndex = 0;
+  DateTime? _preTime;
   final _pageList = [
     NovelRecomPage(),
     NovelRankPage(),
@@ -59,50 +60,68 @@ class _NovelRailState extends State<NovelRail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) =>
-                  Platform.isIOS ? HelloPage() : AndroidHelloPage()));
-        },
-        child: Icon(Icons.picture_in_picture),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).colorScheme.secondary,
-        currentIndex: selectedIndex,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home), label: I18n.of(context).home),
-          BottomNavigationBarItem(
-              icon: Icon(CustomIcons.leaderboard),
-              label: I18n.of(context).rank),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: I18n.of(context).news),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search), label: I18n.of(context).search),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: I18n.of(context).setting),
-        ],
-        onTap: (index) {
-          if (_pageController.hasClients) _pageController.jumpToPage(index);
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-      ),
-      body: PageView.builder(
-          itemCount: _pageList.length,
-          controller: _pageController,
-          onPageChanged: (index) {
+    return WillPopScope(
+      onWillPop: () async {
+        userSetting.setAnimContainer(!userSetting.animContainer);
+        if (!userSetting.isReturnAgainToExit) {
+          return true;
+        }
+        if (_preTime == null ||
+            DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
+          _preTime = DateTime.now();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text(I18n.of(context).return_again_to_exit),
+          ));
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) =>
+                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+          },
+          child: Icon(Icons.picture_in_picture),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).colorScheme.secondary,
+          currentIndex: selectedIndex,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home), label: I18n.of(context).home),
+            BottomNavigationBarItem(
+                icon: Icon(CustomIcons.leaderboard),
+                label: I18n.of(context).rank),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.favorite), label: I18n.of(context).news),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), label: I18n.of(context).search),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: I18n.of(context).setting),
+          ],
+          onTap: (index) {
+            if (_pageController.hasClients) _pageController.jumpToPage(index);
             setState(() {
-              this.selectedIndex = index;
+              selectedIndex = index;
             });
           },
-          itemBuilder: (context, index) {
-            return _pageList[index];
-          }),
+        ),
+        body: PageView.builder(
+            itemCount: _pageList.length,
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                this.selectedIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return _pageList[index];
+            }),
+      ),
     );
   }
 }
