@@ -228,7 +228,7 @@
   },
   "save_painter_avatar": "프로필 이미지를 저장",
   "favorited_tag": "마음에 들어하는 태그",
-  "legacy_mode_warning": "안드로이드 10 이후의 경우 추천하지 않습니다",
+  "legacy_mode_warning": "안드로이드 10 이후 버전의 경우 추천하지 않습니다",
   "clear_old_format_file": "오래된 형식의 파일을 삭제",
   "clear_old_format_file_message": "_p0가 없는 파일을 삭제합니다",
   "login_error_message": "아이디, 비밀번호가 틀렸거나 보안에 취약한 비밀번호를 사용할 경우 로그인이 되지 않을 수 있습니다",
@@ -241,7 +241,7 @@
   "network": "네트워크",
   "select_language": "언어를 선택해주세요",
   "network_question": "픽시브에 정상적으로 접근할 수 있나요?",
-  "media_hint": "일러트스가 갤러리 앨범에 저장됩니다",
+  "media_hint": "일러스트가 갤러리 앨범에 저장됩니다",
   "copy": "복사",
   "view_replies": "댓글 보기",
   "temporarily_visible": "일시적으로 보임",
@@ -254,9 +254,9 @@
   "open_by_default_subtitle":"픽시브 웹페이지를 이 앱에서 열기",
   "text":"텍스트",
   "search_word_hint": "제목이나 작가명을 입력하세요",
-  "save_effect": "Save effect",
-  "layout_mode": "Layout mode",
-  "share_info_format": "Share info format",
-  "account_deletion": "account_deletion",
-  "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account"
+  "save_effect": "저장 효과",
+  "layout_mode": "상세 페이지 레이아웃",
+  "share_info_format": "공유 정보 양식",
+  "account_deletion": "계정 삭제",
+  "account_deletion_subtitle": "앱에서 로그아웃한 후에 계정 삭제 페이지를 엽니다"
 }
