@@ -95,13 +95,19 @@ class _SoupPageState extends State<SoupPage> {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
         return Builder(builder: (context) {
-          if (index == 0)
+          if (index == 0) {
+            if (_soupStore.description == null ||
+                _soupStore.description!.isEmpty)
+              return Container(
+                height: 1,
+              );
             return Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(_soupStore.description ?? ''),
               ),
             );
+          }
           AmWork amWork = _soupStore.amWorks[index - 1];
           return InkWell(
             onTap: () {
