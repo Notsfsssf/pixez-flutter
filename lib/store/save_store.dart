@@ -37,6 +37,14 @@ part 'save_store.g.dart';
 
 enum SaveState { JOIN, SUCCESS, ALREADY, INQUEUE }
 
+class QueueRetryEntity {
+  String url;
+  Illusts illusts;
+  String fileName;
+  TaskPersist taskPersist;
+  QueueRetryEntity(this.url, this.illusts, this.fileName, this.taskPersist);
+}
+
 class SaveData {
   Illusts illusts;
   String fileName;
@@ -48,8 +56,9 @@ class SaveStream {
   SaveState state;
   Illusts data;
   int? index;
+  Object? entity;
 
-  SaveStream(this.state, this.data, {this.index});
+  SaveStream(this.state, this.data, {this.index, this.entity});
 }
 
 class JobEntity {
@@ -121,7 +130,23 @@ abstract class _SaveStoreBase with Store {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 8.0),
                           child: Text("${I18n.of(ctx!).already_in_query}"),
-                        )
+                        ),
+                        IconButton(
+                            onPressed: () async {
+                              if (stream.entity is QueueRetryEntity) {
+                                QueueRetryEntity entity =
+                                    stream.entity as QueueRetryEntity;
+                                final id = entity.taskPersist.id;
+                                if (id != null) {
+                                  final result = await fetcher
+                                      .taskPersistProvider
+                                      .remove(id);
+                                  _joinOnDart(entity.url, entity.illusts,
+                                      entity.fileName);
+                                }
+                              }
+                            },
+                            icon: Icon(Icons.refresh))
                       ],
                     ),
                   ),
@@ -172,7 +197,8 @@ abstract class _SaveStoreBase with Store {
   _joinOnDart(String url, Illusts illusts, String fileName) async {
     final result = await fetcher.taskPersistProvider.getAccount(url);
     if (result != null) {
-      streamController.add(SaveStream(SaveState.INQUEUE, illusts));
+      streamController.add(SaveStream(SaveState.INQUEUE, illusts,
+          entity: QueueRetryEntity(url, illusts, fileName, result)));
       return;
     }
     var taskPersist = TaskPersist(
