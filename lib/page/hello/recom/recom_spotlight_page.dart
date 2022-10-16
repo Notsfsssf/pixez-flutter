@@ -106,6 +106,18 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget buildEasyRefresh(BuildContext context) {
     return Stack(
       children: [
+        NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              elevation: 0.0,
+              titleSpacing: 0.0,
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).canvasColor,
+              title: Text(""),
+            )
+          ],
+          body: ListView(),
+        ),
         EasyRefresh(
           controller: _easyRefreshController,
           header: Platform.isIOS ? CupertinoHeader() : MaterialHeader(),
