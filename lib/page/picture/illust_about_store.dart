@@ -15,6 +15,7 @@
  */
 
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
@@ -30,6 +31,7 @@ abstract class _IllustAboutStoreBase with Store {
   final int id;
   bool fetching = false;
   RefreshController? refreshController;
+  EasyRefreshController? easyRefreshController;
 
   _IllustAboutStoreBase(this.id, {this.refreshController});
 
@@ -50,7 +52,8 @@ abstract class _IllustAboutStoreBase with Store {
       Recommend recommend = Recommend.fromJson(response.data);
       _nextUrl = recommend.nextUrl;
       illusts.clear();
-      illusts.addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
+      illusts
+          .addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
     } catch (e) {
       errorMessage = e.toString();
     }
@@ -65,13 +68,17 @@ abstract class _IllustAboutStoreBase with Store {
           : await apiClient.getNext(_nextUrl!);
       Recommend recommend = Recommend.fromJson(response.data);
       _nextUrl = recommend.nextUrl;
-      illusts.addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
+      illusts
+          .addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
       if (_nextUrl == null || _nextUrl!.isEmpty || recommend.illusts.isEmpty) {
+        easyRefreshController?.finishLoad(IndicatorResult.noMore);
         refreshController?.loadNoData();
       } else {
+        easyRefreshController?.finishLoad(IndicatorResult.success);
         refreshController?.loadComplete();
       }
     } catch (e) {
+      easyRefreshController?.finishLoad(IndicatorResult.fail);
       refreshController?.loadFailed();
     }
   }

@@ -24,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -53,15 +54,19 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   late RecomUserStore _recomUserStore;
   late StreamSubscription<String> subscription;
   late EasyRefreshController _easyRefreshController;
+  late ScrollController _scrollController;
 
   @override
   void dispose() {
     subscription.cancel();
+    _scrollController.dispose();
+    _easyRefreshController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     _easyRefreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
     _recomUserStore = RecomUserStore();
@@ -79,7 +84,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "100") {
-        // _easyRefreshController.position?.jumpTo(0);
+        _scrollController.position.jumpTo(0);
       }
     });
   }
@@ -101,48 +106,45 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget buildEasyRefresh(BuildContext context) {
     return Stack(
       children: [
-        NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification notification) {
-            ScrollMetrics metrics = notification.metrics;
-            if (backToTopVisible == metrics.atEdge && mounted) {
-              setState(() {
-                backToTopVisible = !backToTopVisible;
-              });
-            }
-            return true;
+        EasyRefresh(
+          controller: _easyRefreshController,
+          header: Platform.isIOS ? CupertinoHeader() : MaterialHeader(),
+          onRefresh: () async {
+            await fetchT();
           },
-          child: EasyRefresh(
-            controller: _easyRefreshController,
-            // callRefreshOverOffset: MediaQuery.of(context).padding.top,
-            onRefresh: () async {
-              await fetchT();
-            },
-            refreshOnStart: true,
-            onLoad: () async {
-              await _lightingStore.fetchNext();
-            },
-            child: Observer(builder: (context) {
-              return _buildWaterFall(context);
-            }),
-          ),
+          refreshOnStart: true,
+          onLoad: () async {
+            await _lightingStore.fetchNext();
+          },
+          child: Observer(builder: (context) {
+            return _buildWaterFall(context);
+          }),
         ),
         Align(
           child: Visibility(
             visible: backToTopVisible,
             child: Opacity(
               opacity: 0.5,
-              child: Container(
-                height: 24.0,
-                margin: EdgeInsets.only(bottom: 8.0),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_drop_up_outlined,
-                    size: 24,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 24.0,
+                    margin: EdgeInsets.only(bottom: 8.0),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_drop_up_outlined,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        _scrollController.position.jumpTo(0);
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    // _easyRefreshController.position?.jumpTo(0);
-                  },
-                ),
+                  Container(
+                    height: 80,
+                  )
+                ],
               ),
             ),
           ),
@@ -178,22 +180,34 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   Widget _buildWaterFall(BuildContext context) {
     _lightingStore.iStores
         .removeWhere((element) => element.illusts!.hateByUser());
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Container(height: MediaQuery.of(context).padding.top),
-        ),
-        SliverToBoxAdapter(
-          child: _buildFirstRow(context),
-        ),
-        SliverToBoxAdapter(
-          child: _buidTagSpotlightRow(context),
-        ),
-        SliverToBoxAdapter(
-          child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
-        ),
-        _buildWaterfall(context, MediaQuery.of(context).orientation)
-      ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification notification) {
+        ScrollMetrics metrics = notification.metrics;
+        if (backToTopVisible == metrics.atEdge && mounted) {
+          setState(() {
+            backToTopVisible = !backToTopVisible;
+          });
+        }
+        return true;
+      },
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(height: MediaQuery.of(context).padding.top),
+          ),
+          SliverToBoxAdapter(
+            child: _buildFirstRow(context),
+          ),
+          SliverToBoxAdapter(
+            child: _buidTagSpotlightRow(context),
+          ),
+          SliverToBoxAdapter(
+            child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
+          ),
+          _buildWaterfall(context, MediaQuery.of(context).orientation)
+        ],
+      ),
     );
   }
 
