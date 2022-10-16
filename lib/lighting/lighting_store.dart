@@ -15,6 +15,7 @@
  */
 
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/main.dart';
@@ -66,6 +67,7 @@ abstract class _LightingStoreBase with Store {
   late LightSource source;
   String? nextUrl;
   RefreshController? controller;
+  EasyRefreshController? easyRefreshController;
   final Function? onChange;
   final String? portal;
   @observable
@@ -139,10 +141,12 @@ abstract class _LightingStoreBase with Store {
           await WidgetkitPlugin.notify();
         });
       }
+      easyRefreshController?.finishRefresh(IndicatorResult.success);
       controller?.refreshCompleted();
       return true;
     } catch (e) {
       errorMessage = e.toString();
+      easyRefreshController?.finishLoad(IndicatorResult.fail);
       controller?.refreshFailed();
       return false;
     }
@@ -168,12 +172,15 @@ abstract class _LightingStoreBase with Store {
           map = map.where((element) => !iterable.contains(element.id));
         }
         iStores.addAll(map);
+        easyRefreshController?.finishLoad(IndicatorResult.success);
         controller?.loadComplete();
       } else {
+        easyRefreshController?.finishLoad(IndicatorResult.noMore);
         controller?.loadNoData();
       }
       return true;
     } catch (e) {
+      easyRefreshController?.finishLoad(IndicatorResult.fail);
       controller?.loadFailed();
       return false;
     }
