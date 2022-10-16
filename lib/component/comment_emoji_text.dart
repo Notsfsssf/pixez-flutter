@@ -24,6 +24,7 @@ class _CommentEmojiTextState extends State<CommentEmojiText> {
     return ExtendedText(
       _text,
       specialTextSpanBuilder: EmojisSpecialTextSpanBuilder(),
+      selectionEnabled: true,
     );
   }
 }
@@ -34,7 +35,11 @@ class PixivEmojiSpan extends ExtendedWidgetSpan {
       : super(
             child: Padding(
           padding: const EdgeInsets.all(4.0),
-          child: Image.asset('assets/emojis/${emojisMap[name]}',width: 32,height: 32,),
+          child: Image.asset(
+            'assets/emojis/${emojisMap[name]}',
+            width: 32,
+            height: 32,
+          ),
         ));
 }
 

@@ -207,14 +207,15 @@ class _CommentPageState extends State<CommentPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
-                                              Text(
+                                              SelectableText(
                                                 comment.user!.name,
                                                 maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
-                                                        .secondary),
+                                                        .secondary,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
                                               ),
                                               TextButton(
                                                   onPressed: () {
