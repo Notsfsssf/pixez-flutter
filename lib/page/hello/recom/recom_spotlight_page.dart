@@ -410,7 +410,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   Widget _buildFirstRow(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(top: 0.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
