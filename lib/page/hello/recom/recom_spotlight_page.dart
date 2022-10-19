@@ -118,7 +118,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           ],
           body: ListView(),
         ),
-        EasyRefresh(
+        EasyRefresh.builder(
           controller: _easyRefreshController,
           header: Platform.isIOS ? CupertinoHeader() : MaterialHeader(),
           onRefresh: () async {
@@ -128,9 +128,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           onLoad: () async {
             await _lightingStore.fetchNext();
           },
-          child: Observer(builder: (context) {
-            return _buildWaterFall(context);
-          }),
+          childBuilder: (context, physics) => Observer(
+            builder: (context) => _buildWaterFall(context, physics),
+          ),
         ),
         Align(
           child: Visibility(
@@ -189,7 +189,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  Widget _buildWaterFall(BuildContext context) {
+  Widget _buildWaterFall(BuildContext context, ScrollPhysics physics) {
     _lightingStore.iStores
         .removeWhere((element) => element.illusts!.hateByUser());
     return NotificationListener<ScrollNotification>(
@@ -204,6 +204,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
       },
       child: CustomScrollView(
         controller: _scrollController,
+        physics: physics,
         slivers: [
           SliverToBoxAdapter(
             child: Container(height: MediaQuery.of(context).padding.top),
