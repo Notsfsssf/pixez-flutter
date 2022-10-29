@@ -69,6 +69,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
     500,
     1000,
     5000,
+    7500,
     10000,
     20000,
     30000,
