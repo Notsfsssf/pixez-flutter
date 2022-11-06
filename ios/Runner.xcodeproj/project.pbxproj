@@ -17,41 +17,12 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
-		C4E5B69C45BB8805F3E930A4 /* Pods_SsssGridManExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B21E80AFA3AD042A95F94C9F /* Pods_SsssGridManExtension.framework */; };
-		CF24B04D28CB42C600AE445E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
-		CFB8EE9328C49E8900B8D74E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
-		CFB8EE9428C49E8900B8D74E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B596A260F680500098D5C /* SwiftUI.framework */; };
-		CFB8EE9728C49E8900B8D74E /* SsssGridMan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */; };
-		CFB8EE9A28C49E8900B8D74E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFB8EE9928C49E8900B8D74E /* Assets.xcassets */; };
-		CFB8EE9C28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */; };
 		CFB8EE9D28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */; };
-		CFB8EEA028C49E8900B8D74E /* SsssGridManExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29C34664529F630B1285C5 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		CFB8EE9E28C49E8900B8D74E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CFB8EE9128C49E8900B8D74E;
-			remoteInfo = SsssGridManExtension;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
-		7C8B5978260F680600098D5C /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				CFB8EEA028C49E8900B8D74E /* SsssGridManExtension.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,7 +81,6 @@
 		CF0E66D927BAA7F300DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
 		CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
-		CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SsssGridManExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SsssGridMan.swift; sourceTree = "<group>"; };
 		CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SsssGridMan.intentdefinition; sourceTree = "<group>"; };
 		CFB8EE9928C49E8900B8D74E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -129,16 +99,6 @@
 			files = (
 				D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */,
 				7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CFB8EE8F28C49E8900B8D74E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CFB8EE9428C49E8900B8D74E /* SwiftUI.framework in Frameworks */,
-				CFB8EE9328C49E8900B8D74E /* WidgetKit.framework in Frameworks */,
-				C4E5B69C45BB8805F3E930A4 /* Pods_SsssGridManExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +165,6 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
-				CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,35 +216,15 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				5AD1FD42E9F53D5652535AF0 /* [CP] Embed Pods Frameworks */,
-				7C8B5978260F680600098D5C /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CFB8EE9F28C49E8900B8D74E /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
-		};
-		CFB8EE9128C49E8900B8D74E /* SsssGridManExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CFB8EEA128C49E8900B8D74E /* Build configuration list for PBXNativeTarget "SsssGridManExtension" */;
-			buildPhases = (
-				ABBA5ED33FCD1583A2E18386 /* [CP] Check Pods Manifest.lock */,
-				CFB8EE8E28C49E8900B8D74E /* Sources */,
-				CFB8EE8F28C49E8900B8D74E /* Frameworks */,
-				CFB8EE9028C49E8900B8D74E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SsssGridManExtension;
-			productName = SsssGridManExtension;
-			productReference = CFB8EE9228C49E8900B8D74E /* SsssGridManExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -300,9 +239,6 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
-					};
-					CFB8EE9128C49E8900B8D74E = {
-						CreatedOnToolsVersion = 13.4.1;
 					};
 				};
 			};
@@ -326,7 +262,6 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
-				CFB8EE9128C49E8900B8D74E /* SsssGridManExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -340,14 +275,6 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CFB8EE9028C49E8900B8D74E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CFB8EE9A28C49E8900B8D74E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,28 +326,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-		ABBA5ED33FCD1583A2E18386 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SsssGridManExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E8285C1374D9FDD29887C33E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -460,25 +365,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CFB8EE8E28C49E8900B8D74E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CFB8EE9728C49E8900B8D74E /* SsssGridMan.swift in Sources */,
-				CF24B04D28CB42C600AE445E /* AppWidgetDBManager.swift in Sources */,
-				CFB8EE9C28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		CFB8EE9F28C49E8900B8D74E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CFB8EE9128C49E8900B8D74E /* SsssGridManExtension */;
-			targetProxy = CFB8EE9E28C49E8900B8D74E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -567,11 +454,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 205;
 				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -587,7 +473,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.9.0;
+				MARKETING_VERSION = 1.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -709,11 +595,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 205;
 				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -729,7 +614,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.9.0;
+				MARKETING_VERSION = 1.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -743,11 +628,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 205;
 				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -763,7 +647,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.9.0;
+				MARKETING_VERSION = 1.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -771,126 +655,6 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
-		};
-		CFB8EEA228C49E8900B8D74E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3E4DDACA2D1EFD551F6D02ED /* Pods-SsssGridManExtension.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = SsssGridManExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
-				ENABLE_BITCODE = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SsssGridMan/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SsssGridMan;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.SsssGridMan;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		CFB8EEA328C49E8900B8D74E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38124249E5183C66C43E2B7D /* Pods-SsssGridManExtension.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = SsssGridManExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
-				ENABLE_BITCODE = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SsssGridMan/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SsssGridMan;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.SsssGridMan;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		CFB8EEA428C49E8900B8D74E /* Profile */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F2719FA904FF0441CF55D77 /* Pods-SsssGridManExtension.profile.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = SsssGridManExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
-				ENABLE_BITCODE = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SsssGridMan/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SsssGridMan;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.SsssGridMan;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Profile;
 		};
 /* End XCBuildConfiguration section */
 
@@ -911,16 +675,6 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CFB8EEA128C49E8900B8D74E /* Build configuration list for PBXNativeTarget "SsssGridManExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CFB8EEA228C49E8900B8D74E /* Debug */,
-				CFB8EEA328C49E8900B8D74E /* Release */,
-				CFB8EEA428C49E8900B8D74E /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

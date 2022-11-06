@@ -32,9 +32,9 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  target 'SsssGridManExtension' do
-    inherit! :search_paths
-  end
+  # target 'SsssGridManExtension' do
+  #   inherit! :search_paths
+  # end
 end
 
 
