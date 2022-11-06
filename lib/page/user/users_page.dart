@@ -23,12 +23,14 @@ import 'package:dio/dio.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -286,14 +288,49 @@ class _UsersPageState extends State<UsersPage>
                                 ? userStore.userDetail!.profile
                                             .background_image_url !=
                                         null
-                                    ? CachedNetworkImage(
-                                        imageUrl: userStore.userDetail!.profile
-                                            .background_image_url!,
-                                        fit: BoxFit.fitWidth,
-                                        cacheManager: pixivCacheManager,
-                                        httpHeaders: Hoster.header(
-                                            url: userStore.userDetail!.profile
-                                                .background_image_url),
+                                    ? InkWell(
+                                        onLongPress: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                      I18n.of(context).save),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text(
+                                                            I18n.of(context)
+                                                                .cancel)),
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          await _saveUserBg(
+                                                              userStore
+                                                                  .userDetail!
+                                                                  .profile
+                                                                  .background_image_url!);
+                                                        },
+                                                        child: Text(
+                                                            I18n.of(context)
+                                                                .ok)),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: CachedNetworkImage(
+                                          imageUrl: userStore.userDetail!
+                                              .profile.background_image_url!,
+                                          fit: BoxFit.fitWidth,
+                                          cacheManager: pixivCacheManager,
+                                          httpHeaders: Hoster.header(
+                                              url: userStore.userDetail!.profile
+                                                  .background_image_url),
+                                        ),
                                       )
                                     : Container(
                                         color: Theme.of(context)
@@ -552,6 +589,19 @@ class _UsersPageState extends State<UsersPage>
         )
       ],
     );
+  }
+
+  _saveUserBg(String url) async {
+    try {
+      final result = await pixivCacheManager.downloadFile(url, authHeaders: {
+        'Referer': 'https://app-api.pixiv.net/',
+      });
+      final bytes = await result.file.readAsBytes();
+      await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
+      BotToast.showText(text: I18n.of(context).saved);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future _saveUserC() async {
