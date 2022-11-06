@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -21,6 +23,7 @@ import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/user_detail.dart';
 import 'package:pixez/page/follow/follow_list.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -116,9 +119,18 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         DataCell(Text(profile.twitter_account ?? ""),
                             onTap: () async {
                           final url = profile.twitter_url;
-                          try {
-                            await launch(url!);
-                          } catch (e) {}
+                          if (url != null) {
+                            try {
+                              if (Platform.isIOS) {
+                                await launchUrlString(url,
+                                    mode: LaunchMode.externalApplication);
+                              } else {
+                                await launch(url);
+                              }
+                            } catch (e) {
+                              Share.share(url);
+                            }
+                          }
                         }),
                       ]),
                       DataRow(cells: [

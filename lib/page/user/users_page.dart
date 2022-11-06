@@ -594,7 +594,7 @@ class _UsersPageState extends State<UsersPage>
   _saveUserBg(String url) async {
     try {
       final result = await pixivCacheManager.downloadFile(url, authHeaders: {
-        'Referer': 'https://app-api.pixiv.net/',
+        'referer': 'https://app-api.pixiv.net/',
       });
       final bytes = await result.file.readAsBytes();
       await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
