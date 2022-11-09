@@ -451,12 +451,13 @@ class _AboutPageState extends State<AboutPage> {
           ListTile(
             leading: Icon(Icons.email),
             title: Text(I18n.of(context).feedback),
-            subtitle: SelectableText('PxezFeedBack@outlook.com'),
+            subtitle: SelectionArea(child: Text('PxezFeedBack@outlook.com')),
           ),
           ListTile(
             leading: Icon(Icons.stars),
             title: Text(I18n.of(context).support),
-            subtitle: SelectableText(I18n.of(context).support_message),
+            subtitle:
+                SelectionArea(child: Text(I18n.of(context).support_message)),
           ),
           ListTile(
             leading: Icon(Icons.favorite),
@@ -484,7 +485,7 @@ class _AboutPageState extends State<AboutPage> {
           ListTile(
             leading: Icon(FontAwesomeIcons.telegram),
             title: Text("Group"),
-            subtitle: SelectableText("t.me/PixEzViewer"),
+            subtitle: SelectionArea(child: Text('t.me/PixEzChannel')),
           ),
           if (Platform.isAndroid && !Constants.isGooglePlay) ...[
             ListTile(
@@ -494,7 +495,7 @@ class _AboutPageState extends State<AboutPage> {
             Card(
               child: ListTile(
                 title: Text('AliPay'),
-                subtitle: SelectableText('912756674@qq.com'),
+                subtitle: SelectionArea(child: Text('912756674@qq.com')),
                 onTap: () async {},
               ),
             ),

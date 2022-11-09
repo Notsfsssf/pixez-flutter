@@ -61,6 +61,6 @@
 
 邮件反馈：PxezFeedback@outlook.com
 
-也可以在 Telegram 群交流反馈：[@PixEzViewer](https://t.me/PixEzViewer)
+也可以在 Telegram 群交流反馈：[@PixEzViewer](https://t.me/PixEzChannel)
 
 也可以进企鹅群交流经验或者反馈：815791942（闲聊为主）
