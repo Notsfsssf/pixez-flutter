@@ -6,27 +6,32 @@ import 'package:pixez/network/api_client.dart';
 
 class IllustListNotifier extends StateNotifier<List<Illusts>> {
   final Ref ref;
-  final ApiSource source;
-  IllustListNotifier(this.ref, this.source) : super([]);
+  IllustListNotifier(this.ref) : super([]);
 
   int currentPage = 0;
+  int? nextCursor;
 
   fetch() async {
     try {
-      final response = await source.fetch();
+      nextCursor = null;
+      final response =
+          await apiClient.getUserIllustsOffset(420509, "illust", nextCursor);
       Recommend recommend = Recommend.fromJson(response.data);
-      recommend.illusts;
       print(recommend.nextUrl);
+      nextCursor =
+          recommend.illusts.length < 30 ? null : recommend.illusts.length;
       state = recommend.illusts;
     } catch (e) {}
   }
 
   next() async {
     try {
-      final response = await apiClient.getRecommend();
+      if (nextCursor == null) return;
+      final response =
+          await apiClient.getUserIllustsOffset(420509, "illust", nextCursor);
       Recommend recommend = Recommend.fromJson(response.data);
-      recommend.illusts;
       state = [...state, ...recommend.illusts];
+      nextCursor = recommend.illusts.length < 30 ? null : state.length;
     } catch (e) {}
   }
 }

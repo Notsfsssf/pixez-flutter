@@ -179,9 +179,10 @@ class ApiClient {
   }
 
   Future<Response> getMangaRecommend() async {
-    return httpClient.get(
-        "/v1/manga/recommended?filter=for_ios&include_ranking_label=true");
+    return httpClient
+        .get("/v1/manga/recommended?filter=for_ios&include_ranking_label=true");
   }
+
   //
   // @GET("/v1/user/recommended?filter=for_android")
   // fun getUserRecommended(@Header("Authorization") paramString: String): Observable<SearchUserResponse>
@@ -277,6 +278,13 @@ class ApiClient {
   Future<Response> getUserIllusts(int user_id, String type) async {
     return httpClient.get("/v1/user/illusts?filter=for_android",
         queryParameters: {"user_id": user_id, "type": type});
+  }
+
+  Future<Response> getUserIllustsOffset(
+      int user_id, String type, int? offset) async {
+    return httpClient.get("/v1/user/illusts?filter=for_android",
+        queryParameters:
+            notNullMap({"user_id": user_id, "type": type, "offset": offset}));
   }
 
   Future<Response> getUserNovels(int user_id) async {

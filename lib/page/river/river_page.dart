@@ -14,8 +14,7 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 final illustsProvider =
     StateNotifierProvider<IllustListNotifier, List<Illusts>>((ref) {
-  return IllustListNotifier(
-      ref, ApiSource(futureGet: () => apiClient.getRecommend()));
+  return IllustListNotifier(ref);
 });
 
 class RiverPage extends HookConsumerWidget {
@@ -37,15 +36,38 @@ class RiverPage extends HookConsumerWidget {
     }, [scrollController]);
     // ref.read(illustsProvider.notifier).fetch();
 
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        SliverToBoxAdapter(
-          child: _buildTopIndicator(),
+    return Stack(
+      children: [
+        CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: _buildTopIndicator(),
+            ),
+            SliverWaterfallFlow(
+              gridDelegate: _buildGridDelegate(ref.context),
+              delegate: _buildSliverChildBuilderDelegate(ref.context, illusts),
+            )
+          ],
         ),
-        SliverWaterfallFlow(
-          gridDelegate: _buildGridDelegate(ref.context),
-          delegate: _buildSliverChildBuilderDelegate(ref.context, illusts),
+        Container(
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                clipBehavior: Clip.antiAlias,
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  color: Theme.of(ref.context).canvasColor,
+                  child: Center(child: Text("0")),
+                ),
+              ),
+            ),
+          ),
         )
       ],
     );
