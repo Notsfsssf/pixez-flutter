@@ -128,6 +128,7 @@ abstract class _LightingStoreBase with Store {
       }
 
       Recommend recommend = Recommend.fromJson(result!.data);
+      //https://app-api.pixiv.net/v1/user/illusts?filter=for_android&user_id=${user_id}&type=illust&offset=30
       nextUrl = recommend.nextUrl;
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));

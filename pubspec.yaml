@@ -68,6 +68,8 @@ dependencies:
     git: 
       url: https://github.com/xuelongqy/flutter_easy_refresh
       ref: v3
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^2.1.1 
 
   # dart_eval: ^0.4.6 //TODO dynamic feat
 
