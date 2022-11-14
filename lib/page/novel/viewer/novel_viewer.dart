@@ -509,7 +509,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         title: Text("no more"),
       );
     return ListTile(
-      title: Text(series.title!),
+      title: Text(series.title!, maxLines: 2, overflow: TextOverflow.ellipsis),
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(
