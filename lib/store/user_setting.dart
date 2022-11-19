@@ -66,6 +66,7 @@ abstract class _UserSettingBase with Store {
   static const String CROSS_ADAPT_WIDTH_KEY = "cross_adapt_width";
   static const String H_CROSS_ADAPT_KEY = "cross_adapt";
   static const String H_CROSS_ADAPT_WIDTH_KEY = "cross_adapt_width";
+  static const String DEFAULT_PRIVATE_LIKE_KEY = "default_private_like";
 
   @observable
   int crossAdapterWidth = 100;
@@ -142,6 +143,8 @@ abstract class _UserSettingBase with Store {
   int fileNameEval = 0;
   @observable
   String? nameEval;
+  @observable
+  bool defaultPrivateLike = false;
 
   @observable
   String? format = "";
@@ -257,6 +260,12 @@ abstract class _UserSettingBase with Store {
   }
 
   @action
+  setDefaultPrivateLike(bool v) async {
+    await prefs.setBool(DEFAULT_PRIVATE_LIKE_KEY, v);
+    defaultPrivateLike = v;
+  }
+
+  @action
   setPictureSource(String value) async {
     await prefs.setString(PICTURE_SOURCE_KEY, value);
     pictureSource = value;
@@ -330,6 +339,7 @@ abstract class _UserSettingBase with Store {
     final hCrossAdapterV = prefs.getInt(H_CROSS_ADAPT_WIDTH_KEY) ?? 100;
     crossAdapterWidth = min(2160, max(100, crossAdapterV));
     hCrossAdapterWidth = min(2160, max(100, hCrossAdapterV));
+    defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {

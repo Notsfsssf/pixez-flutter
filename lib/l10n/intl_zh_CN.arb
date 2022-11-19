@@ -258,5 +258,6 @@
   "layout_mode": "布局方式",
   "share_info_format": "分享信息格式",
   "account_deletion": "注销账号",
-  "account_deletion_subtitle": "这将会登出账号然后前往网页进行账号注销"
+  "account_deletion_subtitle": "这将会登出账号然后前往网页进行账号注销",
+  "private_like_by_default": "默认私密收藏"
 }

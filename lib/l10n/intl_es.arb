@@ -249,5 +249,6 @@
   "layout_mode": "Layout mode",
   "share_info_format": "Share info format",
   "account_deletion": "account_deletion",
-  "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account"
+  "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account",
+  "private_like_by_default": "Private like by default"
 }

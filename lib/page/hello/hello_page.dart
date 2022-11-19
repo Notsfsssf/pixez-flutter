@@ -30,6 +30,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/river/river_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/widgetkit_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,7 +91,7 @@ class _HelloPageState extends State<HelloPage> {
   List<Widget> _lists = <Widget>[
     Observer(builder: (context) {
       if (accountStore.now != null)
-        return RecomSpolightPage();
+        return RiverPage();
       else
         return PreviewPage();
     }),

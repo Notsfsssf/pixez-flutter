@@ -258,5 +258,6 @@
   "layout_mode": "レイアウト方式",
   "share_info_format": "シェアする詳細情報の形式",
   "account_deletion": "アカウントの削除",
-  "account_deletion_subtitle": "アカウントからログアウトし、Pixivの退会ページに移動します。"
+  "account_deletion_subtitle": "アカウントからログアウトし、Pixivの退会ページに移動します。",
+  "private_like_by_default": "Private like by default"
 }

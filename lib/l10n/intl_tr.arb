@@ -258,5 +258,6 @@
   "layout_mode": "Düzen",
   "share_info_format": "Bilgi paylaşma biçimi",
   "account_deletion": "hesap_silme",
-  "account_deletion_subtitle": "Bu işlem hesabınızdan çıkış yapacak ve hesap silme web sayfasına yönlendirecektir"
+  "account_deletion_subtitle": "Bu işlem hesabınızdan çıkış yapacak ve hesap silme web sayfasına yönlendirecektir",
+  "private_like_by_default": "Private like by default"
 }

@@ -840,6 +840,20 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               }),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).colorScheme.secondary,
+                    value: userSetting.defaultPrivateLike,
+                    title: Text(I18n.of(context).private_like_by_default),
+                    onChanged: (value) async {
+                      userSetting.setDefaultPrivateLike(value);
+                    });
+              }),
+            ),
+          ),
           if (Platform.isIOS) //TODO android flutter surface view secure
             Padding(
               padding: const EdgeInsets.all(8.0),

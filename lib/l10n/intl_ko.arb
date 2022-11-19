@@ -258,5 +258,6 @@
   "layout_mode": "상세 페이지 레이아웃",
   "share_info_format": "공유 정보 양식",
   "account_deletion": "계정 삭제",
-  "account_deletion_subtitle": "앱에서 로그아웃한 후에 계정 삭제 페이지를 엽니다"
+  "account_deletion_subtitle": "앱에서 로그아웃한 후에 계정 삭제 페이지를 엽니다",
+  "private_like_by_default": "Private like by default"
 }

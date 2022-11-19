@@ -292,7 +292,9 @@ class _IllustCardState extends State<IllustCard> {
                 );
               }),
               onTap: () async {
-                store.star();
+                store.star(
+                    restrict:
+                        userSetting.defaultPrivateLike ? "private" : "public");
                 if (!userSetting.followAfterStar) {
                   return;
                 }

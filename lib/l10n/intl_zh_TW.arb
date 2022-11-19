@@ -258,5 +258,6 @@
   "layout_mode": "版面配置",
   "share_info_format": "資訊分享格式",
   "account_deletion": "註銷帳戶",
-  "account_deletion_subtitle": "這將會登出帳戶並前往網頁進行帳戶註銷"
+  "account_deletion_subtitle": "這將會登出帳戶並前往網頁進行帳戶註銷",
+  "private_like_by_default": "默認私密收藏"
 }
