@@ -14,10 +14,14 @@
  *
  */
 
+import 'dart:convert';
+
 import 'package:mobx/mobx.dart';
+import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
+import 'package:quiver/time.dart';
 
 part 'mute_store.g.dart';
 
@@ -31,8 +35,7 @@ abstract class _MuteStoreBase with Store {
   ObservableList<BanTagPersist> banTags = ObservableList();
   ObservableList<BanIllustIdPersist> banillusts = ObservableList();
 
-  _MuteStoreBase() {
-  }
+  _MuteStoreBase() {}
 
   @action
   Future<void> fetchBanUserIds() async {
@@ -100,5 +103,33 @@ abstract class _MuteStoreBase with Store {
     await banIllustIdProvider.open();
     await banIllustIdProvider.delete(id);
     await fetchBanIllusts();
+  }
+
+  export() async {
+    await banUserIdProvider.open();
+    await banIllustIdProvider.open();
+    await banTagProvider.open();
+    final banIllust = await banIllustIdProvider.getAllAccount();
+    final banUser = await banUserIdProvider.getAllAccount();
+    final banTag = await banTagProvider.getAllAccount();
+    banTags.map((e) => e.toJson()).toList();
+    var entity = {
+      "banillustid": banillusts,
+      "banuserid": banUserIds,
+      "bantag": banTags
+    };
+    final exportJson = jsonEncode(entity);
+    LPrinter.d("exportJson:$exportJson");
+  }
+
+  import() async {
+    final importStr = "";
+    await banUserIdProvider.open();
+    await banIllustIdProvider.open();
+    await banTagProvider.open();
+    final importBean = jsonDecode(importStr);
+    final importMap = importBean as Map<String, dynamic>;
+    final illustId = importMap['banillustid'];
+    //TODO
   }
 }

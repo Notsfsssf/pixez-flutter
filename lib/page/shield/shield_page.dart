@@ -44,6 +44,13 @@ class _ShieldPageState extends State<ShieldPage> {
         return Scaffold(
             appBar: AppBar(
               title: Text(I18n.of(context).shielding_settings),
+              actions: [
+                // IconButton(
+                //     onPressed: () {
+                //       muteStore.export();
+                //     },
+                //     icon: Icon(Icons.expand_circle_down_outlined))
+              ],
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
