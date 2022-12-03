@@ -21,7 +21,6 @@ import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'illust_about_store.g.dart';
 
@@ -30,8 +29,7 @@ class IllustAboutStore = _IllustAboutStoreBase with _$IllustAboutStore;
 abstract class _IllustAboutStoreBase with Store {
   final int id;
   bool fetching = false;
-  RefreshController? refreshController;
-  EasyRefreshController? easyRefreshController;
+  EasyRefreshController? refreshController;
 
   _IllustAboutStoreBase(this.id, {this.refreshController});
 
@@ -71,15 +69,12 @@ abstract class _IllustAboutStoreBase with Store {
       illusts
           .addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
       if (_nextUrl == null || _nextUrl!.isEmpty || recommend.illusts.isEmpty) {
-        easyRefreshController?.finishLoad(IndicatorResult.noMore);
-        refreshController?.loadNoData();
+        refreshController?.finishLoad(IndicatorResult.noMore);
       } else {
-        easyRefreshController?.finishLoad(IndicatorResult.success);
-        refreshController?.loadComplete();
+        refreshController?.finishLoad(IndicatorResult.success);
       }
     } catch (e) {
-      easyRefreshController?.finishLoad(IndicatorResult.fail);
-      refreshController?.loadFailed();
+      refreshController?.finishLoad(IndicatorResult.fail);
     }
   }
 }

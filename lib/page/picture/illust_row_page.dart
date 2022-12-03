@@ -14,9 +14,8 @@
  *
  */
 
-import 'dart:ui';
-
 import 'package:bot_toast/bot_toast.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -44,7 +43,6 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustRowPage extends StatefulWidget {
@@ -65,12 +63,13 @@ class _IllustRowPageState extends State<IllustRowPage>
   late IllustStore _illustStore;
   late IllustAboutStore _aboutStore;
   late ScrollController _scrollController;
-  late RefreshController _refreshController;
+  late EasyRefreshController _refreshController;
   bool tempView = false;
 
   @override
   void initState() {
-    _refreshController = RefreshController();
+    _refreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     _scrollController = ScrollController();
     _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
@@ -102,6 +101,7 @@ class _IllustRowPageState extends State<IllustRowPage>
   void dispose() {
     _illustStore.dispose();
     _scrollController.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -238,29 +238,6 @@ class _IllustRowPageState extends State<IllustRowPage>
 
   ScrollController scrollController = ScrollController();
 
-  CustomFooter _buildCustomFooter() {
-    return CustomFooter(
-      builder: (BuildContext context, LoadStatus? mode) {
-        Widget body;
-        if (mode == LoadStatus.idle) {
-          body = Text(I18n.of(context).pull_up_to_load_more);
-        } else if (mode == LoadStatus.loading) {
-          body = CircularProgressIndicator();
-        } else if (mode == LoadStatus.failed) {
-          body = Text(I18n.of(context).loading_failed_retry_message);
-        } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n.of(context).let_go_and_load_more);
-        } else {
-          body = Text(I18n.of(context).no_more_data);
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
-    );
-  }
-
   Widget _buildContent(BuildContext context, Illusts? data) {
     if (_illustStore.errorMessage != null) return _buildErrorContent(context);
     if (data == null)
@@ -295,12 +272,9 @@ class _IllustRowPageState extends State<IllustRowPage>
               Expanded(
                 child: Container(
                   color: Theme.of(context).cardColor,
-                  child: SmartRefresher(
+                  child: EasyRefresh(
                     controller: _refreshController,
-                    enablePullDown: false,
-                    enablePullUp: true,
-                    footer: _buildCustomFooter(),
-                    onLoading: () {
+                    onLoad: () {
                       _aboutStore.next();
                     },
                     child: CustomScrollView(
