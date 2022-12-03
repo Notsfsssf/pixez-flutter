@@ -25,7 +25,6 @@ import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/widgetkit_plugin.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'lighting_store.g.dart';
 
@@ -66,7 +65,6 @@ class ApiForceSource extends LightSource {
 abstract class _LightingStoreBase with Store {
   late LightSource source;
   String? nextUrl;
-  RefreshController? controller;
   EasyRefreshController? easyRefreshController;
   final Function? onChange;
   final String? portal;
@@ -89,7 +87,7 @@ abstract class _LightingStoreBase with Store {
   @observable
   String? errorMessage;
 
-  _LightingStoreBase(this.source, this.controller,
+  _LightingStoreBase(this.source,
       {this.onChange, this.portal});
 
   bool okForUser(Illusts illust) {
@@ -117,8 +115,6 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetch({String? url, bool force = false}) async {
     nextUrl = null;
     errorMessage = null;
-    controller?.footerMode?.value = LoadStatus.idle;
-    controller?.headerMode?.value = RefreshStatus.refreshing;
     try {
       Response? result = null;
       if (source is ApiSource) {
@@ -143,12 +139,10 @@ abstract class _LightingStoreBase with Store {
         });
       }
       easyRefreshController?.finishRefresh(IndicatorResult.success);
-      controller?.refreshCompleted();
       return true;
     } catch (e) {
       errorMessage = e.toString();
       easyRefreshController?.finishLoad(IndicatorResult.fail);
-      controller?.refreshFailed();
       return false;
     }
   }
@@ -174,15 +168,12 @@ abstract class _LightingStoreBase with Store {
         }
         iStores.addAll(map);
         easyRefreshController?.finishLoad(IndicatorResult.success);
-        controller?.loadComplete();
       } else {
         easyRefreshController?.finishLoad(IndicatorResult.noMore);
-        controller?.loadNoData();
       }
       return true;
     } catch (e) {
       easyRefreshController?.finishLoad(IndicatorResult.fail);
-      controller?.loadFailed();
       return false;
     }
   }

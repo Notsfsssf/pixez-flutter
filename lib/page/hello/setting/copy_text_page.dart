@@ -14,12 +14,9 @@
  *
  */
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/illust.dart';
 
 class CopyTextPage extends StatefulWidget {
   const CopyTextPage({Key? key}) : super(key: key);

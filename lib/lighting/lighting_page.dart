@@ -14,11 +14,10 @@
  *
  */
 
-import 'dart:io';
 import 'dart:math';
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
@@ -27,14 +26,13 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class LightingList extends StatefulWidget {
   final LightSource source;
   final Widget? header;
   final bool? isNested;
-  final RefreshController? refreshController;
+  final ScrollController? scrollController;
   final String? portal;
 
   const LightingList(
@@ -42,7 +40,7 @@ class LightingList extends StatefulWidget {
       required this.source,
       this.header,
       this.isNested,
-      this.refreshController,
+      this.scrollController,
       this.portal})
       : super(key: key);
 
@@ -53,6 +51,7 @@ class LightingList extends StatefulWidget {
 class _LightingListState extends State<LightingList> {
   late LightingStore _store;
   late bool _isNested;
+  late ScrollController _scrollController;
 
   @override
   void didUpdateWidget(LightingList oldWidget) {
@@ -65,8 +64,9 @@ class _LightingListState extends State<LightingList> {
 
   _fetch() async {
     await _store.fetch(force: true);
-    if (!_isNested && _store.errorMessage == null && !_store.iStores.isEmpty)
-      _refreshController.position?.jumpTo(0.0);
+    if (!_isNested && _store.errorMessage == null && !_store.iStores.isEmpty) {
+      _scrollController.position.jumpTo(0.0);
+    }
   }
 
   ReactionDisposer? disposer;
@@ -74,18 +74,22 @@ class _LightingListState extends State<LightingList> {
   @override
   void initState() {
     _isNested = widget.isNested ?? false;
-    _refreshController = widget.refreshController ?? RefreshController();
+    _scrollController = widget.scrollController ?? ScrollController();
+    _refreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     _store = LightingStore(
       widget.source,
-      _refreshController,
     );
+    _store.easyRefreshController = _refreshController;
     super.initState();
     _store.fetch();
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _store.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -115,7 +119,7 @@ class _LightingListState extends State<LightingList> {
                       size: 24,
                     ),
                     onPressed: () {
-                      _refreshController.position?.jumpTo(0);
+                      _scrollController.position.jumpTo(0);
                     },
                   ),
                 ),
@@ -128,30 +132,7 @@ class _LightingListState extends State<LightingList> {
     );
   }
 
-  late RefreshController _refreshController;
-
-  CustomFooter _buildCustomFooter() {
-    return CustomFooter(
-      builder: (BuildContext context, LoadStatus? mode) {
-        Widget body;
-        if (mode == LoadStatus.idle) {
-          body = Text(I18n.of(context).pull_up_to_load_more);
-        } else if (mode == LoadStatus.loading) {
-          body = CircularProgressIndicator();
-        } else if (mode == LoadStatus.failed) {
-          body = Text(I18n.of(context).loading_failed_retry_message);
-        } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n.of(context).let_go_and_load_more);
-        } else {
-          body = Text(I18n.of(context).no_more_data);
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
-    );
-  }
+  late EasyRefreshController _refreshController;
 
   Widget _buildWithoutHeader(context) {
     _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
@@ -165,21 +146,13 @@ class _LightingListState extends State<LightingList> {
           }
           return true;
         },
-        child: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          header: (Platform.isAndroid)
-              ? MaterialClassicHeader(
-                  color: Theme.of(context).colorScheme.secondary,
-                  backgroundColor: Theme.of(context).cardColor,
-                )
-              : ClassicHeader(),
-          footer: _buildCustomFooter(),
+        child: EasyRefresh(
           controller: _refreshController,
+          scrollController: _scrollController,
           onRefresh: () {
             _store.fetch(force: true);
           },
-          onLoading: () {
+          onLoad: () {
             _store.fetchNext();
           },
           child: WaterfallFlow.builder(
@@ -257,34 +230,30 @@ class _LightingListState extends State<LightingList> {
         }
         return true;
       },
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-                color: Theme.of(context).colorScheme.secondary,
-                backgroundColor: Theme.of(context).cardColor,
-              )
-            : ClassicHeader(),
-        footer: _buildCustomFooter(),
+      child: EasyRefresh.builder(
         controller: _refreshController,
+        scrollController: _scrollController,
         onRefresh: () {
           _store.fetch(force: true);
         },
-        onLoading: () {
+        onLoad: () {
           _store.fetchNext();
         },
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(child: widget.header),
-            ),
-            SliverWaterfallFlow(
-              gridDelegate: _buildGridDelegate(),
-              delegate: _buildSliverChildBuilderDelegate(context),
-            )
-          ],
-        ),
+        childBuilder: ((context, physics) {
+          return CustomScrollView(
+            physics: physics,
+            controller: widget.isNested ?? false ? null : _scrollController,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(child: widget.header),
+              ),
+              SliverWaterfallFlow(
+                gridDelegate: _buildGridDelegate(),
+                delegate: _buildSliverChildBuilderDelegate(context),
+              )
+            ],
+          );
+        }),
       ),
     );
   }

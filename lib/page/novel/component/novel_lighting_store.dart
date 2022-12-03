@@ -15,12 +15,12 @@
  */
 
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'novel_lighting_store.g.dart';
 
@@ -29,7 +29,7 @@ class NovelLightingStore = _NovelLightingStoreBase with _$NovelLightingStore;
 abstract class _NovelLightingStoreBase with Store {
   FutureGet source;
   final ApiClient _client = apiClient;
-  final RefreshController _controller;
+  final EasyRefreshController _controller;
 
   _NovelLightingStoreBase(this.source, this._controller);
 
@@ -41,7 +41,6 @@ abstract class _NovelLightingStoreBase with Store {
   @action
   Future<void> fetch() async {
     nextUrl = null;
-    _controller.headerMode?.value = RefreshStatus.idle;
     errorMessage = null;
     try {
       Response response = await source();
@@ -53,11 +52,11 @@ abstract class _NovelLightingStoreBase with Store {
       this
           .novels
           .addAll(novel.map((element) => NovelStore(element.id, element)));
-      _controller.refreshCompleted();
+      _controller.finishRefresh(IndicatorResult.success);
     } catch (e) {
       print(e);
       errorMessage = e.toString();
-      _controller.refreshFailed();
+      _controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
@@ -71,12 +70,12 @@ abstract class _NovelLightingStoreBase with Store {
         nextUrl = novelRecomResponse.nextUrl;
         final novel = novelRecomResponse.novels;
         novels.addAll(novel.map((element) => NovelStore(element.id, element)));
-        _controller.loadComplete();
+        _controller.finishLoad(IndicatorResult.success);
       } catch (e) {
-        _controller.loadFailed();
+        _controller.finishLoad(IndicatorResult.fail);
       }
     } else {
-      _controller.loadNoData();
+      _controller.finishLoad(IndicatorResult.noMore);
     }
   }
 }

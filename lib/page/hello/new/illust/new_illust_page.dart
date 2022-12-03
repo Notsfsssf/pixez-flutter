@@ -17,14 +17,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NewIllustPage extends StatefulWidget {
   final String restrict;
@@ -37,19 +35,19 @@ class NewIllustPage extends StatefulWidget {
 
 class _NewIllustPageState extends State<NewIllustPage> {
   late ApiForceSource futureGet;
-  late RefreshController _refreshController;
   late StreamSubscription<String> subscription;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
-    _refreshController = RefreshController();
+    _scrollController = ScrollController();
     futureGet = ApiForceSource(
         futureGet: (e) => apiClient.getFollowIllusts(widget.restrict, force: e),
         glanceKey: "follow_illust");
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "301") {
-        _refreshController.position?.jumpTo(0);
+        _scrollController.position.jumpTo(0);
       }
     });
   }
@@ -57,7 +55,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
   @override
   void dispose() {
     subscription.cancel();
-    _refreshController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -67,7 +65,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
       children: [
         LightingList(
           source: futureGet,
-          refreshController: _refreshController,
+          scrollController: _scrollController,
           header: Container(
             height: 45.0,
           ),

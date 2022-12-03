@@ -21,7 +21,6 @@ import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RankModePage extends StatefulWidget {
   final String? mode;
@@ -36,12 +35,12 @@ class RankModePage extends StatefulWidget {
 }
 
 class _RankModePageState extends State<RankModePage> {
-  late RefreshController _refreshController;
+  late ScrollController _scrollController;
   late StreamSubscription<String> subscription;
 
   @override
   void dispose() {
-    _refreshController.dispose();
+    _scrollController.dispose();
     subscription.cancel();
     super.dispose();
   }
@@ -49,10 +48,10 @@ class _RankModePageState extends State<RankModePage> {
   @override
   void initState() {
     super.initState();
-    _refreshController = RefreshController();
+    _scrollController = ScrollController();
     subscription = topStore.topStream.listen((event) {
       if (event == (201 + widget.index!).toString()) {
-        _refreshController.position?.jumpTo(0);
+        _scrollController.position.jumpTo(0);
       }
     });
   }
@@ -60,7 +59,7 @@ class _RankModePageState extends State<RankModePage> {
   @override
   Widget build(BuildContext context) {
     return LightingList(
-      refreshController: _refreshController,
+      scrollController: _scrollController,
       source: ApiForceSource(
           futureGet: (e) =>
               apiClient.getIllustRanking(widget.mode!, widget.date, force: e),

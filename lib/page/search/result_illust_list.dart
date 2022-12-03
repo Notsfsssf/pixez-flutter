@@ -26,7 +26,6 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result_illust_store.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ResultIllustList extends StatefulWidget {
   final String word;
@@ -40,18 +39,18 @@ class ResultIllustList extends StatefulWidget {
 class _ResultIllustListState extends State<ResultIllustList> {
   late ResultIllustStore resultIllustStore;
   late ApiForceSource futureGet;
-  late RefreshController _refreshController;
+  late ScrollController _scrollController;
   late StreamSubscription<String> listen;
 
   @override
   void initState() {
-    _refreshController = RefreshController();
+    _scrollController = ScrollController();
     futureGet = ApiForceSource(
         futureGet: (e) => apiClient.getSearchIllust(widget.word));
     super.initState();
     listen = topStore.topStream.listen((event) {
       if (event == "401") {
-        _refreshController.position?.jumpTo(0);
+        _scrollController.position.jumpTo(0);
       }
     });
   }
@@ -140,7 +139,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
           Expanded(
               child: LightingList(
             source: futureGet,
-            refreshController: _refreshController,
+            scrollController: _scrollController,
           ))
         ],
       ),

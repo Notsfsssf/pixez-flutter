@@ -19,8 +19,6 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 part 'spotlight_store.g.dart';
 
 class SpotlightStore = _SpotlightStoreBase with _$SpotlightStore;

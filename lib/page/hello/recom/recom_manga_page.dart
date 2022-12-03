@@ -1,17 +1,13 @@
-import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
-import 'package:pixez/models/illust.dart';
-import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecomMangaPage extends StatefulWidget {
   const RecomMangaPage({Key? key}) : super(key: key);
@@ -21,7 +17,8 @@ class RecomMangaPage extends StatefulWidget {
 }
 
 class _RecomMangaPageState extends State<RecomMangaPage> {
-  RefreshController controller = RefreshController();
+  EasyRefreshController controller = EasyRefreshController(
+      controlFinishLoad: true, controlFinishRefresh: true);
   late LightingStore _store;
 
   @override
@@ -30,7 +27,6 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
       ApiSource(
         futureGet: () => apiClient.getMangaRecommend(),
       ),
-      controller,
     );
     _store.fetch();
     super.initState();
@@ -50,16 +46,14 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Observer(builder: (_) {
-        return SmartRefresher(
+        return EasyRefresh(
           controller: controller,
-          onLoading: () {
+          onLoad: () {
             _store.fetchNext();
           },
           onRefresh: () {
             _store.fetch();
           },
-          enablePullDown: true,
-          enablePullUp: true,
           child: Container(
             child: _store.iStores.isEmpty
                 ? Container()

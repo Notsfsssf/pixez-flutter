@@ -16,8 +16,8 @@
 
 import 'dart:io';
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -26,7 +26,6 @@ import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pixez/exts.dart';
 
 class NovelLightingList extends StatefulWidget {
@@ -40,12 +39,12 @@ class NovelLightingList extends StatefulWidget {
 }
 
 class _NovelLightingListState extends State<NovelLightingList> {
-  late RefreshController _easyRefreshController;
+  late EasyRefreshController _easyRefreshController;
   late NovelLightingStore _store;
 
   @override
   void initState() {
-    _easyRefreshController = RefreshController(initialRefresh: true);
+    _easyRefreshController = EasyRefreshController(controlFinishLoad: true,controlFinishRefresh: true);
     _store = NovelLightingStore(widget.futureGet, _easyRefreshController);
     super.initState();
   }
@@ -213,16 +212,10 @@ class _NovelLightingListState extends State<NovelLightingList> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return SmartRefresher(
-        onLoading: () => _store.next(),
+      return EasyRefresh(
+        onLoad: () => _store.next(),
         onRefresh: () => _store.fetch(),
-        header: Platform.isAndroid
-            ? MaterialClassicHeader(
-                color: Theme.of(context).colorScheme.secondary,
-              )
-            : ClassicHeader(),
-        enablePullDown: true,
-        enablePullUp: true,
+        refreshOnStart: true,
         controller: _easyRefreshController,
         child: _buildBody(context),
       );

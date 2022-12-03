@@ -24,7 +24,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -35,7 +34,6 @@ import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/spotlight/spotlight_page.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
@@ -75,7 +73,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         LightingStore(
             ApiForceSource(
                 futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
-            null);
+            );
     if (widget.lightingStore != null) {
       _lightingStore.easyRefreshController = _easyRefreshController;
     }
@@ -163,29 +161,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           alignment: Alignment.bottomCenter,
         )
       ],
-    );
-  }
-
-  CustomFooter _buildCustomFooter() {
-    return CustomFooter(
-      builder: (BuildContext context, LoadStatus? mode) {
-        Widget body;
-        if (mode == LoadStatus.idle) {
-          body = Text(I18n.of(context).pull_up_to_load_more);
-        } else if (mode == LoadStatus.loading) {
-          body = CircularProgressIndicator();
-        } else if (mode == LoadStatus.failed) {
-          body = Text(I18n.of(context).loading_failed_retry_message);
-        } else if (mode == LoadStatus.canLoading) {
-          body = Text(I18n.of(context).let_go_and_load_more);
-        } else {
-          body = Text(I18n.of(context).no_more_data);
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
     );
   }
 
