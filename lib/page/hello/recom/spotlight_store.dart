@@ -15,6 +15,7 @@
  */
 
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/network/api_client.dart';
@@ -28,26 +29,22 @@ abstract class _SpotlightStoreBase with Store {
   final ApiClient client = apiClient;
   ObservableList<SpotlightArticle> articles = ObservableList();
   String? nextUrl;
-  final RefreshController? _controller;
+  final EasyRefreshController? _controller;
 
   _SpotlightStoreBase(this._controller);
 
   @action
   Future<void> fetch() async {
     nextUrl = null;
-    if (_controller != null) {
-      _controller!.headerMode?.value = RefreshStatus.idle;
-      _controller!.footerMode?.value = LoadStatus.idle;
-    }
     try {
       Response response = await client.getSpotlightArticles("all");
       final result = SpotlightResponse.fromJson(response.data);
       articles.clear();
       articles.addAll(result.spotlightArticles);
       nextUrl = result.nextUrl;
-      _controller?.refreshCompleted();
+      _controller?.finishRefresh(IndicatorResult.success);
     } catch (e) {
-      _controller?.refreshFailed();
+      _controller?.finishRefresh(IndicatorResult.fail);
     }
   }
 
@@ -59,12 +56,13 @@ abstract class _SpotlightStoreBase with Store {
         final results = SpotlightResponse.fromJson(response.data);
         nextUrl = results.nextUrl;
         articles.addAll(results.spotlightArticles);
-        _controller?.loadComplete();
+        _controller?.finishLoad(
+            nextUrl == null ? IndicatorResult.noMore : IndicatorResult.success);
       } catch (e) {
-        _controller?.loadFailed();
+        _controller?.finishLoad(IndicatorResult.fail);
       }
     } else {
-      _controller?.loadNoData();
+      _controller?.finishLoad(IndicatorResult.noMore);
     }
   }
 }

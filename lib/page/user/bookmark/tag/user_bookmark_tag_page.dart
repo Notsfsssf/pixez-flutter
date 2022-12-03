@@ -14,13 +14,13 @@
  *
  */
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/user/bookmark/tag/bookmark_tag_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UserBookmarkTagPage extends StatefulWidget {
   @override
@@ -85,50 +85,47 @@ class NewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final RefreshController _easyRefreshController =
-        RefreshController(initialRefresh: true);
+    final EasyRefreshController _easyRefreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     BookMarkTagStore _bookMarkTagStore = BookMarkTagStore(
         int.parse(accountStore.now!.userId), _easyRefreshController);
     return Observer(builder: (_) {
-      return SmartRefresher(
-        enablePullUp: true,
+      return EasyRefresh(
         controller: _easyRefreshController,
-        child: _bookMarkTagStore.bookmarkTags.isNotEmpty
-            ? ListView.builder(
-                itemBuilder: (context, index) {
-                  if (index == 0)
-                    return ListTile(
-                      title: Text(I18n.of(context).all),
-                      onTap: () {
-                        Navigator.pop(
-                            context, {"tag": null, "restrict": restrict});
-                      },
-                    );
-                  else if (index == 1)
-                    return ListTile(
-                      title: Text(I18n.of(context).unclassified),
-                      onTap: () {
-                        Navigator.pop(
-                            context, {"tag": "未分類", "restrict": restrict}); //日语
-                      },
-                    );
-                  var bookmarkTag = _bookMarkTagStore.bookmarkTags[index - 2];
-                  return ListTile(
-                    title: Text(bookmarkTag.name),
-                    trailing: Text(bookmarkTag.count.toString()),
-                    onTap: () {
-                      Navigator.pop(context,
-                          {"tag": bookmarkTag.name, "restrict": restrict});
-                    },
-                  );
+        refreshOnStart: true,
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            if (index == 0)
+              return ListTile(
+                title: Text(I18n.of(context).all),
+                onTap: () {
+                  Navigator.pop(context, {"tag": null, "restrict": restrict});
                 },
-                itemCount: _bookMarkTagStore.bookmarkTags.length + 2,
-              )
-            : Container(),
+              );
+            else if (index == 1)
+              return ListTile(
+                title: Text(I18n.of(context).unclassified),
+                onTap: () {
+                  Navigator.pop(
+                      context, {"tag": "未分類", "restrict": restrict}); //日语
+                },
+              );
+            var bookmarkTag = _bookMarkTagStore.bookmarkTags[index - 2];
+            return ListTile(
+              title: Text(bookmarkTag.name),
+              trailing: Text(bookmarkTag.count.toString()),
+              onTap: () {
+                Navigator.pop(
+                    context, {"tag": bookmarkTag.name, "restrict": restrict});
+              },
+            );
+          },
+          itemCount: _bookMarkTagStore.bookmarkTags.length + 2,
+        ),
         onRefresh: () async {
           await _bookMarkTagStore.fetch(restrict);
         },
-        onLoading: () async {
+        onLoad: () async {
           await _bookMarkTagStore.next();
         },
       );

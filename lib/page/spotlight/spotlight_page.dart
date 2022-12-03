@@ -14,22 +14,20 @@
  *
  */
 
-import 'dart:io';
-
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class SpotLightPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ScrollController _controller = ScrollController();
-    final RefreshController _refreshController =
-        RefreshController(initialRefresh: true);
+    final EasyRefreshController _refreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     final SpotlightStore _spotlightStore = SpotlightStore(_refreshController);
     return Observer(builder: (_) {
       return Scaffold(
@@ -45,16 +43,10 @@ class SpotLightPage extends StatelessWidget {
             )
           ],
         ),
-        body: SmartRefresher(
-            onLoading: () => _spotlightStore.next(),
+        body: EasyRefresh(
+            onLoad: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
-            enablePullDown: true,
-            header: (Platform.isAndroid)
-                ? MaterialClassicHeader(
-                    color: Theme.of(context).colorScheme.secondary,
-                  )
-                : ClassicHeader(),
-            enablePullUp: true,
+            refreshOnStart: true,
             controller: _refreshController,
             child: WaterfallFlow.builder(
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(

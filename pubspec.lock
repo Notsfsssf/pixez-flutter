@@ -270,12 +270,10 @@ packages:
   easy_refresh:
     dependency: "direct main"
     description:
-      path: "."
-      ref: v3
-      resolved-ref: "30976e0acd3aae3b203614167e165ef386e3651b"
-      url: "https://github.com/xuelongqy/flutter_easy_refresh"
-    source: git
-    version: "3.0.4+2"
+      name: easy_refresh
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.5"
   extended_list_library:
     dependency: transitive
     description:
