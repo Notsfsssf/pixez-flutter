@@ -14,9 +14,8 @@
  *
  */
 
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/comment_emoji_text.dart';
@@ -27,7 +26,6 @@ import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum CommentArtWorkType { ILLUST, NOVEL }
 
@@ -55,7 +53,7 @@ class _CommentPageState extends State<CommentPage> {
   late TextEditingController _editController;
   int? parentCommentId;
   String? parentCommentName;
-  late RefreshController easyRefreshController;
+  late EasyRefreshController easyRefreshController;
   late CommentStore _store;
 
   List<String> banList = [
@@ -71,7 +69,8 @@ class _CommentPageState extends State<CommentPage> {
     parentCommentId = widget.isReplay ? widget.pId : null;
     parentCommentName = widget.isReplay ? widget.name : null;
     _editController = TextEditingController();
-    easyRefreshController = RefreshController();
+    easyRefreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     _store = CommentStore(easyRefreshController, widget.id, widget.pId,
         widget.isReplay, widget.type)
       ..fetch();
@@ -136,18 +135,10 @@ class _CommentPageState extends State<CommentPage> {
         child: Column(
           children: <Widget>[
             Expanded(
-              child: SmartRefresher(
+              child: EasyRefresh(
                 controller: easyRefreshController,
-                enablePullUp: true,
-                enablePullDown: true,
-                header: (Platform.isAndroid)
-                    ? MaterialClassicHeader(
-                        color: Theme.of(context).colorScheme.secondary,
-                        backgroundColor: Theme.of(context).cardColor,
-                      )
-                    : ClassicHeader(),
                 onRefresh: () => _store.fetch(),
-                onLoading: () => _store.next(),
+                onLoad: () => _store.next(),
                 child: Observer(
                   builder: (context) {
                     if (_store.errorMessage != null) {

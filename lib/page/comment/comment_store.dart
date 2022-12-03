@@ -14,15 +14,13 @@
  *
  */
 
-import 'dart:io';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 part 'comment_store.g.dart';
 
@@ -77,7 +75,7 @@ abstract class _CommentStoreBase with Store {
   String? errorMessage;
   @observable
   bool isEmpty = false;
-  final RefreshController _controller;
+  final EasyRefreshController _controller;
   final int id;
   final CommentArtWorkType type;
   int? pId;
@@ -90,8 +88,6 @@ abstract class _CommentStoreBase with Store {
   fetch() async {
     errorMessage = null;
     nextUrl = null;
-    _controller.footerMode?.value = LoadStatus.idle;
-    _controller.headerMode?.value = RefreshStatus.refreshing;
     try {
       Response response = type == CommentArtWorkType.ILLUST
           ? (isReplay
@@ -105,10 +101,10 @@ abstract class _CommentStoreBase with Store {
       comments.clear();
       comments.addAll(commentResponse.comments);
       isEmpty = comments.isEmpty;
-      _controller.refreshCompleted();
+      _controller.finishRefresh(IndicatorResult.success);
     } catch (e) {
       errorMessage = e.toString();
-      _controller.refreshFailed();
+      _controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
@@ -121,12 +117,12 @@ abstract class _CommentStoreBase with Store {
             CommentResponse.fromJson(response.data);
         nextUrl = commentResponse.nextUrl;
         comments.addAll(commentResponse.comments);
-        _controller.loadComplete();
+        _controller.finishLoad(IndicatorResult.success);
       } catch (e) {
-        _controller.loadFailed();
+        _controller.finishLoad(IndicatorResult.fail);
       }
     } else {
-      _controller.loadNoData();
+      _controller.finishLoad(IndicatorResult.noMore);
     }
   }
 }

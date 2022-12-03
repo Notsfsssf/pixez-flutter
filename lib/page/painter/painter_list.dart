@@ -14,15 +14,12 @@
  *
  */
 
-import 'dart:io';
-
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
-import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PainterList extends StatefulWidget {
   final FutureGet futureGet;
@@ -41,14 +38,14 @@ class PainterList extends StatefulWidget {
 }
 
 class _PainterListState extends State<PainterList> {
-  late RefreshController _easyRefreshController;
+  late EasyRefreshController _easyRefreshController;
   late PainterListStore _painterListStore;
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    _easyRefreshController = RefreshController();
+    _easyRefreshController = EasyRefreshController(controlFinishLoad: true,controlFinishRefresh: true);
     _painterListStore =
         PainterListStore(_easyRefreshController, widget.futureGet);
     super.initState();
@@ -60,7 +57,7 @@ class _PainterListState extends State<PainterList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.futureGet != widget.futureGet) {
       _painterListStore.source = widget.futureGet;
-      _easyRefreshController.footerMode?.value = LoadStatus.idle;
+      _easyRefreshController.resetFooter();
       _painterListStore.fetch();
       if (_painterListStore.users.isNotEmpty) _scrollController.jumpTo(0.0);
     }
@@ -76,36 +73,9 @@ class _PainterListState extends State<PainterList> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: (Platform.isAndroid)
-            ? MaterialClassicHeader(
-                color: Theme.of(context).colorScheme.secondary,
-              )
-            : ClassicHeader(),
-        footer: CustomFooter(
-          builder: (BuildContext context, LoadStatus? mode) {
-            Widget body;
-            if (mode == LoadStatus.idle) {
-              body = Text(I18n.of(context).pull_up_to_load_more);
-            } else if (mode == LoadStatus.loading) {
-              body = CircularProgressIndicator();
-            } else if (mode == LoadStatus.failed) {
-              body = Text(I18n.of(context).loading_failed_retry_message);
-            } else if (mode == LoadStatus.canLoading) {
-              body = Text(I18n.of(context).let_go_and_load_more);
-            } else {
-              body = Text(I18n.of(context).no_more_data);
-            }
-            return Container(
-              height: 55.0,
-              child: Center(child: body),
-            );
-          },
-        ),
+      return EasyRefresh(
         controller: _easyRefreshController,
-        onLoading: () => _painterListStore.next(),
+        onLoad: () => _painterListStore.next(),
         onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty
             ? ListView.builder(
