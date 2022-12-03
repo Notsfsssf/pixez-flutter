@@ -13,14 +13,13 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecomUserPage extends StatefulWidget {
   final RecomUserStore? recomUserStore;
@@ -32,13 +31,13 @@ class RecomUserPage extends StatefulWidget {
 }
 
 class _RecomUserPageState extends State<RecomUserPage> {
-  late RefreshController _refreshController;
+  late EasyRefreshController _refreshController;
   late RecomUserStore _recomUserStore;
 
   @override
   void initState() {
-    _refreshController =
-        RefreshController(initialRefresh: widget.recomUserStore == null);
+    _refreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     _recomUserStore =
         widget.recomUserStore ?? RecomUserStore(controller: _refreshController);
     if (widget.recomUserStore != null) {
@@ -61,47 +60,19 @@ class _RecomUserPageState extends State<RecomUserPage> {
         appBar: AppBar(
           title: Text(I18n.of(context).recommend_for_you),
         ),
-        body: SmartRefresher(
-          header: Platform.isAndroid
-              ? MaterialClassicHeader(
-                  color: Theme.of(context).colorScheme.secondary,
-                )
-              : ClassicHeader(),
+        body: EasyRefresh(
           controller: _refreshController,
-          enablePullDown: true,
-          enablePullUp: true,
           onRefresh: () => _recomUserStore.fetch(),
-          onLoading: () => _recomUserStore.next(),
-          footer: CustomFooter(
-            builder: (BuildContext context, LoadStatus? mode) {
-              Widget body;
-              if (mode == LoadStatus.idle) {
-                body = Text(I18n.of(context).pull_up_to_load_more);
-              } else if (mode == LoadStatus.loading) {
-                body = CircularProgressIndicator();
-              } else if (mode == LoadStatus.failed) {
-                body = Text(I18n.of(context).loading_failed_retry_message);
-              } else if (mode == LoadStatus.canLoading) {
-                body = Text(I18n.of(context).let_go_and_load_more);
-              } else {
-                body = Text(I18n.of(context).no_more_data);
-              }
-              return Container(
-                height: 55.0,
-                child: Center(child: body),
-              );
-            },
-          ),
-          child: _recomUserStore.users.isNotEmpty
-              ? ListView.builder(
-                  itemCount: _recomUserStore.users.length,
-                  itemBuilder: (context, index) {
-                    final data = _recomUserStore.users[index];
-                    return PainterCard(
-                      user: data,
-                    );
-                  })
-              : Container(),
+          onLoad: () => _recomUserStore.next(),
+          refreshOnStart: widget.recomUserStore == null,
+          child: ListView.builder(
+              itemCount: _recomUserStore.users.length,
+              itemBuilder: (context, index) {
+                final data = _recomUserStore.users[index];
+                return PainterCard(
+                  user: data,
+                );
+              }),
         ),
       );
     });

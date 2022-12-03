@@ -13,10 +13,10 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 part 'recom_user_store.g.dart';
 
 class RecomUserStore = _RecomUserStoreBase with _$RecomUserStore;
@@ -24,7 +24,7 @@ class RecomUserStore = _RecomUserStoreBase with _$RecomUserStore;
 abstract class _RecomUserStoreBase with Store {
   String? nextUrl;
   ObservableList<UserPreviews> users = ObservableList();
-  RefreshController? controller;
+  EasyRefreshController? controller;
 
   _RecomUserStoreBase({this.controller});
 
@@ -37,9 +37,9 @@ abstract class _RecomUserStoreBase with Store {
       nextUrl = response.next_url;
       users.clear();
       users.addAll(response.user_previews);
-      controller?.refreshCompleted();
+      controller?.finishRefresh(IndicatorResult.success);
     } catch (e) {
-      controller?.refreshFailed();
+      controller?.finishRefresh(IndicatorResult.fail);
     }
   }
 
@@ -51,12 +51,12 @@ abstract class _RecomUserStoreBase with Store {
         final response = UserPreviewsResponse.fromJson(result.data);
         nextUrl = response.next_url;
         users.addAll(response.user_previews);
-        controller?.loadComplete();
+        controller?.finishLoad(IndicatorResult.success);
       } else {
-        controller?.loadNoData();
+        controller?.finishLoad(IndicatorResult.noMore);
       }
     } catch (e) {
-      controller?.loadFailed();
+      controller?.finishLoad(IndicatorResult.fail);
     }
   }
 }
