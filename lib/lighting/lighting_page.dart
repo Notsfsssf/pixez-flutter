@@ -87,7 +87,9 @@ class _LightingListState extends State<LightingList> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    if (widget.scrollController == null) {
+      _scrollController.dispose();
+    }
     _store.dispose();
     _refreshController.dispose();
     super.dispose();
@@ -146,7 +148,7 @@ class _LightingListState extends State<LightingList> {
           }
           return true;
         },
-        child: EasyRefresh(
+        child: EasyRefresh.builder(
           controller: _refreshController,
           scrollController: _scrollController,
           onRefresh: () {
@@ -155,7 +157,9 @@ class _LightingListState extends State<LightingList> {
           onLoad: () {
             _store.fetchNext();
           },
-          child: WaterfallFlow.builder(
+          childBuilder: (context, physics) => WaterfallFlow.builder(
+            physics: physics,
+            controller: widget.isNested ?? false ? null : _scrollController,
             padding: EdgeInsets.all(5.0),
             itemCount: _store.iStores.length,
             itemBuilder: (context, index) {
