@@ -78,6 +78,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
             LightingList(
               source: futureGet,
               scrollController: _scrollController,
+              isNested: widget.isNested,
               header: Container(
                 height: 45,
               ),

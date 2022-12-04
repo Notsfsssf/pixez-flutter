@@ -61,12 +61,30 @@ class _UsersPageState extends State<UsersPage>
   late UserStore userStore;
   late TabController _tabController;
   late ScrollController _scrollController;
+  bool backToTopVisible = false;
 
   @override
   void initState() {
     userStore = widget.userStore ?? UserStore(widget.id);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.hasClients) {
+        if (_scrollController.offset > 100) {
+          if (!backToTopVisible) {
+            setState(() {
+              backToTopVisible = true;
+            });
+          }
+        } else {
+          if (backToTopVisible) {
+            setState(() {
+              backToTopVisible = false;
+            });
+          }
+        }
+      }
+    });
     super.initState();
     userStore.firstFetch();
     muteStore.fetchBanUserIds();
@@ -176,24 +194,29 @@ class _UsersPageState extends State<UsersPage>
           controller: _scrollController,
           innerScrollPositionKeyBuilder: () =>
               Key("Tab${_tabController.index}"),
-          body: IndexedStack(index: _tabIndex, children: [
-            NestedScrollViewInnerScrollPositionKeyWidget(
-                Key('Tab0'),
-                WorksPage(
-                  id: widget.id,
-                )),
-            NestedScrollViewInnerScrollPositionKeyWidget(
-                Key('Tab1'),
-                BookmarkPage(
-                  isNested: true,
-                  id: widget.id,
-                )),
-            NestedScrollViewInnerScrollPositionKeyWidget(
-                Key('Tab2'),
-                userStore.userDetail != null
-                    ? UserDetailPage(userDetail: userStore.userDetail!)
-                    : Container()),
-          ]),
+          body: Stack(
+            children: [
+              IndexedStack(index: _tabIndex, children: [
+                NestedScrollViewInnerScrollPositionKeyWidget(
+                    Key('Tab0'),
+                    WorksPage(
+                      id: widget.id,
+                    )),
+                NestedScrollViewInnerScrollPositionKeyWidget(
+                    Key('Tab1'),
+                    BookmarkPage(
+                      isNested: true,
+                      id: widget.id,
+                    )),
+                NestedScrollViewInnerScrollPositionKeyWidget(
+                    Key('Tab2'),
+                    userStore.userDetail != null
+                        ? UserDetailPage(userDetail: userStore.userDetail!)
+                        : Container()),
+              ]),
+              _topVert(context)
+            ],
+          ),
           headerSliverBuilder:
               (BuildContext context, bool? innerBoxIsScrolled) {
             return [
@@ -396,6 +419,33 @@ class _UsersPageState extends State<UsersPage>
         ),
       );
     });
+  }
+
+  Align _topVert(BuildContext context) {
+    return Align(
+              child: Visibility(
+                visible: backToTopVisible,
+                child: Opacity(
+                  opacity: 0.5,
+                  child: Container(
+                    height: 50.0,
+                    width: 50.0,
+                    margin: EdgeInsets.only(
+                        bottom: 8.0 + MediaQuery.of(context).padding.bottom),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_drop_up_outlined,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        _scrollController.position.jumpTo(0);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              alignment: Alignment.bottomCenter,
+            );
   }
 
   Widget _buildNameFollow(BuildContext context) {

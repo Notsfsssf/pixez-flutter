@@ -105,30 +105,31 @@ class _LightingListState extends State<LightingList> {
           Observer(builder: (_) {
             return Container(child: _buildContent(context));
           }),
-          Align(
-            child: Visibility(
-              visible: backToTopVisible,
-              child: Opacity(
-                opacity: 0.5,
-                child: Container(
-                  height: 50.0,
-                  width: 50.0,
-                  margin: EdgeInsets.only(
-                      bottom: 8.0 + MediaQuery.of(context).padding.bottom),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_drop_up_outlined,
-                      size: 24,
+          if (widget.isNested == null || widget.isNested == false)
+            Align(
+              child: Visibility(
+                visible: backToTopVisible,
+                child: Opacity(
+                  opacity: 0.5,
+                  child: Container(
+                    height: 50.0,
+                    width: 50.0,
+                    margin: EdgeInsets.only(
+                        bottom: 8.0 + MediaQuery.of(context).padding.bottom),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_drop_up_outlined,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        _scrollController.position.jumpTo(0);
+                      },
                     ),
-                    onPressed: () {
-                      _scrollController.position.jumpTo(0);
-                    },
                   ),
                 ),
               ),
-            ),
-            alignment: Alignment.bottomCenter,
-          )
+              alignment: Alignment.bottomCenter,
+            )
         ],
       ),
     );
@@ -140,6 +141,9 @@ class _LightingListState extends State<LightingList> {
     _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
+          if (widget.isNested == true) {
+            return true;
+          }
           ScrollMetrics metrics = notification.metrics;
           if (backToTopVisible == metrics.atEdge && mounted) {
             setState(() {
