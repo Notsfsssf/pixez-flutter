@@ -23,7 +23,8 @@ import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
 class NovelUserBookmarkPage extends StatefulWidget {
   final int id;
-  NovelUserBookmarkPage({required this.id});
+  final bool isNested;
+  NovelUserBookmarkPage({required this.id, required this.isNested});
 
   @override
   _NovelUserBookmarkPageState createState() => _NovelUserBookmarkPageState();
@@ -59,6 +60,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
         Expanded(
           child: NovelLightingList(
             futureGet: futureGet,
+            isNested: widget.isNested,
           ),
         ),
       ],

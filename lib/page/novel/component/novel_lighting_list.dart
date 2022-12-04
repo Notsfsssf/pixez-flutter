@@ -15,6 +15,7 @@
  */
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,9 @@ import 'package:pixez/exts.dart';
 
 class NovelLightingList extends StatefulWidget {
   final FutureGet futureGet;
+  final bool? isNested;
 
-  const NovelLightingList({Key? key, required this.futureGet})
+  const NovelLightingList({Key? key, required this.futureGet, this.isNested})
       : super(key: key);
 
   @override
@@ -41,12 +43,16 @@ class NovelLightingList extends StatefulWidget {
 class _NovelLightingListState extends State<NovelLightingList> {
   late EasyRefreshController _easyRefreshController;
   late NovelLightingStore _store;
+  late bool _isNested;
 
   @override
   void initState() {
-    _easyRefreshController = EasyRefreshController(controlFinishLoad: true,controlFinishRefresh: true);
+    _isNested = widget.isNested ?? false;
+    _easyRefreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     _store = NovelLightingStore(widget.futureGet, _easyRefreshController);
     super.initState();
+    if (_isNested) _store.fetch();
   }
 
   @override
@@ -89,10 +95,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
         ),
       );
     }
-    if (_store.novels.isNotEmpty) {
-      return _buildListBody();
-    }
-    return Container();
+    return _buildListBody();
   }
 
   ListView _buildListBody() {
@@ -104,12 +107,11 @@ class _NovelLightingListState extends State<NovelLightingList> {
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: InkWell(
             onTap: () {
-              Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(
-                      builder: (BuildContext context) => NovelViewerPage(
-                            id: novel.id,
-                            novelStore: _store.novels[index],
-                          )));
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (BuildContext context) => NovelViewerPage(
+                        id: novel.id,
+                        novelStore: _store.novels[index],
+                      )));
             },
             child: Card(
               child: Row(
@@ -133,19 +135,18 @@ class _NovelLightingListState extends State<NovelLightingList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 8.0, left: 8.0),
+                                padding:
+                                    const EdgeInsets.only(top: 8.0, left: 8.0),
                                 child: Text(
                                   novel.title,
                                   overflow: TextOverflow.ellipsis,
-                                  style:
-                                      Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyText1,
                                   maxLines: 3,
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   novel.user.name,
                                   maxLines: 1,
@@ -153,22 +154,23 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                       .textTheme
                                       .caption!
                                       .copyWith(
-                                          color:
-                                              Theme.of(context).colorScheme.secondary),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Wrap(
-                                  crossAxisAlignment:
-                                      WrapCrossAlignment.center,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   spacing: 2,
                                   runSpacing: 0,
                                   children: [
                                     for (var f in novel.tags)
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 1),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 1),
                                         child: Text(
                                           f.name,
                                           style: Theme.of(context)
@@ -215,7 +217,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
       return EasyRefresh(
         onLoad: () => _store.next(),
         onRefresh: () => _store.fetch(),
-        refreshOnStart: true,
+        refreshOnStart: _isNested ? false : true,
         controller: _easyRefreshController,
         child: _buildBody(context),
       );

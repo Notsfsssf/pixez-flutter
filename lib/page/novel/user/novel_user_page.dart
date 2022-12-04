@@ -278,12 +278,14 @@ class _NovelUserPageState extends State<NovelUserPage>
                     Key('Tab0'),
                     NovelUserWorkPage(
                       id: widget.id,
+                      isNested: true,
                     ),
                   ),
                   NestedScrollViewInnerScrollPositionKeyWidget(
                     Key('Tab1'),
                     NovelUserBookmarkPage(
                       id: widget.id,
+                      isNested: true,
                     ),
                   ),
                   NestedScrollViewInnerScrollPositionKeyWidget(Key('Tab2'),
