@@ -25,8 +25,8 @@ dependencies:
     sdk: flutter
   dio: ^4.0.6
   crypto: ^3.0.1
-  sqflite: ^2.0.3+1
-  path_provider: ^2.0.9
+  sqflite: ^2.2.1
+  path_provider: ^2.0.11
   shared_preferences: ^2.0.15
   share_plus: ^6.2.0
   permission_handler: ^10.2.0
@@ -40,13 +40,13 @@ dependencies:
   in_app_purchase: ^3.0.7
   flutter_widget_from_html: ^0.9.0
   device_info_plus: ^8.0.0
-  flutter_displaymode: ^0.4.0
+  flutter_displaymode: ^0.4.1
   receive_sharing_intent: ^1.4.5
-  cached_network_image: ^3.2.2
+  cached_network_image: ^3.2.3
   flutter_cache_manager: ^3.3.0
   flutter_colorpicker: ^1.0.3
   waterfall_flow: ^3.0.2
-  animations: ^2.0.4
+  animations: ^2.0.7
   extended_text: ^9.1.2
   font_awesome_flutter: ^10.1.0
   json_annotation: ^4.6.0
@@ -55,9 +55,9 @@ dependencies:
   image_picker: ^0.8.6
   intl: ^0.17.0
   extended_nested_scroll_view: ^3.0.0
-  quiver: ^3.0.1+1
+  quiver: ^3.1.0
   flutter_inappwebview_quill: ^5.4.6
-  auto_animated: ^3.0.1
+  auto_animated: ^3.1.0
   http: ^0.13.4
   dio_cache_interceptor: 3.2.7
   photo_view: ^0.14.0

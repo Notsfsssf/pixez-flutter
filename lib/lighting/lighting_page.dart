@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/component/list_indicator.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -109,26 +110,14 @@ class _LightingListState extends State<LightingList> {
             Align(
               child: Visibility(
                 visible: backToTopVisible,
-                child: Opacity(
-                  opacity: 0.5,
-                  child: Container(
-                    height: 50.0,
-                    width: 50.0,
-                    margin: EdgeInsets.only(
-                        bottom: 8.0 + MediaQuery.of(context).padding.bottom),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_drop_up_outlined,
-                        size: 24,
-                      ),
-                      onPressed: () {
-                        _scrollController.position.jumpTo(0);
-                      },
-                    ),
-                  ),
+                child: ListIndicator(
+                  onTop: () {
+                    if (_scrollController.hasClients)
+                      _scrollController.position.jumpTo(0);
+                  },
                 ),
               ),
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomLeft,
             )
         ],
       ),

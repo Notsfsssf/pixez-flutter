@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/list_indicator.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -423,29 +424,17 @@ class _UsersPageState extends State<UsersPage>
 
   Align _topVert(BuildContext context) {
     return Align(
-              child: Visibility(
-                visible: backToTopVisible,
-                child: Opacity(
-                  opacity: 0.5,
-                  child: Container(
-                    height: 50.0,
-                    width: 50.0,
-                    margin: EdgeInsets.only(
-                        bottom: 8.0 + MediaQuery.of(context).padding.bottom),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_drop_up_outlined,
-                        size: 24,
-                      ),
-                      onPressed: () {
-                        _scrollController.position.jumpTo(0);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              alignment: Alignment.bottomCenter,
-            );
+      child: Visibility(
+        visible: backToTopVisible,
+        child: ListIndicator(
+          onTop: () {
+            if (_scrollController.hasClients)
+              _scrollController.position.jumpTo(0);
+          },
+        ),
+      ),
+      alignment: Alignment.bottomCenter,
+    );
   }
 
   Widget _buildNameFollow(BuildContext context) {
