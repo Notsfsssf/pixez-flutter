@@ -70,6 +70,8 @@ abstract class _LightingStoreBase with Store {
   final String? portal;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
+  @observable
+  bool refreshing = false;
 
   GlanceIllustPersistProvider glanceIllustPersistProvider =
       GlanceIllustPersistProvider();
@@ -115,6 +117,7 @@ abstract class _LightingStoreBase with Store {
   Future<bool> fetch({String? url, bool force = false}) async {
     nextUrl = null;
     errorMessage = null;
+    refreshing = true;
     try {
       Response? result = null;
       if (source is ApiSource) {
@@ -129,6 +132,7 @@ abstract class _LightingStoreBase with Store {
       iStores.clear();
       iStores.addAll(recommend.illusts.map((e) => IllustStore(e.id, e)));
       String? glanceKey = source.glanceKey;
+      refreshing = false;
       if (glanceKey != null && glanceKey.isNotEmpty) {
         await glanceIllustPersistProvider.open();
         Future.microtask(() async {
@@ -141,6 +145,7 @@ abstract class _LightingStoreBase with Store {
       easyRefreshController?.finishRefresh(IndicatorResult.success);
       return true;
     } catch (e) {
+      refreshing = false;
       errorMessage = e.toString();
       easyRefreshController?.finishLoad(IndicatorResult.fail);
       return false;
