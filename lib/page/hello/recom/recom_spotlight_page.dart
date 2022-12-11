@@ -22,6 +22,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/component/list_indicator.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
@@ -71,9 +72,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     spotlightStore = SpotlightStore(null);
     _lightingStore = widget.lightingStore ??
         LightingStore(
-            ApiForceSource(
-                futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
-            );
+          ApiForceSource(
+              futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
+        );
     if (widget.lightingStore != null) {
       _lightingStore.easyRefreshController = _easyRefreshController;
     }
@@ -133,29 +134,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         Align(
           child: Visibility(
             visible: backToTopVisible,
-            child: Opacity(
-              opacity: 0.5,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 24.0,
-                    margin: EdgeInsets.only(bottom: 8.0),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_drop_up_outlined,
-                        size: 24,
-                      ),
-                      onPressed: () {
-                        _scrollController.position.jumpTo(0);
-                      },
-                    ),
-                  ),
-                  Container(
-                    height: 80,
-                  )
-                ],
-              ),
+            child: Container(
+              child: ListIndicator(),
+              margin: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
             ),
           ),
           alignment: Alignment.bottomCenter,

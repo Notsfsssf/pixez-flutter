@@ -110,11 +110,14 @@ class _LightingListState extends State<LightingList> {
             Align(
               child: Visibility(
                 visible: backToTopVisible,
-                child: ListIndicator(
-                  onTop: () {
-                    if (_scrollController.hasClients)
-                      _scrollController.position.jumpTo(0);
-                  },
+                child: Container(
+                  margin: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                  child: ListIndicator(
+                    onTop: () {
+                      if (_scrollController.hasClients)
+                        _scrollController.position.jumpTo(0);
+                    },
+                  ),
                 ),
               ),
               alignment: Alignment.bottomLeft,
