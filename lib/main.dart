@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -104,6 +105,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    EasyRefresh.defaultHeaderBuilder = () => ClassicHeader();
+    EasyRefresh.defaultFooterBuilder = () => ClassicFooter();
     Hoster.init();
     Hoster.syncRemote();
     userSetting.init();
