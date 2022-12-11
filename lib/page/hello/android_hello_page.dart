@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -217,6 +218,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   void initState() {
+    EasyRefresh.defaultFooterBuilder = () => ClassicFooter(dragText: I18n.of(context).pull_up_to_load_more, failedText: I18n.of(context).loading_failed_retry_message, noMoreText: I18n.of(context).no_more_data);
+
     fetcher.context = context;
     Constants.type = 0;
     _pageList = [

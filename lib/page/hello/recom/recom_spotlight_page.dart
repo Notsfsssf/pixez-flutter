@@ -119,7 +119,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         ),
         EasyRefresh.builder(
           controller: _easyRefreshController,
-          header: Platform.isIOS ? CupertinoHeader() : MaterialHeader(),
           onRefresh: () async {
             await fetchT();
           },
