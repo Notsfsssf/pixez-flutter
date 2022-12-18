@@ -148,7 +148,7 @@
   "setting": "設定",
   "share": "分享",
   "share_this_app_link": "推薦這個應用程式",
-  "shield_message": "{name} 已被封鎖",
+  "shield_message": "{name} 已被封鎖或檢舉",
   "@shield_message": {
     "description": "A message with a parameter",
     "placeholders": {

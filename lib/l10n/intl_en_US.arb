@@ -148,7 +148,7 @@
   "setting": "Settings",
   "share": "Share",
   "share_this_app_link": "Share this app with others",
-  "shield_message": "{name} has been muted",
+  "shield_message": "{name} has been muted or reported",
   "@shield_message": {
     "description": "A message with a parameter",
     "placeholders": {

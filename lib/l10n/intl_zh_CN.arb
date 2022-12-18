@@ -148,7 +148,7 @@
   "setting": "设置",
   "share": "分享",
   "share_this_app_link": "推荐这个 app",
-  "shield_message": "{name} 已被你设为屏蔽",
+  "shield_message": "{name} 已被你举报或设为屏蔽",
   "@shield_message": {
     "description": "A message with a parameter",
     "placeholders": {
