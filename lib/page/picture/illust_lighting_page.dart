@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,7 @@ import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
+import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
@@ -1045,29 +1048,41 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         title: Text(I18n.of(context).report),
                         leading: Icon(Icons.report),
                         onTap: () async {
-                          await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(I18n.of(context).report),
-                                  content:
-                                      Text(I18n.of(context).report_message),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text(I18n.of(context).cancel),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("CANCEL");
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text(I18n.of(context).ok),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("OK");
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
+                          if (Platform.isAndroid) {
+                            Navigator.of(context).pop();
+                            await Reporter.show(
+                                context,
+                                () async => {
+                                      await muteStore.insertBanIllusts(
+                                          BanIllustIdPersist(
+                                              illustId: widget.id.toString(),
+                                              name: illusts.title))
+                                    });
+                          } else {
+                            await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text(I18n.of(context).report),
+                                    content:
+                                        Text(I18n.of(context).report_message),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text(I18n.of(context).cancel),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("CANCEL");
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text(I18n.of(context).ok),
+                                        onPressed: () {
+                                          Navigator.of(context).pop("OK");
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          }
                         },
                       )
                     ],

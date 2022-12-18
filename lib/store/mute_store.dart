@@ -18,6 +18,7 @@ import 'dart:convert';
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/models/ban_comment_persist.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
@@ -30,10 +31,12 @@ class MuteStore = _MuteStoreBase with _$MuteStore;
 abstract class _MuteStoreBase with Store {
   BanIllustIdProvider banIllustIdProvider = BanIllustIdProvider();
   BanUserIdProvider banUserIdProvider = BanUserIdProvider();
+  BanCommenProvider banCommentPersistProvider = BanCommenProvider();
   BanTagProvider banTagProvider = BanTagProvider();
   ObservableList<BanUserIdPersist> banUserIds = ObservableList();
   ObservableList<BanTagPersist> banTags = ObservableList();
   ObservableList<BanIllustIdPersist> banillusts = ObservableList();
+  ObservableList<BanCommentPersist> banComments = ObservableList();
 
   _MuteStoreBase() {}
 
@@ -43,6 +46,15 @@ abstract class _MuteStoreBase with Store {
     List<BanUserIdPersist> userids = await banUserIdProvider.getAllAccount();
     banUserIds.clear();
     banUserIds.addAll(userids);
+  }
+
+  @action
+  Future<void> fetchBanComments() async {
+    await banUserIdProvider.open();
+    List<BanCommentPersist> userids =
+        await banCommentPersistProvider.getAllAccount();
+    banComments.clear();
+    banComments.addAll(userids);
   }
 
   @action

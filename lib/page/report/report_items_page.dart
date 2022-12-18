@@ -10,6 +10,13 @@ class ReportItemsPage extends StatefulWidget {
   State<ReportItemsPage> createState() => _ReportItemsPageState();
 }
 
+class Reporter {
+  static Future<void> show(BuildContext context, FutureFunc onSubmit) async {
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ReportItemsPage(onSubmit: onSubmit)));
+  }
+}
+
 class _ReportItemsPageState extends State<ReportItemsPage> {
   final items = [
     "Sexual Content and Profanity",
@@ -41,7 +48,9 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
                   child: ListTile(
                     title: Text(title),
                     onTap: () {
-                      _selectItem = index;
+                      setState(() {
+                        _selectItem = index;
+                      });
                     },
                   ),
                 );
@@ -49,14 +58,22 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
               itemCount: items.length),
           Align(
             alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-              onPressed: () async {
-                BotToast.showLoading();
-                await widget.onSubmit();
-                BotToast.closeAllLoading();
-                Navigator.of(context).pop();
-              },
-              child: Text("Submit"),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40), // NEW
+                ),
+                onPressed: () async {
+                  BotToast.showLoading();
+                  await widget.onSubmit();
+                  BotToast.closeAllLoading();
+                  Navigator.of(context).pop();
+                  BotToast.showText(text: "Thanks for your feedback");
+                },
+                child: Text("Submit"),
+              ),
             ),
           )
         ],
