@@ -139,7 +139,7 @@ class _CommentPageState extends State<CommentPage> {
         return true;
       }
     }
-    return true;
+    return false;
   }
 
   @override
