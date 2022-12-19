@@ -24,8 +24,11 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
+import 'package:pixez/page/report/report_items_page.dart';
 
 enum CommentArtWorkType { ILLUST, NOVEL }
 
@@ -125,6 +128,20 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
+  bool commentHateByUser(Comment comment) {
+    for (var i in muteStore.banComments) {
+      if (i.commentId == comment.id) {
+        return true;
+      }
+    }
+    for (var i in muteStore.banUserIds) {
+      if (i.userId == comment.user?.id) {
+        return true;
+      }
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,20 +176,23 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                       );
                     }
-                    return _store.comments.isNotEmpty
+                    var comments = _store.comments
+                        .where((element) => !commentHateByUser(element))
+                        .toList();
+                    return comments.isNotEmpty
                         ? ListView.separated(
-                            itemCount: _store.comments.length,
+                            itemCount: comments.length,
                             itemBuilder: (context, index) {
                               if (banList
-                                  .where((element) => _store
-                                      .comments[index].comment!
+                                  .where((element) => comments[index]
+                                      .comment!
                                       .contains(element))
                                   .isNotEmpty)
                                 return Visibility(
                                   visible: false,
                                   child: Container(),
                                 );
-                              var comment = _store.comments[index];
+                              var comment = comments[index];
                               return Container(
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
@@ -182,9 +202,11 @@ class _CommentPageState extends State<CommentPage> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: PainterAvatar(
-                                        url: _store.comments[index].user!
-                                            .profileImageUrls.medium,
-                                        id: _store.comments[index].user!.id!,
+                                        url: comments[index]
+                                            .user!
+                                            .profileImageUrls
+                                            .medium,
+                                        id: comments[index].user!.id!,
                                       ),
                                     ),
                                     Expanded(
@@ -208,25 +230,8 @@ class _CommentPageState extends State<CommentPage> {
                                                     overflow:
                                                         TextOverflow.ellipsis),
                                               ),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    if (widget.isReplay) return;
-                                                    parentCommentId =
-                                                        comment.id;
-                                                    setState(() {
-                                                      parentCommentName =
-                                                          comment.user!.name;
-                                                    });
-                                                  },
-                                                  child: Text(
-                                                    widget.isReplay
-                                                        ? ""
-                                                        : "Reply",
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
-                                                  ))
+                                              _buildTrailingRow(
+                                                  comment, context)
                                             ],
                                           ),
                                           if (comment.parentComment?.user !=
@@ -294,8 +299,8 @@ class _CommentPageState extends State<CommentPage> {
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               if (banList
-                                  .where((element) => _store
-                                      .comments[index].comment!
+                                  .where((element) => comments[index]
+                                      .comment!
                                       .contains(element))
                                   .isNotEmpty)
                                 return Visibility(
@@ -418,6 +423,58 @@ class _CommentPageState extends State<CommentPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTrailingRow(Comment comment, BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+            onTap: () {
+              if (widget.isReplay) return;
+              parentCommentId = comment.id;
+              setState(() {
+                parentCommentName = comment.user!.name;
+              });
+            },
+            child: Text(
+              widget.isReplay ? "" : "Reply",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            )),
+        if (!widget.isReplay)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              title: Text(I18n.of(context).ban),
+                              onTap: () async {
+                                await muteStore.insertComment(comment);
+                              },
+                            ),
+                            ListTile(
+                              title: Text(I18n.of(context).report),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                Reporter.show(
+                                    context,
+                                    () async => {
+                                          await muteStore.insertComment(comment)
+                                        });
+                              },
+                            ),
+                          ],
+                        );
+                      });
+                },
+                child: Icon(Icons.more_horiz)),
+          )
+      ],
     );
   }
 }

@@ -22,6 +22,7 @@ import 'package:pixez/models/ban_comment_persist.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
+import 'package:pixez/models/comment_response.dart';
 import 'package:quiver/time.dart';
 
 part 'mute_store.g.dart';
@@ -86,6 +87,15 @@ abstract class _MuteStoreBase with Store {
     await banTagProvider.open();
     await banTagProvider.insert(banTagsPersist);
     await fetchBanTags();
+  }
+
+  @action
+  insertComment(Comment comment) async {
+    await banCommentPersistProvider.open();
+    await banCommentPersistProvider.insert(BanCommentPersist(
+        commentId: comment.id?.toString() ?? "",
+        name: comment.user?.name ?? ""));
+    await fetchBanComments();
   }
 
   @action
