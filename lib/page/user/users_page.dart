@@ -38,6 +38,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/follow/follow_list.dart';
+import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
@@ -278,6 +279,15 @@ class _UsersPageState extends State<UsersPage>
                                 text: I18n.of(context).copied_to_clipboard);
                             break;
                           }
+                        case 3:
+                          {
+                            Reporter.show(
+                                context,
+                                () async => await muteStore.insertBanUserId(
+                                    widget.id.toString(),
+                                    userStore.userDetail!.user.name));
+                            break;
+                          }
                         default:
                       }
                     },
@@ -294,6 +304,10 @@ class _UsersPageState extends State<UsersPage>
                         PopupMenuItem<int>(
                           value: 2,
                           child: Text(I18n.of(context).copymessage),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 3,
+                          child: Text(I18n.of(context).report),
                         ),
                       ];
                     },
