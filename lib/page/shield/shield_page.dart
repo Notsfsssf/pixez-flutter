@@ -34,6 +34,7 @@ class _ShieldPageState extends State<ShieldPage> {
     muteStore.fetchBanUserIds();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanUserIds();
+    muteStore.fetchBanComments();
     super.initState();
   }
 

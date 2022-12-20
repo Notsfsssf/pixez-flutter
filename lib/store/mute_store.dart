@@ -51,7 +51,7 @@ abstract class _MuteStoreBase with Store {
 
   @action
   Future<void> fetchBanComments() async {
-    await banUserIdProvider.open();
+    await banCommentPersistProvider.open();
     List<BanCommentPersist> userids =
         await banCommentPersistProvider.getAllAccount();
     banComments.clear();
