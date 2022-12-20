@@ -130,12 +130,12 @@ class _CommentPageState extends State<CommentPage> {
 
   bool commentHateByUser(Comment comment) {
     for (var i in muteStore.banComments) {
-      if (i.commentId == comment.id) {
+      if (i.commentId == comment.id.toString()) {
         return true;
       }
     }
     for (var i in muteStore.banUserIds) {
-      if (i.userId == comment.user?.id) {
+      if (i.userId == comment.user?.id?.toString()) {
         return true;
       }
     }
@@ -448,12 +448,19 @@ class _CommentPageState extends State<CommentPage> {
                 onTap: () {
                   showModalBottomSheet(
                       context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                      ),
                       builder: (context) {
                         return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
                               title: Text(I18n.of(context).ban),
                               onTap: () async {
+                                Navigator.of(context).pop();
                                 await muteStore.insertComment(comment);
                               },
                             ),

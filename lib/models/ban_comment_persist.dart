@@ -42,13 +42,13 @@ create table $tableBanComment (
   }
 
   Future<BanCommentPersist> insert(BanCommentPersist todo) async {
-    todo.id = await db.insert(columnCommentId, todo.toJson(),
+    todo.id = await db.insert(tableBanComment, todo.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return todo;
   }
 
   Future<BanCommentPersist?> getAccount(int id) async {
-    List<Map<String, dynamic>> maps = await db.query(columnCommentId,
+    List<Map<String, dynamic>> maps = await db.query(tableBanComment,
         columns: [columnId, columnCommentId],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -60,7 +60,7 @@ create table $tableBanComment (
 
   Future<List<BanCommentPersist>> getAllAccount() async {
     List<BanCommentPersist> result = [];
-    List<Map<String, dynamic>> maps = await db.query(columnCommentId,
+    List<Map<String, dynamic>> maps = await db.query(tableBanComment,
         columns: [columnId, columnCommentId, columnName]);
 
     if (maps.length > 0) {
@@ -73,15 +73,15 @@ create table $tableBanComment (
 
   Future<int> delete(int id) async {
     return await db
-        .delete(columnCommentId, where: '$columnId = ?', whereArgs: [id]);
+        .delete(tableBanComment, where: '$columnId = ?', whereArgs: [id]);
   }
 
   Future<int> deleteAll() async {
-    return await db.delete(columnCommentId);
+    return await db.delete(tableBanComment);
   }
 
   Future<int> update(BanCommentPersist todo) async {
-    return await db.update(columnCommentId, todo.toJson(),
+    return await db.update(tableBanComment, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
   }
 
