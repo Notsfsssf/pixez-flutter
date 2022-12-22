@@ -273,7 +273,7 @@ packages:
       name: easy_refresh
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.5"
+    version: "3.1.0"
   extended_list_library:
     dependency: transitive
     description:

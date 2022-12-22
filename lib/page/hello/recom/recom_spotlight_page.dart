@@ -119,6 +119,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         ),
         EasyRefresh.builder(
           controller: _easyRefreshController,
+          callLoadOverOffset: 10,
+          header: MaterialHeader(),
           onRefresh: () async {
             await fetchT();
           },
