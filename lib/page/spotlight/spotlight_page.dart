@@ -46,6 +46,7 @@ class SpotLightPage extends StatelessWidget {
         body: EasyRefresh(
             onLoad: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
+            header: MaterialHeader(),
             refreshOnStart: true,
             controller: _refreshController,
             child: WaterfallFlow.builder(

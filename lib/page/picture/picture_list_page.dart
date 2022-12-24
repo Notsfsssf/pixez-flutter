@@ -52,38 +52,46 @@ class _PictureListPageState extends State<PictureListPage> {
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width / 2;
-    return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails detail) {
-        if (detail.velocity.pixelsPerSecond.dx.abs() > screenWidth) {
-          int result = nowPosition;
-          if (detail.velocity.pixelsPerSecond.dx < 0)
-            result++;
-          else
-            result--;
-          _pageController.animateToPage(result,
-              duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
-          if (result >= widget.iStores.length)
-            result = widget.iStores.length - 1;
-          if (result < 0) result = 0;
-          setState(() {
-            nowPosition = result;
-          });
-        }
-      },
-      child: PageView.builder(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) {
-          final f = widget.iStores[index];
-          String? tag = nowPosition == index ? widget.heroString : null;
-          return IllustLightingPage(
-            id: f.id,
-            heroString: tag,
-            store: f,
-          );
-        },
-        itemCount: widget.iStores.length,
-      ),
+    return Stack(
+      children: [
+        PageView.builder(
+          controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            final f = widget.iStores[index];
+            String? tag = nowPosition == index ? widget.heroString : null;
+            return IllustLightingPage(
+              id: f.id,
+              heroString: tag,
+              store: f,
+            );
+          },
+          itemCount: widget.iStores.length,
+        ),
+        Container(
+          margin: EdgeInsets.all(24),
+          child: GestureDetector(
+            onHorizontalDragEnd: (DragEndDetails detail) {
+              if (detail.velocity.pixelsPerSecond.dx.abs() > screenWidth) {
+                int result = nowPosition;
+                if (detail.velocity.pixelsPerSecond.dx < 0)
+                  result++;
+                else
+                  result--;
+                _pageController.animateToPage(result,
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.easeInOut);
+                if (result >= widget.iStores.length)
+                  result = widget.iStores.length - 1;
+                if (result < 0) result = 0;
+                setState(() {
+                  nowPosition = result;
+                });
+              }
+            },
+          ),
+        )
+      ],
     );
   }
 }
