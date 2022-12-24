@@ -462,9 +462,11 @@ class _UsersPageState extends State<UsersPage>
             children: <Widget>[
               NullHero(
                 tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
-                child: SelectableText(
-                  userStore.user?.name ?? "",
-                  style: Theme.of(context).textTheme.headline6,
+                child: SelectionArea(
+                  child: Text(
+                    userStore.user?.name ?? "",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
                 ),
               ),
               InkWell(

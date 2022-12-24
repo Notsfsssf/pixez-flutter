@@ -380,7 +380,8 @@ class _AboutPageState extends State<AboutPage> {
             ListTile(
               leading: Icon(Icons.device_hub),
               title: Text(I18n.of(context).repo_address),
-              subtitle: SelectableText('github.com/Notsfsssf/pixez-flutter'),
+              subtitle: SelectionArea(
+                  child: Text('github.com/Notsfsssf/pixez-flutter')),
               trailing: Visibility(
                 child: NewVersionChip(),
                 visible: hasNewVersion,

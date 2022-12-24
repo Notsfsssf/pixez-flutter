@@ -153,6 +153,7 @@ class _CommentPageState extends State<CommentPage> {
           children: <Widget>[
             Expanded(
               child: EasyRefresh(
+                header: MaterialHeader(),
                 controller: easyRefreshController,
                 onRefresh: () => _store.fetch(),
                 onLoad: () => _store.next(),
@@ -220,15 +221,17 @@ class _CommentPageState extends State<CommentPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
-                                              SelectableText(
-                                                comment.user!.name,
-                                                maxLines: 1,
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary,
-                                                    overflow:
-                                                        TextOverflow.ellipsis),
+                                              SelectionArea(
+                                                child: Text(
+                                                  comment.user!.name,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
+                                                ),
                                               ),
                                               _buildTrailingRow(
                                                   comment, context)

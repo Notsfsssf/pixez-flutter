@@ -44,9 +44,11 @@ class IllustDetailBody extends StatelessWidget {
 
   IllustDetailBody({Key? key, required this.illust}) : super(key: key);
 
-  Widget colorText(String text, BuildContext context) => SelectableText(
-        text,
-        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+  Widget colorText(String text, BuildContext context) => SelectionArea(
+        child: Text(
+          text,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
       );
 
   Widget _buildNameAvatar(
@@ -99,16 +101,21 @@ class IllustDetailBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SelectableText(
-                  illust.title,
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                SelectionArea(
+                  child: Text(
+                    illust.title,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ),
                 Container(
                   height: 4.0,
                 ),
-                SelectableText(
-                  illust.user.name,
-                  style: Theme.of(context).textTheme.bodyText2,
+                SelectionArea(
+                  child: Text(
+                    illust.user.name,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 ),
                 Text(
                   toShortTime(illust.createDate),

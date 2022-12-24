@@ -231,9 +231,11 @@ class _IllustRowPageState extends State<IllustRowPage>
     );
   }
 
-  Widget colorText(String text, BuildContext context) => SelectableText(
-        text,
-        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+  Widget colorText(String text, BuildContext context) => SelectionArea(
+        child: Text(
+          text,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
       );
 
   ScrollController scrollController = ScrollController();
@@ -762,19 +764,23 @@ class _IllustRowPageState extends State<IllustRowPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SelectableText(
-                    illust.title,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
+                  SelectionArea(
+                    child: Text(
+                      illust.title,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
+                    ),
                   ),
                   Container(
                     height: 4.0,
                   ),
                   Hero(
                     tag: illust.user.name + this.hashCode.toString(),
-                    child: SelectableText(
-                      illust.user.name,
-                      style: Theme.of(context).textTheme.bodyText2,
+                    child: SelectionArea(
+                      child: Text(
+                        illust.user.name,
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
                     ),
                   ),
                   Text(

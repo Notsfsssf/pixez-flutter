@@ -312,9 +312,11 @@ class _NovelUserPageState extends State<NovelUserPage>
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SelectableText(
-                userStore.userDetail!.user.name,
-                style: Theme.of(context).textTheme.headline6,
+              SelectionArea(
+                child: Text(
+                  userStore.userDetail!.user.name,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
               ),
               InkWell(
                 onTap: () {

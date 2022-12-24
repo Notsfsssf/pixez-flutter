@@ -51,9 +51,11 @@ mixin SelectableHtmlTextFactory on WidgetFactory {
   }
 }
 
-class SelectableHtmlWidgetFactory extends WidgetFactory with SelectableHtmlTextFactory {
+class SelectableHtmlWidgetFactory extends WidgetFactory
+    with SelectableHtmlTextFactory {
   @override
-  SelectionChangedCallback? get selectableTextOnChanged => (selection, cause) {};
+  SelectionChangedCallback? get selectableTextOnChanged =>
+      (selection, cause) {};
 }
 
 class SelectableHtml extends StatefulWidget {
@@ -76,30 +78,32 @@ class _SelectableHtmlState extends State<SelectableHtml> {
   Widget build(BuildContext context) {
     return SelectionArea(
       child: HtmlWidget(
-              widget.data,
-              customStylesBuilder: (e) {
-                if (e.attributes.containsKey('href')) {
-                  final color = userSetting.themeData.colorScheme.primary;
-                  return {
-                    'color': '#${color.value.toRadixString(16).substring(2, 8)}'
-                  };
-                }
-                return null;
-              },
-              factoryBuilder: supportTranslate? () => SelectableHtmlWidgetFactory():(null),
-              onTapUrl: (String url) async {
-                try {
-                  LPrinter.d("html tap url: $url");
-                  if (url.startsWith("pixiv")) {
-                    Leader.pushWithUri(context, Uri.parse(url));
-                  } else
-                    await launchUrl(Uri.parse(url),mode: LaunchMode.externalNonBrowserApplication);
-                } catch (e) {
-                  Share.share(url);
-                }
-                return true;
-              },
-            ),
+        widget.data,
+        customStylesBuilder: (e) {
+          if (e.attributes.containsKey('href')) {
+            final color = userSetting.themeData.colorScheme.primary;
+            return {
+              'color': '#${color.value.toRadixString(16).substring(2, 8)}'
+            };
+          }
+          return null;
+        },
+        factoryBuilder:
+            supportTranslate ? () => SelectableHtmlWidgetFactory() : (null),
+        onTapUrl: (String url) async {
+          try {
+            LPrinter.d("html tap url: $url");
+            if (url.startsWith("pixiv")) {
+              Leader.pushWithUri(context, Uri.parse(url));
+            } else
+              await launchUrl(Uri.parse(url),
+                  mode: LaunchMode.externalNonBrowserApplication);
+          } catch (e) {
+            Share.share(url);
+          }
+          return true;
+        },
+      ),
     );
   }
 

@@ -27,10 +27,7 @@ class PainterList extends StatefulWidget {
   final Widget? header;
 
   const PainterList(
-      {Key? key,
-      required this.futureGet,
-      this.isNovel = false,
-      this.header})
+      {Key? key, required this.futureGet, this.isNovel = false, this.header})
       : super(key: key);
 
   @override
@@ -45,7 +42,8 @@ class _PainterListState extends State<PainterList> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    _easyRefreshController = EasyRefreshController(controlFinishLoad: true,controlFinishRefresh: true);
+    _easyRefreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     _painterListStore =
         PainterListStore(_easyRefreshController, widget.futureGet);
     super.initState();
@@ -75,6 +73,7 @@ class _PainterListState extends State<PainterList> {
     return Observer(builder: (_) {
       return EasyRefresh(
         controller: _easyRefreshController,
+        header: MaterialHeader(),
         onLoad: () => _painterListStore.next(),
         onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty

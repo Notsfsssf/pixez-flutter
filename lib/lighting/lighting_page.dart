@@ -163,6 +163,7 @@ class _LightingListState extends State<LightingList> {
         },
         child: EasyRefresh.builder(
           controller: _refreshController,
+          header: MaterialHeader(),
           scrollController: _scrollController,
           onRefresh: () {
             _store.fetch(force: true);
@@ -255,6 +256,7 @@ class _LightingListState extends State<LightingList> {
       child: EasyRefresh.builder(
         controller: _refreshController,
         scrollController: _scrollController,
+        header: MaterialHeader(),
         onRefresh: () {
           _store.fetch(force: true);
         },

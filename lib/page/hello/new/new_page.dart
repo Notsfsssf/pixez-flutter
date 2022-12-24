@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
@@ -102,15 +103,20 @@ class _NewPageState extends State<NewPage>
                     ),
                   ]),
               actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.account_circle),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => UsersPage(
-                              id: int.parse(accountStore.now!.userId),
-                            )));
-                  },
-                )
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Container(
+                    height: 26,
+                    width: 26,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.0)),
+                    child: PainterAvatar(
+                      url: accountStore.now!.userImage,
+                      id: int.parse(accountStore.now!.userId),
+                    ),
+                  ),
+                ),
               ],
             ),
             Expanded(
