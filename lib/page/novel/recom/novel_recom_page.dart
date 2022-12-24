@@ -75,13 +75,15 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return EasyRefresh.builder(
-        onRefresh: () => _store.fetch(),
-        onLoad: () => _store.next(),
-        controller: _easyRefreshController,
-        refreshOnStart: true,
-        childBuilder: (context, physics) => CustomScrollView(
+    return EasyRefresh.builder(
+      header: MaterialHeader(),
+      onRefresh: () => _store.fetch(),
+      onLoad: () => _store.next(),
+      controller: _easyRefreshController,
+      callRefreshOverOffset: 10,
+      refreshOnStart: true,
+      childBuilder: (context, physics) => Observer(builder: (context) {
+        return CustomScrollView(
           physics: physics,
           slivers: [
             SliverAppBar(
@@ -93,9 +95,9 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
             ),
             if (_store.novels.isNotEmpty) _buildSliverList(),
           ],
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 
   SliverList _buildSliverList() {

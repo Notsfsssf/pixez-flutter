@@ -213,14 +213,15 @@ class _NovelLightingListState extends State<NovelLightingList> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return EasyRefresh(
-        onLoad: () => _store.next(),
-        onRefresh: () => _store.fetch(),
-        refreshOnStart: _isNested ? false : true,
-        controller: _easyRefreshController,
-        child: _buildBody(context),
-      );
-    });
+    return EasyRefresh(
+      onLoad: () => _store.next(),
+      onRefresh: () => _store.fetch(),
+      refreshOnStart: _isNested ? false : true,
+      controller: _easyRefreshController,
+      header: MaterialHeader(),
+      child: Observer(builder: (context) {
+        return _buildBody(context);
+      }),
+    );
   }
 }

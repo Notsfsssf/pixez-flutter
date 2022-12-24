@@ -128,7 +128,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // }
   @override
   void initState() {
-    EasyRefresh.defaultHeaderBuilder = () => ClassicHeader();
     Hoster.init();
     Hoster.syncRemote();
     userSetting.init();
