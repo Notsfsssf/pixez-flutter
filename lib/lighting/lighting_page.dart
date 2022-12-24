@@ -22,6 +22,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/list_indicator.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -163,7 +164,7 @@ class _LightingListState extends State<LightingList> {
         },
         child: EasyRefresh.builder(
           controller: _refreshController,
-          header: MaterialHeader(),
+          header: PixezDefault.header(context),
           scrollController: _scrollController,
           onRefresh: () {
             _store.fetch(force: true);
@@ -256,7 +257,7 @@ class _LightingListState extends State<LightingList> {
       child: EasyRefresh.builder(
         controller: _refreshController,
         scrollController: _scrollController,
-        header: MaterialHeader(),
+        header: PixezDefault.header(context),
         onRefresh: () {
           _store.fetch(force: true);
         },

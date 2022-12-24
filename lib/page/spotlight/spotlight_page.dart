@@ -17,6 +17,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
@@ -46,7 +47,7 @@ class SpotLightPage extends StatelessWidget {
         body: EasyRefresh(
             onLoad: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
-            header: MaterialHeader(),
+            header: PixezDefault.header(context),
             refreshOnStart: true,
             controller: _refreshController,
             child: WaterfallFlow.builder(

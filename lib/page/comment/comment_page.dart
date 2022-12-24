@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/comment_emoji_text.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
@@ -153,7 +154,7 @@ class _CommentPageState extends State<CommentPage> {
           children: <Widget>[
             Expanded(
               child: EasyRefresh(
-                header: MaterialHeader(),
+                header: PixezDefault.header(context),
                 controller: easyRefreshController,
                 onRefresh: () => _store.fetch(),
                 onLoad: () => _store.next(),

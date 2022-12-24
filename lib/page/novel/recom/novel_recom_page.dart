@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/exts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -76,7 +77,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
   @override
   Widget build(BuildContext context) {
     return EasyRefresh.builder(
-      header: MaterialHeader(),
+      header: PixezDefault.header(context),
       onRefresh: () => _store.fetch(),
       onLoad: () => _store.next(),
       controller: _easyRefreshController,

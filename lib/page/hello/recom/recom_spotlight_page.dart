@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/list_indicator.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
@@ -120,7 +121,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         EasyRefresh.builder(
           controller: _easyRefreshController,
           callLoadOverOffset: 10,
-          header: MaterialHeader(),
+          header: PixezDefault.header(context),
           onRefresh: () async {
             await fetchT();
           },

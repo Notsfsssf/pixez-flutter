@@ -20,6 +20,7 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -218,7 +219,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
       onRefresh: () => _store.fetch(),
       refreshOnStart: _isNested ? false : true,
       controller: _easyRefreshController,
-      header: MaterialHeader(),
+      header: PixezDefault.header(context),
       child: Observer(builder: (context) {
         return _buildBody(context);
       }),

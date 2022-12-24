@@ -18,6 +18,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
 
@@ -73,7 +74,7 @@ class _PainterListState extends State<PainterList> {
     return Observer(builder: (_) {
       return EasyRefresh(
         controller: _easyRefreshController,
-        header: MaterialHeader(),
+        header: PixezDefault.header(context),
         onLoad: () => _painterListStore.next(),
         onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty
