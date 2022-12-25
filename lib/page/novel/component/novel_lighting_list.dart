@@ -102,6 +102,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
   ListView _buildListBody() {
     _store.novels.removeWhere((element) => element.novel?.hateByUser() == true);
     return ListView.builder(
+      padding: EdgeInsets.all(0),
       itemBuilder: (context, index) {
         Novel novel = _store.novels[index].novel!;
         return Padding(

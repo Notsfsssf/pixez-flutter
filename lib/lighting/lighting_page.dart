@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/component/list_indicator.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -118,30 +117,9 @@ class _LightingListState extends State<LightingList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Stack(
-        children: <Widget>[
-          Observer(builder: (_) {
-            return Container(child: _buildContent(context));
-          }),
-          if (widget.isNested == null || widget.isNested == false)
-            Align(
-              child: Visibility(
-                visible: backToTopVisible,
-                child: Container(
-                  margin: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom),
-                  child: ListIndicator(
-                    onTop: () {
-                      if (_scrollController.hasClients)
-                        _scrollController.position.jumpTo(0);
-                    },
-                  ),
-                ),
-              ),
-              alignment: Alignment.bottomLeft,
-            )
-        ],
-      ),
+      child: Observer(builder: (_) {
+        return Container(child: _buildContent(context));
+      }),
     );
   }
 

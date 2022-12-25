@@ -416,14 +416,32 @@ class _UsersPageState extends State<UsersPage>
                   labelColor: Theme.of(context).textTheme.bodyText1!.color,
                   indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
-                    Tab(
-                      text: I18n.of(context).works,
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if (_tabIndex == 0)
+                          _scrollController.position.jumpTo(0);
+                      },
+                      child: Tab(
+                        text: I18n.of(context).works,
+                      ),
                     ),
-                    Tab(
-                      text: I18n.of(context).bookmark,
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if (_tabIndex == 1)
+                          _scrollController.position.jumpTo(0);
+                      },
+                      child: Tab(
+                        text: I18n.of(context).bookmark,
+                      ),
                     ),
-                    Tab(
-                      text: I18n.of(context).detail,
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if (_tabIndex == 2)
+                          _scrollController.position.jumpTo(0);
+                      },
+                      child: Tab(
+                        text: I18n.of(context).detail,
+                      ),
                     ),
                   ],
                 )),
