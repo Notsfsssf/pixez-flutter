@@ -120,7 +120,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         ),
         EasyRefresh.builder(
           controller: _easyRefreshController,
-          callLoadOverOffset: 10,
+          callLoadOverOffset: 5,
           header: PixezDefault.header(context),
           onRefresh: () async {
             await fetchT();

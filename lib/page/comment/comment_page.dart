@@ -184,6 +184,7 @@ class _CommentPageState extends State<CommentPage> {
                     return comments.isNotEmpty
                         ? ListView.separated(
                             itemCount: comments.length,
+                            padding: EdgeInsets.only(top: 10),
                             itemBuilder: (context, index) {
                               if (banList
                                   .where((element) => comments[index]

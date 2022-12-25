@@ -80,6 +80,7 @@ class _PainterListState extends State<PainterList> {
         child: _painterListStore.users.isNotEmpty
             ? ListView.builder(
                 controller: _scrollController,
+                padding: EdgeInsets.all(0),
                 itemBuilder: (context, index) {
                   if (index == 0 && widget.header != null) {
                     return widget.header!;
