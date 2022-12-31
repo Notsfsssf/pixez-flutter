@@ -86,6 +86,8 @@ class Illusts {
   bool visible;
   @JsonKey(name: 'is_muted')
   bool isMuted;
+  @JsonKey(name: 'illust_ai_type')
+  int illustAIType;
 
   Illusts(
       {required this.id,
@@ -110,7 +112,8 @@ class Illusts {
       required this.totalBookmarks,
       required this.isBookmarked,
       required this.visible,
-      required this.isMuted});
+      required this.isMuted,
+      required this.illustAIType});
 
   factory Illusts.fromJson(Map<String, dynamic> json) =>
       _$IllustsFromJson(json);
