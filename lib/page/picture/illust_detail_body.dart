@@ -197,7 +197,18 @@ class IllustDetailBody extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 2, // gap between adjacent chips
                 runSpacing: 0, // gap between lines
-                children: [for (var f in illust.tags) buildRow(context, f)],
+                children: [
+                  if (illust.illustAIType == 2)
+                    Text(
+                        "${I18n.of(context).ai_generated}",
+                        style:
+                        Theme.of(context)
+                            .textTheme
+                            .caption!
+                            .copyWith(color: Theme.of(context).colorScheme.secondary)
+                    ),
+                  for (var f in illust.tags) buildRow(context, f)
+                ],
               ),
             ),
             Card(

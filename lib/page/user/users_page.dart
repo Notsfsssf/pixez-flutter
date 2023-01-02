@@ -740,6 +740,7 @@ class _UsersPageState extends State<UsersPage>
               title: '',
               isBookmarked: false,
               totalView: 0,
+              illustAIType: 1,
             ),
             fileName);
         BotToast.showText(text: I18n.of(context).complete);

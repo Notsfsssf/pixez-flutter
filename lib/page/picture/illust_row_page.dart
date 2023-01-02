@@ -343,6 +343,15 @@ class _IllustRowPageState extends State<IllustRowPage>
                               spacing: 2,
                               runSpacing: 0,
                               children: [
+                                if (data.illustAIType == 2)
+                                  Text(
+                                      "${I18n.of(context).ai_generated}",
+                                      style:
+                                      Theme.of(context)
+                                          .textTheme
+                                          .caption!
+                                          .copyWith(color: Theme.of(context).colorScheme.secondary)
+                                  ),
                                 for (var f in data.tags) buildRow(context, f)
                               ],
                             ),

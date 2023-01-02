@@ -97,7 +97,8 @@ class TaskPersist {
         totalBookmarks: 0,
         isBookmarked: false,
         visible: false,
-        isMuted: false);
+        isMuted: false,
+        illustAIType: 1);
     illusts.user = user2;
     illusts.title = this.title;
     illusts.id = this.illustId;

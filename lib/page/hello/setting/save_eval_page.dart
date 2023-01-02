@@ -56,7 +56,8 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
       totalBookmarks: 1000,
       isBookmarked: false,
       visible: true,
-      isMuted: false);
+      isMuted: false,
+      illustAIType: 1);
 
   @override
   void initState() {

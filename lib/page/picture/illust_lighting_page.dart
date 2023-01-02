@@ -371,7 +371,18 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 2,
                 runSpacing: 0,
-                children: [for (var f in data.tags) buildRow(context, f)],
+                children: [
+                  if (data.illustAIType == 2)
+                    Text(
+                        "${I18n.of(context).ai_generated}",
+                        style:
+                        Theme.of(context)
+                            .textTheme
+                            .caption!
+                            .copyWith(color: Theme.of(context).colorScheme.secondary)
+                    ),
+                  for (var f in data.tags) buildRow(context, f)
+                ],
               ),
             ),
           ),
