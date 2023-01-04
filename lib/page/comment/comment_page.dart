@@ -480,6 +480,9 @@ class _CommentPageState extends State<CommentPage> {
                                         });
                               },
                             ),
+                            Container(
+                              height: MediaQuery.of(context).padding.bottom,
+                            )
                           ],
                         );
                       });

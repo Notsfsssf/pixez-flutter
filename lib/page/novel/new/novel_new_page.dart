@@ -15,12 +15,12 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/network/api_client.dart';
-import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
+import 'package:pixez/page/novel/new/novel_new_list.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
 
 class NovelNewPage extends StatefulWidget {
@@ -28,13 +28,20 @@ class NovelNewPage extends StatefulWidget {
   _NovelNewPageState createState() => _NovelNewPageState();
 }
 
-class _NovelNewPageState extends State<NovelNewPage> {
-  late FutureGet futureGet;
+class _NovelNewPageState extends State<NovelNewPage>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
 
   @override
   void initState() {
-    futureGet = () => apiClient.getNovelFollow('public');
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,57 +50,51 @@ class _NovelNewPageState extends State<NovelNewPage> {
       child: Column(
         children: [
           AppBar(
+            title: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: I18n.of(context).news,
+                ),
+                Tab(
+                  text: I18n.of(context).bookmark,
+                )
+              ],
+            ),
             actions: [
-              IconButton(
-                  icon: Icon(Icons.account_circle),
-                  onPressed: () {
-                    if (accountStore.now != null)
-                      Leader.push(
-                          context,
-                          NovelUserPage(
-                            id: int.parse(accountStore.now!.userId),
-                          ));
-                  })
+              if (accountStore.now != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Container(
+                    height: 26,
+                    width: 26,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.0)),
+                    child: PainterAvatar(
+                      url: accountStore.now!.userImage,
+                      id: int.parse(accountStore.now!.userId),
+                      onTap: () {
+                        if (accountStore.now != null)
+                          Leader.push(
+                              context,
+                              NovelUserPage(
+                                id: int.parse(accountStore.now!.userId),
+                              ));
+                      },
+                    ),
+                  ),
+                ),
             ],
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-                icon: Icon(Icons.list),
-                onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16.0))),
-                      builder: (context) {
-                        return SafeArea(
-                            child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              title: Text(I18n.of(context).public),
-                              onTap: () {
-                                setState(() {
-                                  futureGet =
-                                      () => apiClient.getNovelFollow('public');
-                                });
-                              },
-                            ),
-                            ListTile(
-                                title: Text(I18n.of(context).private),
-                                onTap: () {
-                                  setState(() {
-                                    futureGet = () =>
-                                        apiClient.getNovelFollow('private');
-                                  });
-                                }),
-                          ],
-                        ));
-                      });
-                }),
-          ),
-          Expanded(child: NovelLightingList(futureGet: futureGet)),
+          Expanded(
+              child: TabBarView(
+            controller: _tabController,
+            children: [
+              NovelNewList(),
+              NovelBookmarkPage(),
+            ],
+          )),
         ],
       ),
     );
