@@ -76,7 +76,7 @@ class _SelectableHtmlState extends State<SelectableHtml> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
+    return Container(
       child: HtmlWidget(
         widget.data,
         customStylesBuilder: (e) {

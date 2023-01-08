@@ -207,85 +207,87 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      floatingActionButton: GestureDetector(
-        onLongPress: () {
-          _showBookMarkTag();
-        },
-        child: Observer(builder: (context) {
-          return Visibility(
-            visible: _illustStore.errorMessage == null,
-            child: FloatingActionButton(
-              heroTag: widget.id,
-              backgroundColor: Colors.white,
-              onPressed: () => _illustStore.star(
-                  restrict:
-                      userSetting.defaultPrivateLike ? "private" : "public"),
-              child: Observer(builder: (_) {
-                return StarIcon(
-                  state: _illustStore.state,
-                );
-              }),
-            ),
-          );
-        }),
-      ),
-      body: Observer(builder: (_) {
-        if (!tempView)
-          for (var i in muteStore.banillusts) {
-            if (i.illustId == widget.id.toString()) {
-              return BanPage(
-                name: "${I18n.of(context).illust}\n${i.name}\n",
-                onPressed: () {
-                  setState(() {
-                    tempView = true;
-                  });
-                },
-              );
-            }
-          }
-        if (!tempView && _illustStore.illusts != null) {
-          for (var j in muteStore.banUserIds) {
-            if (j.userId == _illustStore.illusts!.user.id.toString()) {
-              return BanPage(
-                name: "${I18n.of(context).painter}\n${j.name}\n",
-                onPressed: () {
-                  setState(() {
-                    tempView = true;
-                  });
-                },
-              );
-            }
-          }
-          for (var t in muteStore.banTags) {
-            for (var t1 in _illustStore.illusts!.tags) {
-              if (t.name == t1.name)
+    return SelectionArea(
+      child: Scaffold(
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        floatingActionButton: GestureDetector(
+          onLongPress: () {
+            _showBookMarkTag();
+          },
+          child: Observer(builder: (context) {
+            return Visibility(
+              visible: _illustStore.errorMessage == null,
+              child: FloatingActionButton(
+                heroTag: widget.id,
+                backgroundColor: Colors.white,
+                onPressed: () => _illustStore.star(
+                    restrict:
+                        userSetting.defaultPrivateLike ? "private" : "public"),
+                child: Observer(builder: (_) {
+                  return StarIcon(
+                    state: _illustStore.state,
+                  );
+                }),
+              ),
+            );
+          }),
+        ),
+        body: Observer(builder: (_) {
+          if (!tempView)
+            for (var i in muteStore.banillusts) {
+              if (i.illustId == widget.id.toString()) {
                 return BanPage(
-                  name: "${I18n.of(context).tag}\n${t.name}\n",
+                  name: "${I18n.of(context).illust}\n${i.name}\n",
                   onPressed: () {
                     setState(() {
                       tempView = true;
                     });
                   },
                 );
+              }
+            }
+          if (!tempView && _illustStore.illusts != null) {
+            for (var j in muteStore.banUserIds) {
+              if (j.userId == _illustStore.illusts!.user.id.toString()) {
+                return BanPage(
+                  name: "${I18n.of(context).painter}\n${j.name}\n",
+                  onPressed: () {
+                    setState(() {
+                      tempView = true;
+                    });
+                  },
+                );
+              }
+            }
+            for (var t in muteStore.banTags) {
+              for (var t1 in _illustStore.illusts!.tags) {
+                if (t.name == t1.name)
+                  return BanPage(
+                    name: "${I18n.of(context).tag}\n${t.name}\n",
+                    onPressed: () {
+                      setState(() {
+                        tempView = true;
+                      });
+                    },
+                  );
+              }
             }
           }
-        }
-        return Container(
-          child: Stack(
-            children: [
-              _buildContent(context, _illustStore.illusts),
-              _buildAppbar()
-            ],
-          ),
-        );
-      }),
+          return Container(
+            child: Stack(
+              children: [
+                _buildContent(context, _illustStore.illusts),
+                _buildAppbar()
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 
-  Widget colorText(String text, BuildContext context) => SelectionArea(
+  Widget colorText(String text, BuildContext context) => Container(
         child: Text(
           text,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
@@ -327,7 +329,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text(I18n.of(context).illust_id),
+                      SelectionContainer.disabled(
+                          child: Text(I18n.of(context).illust_id)),
                       Container(
                         width: 10.0,
                       ),
@@ -779,23 +782,19 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SelectionArea(
-                    child: Text(
-                      illust.title,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
+                  Text(
+                    illust.title,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                   Container(
                     height: 4.0,
                   ),
                   Hero(
                     tag: illust.user.name + this.hashCode.toString(),
-                    child: SelectionArea(
-                      child: Text(
-                        illust.user.name,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary),
-                      ),
+                    child: Text(
+                      illust.user.name,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                   Text(
