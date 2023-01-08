@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
@@ -338,7 +339,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       Container(
                         width: 20.0,
                       ),
-                      Text(I18n.of(context).pixel),
+                      SelectionContainer.disabled(
+                          child: Text(I18n.of(context).pixel)),
                       Container(
                         width: 10.0,
                       ),
@@ -348,7 +350,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text(I18n.of(context).total_view),
+                      SelectionContainer.disabled(
+                          child: Text(I18n.of(context).total_view)),
                       Container(
                         width: 10.0,
                       ),
@@ -356,7 +359,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       Container(
                         width: 20.0,
                       ),
-                      Text(I18n.of(context).total_bookmark),
+                      SelectionContainer.disabled(
+                          child: Text(I18n.of(context).total_bookmark)),
                       Container(
                         width: 10.0,
                       ),
@@ -397,18 +401,20 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextButton(
-                child: Text(
-                  I18n.of(context).view_comment,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1!,
+              child: SelectionContainer.disabled(
+                child: TextButton(
+                  child: Text(
+                    I18n.of(context).view_comment,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1!,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => CommentPage(
+                              id: data.id,
+                            )));
+                  },
                 ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => CommentPage(
-                            id: data.id,
-                          )));
-                },
               ),
             ),
           ),
@@ -794,7 +800,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     child: Text(
                       illust.user.name,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).textTheme.caption!.color),
                     ),
                   ),
                   Text(

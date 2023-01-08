@@ -133,17 +133,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             builder: (context) => _buildWaterFall(context, physics),
           ),
         ),
-        Align(
-          child: Visibility(
-            visible: backToTopVisible,
-            child: Container(
-              child: ListIndicator(),
-              margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-            ),
-          ),
-          alignment: Alignment.bottomCenter,
-        )
       ],
     );
   }
