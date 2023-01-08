@@ -19,6 +19,14 @@ class _CommentEmojiTextState extends State<CommentEmojiText> {
     _buildSpans();
   }
 
+  @override
+  void didUpdateWidget(CommentEmojiText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _buildSpans();
+    }
+  }
+
   _buildSpans() {
     String text = widget.text;
     List<InlineSpan> spans = [];

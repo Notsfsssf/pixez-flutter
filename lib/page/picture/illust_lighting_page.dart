@@ -373,14 +373,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 runSpacing: 0,
                 children: [
                   if (data.illustAIType == 2)
-                    Text(
-                        "${I18n.of(context).ai_generated}",
-                        style:
-                        Theme.of(context)
-                            .textTheme
-                            .caption!
-                            .copyWith(color: Theme.of(context).colorScheme.secondary)
-                    ),
+                    Text("${I18n.of(context).ai_generated}",
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary)),
                   for (var f in data.tags) buildRow(context, f)
                 ],
               ),
@@ -787,8 +782,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   SelectionArea(
                     child: Text(
                       illust.title,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                   Container(
@@ -799,7 +793,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     child: SelectionArea(
                       child: Text(
                         illust.user.name,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
                       ),
                     ),
                   ),
