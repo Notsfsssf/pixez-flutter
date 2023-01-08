@@ -91,7 +91,7 @@ class _HelloPageState extends State<HelloPage> {
   List<Widget> _lists = <Widget>[
     Observer(builder: (context) {
       if (accountStore.now != null)
-        return RiverPage();
+        return RecomSpolightPage();
       else
         return PreviewPage();
     }),
