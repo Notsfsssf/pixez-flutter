@@ -167,12 +167,14 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(I18n.of(context).about),
-        actions: <Widget>[],
+    return SelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(I18n.of(context).about),
+          actions: <Widget>[],
+        ),
+        body: _buildInfo(context),
       ),
-      body: _buildInfo(context),
     );
   }
 
@@ -380,8 +382,7 @@ class _AboutPageState extends State<AboutPage> {
             ListTile(
               leading: Icon(Icons.device_hub),
               title: Text(I18n.of(context).repo_address),
-              subtitle: SelectionArea(
-                  child: Text('github.com/Notsfsssf/pixez-flutter')),
+              subtitle: Text('github.com/Notsfsssf/pixez-flutter'),
               trailing: Visibility(
                 child: NewVersionChip(),
                 visible: hasNewVersion,
@@ -452,13 +453,12 @@ class _AboutPageState extends State<AboutPage> {
           ListTile(
             leading: Icon(Icons.email),
             title: Text(I18n.of(context).feedback),
-            subtitle: SelectionArea(child: Text('PxezFeedBack@outlook.com')),
+            subtitle: Text('PxezFeedBack@outlook.com'),
           ),
           ListTile(
             leading: Icon(Icons.stars),
             title: Text(I18n.of(context).support),
-            subtitle:
-                SelectionArea(child: Text(I18n.of(context).support_message)),
+            subtitle: Text(I18n.of(context).support_message),
           ),
           ListTile(
             leading: Icon(Icons.favorite),
@@ -486,7 +486,7 @@ class _AboutPageState extends State<AboutPage> {
           ListTile(
             leading: Icon(FontAwesomeIcons.telegram),
             title: Text("Group"),
-            subtitle: SelectionArea(child: Text('t.me/PixEzChannel')),
+            subtitle: Text('t.me/PixEzChannel'),
           ),
           if (Platform.isAndroid && !Constants.isGooglePlay) ...[
             ListTile(
@@ -496,7 +496,7 @@ class _AboutPageState extends State<AboutPage> {
             Card(
               child: ListTile(
                 title: Text('AliPay'),
-                subtitle: SelectionArea(child: Text('912756674@qq.com')),
+                subtitle: Text('912756674@qq.com'),
                 onTap: () async {},
               ),
             ),

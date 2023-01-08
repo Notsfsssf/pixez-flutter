@@ -105,193 +105,197 @@ class _NovelUserPageState extends State<NovelUserPage>
       }
 
       if (userStore.userDetail != null)
-        return Scaffold(
-          body: NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool? innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    elevation: 0.0,
-                    forceElevated: innerBoxIsScrolled ?? false,
-                    expandedHeight: 280,
-                    actions: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.share),
-                          onPressed: () {
-                            Share.share(
-                                'https://www.pixiv.net/users/${widget.id}');
-                          }),
-                      PopupMenuButton<int>(
-                        onSelected: (index) async {
-                          switch (index) {
-                            case 0:
-                              userStore.follow(needPrivate: true);
-                              break;
-                            case 1:
-                              {
-                                final result = await showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                            '${I18n.of(context).block_user}?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text("CANCEL"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: Text("OK"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop("OK");
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                                if (result == "OK") {
-                                  await muteStore.insertBanUserId(
-                                      widget.id.toString(),
-                                      userStore.userDetail!.user.name);
-                                  Navigator.of(context).pop();
-                                }
-                              }
-                              break;
-                            case 2:
-                              {
-                                Clipboard.setData(ClipboardData(
-                                    text:
-                                        'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
-                                BotToast.showText(
-                                    text: I18n.of(context).copied_to_clipboard);
+        return SelectionArea(
+          child: Scaffold(
+            body: NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool? innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      elevation: 0.0,
+                      forceElevated: innerBoxIsScrolled ?? false,
+                      expandedHeight: 280,
+                      actions: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.share),
+                            onPressed: () {
+                              Share.share(
+                                  'https://www.pixiv.net/users/${widget.id}');
+                            }),
+                        PopupMenuButton<int>(
+                          onSelected: (index) async {
+                            switch (index) {
+                              case 0:
+                                userStore.follow(needPrivate: true);
                                 break;
-                              }
-                            default:
-                          }
-                        },
-                        itemBuilder: (context) {
-                          return [
-                            PopupMenuItem<int>(
-                              value: 0,
-                              child: Text(I18n.of(context).quietly_follow),
-                            ),
-                            PopupMenuItem<int>(
-                              value: 1,
-                              child: Text(I18n.of(context).block_user),
-                            ),
-                            PopupMenuItem<int>(
-                              value: 2,
-                              child: Text(I18n.of(context).copymessage),
-                            ),
-                          ];
-                        },
-                      )
-                    ],
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.pin,
-                      background: Container(
-                        color: Theme.of(context).cardColor,
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).padding.top + 160,
-                                child: userStore.userDetail!.profile
-                                            .background_image_url !=
-                                        null
-                                    ? PixivImage(userStore.userDetail!.profile
-                                        .background_image_url!)
-                                    : Container(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  _buildHeader(context),
-                                  Container(
-                                    color: Theme.of(context).cardColor,
-                                    child: Column(
-                                      children: <Widget>[
-                                        _buildNameFollow(context),
-                                        _buildComment(context)
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                              case 1:
+                                {
+                                  final result = await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                              '${I18n.of(context).block_user}?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text("CANCEL"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: Text("OK"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop("OK");
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                  if (result == "OK") {
+                                    await muteStore.insertBanUserId(
+                                        widget.id.toString(),
+                                        userStore.userDetail!.user.name);
+                                    Navigator.of(context).pop();
+                                  }
+                                }
+                                break;
+                              case 2:
+                                {
+                                  Clipboard.setData(ClipboardData(
+                                      text:
+                                          'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
+                                  BotToast.showText(
+                                      text:
+                                          I18n.of(context).copied_to_clipboard);
+                                  break;
+                                }
+                              default:
+                            }
+                          },
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem<int>(
+                                value: 0,
+                                child: Text(I18n.of(context).quietly_follow),
                               ),
-                            ),
-                          ],
+                              PopupMenuItem<int>(
+                                value: 1,
+                                child: Text(I18n.of(context).block_user),
+                              ),
+                              PopupMenuItem<int>(
+                                value: 2,
+                                child: Text(I18n.of(context).copymessage),
+                              ),
+                            ];
+                          },
+                        )
+                      ],
+                      flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.pin,
+                        background: Container(
+                          color: Theme.of(context).cardColor,
+                          child: Stack(
+                            children: <Widget>[
+                              Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).padding.top + 160,
+                                  child: userStore.userDetail!.profile
+                                              .background_image_url !=
+                                          null
+                                      ? PixivImage(userStore.userDetail!.profile
+                                          .background_image_url!)
+                                      : Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        )),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    _buildHeader(context),
+                                    Container(
+                                      color: Theme.of(context).cardColor,
+                                      child: Column(
+                                        children: <Widget>[
+                                          _buildNameFollow(context),
+                                          _buildComment(context)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SliverPersistentHeader(
-                    delegate: StickyTabBarDelegate(
-                        child: TabBar(
-                      controller: _tabController,
-                      onTap: (index) {
-                        setState(() {
-                          _tabIndex = index;
-                        });
-                      },
-                      labelColor: Theme.of(context).textTheme.bodyText1!.color,
-                      tabs: [
-                        Tab(
-                          text: I18n.of(context).works,
-                        ),
-                        Tab(
-                          text: I18n.of(context).bookmark,
-                        ),
-                        Tab(
-                          text: I18n.of(context).detail,
-                        ),
-                      ],
-                    )),
-                    pinned: true,
-                  ),
-                ];
-              },
-              controller: _scrollController,
-              pinnedHeaderSliverHeightBuilder: () {
-                return MediaQuery.of(context).padding.top +
-                    kToolbarHeight +
-                    46.0;
-              },
-              innerScrollPositionKeyBuilder: () {
-                var index = "Tab";
-                index += _tabController.index.toString();
-                return Key(index);
-              },
-              body: IndexedStack(
-                index: _tabIndex,
-                children: [
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab0'),
-                    NovelUserWorkPage(
-                      id: widget.id,
-                      isNested: true,
+                    SliverPersistentHeader(
+                      delegate: StickyTabBarDelegate(
+                          child: TabBar(
+                        controller: _tabController,
+                        onTap: (index) {
+                          setState(() {
+                            _tabIndex = index;
+                          });
+                        },
+                        labelColor:
+                            Theme.of(context).textTheme.bodyText1!.color,
+                        tabs: [
+                          Tab(
+                            text: I18n.of(context).works,
+                          ),
+                          Tab(
+                            text: I18n.of(context).bookmark,
+                          ),
+                          Tab(
+                            text: I18n.of(context).detail,
+                          ),
+                        ],
+                      )),
+                      pinned: true,
                     ),
-                  ),
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab1'),
-                    NovelUserBookmarkPage(
-                      id: widget.id,
-                      isNested: true,
+                  ];
+                },
+                controller: _scrollController,
+                pinnedHeaderSliverHeightBuilder: () {
+                  return MediaQuery.of(context).padding.top +
+                      kToolbarHeight +
+                      46.0;
+                },
+                innerScrollPositionKeyBuilder: () {
+                  var index = "Tab";
+                  index += _tabController.index.toString();
+                  return Key(index);
+                },
+                body: IndexedStack(
+                  index: _tabIndex,
+                  children: [
+                    NestedScrollViewInnerScrollPositionKeyWidget(
+                      Key('Tab0'),
+                      NovelUserWorkPage(
+                        id: widget.id,
+                        isNested: true,
+                      ),
                     ),
-                  ),
-                  NestedScrollViewInnerScrollPositionKeyWidget(Key('Tab2'),
-                      UserDetailPage(userDetail: userStore.userDetail!)),
-                ],
-              )),
+                    NestedScrollViewInnerScrollPositionKeyWidget(
+                      Key('Tab1'),
+                      NovelUserBookmarkPage(
+                        id: widget.id,
+                        isNested: true,
+                      ),
+                    ),
+                    NestedScrollViewInnerScrollPositionKeyWidget(Key('Tab2'),
+                        UserDetailPage(userDetail: userStore.userDetail!)),
+                  ],
+                )),
+          ),
         );
       else
         return Scaffold(
@@ -312,11 +316,9 @@ class _NovelUserPageState extends State<NovelUserPage>
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SelectionArea(
-                child: Text(
-                  userStore.userDetail!.user.name,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
+              Text(
+                userStore.userDetail!.user.name,
+                style: Theme.of(context).textTheme.headline6,
               ),
               InkWell(
                 onTap: () {
@@ -347,11 +349,13 @@ class _NovelUserPageState extends State<NovelUserPage>
       height: 60,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-        child: SingleChildScrollView(
-          child: Text(
-            '${userStore.userDetail!.user.comment}',
-            style: Theme.of(context).textTheme.caption,
-            overflow: TextOverflow.ellipsis,
+        child: SelectionContainer.disabled(
+          child: SingleChildScrollView(
+            child: Text(
+              '${userStore.userDetail!.user.comment}',
+              style: Theme.of(context).textTheme.caption,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       ),

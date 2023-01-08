@@ -74,12 +74,10 @@ class _CommentEmojiTextState extends State<CommentEmojiText> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      child: Text.rich(
-        TextSpan(
-          style: Theme.of(context).textTheme.bodyText2,
-          children: [for (var i in _spans) i],
-        ),
+    return Text.rich(
+      TextSpan(
+        style: Theme.of(context).textTheme.bodyText2,
+        children: [for (var i in _spans) i],
       ),
     );
   }

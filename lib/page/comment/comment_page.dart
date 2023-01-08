@@ -145,86 +145,88 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(I18n.of(context).view_comment),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: EasyRefresh(
-                header: PixezDefault.header(context),
-                controller: easyRefreshController,
-                onRefresh: () => _store.fetch(),
-                onLoad: () => _store.next(),
-                child: Observer(
-                  builder: (context) {
-                    if (_store.errorMessage != null) {
-                      return Container(
-                        child: Center(
-                          child: Text(_store.errorMessage!),
-                        ),
-                      );
-                    }
-                    if (_store.isEmpty) {
-                      return Container(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('[ ]',
-                                style: Theme.of(context).textTheme.headline4),
+    return SelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(I18n.of(context).view_comment),
+        ),
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: EasyRefresh(
+                  header: PixezDefault.header(context),
+                  controller: easyRefreshController,
+                  onRefresh: () => _store.fetch(),
+                  onLoad: () => _store.next(),
+                  child: Observer(
+                    builder: (context) {
+                      if (_store.errorMessage != null) {
+                        return Container(
+                          child: Center(
+                            child: Text(_store.errorMessage!),
                           ),
-                        ),
-                      );
-                    }
-                    var comments = _store.comments
-                        .where((element) => !commentHateByUser(element))
-                        .toList();
-                    return comments.isNotEmpty
-                        ? ListView.separated(
-                            itemCount: comments.length,
-                            padding: EdgeInsets.only(top: 10),
-                            itemBuilder: (context, index) {
-                              if (banList
-                                  .where((element) => comments[index]
-                                      .comment!
-                                      .contains(element))
-                                  .isNotEmpty)
-                                return Visibility(
-                                  visible: false,
-                                  child: Container(),
-                                );
-                              var comment = comments[index];
-                              return Container(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: PainterAvatar(
-                                        url: comments[index]
-                                            .user!
-                                            .profileImageUrls
-                                            .medium,
-                                        id: comments[index].user!.id!,
+                        );
+                      }
+                      if (_store.isEmpty) {
+                        return Container(
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('[ ]',
+                                  style: Theme.of(context).textTheme.headline4),
+                            ),
+                          ),
+                        );
+                      }
+                      var comments = _store.comments
+                          .where((element) => !commentHateByUser(element))
+                          .toList();
+                      return comments.isNotEmpty
+                          ? ListView.separated(
+                              itemCount: comments.length,
+                              padding: EdgeInsets.only(top: 10),
+                              itemBuilder: (context, index) {
+                                if (banList
+                                    .where((element) => comments[index]
+                                        .comment!
+                                        .contains(element))
+                                    .isNotEmpty)
+                                  return Visibility(
+                                    visible: false,
+                                    child: Container(),
+                                  );
+                                var comment = comments[index];
+                                return Container(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: PainterAvatar(
+                                          url: comments[index]
+                                              .user!
+                                              .profileImageUrls
+                                              .medium,
+                                          id: comments[index].user!.id!,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              SelectionArea(
-                                                child: Text(
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
                                                   comment.user!.name,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -234,198 +236,200 @@ class _CommentPageState extends State<CommentPage> {
                                                       overflow: TextOverflow
                                                           .ellipsis),
                                                 ),
+                                                _buildTrailingRow(
+                                                    comment, context)
+                                              ],
+                                            ),
+                                            if (comment.parentComment?.user !=
+                                                null)
+                                              Text(
+                                                  'To ${comment.parentComment!.user!.name}'),
+                                            if (comment.stamp == null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 4.0),
+                                                child: CommentEmojiText(
+                                                  text: comment.comment ?? "",
+                                                ),
                                               ),
-                                              _buildTrailingRow(
-                                                  comment, context)
-                                            ],
-                                          ),
-                                          if (comment.parentComment?.user !=
-                                              null)
-                                            Text(
-                                                'To ${comment.parentComment!.user!.name}'),
-                                          if (comment.stamp == null)
+                                            if (comment.stamp != null)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 4.0),
+                                                child: PixivImage(
+                                                  comment.stamp!.stamp_url!,
+                                                  height: 100,
+                                                  width: 100,
+                                                ),
+                                              ),
+                                            if (comment.hasReplies == true)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 4.0),
+                                                child: ActionChip(
+                                                  label: Text(I18n.of(context)
+                                                      .view_replies),
+                                                  onPressed: () async {
+                                                    Leader.push(
+                                                        context,
+                                                        CommentPage(
+                                                          id: widget.id,
+                                                          isReplay: true,
+                                                          pId: comment.id!,
+                                                          type: widget.type,
+                                                          name: comment
+                                                              .user!.name,
+                                                        ));
+                                                  },
+                                                ),
+                                              ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  right: 4.0),
-                                              child: CommentEmojiText(
-                                                text: comment.comment ?? "",
+                                                  top: 8.0),
+                                              child: Text(
+                                                comment.date
+                                                    .toString()
+                                                    .toShortTime(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption,
                                               ),
-                                            ),
-                                          if (comment.stamp != null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 4.0),
-                                              child: PixivImage(
-                                                comment.stamp!.stamp_url!,
-                                                height: 100,
-                                                width: 100,
-                                              ),
-                                            ),
-                                          if (comment.hasReplies == true)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 4.0),
-                                              child: ActionChip(
-                                                label: Text(I18n.of(context)
-                                                    .view_replies),
-                                                onPressed: () async {
-                                                  Leader.push(
-                                                      context,
-                                                      CommentPage(
-                                                        id: widget.id,
-                                                        isReplay: true,
-                                                        pId: comment.id!,
-                                                        type: widget.type,
-                                                        name:
-                                                            comment.user!.name,
-                                                      ));
-                                                },
-                                              ),
-                                            ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8.0),
-                                            child: Text(
-                                              comment.date
-                                                  .toString()
-                                                  .toShortTime(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              if (banList
-                                  .where((element) => comments[index]
-                                      .comment!
-                                      .contains(element))
-                                  .isNotEmpty)
-                                return Visibility(
-                                  visible: false,
-                                  child: Container(),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 );
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Divider(),
-                              );
-                            },
-                          )
-                        : Container(
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.secondary,
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                if (banList
+                                    .where((element) => comments[index]
+                                        .comment!
+                                        .contains(element))
+                                    .isNotEmpty)
+                                  return Visibility(
+                                    visible: false,
+                                    child: Container(),
+                                  );
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Divider(),
+                                );
+                              },
+                            )
+                          : Container(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
                               ),
-                            ),
-                          );
-                  },
+                            );
+                    },
+                  ),
                 ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                children: [
-                  Container(
-                    color: Theme.of(context).dialogBackgroundColor,
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.book),
-                          onPressed: () {
-                            if (widget.isReplay) return;
-                            setState(() {
-                              parentCommentName = null;
-                              parentCommentId = null;
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.emoji_emotions_outlined),
-                          onPressed: () {
-                            setState(() {
-                              _emojiPanelShow = !_emojiPanelShow;
-                              if (_emojiPanelShow) {
-                                FocusScope.of(context).unfocus();
-                              }
-                            });
-                          },
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 2.0, right: 8.0),
-                            child: Theme(
-                              data: Theme.of(context).copyWith(
-                                colorScheme: Theme.of(context)
-                                    .colorScheme
-                                    .copyWith(
-                                        primary: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
-                              ),
-                              child: TextField(
-                                controller: _editController,
-                                decoration: InputDecoration(
-                                    labelText:
-                                        "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
-                                    suffixIcon: IconButton(
-                                        icon: Icon(
-                                          Icons.reply,
-                                        ),
-                                        onPressed: () async {
-                                          final client = apiClient;
-                                          String txt =
-                                              _editController.text.trim();
-                                          final fun1 = BotToast.showLoading();
-                                          try {
-                                            if (txt.isNotEmpty) {
-                                              if (banList
-                                                  .where((element) =>
-                                                      txt.contains(element))
-                                                  .isEmpty) if (widget
-                                                      .type ==
-                                                  CommentArtWorkType.ILLUST)
-                                                await client.postIllustComment(
-                                                    widget.id, txt,
-                                                    parent_comment_id:
-                                                        parentCommentId);
-                                              else if (widget.type ==
-                                                  CommentArtWorkType.NOVEL)
-                                                await client.postNovelComment(
-                                                    widget.id, txt,
-                                                    parent_comment_id:
-                                                        parentCommentId);
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  children: [
+                    Container(
+                      color: Theme.of(context).dialogBackgroundColor,
+                      child: Row(
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.book),
+                            onPressed: () {
+                              if (widget.isReplay) return;
+                              setState(() {
+                                parentCommentName = null;
+                                parentCommentId = null;
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.emoji_emotions_outlined),
+                            onPressed: () {
+                              setState(() {
+                                _emojiPanelShow = !_emojiPanelShow;
+                                if (_emojiPanelShow) {
+                                  FocusScope.of(context).unfocus();
+                                }
+                              });
+                            },
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 2.0, right: 8.0),
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: Theme.of(context)
+                                      .colorScheme
+                                      .copyWith(
+                                          primary: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                ),
+                                child: TextField(
+                                  controller: _editController,
+                                  decoration: InputDecoration(
+                                      labelText:
+                                          "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                      suffixIcon: IconButton(
+                                          icon: Icon(
+                                            Icons.reply,
+                                          ),
+                                          onPressed: () async {
+                                            final client = apiClient;
+                                            String txt =
+                                                _editController.text.trim();
+                                            final fun1 = BotToast.showLoading();
+                                            try {
+                                              if (txt.isNotEmpty) {
+                                                if (banList
+                                                    .where((element) =>
+                                                        txt.contains(element))
+                                                    .isEmpty) if (widget
+                                                        .type ==
+                                                    CommentArtWorkType.ILLUST)
+                                                  await client
+                                                      .postIllustComment(
+                                                          widget.id, txt,
+                                                          parent_comment_id:
+                                                              parentCommentId);
+                                                else if (widget.type ==
+                                                    CommentArtWorkType.NOVEL)
+                                                  await client.postNovelComment(
+                                                      widget.id, txt,
+                                                      parent_comment_id:
+                                                          parentCommentId);
+                                              }
+                                              _editController.clear();
+                                              _store.fetch();
+                                            } catch (e) {
+                                              print(e);
                                             }
-                                            _editController.clear();
-                                            _store.fetch();
-                                          } catch (e) {
-                                            print(e);
-                                          }
-                                          fun1();
-                                        })),
+                                            fun1();
+                                          })),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  if (MediaQuery.of(context).viewInsets.bottom == 0 &&
-                      _emojiPanelShow)
-                    _buildEmojiPanel(context),
-                ],
-              ),
-            )
-          ],
+                    if (MediaQuery.of(context).viewInsets.bottom == 0 &&
+                        _emojiPanelShow)
+                      _buildEmojiPanel(context),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

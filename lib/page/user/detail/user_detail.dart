@@ -68,15 +68,13 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       DataColumn(label: Text(I18n.of(context).nickname)),
                       DataColumn(
                           label: Expanded(
-                              child: SelectionArea(
-                                  child: Text(detail.user.name)))),
+                              child: Text(detail.user.name))),
                     ],
                     rows: <DataRow>[
                       DataRow(cells: [
                         DataCell(Text(I18n.of(context).painter_id)),
                         DataCell(
-                            SelectionArea(
-                                child: Text(detail.user.id.toString())),
+                            Text(detail.user.id.toString()),
                             onTap: () {
                           try {
                             Clipboard.setData(

@@ -23,7 +23,6 @@ import 'package:dio/dio.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/list_indicator.dart';
@@ -189,266 +188,272 @@ class _UsersPageState extends State<UsersPage>
           )),
         );
       }
-      return Scaffold(
-        body: NestedScrollView(
-          pinnedHeaderSliverHeightBuilder: () =>
-              MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
-          controller: _scrollController,
-          innerScrollPositionKeyBuilder: () =>
-              Key("Tab${_tabController.index}"),
-          body: Stack(
-            children: [
-              IndexedStack(index: _tabIndex, children: [
-                NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab0'),
-                    WorksPage(
-                      id: widget.id,
-                    )),
-                NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab1'),
-                    BookmarkPage(
-                      isNested: true,
-                      id: widget.id,
-                    )),
-                NestedScrollViewInnerScrollPositionKeyWidget(
-                    Key('Tab2'),
-                    userStore.userDetail != null
-                        ? UserDetailPage(userDetail: userStore.userDetail!)
-                        : Container()),
-              ]),
-              _topVert(context)
-            ],
-          ),
-          headerSliverBuilder:
-              (BuildContext context, bool? innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                pinned: true,
-                elevation: 0.0,
-                forceElevated: innerBoxIsScrolled ?? false,
-                expandedHeight: 280,
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () => Share.share(
-                          'https://www.pixiv.net/users/${widget.id}')),
-                  PopupMenuButton<int>(
-                    onSelected: (index) async {
-                      switch (index) {
-                        case 0:
-                          userStore.follow(needPrivate: true);
-                          break;
-                        case 1:
-                          {
-                            final result = await showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title:
-                                        Text('${I18n.of(context).block_user}?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text("OK"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop("OK");
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text("CANCEL"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      )
-                                    ],
-                                  );
-                                });
-                            if (result == "OK") {
-                              await muteStore.insertBanUserId(
-                                  widget.id.toString(),
-                                  userStore.userDetail!.user.name);
-                              Navigator.of(context).pop();
-                            }
-                          }
-                          break;
-                        case 2:
-                          {
-                            Clipboard.setData(ClipboardData(
-                                text:
-                                    'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
-                            BotToast.showText(
-                                text: I18n.of(context).copied_to_clipboard);
+      return SelectionArea(
+        child: Scaffold(
+          body: NestedScrollView(
+            pinnedHeaderSliverHeightBuilder: () =>
+                MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
+            controller: _scrollController,
+            innerScrollPositionKeyBuilder: () =>
+                Key("Tab${_tabController.index}"),
+            body: Stack(
+              children: [
+                IndexedStack(index: _tabIndex, children: [
+                  NestedScrollViewInnerScrollPositionKeyWidget(
+                      Key('Tab0'),
+                      WorksPage(
+                        id: widget.id,
+                      )),
+                  NestedScrollViewInnerScrollPositionKeyWidget(
+                      Key('Tab1'),
+                      BookmarkPage(
+                        isNested: true,
+                        id: widget.id,
+                      )),
+                  NestedScrollViewInnerScrollPositionKeyWidget(
+                      Key('Tab2'),
+                      userStore.userDetail != null
+                          ? UserDetailPage(userDetail: userStore.userDetail!)
+                          : Container()),
+                ]),
+                _topVert(context)
+              ],
+            ),
+            headerSliverBuilder:
+                (BuildContext context, bool? innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  pinned: true,
+                  elevation: 0.0,
+                  forceElevated: innerBoxIsScrolled ?? false,
+                  expandedHeight: 280,
+                  actions: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.share),
+                        onPressed: () => Share.share(
+                            'https://www.pixiv.net/users/${widget.id}')),
+                    PopupMenuButton<int>(
+                      onSelected: (index) async {
+                        switch (index) {
+                          case 0:
+                            userStore.follow(needPrivate: true);
                             break;
-                          }
-                        case 3:
-                          {
-                            Reporter.show(
-                                context,
-                                () async => await muteStore.insertBanUserId(
-                                    widget.id.toString(),
-                                    userStore.userDetail!.user.name));
-                            break;
-                          }
-                        default:
-                      }
-                    },
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem<int>(
-                          value: 0,
-                          child: Text(I18n.of(context).quietly_follow),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 1,
-                          child: Text(I18n.of(context).block_user),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 2,
-                          child: Text(I18n.of(context).copymessage),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 3,
-                          child: Text(I18n.of(context).report),
-                        ),
-                      ];
-                    },
-                  )
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.pin,
-                  background: Container(
-                    color: Theme.of(context).cardColor,
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).padding.top + 160,
-                            child: userStore.userDetail != null
-                                ? userStore.userDetail!.profile
-                                            .background_image_url !=
-                                        null
-                                    ? InkWell(
-                                        onLongPress: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                      I18n.of(context).save),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () async {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text(
-                                                            I18n.of(context)
-                                                                .cancel)),
-                                                    TextButton(
-                                                        onPressed: () async {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          await _saveUserBg(
-                                                              userStore
-                                                                  .userDetail!
-                                                                  .profile
-                                                                  .background_image_url!);
-                                                        },
-                                                        child: Text(
-                                                            I18n.of(context)
-                                                                .ok)),
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                        child: CachedNetworkImage(
-                                          imageUrl: userStore.userDetail!
-                                              .profile.background_image_url!,
-                                          fit: BoxFit.fitWidth,
-                                          cacheManager: pixivCacheManager,
-                                          httpHeaders: Hoster.header(
-                                              url: userStore.userDetail!.profile
-                                                  .background_image_url),
+                          case 1:
+                            {
+                              final result = await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          '${I18n.of(context).block_user}?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text("OK"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop("OK");
+                                          },
                                         ),
-                                      )
-                                    : Container(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )
-                                : Container()),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              _buildHeader(context),
-                              Container(
-                                color: Theme.of(context).cardColor,
-                                child: Column(
-                                  children: <Widget>[
-                                    _buildNameFollow(context),
-                                    _buildComment(context)
-                                  ],
-                                ),
-                              ),
-                            ],
+                                        TextButton(
+                                          child: Text("CANCEL"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  });
+                              if (result == "OK") {
+                                await muteStore.insertBanUserId(
+                                    widget.id.toString(),
+                                    userStore.userDetail!.user.name);
+                                Navigator.of(context).pop();
+                              }
+                            }
+                            break;
+                          case 2:
+                            {
+                              Clipboard.setData(ClipboardData(
+                                  text:
+                                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
+                              BotToast.showText(
+                                  text: I18n.of(context).copied_to_clipboard);
+                              break;
+                            }
+                          case 3:
+                            {
+                              Reporter.show(
+                                  context,
+                                  () async => await muteStore.insertBanUserId(
+                                      widget.id.toString(),
+                                      userStore.userDetail!.user.name));
+                              break;
+                            }
+                          default:
+                        }
+                      },
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: Text(I18n.of(context).quietly_follow),
                           ),
-                        ),
-                      ],
+                          PopupMenuItem<int>(
+                            value: 1,
+                            child: Text(I18n.of(context).block_user),
+                          ),
+                          PopupMenuItem<int>(
+                            value: 2,
+                            child: Text(I18n.of(context).copymessage),
+                          ),
+                          PopupMenuItem<int>(
+                            value: 3,
+                            child: Text(I18n.of(context).report),
+                          ),
+                        ];
+                      },
+                    )
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.pin,
+                    background: Container(
+                      color: Theme.of(context).cardColor,
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).padding.top + 160,
+                              child: userStore.userDetail != null
+                                  ? userStore.userDetail!.profile
+                                              .background_image_url !=
+                                          null
+                                      ? InkWell(
+                                          onLongPress: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                        I18n.of(context).save),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text(
+                                                              I18n.of(context)
+                                                                  .cancel)),
+                                                      TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            await _saveUserBg(
+                                                                userStore
+                                                                    .userDetail!
+                                                                    .profile
+                                                                    .background_image_url!);
+                                                          },
+                                                          child: Text(
+                                                              I18n.of(context)
+                                                                  .ok)),
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                          child: CachedNetworkImage(
+                                            imageUrl: userStore.userDetail!
+                                                .profile.background_image_url!,
+                                            fit: BoxFit.fitWidth,
+                                            cacheManager: pixivCacheManager,
+                                            httpHeaders: Hoster.header(
+                                                url: userStore
+                                                    .userDetail!
+                                                    .profile
+                                                    .background_image_url),
+                                          ),
+                                        )
+                                      : Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        )
+                                  : Container()),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                _buildHeader(context),
+                                Container(
+                                  color: Theme.of(context).cardColor,
+                                  child: Column(
+                                    children: <Widget>[
+                                      _buildNameFollow(context),
+                                      _buildComment(context)
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SliverPersistentHeader(
-                delegate: StickyTabBarDelegate(
-                    child: TabBar(
-                  controller: _tabController,
-                  indicator: MD2Indicator(
-                      indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).colorScheme.primary,
-                      indicatorSize: MD2IndicatorSize.normal),
-                  onTap: (index) {
-                    setState(() {
-                      _tabIndex = index;
-                    });
-                  },
-                  labelColor: Theme.of(context).textTheme.bodyText1!.color,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  tabs: [
-                    GestureDetector(
-                      onDoubleTap: () {
-                        if (_tabIndex == 0)
-                          _scrollController.position.jumpTo(0);
-                      },
-                      child: Tab(
-                        text: I18n.of(context).works,
+                SliverPersistentHeader(
+                  delegate: StickyTabBarDelegate(
+                      child: TabBar(
+                    controller: _tabController,
+                    indicator: MD2Indicator(
+                        indicatorHeight: 3,
+                        indicatorColor: Theme.of(context).colorScheme.primary,
+                        indicatorSize: MD2IndicatorSize.normal),
+                    onTap: (index) {
+                      setState(() {
+                        _tabIndex = index;
+                      });
+                    },
+                    labelColor: Theme.of(context).textTheme.bodyText1!.color,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    tabs: [
+                      GestureDetector(
+                        onDoubleTap: () {
+                          if (_tabIndex == 0)
+                            _scrollController.position.jumpTo(0);
+                        },
+                        child: Tab(
+                          text: I18n.of(context).works,
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onDoubleTap: () {
-                        if (_tabIndex == 1)
-                          _scrollController.position.jumpTo(0);
-                      },
-                      child: Tab(
-                        text: I18n.of(context).bookmark,
+                      GestureDetector(
+                        onDoubleTap: () {
+                          if (_tabIndex == 1)
+                            _scrollController.position.jumpTo(0);
+                        },
+                        child: Tab(
+                          text: I18n.of(context).bookmark,
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onDoubleTap: () {
-                        if (_tabIndex == 2)
-                          _scrollController.position.jumpTo(0);
-                      },
-                      child: Tab(
-                        text: I18n.of(context).detail,
+                      GestureDetector(
+                        onDoubleTap: () {
+                          if (_tabIndex == 2)
+                            _scrollController.position.jumpTo(0);
+                        },
+                        child: Tab(
+                          text: I18n.of(context).detail,
+                        ),
                       ),
-                    ),
-                  ],
-                )),
-                pinned: true,
-              ),
-            ];
-          },
+                    ],
+                  )),
+                  pinned: true,
+                ),
+              ];
+            },
+          ),
         ),
       );
     });
@@ -480,11 +485,9 @@ class _UsersPageState extends State<UsersPage>
             children: <Widget>[
               NullHero(
                 tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
-                child: SelectionArea(
-                  child: Text(
-                    userStore.user?.name ?? "",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
+                child: Text(
+                  userStore.user?.name ?? "",
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               InkWell(
@@ -518,13 +521,15 @@ class _UsersPageState extends State<UsersPage>
       height: 60,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-        child: SingleChildScrollView(
-          child: Text(
-            userStore.userDetail == null
-                ? ""
-                : '${userStore.userDetail!.user.comment}',
-            style: Theme.of(context).textTheme.caption,
-            overflow: TextOverflow.ellipsis,
+        child: SelectionContainer.disabled(
+          child: SingleChildScrollView(
+            child: Text(
+              userStore.userDetail == null
+                  ? ""
+                  : '${userStore.userDetail!.user.comment}',
+              style: Theme.of(context).textTheme.caption,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       ),

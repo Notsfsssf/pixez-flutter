@@ -44,11 +44,9 @@ class IllustDetailBody extends StatelessWidget {
 
   IllustDetailBody({Key? key, required this.illust}) : super(key: key);
 
-  Widget colorText(String text, BuildContext context) => SelectionArea(
-        child: Text(
-          text,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-        ),
+  Widget colorText(String text, BuildContext context) => Text(
+        text,
+        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       );
 
   Widget _buildNameAvatar(
@@ -101,21 +99,17 @@ class IllustDetailBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SelectionArea(
-                  child: Text(
-                    illust.title,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
+                Text(
+                  illust.title,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
                 Container(
                   height: 4.0,
                 ),
-                SelectionArea(
-                  child: Text(
-                    illust.user.name,
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                Text(
+                  illust.user.name,
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
                 Text(
                   toShortTime(illust.createDate),
@@ -199,14 +193,9 @@ class IllustDetailBody extends StatelessWidget {
                 runSpacing: 0, // gap between lines
                 children: [
                   if (illust.illustAIType == 2)
-                    Text(
-                        "${I18n.of(context).ai_generated}",
-                        style:
-                        Theme.of(context)
-                            .textTheme
-                            .caption!
-                            .copyWith(color: Theme.of(context).colorScheme.secondary)
-                    ),
+                    Text("${I18n.of(context).ai_generated}",
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary)),
                   for (var f in illust.tags) buildRow(context, f)
                 ],
               ),
