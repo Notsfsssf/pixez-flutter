@@ -72,9 +72,11 @@ class _PictureListPageState extends State<PictureListPage> {
           margin: EdgeInsets.all(24),
           child: GestureDetector(
             onHorizontalDragEnd: (DragEndDetails detail) {
-              if (detail.velocity.pixelsPerSecond.dx.abs() > screenWidth) {
+              final pixelsPerSecond = detail.velocity.pixelsPerSecond;
+              if (pixelsPerSecond.dy.abs() > pixelsPerSecond.dx.abs()) return;
+              if (pixelsPerSecond.dx.abs() > screenWidth) {
                 int result = nowPosition;
-                if (detail.velocity.pixelsPerSecond.dx < 0)
+                if (pixelsPerSecond.dx < 0)
                   result++;
                 else
                   result--;
