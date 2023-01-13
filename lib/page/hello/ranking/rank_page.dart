@@ -51,6 +51,8 @@ class _RankPageState extends State<RankPage>
     "week_rookie",
     "week",
     "month",
+    "day_ai",
+    "day_r18_ai",
     "day_r18",
     "week_r18",
     "week_r18g"

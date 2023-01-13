@@ -80,8 +80,8 @@
   "logout_message": "다음에 다시 만나요!",
   "manga": "만화",
   "medium": "저화질",
-  "mode_list": "오늘 남성향 여성향 오리지널 루키 주간 월간 XVIII XVIII_W XVIII_G",
-  "novel_mode_list": "오늘 남성향 여성향 주간 XVIII XVIII_W XVIII_G",
+  "mode_list": "오늘 남성향 여성향 오리지널 루키 주간 월간 AI XVIII_AI XVIII XVIII_W XVIII_G",
+  "novel_mode_list": "오늘 남성향 여성향 주간 AI XVIII_AI XVIII XVIII_W XVIII_G",
   "more": "더 보기",
   "more_then_starnum_bookmark": "{starNum}개 이상의 좋아요",
   "@more_then_starnum_bookmark": {

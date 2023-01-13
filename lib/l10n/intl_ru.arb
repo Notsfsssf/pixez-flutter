@@ -80,8 +80,8 @@
   "logout_message": "Это очистит информацию об учетной записи и вернется на страницу входа в систему.",
   "manga": "Манга",
   "medium": "Среднее",
-  "mode_list": "За_день Мужское Женское Оригинальное Новое За_неделю За_месяц XVIII XVIII_WEEKLY XVIII_G",
-  "novel_mode_list":"За_день Мужское Женское За_неделю XVIII XVIII_WEEKLY XVIII_G",
+  "mode_list": "За_день Мужское Женское Оригинальное Новое За_неделю За_месяц AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
+  "novel_mode_list":"За_день Мужское Женское За_неделю AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
   "more": "Ещё",
   "more_then_starnum_bookmark": "Более чем {starNum} в избранном",
   "@more_then_starnum_bookmark": {

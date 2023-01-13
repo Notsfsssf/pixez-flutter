@@ -31,6 +31,8 @@ abstract class _RankStoreBase with Store {
     "week_rookie",
     "week",
     "month",
+    "day_ai",
+    "day_r18_ai",
     "day_r18",
     "week_r18",
     "week_r18g"

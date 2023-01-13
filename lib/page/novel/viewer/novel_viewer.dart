@@ -224,6 +224,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         spacing: 2,
                         runSpacing: 0,
                         children: [
+                          if (_novelStore.novel!.NovelAIType == 2)
+                            Text("${I18n.of(context).ai_generated}",
+                                style: Theme.of(context).textTheme.caption!.copyWith(
+                                    color: Theme.of(context).colorScheme.secondary)),
                           for (var f in _novelStore.novel!.tags)
                             buildRow(context, f)
                         ],

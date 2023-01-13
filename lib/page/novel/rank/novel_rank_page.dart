@@ -16,6 +16,8 @@ class _NovelRankPageState extends State<NovelRankPage> {
     "day_male",
     "day_female",
     "week",
+    "week_ai",
+    "week_ai_r18",
     "day_r18",
     "week_r18",
     "week_r18g"
