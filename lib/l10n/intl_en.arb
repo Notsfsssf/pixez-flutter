@@ -80,8 +80,8 @@
   "logout_message": "This will clear account info and return to Login page.",
   "manga": "Manga",
   "medium": "Medium",
-  "mode_list": "Daily For_male For_female Original Rookie Weekly Monthly XVIII XVIII_WEEKLY XVIII_G",
-  "novel_mode_list":"Daily For_male For_female Weekly XVIII XVIII_WEEKLY XVIII_G",
+  "mode_list": "Daily For_male For_female Original Rookie Weekly Monthly AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
+  "novel_mode_list":"Daily For_male For_female Weekly AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
   "more": "More",
   "more_then_starnum_bookmark": "More than {starNum} like(s)",
   "@more_then_starnum_bookmark": {

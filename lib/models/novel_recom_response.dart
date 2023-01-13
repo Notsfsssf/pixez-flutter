@@ -70,6 +70,8 @@ class Novel {
   bool isMypixivOnly;
   @JsonKey(name: 'is_x_restricted')
   bool isXRestricted;
+  @JsonKey(name: 'novel_ai_type')
+  int NovelAIType;
 
   Novel({
     required this.id,
@@ -93,6 +95,7 @@ class Novel {
     required this.isMuted,
     required this.isMypixivOnly,
     required this.isXRestricted,
+    required this.NovelAIType,
   });
 
   factory Novel.fromJson(Map<String, dynamic> json) => _$NovelFromJson(json);

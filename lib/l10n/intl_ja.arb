@@ -80,8 +80,8 @@
   "logout_message": "このアプリに記録されたアカウント情報が消去され、ログインページに戻ります",
   "manga": "マンガ",
   "medium": "低画質",
-  "mode_list": "デイリー 男性に人気 女性に人気 オリジナル ルーキー ウィークリー マンスリー XVIII XVIII_W XVIII_G",
-  "novel_mode_list": "デイリー 男性に人気 女性に人気 ウィークリー XVIII XVIII_W XVIII_G",
+  "mode_list": "デイリー 男性に人気 女性に人気 オリジナル ルーキー ウィークリー マンスリー AI XVIII_AI XVIII XVIII_W XVIII_G",
+  "novel_mode_list": "デイリー 男性に人気 女性に人気 ウィークリー AI XVIII_AI XVIII XVIII_W XVIII_G",
   "more": "もっと見る",
   "more_then_starnum_bookmark": "{starNum} 回以上のお気に入り",
   "@more_then_starnum_bookmark": {

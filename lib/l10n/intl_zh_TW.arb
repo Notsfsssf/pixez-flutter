@@ -80,8 +80,8 @@
   "logout_message": "這將清除此應用程式已登入的帳戶之資訊並返回登入頁面",
   "manga": "漫畫",
   "medium": "中等",
-  "mode_list": "每日 男性向 女性向 原創 新人 每週 每月 XVIII XVIII_WEEK XVIII_G",
-  "novel_mode_list":"每日 男性向 女性向 每週 XVIII XVIII_WEEK XVIII_G",
+  "mode_list": "每日 男性向 女性向 原創 新人 每週 每月 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
+  "novel_mode_list":"每日 男性向 女性向 每週 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
   "more": "更多",
   "more_then_starnum_bookmark": "收藏數超過 {starNum}",
   "@more_then_starnum_bookmark": {
