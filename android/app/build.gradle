@@ -134,13 +134,13 @@ flutter {
 dependencies {
 //    implementation("androidx.glance:glance-appwidget:1.0.0-alpha05")
     implementation("androidx.core:core-remoteviews:1.0.0-beta03")
-    implementation("androidx.annotation:annotation:1.4.0")
+    implementation("androidx.annotation:annotation:1.5.0")
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(":weiss")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     def work_version = "2.7.1"
     implementation("androidx.work:work-runtime-ktx:$work_version")
-    implementation("com.google.android.material:material:1.7.0-beta01")
+    implementation("com.google.android.material:material:1.8.0-rc01")
     implementation("io.coil-kt:coil:2.1.0")
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation 'androidx.webkit:webkit:1.4.0'
