@@ -46,7 +46,11 @@ class SquareAppWidget : AppWidgetProvider() {
             val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
             val sharedPreferences =
                 context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-            val illust = GlanceDBManager().fetch(context).randomOrNull()
+            val glanceDBManager = GlanceDBManager()
+            val illust = glanceDBManager.fetch(context).randomOrNull() ?: glanceDBManager.fetch(
+                context,
+                "follow_illust"
+            ).randomOrNull() ?: glanceDBManager.fetch(context, "recom").randomOrNull()
             if (illust != null) {
                 illust.let {
                     val host = sharedPreferences.getString("flutter.picture_source", null)
