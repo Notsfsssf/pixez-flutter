@@ -29,9 +29,8 @@ import android.view.View
 import android.widget.RemoteViews
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.transform.RoundedCornersTransformation
 import com.perol.pixez.glance.GlanceDBManager
-import org.json.JSONObject
-
 
 /**
  * Implementation of App Widget functionality.
@@ -51,7 +50,13 @@ class SquareAppWidget : AppWidgetProvider() {
             if (illust != null) {
                 illust.let {
                     val host = sharedPreferences.getString("flutter.picture_source", null)
-                    updateWidget(context, it.pictureUrl, appWidgetId, it.illustId.toInt(), "i.pixiv.cat")
+                    updateWidget(
+                        context,
+                        it.pictureUrl,
+                        appWidgetId,
+                        it.illustId.toInt(),
+                        host
+                    )
                 }
             } else {
                 val views = RemoteViews(context.packageName, R.layout.card_app_widget)
@@ -85,8 +90,12 @@ internal fun updateWidget(
         } else {
             url
         }
+        val scale = context.resources.displayMetrics.density
+        val dp = 16.0f
+        val radius = (dp * scale + 0.5f)
         val request = ImageRequest.Builder(context)
             .data(trueUrl)
+            .transformations(RoundedCornersTransformation(radius))
             .setHeader("referer", "https://app-api.pixiv.net/")
             .setHeader("User-Agent", "PixivIOSApp/5.8.0")
             .setHeader("host", Uri.parse(trueUrl).host!!)
@@ -123,7 +132,7 @@ internal fun updateWidget(
                         )
                     }
                     views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
-                    views.setViewVisibility(R.id.appwidget_warning_title, View.GONE);
+                    views.setViewVisibility(R.id.appwidget_warning_container, View.GONE);
                     manager.updateAppWidget(appWidgetId, views)
                 }
 

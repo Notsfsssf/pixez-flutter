@@ -1,20 +1,27 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/appwidget_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:contentDescription="An image" />
+        android:contentDescription="An image"
+        android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/appwidget_warning_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Empty data,please view more artwork"
-        android:visibility="gone" />
-</RelativeLayout>
+    <FrameLayout
+        android:id="@+id/appwidget_warning_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/colorBackground">
+
+        <TextView
+            android:id="@+id/appwidget_warning_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Empty data,please view more artwork"
+            android:visibility="gone" />
+    </FrameLayout>
+</FrameLayout>
