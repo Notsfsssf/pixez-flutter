@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="?android:attr/colorBackground">
+        android:background="@drawable/bg_widget_card"
+        android:theme="@style/MyWidgetTheme">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +31,7 @@
                     android:contentDescription="An image"
                     android:scaleType="centerCrop" />
 
-                <View
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
@@ -75,7 +76,8 @@
         android:id="@+id/appwidget_warning_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorBackground">
+        android:background="@drawable/bg_widget_card"
+        android:theme="@style/MyWidgetTheme">
 
         <TextView
             android:id="@+id/appwidget_warning_title"

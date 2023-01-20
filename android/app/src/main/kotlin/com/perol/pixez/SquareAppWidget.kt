@@ -53,7 +53,8 @@ class SquareAppWidget : AppWidgetProvider() {
             typeArray.addAll(arrayOf("recom", "rank", "follow_illust"))
             var illust: GlanceIllust? = null
             for (i in typeArray) {
-                illust = glanceDBManager.fetch(context, i).randomOrNull()
+                illust = kotlin.runCatching { glanceDBManager.fetch(context, i) }.getOrNull()
+                    ?.randomOrNull()
                 if (illust != null)
                     break
             }

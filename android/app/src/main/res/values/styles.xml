@@ -38,4 +38,7 @@
         <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
 
+    <style name="MyWidgetTheme" parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="android:colorBackground">@android:color/white</item>
+    </style>
 </resources>

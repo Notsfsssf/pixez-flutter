@@ -14,7 +14,8 @@
         android:id="@+id/appwidget_warning_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorBackground">
+        android:background="@drawable/bg_widget_card"
+        android:theme="@style/MyWidgetTheme">
 
         <TextView
             android:id="@+id/appwidget_warning_title"
