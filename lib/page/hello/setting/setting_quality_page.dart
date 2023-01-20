@@ -40,7 +40,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
   late Widget _languageTranlator;
 
-  final _typeList = ["rank", "follow_illust", "recom"];
+  final _typeList = ["follow_illust", "recom", "rank"];
   SharedPreferences? _pref;
   int _widgetTypeIndex = -1;
 
@@ -55,9 +55,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
     _pref = await SharedPreferences.getInstance();
     final type = await _pref?.getString("widget_illust_type") ?? "recom";
     int index = _typeList.indexOf(type);
-    if (index == -1) {
+    if (index != -1) {
       setState(() {
         _widgetTypeIndex = index;
+      });
+    } else {
+      setState(() {
+        _widgetTypeIndex = 0;
       });
     }
   }
@@ -922,13 +926,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   Observer(builder: (_) {
                     var tablist = [
                       Tab(
+                        text: I18n.of(context).recommend,
+                      ),
+                      Tab(
                         text: I18n.of(context).rank,
                       ),
                       Tab(
                         text: I18n.of(context).news,
-                      ),
-                      Tab(
-                        text: I18n.of(context).recommend,
                       ),
                     ];
                     return Theme(

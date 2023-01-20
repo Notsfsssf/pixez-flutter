@@ -31,6 +31,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.perol.pixez.glance.GlanceDBManager
+import com.perol.pixez.glance.GlanceIllust
 
 /**
  * Implementation of App Widget functionality.
@@ -47,10 +48,15 @@ class SquareAppWidget : AppWidgetProvider() {
             val sharedPreferences =
                 context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
             val glanceDBManager = GlanceDBManager()
-            val illust = glanceDBManager.fetch(context).randomOrNull() ?: glanceDBManager.fetch(
-                context,
-                "follow_illust"
-            ).randomOrNull() ?: glanceDBManager.fetch(context, "recom").randomOrNull()
+            val type = sharedPreferences.getString("flutter.widget_illust_type", "recom") ?: "recom"
+            val typeArray = mutableSetOf(type)
+            typeArray.addAll(arrayOf("recom", "rank", "follow_illust"))
+            var illust: GlanceIllust? = null
+            for (i in typeArray) {
+                illust = glanceDBManager.fetch(context, i).randomOrNull()
+                if (illust != null)
+                    break
+            }
             if (illust != null) {
                 illust.let {
                     val host = sharedPreferences.getString("flutter.picture_source", null)
