@@ -21,7 +21,6 @@
             android:id="@+id/appwidget_warning_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="Empty data,please view more artwork"
             android:visibility="gone" />
     </FrameLayout>
