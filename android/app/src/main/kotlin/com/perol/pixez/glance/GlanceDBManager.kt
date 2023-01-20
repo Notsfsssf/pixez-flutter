@@ -2,10 +2,6 @@ package com.perol.pixez.glance
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
-import androidx.work.impl.WorkDatabasePathHelper.getDatabasePath
-import com.perol.pixez.PixEz
-import com.tekartik.sqflite.SqflitePlugin
 import java.io.File
 
 data class GlanceIllust(
