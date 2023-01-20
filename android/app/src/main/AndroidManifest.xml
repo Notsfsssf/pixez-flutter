@@ -27,6 +27,16 @@
         android:label="PixEz"
         android:requestLegacyExternalStorage="true">
         <receiver
+            android:name=".IllustCardAppWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/illust_app_widget_info" />
+        </receiver>
+        <receiver
             android:name=".SquareAppWidget"
             android:exported="false">
             <intent-filter>

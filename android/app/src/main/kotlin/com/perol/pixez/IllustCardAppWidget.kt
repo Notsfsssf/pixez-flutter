@@ -1,42 +1,29 @@
-/*
- * Copyright (C) 2020. by perol_notsf, All rights reserved
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 package com.perol.pixez
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.widget.RemoteViewsCompat.setImageViewColorFilter
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import com.google.android.material.color.MaterialColors
 import com.perol.pixez.glance.GlanceDBManager
 import com.perol.pixez.glance.GlanceIllust
 
-/**
- * Implementation of App Widget functionality.
- */
-class SquareAppWidget : AppWidgetProvider() {
+class IllustCardAppWidget : AppWidgetProvider() {
 
     override fun onUpdate(
         context: Context,
@@ -62,9 +49,9 @@ class SquareAppWidget : AppWidgetProvider() {
                     val host = sharedPreferences.getString("flutter.picture_source", null)
                     updateWidget(
                         context,
-                        it.pictureUrl,
+                        appWidgetManager,
                         appWidgetId,
-                        it.illustId,
+                        illust,
                         host
                     )
                 }
@@ -87,13 +74,14 @@ class SquareAppWidget : AppWidgetProvider() {
 
 private fun updateWidget(
     context: Context,
-    url: String,
+    appWidgetManager: AppWidgetManager,
     appWidgetId: Int,
-    iId: Long?,
+    illust: GlanceIllust,
     host: String?
 ) {
-    val views = RemoteViews(context.packageName, R.layout.card_app_widget)
-    val manager = AppWidgetManager.getInstance(context)
+    val url = illust.pictureUrl
+    val iId = illust.illustId
+    val views = RemoteViews(context.packageName, R.layout.illust_app_widget)
     try {
         val trueUrl = if (host != null) {
             url.replace("i.pximg.net", host)
@@ -117,6 +105,7 @@ private fun updateWidget(
                     io.flutter.Log.d("Card app widget", "url: ${trueUrl}")
                 }
 
+                @SuppressLint("UnspecifiedImmutableFlag")
                 override fun onSuccess(result: Drawable) {
                     io.flutter.Log.d("Card app widget", "url success: ${trueUrl}")
                     views.setImageViewBitmap(
@@ -141,9 +130,23 @@ private fun updateWidget(
                             PendingIntent.FLAG_UPDATE_CURRENT
                         )
                     }
-                    views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
-                    views.setViewVisibility(R.id.appwidget_warning_container, View.GONE);
-                    manager.updateAppWidget(appWidgetId, views)
+                    views.setTextViewText(R.id.appwidget_title, illust.title)
+                    views.setTextViewText(R.id.appwidget_subtitle, illust.userName)
+                    views.setOnClickPendingIntent(R.id.appwidget_normal_container, pendingIntent)
+                    views.setViewVisibility(R.id.appwidget_warning_container, View.GONE)
+                    views.setImageViewResource(
+                        R.id.appwidget_app_icon,
+                        R.mipmap.ic_launcher_foreground
+                    )
+                    views.setImageViewColorFilter(
+                        R.id.appwidget_app_icon,
+                        MaterialColors.getColor(
+                            context,
+                            android.R.attr.colorAccent,
+                            Color.BLACK
+                        )
+                    )
+                    appWidgetManager.updateAppWidget(appWidgetId, views)
                 }
 
                 override fun onError(error: Drawable?) {

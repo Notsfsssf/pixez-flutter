@@ -31,9 +31,9 @@ class IntentActivity : FragmentActivity() {
         setContentView(FrameLayout(this).apply {
             addView(textView)
         })
-        val iid = intent.getIntExtra("iid", 0)
+        val iid = intent.getLongExtra("iid", 0)
         textView.text= iid.toString()
-        if (iid == 0)
+        if (iid == 0L)
             startActivity(Intent(this, MainActivity::class.java))
         else {
             val uri: Uri = Uri.parse("pixez://www.pixiv.net/artworks/$iid")
