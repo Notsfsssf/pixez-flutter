@@ -21,4 +21,6 @@
     <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正确取得授权，可能会导致部分功能失效或闪退</string>
     <string name="encode_success">合成成功</string>
     <string name="do_not_choice_download_folder_message">授权目录包含download(下载)目录，可能会导致保存出错，请重新选择保存目录授权</string>
+    <string name="appwidget_card_desc">充满内容的插画widget</string>
+    <string name="appwidget_illust_desc">带标题的插画widget</string>
 </resources>
