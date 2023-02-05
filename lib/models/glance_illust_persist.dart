@@ -21,7 +21,7 @@ import 'package:sqflite/sqflite.dart';
 
 part 'glance_illust_persist.g.dart';
 
-extension ListGlanceIllustExt on List<Illusts> {
+extension ListGlanceIllustExt on Iterable<Illusts> {
   List<GlanceIllustPersist> toGlancePersist(String type, int time) {
     return map((e) => e.toGlanceIllustPersist(type, time)).toList();
   }

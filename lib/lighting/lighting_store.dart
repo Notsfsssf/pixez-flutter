@@ -18,6 +18,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/models/illust.dart';
@@ -89,8 +90,7 @@ abstract class _LightingStoreBase with Store {
   @observable
   String? errorMessage;
 
-  _LightingStoreBase(this.source,
-      {this.onChange, this.portal});
+  _LightingStoreBase(this.source, {this.onChange, this.portal});
 
   bool okForUser(Illusts illust) {
     // if (userSetting.hIsNotAllow)
@@ -137,6 +137,7 @@ abstract class _LightingStoreBase with Store {
         await glanceIllustPersistProvider.open();
         Future.microtask(() async {
           await glanceIllustPersistProvider.insertAll(recommend.illusts
+              .where((element) => !element.hateByUser())
               .toGlancePersist(
                   glanceKey, DateTime.now().microsecondsSinceEpoch));
           await WidgetkitPlugin.notify();

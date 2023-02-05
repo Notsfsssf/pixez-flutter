@@ -446,14 +446,18 @@ class _SettingPageState extends State<SettingPage> {
           try {
             Directory tempDir = await getTemporaryDirectory();
             tempDir.deleteSync(recursive: true);
-            GlanceIllustPersistProvider glanceIllustPersistProvider =
-                GlanceIllustPersistProvider();
-            await glanceIllustPersistProvider.open();
-            await glanceIllustPersistProvider.deleteAll();
-            await glanceIllustPersistProvider.close();
+            cleanGlanceData();
           } catch (e) {}
         }
         break;
     }
+  }
+
+  void cleanGlanceData() async {
+    GlanceIllustPersistProvider glanceIllustPersistProvider =
+        GlanceIllustPersistProvider();
+    await glanceIllustPersistProvider.open();
+    await glanceIllustPersistProvider.deleteAll();
+    await glanceIllustPersistProvider.close();
   }
 }
