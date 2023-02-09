@@ -392,7 +392,7 @@ abstract class _SaveStoreBase with Store {
     final result = userSetting.format!
         .replaceAll("{illust_id}", illust.id.toString())
         .replaceAll("{user_id}", illust.user.id.toString())
-        .replaceAll("{part}", index.toString())
+        .replaceAll("{part}", index.toString().padLeft(3, '0'))
         .replaceAll("{user_name}", illust.user.name.toString())
         .replaceAll("{title}", illust.title);
     return "$result$memType".toLegal();
