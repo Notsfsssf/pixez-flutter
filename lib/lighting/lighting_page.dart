@@ -236,6 +236,9 @@ class _LightingListState extends State<LightingList> {
         controller: _refreshController,
         scrollController: _scrollController,
         header: PixezDefault.header(context),
+        footer: ClassicFooter(
+          position: IndicatorPosition.locator,
+        ),
         onRefresh: () {
           _store.fetch(force: true);
         },
@@ -253,7 +256,8 @@ class _LightingListState extends State<LightingList> {
               SliverWaterfallFlow(
                 gridDelegate: _buildGridDelegate(),
                 delegate: _buildSliverChildBuilderDelegate(context),
-              )
+              ),
+              const FooterLocator.sliver(),
             ],
           );
         }),

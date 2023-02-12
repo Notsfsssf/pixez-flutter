@@ -57,8 +57,7 @@ class UsersPage extends StatefulWidget {
   _UsersPageState createState() => _UsersPageState();
 }
 
-class _UsersPageState extends State<UsersPage>
-    with SingleTickerProviderStateMixin {
+class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
   late UserStore userStore;
   late TabController _tabController;
   late ScrollController _scrollController;
@@ -190,35 +189,31 @@ class _UsersPageState extends State<UsersPage>
       }
       return SelectionArea(
         child: Scaffold(
-          body: NestedScrollView(
+          body: ExtendedNestedScrollView(
             pinnedHeaderSliverHeightBuilder: () =>
                 MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
             controller: _scrollController,
-            innerScrollPositionKeyBuilder: () =>
-                Key("Tab${_tabController.index}"),
-            body: Stack(
-              children: [
-                IndexedStack(index: _tabIndex, children: [
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                      Key('Tab0'),
-                      WorksPage(
-                        id: widget.id,
-                      )),
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                      Key('Tab1'),
-                      BookmarkPage(
-                        isNested: true,
-                        id: widget.id,
-                      )),
-                  NestedScrollViewInnerScrollPositionKeyWidget(
-                      Key('Tab2'),
-                      userStore.userDetail != null
-                          ? UserDetailPage(userDetail: userStore.userDetail!)
-                          : Container()),
-                ]),
-                _topVert(context)
-              ],
-            ),
+            onlyOneScrollInBody: true,
+            body: IndexedStack(index: _tabIndex, children: [
+              ExtendedVisibilityDetector(
+                  uniqueKey: Key('Tab0'),
+                  child: WorksPage(
+                    id: widget.id,
+                  )),
+              ExtendedVisibilityDetector(
+                  uniqueKey: Key('Tab1'),
+                  child: BookmarkPage(
+                    isNested: true,
+                    id: widget.id,
+                  )),
+              ExtendedVisibilityDetector(
+                  uniqueKey: Key('Tab2'),
+                  child: userStore.userDetail != null
+                      ? UserDetailPage(
+                          key: PageStorageKey('Tab2'),
+                          userDetail: userStore.userDetail!)
+                      : Container()),
+            ]),
             headerSliverBuilder:
                 (BuildContext context, bool? innerBoxIsScrolled) {
               return [

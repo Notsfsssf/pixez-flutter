@@ -5,4 +5,8 @@ class PixezDefault {
   static Header header(BuildContext context) {
     return MaterialHeader();
   }
+
+  static Footer footer(BuildContext context) {
+    return MaterialFooter();
+  }
 }

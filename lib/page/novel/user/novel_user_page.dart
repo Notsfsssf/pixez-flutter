@@ -16,7 +16,7 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -107,7 +107,8 @@ class _NovelUserPageState extends State<NovelUserPage>
       if (userStore.userDetail != null)
         return SelectionArea(
           child: Scaffold(
-            body: NestedScrollView(
+            body: ExtendedNestedScrollView(
+                onlyOneScrollInBody: true,
                 headerSliverBuilder:
                     (BuildContext context, bool? innerBoxIsScrolled) {
                   return <Widget>[
@@ -269,30 +270,27 @@ class _NovelUserPageState extends State<NovelUserPage>
                       kToolbarHeight +
                       46.0;
                 },
-                innerScrollPositionKeyBuilder: () {
-                  var index = "Tab";
-                  index += _tabController.index.toString();
-                  return Key(index);
-                },
                 body: IndexedStack(
                   index: _tabIndex,
                   children: [
-                    NestedScrollViewInnerScrollPositionKeyWidget(
-                      Key('Tab0'),
-                      NovelUserWorkPage(
+                    ExtendedVisibilityDetector(
+                      uniqueKey: Key('Tab0'),
+                      child: NovelUserWorkPage(
                         id: widget.id,
                         isNested: true,
                       ),
                     ),
-                    NestedScrollViewInnerScrollPositionKeyWidget(
-                      Key('Tab1'),
-                      NovelUserBookmarkPage(
+                    ExtendedVisibilityDetector(
+                      uniqueKey: Key('Tab1'),
+                      child: NovelUserBookmarkPage(
                         id: widget.id,
                         isNested: true,
                       ),
                     ),
-                    NestedScrollViewInnerScrollPositionKeyWidget(Key('Tab2'),
-                        UserDetailPage(userDetail: userStore.userDetail!)),
+                    ExtendedVisibilityDetector(
+                        uniqueKey: Key('Tab2'),
+                        child:
+                            UserDetailPage(userDetail: userStore.userDetail!)),
                   ],
                 )),
           ),

@@ -163,7 +163,7 @@ class _PixivImageState extends State<PixivImage> {
 }
 
 class PixivProvider {
-  static CachedNetworkImageProvider url(String url, {String? preUrl}) {
+  static ImageProvider url(String url, {String? preUrl}) {
     return CachedNetworkImageProvider(url,
         headers: Hoster.header(url: preUrl), cacheManager: pixivCacheManager);
   }
