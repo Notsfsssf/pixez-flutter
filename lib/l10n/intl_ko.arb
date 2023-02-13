@@ -260,5 +260,9 @@
   "share_info_format": "공유 정보 양식",
   "account_deletion": "계정 삭제",
   "account_deletion_subtitle": "앱에서 로그아웃한 후에 계정 삭제 페이지를 엽니다",
-  "private_like_by_default": "Private like by default"
+  "private_like_by_default": "Private like by default",
+  "partially_hidden": "partially hidden",
+  "show": "show",
+  "ai_work_display_settings" : "AI generated works display settings",
+  "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible"
 }

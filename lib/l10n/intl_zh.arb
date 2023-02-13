@@ -260,5 +260,9 @@
   "share_info_format": "分享信息格式",
   "account_deletion": "注销账号",
   "account_deletion_subtitle": "这将会登出账号然后前往网页进行账号注销",
-  "private_like_by_default": "默认私密收藏"
+  "private_like_by_default": "默认私密收藏",
+  "partially_hidden": "部分隐藏",
+  "show": "显示",
+  "ai_work_display_settings" : "AI生成作品显示设置",
+  "make_works_with_ai_generated_flags_invisible": "使带有AI生成标记的作品不可见"
 }

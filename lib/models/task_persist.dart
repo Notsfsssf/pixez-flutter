@@ -23,6 +23,7 @@ class TaskPersist {
   String fileName;
   String title;
   String url;
+  String? medium;
   int userId;
   int illustId;
   int sanityLevel;
@@ -37,6 +38,7 @@ class TaskPersist {
       required this.fileName,
       this.sanityLevel = 0,
       this.id,
+      this.medium,
       required this.status});
 
   factory TaskPersist.fromJson(Map<String, dynamic> json) {
@@ -49,7 +51,8 @@ class TaskPersist {
         sanityLevel: json[columnSanityLevel],
         illustId: json[columnIllustId],
         status: json[columnStatus],
-        fileName: json[columnFileName]);
+        fileName: json[columnFileName],
+        medium: json[columnMedium]);
   }
 
   Map<String, dynamic> toJson() {
@@ -78,7 +81,8 @@ class TaskPersist {
         id: this.illustId,
         title: this.title,
         type: 'type',
-        imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
+        imageUrls:
+            ImageUrls(squareMedium: '', medium: this.medium ?? '', large: ''),
         caption: 'caption',
         restrict: 0,
         user: user2,
@@ -115,6 +119,7 @@ final String columnIllustId = 'illust_id';
 final String columnUserId = 'user_id';
 final String columnStatus = 'status';
 final String columnFileName = 'file_name';
+final String columnMedium = 'medium';
 final String columnSanityLevel = 'sanity_level';
 
 class TaskPersistProvider {
@@ -124,7 +129,7 @@ class TaskPersistProvider {
     String databasesPath = (await getDatabasesPath());
     String path =
         join(databasesPath, 'task1.db'); //某个版本出的bug，升级table无法定位问题，只能改了
-    db = await openDatabase(path, version: 1,
+    db = await openDatabase(path, version: 2,
         onCreate: (Database db, int version) async {
       await db.execute('''
 create table $tableAccount ( 
@@ -136,9 +141,17 @@ create table $tableAccount (
   $columnIllustId integer not null,
   $columnUserId integer not null,
   $columnStatus integer not null,
-  $columnFileName text not null
+  $columnFileName text not null,
+  $columnMedium text
   )
 ''');
+    }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
+      if (oldVersion == 1 && newVersion == 2) {
+        await db.execute('''
+        ALTER TABLE $tableAccount
+  ADD $columnMedium text;
+        ''');
+      }
     });
   }
 
@@ -160,7 +173,8 @@ create table $tableAccount (
           columnSanityLevel,
           columnUserName,
           columnUrl,
-          columnStatus
+          columnStatus,
+          columnMedium
         ],
         where: '$columnUrl = ?',
         whereArgs: [id]);
@@ -198,6 +212,7 @@ create table $tableAccount (
       firstWhere.status = todo.status;
       firstWhere.userId = todo.userId;
       firstWhere.userName = todo.userName;
+      firstWhere.medium = todo.medium;
     } catch (e) {}
 
     return result;
@@ -215,7 +230,8 @@ create table $tableAccount (
         columnUrl,
         columnFileName,
         columnSanityLevel,
-        columnStatus
+        columnStatus,
+        columnMedium
       ],
       orderBy: "${columnId} ASC",
     );

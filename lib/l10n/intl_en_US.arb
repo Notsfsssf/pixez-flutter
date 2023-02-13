@@ -260,5 +260,9 @@
   "share_info_format": "Share info format",
   "account_deletion": "account_deletion",
   "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account",
-  "private_like_by_default": "Private like by default"
+  "private_like_by_default": "Private like by default",
+  "partially_hidden": "partially hidden",
+  "show": "show",
+  "ai_work_display_settings" : "AI generated works display settings",
+  "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible"
 }

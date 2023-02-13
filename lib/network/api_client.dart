@@ -590,4 +590,15 @@ class ApiClient {
     final result = await httpClient.get(previewUrl);
     return result;
   }
+
+  Future<Response> getUserAISettings() async {
+    final result = await httpClient.get('/v1/user/ai-show-settings');
+    return result;
+  }
+
+  Future<Response> postUserAIShowSettings(bool show) async {
+    return httpClient.post('/v1/user/ai-show-settings/edit',
+        data: notNullMap({"show_ai": show}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
 }

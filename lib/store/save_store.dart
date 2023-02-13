@@ -209,6 +209,7 @@ abstract class _SaveStoreBase with Store {
         sanityLevel: illusts.sanityLevel,
         fileName: fileName,
         status: 0,
+        medium: illusts.imageUrls.medium,
         url: url);
     try {
       await fetcher.taskPersistProvider.insert(taskPersist);

@@ -113,7 +113,13 @@ extension NovelExts on Novel {
 }
 
 extension IllustExts on Illusts {
-  bool hateByUser() {
+  bool hateByUser({bool ai = false}) {
+    if (ai) {
+      return false;
+    }
+    if (muteStore.banAIIllust && illustAIType == 2) {
+      return true;
+    }
     for (var t in muteStore.banTags) {
       for (var f in this.tags) {
         if (f.name == t.name) return true;

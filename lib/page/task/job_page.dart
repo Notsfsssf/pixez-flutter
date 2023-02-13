@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -35,7 +36,6 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   List<TaskPersist> _list = [];
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
   Timer? _timer;
-  String? cachePath;
   late AnimationController rotationController;
 
   @override
@@ -65,7 +65,6 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
       fetchLocal();
     });
-    cachePath = (await getTemporaryDirectory()).path;
   }
 
   fetchLocal() async {
@@ -277,48 +276,47 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
               return IllustLightingPage(id: taskPersist.illustId);
             },
             closedBuilder: (context, openContainer) {
-              File targetFile = File("${cachePath}/${taskPersist.fileName}");
               return InkWell(
                 onTap: () {
                   openContainer();
                 },
                 child: Row(
                   children: [
-                    (taskPersist.status == 2 &&
-                            cachePath != null &&
-                            targetFile.existsSync())
-                        ? Container(
+                    Container(
+                      child: Stack(
+                        children: [
+                          Container(
                             height: 100,
                             width: 100,
-                            child: Image.file(
-                              targetFile,
-                              fit: BoxFit.scaleDown,
-                              cacheHeight: 100,
-                              cacheWidth: 100,
+                            child: PixivImage(
+                              taskPersist.medium ?? taskPersist.url,
+                              fit: BoxFit.cover,
+                              height: 100,
+                              width: 100,
                             ),
-                          )
-                        : (jobEntity != null && jobEntity.status != 2)
-                            ? Container(
-                                height: 100,
-                                width: 100,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value: ((jobEntity.min ?? 0.0) /
-                                            ((jobEntity.max ?? 0.0)))
-                                        .toDouble(),
-                                    backgroundColor: Colors.grey[200],
+                          ),
+                          (jobEntity != null && jobEntity.status != 2)
+                              ? Container(
+                                  height: 100,
+                                  width: 100,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value: ((jobEntity.min ?? 0.0) /
+                                              ((jobEntity.max ?? 0.0)))
+                                          .toDouble(),
+                                      backgroundColor: Colors.grey[200],
+                                    ),
                                   ),
+                                )
+                              : Container(
+                                  height: 100,
+                                  width: 100,
                                 ),
-                              )
-                            : Container(
-                                height: 100,
-                                width: 100,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value: 1.0,
-                                  ),
-                                ),
-                              ),
+                        ],
+                      ),
+                      width: 100,
+                      height: 100,
+                    ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

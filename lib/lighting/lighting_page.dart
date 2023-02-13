@@ -51,6 +51,7 @@ class LightingList extends StatefulWidget {
   final bool? isNested;
   final ScrollController? scrollController;
   final String? portal;
+  final bool? ai;
 
   const LightingList(
       {Key? key,
@@ -58,7 +59,8 @@ class LightingList extends StatefulWidget {
       this.header,
       this.isNested,
       this.scrollController,
-      this.portal})
+      this.portal,
+      this.ai})
       : super(key: key);
 
   @override
@@ -69,6 +71,7 @@ class _LightingListState extends State<LightingList> {
   late LightingStore _store;
   late bool _isNested;
   late ScrollController _scrollController;
+  late bool _ai;
 
   @override
   void didUpdateWidget(LightingList oldWidget) {
@@ -90,6 +93,7 @@ class _LightingListState extends State<LightingList> {
 
   @override
   void initState() {
+    _ai = widget.ai ?? false;
     _isNested = widget.isNested ?? false;
     _scrollController = widget.scrollController ?? ScrollController();
     _refreshController = EasyRefreshController(
@@ -126,7 +130,8 @@ class _LightingListState extends State<LightingList> {
   late EasyRefreshController _refreshController;
 
   Widget _buildWithoutHeader(context) {
-    _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
+    _store.iStores
+        .removeWhere((element) => element.illusts!.hateByUser(ai: _ai));
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           if (widget.isNested == true) {
@@ -267,7 +272,8 @@ class _LightingListState extends State<LightingList> {
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       BuildContext context) {
-    _store.iStores.removeWhere((element) => element.illusts!.hateByUser());
+    _store.iStores
+        .removeWhere((element) => element.illusts!.hateByUser(ai: _ai));
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       return IllustCard(
         store: _store.iStores[index],

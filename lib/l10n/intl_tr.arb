@@ -260,5 +260,9 @@
   "share_info_format": "Bilgi paylaşma biçimi",
   "account_deletion": "hesap_silme",
   "account_deletion_subtitle": "Bu işlem hesabınızdan çıkış yapacak ve hesap silme web sayfasına yönlendirecektir",
-  "private_like_by_default": "Varsayılan olarak gizli yer imlerine kaydet"
+  "private_like_by_default": "Varsayılan olarak gizli yer imlerine kaydet",
+  "partially_hidden": "partially hidden",
+  "show": "show",
+  "ai_work_display_settings" : "AI generated works display settings",
+  "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible"
 }

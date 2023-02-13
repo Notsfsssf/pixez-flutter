@@ -81,8 +81,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 10009130
-        versionName "0.9.13 widget"
+        versionCode 10009140
+        versionName "0.9.14 ai"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {

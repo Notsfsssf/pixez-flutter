@@ -260,5 +260,9 @@
   "share_info_format": "シェアする詳細情報の形式",
   "account_deletion": "アカウントの削除",
   "account_deletion_subtitle": "アカウントからログアウトし、Pixivの退会ページに移動します。",
-  "private_like_by_default": "Private like by default"
+  "private_like_by_default": "Private like by default",
+  "partially_hidden": "partially hidden",
+  "show": "show",
+  "ai_work_display_settings" : "AI generated works display settings",
+  "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible"
 }

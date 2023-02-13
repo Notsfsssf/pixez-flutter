@@ -14,14 +14,20 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
+import 'package:pixez/models/show_ai_response.dart';
+import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/shield/user_show_ai_setting.dart';
 
 class ShieldPage extends StatefulWidget {
   @override
@@ -31,7 +37,7 @@ class ShieldPage extends StatefulWidget {
 class _ShieldPageState extends State<ShieldPage> {
   @override
   void initState() {
-    muteStore.fetchBanUserIds();
+    muteStore.fetchBanAI();
     muteStore.fetchBanIllusts();
     muteStore.fetchBanUserIds();
     muteStore.fetchBanComments();
@@ -60,6 +66,33 @@ class _ShieldPageState extends State<ShieldPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
+                    ListTile(
+                      title: Text(I18n.of(context).ai_work_display_settings),
+                      onTap: () async {
+                        try {
+                          BotToast.showLoading();
+                          Response response =
+                              await apiClient.getUserAISettings();
+                          var showAIResponse =
+                              ShowAIResponse.fromJson(response.data);
+                          Leader.push(context,
+                              UserShowAISetting(showAI: showAIResponse.showAI));
+                        } catch (e) {
+                        } finally {
+                          BotToast.closeAllLoading();
+                        }
+                      },
+                    ),
+                    ListTile(
+                      title: Text(I18n.of(context).make_works_with_ai_generated_flags_invisible),
+                      trailing: Switch(
+                        value: muteStore.banAIIllust,
+                        onChanged: (v) {
+                          muteStore.changeBanAI(v);
+                        },
+                      ),
+                    ),
+                    Divider(),
                     Text(I18n.of(context).tag),
                     Container(
                       child: Wrap(

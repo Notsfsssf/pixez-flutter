@@ -24,6 +24,7 @@ import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:quiver/time.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'mute_store.g.dart';
 
@@ -39,7 +40,24 @@ abstract class _MuteStoreBase with Store {
   ObservableList<BanIllustIdPersist> banillusts = ObservableList();
   ObservableList<BanCommentPersist> banComments = ObservableList();
 
+  @observable
+  bool banAIIllust = false;
+
   _MuteStoreBase() {}
+
+  @action
+  Future<void> changeBanAI(bool value) async {
+    var instance = await SharedPreferences.getInstance();
+    await instance.setBool("ban_ai_illust", value);
+    banAIIllust = value;
+  }
+
+  @action
+  Future<void> fetchBanAI() async {
+    var instance = await SharedPreferences.getInstance();
+    final result = instance.getBool("ban_ai_illust") ?? false;
+    banAIIllust = result;
+  }
 
   @action
   Future<void> fetchBanUserIds() async {
