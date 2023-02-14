@@ -138,7 +138,7 @@
   "retry_failed_tasks": "Başarısız olanları tekrardan indirmeyi dene",
   "right_now_message": "PixEz için bu güzel ikonu çizen tasarımcı",
   "running": "Devam Eden",
-  "save": "Kaydedilsin mi?",
+  "save": "Kaydet",
   "save_format": "Dosya adı biçimi",
   "save_path": "Kaydetme konumu",
   "saved": "Kaydedildi",
@@ -261,8 +261,8 @@
   "account_deletion": "hesap_silme",
   "account_deletion_subtitle": "Bu işlem hesabınızdan çıkış yapacak ve hesap silme web sayfasına yönlendirecektir",
   "private_like_by_default": "Varsayılan olarak gizli yer imlerine kaydet",
-  "partially_hidden": "partially hidden",
-  "show": "show",
-  "ai_work_display_settings" : "AI generated works display settings",
-  "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible"
+  "partially_hidden": "kısmen gizle",
+  "show": "göster",
+  "ai_work_display_settings" : "AI tarafından oluşturulmuş çalışmalar için görünüm ayarları",
+  "make_works_with_ai_generated_flags_invisible": "AI tarafından oluşturulmuş etiketine sahip çalışmaları görünmez yap"
 }
