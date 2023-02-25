@@ -28,6 +28,7 @@ import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/js_eval_plugin.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
@@ -328,66 +329,29 @@ abstract class _SaveStoreBase with Store {
   }
 
   Future<String> testEvalName(
-      String text, Illusts illust, int index, String memType) async {
-    final tag = illust.tags.isEmpty
-        ? ""
-        : illust.tags.map((e) => e.name).toList().join(",");
-    // final result = eval(text, function: "main", args: [
-    //   index,
-    //   $String(memType),
-    //   illust.id,
-    //   $String(illust.title),
-    //   $String(illust.type),
-    //   $String(illust.caption),
-    //   $String(illust.createDate),
-    //   illust.pageCount,
-    //   illust.width,
-    //   illust.height,
-    //   illust.totalView,
-    //   illust.totalBookmarks,
-    //   $String(illust.user.name),
-    //   illust.user.id,
-    //   $String(tag)
-    // ]);
-    // print("object === ${result}");
-    throw UnsupportedError("eval");
-    return "";
+      String func, Illusts illust, int index, String memType) async {
+    final result = await JSEvalPlugin.eval(illust, func, index, memType);
+    return result ?? "";
   }
 
-  String? _handleEvalName(
-      String text, Illusts illust, int index, String memType) {
-    // final tag = illust.tags.isEmpty
-    //     ? ""
-    //     : illust.tags.map((e) => e.name).toList().join(",");
-    // try {
-    //   final result = eval(text, function: "main", args: [
-    //     index,
-    //     $String(memType),
-    //     illust.id,
-    //     $String(illust.title),
-    //     $String(illust.type),
-    //     $String(illust.caption),
-    //     $String(illust.createDate),
-    //     illust.pageCount,
-    //     illust.width,
-    //     illust.height,
-    //     illust.totalView,
-    //     illust.totalBookmarks,
-    //     $String(illust.user.name),
-    //     illust.user.id,
-    //     $String(tag)
-    //   ]);
-    //   return result;
-    // } catch (e) {
-    //   print(e);
-    // }
+  Future<String?> _handleEvalName(
+      String text, Illusts illust, int index, String memType) async {
+    if (userSetting.fileNameEval == 1) {
+      if (userSetting.nameEval == null) {
+        await userSetting.setFileNameEval(0);
+        return null;
+      }
+      return await JSEvalPlugin.eval(
+          illust, userSetting.nameEval!, index, memType);
+    }
     return null;
   }
 
-  String _handleFileName(Illusts illust, int index, String memType) {
+  Future<String> _handleFileName(
+      Illusts illust, int index, String memType) async {
     if (userSetting.fileNameEval == 1) {
       final result =
-          _handleEvalName(userSetting.nameEval!, illust, index, memType);
+          await _handleEvalName(userSetting.nameEval!, illust, index, memType);
       if (result != null) return result;
     }
     final result = userSetting.format!
@@ -413,20 +377,20 @@ abstract class _SaveStoreBase with Store {
     if (illusts.pageCount == 1) {
       String url = illusts.metaSinglePage!.originalImageUrl!;
       memType = url.contains('.png') ? '.png' : '.jpg';
-      String fileName = _handleFileName(illusts, 0, memType);
+      String fileName = await _handleFileName(illusts, 0, memType);
       _saveInternal(url, illusts, fileName, 0, redo: redo);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
-        String fileName = _handleFileName(illusts, index, memType);
+        String fileName = await _handleFileName(illusts, index, memType);
         _saveInternal(url, illusts, fileName, index, redo: redo);
       } else {
         int index = 0;
-        illusts.metaPages.forEach((f) {
+        illusts.metaPages.forEach((f) async {
           String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
-          String fileName = _handleFileName(illusts, index, memType);
+          String fileName = await _handleFileName(illusts, index, memType);
           _saveInternal(url, illusts, fileName, index, redo: redo);
           index++;
         });

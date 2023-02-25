@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/main.dart';
@@ -61,14 +62,21 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
 
   @override
   void initState() {
-    _textEditingController =
-        TextEditingController(text: widget.eval ?? userSetting.nameEval);
+    _textEditingController = TextEditingController(
+        text: widget.eval ?? userSetting.nameEval ?? default_func_str);
     super.initState();
   }
+
+  final default_func_str = '''
+function eval(illust, index, mime) {
+  return illust.id + "_p" + index + "." + mime;
+}
+''';
 
   @override
   void dispose() {
     _textEditingController.dispose();
+    FocusManager.instance.primaryFocus?.unfocus();
     super.dispose();
   }
 
@@ -80,12 +88,23 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
         actions: [
           IconButton(
               onPressed: () async {
+                await userSetting.setFileNameEval(0);
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.cancel)),
+          IconButton(
+              onPressed: () async {
                 final text = _textEditingController.text.trim();
                 if (text.isEmpty) return;
                 final string =
                     await saveStore.testEvalName(text, _illusts, 1, "png");
-                await userSetting.setNameEval(string);
+                if (string.isEmpty) {
+                  BotToast.showText(text: "func eval error");
+                  return;
+                }
+                await userSetting.setNameEval(text);
                 await userSetting.setFileNameEval(1);
+                Navigator.of(context).pop();
               },
               icon: Icon(Icons.check))
         ],
@@ -97,7 +116,8 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
               title: Text("File Name:"),
               subtitle: Text(_fileName ?? "undifined"),
             ),
-            Expanded(
+            Container(
+              height: 200,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(

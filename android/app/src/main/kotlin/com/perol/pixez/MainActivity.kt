@@ -238,6 +238,7 @@ class MainActivity : FlutterFragmentActivity() {
         Weiss.bindChannel(flutterEngine)
         CustomTab.bindChannel(this, flutterEngine)
         Safer.bindChannel(this, flutterEngine)
+        JsEvalPlugin(this).bindChannel(flutterEngine)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             SUPPORTER_CHANNEL
