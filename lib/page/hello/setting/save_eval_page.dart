@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 
@@ -22,12 +23,9 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
       title: "title",
       type: "illust",
       imageUrls: ImageUrls(
-        squareMedium:
-            "https://i.pximg.net/c/540x540_70/img-master/img/2020/12/31/00/00/00/84800000_p0_master1200.jpg",
-        medium:
-            "https://i.pximg.net/c/540x540_70/img-master/img/2020/12/31/00/00/00/84800000_p0_master1200.jpg",
-        large:
-            "https://i.pximg.net/c/540x540_70/img-master/img/2020/12/31/00/00/00/84800000_p0_master1200.jpg",
+        squareMedium: "https://c/xxx.jpg",
+        medium: "https://c/xxx.png",
+        large: "https://c/xxx.jpeg",
       ),
       caption: "caption",
       restrict: 0,
@@ -36,8 +34,7 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
         name: "name",
         account: "account",
         profileImageUrls: ProfileImageUrls(
-          medium:
-              "https://i.pximg.net/c/540x540_70/img-master/img/2020/12/31/00/00/00/84800000_p0_master1200.jpg",
+          medium: "https://c/xxxxx.jpg",
         ),
         isFollowed: false,
       ),
@@ -58,13 +55,16 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
       isBookmarked: false,
       visible: true,
       isMuted: false,
-      illustAIType: 1);
+      illustAIType: 0);
+
+  String _exampleJson = "";
 
   @override
   void initState() {
     _textEditingController = TextEditingController(
         text: widget.eval ?? userSetting.nameEval ?? default_func_str);
     super.initState();
+    _exampleJson = jsonEncode(_illusts.toJson());
   }
 
   final default_func_str = '''
@@ -84,7 +84,7 @@ function eval(illust, index, mime) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Eval"),
+        title: Text("Script"),
         actions: [
           IconButton(
               onPressed: () async {
@@ -109,11 +109,17 @@ function eval(illust, index, mime) {
               icon: Icon(Icons.check))
         ],
       ),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+              height: 12,
+            ),
             ListTile(
-              title: Text("File Name:"),
+              title: Text(I18n.of(context).script_page_hint),
+            ),
+            ListTile(
+              title: Text("Example output file name:"),
               subtitle: Text(_fileName ?? "undifined"),
             ),
             Container(
@@ -132,27 +138,38 @@ function eval(illust, index, mime) {
                     )),
               ),
             ),
-            TextButton(
-                onPressed: () {
-                  Clipboard.getData("text/plain").then((value) {
-                    if (value == null || value.text == null) return;
-                    if (!value.text!.startsWith("pixez")) return;
-                    final link = Uri.tryParse(value.text!);
-                    if (link == null) return;
-                    final base64 = link.queryParameters["code"];
-                    if (base64 == null) return;
-                    final result = String.fromCharCodes(base64Decode(base64));
-                    run(result);
-                  });
-                },
-                child: Text("Read link from scheme")),
-            TextButton(
-                onPressed: () async {
-                  final text = _textEditingController.text.trim();
-                  if (text.isEmpty) return;
-                  run(text);
-                },
-                child: Text("Run"))
+            ListTile(
+              leading: Icon(Icons.read_more),
+              title: Text("Read script from scheme"),
+              onTap: () {
+                Clipboard.getData("text/plain").then((value) {
+                  if (value == null || value.text == null) return;
+                  if (!value.text!.startsWith("pixez")) return;
+                  final link = Uri.tryParse(value.text!);
+                  if (link == null) return;
+                  final base64 = link.queryParameters["code"];
+                  if (base64 == null) return;
+                  final result = String.fromCharCodes(base64Decode(base64));
+                  run(result);
+                });
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.play_arrow),
+              title: Text("Run and test"),
+              onTap: () async {
+                final text = _textEditingController.text.trim();
+                if (text.isEmpty) return;
+                run(text);
+              },
+            ),
+            ListTile(
+              title: Text("Example illust json:"),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(_exampleJson),
+            )
           ],
         ),
       ),

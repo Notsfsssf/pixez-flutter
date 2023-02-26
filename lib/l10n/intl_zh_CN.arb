@@ -264,5 +264,6 @@
   "partially_hidden": "部分隐藏",
   "show": "显示",
   "ai_work_display_settings" : "AI生成作品显示设置",
-  "make_works_with_ai_generated_flags_invisible": "使带有AI生成标记的作品不可见"
+  "make_works_with_ai_generated_flags_invisible": "使带有AI生成标记的作品不可见",
+  "script_page_hint": "这个功能旨在通过自定义js script来处理保存插画时的文件名，如果不清楚原理请不要随意尝试,可以通过点击右上角叉号来恢复默认设定"
 }

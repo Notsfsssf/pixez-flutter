@@ -161,11 +161,11 @@ class _PlatformPageState extends State<PlatformPage> {
                     margin: EdgeInsets.all(8),
                     child: userSetting.fileNameEval == 1
                         ? Text(
-                            "Eval",
+                            "Script",
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor),
                           )
-                        : Text("Eval"),
+                        : Text("Script"),
                   ),
                 ),
               ),
