@@ -93,6 +93,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
+                    android:host="script"
+                    android:scheme="pixez" />
+                <data
+                    android:host="pixiv.net"
+                    android:scheme="pixez" />
+                <data
                     android:host="www.pixiv.net"
                     android:scheme="pixez" />
                 <data

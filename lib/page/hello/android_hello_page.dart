@@ -21,6 +21,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constants.dart';
@@ -309,6 +310,19 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                             child: Text(link),
                           ),
                         ),
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.copy,
+                              ),
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(text: link));
+                                if (_LinkCloser != null) {
+                                  _LinkCloser!();
+                                }
+                              },
+                            )),
                         Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Icon(

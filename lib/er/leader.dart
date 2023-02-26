@@ -44,7 +44,7 @@ class Leader {
   }
 
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
-    if (link.host == "eval" && link.scheme == "pixez") {
+    if (link.host == "script" && link.scheme == "pixez") {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return SaveEvalPage(
           eval: link.queryParameters["code"] != null
