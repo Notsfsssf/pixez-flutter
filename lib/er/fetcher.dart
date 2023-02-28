@@ -16,9 +16,10 @@
 import 'dart:io';
 
 import 'dart:isolate';
+import 'dart:typed_data';
 
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -30,6 +31,29 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
+
+class PixivClientAdapter implements HttpClientAdapter {
+  final HttpClientAdapter _adapter = HttpClientAdapter();
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    final uri = options.uri;
+    // Hook requests to pub.dev
+    if (uri.host == 'pub.dev') {
+      return ResponseBody.fromString('Welcome to pub.dev', 200);
+    }
+    return _adapter.fetch(options, requestStream, cancelFuture);
+  }
+
+  @override
+  void close({bool force = false}) {
+    _adapter.close(force: force);
+  }
+}
 
 enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE }
 
@@ -228,16 +252,14 @@ entryPoint(SendPort sendPort) {
   String inHost = splashStore.host;
   String inSource = userSetting.pictureSource!;
   bool inBypass = userSetting.disableBypassSni;
-  if (!userSetting.disableBypassSni)
-    (isolateDio.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+  if (!userSetting.disableBypassSni) {
+    isolateDio.httpClientAdapter = IOHttpClientAdapter()
+      ..onHttpClientCreate = (client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
       };
-      return httpClient;
-    };
+  }
   ReceivePort receivePort = ReceivePort();
   sendPort.send(
       IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort));

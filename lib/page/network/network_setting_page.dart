@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -56,15 +56,12 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
           "https://i.pximg.net/c/360x360_70/img-master/img/2016/04/29/03/33/27/56585648_p0_square1200.jpg";
       var dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       String trueUrl = url.replaceFirst(ImageHost, host);
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (client) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
+      dio.httpClientAdapter = IOHttpClientAdapter()
+        ..onHttpClientCreate = (client) {
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return client;
         };
-        return httpClient;
-      };
       Response response = await dio
           .download(trueUrl, (await getTemporaryDirectory()).path + "/s.png",
               onReceiveProgress: (min, max) {

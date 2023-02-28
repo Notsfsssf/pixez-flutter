@@ -18,8 +18,8 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/services.dart';
@@ -694,16 +694,14 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
-      if (!userSetting.disableBypassSni)
-        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-            (client) {
-          HttpClient httpClient = new HttpClient();
-          httpClient.badCertificateCallback =
-              (X509Certificate cert, String host, int port) {
-            return true;
+      if (!userSetting.disableBypassSni) {
+        dio.httpClientAdapter = IOHttpClientAdapter()
+          ..onHttpClientCreate = (client) {
+            client.badCertificateCallback =
+                (X509Certificate cert, String host, int port) => true;
+            return client;
           };
-          return httpClient;
-        };
+      }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file != null && file.existsSync()) {

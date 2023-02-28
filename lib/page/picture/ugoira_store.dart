@@ -17,8 +17,8 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/hoster.dart';
@@ -136,16 +136,14 @@ abstract class _UgoiraStoreBase with Store {
         var dio = Dio(BaseOptions(
             headers: Hoster.header(
                 url: ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium)));
-        if (!userSetting.disableBypassSni)
-          (dio.httpClientAdapter as DefaultHttpClientAdapter)
-              .onHttpClientCreate = (client) {
-            HttpClient httpClient = new HttpClient();
-            httpClient.badCertificateCallback =
-                (X509Certificate cert, String host, int port) {
-              return true;
+        if (!userSetting.disableBypassSni) {
+          dio.httpClientAdapter = IOHttpClientAdapter()
+            ..onHttpClientCreate = (client) {
+              client.badCertificateCallback =
+                  (X509Certificate cert, String host, int port) => true;
+              return client;
             };
-            return httpClient;
-          };
+        }
         dio.download(zipUrl, fullPath,
             onReceiveProgress: (int count, int total) {
           this.count = count;

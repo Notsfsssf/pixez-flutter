@@ -16,8 +16,8 @@
 
 import 'dart:io';
 
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:pixez/models/onezero_response.dart';
 
 class OnezeroClient {
@@ -25,17 +25,14 @@ class OnezeroClient {
   static const String URL_DNS_RESOLVER = "https://doh.dns.sb";
 
   OnezeroClient() {
-    this.httpClient =
-        Dio(BaseOptions(baseUrl: URL_DNS_RESOLVER, connectTimeout: 10000));
-    (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    this.httpClient = Dio(BaseOptions(
+        baseUrl: URL_DNS_RESOLVER, connectTimeout: Duration(seconds: 10)));
+    httpClient.httpClientAdapter = IOHttpClientAdapter()
+      ..onHttpClientCreate = (client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
       };
-      return httpClient;
-    };
   }
 
   //     @GET("dns-query")

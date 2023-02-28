@@ -18,8 +18,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
@@ -93,15 +93,12 @@ abstract class SauceStoreBase with Store {
       if (userSetting.disableBypassSni) {
         dio.options.baseUrl = "https://$host";
       } else {
-        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-            (client) {
-          HttpClient httpClient = new HttpClient();
-          httpClient.badCertificateCallback =
-              (X509Certificate cert, String host, int port) {
-            return true;
+        dio.httpClientAdapter = IOHttpClientAdapter()
+          ..onHttpClientCreate = (client) {
+            client.badCertificateCallback =
+                (X509Certificate cert, String host, int port) => true;
+            return client;
           };
-          return httpClient;
-        };
       }
       Response response = await dio.post('/search.php', data: formData);
       BotToast.showText(text: "parsing");

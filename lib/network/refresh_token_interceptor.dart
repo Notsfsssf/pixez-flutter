@@ -23,7 +23,7 @@ import 'package:pixez/models/error_message.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 
-class RefreshTokenInterceptor extends InterceptorsWrapper {
+class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   Future<String> getToken() async {
     String? token = accountStore.now?.accessToken; //可能读的时候没有错的快，导致now为null
     String result;
@@ -71,7 +71,6 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
         try {
           if (err.response!.statusCode == HttpStatus.badRequest) {
-            apiClient.httpClient.interceptors.errorLock.lock();
             print("lock start ========================");
             ErrorMessage errorMessage =
                 ErrorMessage.fromJson(err.response!.data);
@@ -100,16 +99,13 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
                   isMailAuthorized: bti(user.isMailAuthorized),
                   id: accountPersist.id));
               lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
-              apiClient.httpClient.interceptors.errorLock.unlock();
               print("unlock ========================");
             } else if (errorMessage.error.message!.contains("Limit")) {
               lastRefreshTime = 0;
-              apiClient.httpClient.interceptors.errorLock.unlock();
               print("unlock ========================");
               return handler.reject(err);
             } else {
               lastRefreshTime = 0;
-              apiClient.httpClient.interceptors.errorLock.unlock();
               print("unlock ========================");
               return handler.reject(err);
             }
@@ -117,7 +113,6 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
         } catch (e) {
           print(e);
           lastRefreshTime = 0;
-          apiClient.httpClient.interceptors.errorLock.unlock();
           print("unlock ========================");
           return handler.reject(err);
         }
@@ -137,8 +132,9 @@ class RefreshTokenInterceptor extends InterceptorsWrapper {
       );
       return handler.resolve(response);
     }
-    if (err.message
-            .contains("Connection closed before full header was received") &&
+    if (err.message?.contains(
+                "Connection closed before full header was received") ==
+            true &&
         retryNum < 2) {
       print('retry $retryNum =========================');
       retryNum++;

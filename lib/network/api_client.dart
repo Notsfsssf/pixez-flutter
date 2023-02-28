@@ -20,8 +20,8 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -70,15 +70,12 @@ class ApiClient {
       httpClient = Dio(apiClient.httpClient.options)
         // ..interceptors.add(LogInterceptor(responseBody: true, requestBody: true))
         ..interceptors.add(RefreshTokenInterceptor());
-      (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-          .onHttpClientCreate = (client) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          return true;
+      httpClient.httpClientAdapter = IOHttpClientAdapter()
+        ..onHttpClientCreate = (client) {
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return client;
         };
-        return httpClient;
-      };
       return;
     }
 
@@ -100,15 +97,12 @@ class ApiClient {
     if (kDebugMode)
       httpClient.interceptors
           .add(LogInterceptor(responseBody: true, requestBody: true));
-    (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    httpClient.httpClientAdapter = IOHttpClientAdapter()
+      ..onHttpClientCreate = (client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
       };
-      return httpClient;
-    };
     if (userSetting.disableBypassSni) {
       httpClient.options.baseUrl = "https://${BASE_API_URL_HOST}";
     }

@@ -19,8 +19,8 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
@@ -93,16 +93,13 @@ class AccountClient {
         "App-Version": "5.0.166",
         "Host": BASE_API_URL_HOST
       }
-      ..options.connectTimeout = 5000
+      ..options.connectTimeout = Duration(seconds: 5)
       ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
-    (this.httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      HttpClient httpClient = new HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
+    httpClient.httpClientAdapter = IOHttpClientAdapter()
+      ..onHttpClientCreate = (client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
       };
-      return httpClient;
-    };
   }
 }
