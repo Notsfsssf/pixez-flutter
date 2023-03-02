@@ -265,5 +265,6 @@
   "show": "göster",
   "ai_work_display_settings" : "AI tarafından oluşturulmuş çalışmalar için görünüm ayarları",
   "make_works_with_ai_generated_flags_invisible": "AI tarafından oluşturulmuş etiketine sahip çalışmaları görünmez yap",
-  "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner"
+  "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
+  "long_press_save_confirm": "long press to save confirm"
 }

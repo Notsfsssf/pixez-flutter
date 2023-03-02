@@ -807,6 +807,20 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Observer(builder: (_) {
                 return SwitchListTile(
                     activeColor: Theme.of(context).colorScheme.secondary,
+                    value: userSetting.longPressSaveConfirm,
+                    title: Text(I18n.of(context).long_press_save_confirm),
+                    onChanged: (value) async {
+                      userSetting.setLongPressSaveConfirm(value);
+                    });
+              }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(builder: (_) {
+                return SwitchListTile(
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.hIsNotAllow,
                     title: Text('H是不行的！'),
                     onChanged: (value) async {

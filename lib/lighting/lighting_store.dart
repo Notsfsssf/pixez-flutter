@@ -148,7 +148,7 @@ abstract class _LightingStoreBase with Store {
     } catch (e) {
       refreshing = false;
       errorMessage = e.toString();
-      easyRefreshController?.finishLoad(IndicatorResult.fail);
+      easyRefreshController?.finishRefresh(IndicatorResult.fail);
       return false;
     }
   }

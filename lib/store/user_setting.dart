@@ -67,6 +67,7 @@ abstract class _UserSettingBase with Store {
   static const String H_CROSS_ADAPT_KEY = "cross_adapt";
   static const String H_CROSS_ADAPT_WIDTH_KEY = "cross_adapt_width";
   static const String DEFAULT_PRIVATE_LIKE_KEY = "default_private_like";
+  static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
 
   @observable
   int crossAdapterWidth = 100;
@@ -145,6 +146,8 @@ abstract class _UserSettingBase with Store {
   String? nameEval;
   @observable
   bool defaultPrivateLike = false;
+  @observable
+  bool longPressSaveConfirm = false;
 
   @observable
   String? format = "";
@@ -340,6 +343,7 @@ abstract class _UserSettingBase with Store {
     crossAdapterWidth = min(2160, max(100, crossAdapterV));
     hCrossAdapterWidth = min(2160, max(100, hCrossAdapterV));
     defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
+    longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
@@ -534,6 +538,12 @@ abstract class _UserSettingBase with Store {
   Future<void> setCopyInfoText(String text) async {
     copyInfoText = text;
     await prefs.setString(COPY_INFO_TEXT_KEY, text);
+  }
+
+  @action
+  Future<void> setLongPressSaveConfirm(bool value) async {
+    await prefs.setBool(LONG_PRESS_SAVE_CONFIRM_KEY, value);
+    longPressSaveConfirm = value;
   }
 
   String illustToShareInfoText(Illusts illusts) {

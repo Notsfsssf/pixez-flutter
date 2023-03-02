@@ -74,7 +74,7 @@ class _IllustCardState extends State<IllustCard> {
         if (store.illusts!.tags[i].name.startsWith('R-18'))
           return InkWell(
             onTap: () => _buildTap(context),
-            onLongPress: () => saveStore.saveImage(store.illusts!),
+            onLongPress: () => _onLongPressSave(),
             child: Card(
               margin: EdgeInsets.all(8.0),
               elevation: 8.0,
@@ -86,6 +86,37 @@ class _IllustCardState extends State<IllustCard> {
           );
       }
     return buildInkWell(context);
+  }
+
+  _onLongPressSave() async {
+    if (userSetting.longPressSaveConfirm) {
+      final result = await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(I18n.of(context).save),
+              content: Text(store.illusts?.title ?? ""),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(I18n.of(context).cancel),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text(I18n.of(context).ok),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          });
+      if (!result) {
+        return;
+      }
+    }
+    saveStore.saveImage(store.illusts!);
   }
 
   Future _buildTap(BuildContext context) {
@@ -235,7 +266,7 @@ class _IllustCardState extends State<IllustCard> {
       }
       await saveStore.saveImage(store.illusts!);
     } else {
-      await saveStore.saveImage(store.illusts!);
+      _onLongPressSave();
     }
   }
 

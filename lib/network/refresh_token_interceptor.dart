@@ -70,45 +70,42 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
         try {
-          if (err.response!.statusCode == HttpStatus.badRequest) {
-            print("lock start ========================");
-            ErrorMessage errorMessage =
-                ErrorMessage.fromJson(err.response!.data);
-            if (errorMessage.error.message!.contains("OAuth") &&
-                accountStore.now != null) {
-              final client = OAuthClient();
-              AccountPersist accountPersist = accountStore.now!;
-              Response response1 = await client.postRefreshAuthToken(
-                  refreshToken: accountPersist.refreshToken,
-                  deviceToken: accountPersist.deviceToken);
-              AccountResponse accountResponse =
-                  Account.fromJson(response1.data).response;
-              final user = accountResponse.user;
-              accountStore.updateSingle(AccountPersist(
-                  userId: user.id,
-                  userImage: user.profileImageUrls.px170x170,
-                  accessToken: accountResponse.accessToken,
-                  refreshToken: accountResponse.refreshToken,
-                  deviceToken: "",
-                  passWord: "no more",
-                  name: user.name,
-                  account: user.account,
-                  mailAddress: user.mailAddress,
-                  isPremium: bti(user.isPremium),
-                  xRestrict: user.xRestrict,
-                  isMailAuthorized: bti(user.isMailAuthorized),
-                  id: accountPersist.id));
-              lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
-              print("unlock ========================");
-            } else if (errorMessage.error.message!.contains("Limit")) {
-              lastRefreshTime = 0;
-              print("unlock ========================");
-              return handler.reject(err);
-            } else {
-              lastRefreshTime = 0;
-              print("unlock ========================");
-              return handler.reject(err);
-            }
+          print("lock start ========================");
+          ErrorMessage errorMessage = ErrorMessage.fromJson(err.response!.data);
+          if (errorMessage.error.message!.contains("OAuth") &&
+              accountStore.now != null) {
+            final client = OAuthClient();
+            AccountPersist accountPersist = accountStore.now!;
+            Response response1 = await client.postRefreshAuthToken(
+                refreshToken: accountPersist.refreshToken,
+                deviceToken: accountPersist.deviceToken);
+            AccountResponse accountResponse =
+                Account.fromJson(response1.data).response;
+            final user = accountResponse.user;
+            await accountStore.updateSingle(AccountPersist(
+                userId: user.id,
+                userImage: user.profileImageUrls.px170x170,
+                accessToken: accountResponse.accessToken,
+                refreshToken: accountResponse.refreshToken,
+                deviceToken: "",
+                passWord: "no more",
+                name: user.name,
+                account: user.account,
+                mailAddress: user.mailAddress,
+                isPremium: bti(user.isPremium),
+                xRestrict: user.xRestrict,
+                isMailAuthorized: bti(user.isMailAuthorized),
+                id: accountPersist.id));
+            lastRefreshTime = DateTime.now().millisecondsSinceEpoch;
+            print("unlock ========================");
+          } else if (errorMessage.error.message!.contains("Limit")) {
+            lastRefreshTime = 0;
+            print("unlock ========================");
+            return handler.reject(err);
+          } else {
+            lastRefreshTime = 0;
+            print("unlock ========================");
+            return handler.reject(err);
           }
         } catch (e) {
           print(e);
@@ -118,7 +115,9 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
         }
       }
       var option = err.requestOptions;
-      option.headers[OAuthClient.AUTHORIZATION] = (await getToken());
+      final newToken = (await getToken());
+      print("unlock retry ======================== $newToken");
+      option.headers[OAuthClient.AUTHORIZATION] = newToken;
       var response = await apiClient.httpClient.request(
         option.path,
         data: option.data,

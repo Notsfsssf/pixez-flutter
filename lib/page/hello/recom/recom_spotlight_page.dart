@@ -22,7 +22,6 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/component/list_indicator.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/spotlight_card.dart';
@@ -39,9 +38,7 @@ import 'package:pixez/page/spotlight/spotlight_page.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
-  final LightingStore? lightingStore;
-
-  RecomSpolightPage({Key? key, this.lightingStore}) : super(key: key);
+  RecomSpolightPage({Key? key}) : super(key: key);
 
   @override
   _RecomSpolightPageState createState() => _RecomSpolightPageState();
@@ -71,16 +68,10 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         controlFinishLoad: true, controlFinishRefresh: true);
     _recomUserStore = RecomUserStore();
     spotlightStore = SpotlightStore(null);
-    _lightingStore = widget.lightingStore ??
-        LightingStore(
-          ApiForceSource(
-              futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
-        );
-    if (widget.lightingStore != null) {
-      _lightingStore.easyRefreshController = _easyRefreshController;
-    }
-    _lightingStore.easyRefreshController =
-        _lightingStore.easyRefreshController ?? _easyRefreshController;
+    _lightingStore = LightingStore(
+      ApiForceSource(
+          futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
+    )..easyRefreshController = _easyRefreshController;
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "100") {
@@ -91,8 +82,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   Future<void> fetchT() async {
     await spotlightStore.fetch();
-    await _lightingStore.fetch();
-    await _recomUserStore.fetch();
+    _lightingStore.fetch();
+    _recomUserStore.fetch();
   }
 
   @override

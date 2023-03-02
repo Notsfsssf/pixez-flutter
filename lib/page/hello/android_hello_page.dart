@@ -46,9 +46,7 @@ import 'package:uni_links2/uni_links.dart';
 import 'ranking/rank_store.dart';
 
 class AndroidHelloPage extends StatefulWidget {
-  final LightingStore? lightingStore;
-
-  const AndroidHelloPage({Key? key, this.lightingStore}) : super(key: key);
+  const AndroidHelloPage({Key? key}) : super(key: key);
 
   @override
   _AndroidHelloPageState createState() => _AndroidHelloPageState();
@@ -222,7 +220,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     fetcher.context = context;
     Constants.type = 0;
     _pageList = [
-      RecomSpolightPage(lightingStore: widget.lightingStore),
+      RecomSpolightPage(),
       RankPage(
         isFullscreen: isFullscreen,
         toggleFullscreen: toggleFullscreen,
