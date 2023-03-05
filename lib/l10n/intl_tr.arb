@@ -127,7 +127,7 @@
   "rate_message": "Lütfen bize 5 yıldız verin!",
   "rate_title": "PixEz'in harika olduğunu düşünüyorsanız, lütfen bize 5 yıldız puan verin!",
   "recommand_tag": "Önerilen etiketler",
-  "recommend": "Önerilen",
+  "recommend": "Önerilenler",
   "recommend_for_you": "Sizin için",
   "refresh": "Yenile",
   "reply": "Yanıtla",
@@ -264,7 +264,7 @@
   "partially_hidden": "kısmen gizle",
   "show": "göster",
   "ai_work_display_settings" : "AI tarafından oluşturulmuş çalışmalar için görünüm ayarları",
-  "make_works_with_ai_generated_flags_invisible": "AI tarafından oluşturulmuş etiketine sahip çalışmaları görünmez yap",
-  "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
-  "long_press_save_confirm": "long press to save confirm"
+  "make_works_with_ai_generated_flags_invisible": "AI tarafından oluşturulmuş etiketine sahip çalışmaları gösterme",
+  "script_page_hint": "Bu işlev, illüstrasyonları JS script'ini özelleştirerek kaydedildiğinde dosya adını ele alması için dizayn edilmiştir . Prensibi bilmiyorsanız, lütfen denemeyin. Varsayılan ayarları sağ üst köşede bulunan çarpıya basarak geri yükleyebilirsiniz.",
+  "long_press_save_confirm": "Görsele uzun süre basılı tutulduğunda cihaza kaydedilip kaydedilmeyeceğini sor"
 }
