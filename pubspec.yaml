@@ -47,12 +47,12 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   waterfall_flow: ^3.0.2
   animations: ^2.0.7
-  extended_text: ^10.0.0
+  extended_text: ^10.0.1
   font_awesome_flutter: ^10.1.0
   json_annotation: ^4.6.0
   flutter_staggered_animations: ^1.1.1
   badges: ^3.0.2
-  image_picker: ^0.8.6
+  image_picker: ^0.8.6+4
   intl: ^0.17.0
   extended_nested_scroll_view: ^6.0.0
   quiver: ^3.1.0
@@ -72,8 +72,8 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.1.10
   mobx_codegen: ^2.0.6
-  json_serializable: ^6.3.1
-  analyzer: ^4.4.0
+  json_serializable: ^6.6.1
+  analyzer: ^5.7.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
