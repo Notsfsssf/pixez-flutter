@@ -188,32 +188,38 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,
                   duration: Duration(milliseconds: 500),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.share,
-                        color: Colors.white,
-                      ),
-                      onPressed: () async {
-                        var file =
-                            await pixivCacheManager.getFileFromCache(nowUrl);
-                        if (file != null) {
-                          String targetPath = join(
-                              (await getTemporaryDirectory()).path,
-                              "share_cache",
-                              basenameWithoutExtension(file.file.path) +
-                                  (nowUrl.endsWith(".png") ? ".png" : ".jpg"));
-                          File targetFile = new File(targetPath);
-                          if (!targetFile.existsSync()) {
-                            targetFile.createSync(recursive: true);
+                  child: Builder(builder: (context) {
+                    return IconButton(
+                        icon: Icon(
+                          Icons.share,
+                          color: Colors.white,
+                        ),
+                        onPressed: () async {
+                          var file =
+                              await pixivCacheManager.getFileFromCache(nowUrl);
+                          if (file != null) {
+                            String targetPath = join(
+                                (await getTemporaryDirectory()).path,
+                                "share_cache",
+                                basenameWithoutExtension(file.file.path) +
+                                    (nowUrl.endsWith(".png")
+                                        ? ".png"
+                                        : ".jpg"));
+                            File targetFile = new File(targetPath);
+                            if (!targetFile.existsSync()) {
+                              targetFile.createSync(recursive: true);
+                            }
+                            file.file.copySync(targetPath);
+                            final box =
+                                context.findRenderObject() as RenderBox?;
+                            Share.shareXFiles([XFile(targetPath)],
+                                sharePositionOrigin:
+                                    box!.localToGlobal(Offset.zero) & box.size);
+                          } else {
+                            BotToast.showText(text: "can not find image cache");
                           }
-                          file.file.copySync(targetPath);
-                          Share.shareFiles(
-                            [targetPath],
-                          );
-                        } else {
-                          BotToast.showText(text: "can not find image cache");
-                        }
-                      }),
+                        });
+                  }),
                 ),
                 IconButton(
                     icon: Icon(
