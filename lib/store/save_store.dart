@@ -387,13 +387,13 @@ abstract class _SaveStoreBase with Store {
         _saveInternal(url, illusts, fileName, index, redo: redo);
       } else {
         int index = 0;
-        illusts.metaPages.forEach((f) async {
+        for (var f in illusts.metaPages) {
           String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = await _handleFileName(illusts, index, memType);
           _saveInternal(url, illusts, fileName, index, redo: redo);
           index++;
-        });
+        }
       }
     }
   }
