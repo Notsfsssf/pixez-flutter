@@ -264,7 +264,7 @@
   "partially_hidden": "部分隱藏",
   "show": "顯示",
   "ai_work_display_settings" : "AI 生成作品顯示設定",
-  "make_works_with_ai_generated_flags_invisible": "使帶有 AI 生成標示的作品不可見",
-  "script_page_hint": "这个功能旨在通过自定义js script来处理保存插画时的文件名，如果不清楚原理请不要随意尝试,可以通过点击右上角叉号来恢复默认设定",
-  "long_press_save_confirm": "長按保存時確認"
+  "make_works_with_ai_generated_flags_invisible": "使帶有 AI 生成標識的作品不可見",
+  "script_page_hint": "這個功能旨在通過自訂 JavaScript 腳本來處理儲存插畫時的檔名，如果不清楚原理，請不要隨意嘗試；可以通過點按右上角叉號恢復預設組態",
+  "long_press_save_confirm": "按住儲存時進行確認"
 }
