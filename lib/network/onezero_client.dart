@@ -54,7 +54,7 @@ class OnezeroClient {
           'name': name,
           'type': 'A',
         });
-    var responseFromJson = onezeroResponseFromJson(response.data);
+    var responseFromJson = OnezeroResponse.fromJson(response.data);
     // for (var value in responseFromJson.answer) {
     //   if(value.name == "app-api.pixiv.net"){
     //     value.data=""

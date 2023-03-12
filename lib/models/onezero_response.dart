@@ -19,103 +19,39 @@
 //     final onezeroResponse = onezeroResponseFromJson(jsonString);
 import 'dart:convert';
 
-OnezeroResponse onezeroResponseFromJson(String str) =>
-    OnezeroResponse.fromJson(json.decode(str));
+import 'package:json_annotation/json_annotation.dart';
 
-String onezeroResponseToJson(OnezeroResponse data) =>
-    json.encode(data.toJson());
+part 'onezero_response.g.dart';
 
+@JsonSerializable()
 class OnezeroResponse {
-  int status;
-  bool tc;
-  bool rd;
-  bool ra;
-  bool ad;
-  bool cd;
-  List<Question> question;
-  List<Answer> answer;
+  @JsonKey(name: 'Answer')
+  List<OnezeroAnswer> answer;
 
-  OnezeroResponse({
-    required this.status,
-    required this.tc,
-    required this.rd,
-    required this.ra,
-    required this.ad,
-    required this.cd,
-    required this.question,
-    required this.answer,
-  });
+  OnezeroResponse({required this.answer});
 
   factory OnezeroResponse.fromJson(Map<String, dynamic> json) =>
-      OnezeroResponse(
-        status: json["Status"],
-        tc: json["TC"],
-        rd: json["RD"],
-        ra: json["RA"],
-        ad: json["AD"],
-        cd: json["CD"],
-        question: List<Question>.from(
-            json["Question"].map((x) => Question.fromJson(x))),
-        answer:
-            List<Answer>.from(json["Answer"].map((x) => Answer.fromJson(x))),
-      );
+      _$OnezeroResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "Status": status,
-        "TC": tc,
-        "RD": rd,
-        "RA": ra,
-        "AD": ad,
-        "CD": cd,
-        "Question": List<dynamic>.from(question.map((x) => x.toJson())),
-        "Answer": List<dynamic>.from(answer.map((x) => x.toJson())),
-      };
+  Map<String, dynamic> toJson() => _$OnezeroResponseToJson(this);
 }
 
-class Answer {
+@JsonSerializable()
+class OnezeroAnswer {
   String name;
   int type;
-  int ttl;
   String data;
+  @JsonKey(name: 'TTL')
+  int ttl;
 
-  Answer({
-    required this.name,
-    required this.type,
-    required this.ttl,
-    required this.data,
-  });
+  OnezeroAnswer(
+      {required this.name,
+      required this.type,
+      required this.data,
+      required this.ttl});
 
-  factory Answer.fromJson(Map<String, dynamic> json) => Answer(
-        name: json["name"],
-        type: json["type"],
-        ttl: json["TTL"],
-        data: json["data"],
-      );
+  factory OnezeroAnswer.fromJson(Map<String, dynamic> json) =>
+      _$OnezeroAnswerFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "type": type,
-        "TTL": ttl,
-        "data": data,
-      };
-}
-
-class Question {
-  String name;
-  int type;
-
-  Question({
-    required this.name,
-    required this.type,
-  });
-
-  factory Question.fromJson(Map<String, dynamic> json) => Question(
-        name: json["name"],
-        type: json["type"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "type": type,
-      };
+  Map<String, dynamic> toJson() => _$OnezeroAnswerToJson(this);
 }

@@ -27,6 +27,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:image/image.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 part 'sauce_store.g.dart';
 
@@ -57,6 +59,11 @@ abstract class SauceStoreBase with Store {
     results.clear();
     MultipartFile? multipartFile;
     final picker = ImagePicker();
+    final ImagePickerPlatform imagePickerImplementation =
+        ImagePickerPlatform.instance;
+    if (imagePickerImplementation is ImagePickerAndroid) {
+      imagePickerImplementation.useAndroidPhotoPicker = true;
+    }
     if (path == null) {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;

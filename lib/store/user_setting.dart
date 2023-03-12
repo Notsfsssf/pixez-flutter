@@ -29,9 +29,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_setting.g.dart';
 
-class UserSetting = _UserSettingBase with _$UserSetting;
+class UserSetting = _UserSetting with _$UserSetting;
 
-abstract class _UserSettingBase with Store {
+abstract class _UserSetting with Store {
   late SharedPreferences prefs;
   static const String ZOOM_QUALITY_KEY = "zoom_quality";
   static const String SINGLE_FOLDER_KEY = "single_folder";
@@ -127,7 +127,7 @@ abstract class _UserSettingBase with Store {
   @observable
   double novelFontsize = 16.0;
   @observable
-  Locale locale = Locale('en', 'US');
+  dynamic locale = Locale('en', 'US'); //stupid mobx generator
   @observable
   TextStyle novelTextStyle = TextStyle();
   @observable

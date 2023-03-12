@@ -293,10 +293,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "3709d74615bba5e443eb141f6a7f4bcc4788f8fae6f743edadfb79c2a8e6287e"
+      sha256: "2644a9e0965a7aa3deb09cb8ce4081db4450c178f472818c8cd34216a3070d7b"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.1"
+    version: "5.0.2"
   dio_cache_interceptor:
     dependency: "direct main"
     description:
@@ -439,10 +439,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_mobx
-      sha256: "7a73527a6193cad19df35789c34f34cc7e8e7975422ef44220ae4bbd2c2a2034"
+      sha256: "0da4add0016387a7bf309a0d0c41d36c6b3ae25ed7a176409267f166509e723e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.6+5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -649,18 +649,18 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: "715d68a53d6bcc2eae26005097dc74c375a04c0d7c0e657da84deebbbbbf51ed"
+      sha256: "64b21d9f0e065f9ab0e4dde458076226c97382cc0c6949144cb874c62bf8e9f8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.6+4"
+    version: "0.8.7"
   image_picker_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image_picker_android
-      sha256: "68d067baf7f6e401b1124ee83dd6967e67847314250fd68012aab34a69beb344"
+      sha256: "420ed22d2c9ce767ed96df723aaebfeb20ce92dfda8665cd2ba72d72a51ae669"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.5+7"
+    version: "0.8.6+1"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -825,10 +825,10 @@ packages:
     dependency: "direct main"
     description:
       name: mobx
-      sha256: "3d624a37979ac580c3d7d5ea3d846f99203c6023f9637f15385e700c2fef2c76"
+      sha256: "6738620307a424d2c9ad8b873f4dce391c44e9135eb4e75668ac8202fec7a9b8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.7"
+    version: "2.1.4"
   mobx_codegen:
     dependency: "direct dev"
     description:

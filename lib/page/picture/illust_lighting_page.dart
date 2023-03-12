@@ -439,7 +439,34 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           store: list[index],
                         ));
                   },
-                  onLongPress: () {
+                  onLongPress: () async {
+                    if (userSetting.longPressSaveConfirm) {
+                      final result = await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(I18n.of(context).save),
+                              content: Text(list[index].illusts?.title ?? ""),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(I18n.of(context).cancel),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(I18n.of(context).ok),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true);
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                      if (!result) {
+                        return;
+                      }
+                    }
                     saveStore.saveImage(_aboutStore.illusts[index]);
                   },
                   child: PixivImage(
