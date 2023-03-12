@@ -57,7 +57,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "302") {
-        if (_scrollController.hasClients) _scrollController.position?.jumpTo(0);
+        if (_scrollController.hasClients) _scrollController.position.jumpTo(0);
       }
     });
   }

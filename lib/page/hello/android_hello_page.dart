@@ -19,7 +19,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -29,7 +28,6 @@ import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/guide_page.dart';
 import 'package:pixez/page/hello/new/new_page.dart';
@@ -43,7 +41,6 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links2/uni_links.dart';
 
-import 'ranking/rank_store.dart';
 
 class AndroidHelloPage extends StatefulWidget {
   const AndroidHelloPage({Key? key}) : super(key: key);
@@ -351,7 +348,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       if (Platform.isAndroid && userSetting.saveMode != 1) {
         final info = await DeviceInfoPlugin().androidInfo;
-        if (info.version.sdkInt! >= 33) {
+        if (info.version.sdkInt >= 33) {
           final status = await DocumentPlugin.permissionStatus() ?? false;
           if (!status) {
             final grant = await DocumentPlugin.requestPermission();

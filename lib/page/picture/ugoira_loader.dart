@@ -25,7 +25,6 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
-import 'package:share_plus/share_plus.dart';
 
 class UgoiraLoader extends StatefulWidget {
   final int id;
@@ -135,7 +134,14 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
       if (_store.status == UgoiraStatus.progress)
         return Column(
           children: <Widget>[
-            PixivImage(widget.illusts.imageUrls.medium),
+            PixivImage(
+              widget.illusts.imageUrls.medium,
+              height: height,
+              width: MediaQuery.of(context).size.width,
+              placeWidget: Container(
+                height: height,
+              ),
+            ),
             LinearProgressIndicator(
               backgroundColor: Theme.of(context).cardColor,
               valueColor: AlwaysStoppedAnimation(

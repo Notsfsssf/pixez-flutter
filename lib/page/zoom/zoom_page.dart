@@ -133,7 +133,7 @@ class _PinchZoomImageState extends State<PinchZoomImage> {
       zooming = true;
     });
     if (widget.onZoomStart != null) widget.onZoomStart!();
-    OverlayState overlayState = Overlay.of(context)!;
+    OverlayState overlayState = Overlay.of(context);
     double width = context.size!.width;
     double height = context.size!.height;
     origin = (context.findRenderObject() as RenderBox)
