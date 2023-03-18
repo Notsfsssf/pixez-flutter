@@ -187,271 +187,271 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           )),
         );
       }
-      return SelectionArea(
-        child: Scaffold(
-          body: ExtendedNestedScrollView(
-            pinnedHeaderSliverHeightBuilder: () =>
-                MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
-            controller: _scrollController,
-            onlyOneScrollInBody: true,
-            body: IndexedStack(index: _tabIndex, children: [
-              ExtendedVisibilityDetector(
-                  uniqueKey: Key('Tab0'),
-                  child: WorksPage(
-                    id: widget.id,
-                  )),
-              ExtendedVisibilityDetector(
-                  uniqueKey: Key('Tab1'),
-                  child: BookmarkPage(
-                    isNested: true,
-                    id: widget.id,
-                  )),
-              ExtendedVisibilityDetector(
-                  uniqueKey: Key('Tab2'),
-                  child: userStore.userDetail != null
-                      ? UserDetailPage(
-                          key: PageStorageKey('Tab2'),
-                          userDetail: userStore.userDetail!)
-                      : Container()),
-            ]),
-            headerSliverBuilder:
-                (BuildContext context, bool? innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  pinned: true,
-                  elevation: 0.0,
-                  forceElevated: innerBoxIsScrolled ?? false,
-                  expandedHeight: 280,
-                  actions: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.share),
-                        onPressed: () => Share.share(
-                            'https://www.pixiv.net/users/${widget.id}')),
-                    PopupMenuButton<int>(
-                      onSelected: (index) async {
-                        switch (index) {
-                          case 0:
-                            userStore.follow(needPrivate: true);
-                            break;
-                          case 1:
-                            {
-                              final result = await showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          '${I18n.of(context).block_user}?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: Text("OK"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop("OK");
-                                          },
+      return _buildBody(context);
+    });
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Container(
+      child: Scaffold(
+        body: ExtendedNestedScrollView(
+          pinnedHeaderSliverHeightBuilder: () =>
+              MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
+          controller: _scrollController,
+          onlyOneScrollInBody: true,
+          body: IndexedStack(index: _tabIndex, children: [
+            ExtendedVisibilityDetector(
+                uniqueKey: Key('Tab0'),
+                child: WorksPage(
+                  id: widget.id,
+                )),
+            ExtendedVisibilityDetector(
+                uniqueKey: Key('Tab1'),
+                child: BookmarkPage(
+                  isNested: true,
+                  id: widget.id,
+                )),
+            ExtendedVisibilityDetector(
+                uniqueKey: Key('Tab2'),
+                child: userStore.userDetail != null
+                    ? UserDetailPage(
+                        key: PageStorageKey('Tab2'),
+                        userDetail: userStore.userDetail!)
+                    : Container()),
+          ]),
+          headerSliverBuilder:
+              (BuildContext context, bool? innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                pinned: true,
+                elevation: 0.0,
+                forceElevated: innerBoxIsScrolled ?? false,
+                expandedHeight: 280,
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () => Share.share(
+                          'https://www.pixiv.net/users/${widget.id}')),
+                  _buildPopMenu(context)
+                ],
+                flexibleSpace: FlexibleSpaceBar(
+                  collapseMode: CollapseMode.pin,
+                  background: Container(
+                    color: Theme.of(context).cardColor,
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).padding.top + 160,
+                            child: userStore.userDetail != null
+                                ? userStore.userDetail!.profile
+                                            .background_image_url !=
+                                        null
+                                    ? InkWell(
+                                        onLongPress: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                      I18n.of(context).save),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text(
+                                                            I18n.of(context)
+                                                                .cancel)),
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          await _saveUserBg(
+                                                              userStore
+                                                                  .userDetail!
+                                                                  .profile
+                                                                  .background_image_url!);
+                                                        },
+                                                        child: Text(
+                                                            I18n.of(context)
+                                                                .ok)),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: CachedNetworkImage(
+                                          imageUrl: userStore.userDetail!
+                                              .profile.background_image_url!,
+                                          fit: BoxFit.fitWidth,
+                                          cacheManager: pixivCacheManager,
+                                          httpHeaders: Hoster.header(
+                                              url: userStore.userDetail!.profile
+                                                  .background_image_url),
                                         ),
-                                        TextButton(
-                                          child: Text("CANCEL"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        )
-                                      ],
-                                    );
-                                  });
-                              if (result == "OK") {
-                                await muteStore.insertBanUserId(
-                                    widget.id.toString(),
-                                    userStore.userDetail!.user.name);
-                                Navigator.of(context).pop();
-                              }
-                            }
-                            break;
-                          case 2:
-                            {
-                              Clipboard.setData(ClipboardData(
-                                  text:
-                                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
-                              BotToast.showText(
-                                  text: I18n.of(context).copied_to_clipboard);
-                              break;
-                            }
-                          case 3:
-                            {
-                              Reporter.show(
-                                  context,
-                                  () async => await muteStore.insertBanUserId(
-                                      widget.id.toString(),
-                                      userStore.userDetail!.user.name));
-                              break;
-                            }
-                          default:
-                        }
-                      },
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem<int>(
-                            value: 0,
-                            child: Text(I18n.of(context).quietly_follow),
-                          ),
-                          PopupMenuItem<int>(
-                            value: 1,
-                            child: Text(I18n.of(context).block_user),
-                          ),
-                          PopupMenuItem<int>(
-                            value: 2,
-                            child: Text(I18n.of(context).copymessage),
-                          ),
-                          PopupMenuItem<int>(
-                            value: 3,
-                            child: Text(I18n.of(context).report),
-                          ),
-                        ];
-                      },
-                    )
-                  ],
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.pin,
-                    background: Container(
-                      color: Theme.of(context).cardColor,
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).padding.top + 160,
-                              child: userStore.userDetail != null
-                                  ? userStore.userDetail!.profile
-                                              .background_image_url !=
-                                          null
-                                      ? InkWell(
-                                          onLongPress: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    title: Text(
-                                                        I18n.of(context).save),
-                                                    actions: [
-                                                      TextButton(
-                                                          onPressed: () async {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text(
-                                                              I18n.of(context)
-                                                                  .cancel)),
-                                                      TextButton(
-                                                          onPressed: () async {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            await _saveUserBg(
-                                                                userStore
-                                                                    .userDetail!
-                                                                    .profile
-                                                                    .background_image_url!);
-                                                          },
-                                                          child: Text(
-                                                              I18n.of(context)
-                                                                  .ok)),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          child: CachedNetworkImage(
-                                            imageUrl: userStore.userDetail!
-                                                .profile.background_image_url!,
-                                            fit: BoxFit.fitWidth,
-                                            cacheManager: pixivCacheManager,
-                                            httpHeaders: Hoster.header(
-                                                url: userStore
-                                                    .userDetail!
-                                                    .profile
-                                                    .background_image_url),
-                                          ),
-                                        )
-                                      : Container(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        )
-                                  : Container()),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                _buildHeader(context),
-                                Container(
-                                  color: Theme.of(context).cardColor,
-                                  child: Column(
-                                    children: <Widget>[
-                                      _buildNameFollow(context),
-                                      _buildComment(context)
-                                    ],
-                                  ),
+                                      )
+                                    : Container(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      )
+                                : Container()),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _buildHeader(context),
+                              Container(
+                                color: Theme.of(context).cardColor,
+                                child: Column(
+                                  children: <Widget>[
+                                    _buildNameFollow(context),
+                                    _buildComment(context)
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SliverPersistentHeader(
-                  delegate: StickyTabBarDelegate(
-                      child: TabBar(
-                    controller: _tabController,
-                    indicator: MD2Indicator(
-                        indicatorHeight: 3,
-                        indicatorColor: Theme.of(context).colorScheme.primary,
-                        indicatorSize: MD2IndicatorSize.normal),
-                    onTap: (index) {
-                      setState(() {
-                        _tabIndex = index;
-                      });
-                    },
-                    labelColor: Theme.of(context).textTheme.bodyText1!.color,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
-                      GestureDetector(
-                        onDoubleTap: () {
-                          if (_tabIndex == 0)
-                            _scrollController.position.jumpTo(0);
-                        },
-                        child: Tab(
-                          text: I18n.of(context).works,
-                        ),
+              ),
+              SliverPersistentHeader(
+                delegate: StickyTabBarDelegate(
+                    child: TabBar(
+                  controller: _tabController,
+                  indicator: MD2Indicator(
+                      indicatorHeight: 3,
+                      indicatorColor: Theme.of(context).colorScheme.primary,
+                      indicatorSize: MD2IndicatorSize.normal),
+                  onTap: (index) {
+                    setState(() {
+                      _tabIndex = index;
+                    });
+                  },
+                  labelColor: Theme.of(context).textTheme.bodyText1!.color,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if (_tabIndex == 0)
+                          _scrollController.position.jumpTo(0);
+                      },
+                      child: Tab(
+                        text: I18n.of(context).works,
                       ),
-                      GestureDetector(
-                        onDoubleTap: () {
-                          if (_tabIndex == 1)
-                            _scrollController.position.jumpTo(0);
-                        },
-                        child: Tab(
-                          text: I18n.of(context).bookmark,
-                        ),
+                    ),
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if (_tabIndex == 1)
+                          _scrollController.position.jumpTo(0);
+                      },
+                      child: Tab(
+                        text: I18n.of(context).bookmark,
                       ),
-                      GestureDetector(
-                        onDoubleTap: () {
-                          if (_tabIndex == 2)
-                            _scrollController.position.jumpTo(0);
-                        },
-                        child: Tab(
-                          text: I18n.of(context).detail,
-                        ),
+                    ),
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if (_tabIndex == 2)
+                          _scrollController.position.jumpTo(0);
+                      },
+                      child: Tab(
+                        text: I18n.of(context).detail,
                       ),
-                    ],
-                  )),
-                  pinned: true,
-                ),
-              ];
-            },
-          ),
+                    ),
+                  ],
+                )),
+                pinned: true,
+              ),
+            ];
+          },
         ),
-      );
-    });
+      ),
+    );
+  }
+
+  PopupMenuButton<int> _buildPopMenu(BuildContext context) {
+    return PopupMenuButton<int>(
+      onSelected: (index) async {
+        switch (index) {
+          case 0:
+            userStore.follow(needPrivate: true);
+            break;
+          case 1:
+            {
+              final result = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('${I18n.of(context).block_user}?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop("OK");
+                          },
+                        ),
+                        TextButton(
+                          child: Text("CANCEL"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  });
+              if (result == "OK") {
+                await muteStore.insertBanUserId(
+                    widget.id.toString(), userStore.userDetail!.user.name);
+                Navigator.of(context).pop();
+              }
+            }
+            break;
+          case 2:
+            {
+              Clipboard.setData(ClipboardData(
+                  text:
+                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
+              BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+              break;
+            }
+          case 3:
+            {
+              Reporter.show(
+                  context,
+                  () async => await muteStore.insertBanUserId(
+                      widget.id.toString(), userStore.userDetail!.user.name));
+              break;
+            }
+          default:
+        }
+      },
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<int>(
+            value: 0,
+            child: Text(I18n.of(context).quietly_follow),
+          ),
+          PopupMenuItem<int>(
+            value: 1,
+            child: Text(I18n.of(context).block_user),
+          ),
+          PopupMenuItem<int>(
+            value: 2,
+            child: Text(I18n.of(context).copymessage),
+          ),
+          PopupMenuItem<int>(
+            value: 3,
+            child: Text(I18n.of(context).report),
+          ),
+        ];
+      },
+    );
   }
 
   Align _topVert(BuildContext context) {
