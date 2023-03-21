@@ -19,6 +19,7 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
@@ -26,6 +27,7 @@ import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
@@ -45,7 +47,6 @@ class WorksPage extends StatefulWidget {
 }
 
 class _WorksPageState extends State<WorksPage> {
-  late LightSource futureGet;
   late LightingStore _store;
   late EasyRefreshController _easyRefreshController;
 
@@ -53,9 +54,10 @@ class _WorksPageState extends State<WorksPage> {
   void initState() {
     _easyRefreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
-    futureGet = ApiForceSource(
-        futureGet: (bool e) => apiClient.getUserIllusts(widget.id, 'illust'));
-    _store = widget.store ?? LightingStore(futureGet);
+    _store = widget.store ??
+        LightingStore(ApiForceSource(
+            futureGet: (bool e) =>
+                apiClient.getUserIllusts(widget.id, 'illust')));
     _store.easyRefreshController = _easyRefreshController;
     super.initState();
     _store.fetch();
@@ -72,31 +74,53 @@ class _WorksPageState extends State<WorksPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      _buildWorks(),
-      // SafeArea(
-      //   top: false,
-      //   bottom: false,
-      //   child: CustomScrollView(
-      //     slivers: [
-      //       SliverOverlapInjector(
-      //         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-      //       ),
-      //       SliverToBoxAdapter(
-      //         child: Container(
-      //           height: 50,
-      //           child: Center(
-      //             child: _buildSortChip(),
-      //           ),
-      //         ),
-      //       )
-      //     ],
-      //   ),
-      // )
-    ]);
+    return Observer(builder: (_) {
+      return _buildContent(context);
+    });
   }
 
-  Widget _buildWorks() {
+  Widget _buildContent(context) {
+    return _store.errorMessage != null
+        ? _buildErrorContent(context)
+        : _store.iStores.isNotEmpty
+            ? _buildWorks(context)
+            : Container(
+                child: _store.refreshing ? WaterFallLoading() : Container(),
+              );
+  }
+
+  Widget _buildErrorContent(context) {
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            height: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(':(', style: Theme.of(context).textTheme.headline4),
+          ),
+          TextButton(
+              onPressed: () {
+                _store.fetch(force: true);
+              },
+              child: Text(I18n.of(context).retry)),
+          Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                (_store.errorMessage?.contains("400") == true
+                    ? '${I18n.of(context).error_400_hint}\n ${_store.errorMessage}'
+                    : '${_store.errorMessage}'),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWorks(BuildContext context) {
     return SafeArea(
         top: false,
         bottom: false,
@@ -122,16 +146,18 @@ class _WorksPageState extends State<WorksPage> {
                       physics: phy,
                       key: PageStorageKey<String>(widget.portal),
                       slivers: [
-                        SliverOverlapInjector(
+                        SliverPinnedOverlapInjector(
                           handle:
                               NestedScrollView.sliverOverlapAbsorberHandleFor(
                                   context),
                         ),
-                        SliverToBoxAdapter(
-                          child: Container(
-                            height: 50,
-                          ),
-                        ),
+                        SliverPersistentHeader(
+                            delegate: SliverChipDelegate(Container(
+                              child: Center(
+                                child: _buildSortChip(),
+                              ),
+                            )),
+                            pinned: true),
                         const HeaderLocator.sliver(),
                         SliverWaterfallFlow(
                           gridDelegate: _buildGridDelegate(),
@@ -190,8 +216,9 @@ class _WorksPageState extends State<WorksPage> {
       onChange: (index) {
         setState(() {
           now = index == 0 ? 'illust' : 'manga';
-          futureGet = ApiForceSource(
+          _store.source = ApiForceSource(
               futureGet: (bool e) => apiClient.getUserIllusts(widget.id, now));
+          _store.fetch();
         });
       },
       children: [
@@ -199,5 +226,112 @@ class _WorksPageState extends State<WorksPage> {
         I18n.of(context).manga,
       ],
     );
+  }
+}
+
+class SliverPinnedOverlapInjector extends SingleChildRenderObjectWidget {
+  const SliverPinnedOverlapInjector({
+    required this.handle,
+    Key? key,
+  }) : super(key: key);
+
+  final SliverOverlapAbsorberHandle handle;
+
+  @override
+  RenderSliverPinnedOverlapInjector createRenderObject(BuildContext context) {
+    return RenderSliverPinnedOverlapInjector(
+      handle: handle,
+    );
+  }
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderSliverPinnedOverlapInjector renderObject,
+  ) {
+    renderObject.handle = handle;
+  }
+}
+
+class RenderSliverPinnedOverlapInjector extends RenderSliver {
+  RenderSliverPinnedOverlapInjector({
+    required SliverOverlapAbsorberHandle handle,
+  }) : _handle = handle;
+
+  double? _currentLayoutExtent;
+  double? _currentMaxExtent;
+
+  SliverOverlapAbsorberHandle get handle => _handle;
+  SliverOverlapAbsorberHandle _handle;
+
+  set handle(SliverOverlapAbsorberHandle value) {
+    if (handle == value) return;
+    if (attached) {
+      handle.removeListener(markNeedsLayout);
+    }
+    _handle = value;
+    if (attached) {
+      handle.addListener(markNeedsLayout);
+      if (handle.layoutExtent != _currentLayoutExtent ||
+          handle.scrollExtent != _currentMaxExtent) markNeedsLayout();
+    }
+  }
+
+  @override
+  void attach(PipelineOwner owner) {
+    super.attach(owner);
+    handle.addListener(markNeedsLayout);
+    if (handle.layoutExtent != _currentLayoutExtent ||
+        handle.scrollExtent != _currentMaxExtent) markNeedsLayout();
+  }
+
+  @override
+  void detach() {
+    handle.removeListener(markNeedsLayout);
+    super.detach();
+  }
+
+  @override
+  void performLayout() {
+    _currentLayoutExtent = handle.layoutExtent;
+
+    final paintedExtent = min(
+      _currentLayoutExtent!,
+      constraints.remainingPaintExtent - constraints.overlap,
+    );
+
+    geometry = SliverGeometry(
+      paintExtent: paintedExtent,
+      maxPaintExtent: _currentLayoutExtent!,
+      maxScrollObstructionExtent: _currentLayoutExtent!,
+      paintOrigin: constraints.overlap,
+      scrollExtent: _currentLayoutExtent!,
+      layoutExtent: max(0, paintedExtent - constraints.scrollOffset),
+      hasVisualOverflow: paintedExtent < _currentLayoutExtent!,
+    );
+  }
+}
+
+class SliverChipDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  double height = 45;
+
+  SliverChipDelegate(this.child, {this.height = 45});
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(SliverChipDelegate oldDelegate) {
+    return false;
   }
 }

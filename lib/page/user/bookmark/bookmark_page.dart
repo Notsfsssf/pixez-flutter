@@ -29,6 +29,7 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/user/bookmark/tag/user_bookmark_tag_page.dart';
+import 'package:pixez/page/user/works/works_page.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -226,18 +227,24 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
                       physics: phy,
                       key: PageStorageKey<String>(widget.portal),
                       slivers: [
-                        SliverOverlapInjector(
-                          handle:
-                              NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                  context),
-                        ),
-                        const HeaderLocator.sliver(),
+                        userIsMe
+                            ? SliverPinnedOverlapInjector(
+                                handle: NestedScrollView
+                                    .sliverOverlapAbsorberHandleFor(context),
+                              )
+                            : SliverOverlapInjector(
+                                handle: NestedScrollView
+                                    .sliverOverlapAbsorberHandleFor(context),
+                              ),
                         if (userIsMe)
-                          SliverToBoxAdapter(
-                            child: Container(
-                              height: 45,
-                            ),
-                          ),
+                          SliverPersistentHeader(
+                              delegate: SliverChipDelegate(Container(
+                                child: Center(
+                                  child: buildTopChip(context),
+                                ),
+                              )),
+                              pinned: true),
+                        const HeaderLocator.sliver(),
                         SliverWaterfallFlow(
                           gridDelegate: _buildGridDelegate(),
                           delegate: _buildSliverChildBuilderDelegate(context),
@@ -251,38 +258,51 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
         ));
   }
 
+  Widget _buildContent(context) {
+    return _store.errorMessage != null
+        ? _buildErrorContent(context)
+        : _store.iStores.isNotEmpty
+            ? _buildWorks(context)
+            : Container(
+                child: _store.refreshing ? WaterFallLoading() : Container(),
+              );
+  }
+
+  Widget _buildErrorContent(context) {
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            height: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(':(', style: Theme.of(context).textTheme.headline4),
+          ),
+          TextButton(
+              onPressed: () {
+                _store.fetch(force: true);
+              },
+              child: Text(I18n.of(context).retry)),
+          Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                (_store.errorMessage?.contains("400") == true
+                    ? '${I18n.of(context).error_400_hint}\n ${_store.errorMessage}'
+                    : '${_store.errorMessage}'),
+              ))
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      final userIsMe = accountStore.now != null &&
-          accountStore.now!.userId == widget.id.toString();
-      if (userIsMe)
-        return Stack(
-          children: [
-            _buildWorks(context),
-            SafeArea(
-              top: false,
-              bottom: false,
-              child: CustomScrollView(
-                slivers: [
-                  SliverOverlapInjector(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 50,
-                      child: Center(
-                        child: buildTopChip(context),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        );
-      return _buildWorks(context);
+      return _buildContent(context);
     });
   }
 
