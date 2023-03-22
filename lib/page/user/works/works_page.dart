@@ -82,11 +82,7 @@ class _WorksPageState extends State<WorksPage> {
   Widget _buildContent(context) {
     return _store.errorMessage != null
         ? _buildErrorContent(context)
-        : _store.iStores.isNotEmpty
-            ? _buildWorks(context)
-            : Container(
-                child: _store.refreshing ? WaterFallLoading() : Container(),
-              );
+        : _buildWorks(context);
   }
 
   Widget _buildErrorContent(context) {
@@ -141,7 +137,7 @@ class _WorksPageState extends State<WorksPage> {
                   position: IndicatorPosition.locator,
                 ),
                 childBuilder: (context, phy) {
-                  return Observer(builder: (_) {
+                 return Observer(builder: (_) {
                     return CustomScrollView(
                       physics: phy,
                       key: PageStorageKey<String>(widget.portal),
@@ -159,6 +155,15 @@ class _WorksPageState extends State<WorksPage> {
                             )),
                             pinned: true),
                         const HeaderLocator.sliver(),
+                        if (_store.refreshing && _store.iStores.isEmpty)
+                          SliverToBoxAdapter(
+                            child: Container(
+                              height: 200,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          ),
                         SliverWaterfallFlow(
                           gridDelegate: _buildGridDelegate(),
                           delegate: _buildSliverChildBuilderDelegate(context),
@@ -214,12 +219,13 @@ class _WorksPageState extends State<WorksPage> {
   Widget _buildSortChip() {
     return SortGroup(
       onChange: (index) {
+        final type = index == 0 ? 'illust' : 'manga';
         setState(() {
-          now = index == 0 ? 'illust' : 'manga';
-          _store.source = ApiForceSource(
-              futureGet: (bool e) => apiClient.getUserIllusts(widget.id, now));
-          _store.fetch();
+          now = type;
         });
+        _store.source = ApiForceSource(
+            futureGet: (bool e) => apiClient.getUserIllusts(widget.id, type));
+        _store.fetch();
       },
       children: [
         I18n.of(context).illust,

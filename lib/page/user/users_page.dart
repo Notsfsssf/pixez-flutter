@@ -206,6 +206,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     return Container(
       child: Scaffold(
         body: NestedScrollView(
+          controller: _scrollController,
           body: TabBarView(controller: _tabController, children: [
             WorksPage(
               id: widget.id,

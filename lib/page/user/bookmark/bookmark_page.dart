@@ -172,7 +172,6 @@ class BookMarkNestedPage extends StatefulWidget {
 }
 
 class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
-  late LightSource futureGet;
   late ScrollController _scrollController;
   late EasyRefreshController _easyRefreshController;
   late LightingStore _store;
@@ -183,10 +182,10 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
     _scrollController = ScrollController();
     _easyRefreshController = EasyRefreshController(
         controlFinishRefresh: true, controlFinishLoad: true);
-    futureGet = ApiForceSource(
-        futureGet: (e) =>
-            apiClient.getBookmarksIllust(widget.id, restrict, null));
-    _store = widget.store ?? LightingStore(futureGet);
+    _store = widget.store ??
+        LightingStore(ApiForceSource(
+            futureGet: (e) =>
+                apiClient.getBookmarksIllust(widget.id, restrict, null)));
     _store.easyRefreshController = _easyRefreshController;
     super.initState();
     _store.fetch();
@@ -245,6 +244,15 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
                               )),
                               pinned: true),
                         const HeaderLocator.sliver(),
+                        if (_store.refreshing && _store.iStores.isEmpty)
+                          SliverToBoxAdapter(
+                            child: Container(
+                              height: 200,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          ),
                         SliverWaterfallFlow(
                           gridDelegate: _buildGridDelegate(),
                           delegate: _buildSliverChildBuilderDelegate(context),
@@ -261,11 +269,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
   Widget _buildContent(context) {
     return _store.errorMessage != null
         ? _buildErrorContent(context)
-        : _store.iStores.isNotEmpty
-            ? _buildWorks(context)
-            : Container(
-                child: _store.refreshing ? WaterFallLoading() : Container(),
-              );
+        : _buildWorks(context);
   }
 
   Widget _buildErrorContent(context) {
@@ -355,18 +359,17 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
           SortGroup(
             children: [I18n.of(context).public, I18n.of(context).private],
             onChange: (index) {
-              if (index == 0)
-                setState(() {
-                  futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getBookmarksIllust(
-                          widget.id, restrict = 'public', null));
-                });
-              if (index == 1)
-                setState(() {
-                  futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getBookmarksIllust(
-                          widget.id, restrict = 'private', null));
-                });
+              if (index == 0) {
+                _store.source = ApiForceSource(
+                    futureGet: (bool e) => apiClient.getBookmarksIllust(
+                        widget.id, restrict = 'public', null));
+                _store.fetch();
+              } else if (index == 1) {
+                _store.source = ApiForceSource(
+                    futureGet: (bool e) => apiClient.getBookmarksIllust(
+                        widget.id, restrict = 'private', null));
+                _store.fetch();
+              }
             },
           ),
           Padding(
@@ -378,11 +381,10 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
                 if (result != null) {
                   String? tag = result['tag'];
                   String restrict = result['restrict'];
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (bool e) => apiClient.getBookmarksIllust(
-                            widget.id, restrict, tag));
-                  });
+                  _store.source = ApiForceSource(
+                      futureGet: (bool e) => apiClient.getBookmarksIllust(
+                          widget.id, restrict, tag));
+                  _store.fetch();
                 }
               },
               child: Chip(
