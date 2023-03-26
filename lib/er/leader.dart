@@ -55,6 +55,16 @@ class Leader {
       }));
       return;
     }
+    if (link.host == "i.pximg.net") {
+      final id = int.tryParse(
+          link.pathSegments.last.split(".").first.split("_").first);
+      if (id != null) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return IllustLightingPage(id: id);
+        }));
+        return;
+      }
+    }
     if (link.host == "pixiv.me") {
       try {
         BotToast.showText(text: "Pixiv me...");

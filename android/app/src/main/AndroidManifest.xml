@@ -99,6 +99,9 @@
                     android:host="pixiv.net"
                     android:scheme="pixez" />
                 <data
+                    android:host="i.pximg.net"
+                    android:scheme="pixez" />
+                <data
                     android:host="www.pixiv.net"
                     android:scheme="pixez" />
                 <data
@@ -125,6 +128,9 @@
                 <data
                     android:host="www.pixiv.me"
                     android:scheme="http" />
+                <data
+                    android:host="i.pximg.net"
+                    android:scheme="https" />
                 <data
                     android:host="users"
                     android:scheme="pixiv" />
