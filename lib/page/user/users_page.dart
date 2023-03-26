@@ -256,6 +256,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               child: Stack(
                 children: <Widget>[
                   _buildBackground(context),
+                  _buildFakeBg(context),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Column(
@@ -277,7 +278,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -372,6 +373,37 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       //   pinned: true,
       // ),
     ];
+  }
+
+  //为什么会需要这段？因为外部Column无法使子元素贴紧，子元素之间在真机上总是有spacing，所以底部又需要一个cardColor来填充
+  Widget _buildFakeBg(BuildContext context) {
+    return Align(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            height: 55,
+            color: Theme.of(context).cardColor,
+          ),
+          Container(
+            color: Theme.of(context).cardColor,
+            child: Column(
+              children: <Widget>[
+                _buildFakeNameFollow(context),
+                Container(
+                  height: 60,
+                ),
+                Tab(
+                  text: " ",
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+      alignment: Alignment.bottomCenter,
+    );
   }
 
   Widget _buildBackground(BuildContext context) {
@@ -511,6 +543,29 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
         ),
       ),
       alignment: Alignment.bottomCenter,
+    );
+  }
+
+  Widget _buildFakeNameFollow(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                userStore.user?.name ?? "",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                userStore.userDetail == null
+                    ? ""
+                    : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
+                style: Theme.of(context).textTheme.caption,
+              )
+            ]),
+      ),
     );
   }
 
