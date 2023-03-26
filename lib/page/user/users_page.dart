@@ -146,7 +146,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
         }
       }
 
-      if (userStore.errorMessage != null) {
+      if (userStore.errorMessage != null && userStore.user != null) {
         if (userStore.errorMessage!.contains("404"))
           return Scaffold(
             appBar: AppBar(),
@@ -218,12 +218,11 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               store: _bookmarkStore,
               portal: "Book",
             ),
-            Container(
-                child: userStore.userDetail != null
-                    ? UserDetailPage(
-                        key: PageStorageKey('Tab2'),
-                        userDetail: userStore.userDetail!)
-                    : Container()),
+            UserDetailPage(
+              key: PageStorageKey('Tab2'),
+              userDetail: userStore.userDetail,
+              isNewNested: true,
+            ),
           ]),
           headerSliverBuilder:
               (BuildContext context, bool? innerBoxIsScrolled) {
@@ -332,45 +331,48 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          bottom: TabBar(
-            controller: _tabController,
-            indicator: MD2Indicator(
-                indicatorHeight: 3,
-                indicatorColor: Theme.of(context).colorScheme.primary,
-                indicatorSize: MD2IndicatorSize.normal),
-            onTap: (index) {
-              setState(() {
-                _tabIndex = index;
-              });
-            },
-            labelColor: Theme.of(context).textTheme.bodyText1!.color,
-            indicatorSize: TabBarIndicatorSize.label,
-            tabs: [
-              GestureDetector(
-                onDoubleTap: () {
-                  if (_tabIndex == 0) _scrollController.position.jumpTo(0);
-                },
-                child: Tab(
-                  text: I18n.of(context).works,
+          bottom: ColoredTabBar(
+            Theme.of(context).cardColor,
+            TabBar(
+              controller: _tabController,
+              indicator: MD2Indicator(
+                  indicatorHeight: 3,
+                  indicatorColor: Theme.of(context).colorScheme.primary,
+                  indicatorSize: MD2IndicatorSize.normal),
+              onTap: (index) {
+                setState(() {
+                  _tabIndex = index;
+                });
+              },
+              labelColor: Theme.of(context).textTheme.bodyText1!.color,
+              indicatorSize: TabBarIndicatorSize.label,
+              tabs: [
+                GestureDetector(
+                  onDoubleTap: () {
+                    if (_tabIndex == 0) _scrollController.position.jumpTo(0);
+                  },
+                  child: Tab(
+                    text: I18n.of(context).works,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onDoubleTap: () {
-                  if (_tabIndex == 1) _scrollController.position.jumpTo(0);
-                },
-                child: Tab(
-                  text: I18n.of(context).bookmark,
+                GestureDetector(
+                  onDoubleTap: () {
+                    if (_tabIndex == 1) _scrollController.position.jumpTo(0);
+                  },
+                  child: Tab(
+                    text: I18n.of(context).bookmark,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onDoubleTap: () {
-                  if (_tabIndex == 2) _scrollController.position.jumpTo(0);
-                },
-                child: Tab(
-                  text: I18n.of(context).detail,
+                GestureDetector(
+                  onDoubleTap: () {
+                    if (_tabIndex == 2) _scrollController.position.jumpTo(0);
+                  },
+                  child: Tab(
+                    text: I18n.of(context).detail,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -820,4 +822,20 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return false;
   }
+}
+
+class ColoredTabBar extends Container implements PreferredSizeWidget {
+  ColoredTabBar(this.color, this.tabBar);
+
+  final Color color;
+  final TabBar tabBar;
+
+  @override
+  Size get preferredSize => tabBar.preferredSize;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        color: color,
+        child: tabBar,
+      );
 }

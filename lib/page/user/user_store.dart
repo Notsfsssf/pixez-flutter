@@ -82,6 +82,7 @@ abstract class _UserStoreBase with Store {
   @action
   Future<void> firstFetch() async {
     try {
+      errorMessage = null;
       Response response = await client.getUser(id);
       UserDetail userDetail = UserDetail.fromJson(response.data);
       this.userDetail = userDetail;

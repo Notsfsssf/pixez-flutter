@@ -80,7 +80,7 @@ class _WorksPageState extends State<WorksPage> {
   }
 
   Widget _buildContent(context) {
-    return _store.errorMessage != null
+    return _store.errorMessage != null && _store.iStores.isEmpty
         ? _buildErrorContent(context)
         : _buildWorks(context);
   }
@@ -132,6 +132,7 @@ class _WorksPageState extends State<WorksPage> {
                 },
                 header: ClassicHeader(
                   position: IndicatorPosition.locator,
+                  safeArea: false,
                 ),
                 footer: ClassicFooter(
                   position: IndicatorPosition.locator,

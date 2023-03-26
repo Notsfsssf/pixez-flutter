@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -28,9 +29,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class UserDetailPage extends StatefulWidget {
-  final UserDetail userDetail;
+  final UserDetail? userDetail;
+  bool isNewNested;
 
-  const UserDetailPage({Key? key, required this.userDetail}) : super(key: key);
+  UserDetailPage({Key? key, required this.userDetail, this.isNewNested = false})
+      : super(key: key);
 
   @override
   _UserDetailPageState createState() => _UserDetailPageState();
@@ -40,128 +43,148 @@ class _UserDetailPageState extends State<UserDetailPage> {
   @override
   Widget build(BuildContext context) {
     var detail = widget.userDetail;
-    var profile = widget.userDetail.profile;
-    var public = widget.userDetail.profile_publicity;
-    return widget.userDetail != null
-        ? SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Padding(
+    var profile = widget.userDetail?.profile;
+    var public = widget.userDetail?.profile_publicity;
+    if (widget.isNewNested)
+      return SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(builder: (context) {
+          return _buildScrollView(context, detail, profile, public);
+        }),
+      );
+    return _buildScrollView(context, detail, profile, public);
+  }
+
+  CustomScrollView _buildScrollView(BuildContext context, UserDetail? detail,
+      Profile? profile, Profile_publicity? public) {
+    return CustomScrollView(
+      key: PageStorageKey<String>("user_detail"),
+      slivers: [
+        if (widget.isNewNested)
+          SliverOverlapInjector(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: widget.userDetail.user.comment != null &&
-                                widget.userDetail.user.comment!.isNotEmpty
-                            ? SelectableHtml(
-                                data: widget.userDetail.user.comment!)
-                            : SelectableHtml(
-                                data: '~',
-                              )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DataTable(
-                    columns: <DataColumn>[
-                      DataColumn(label: Text(I18n.of(context).nickname)),
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(detail.user.name))),
-                    ],
-                    rows: <DataRow>[
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).painter_id)),
-                        DataCell(
-                            Text(detail.user.id.toString()),
-                            onTap: () {
-                          try {
-                            Clipboard.setData(
-                                ClipboardData(text: detail.user.id.toString()));
-                          } catch (e) {}
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).total_follow_users)),
-                        DataCell(
-                            Text(detail.profile.total_follow_users.toString()),
-                            onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return Scaffold(
-                              appBar: AppBar(
-                                title: Text(I18n.of(context).followed),
-                              ),
-                              body: FollowList(id: widget.userDetail.user.id),
-                            );
-                          }));
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).total_mypixiv_users)),
-                        DataCell(
-                            Text(detail.profile.total_mypixiv_users.toString()),
-                            onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return Scaffold(
-                              appBar: AppBar(),
-                              body: FollowList(
-                                id: widget.userDetail.user.id,
+                  child: widget.userDetail?.user.comment != null &&
+                          widget.userDetail?.user.comment!.isNotEmpty == true
+                      ? SelectableHtml(data: widget.userDetail!.user.comment!)
+                      : SelectableHtml(
+                          data: '~',
+                        )),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DataTable(
+              columns: <DataColumn>[
+                DataColumn(label: Text(I18n.of(context).nickname)),
+                DataColumn(
+                    label: Expanded(child: Text(detail?.user.name ?? ""))),
+              ],
+              rows: <DataRow>[
+                DataRow(cells: [
+                  DataCell(Text(I18n.of(context).painter_id)),
+                  DataCell(Text(detail?.user.id.toString() ?? ""), onTap: () {
+                    try {
+                      Clipboard.setData(
+                          ClipboardData(text: detail!.user.id.toString()));
+                    } catch (e) {}
+                  }),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text(I18n.of(context).total_follow_users)),
+                  DataCell(
+                      Text(detail?.profile.total_follow_users.toString() ?? ""),
+                      onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text(I18n.of(context).followed),
+                        ),
+                        body: detail == null
+                            ? Container()
+                            : FollowList(id: detail.user.id),
+                      );
+                    }));
+                  }),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text(I18n.of(context).total_mypixiv_users)),
+                  DataCell(
+                      Text(
+                          detail?.profile.total_mypixiv_users.toString() ?? ""),
+                      onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return Scaffold(
+                        appBar: AppBar(),
+                        body: detail == null
+                            ? Container()
+                            : FollowList(
+                                id: detail.user.id,
                                 isFollowMe: true,
                               ),
-                            );
-                          }));
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).twitter_account)),
-                        DataCell(Text(profile.twitter_account ?? ""),
-                            onTap: () async {
-                          final url = profile.twitter_url;
-                          if (url != null) {
-                            try {
-                              if (Platform.isIOS) {
-                                await launchUrlString(url,
-                                    mode: LaunchMode.externalApplication);
-                              } else {
-                                await launch(url);
-                              }
-                            } catch (e) {
-                              Share.share(url);
-                            }
-                          }
-                        }),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).gender)),
-                        DataCell(Text(detail.profile.gender!)),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text(I18n.of(context).job)),
-                        DataCell(Text(detail.profile.job!)),
-                      ]),
-                      DataRow(cells: [
-                        DataCell(Text('Pawoo')),
-                        DataCell(Text(public.pawoo ? 'Link' : 'none'),
-                            onTap: () async {
-                          if (!public.pawoo) return;
-                          var url = detail.profile.pawoo_url;
-                          try {
-                            await launch(url!);
-                          } catch (e) {}
-                        }),
-                      ]),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 200,
-                )
+                      );
+                    }));
+                  }),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text(I18n.of(context).twitter_account)),
+                  DataCell(Text(profile?.twitter_account ?? ""),
+                      onTap: () async {
+                    final url = profile?.twitter_url;
+                    if (url != null) {
+                      try {
+                        if (Platform.isIOS) {
+                          await launchUrlString(url,
+                              mode: LaunchMode.externalApplication);
+                        } else {
+                          await launch(url);
+                        }
+                      } catch (e) {
+                        Share.share(url);
+                      }
+                    }
+                  }),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text(I18n.of(context).gender)),
+                  DataCell(Text(detail?.profile.gender ?? "")),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text(I18n.of(context).job)),
+                  DataCell(Text(detail?.profile.job ?? "")),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Pawoo')),
+                  DataCell(Text(public?.pawoo != null ? 'Link' : 'none'),
+                      onTap: () async {
+                    if (public?.pawoo == null || !public!.pawoo) return;
+                    var url = detail?.profile.pawoo_url;
+                    try {
+                      await launch(url!);
+                    } catch (e) {}
+                  }),
+                ]),
               ],
             ),
-          )
-        : Container();
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            height: 200,
+          ),
+        )
+      ],
+    );
   }
 }

@@ -214,6 +214,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
                 },
                 header: ClassicHeader(
                   position: IndicatorPosition.locator,
+                  safeArea: false
                 ),
                 footer: ClassicFooter(
                   position: IndicatorPosition.locator,
@@ -267,7 +268,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
   }
 
   Widget _buildContent(context) {
-    return _store.errorMessage != null
+    return _store.errorMessage != null && _store.iStores.isEmpty
         ? _buildErrorContent(context)
         : _buildWorks(context);
   }
