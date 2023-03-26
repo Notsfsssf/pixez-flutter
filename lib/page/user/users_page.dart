@@ -255,56 +255,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               color: Theme.of(context).cardColor,
               child: Stack(
                 children: <Widget>[
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).padding.top + 160,
-                      child: userStore.userDetail != null
-                          ? userStore.userDetail!.profile
-                                      .background_image_url !=
-                                  null
-                              ? InkWell(
-                                  onLongPress: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(I18n.of(context).save),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text(
-                                                      I18n.of(context).cancel)),
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    Navigator.of(context).pop();
-                                                    await _saveUserBg(userStore
-                                                        .userDetail!
-                                                        .profile
-                                                        .background_image_url!);
-                                                  },
-                                                  child: Text(
-                                                      I18n.of(context).ok)),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: CachedNetworkImage(
-                                    imageUrl: userStore.userDetail!.profile
-                                        .background_image_url!,
-                                    fit: BoxFit.fitWidth,
-                                    cacheManager: pixivCacheManager,
-                                    httpHeaders: Hoster.header(
-                                        url: userStore.userDetail!.profile
-                                            .background_image_url),
-                                  ),
-                                )
-                              : Container(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                )
-                          : Container()),
+                  _buildBackground(context),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Column(
@@ -421,6 +372,52 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       //   pinned: true,
       // ),
     ];
+  }
+
+  Widget _buildBackground(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).padding.top + 160,
+        child: userStore.userDetail != null
+            ? userStore.userDetail!.profile.background_image_url != null
+                ? InkWell(
+                    onLongPress: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(I18n.of(context).save),
+                              actions: [
+                                TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(I18n.of(context).cancel)),
+                                TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      await _saveUserBg(userStore.userDetail!
+                                          .profile.background_image_url!);
+                                    },
+                                    child: Text(I18n.of(context).ok)),
+                              ],
+                            );
+                          });
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          userStore.userDetail!.profile.background_image_url!,
+                      fit: BoxFit.fitWidth,
+                      cacheManager: pixivCacheManager,
+                      httpHeaders: Hoster.header(
+                          url: userStore
+                              .userDetail!.profile.background_image_url),
+                    ),
+                  )
+                : Container(
+                    color: Theme.of(context).colorScheme.secondary,
+                  )
+            : Container());
   }
 
   PopupMenuButton<int> _buildPopMenu(BuildContext context) {
@@ -580,7 +577,29 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
   }
 
   Widget _buildHeader(BuildContext context) {
-    Widget w = Container(
+    Widget w = _buildAvatarFollow(context);
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(top: 25),
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: 55.0,
+            child: Container(
+              color: Theme.of(context).cardColor,
+            ),
+          ),
+        ),
+        Align(
+          child: w,
+          alignment: Alignment.bottomCenter,
+        )
+      ],
+    );
+  }
+
+  Container _buildAvatarFollow(BuildContext context) {
+    return Container(
       child: Observer(
         builder: (_) => Row(
           mainAxisSize: MainAxisSize.max,
@@ -691,24 +710,6 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-    );
-    return Stack(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: 25),
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            height: 55.0,
-            child: Container(
-              color: Theme.of(context).cardColor,
-            ),
-          ),
-        ),
-        Align(
-          child: w,
-          alignment: Alignment.bottomCenter,
-        )
-      ],
     );
   }
 
