@@ -162,7 +162,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                   _tabIndex = index;
                 });
               },
-              labelColor: Theme.of(context).textTheme.bodyText1!.color,
+              labelColor: Theme.of(context).textTheme.bodyLarge!.color,
               indicatorSize: TabBarIndicatorSize.label,
               tabs: [
                 GestureDetector(
@@ -417,13 +417,13 @@ class _NovelUsersPageState extends State<NovelUsersPage>
             children: <Widget>[
               Text(
                 userStore.user?.name ?? "",
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Text(
                 userStore.userDetail == null
                     ? ""
                     : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               )
             ]),
       ),
@@ -443,7 +443,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                 tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
                 child: Text(
                   userStore.user?.name ?? "",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               InkWell(
@@ -462,7 +462,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                   userStore.userDetail == null
                       ? ""
                       : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               )
             ]),
@@ -483,7 +483,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
               userStore.userDetail == null
                   ? ""
                   : '${userStore.userDetail!.user.comment}',
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -617,7 +617,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .textTheme
-                                        .bodyText1!
+                                        .bodyLarge!
                                         .color),
                               ),
                             ),

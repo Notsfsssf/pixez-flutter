@@ -70,14 +70,12 @@ class IllustDetailBody extends StatelessWidget {
                         height: 70,
                         width: 70,
                         child: Container(
-                          decoration: illust != null
-                              ? BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _store.isFollow
-                                      ? Colors.yellow
-                                      : Theme.of(context).colorScheme.secondary,
-                                )
-                              : BoxDecoration(),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _store.isFollow
+                                ? Colors.yellow
+                                : Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                       ),
                     ),
@@ -109,11 +107,11 @@ class IllustDetailBody extends StatelessWidget {
                 ),
                 Text(
                   illust.user.name,
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
                   toShortTime(illust.createDate),
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),

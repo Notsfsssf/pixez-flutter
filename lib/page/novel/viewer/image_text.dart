@@ -73,7 +73,6 @@ class SpecialImageText extends SpecialText {
     if (now.contains('-')) {
       trueId = int.tryParse(now.split('-').first)!;
     }
-    if (int == null) return TextSpan(text: key, style: textStyle);
     return PixivImageSpan(trueId, key);
   }
 }
@@ -174,7 +173,7 @@ class NovelSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       {TextStyle? textStyle,
       SpecialTextGestureTapCallback? onTap,
       int? index}) {
-    if (flag == null || flag == '') {
+    if (flag.isEmpty) {
       return null;
     }
     if (isStart(flag, NextPageText.flag)) {

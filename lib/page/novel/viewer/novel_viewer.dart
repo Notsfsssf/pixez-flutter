@@ -108,7 +108,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(':(',
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context).textTheme.headlineMedium),
                   ),
                   TextButton(
                       onPressed: () {
@@ -127,7 +127,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         if (_novelStore.novelTextResponse != null &&
             _novelStore.novel != null) {
           _textStyle =
-              _textStyle ?? Theme.of(context).textTheme.bodyText1!.copyWith();
+              _textStyle ?? Theme.of(context).textTheme.bodyLarge!.copyWith();
           if (_controller == null) {
             LPrinter.d("init Controller ${_novelStore.bookedOffset}");
             _controller =
@@ -143,7 +143,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 leading: IconButton(
                   icon: Icon(
                     Icons.arrow_back,
-                    color: Theme.of(context).textTheme.bodyText1!.color,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -168,14 +168,14 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     icon: Icon(Icons.history),
                     color: Theme.of(context)
                         .textTheme
-                        .bodyText1!
+                        .bodyLarge!
                         .color!
                         .withAlpha(_novelStore.positionBooked ? 225 : 120),
                   ),
                   IconButton(
                     icon: Icon(
                       Icons.more_vert,
-                      color: Theme.of(context).textTheme.bodyText1!.color,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
                     ),
                     onPressed: () {
                       _showMessage(context);
@@ -201,7 +201,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
                     child: Text(
                       "${_novelStore.novel!.title}",
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   //MARK DETAIL NUM,
@@ -211,7 +211,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
                       "${_novelStore.novel!.createDate}",
-                      style: Theme.of(context).textTheme.overline,
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ),
                   Padding(
@@ -224,8 +224,13 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         children: [
                           if (_novelStore.novel!.NovelAIType == 2)
                             Text("${I18n.of(context).ai_generated}",
-                                style: Theme.of(context).textTheme.caption!.copyWith(
-                                    color: Theme.of(context).colorScheme.secondary)),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
                           for (var f in _novelStore.novel!.tags)
                             buildRow(context, f)
                         ],

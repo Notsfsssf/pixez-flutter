@@ -39,7 +39,7 @@ class Leader {
       MaterialPageRoute(
           builder: (context) =>
               Platform.isIOS ? HelloPage() : AndroidHelloPage()),
-      (route) => route == null,
+      (route) => false,
     );
   }
 

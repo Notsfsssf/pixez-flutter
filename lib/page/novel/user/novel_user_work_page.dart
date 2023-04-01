@@ -18,12 +18,9 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
-import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/user/works/works_page.dart';
@@ -140,7 +137,7 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
                               child: Text(
                                 novel.title,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyText1,
+                                style: Theme.of(context).textTheme.bodyLarge,
                                 maxLines: 3,
                               ),
                             ),
@@ -173,8 +170,9 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
                                           horizontal: 1),
                                       child: Text(
                                         f.name,
-                                        style:
-                                            Theme.of(context).textTheme.caption,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
                                       ),
                                     )
                                 ],
@@ -196,7 +194,7 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
                     children: [
                       NovelBookmarkButton(novel: novel),
                       Text('${novel.totalBookmarks}',
-                          style: Theme.of(context).textTheme.caption)
+                          style: Theme.of(context).textTheme.bodySmall)
                     ],
                   ),
                 )
