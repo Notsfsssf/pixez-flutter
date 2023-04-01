@@ -51,9 +51,9 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
       child: IconButton(
         icon: widget.novel.isBookmarked
             ? Icon(Icons.bookmark,
-                color: Theme.of(context).textTheme.caption!.color)
+                color: Theme.of(context).textTheme.bodySmall!.color)
             : Icon(Icons.bookmark_border,
-                color: Theme.of(context).textTheme.caption!.color),
+                color: Theme.of(context).textTheme.bodySmall!.color),
         onPressed: () async {
           if (!widget.novel.isBookmarked) {
             try {

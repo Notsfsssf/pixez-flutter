@@ -13,7 +13,6 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -112,7 +111,6 @@ class _ColorPickPageState extends State<ColorPickPage> {
                 pickerColor = color;
               });
             },
-            showLabel: true,
             pickerAreaHeightPercent: 0.8,
           ),
         ],

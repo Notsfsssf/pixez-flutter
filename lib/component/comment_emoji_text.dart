@@ -76,7 +76,7 @@ class _CommentEmojiTextState extends State<CommentEmojiText> {
   Widget build(BuildContext context) {
     return Text.rich(
       TextSpan(
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
         children: [for (var i in _spans) i],
       ),
     );
@@ -120,7 +120,7 @@ class EmojisSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       {TextStyle? textStyle,
       SpecialTextGestureTapCallback? onTap,
       required int index}) {
-    if (flag == null || flag == '') {
+    if (flag.isEmpty) {
       return null;
     }
     if (isStart(flag, "(")) {

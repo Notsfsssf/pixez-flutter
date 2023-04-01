@@ -17,17 +17,13 @@
 import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
-import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
@@ -54,10 +50,7 @@ class _WorksPageState extends State<WorksPage> {
   void initState() {
     _easyRefreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
-    _store = widget.store ??
-        LightingStore(ApiForceSource(
-            futureGet: (bool e) =>
-                apiClient.getUserIllusts(widget.id, 'illust')));
+    _store = widget.store;
     _store.easyRefreshController = _easyRefreshController;
     super.initState();
     _store.fetch();
@@ -97,7 +90,7 @@ class _WorksPageState extends State<WorksPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(':(', style: Theme.of(context).textTheme.headline4),
+            child: Text(':(', style: Theme.of(context).textTheme.headlineMedium),
           ),
           TextButton(
               onPressed: () {
@@ -138,7 +131,7 @@ class _WorksPageState extends State<WorksPage> {
                   position: IndicatorPosition.locator,
                 ),
                 childBuilder: (context, phy) {
-                 return Observer(builder: (_) {
+                  return Observer(builder: (_) {
                     return CustomScrollView(
                       physics: phy,
                       key: PageStorageKey<String>(widget.portal),

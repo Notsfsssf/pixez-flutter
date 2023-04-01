@@ -24,8 +24,6 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
-import 'package:pixez/page/novel/user/novel_user_bookmark_page.dart';
-import 'package:pixez/page/novel/user/novel_user_work_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:share_plus/share_plus.dart';
@@ -275,18 +273,10 @@ class _NovelUserPageState extends State<NovelUserPage>
                   children: [
                     ExtendedVisibilityDetector(
                       uniqueKey: Key('Tab0'),
-                      child: NovelUserWorkPage(
-                        id: widget.id,
-                        isNested: true,
-                      ),
+                      child: Container(),
                     ),
                     ExtendedVisibilityDetector(
-                      uniqueKey: Key('Tab1'),
-                      child: NovelUserBookmarkPage(
-                        id: widget.id,
-                        isNested: true,
-                      ),
-                    ),
+                        uniqueKey: Key('Tab1'), child: Container()),
                     ExtendedVisibilityDetector(
                         uniqueKey: Key('Tab2'),
                         child:

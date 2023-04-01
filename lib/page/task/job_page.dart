@@ -14,11 +14,9 @@
  */
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
@@ -98,13 +96,11 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
       case 0:
         return Text("seed",
             style:
-                Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12));
-        break;
+                Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 12));
       case 1:
         return Text(I18n.of(context).running,
             style:
-                Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12));
-        break;
+                Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 12));
       case 2:
         return Icon(
           Icons.check_circle,
@@ -119,7 +115,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
       default:
         return Text(
           "seed",
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 16),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 16),
         );
     }
   }
@@ -349,7 +345,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                               taskPersist.userName,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2!
+                                  .bodyMedium!
                                   .copyWith(
                                       color:
                                           Theme.of(context).colorScheme.primary,

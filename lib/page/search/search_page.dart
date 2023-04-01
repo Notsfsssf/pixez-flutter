@@ -15,19 +15,15 @@
  */
 
 import 'dart:io';
-import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
-import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/search_bar.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';

@@ -17,8 +17,6 @@
 import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/painting/inline_span.dart';
-import 'package:flutter/src/painting/text_style.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/models/illust.dart';

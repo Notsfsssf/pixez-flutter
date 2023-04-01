@@ -15,7 +15,6 @@
  */
 
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -125,7 +124,9 @@ class _PreviewPageState extends State<PreviewPage> {
     _lightingStore = LightingStore(
       ApiSource(futureGet: () => apiClient.walkthroughIllusts()),
     );
+    _lightingStore.easyRefreshController = _easyRefreshController;
     super.initState();
+    _lightingStore.fetch();
   }
 
   @override

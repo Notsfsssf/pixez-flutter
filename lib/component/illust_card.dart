@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:animations/animations.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -122,16 +121,9 @@ class _IllustCardState extends State<IllustCard> {
   Future _buildTap(BuildContext context) {
     return Navigator.of(context, rootNavigator: true)
         .push(MaterialPageRoute(builder: (_) {
-      if (store != null) {
-        return PictureListPage(
-          iStores: iStores!,
-          store: store,
-          heroString: tag,
-        );
-      }
-      return IllustLightingPage(
+      return PictureListPage(
+        iStores: iStores!,
         store: store,
-        id: store.illusts!.id,
         heroString: tag,
       );
     }));
@@ -199,38 +191,6 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
-    if (false)
-      return GestureDetector(
-        onLongPress: () {
-          saveStore.saveImage(store.illusts!);
-        },
-        child: OpenContainer(
-          closedBuilder: (context, action) {
-            return child;
-          },
-          openBuilder: (context, action) {
-            if (iStores != null) {
-              return PictureListPage(
-                store: store,
-                iStores: iStores!,
-              );
-            }
-            return IllustLightingPage(
-              id: store.illusts!.id,
-              store: store,
-            );
-          },
-          openColor: Colors.transparent,
-          closedColor: Colors.transparent,
-          closedShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          transitionType: ContainerTransitionType.fade,
-          openShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-        ),
-      );
     return InkWell(
       onLongPress: () {
         _buildLongPressToSaveHint();
@@ -302,14 +262,14 @@ class _IllustCardState extends State<IllustCard> {
                 store.illusts!.title,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
                 strutStyle: StrutStyle(forceStrutHeight: true, leading: 0),
               ),
               Text(
                 store.illusts!.user.name,
                 maxLines: 1,
                 overflow: TextOverflow.clip,
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
                 strutStyle: StrutStyle(forceStrutHeight: true, leading: 0),
               )
             ]),

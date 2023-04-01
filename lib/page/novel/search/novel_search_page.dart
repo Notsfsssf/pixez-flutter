@@ -26,7 +26,7 @@ import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
-import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 
@@ -78,7 +78,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                 cursorColor: Theme.of(context).iconTheme.color,
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle1!
+                    .titleMedium!
                     .copyWith(color: Theme.of(context).iconTheme.color),
                 controller: _textEditingController,
                 onChanged: (v) {
@@ -134,7 +134,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                           Text("$_id"),
                           Text(
                             "Novel Id",
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                           )
                         ],
                       ),
@@ -144,7 +144,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                 ),
                 InkWell(
                     onTap: () {
-                      Leader.push(context, NovelUserPage(id: _id!));
+                      Leader.push(context, NovelUsersPage(id: _id!));
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

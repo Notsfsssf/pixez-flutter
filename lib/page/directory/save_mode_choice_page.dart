@@ -100,21 +100,21 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                           'Media',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(fontSize: 16.0),
                         ),
                         1: Text(
                           'SAF',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(fontSize: 16.0),
                         ),
                         2: Text(
                           I18n.of(context).old_way,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodyLarge!
                               .copyWith(fontSize: 16.0),
                         )
                       },

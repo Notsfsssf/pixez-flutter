@@ -16,9 +16,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -28,7 +26,6 @@ import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/hello/new/illust/new_illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
-import 'package:pixez/page/user/users_page.dart';
 
 class NewPage extends StatefulWidget {
   final String newRestrict, bookRestrict, painterRestrict;

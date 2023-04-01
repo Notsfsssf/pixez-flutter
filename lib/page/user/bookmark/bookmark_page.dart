@@ -182,10 +182,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
     _scrollController = ScrollController();
     _easyRefreshController = EasyRefreshController(
         controlFinishRefresh: true, controlFinishLoad: true);
-    _store = widget.store ??
-        LightingStore(ApiForceSource(
-            futureGet: (e) =>
-                apiClient.getBookmarksIllust(widget.id, restrict, null)));
+    _store = widget.store;
     _store.easyRefreshController = _easyRefreshController;
     super.initState();
     _store.fetch();
@@ -213,9 +210,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
                   _store.fetch(force: true);
                 },
                 header: ClassicHeader(
-                  position: IndicatorPosition.locator,
-                  safeArea: false
-                ),
+                    position: IndicatorPosition.locator, safeArea: false),
                 footer: ClassicFooter(
                   position: IndicatorPosition.locator,
                 ),
@@ -285,7 +280,7 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(':(', style: Theme.of(context).textTheme.headline4),
+            child: Text(':(', style: Theme.of(context).textTheme.headlineMedium),
           ),
           TextButton(
               onPressed: () {

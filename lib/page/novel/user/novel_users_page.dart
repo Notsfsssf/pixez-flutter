@@ -1,25 +1,10 @@
-/*
- * Copyright (C) 2020. by perol_notsf, All rights reserved
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,203 +17,85 @@ import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/follow/follow_list.dart';
+import 'package:pixez/page/novel/component/novel_lighting_store.dart';
+import 'package:pixez/page/novel/user/novel_user_bookmark_page.dart';
+import 'package:pixez/page/novel/user/novel_user_work_page.dart';
 import 'package:pixez/page/report/report_items_page.dart';
-import 'package:pixez/page/shield/shield_page.dart';
-import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
-import 'package:pixez/page/user/works/works_page.dart';
+import 'package:pixez/page/user/users_page.dart';
 import 'package:share_plus/share_plus.dart';
 
-class UsersPage extends StatefulWidget {
+class NovelUsersPage extends StatefulWidget {
   final int id;
   final UserStore? userStore;
   final String? heroTag;
 
-  const UsersPage({Key? key, required this.id, this.userStore, this.heroTag})
+  const NovelUsersPage(
+      {Key? key, required this.id, this.userStore, this.heroTag})
       : super(key: key);
 
   @override
-  _UsersPageState createState() => _UsersPageState();
+  State<NovelUsersPage> createState() => _NovelUsersPageState();
 }
 
-class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
-  late UserStore userStore;
+class _NovelUsersPageState extends State<NovelUsersPage>
+    with TickerProviderStateMixin {
   late TabController _tabController;
+  int _tabIndex = 0;
+  late UserStore userStore;
   late ScrollController _scrollController;
-  bool backToTopVisible = false;
-
-  late LightingStore _workStore;
-  late LightingStore _bookmarkStore;
-
-  String restrict = 'public';
+  late NovelLightingStore _bookMarkStore;
+  late NovelLightingStore _workStore;
 
   @override
   void initState() {
-    _workStore = LightingStore(ApiForceSource(
-        futureGet: (bool e) => apiClient.getUserIllusts(widget.id, 'illust')));
-    _bookmarkStore = LightingStore(ApiForceSource(
-        futureGet: (e) =>
-            apiClient.getBookmarksIllust(widget.id, restrict, null)));
+    _workStore = NovelLightingStore(
+        () => apiClient.getUserNovels(widget.id),
+        EasyRefreshController(
+            controlFinishLoad: true, controlFinishRefresh: true));
+    _bookMarkStore = NovelLightingStore(
+        () => apiClient.getUserBookmarkNovel(widget.id, "public"),
+        EasyRefreshController(
+            controlFinishLoad: true, controlFinishRefresh: true));
     userStore = widget.userStore ?? UserStore(widget.id);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.hasClients) {
-        if (_scrollController.offset > 100) {
-          if (!backToTopVisible) {
-            setState(() {
-              backToTopVisible = true;
-            });
-          }
-        } else {
-          if (backToTopVisible) {
-            setState(() {
-              backToTopVisible = false;
-            });
-          }
-        }
-      }
-    });
     super.initState();
-    userStore.firstFetch();
-    muteStore.fetchBanUserIds();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  int _tabIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      if (muteStore.banUserIds.isNotEmpty) {
-        if (muteStore.banUserIds
-            .map((element) => int.parse(element.userId!))
-            .contains(widget.id)) {
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),
-            extendBodyBehindAppBar: true,
-            extendBody: true,
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('X_X'),
-                  Text('${widget.id}'),
-                  MaterialButton(
-                    color: Theme.of(context).colorScheme.secondary,
-                    textColor: Colors.white,
-                    child: Text(I18n.of(context).shielding_settings),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ShieldPage()));
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
-        }
-      }
-
-      if (userStore.errorMessage != null && userStore.user != null) {
-        if (userStore.errorMessage!.contains("404"))
-          return Scaffold(
-            appBar: AppBar(),
-            body: Container(
-                child: Center(
-              child: Text('404 not found'),
-            )),
-          );
-        return Scaffold(
-          appBar: AppBar(),
-          body: Container(
-              child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Http error\n${userStore.errorMessage}',
-                    maxLines: 5,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MaterialButton(
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      userStore.errorMessage = null;
-                      userStore.firstFetch();
-                    },
-                    child: Text(I18n.of(context).refresh),
-                  ),
-                )
-              ],
-            ),
-          )),
-        );
-      }
-      if (userStore.user == null) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: Container(
-              child: Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          )),
-        );
-      }
-      return _buildBody(context);
-    });
-  }
-
-  Widget _buildBody(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        body: NestedScrollView(
-          controller: _scrollController,
-          body: TabBarView(controller: _tabController, children: [
-            WorksPage(
-              id: widget.id,
-              store: _workStore,
-              portal: "Work",
-            ),
-            BookMarkNestedPage(
-              id: widget.id,
-              store: _bookmarkStore,
-              portal: "Book",
-            ),
-            UserDetailPage(
-              key: PageStorageKey('Tab2'),
-              userDetail: userStore.userDetail,
-              isNewNested: true,
-            ),
-          ]),
-          headerSliverBuilder:
-              (BuildContext context, bool? innerBoxIsScrolled) {
-            return _HeaderSlivers(innerBoxIsScrolled, context);
-          },
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool? innerBoxIsScrolled) {
+        return _HeaderSlivers(innerBoxIsScrolled, context);
+      },
+      body: TabBarView(controller: _tabController, children: [
+        NovelUserWorkPage(
+          id: widget.id,
+          store: _workStore,
         ),
-      ),
+        NovelUserBookmarkPage(
+          id: widget.id,
+          store: _bookMarkStore,
+        ),
+        UserDetailPage(
+          key: PageStorageKey('NovelTab2'),
+          userDetail: userStore.userDetail,
+          isNewNested: true,
+        ),
+      ]),
     );
   }
 
@@ -327,82 +194,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      // SliverPersistentHeader(
-      //   delegate: StickyTabBarDelegate(
-      //       child: TabBar(
-      //     controller: _tabController,
-      //     indicator: MD2Indicator(
-      //         indicatorHeight: 3,
-      //         indicatorColor: Theme.of(context).colorScheme.primary,
-      //         indicatorSize: MD2IndicatorSize.normal),
-      //     onTap: (index) {
-      //       setState(() {
-      //         _tabIndex = index;
-      //       });
-      //     },
-      //     labelColor: Theme.of(context).textTheme.bodyText1!.color,
-      //     indicatorSize: TabBarIndicatorSize.label,
-      //     tabs: [
-      //       GestureDetector(
-      //         onDoubleTap: () {
-      //           if (_tabIndex == 0) _scrollController.position.jumpTo(0);
-      //         },
-      //         child: Tab(
-      //           text: I18n.of(context).works,
-      //         ),
-      //       ),
-      //       GestureDetector(
-      //         onDoubleTap: () {
-      //           if (_tabIndex == 1) _scrollController.position.jumpTo(0);
-      //         },
-      //         child: Tab(
-      //           text: I18n.of(context).bookmark,
-      //         ),
-      //       ),
-      //       GestureDetector(
-      //         onDoubleTap: () {
-      //           if (_tabIndex == 2) _scrollController.position.jumpTo(0);
-      //         },
-      //         child: Tab(
-      //           text: I18n.of(context).detail,
-      //         ),
-      //       ),
-      //     ],
-      //   )),
-      //   pinned: true,
-      // ),
     ];
-  }
-
-  //为什么会需要这段？因为外部Column无法使子元素贴紧，子元素之间在真机上总是有spacing，所以底部又需要一个cardColor来填充
-  Widget _buildFakeBg(BuildContext context) {
-    return Align(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            height: 55,
-            color: Theme.of(context).cardColor,
-          ),
-          Container(
-            color: Theme.of(context).cardColor,
-            child: Column(
-              children: <Widget>[
-                _buildFakeNameFollow(context),
-                Container(
-                  height: 60,
-                ),
-                Tab(
-                  text: " ",
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-      alignment: Alignment.bottomCenter,
-    );
   }
 
   Widget _buildBackground(BuildContext context) {
@@ -449,6 +241,91 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                     color: Theme.of(context).colorScheme.secondary,
                   )
             : Container());
+  }
+
+  _saveUserBg(String url) async {
+    try {
+      final result = await pixivCacheManager.downloadFile(url, authHeaders: {
+        'referer': 'https://app-api.pixiv.net/',
+      });
+      final bytes = await result.file.readAsBytes();
+      await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
+      BotToast.showText(text: I18n.of(context).saved);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future _saveUserC() async {
+    var url = userStore.userDetail!.user.profileImageUrls.medium;
+    String meme = url.split(".").last;
+    if (meme.isEmpty) meme = "jpg";
+    var replaceAll = userStore.userDetail!.user.name
+        .replaceAll("/", "")
+        .replaceAll("\\", "")
+        .replaceAll(":", "")
+        .replaceAll("*", "")
+        .replaceAll("?", "")
+        .replaceAll(">", "")
+        .replaceAll("|", "")
+        .replaceAll("<", "");
+    String fileName = "${replaceAll}_${userStore.userDetail!.user.id}.${meme}";
+    try {
+      String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
+      final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
+      if (!userSetting.disableBypassSni) {
+        dio.httpClientAdapter = IOHttpClientAdapter()
+          ..onHttpClientCreate = (client) {
+            client.badCertificateCallback =
+                (X509Certificate cert, String host, int port) => true;
+            return client;
+          };
+      }
+      await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
+      File file = File(tempFile);
+      if (file != null && file.existsSync()) {
+        await saveStore.saveToGallery(
+            file.readAsBytesSync(),
+            Illusts(
+              user: User(
+                id: userStore.userDetail!.user.id,
+                name: replaceAll,
+                profileImageUrls: userStore.userDetail!.user.profileImageUrls,
+                isFollowed: userStore.userDetail!.user.isFollowed,
+                account: userStore.userDetail!.user.account,
+                comment: userStore.userDetail!.user.comment,
+              ),
+              metaPages: [],
+              type: '',
+              width: 0,
+              series: Object(),
+              totalBookmarks: 0,
+              visible: false,
+              isMuted: false,
+              sanityLevel: 0,
+              tags: [],
+              caption: '',
+              pageCount: 0,
+              metaSinglePage: MetaSinglePage(originalImageUrl: ''),
+              tools: [],
+              height: 0,
+              restrict: 0,
+              createDate: '',
+              id: 0,
+              xRestrict: 0,
+              imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
+              title: '',
+              isBookmarked: false,
+              totalView: 0,
+              illustAIType: 1,
+            ),
+            fileName);
+        BotToast.showText(text: I18n.of(context).complete);
+      } else
+        BotToast.showText(text: I18n.of(context).failed);
+    } catch (e) {
+      print(e);
+    }
   }
 
   PopupMenuButton<int> _buildPopMenu(BuildContext context) {
@@ -637,7 +514,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     );
   }
 
-  Container _buildAvatarFollow(BuildContext context) {
+  Widget _buildAvatarFollow(BuildContext context) {
     return Container(
       child: Observer(
         builder: (_) => Row(
@@ -752,130 +629,33 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     );
   }
 
-  _saveUserBg(String url) async {
-    try {
-      final result = await pixivCacheManager.downloadFile(url, authHeaders: {
-        'referer': 'https://app-api.pixiv.net/',
-      });
-      final bytes = await result.file.readAsBytes();
-      await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
-      BotToast.showText(text: I18n.of(context).saved);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future _saveUserC() async {
-    var url = userStore.userDetail!.user.profileImageUrls.medium;
-    String meme = url.split(".").last;
-    if (meme.isEmpty) meme = "jpg";
-    var replaceAll = userStore.userDetail!.user.name
-        .replaceAll("/", "")
-        .replaceAll("\\", "")
-        .replaceAll(":", "")
-        .replaceAll("*", "")
-        .replaceAll("?", "")
-        .replaceAll(">", "")
-        .replaceAll("|", "")
-        .replaceAll("<", "");
-    String fileName = "${replaceAll}_${userStore.userDetail!.user.id}.${meme}";
-    try {
-      String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
-      final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
-      if (!userSetting.disableBypassSni) {
-        dio.httpClientAdapter = IOHttpClientAdapter()
-          ..onHttpClientCreate = (client) {
-            client.badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;
-            return client;
-          };
-      }
-      await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
-      File file = File(tempFile);
-      if (file != null && file.existsSync()) {
-        await saveStore.saveToGallery(
-            file.readAsBytesSync(),
-            Illusts(
-              user: User(
-                id: userStore.userDetail!.user.id,
-                name: replaceAll,
-                profileImageUrls: userStore.userDetail!.user.profileImageUrls,
-                isFollowed: userStore.userDetail!.user.isFollowed,
-                account: userStore.userDetail!.user.account,
-                comment: userStore.userDetail!.user.comment,
-              ),
-              metaPages: [],
-              type: '',
-              width: 0,
-              series: Object(),
-              totalBookmarks: 0,
-              visible: false,
-              isMuted: false,
-              sanityLevel: 0,
-              tags: [],
-              caption: '',
-              pageCount: 0,
-              metaSinglePage: MetaSinglePage(originalImageUrl: ''),
-              tools: [],
-              height: 0,
-              restrict: 0,
-              createDate: '',
-              id: 0,
-              xRestrict: 0,
-              imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
-              title: '',
-              isBookmarked: false,
-              totalView: 0,
-              illustAIType: 1,
+  Widget _buildFakeBg(BuildContext context) {
+    return Align(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            height: 55,
+            color: Theme.of(context).cardColor,
+          ),
+          Container(
+            color: Theme.of(context).cardColor,
+            child: Column(
+              children: <Widget>[
+                _buildFakeNameFollow(context),
+                Container(
+                  height: 60,
+                ),
+                Tab(
+                  text: " ",
+                )
+              ],
             ),
-            fileName);
-        BotToast.showText(text: I18n.of(context).complete);
-      } else
-        BotToast.showText(text: I18n.of(context).failed);
-    } catch (e) {
-      print(e);
-    }
-  }
-}
-
-class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar child;
-
-  StickyTabBarDelegate({required this.child});
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      child: this.child,
-      color: Theme.of(context).cardColor,
+          ),
+        ],
+      ),
+      alignment: Alignment.bottomCenter,
     );
   }
-
-  @override
-  double get maxExtent => this.child.preferredSize.height;
-
-  @override
-  double get minExtent => this.child.preferredSize.height;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
-  }
-}
-
-class ColoredTabBar extends Container implements PreferredSizeWidget {
-  ColoredTabBar(this.color, this.tabBar);
-
-  final Color color;
-  final TabBar tabBar;
-
-  @override
-  Size get preferredSize => tabBar.preferredSize;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        color: color,
-        child: tabBar,
-      );
 }

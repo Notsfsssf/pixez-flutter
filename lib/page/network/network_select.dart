@@ -45,7 +45,7 @@ class _NetworkSelectPageState extends State<NetworkSelectPage>
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   I18n.of(context).network_question,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
               ),

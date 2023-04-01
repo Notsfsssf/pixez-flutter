@@ -22,6 +22,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/new/novel_new_list.dart';
 import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
 
 class NovelNewPage extends StatefulWidget {
   @override
@@ -78,7 +79,7 @@ class _NovelNewPageState extends State<NovelNewPage>
                         if (accountStore.now != null)
                           Leader.push(
                               context,
-                              NovelUserPage(
+                              NovelUsersPage(
                                 id: int.parse(accountStore.now!.userId),
                               ));
                       },

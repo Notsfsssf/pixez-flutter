@@ -14,7 +14,6 @@
  *
  */
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -22,7 +21,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -40,7 +38,7 @@ import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
-import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:share_plus/share_plus.dart';
@@ -456,7 +454,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return NovelUserPage(
+                        return NovelUsersPage(
                           id: _novelStore.novel!.user.id,
                         );
                       }));

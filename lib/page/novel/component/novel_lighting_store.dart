@@ -29,9 +29,9 @@ class NovelLightingStore = _NovelLightingStoreBase with _$NovelLightingStore;
 abstract class _NovelLightingStoreBase with Store {
   FutureGet source;
   final ApiClient _client = apiClient;
-  final EasyRefreshController _controller;
+  final EasyRefreshController controller;
 
-  _NovelLightingStoreBase(this.source, this._controller);
+  _NovelLightingStoreBase(this.source, this.controller);
 
   String? nextUrl;
   ObservableList<NovelStore> novels = ObservableList();
@@ -52,11 +52,11 @@ abstract class _NovelLightingStoreBase with Store {
       this
           .novels
           .addAll(novel.map((element) => NovelStore(element.id, element)));
-      _controller.finishRefresh(IndicatorResult.success);
+      controller.finishRefresh(IndicatorResult.success);
     } catch (e) {
       print(e);
       errorMessage = e.toString();
-      _controller.finishRefresh(IndicatorResult.fail);
+      controller.finishRefresh(IndicatorResult.fail);
     }
   }
 
@@ -70,12 +70,12 @@ abstract class _NovelLightingStoreBase with Store {
         nextUrl = novelRecomResponse.nextUrl;
         final novel = novelRecomResponse.novels;
         novels.addAll(novel.map((element) => NovelStore(element.id, element)));
-        _controller.finishLoad(IndicatorResult.success);
+        controller.finishLoad(IndicatorResult.success);
       } catch (e) {
-        _controller.finishLoad(IndicatorResult.fail);
+        controller.finishLoad(IndicatorResult.fail);
       }
     } else {
-      _controller.finishLoad(IndicatorResult.noMore);
+      controller.finishLoad(IndicatorResult.noMore);
     }
   }
 }

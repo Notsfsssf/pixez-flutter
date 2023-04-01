@@ -53,7 +53,7 @@ class _InitPageState extends State<InitPage> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 I18n.of(context).select_language,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -81,7 +81,7 @@ class _InitPageState extends State<InitPage> {
                           trailing: Icon(
                             Icons.check,
                             color: userSetting.languageNum == index
-                                ? Theme.of(context).textTheme.bodyText1!.color
+                                ? Theme.of(context).textTheme.bodyLarge!.color
                                 : Colors.transparent,
                           ),
                         ),

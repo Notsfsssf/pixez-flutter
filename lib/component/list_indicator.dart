@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
 
 class ListIndicator extends StatefulWidget {
   void Function()? onTop;
@@ -10,7 +9,6 @@ class ListIndicator extends StatefulWidget {
 }
 
 class _ListIndicatorState extends State<ListIndicator> {
-  var _showOffset = false;
   @override
   void initState() {
     super.initState();

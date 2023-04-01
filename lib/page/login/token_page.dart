@@ -75,7 +75,7 @@ class _TokenPageState extends State<TokenPage> {
               child: Text("Next"),
             ),
             Visibility(
-              visible: errorMessage != null,
+              visible: errorMessage.isNotEmpty,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0),

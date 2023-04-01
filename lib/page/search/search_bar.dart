@@ -1,10 +1,5 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class SearchBar extends StatefulWidget {
@@ -62,7 +57,7 @@ class _SearchBarState extends State<SearchBar> {
                     I18n.of(context).search_word_hint,
                     style: TextStyle(
                         fontSize: 16,
-                        color: Theme.of(context).textTheme.headline3!.color),
+                        color: Theme.of(context).textTheme.displaySmall!.color),
                   ),
                 ),
               ),

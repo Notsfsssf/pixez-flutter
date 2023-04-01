@@ -13,7 +13,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.9.2+212
+version: 1.9.3+221
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -23,7 +23,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.0.2
+  dio: ^5.0.3
   crypto: ^3.0.2
   sqflite: ^2.2.5
   path_provider: ^2.0.13
@@ -52,15 +52,14 @@ dependencies:
   json_annotation: ^4.8.0
   flutter_staggered_animations: ^1.1.1
   badges: ^3.0.2
-  image_picker: 0.8.7
-  image_picker_android: 0.8.6+1
+  image_picker: ^0.8.7+1
   intl: ^0.17.0
   extended_nested_scroll_view: ^6.0.0
   quiver: ^3.1.0
   flutter_inappwebview_quill: ^5.4.6
   auto_animated: ^3.1.0
   http: ^0.13.4
-  dio_cache_interceptor: ^3.4.0
+  dio_cache_interceptor: ^3.4.1
   photo_view: ^0.14.0
   http_interceptor: 2.0.0-beta.2
   image: ^4.0.15

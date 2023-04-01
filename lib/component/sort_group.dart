@@ -36,7 +36,7 @@ class _SortGroupState extends State<SortGroup> {
               style: TextStyle(
                   color: index == widget.children.indexOf(i)
                       ? Colors.white
-                      : Theme.of(context).textTheme.bodyText1!.color),
+                      : Theme.of(context).textTheme.bodyLarge!.color),
             ),
             backgroundColor: index == widget.children.indexOf(i)
                 ? Theme.of(context).colorScheme.primary

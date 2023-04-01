@@ -16,7 +16,6 @@
 
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';

@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/kver.dart';
@@ -38,8 +37,6 @@ import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:flutter/foundation.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -69,10 +66,6 @@ class MyHttpOverrides extends HttpOverrides {
 main() async {
   // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  if (defaultTargetPlatform == TargetPlatform.android &&
-      Constants.isGooglePlay) {
-    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
-  }
   runApp(ProviderScope(
     child: MyApp(),
   ));

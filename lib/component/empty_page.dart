@@ -19,7 +19,8 @@ class _EmptyPageState extends State<EmptyPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('[ ]', style: Theme.of(context).textTheme.headline4),
+            child:
+                Text('[ ]', style: Theme.of(context).textTheme.headlineMedium),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

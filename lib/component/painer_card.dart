@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
-import 'package:pixez/page/novel/user/novel_user_page.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 
@@ -36,7 +36,7 @@ class PainterCard extends StatelessWidget {
         Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           if (isNovel) {
-            return NovelUserPage(
+            return NovelUsersPage(
               id: user.user.id,
             );
           }
@@ -89,7 +89,7 @@ class PainterCard extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
                   if (isNovel) {
-                    return NovelUserPage(
+                    return NovelUsersPage(
                       id: user.user.id,
                     );
                   }

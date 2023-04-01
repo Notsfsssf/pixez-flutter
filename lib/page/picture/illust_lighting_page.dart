@@ -730,15 +730,15 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               children: [
                 TextSpan(
                   text: " ",
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
                     text: "${f.translatedName ?? "~"}",
-                    style: Theme.of(context).textTheme.caption)
+                    style: Theme.of(context).textTheme.bodySmall)
               ],
               style: Theme.of(context)
                   .textTheme
-                  .caption!
+                  .bodySmall!
                   .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
@@ -769,16 +769,12 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           height: 70,
                           width: 70,
                           child: Container(
-                            decoration: illust != null
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: userStore!.isFollow
-                                        ? Colors.yellow
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                  )
-                                : BoxDecoration(),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: userStore!.isFollow
+                                  ? Colors.yellow
+                                  : Theme.of(context).colorScheme.secondary,
+                            ),
                           ),
                         ),
                       ),
