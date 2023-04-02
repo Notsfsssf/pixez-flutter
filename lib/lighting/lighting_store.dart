@@ -24,7 +24,6 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_store.dart';
-import 'package:pixez/widgetkit_plugin.dart';
 
 part 'lighting_store.g.dart';
 
@@ -139,7 +138,6 @@ abstract class _LightingStoreBase with Store {
               .where((element) => !element.hateByUser())
               .toGlancePersist(
                   glanceKey, DateTime.now().microsecondsSinceEpoch));
-          await WidgetkitPlugin.notify();
         });
       }
       easyRefreshController?.finishRefresh(IndicatorResult.success);

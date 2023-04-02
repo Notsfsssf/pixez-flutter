@@ -45,6 +45,12 @@ import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:share_plus/share_plus.dart';
 
+/*
+🎵 Lyn-The Whims of Fate🎵
+flutter目前3.x以上是支持处理多tab的nestedscrollview的，不需要extended lib，当然extended lib确实比较方便，但是6.0。0存在手势打断的问题
+如果正在求证是否内置的NestedScrollView就能够满足User profile布局，答案是可以的
+可以参见flutter create --sample=widgets.NestedScrollView.1 mysample，你需要把多个tab的列表状态提升到这个User Page上，然后用PageStoreKey记住位置
+*/
 class UsersPage extends StatefulWidget {
   final int id;
   final UserStore? userStore;
@@ -295,7 +301,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                   _tabIndex = index;
                 });
               },
-              labelColor: Theme.of(context).textTheme.bodyText1!.color,
+              labelColor: Theme.of(context).textTheme.bodyLarge!.color,
               indicatorSize: TabBarIndicatorSize.label,
               tabs: [
                 GestureDetector(
@@ -540,13 +546,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
             children: <Widget>[
               Text(
                 userStore.user?.name ?? "",
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Text(
                 userStore.userDetail == null
                     ? ""
                     : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               )
             ]),
       ),
@@ -566,7 +572,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                 tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
                 child: Text(
                   userStore.user?.name ?? "",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               InkWell(
@@ -585,7 +591,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                   userStore.userDetail == null
                       ? ""
                       : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               )
             ]),
@@ -606,7 +612,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               userStore.userDetail == null
                   ? ""
                   : '${userStore.userDetail!.user.comment}',
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -740,7 +746,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .textTheme
-                                        .bodyText1!
+                                        .bodyLarge!
                                         .color),
                               ),
                             ),
@@ -792,7 +798,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
-      if (file != null && file.existsSync()) {
+      if (file.existsSync()) {
         await saveStore.saveToGallery(
             file.readAsBytesSync(),
             Illusts(

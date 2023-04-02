@@ -321,14 +321,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  extended_nested_scroll_view:
-    dependency: "direct main"
-    description:
-      name: extended_nested_scroll_view
-      sha256: fc55b8f7e2c78701320d7eccda3b256387290b8498f0363d8ffd6f16760949d7
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   extended_text:
     dependency: "direct main"
     description:

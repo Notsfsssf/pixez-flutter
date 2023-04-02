@@ -19,12 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
-import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/user/works/works_page.dart';
@@ -41,15 +39,14 @@ class NovelUserBookmarkPage extends StatefulWidget {
 }
 
 class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
-  late FutureGet futureGet;
   String restrict = 'public';
   late NovelLightingStore _store;
 
   @override
   void initState() {
-    futureGet = () => apiClient.getUserBookmarkNovel(widget.id, restrict);
     _store = widget.store;
     super.initState();
+    _store.fetch();
   }
 
   @override
@@ -155,7 +152,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
                               child: Text(
                                 novel.title,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyText1,
+                                style: Theme.of(context).textTheme.bodyLarge,
                                 maxLines: 3,
                               ),
                             ),
@@ -189,7 +186,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
                                       child: Text(
                                         f.name,
                                         style:
-                                            Theme.of(context).textTheme.caption,
+                                            Theme.of(context).textTheme.bodySmall,
                                       ),
                                     )
                                 ],
@@ -211,7 +208,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
                     children: [
                       NovelBookmarkButton(novel: novel),
                       Text('${novel.totalBookmarks}',
-                          style: Theme.of(context).textTheme.caption)
+                          style: Theme.of(context).textTheme.bodySmall)
                     ],
                   ),
                 )
@@ -237,9 +234,11 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
                   title: Text(I18n.of(context).public),
                   onTap: () {
                     setState(() {
-                      futureGet = () =>
-                          apiClient.getUserBookmarkNovel(widget.id, 'public');
+                      restrict = "public";
                     });
+                    _store.source = () =>
+                        apiClient.getUserBookmarkNovel(widget.id, "public");
+                    _store.controller.callRefresh();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -247,9 +246,11 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
                   title: Text(I18n.of(context).private),
                   onTap: () {
                     setState(() {
-                      futureGet = () =>
-                          apiClient.getUserBookmarkNovel(widget.id, 'private');
+                      restrict = "private";
                     });
+                    _store.source = () =>
+                        apiClient.getUserBookmarkNovel(widget.id, "private");
+                    _store.controller.callRefresh();
                     Navigator.of(context).pop();
                   },
                 ),

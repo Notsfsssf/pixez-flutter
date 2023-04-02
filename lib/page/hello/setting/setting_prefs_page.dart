@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -97,11 +95,11 @@ class _SettingPrefsPageState extends State<SettingPrefsPage> {
               Text(
                 subtitle ?? "",
                 style: TextStyle(
-                    color: Theme.of(context).textTheme.caption!.color),
+                    color: Theme.of(context).textTheme.bodySmall!.color),
               ),
               Icon(
                 Icons.keyboard_arrow_right,
-                color: Theme.of(context).textTheme.caption!.color,
+                color: Theme.of(context).textTheme.bodySmall!.color,
               )
             ]))
           ],
@@ -205,7 +203,7 @@ class _SettingSelectRowState extends State<SettingSelectRow> {
               if (widget.select)
                 Icon(
                   Icons.check,
-                  color: Theme.of(context).textTheme.caption!.color,
+                  color: Theme.of(context).textTheme.bodySmall!.color,
                 )
             ]))
           ],
@@ -244,11 +242,11 @@ class _SettingRowState extends State<SettingRow> {
               Text(
                 widget.subTitle ?? "",
                 style: TextStyle(
-                    color: Theme.of(context).textTheme.caption!.color),
+                    color: Theme.of(context).textTheme.bodySmall!.color),
               ),
               Icon(
                 Icons.keyboard_arrow_right,
-                color: Theme.of(context).textTheme.caption!.color,
+                color: Theme.of(context).textTheme.bodySmall!.color,
               )
             ]))
           ],

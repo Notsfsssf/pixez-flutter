@@ -78,7 +78,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(':(', style: Theme.of(context).textTheme.headline4),
+              child: Text(':(', style: Theme.of(context).textTheme.headlineMedium),
             ),
             TextButton(
                 onPressed: () {
@@ -139,7 +139,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                 child: Text(
                                   novel.title,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                   maxLines: 3,
                                 ),
                               ),
@@ -151,7 +151,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                   maxLines: 1,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption!
+                                      .bodySmall!
                                       .copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -174,7 +174,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                                           f.name,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                         ),
                                       )
                                   ],
@@ -196,7 +196,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                       children: [
                         NovelBookmarkButton(novel: novel),
                         Text('${novel.totalBookmarks}',
-                            style: Theme.of(context).textTheme.caption)
+                            style: Theme.of(context).textTheme.bodySmall)
                       ],
                     ),
                   )

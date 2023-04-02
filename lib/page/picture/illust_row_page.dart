@@ -344,14 +344,14 @@ class _IllustRowPageState extends State<IllustRowPage>
                               runSpacing: 0,
                               children: [
                                 if (data.illustAIType == 2)
-                                  Text(
-                                      "${I18n.of(context).ai_generated}",
-                                      style:
-                                      Theme.of(context)
+                                  Text("${I18n.of(context).ai_generated}",
+                                      style: Theme.of(context)
                                           .textTheme
-                                          .caption!
-                                          .copyWith(color: Theme.of(context).colorScheme.secondary)
-                                  ),
+                                          .bodySmall!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary)),
                                 for (var f in data.tags) buildRow(context, f)
                               ],
                             ),
@@ -374,7 +374,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                               child: Text(
                                 I18n.of(context).view_comment,
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyText1!,
+                                style: Theme.of(context).textTheme.bodyLarge!,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -531,7 +531,8 @@ class _IllustRowPageState extends State<IllustRowPage>
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(':(', style: Theme.of(context).textTheme.headline4),
+            child:
+                Text(':(', style: Theme.of(context).textTheme.headlineMedium),
           ),
           Text(
             '${_illustStore.errorMessage}',
@@ -578,7 +579,8 @@ class _IllustRowPageState extends State<IllustRowPage>
         placeWidget: Container(
           height: height,
           child: Center(
-            child: Text('$index', style: Theme.of(context).textTheme.headline4),
+            child: Text('$index',
+                style: Theme.of(context).textTheme.headlineMedium),
           ),
         ),
       );
@@ -612,7 +614,7 @@ class _IllustRowPageState extends State<IllustRowPage>
               height: 150,
               child: Center(
                 child: Text('$index',
-                    style: Theme.of(context).textTheme.headline4),
+                    style: Theme.of(context).textTheme.headlineMedium),
               ),
             ),
           );
@@ -688,15 +690,15 @@ class _IllustRowPageState extends State<IllustRowPage>
               children: [
                 TextSpan(
                   text: " ",
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
                     text: "${f.translatedName ?? "~"}",
-                    style: Theme.of(context).textTheme.caption)
+                    style: Theme.of(context).textTheme.bodySmall)
               ],
               style: Theme.of(context)
                   .textTheme
-                  .caption!
+                  .bodySmall!
                   .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
@@ -727,16 +729,12 @@ class _IllustRowPageState extends State<IllustRowPage>
                           height: 70,
                           width: 70,
                           child: Container(
-                            decoration: illust != null
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: userStore!.isFollow
-                                        ? Colors.yellow
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                  )
-                                : BoxDecoration(),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: userStore!.isFollow
+                                  ? Colors.yellow
+                                  : Theme.of(context).colorScheme.secondary,
+                            ),
                           ),
                         ),
                       ),
@@ -788,13 +786,13 @@ class _IllustRowPageState extends State<IllustRowPage>
                     child: SelectionArea(
                       child: Text(
                         illust.user.name,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   ),
                   Text(
                     illust.createDate.toShortTime(),
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

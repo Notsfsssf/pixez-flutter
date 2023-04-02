@@ -155,7 +155,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                           Text("$_id"),
                           Text(
                             "Author Id",
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                           )
                         ],
                       ),
@@ -193,17 +193,17 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                             Icon(
                               Icons.delete_outline,
                               size: 18.0,
-                              color: Theme.of(context).textTheme.caption!.color,
+                              color: Theme.of(context).textTheme.bodySmall!.color,
                             ),
                             Text(
                               I18n.of(context).clear_search_tag_history,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2!
+                                  .bodyMedium!
                                   .copyWith(
                                       color: Theme.of(context)
                                           .textTheme
-                                          .caption!
+                                          .bodySmall!
                                           .color),
                             )
                           ],
@@ -222,7 +222,7 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                   I18n.of(context).recommand_tag,
                   style: TextStyle(
                       fontSize: 16.0,
-                      color: Theme.of(context).textTheme.headline6!.color),
+                      color: Theme.of(context).textTheme.titleLarge!.color),
                 ),
               ),
             ),

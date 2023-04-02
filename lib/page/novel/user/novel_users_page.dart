@@ -63,6 +63,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
         EasyRefreshController(
             controlFinishLoad: true, controlFinishRefresh: true));
     userStore = widget.userStore ?? UserStore(widget.id);
+    userStore.firstFetch();
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     super.initState();
@@ -77,25 +78,30 @@ class _NovelUsersPageState extends State<NovelUsersPage>
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool? innerBoxIsScrolled) {
-        return _HeaderSlivers(innerBoxIsScrolled, context);
-      },
-      body: TabBarView(controller: _tabController, children: [
-        NovelUserWorkPage(
-          id: widget.id,
-          store: _workStore,
-        ),
-        NovelUserBookmarkPage(
-          id: widget.id,
-          store: _bookMarkStore,
-        ),
-        UserDetailPage(
-          key: PageStorageKey('NovelTab2'),
-          userDetail: userStore.userDetail,
-          isNewNested: true,
-        ),
-      ]),
+    return Scaffold(
+      body: Observer(builder: (_) {
+        return NestedScrollView(
+          headerSliverBuilder:
+              (BuildContext context, bool? innerBoxIsScrolled) {
+            return _HeaderSlivers(innerBoxIsScrolled, context);
+          },
+          body: TabBarView(controller: _tabController, children: [
+            NovelUserWorkPage(
+              id: widget.id,
+              store: _workStore,
+            ),
+            NovelUserBookmarkPage(
+              id: widget.id,
+              store: _bookMarkStore,
+            ),
+            UserDetailPage(
+              key: PageStorageKey('NovelTab2'),
+              userDetail: userStore.userDetail,
+              isNewNested: true,
+            ),
+          ]),
+        );
+      }),
     );
   }
 
@@ -283,7 +289,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
       }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
-      if (file != null && file.existsSync()) {
+      if (file.existsSync()) {
         await saveStore.saveToGallery(
             file.readAsBytesSync(),
             Illusts(
@@ -493,7 +499,6 @@ class _NovelUsersPageState extends State<NovelUsersPage>
   }
 
   Widget _buildHeader(BuildContext context) {
-    Widget w = _buildAvatarFollow(context);
     return Stack(
       children: <Widget>[
         Container(
@@ -507,11 +512,34 @@ class _NovelUsersPageState extends State<NovelUsersPage>
           ),
         ),
         Align(
-          child: w,
+          child: _buildAvatarFollow(context),
           alignment: Alignment.bottomCenter,
         )
       ],
     );
+  }
+
+  _showSaveAvatarDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(I18n.of(context).save_painter_avatar),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(I18n.of(context).cancel)),
+              TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await _saveUserC();
+                  },
+                  child: Text(I18n.of(context).ok)),
+            ],
+          );
+        });
   }
 
   Widget _buildAvatarFollow(BuildContext context) {
@@ -525,37 +553,23 @@ class _NovelUsersPageState extends State<NovelUsersPage>
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-              child: NullHero(
-                tag: userStore.user!.profileImageUrls.medium +
-                    widget.heroTag.toString(),
-                child: PainterAvatar(
-                  url: userStore.user!.profileImageUrls.medium,
-                  size: Size(80, 80),
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(I18n.of(context).save_painter_avatar),
-                            actions: [
-                              TextButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(I18n.of(context).cancel)),
-                              TextButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    await _saveUserC();
-                                  },
-                                  child: Text(I18n.of(context).ok)),
-                            ],
-                          );
-                        });
-                  },
-                  id: userStore.user!.id,
-                ),
-              ),
+              child: userStore.user != null
+                  ? NullHero(
+                      tag: userStore.user!.profileImageUrls.medium +
+                          widget.heroTag.toString(),
+                      child: PainterAvatar(
+                        url: userStore.user!.profileImageUrls.medium,
+                        size: Size(80, 80),
+                        onTap: () {
+                          _showSaveAvatarDialog();
+                        },
+                        id: userStore.user!.id,
+                      ),
+                    )
+                  : Container(
+                      width: 80,
+                      height: 80,
+                    ),
             ),
             Container(
               child: userStore.userDetail == null

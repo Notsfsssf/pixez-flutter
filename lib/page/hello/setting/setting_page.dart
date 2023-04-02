@@ -14,19 +14,15 @@
  *
  */
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -39,7 +35,6 @@ import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/recom/recom_manga_page.dart';
-import 'package:pixez/page/hello/setting/setting_prefs_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -118,7 +113,7 @@ class _SettingPageState extends State<SettingPage> {
                     IconButton(
                       icon: Icon(
                         Icons.palette,
-                        color: Theme.of(context).textTheme.bodyText1!.color,
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -164,13 +159,13 @@ class _SettingPageState extends State<SettingPage> {
                                           child: Text(accountStore.now!.name,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle1),
+                                                  .titleMedium),
                                         ),
                                         Text(
                                           accountStore.now!.mailAddress,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                         )
                                       ],
                                     ),

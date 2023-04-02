@@ -44,6 +44,7 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
   void initState() {
     _store = widget.store;
     super.initState();
+    _store.fetch();
   }
 
   @override

@@ -54,7 +54,6 @@ dependencies:
   badges: ^3.0.2
   image_picker: ^0.8.7+1
   intl: ^0.17.0
-  extended_nested_scroll_view: ^6.0.0
   quiver: ^3.1.0
   flutter_inappwebview_quill: ^5.4.6
   auto_animated: ^3.1.0

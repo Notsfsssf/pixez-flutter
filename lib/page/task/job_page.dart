@@ -78,10 +78,8 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     switch (i) {
       case 0:
         return "seed";
-        break;
       case 1:
         return I18n.of(context).running;
-        break;
       case 2:
         return I18n.of(context).complete;
       case 3:

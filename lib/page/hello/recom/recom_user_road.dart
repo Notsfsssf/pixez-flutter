@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
-import 'package:pixez/exts.dart';
 
 class RecomUserRoad extends StatefulWidget {
   final RecomUserStore? recomUserStore;

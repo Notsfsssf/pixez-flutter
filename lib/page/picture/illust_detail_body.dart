@@ -192,7 +192,7 @@ class IllustDetailBody extends StatelessWidget {
                 children: [
                   if (illust.illustAIType == 2)
                     Text("${I18n.of(context).ai_generated}",
-                        style: Theme.of(context).textTheme.caption!.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Theme.of(context).colorScheme.secondary)),
                   for (var f in illust.tags) buildRow(context, f)
                 ],
@@ -211,7 +211,7 @@ class IllustDetailBody extends StatelessWidget {
               child: TextButton(
                 child: Text(I18n.of(context).view_comment,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText1!),
+                    style: Theme.of(context).textTheme.bodyLarge!),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => CommentPage(
@@ -246,15 +246,15 @@ class IllustDetailBody extends StatelessWidget {
               children: [
                 TextSpan(
                   text: " ",
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
                     text: "${f.translatedName ?? ""}",
-                    style: Theme.of(context).textTheme.caption)
+                    style: Theme.of(context).textTheme.bodySmall)
               ],
               style: Theme.of(context)
                   .textTheme
-                  .caption!
+                  .bodySmall!
                   .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }

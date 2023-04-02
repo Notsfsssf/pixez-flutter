@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
@@ -208,7 +207,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SelectionArea(
+    return Container(
       child: Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
@@ -289,7 +288,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Widget colorText(String text, BuildContext context) => Container(
-        child: Text(
+        child: SelectableText(
           text,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
@@ -381,7 +380,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 children: [
                   if (data.illustAIType == 2)
                     Text("${I18n.of(context).ai_generated}",
-                        style: Theme.of(context).textTheme.caption!.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Theme.of(context).colorScheme.secondary)),
                   for (var f in data.tags) buildRow(context, f)
                 ],

@@ -62,7 +62,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
               child: Text(
                 I18n.of(context).recommend,
                 style: TextStyle(
-                    color: Theme.of(context).textTheme.headline6!.color),
+                    color: Theme.of(context).textTheme.titleLarge!.color),
               ),
               padding: EdgeInsets.only(left: 8.0, bottom: 10.0),
             ),
@@ -141,7 +141,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                               child: Text(
                                 novel.title,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyText1,
+                                style: Theme.of(context).textTheme.bodyLarge,
                                 maxLines: 3,
                               ),
                             ),
@@ -153,7 +153,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                 maxLines: 1,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .caption!
+                                    .bodySmall!
                                     .copyWith(
                                         color: Theme.of(context)
                                             .colorScheme
@@ -172,7 +172,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                                     Text(
                                       f.name,
                                       style:
-                                          Theme.of(context).textTheme.caption,
+                                          Theme.of(context).textTheme.bodySmall,
                                     )
                                 ],
                               ),
@@ -193,7 +193,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
                     children: [
                       NovelBookmarkButton(novel: novel),
                       Text('${novel.totalBookmarks}',
-                          style: Theme.of(context).textTheme.caption)
+                          style: Theme.of(context).textTheme.bodySmall)
                     ],
                   ),
                 )

@@ -172,15 +172,17 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         .color!
                         .withAlpha(_novelStore.positionBooked ? 225 : 120),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.more_vert,
-                      color: Theme.of(context).textTheme.bodyLarge!.color,
-                    ),
-                    onPressed: () {
-                      _showMessage(context);
-                    },
-                  )
+                  Builder(builder: (context) {
+                    return IconButton(
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
+                      ),
+                      onPressed: () {
+                        _showMessage(context);
+                      },
+                    );
+                  })
                 ],
               ),
               extendBodyBehindAppBar: true,
