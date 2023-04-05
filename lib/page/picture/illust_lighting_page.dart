@@ -18,7 +18,9 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
@@ -207,6 +209,29 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    return ExtendedTextSelectionPointerHandler(
+      builder: (List<ExtendedTextSelectionState> states) {
+        return Listener(
+          child: _buildBody(context),
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (PointerDownEvent value) {
+            for (final ExtendedTextSelectionState state in states) {
+              if (!state.containsPosition(value.position)) {
+                state.clearSelection();
+              }
+            }
+          },
+          onPointerMove: (PointerMoveEvent value) {
+            for (final ExtendedTextSelectionState state in states) {
+              state.clearSelection();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     return Container(
       child: Scaffold(
         extendBody: true,
@@ -287,12 +312,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     );
   }
 
-  Widget colorText(String text, BuildContext context) => Container(
-        child: SelectableText(
-          text,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-        ),
-      );
+  Widget colorText(String text, BuildContext context) {
+    return ExtendedText(
+      text,
+      selectionEnabled: true,
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+    );
+  }
 
   ScrollController scrollController = ScrollController();
 
@@ -391,8 +417,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SelectableHtml(
-                  data: data.caption.isEmpty ? "~" : data.caption,
+                child: SelectionArea(
+                  child: SelectableHtml(
+                    data: data.caption.isEmpty ? "~" : data.caption,
+                  ),
                 ),
               ),
             ),

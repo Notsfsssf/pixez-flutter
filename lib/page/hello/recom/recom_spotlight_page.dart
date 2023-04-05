@@ -24,7 +24,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -328,26 +327,6 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     );
   }
 
-  Widget _buildSpotlightContainer() {
-    return Container(
-      height: 230.0,
-      padding: EdgeInsets.only(left: 5.0),
-      child: spotlightStore.articles.isNotEmpty
-          ? ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final spotlight = spotlightStore.articles[index];
-                return SpotlightCard(
-                  spotlight: spotlight,
-                );
-              },
-              itemCount: spotlightStore.articles.length,
-              scrollDirection: Axis.horizontal,
-            )
-          : Container(),
-    );
-  }
-
   Widget _buildFirstRow(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 0.0),
@@ -361,7 +340,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
-                    color: Theme.of(context).textTheme.headline6!.color),
+                    color: Theme.of(context).textTheme.titleLarge!.color),
               ),
               padding: EdgeInsets.only(left: 20.0, bottom: 10.0),
             ),
@@ -370,7 +349,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             child: TextButton(
               child: Text(
                 I18n.of(context).more,
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               onPressed: () {
                 Navigator.of(context)

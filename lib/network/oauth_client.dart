@@ -140,7 +140,7 @@ class OAuthClient {
   }
 
   Future<Response> postRefreshAuthToken(
-      {refreshToken: String, deviceToken: String}) {
+      {refreshToken = String, deviceToken = String}) {
     return httpClient.post("/auth/token", data: {
       "client_id": CLIENT_ID,
       "client_secret": CLIENT_SECRET,

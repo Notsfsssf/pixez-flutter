@@ -23,7 +23,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.0.3
+  dio: ^5.1.1
   crypto: ^3.0.2
   sqflite: ^2.2.5
   path_provider: ^2.0.13
@@ -35,7 +35,7 @@ dependencies:
   bot_toast: ^4.0.3
   package_info_plus: ^3.0.3
   uni_links2: ^0.6.0+2
-  mobx: ^2.1.3
+  mobx: ^2.1.4
   flutter_mobx: ^2.0.6+5
   in_app_purchase: ^3.1.5
   flutter_widget_from_html: ^0.10.0
@@ -51,7 +51,7 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   json_annotation: ^4.8.0
   flutter_staggered_animations: ^1.1.1
-  badges: ^3.0.2
+  badges: ^3.0.3
   image_picker: ^0.8.7+1
   intl: ^0.17.0
   quiver: ^3.1.0
