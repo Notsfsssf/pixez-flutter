@@ -35,7 +35,7 @@ class UserPreviewsResponse {
 class UserPreviews {
   User user;
   List<Illusts> illusts;
-  List<Object> novels;
+  List<UserPreviewsNovel> novels;
   bool is_muted;
 
   UserPreviews({
@@ -45,7 +45,27 @@ class UserPreviews {
     required this.is_muted,
   });
 
-    factory UserPreviews.fromJson(Map<String, dynamic> json) =>
+  factory UserPreviews.fromJson(Map<String, dynamic> json) =>
       _$UserPreviewsFromJson(json);
   Map<String, dynamic> toJson() => _$UserPreviewsToJson(this);
+}
+
+@JsonSerializable()
+class UserPreviewsNovel {
+  int id;
+  String title;
+  String? caption;
+  @JsonKey(name: 'image_urls')
+  ImageUrls imageUrls;
+  
+  UserPreviewsNovel({
+    required this.id,
+    required this.title,
+    required this.caption,
+    required this.imageUrls,
+  });
+
+  factory UserPreviewsNovel.fromJson(Map<String, dynamic> json) =>
+      _$UserPreviewsNovelFromJson(json);
+  Map<String, dynamic> toJson() => _$UserPreviewsNovelToJson(this);
 }

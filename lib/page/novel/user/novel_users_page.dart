@@ -98,6 +98,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
               key: PageStorageKey('NovelTab2'),
               userDetail: userStore.userDetail,
               isNewNested: true,
+              isNovel: true,
             ),
           ]),
         );
@@ -460,7 +461,10 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                       appBar: AppBar(
                         title: Text(I18n.of(context).followed),
                       ),
-                      body: FollowList(id: widget.id),
+                      body: FollowList(
+                        id: widget.id,
+                        isNovel: true,
+                      ),
                     );
                   }));
                 },

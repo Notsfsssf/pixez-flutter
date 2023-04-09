@@ -19,6 +19,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/new/novel_new_list.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
@@ -34,7 +35,7 @@ class _NovelNewPageState extends State<NovelNewPage>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -52,12 +53,16 @@ class _NovelNewPageState extends State<NovelNewPage>
           AppBar(
             title: TabBar(
               controller: _tabController,
+              isScrollable: true,
               tabs: [
                 Tab(
                   text: I18n.of(context).news,
                 ),
                 Tab(
                   text: I18n.of(context).bookmark,
+                ),
+                Tab(
+                  text: I18n.of(context).follow,
                 )
               ],
             ),
@@ -93,6 +98,10 @@ class _NovelNewPageState extends State<NovelNewPage>
             children: [
               NovelNewList(),
               NovelBookmarkPage(),
+              (accountStore.now != null)
+                  ? FollowList(
+                      id: int.parse(accountStore.now!.userId), isNovel: true)
+                  : Container()
             ],
           )),
         ],

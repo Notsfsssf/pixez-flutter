@@ -14,12 +14,10 @@
  *
  */
 
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/user_detail.dart';
@@ -31,8 +29,13 @@ import 'package:url_launcher/url_launcher_string.dart';
 class UserDetailPage extends StatefulWidget {
   final UserDetail? userDetail;
   bool isNewNested;
+  bool? isNovel;
 
-  UserDetailPage({Key? key, required this.userDetail, this.isNewNested = false})
+  UserDetailPage(
+      {Key? key,
+      required this.userDetail,
+      this.isNewNested = false,
+      this.isNovel})
       : super(key: key);
 
   @override
@@ -40,6 +43,14 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
+  bool _isNovel = false;
+
+  @override
+  void initState() {
+    _isNovel = widget.isNovel ?? false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var detail = widget.userDetail;
@@ -112,7 +123,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         ),
                         body: detail == null
                             ? Container()
-                            : FollowList(id: detail.user.id),
+                            : FollowList(id: detail.user.id, isNovel: _isNovel),
                       );
                     }));
                   }),
