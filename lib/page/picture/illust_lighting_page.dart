@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:extended_text/extended_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -209,26 +210,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ExtendedTextSelectionPointerHandler(
-      builder: (List<ExtendedTextSelectionState> states) {
-        return Listener(
-          child: _buildBody(context),
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (PointerDownEvent value) {
-            for (final ExtendedTextSelectionState state in states) {
-              if (!state.containsPosition(value.position)) {
-                state.clearSelection();
-              }
-            }
-          },
-          onPointerMove: (PointerMoveEvent value) {
-            for (final ExtendedTextSelectionState state in states) {
-              state.clearSelection();
-            }
-          },
-        );
-      },
-    );
+    return _buildBody(context);
   }
 
   Widget _buildBody(BuildContext context) {
@@ -313,10 +295,12 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Widget colorText(String text, BuildContext context) {
-    return ExtendedText(
-      text,
-      selectionEnabled: true,
-      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+    return SelectionArea(
+      selectionControls: TextSelectionFix.buildControls(context),
+      child: Text(
+        text,
+        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      ),
     );
   }
 
@@ -418,6 +402,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SelectionArea(
+                  selectionControls: TextSelectionFix.buildControls(context),
                   child: SelectableHtml(
                     data: data.caption.isEmpty ? "~" : data.caption,
                   ),
@@ -838,19 +823,26 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    illust.title,
-                    style: Theme.of(context).textTheme.bodyText2,
+                  SelectionArea(
+                    selectionControls: TextSelectionFix.buildControls(context),
+                    child: Text(
+                      illust.title,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
                   ),
                   Container(
                     height: 4.0,
                   ),
                   Hero(
                     tag: illust.user.name + this.hashCode.toString(),
-                    child: Text(
-                      illust.user.name,
-                      style: TextStyle(
-                          color: Theme.of(context).textTheme.caption!.color),
+                    child: SelectionArea(
+                      selectionControls:
+                          TextSelectionFix.buildControls(context),
+                      child: Text(
+                        illust.user.name,
+                        style: TextStyle(
+                            color: Theme.of(context).textTheme.caption!.color),
+                      ),
                     ),
                   ),
                   Text(
@@ -1177,4 +1169,27 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   @override
   bool get wantKeepAlive => false;
+}
+
+class TextSelectionFix {
+  static TextSelectionControls? buildControls(BuildContext context) {
+    TextSelectionControls? controls = null;
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+        controls ??= materialTextSelectionControls;
+        break;
+      case TargetPlatform.iOS:
+        controls ??= cupertinoTextSelectionControls;
+        break;
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+        controls ??= desktopTextSelectionControls;
+        break;
+      case TargetPlatform.macOS:
+        controls ??= cupertinoDesktopTextSelectionControls;
+        break;
+    }
+    return controls;
+  }
 }
