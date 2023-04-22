@@ -135,7 +135,7 @@ abstract class _LightingStoreBase with Store {
         await glanceIllustPersistProvider.open();
         Future.microtask(() async {
           await glanceIllustPersistProvider.insertAll(recommend.illusts
-              .where((element) => !element.hateByUser())
+              .where((element) => !element.hateByUser(includeR18Setting: true))
               .toGlancePersist(
                   glanceKey, DateTime.now().microsecondsSinceEpoch));
         });

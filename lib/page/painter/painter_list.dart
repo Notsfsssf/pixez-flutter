@@ -100,13 +100,9 @@ class _PainterListState extends State<PainterList> {
 
   Widget _itemBuilder(int index) {
     final user = _painterListStore.users[index];
-    if (widget.isNovel)
-      return PainterCard(
-        user: user,
-        isNovel: widget.isNovel,
-      );
     return PainterCard(
       user: user,
+      isNovel: widget.isNovel,
     );
   }
 }

@@ -113,9 +113,16 @@ extension NovelExts on Novel {
 }
 
 extension IllustExts on Illusts {
-  bool hateByUser({bool ai = false}) {
+  bool hateByUser({bool ai = false, bool includeR18Setting = false}) {
     if (ai) {
       return false;
+    }
+    if (includeR18Setting) {
+      if (userSetting.hIsNotAllow) {
+        for (int i = 0; i < tags.length; i++) {
+          if (tags[i].name.startsWith('R-18')) return true;
+        }
+      }
     }
     if (muteStore.banAIIllust && illustAIType == 2) {
       return true;

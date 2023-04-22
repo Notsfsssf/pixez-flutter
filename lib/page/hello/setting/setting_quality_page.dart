@@ -24,6 +24,7 @@ import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
@@ -43,6 +44,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   final _typeList = ["follow_illust", "recom", "rank"];
   SharedPreferences? _pref;
   int _widgetTypeIndex = -1;
+  GlanceIllustPersistProvider glanceIllustPersistProvider =
+      GlanceIllustPersistProvider();
 
   @override
   void initState() {
@@ -965,8 +968,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                             indicatorSize: MD2IndicatorSize.normal),
                         isScrollable: true,
                         onTap: (index) async {
-                          final type = _typeList[index];
-                          await _pref?.setString("widget_illust_type", type);
+                          try {
+                            final type = _typeList[index];
+                            await _pref?.setString("widget_illust_type", type);
+                            await glanceIllustPersistProvider.open();
+                            await glanceIllustPersistProvider.deleteAll();
+                          } catch (e) {}
                         },
                         controller: TabController(
                             length: tablist.length,
