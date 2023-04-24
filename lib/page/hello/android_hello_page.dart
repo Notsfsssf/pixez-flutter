@@ -41,7 +41,6 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links2/uni_links.dart';
 
-
 class AndroidHelloPage extends StatefulWidget {
   const AndroidHelloPage({Key? key}) : super(key: key);
 
@@ -105,6 +104,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           //     return _buildPadScafford(context, constraint);
           //   return _buildScaffold(context);
           // });
+        }
+        if (accountStore.now == null && accountStore.feching) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
         return LoginPage();
       }),

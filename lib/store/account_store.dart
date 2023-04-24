@@ -28,6 +28,8 @@ abstract class _AccountStoreBase with Store {
   AccountPersist? now;
   @observable
   int index = 0;
+  @observable
+  bool feching = false;
 
   ObservableList<AccountPersist> accounts = ObservableList();
 
@@ -62,6 +64,7 @@ abstract class _AccountStoreBase with Store {
 
   @action
   fetch() async {
+    feching = true;
     await accountProvider.open();
     List<AccountPersist> list = await accountProvider.getAllAccount();
     accounts.clear();
@@ -71,6 +74,7 @@ abstract class _AccountStoreBase with Store {
     if (list.isNotEmpty) {
       index = i ?? 0;
       now = list[i ?? 0];
+      feching = false;
     }
   }
 }
