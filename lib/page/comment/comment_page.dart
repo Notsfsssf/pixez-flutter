@@ -29,6 +29,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 
 enum CommentArtWorkType { ILLUST, NOVEL }
@@ -68,8 +69,11 @@ class _CommentPageState extends State<CommentPage> {
     "33h.live"
   ];
 
+  late FocusNode _focusNode;
+
   @override
   void initState() {
+    _focusNode = FocusNode();
     parentCommentId = widget.isReplay ? widget.pId : null;
     parentCommentName = widget.isReplay ? widget.name : null;
     _editController = TextEditingController();
@@ -85,6 +89,7 @@ class _CommentPageState extends State<CommentPage> {
   void dispose() {
     _editController.dispose();
     easyRefreshController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -145,7 +150,20 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
+    return Listener(
+      child: _buildBody(context),
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (value) {
+        if (_focusNode.hasFocus) _focusNode.unfocus();
+      },
+      onPointerMove: (value) {
+        if (_focusNode.hasFocus) _focusNode.unfocus();
+      },
+    );
+  }
+
+  Container _buildBody(BuildContext context) {
+    return Container(
       child: Scaffold(
         appBar: AppBar(
           title: Text(I18n.of(context).view_comment),
@@ -174,7 +192,9 @@ class _CommentPageState extends State<CommentPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text('[ ]',
-                                  style: Theme.of(context).textTheme.headlineMedium),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium),
                             ),
                           ),
                         );
@@ -248,8 +268,15 @@ class _CommentPageState extends State<CommentPage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 4.0),
-                                                child: CommentEmojiText(
-                                                  text: comment.comment ?? "",
+                                                child: SelectionArea(
+                                                  focusNode: _focusNode,
+                                                  selectionControls:
+                                                      TextSelectionFix
+                                                          .buildControls(
+                                                              context),
+                                                  child: CommentEmojiText(
+                                                    text: comment.comment ?? "",
+                                                  ),
                                                 ),
                                               ),
                                             if (comment.stamp != null)
