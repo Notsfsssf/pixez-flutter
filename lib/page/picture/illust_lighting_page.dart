@@ -125,6 +125,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   @override
   void initState() {
+    _focusNode = FocusNode();
     _refreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
     _scrollController = ScrollController();
@@ -159,6 +160,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     _illustStore.dispose();
     _scrollController.dispose();
     _refreshController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -206,6 +208,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     );
   }
 
+  late FocusNode _focusNode;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -220,11 +224,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 state.clearSelection();
               }
             }
+            if (_focusNode.hasFocus) _focusNode.unfocus();
           },
           onPointerMove: (value) {
             for (var state in states) {
               state.clearSelection();
             }
+            if (_focusNode.hasFocus) _focusNode.unfocus();
           },
         );
       },
@@ -355,8 +361,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                          child: Text(I18n.of(context).illust_id)),
+                      Container(child: Text(I18n.of(context).illust_id)),
                       Container(
                         width: 10.0,
                       ),
@@ -418,6 +423,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 padding: const EdgeInsets.all(8.0),
                 child: SelectionArea(
                   selectionControls: TextSelectionFix.buildControls(context),
+                  focusNode: _focusNode,
                   child: SelectableHtml(
                     data: data.caption.isEmpty ? "~" : data.caption,
                   ),
