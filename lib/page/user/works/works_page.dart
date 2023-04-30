@@ -90,7 +90,8 @@ class _WorksPageState extends State<WorksPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(':(', style: Theme.of(context).textTheme.headlineMedium),
+            child:
+                Text(':(', style: Theme.of(context).textTheme.headlineMedium),
           ),
           TextButton(
               onPressed: () {
@@ -191,6 +192,7 @@ class _WorksPageState extends State<WorksPage> {
         .removeWhere((element) => element.illusts!.hateByUser(ai: false));
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       return IllustCard(
+        lightingStore: _store,
         store: _store.iStores[index],
         iStores: _store.iStores,
       );

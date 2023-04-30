@@ -24,6 +24,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -35,9 +36,11 @@ class IllustCard extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore>? iStores;
   final bool needToBan;
+  final LightingStore lightingStore;
 
   IllustCard({
     required this.store,
+    required this.lightingStore,
     this.iStores,
     this.needToBan = false,
   });
@@ -50,11 +53,13 @@ class _IllustCardState extends State<IllustCard> {
   late IllustStore store;
   late List<IllustStore>? iStores;
   late String tag;
+  late LightingStore _lightingStore;
 
   @override
   void initState() {
     store = widget.store;
     iStores = widget.iStores;
+    _lightingStore = widget.lightingStore;
     tag = this.hashCode.toString();
     super.initState();
   }
@@ -64,6 +69,7 @@ class _IllustCardState extends State<IllustCard> {
     super.didUpdateWidget(oldWidget);
     store = widget.store;
     iStores = widget.iStores;
+    _lightingStore = widget.lightingStore;
   }
 
   @override
@@ -124,6 +130,7 @@ class _IllustCardState extends State<IllustCard> {
       return PictureListPage(
         iStores: iStores!,
         store: store,
+        lightingStore: _lightingStore,
         heroString: tag,
       );
     }));
@@ -237,6 +244,7 @@ class _IllustCardState extends State<IllustCard> {
         return PictureListPage(
           heroString: heroTag,
           store: store,
+          lightingStore: _lightingStore,
           iStores: iStores!,
         );
       }

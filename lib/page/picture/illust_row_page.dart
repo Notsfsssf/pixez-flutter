@@ -29,10 +29,12 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -417,6 +419,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                   context,
                   PictureListPage(
                     iStores: list,
+                    lightingStore: null,
                     store: list[index],
                   ));
             },

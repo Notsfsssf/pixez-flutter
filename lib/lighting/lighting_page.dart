@@ -207,7 +207,8 @@ class _LightingListState extends State<LightingList> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(':(', style: Theme.of(context).textTheme.headlineMedium),
+            child:
+                Text(':(', style: Theme.of(context).textTheme.headlineMedium),
           ),
           TextButton(
               onPressed: () {
@@ -276,6 +277,7 @@ class _LightingListState extends State<LightingList> {
         .removeWhere((element) => element.illusts!.hateByUser(ai: _ai));
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       return IllustCard(
+        lightingStore: _store,
         store: _store.iStores[index],
         iStores: _store.iStores,
       );
@@ -312,6 +314,7 @@ class _LightingListState extends State<LightingList> {
   Widget _buildItem(int index) {
     return IllustCard(
       store: _store.iStores[index],
+      lightingStore: _store,
       iStores: _store.iStores,
     );
   }

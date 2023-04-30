@@ -190,6 +190,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
               return IllustCard(
+                lightingStore: _lightingStore,
                 store: _lightingStore.iStores[index],
                 iStores: _lightingStore.iStores,
               );
