@@ -283,7 +283,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           routeObserver,
         ],
         themeMode: userSetting.themeMode,
-        darkTheme: fluentui.FluentThemeData.dark().copyWith(
+        darkTheme: fluentui.FluentThemeData(
           brightness: Brightness.dark,
           visualDensity: fluentui.VisualDensity.standard,
           accentColor: _accentColor,
@@ -291,7 +291,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             glowFactor: fluentui.is10footScreen() ? 2.0 : 0.0,
           ),
         ),
-        theme: fluentui.FluentThemeData.light().copyWith(
+        theme: fluentui.FluentThemeData(
           brightness: Brightness.light,
           visualDensity: fluentui.VisualDensity.standard,
           accentColor: _accentColor,
