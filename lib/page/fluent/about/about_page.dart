@@ -19,20 +19,21 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:pixez/component/new_version_chip.dart';
-import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/fluent/new_version_chip.dart';
+import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/recommend.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/contributors.dart';
-import 'package:pixez/page/about/thanks_list.dart';
-import 'package:pixez/page/about/update_page.dart';
+import 'package:pixez/page/fluent/about/thanks_list.dart';
+import 'package:pixez/page/fluent/about/update_page.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
@@ -107,14 +108,11 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(I18n.of(context).about),
-          actions: <Widget>[],
-        ),
-        body: _buildInfo(context),
+    return ScaffoldPage(
+      header: PageHeader(
+        title: Text(I18n.of(context).about),
       ),
+      content: _buildInfo(context),
     );
   }
 
@@ -128,8 +126,8 @@ class _AboutPageState extends State<AboutPage> {
             ),
             title: Text('Perol_Notsfsssf'),
             subtitle: Text(I18n.of(context).perol_message),
-            onTap: () {
-              showModalBottomSheet(
+            onPressed: () {
+              showBottomSheet(
                 context: context,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
@@ -137,14 +135,14 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ),
                 builder: (BuildContext context) {
-                  return InkWell(
-                    onTap: () {
+                  return IconButton(
+                    onPressed: () {
                       if (Platform.isAndroid)
                         launch(Constants.isGooglePlay
                             ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
                             : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587");
                     },
-                    child: Container(
+                    icon: Container(
                       child: Image.asset(
                         'assets/images/liz.png',
                         fit: BoxFit.cover,
@@ -161,8 +159,8 @@ class _AboutPageState extends State<AboutPage> {
             ),
             title: Text('Right now'),
             subtitle: Text(I18n.of(context).right_now_message),
-            onTap: () {
-              showModalBottomSheet(
+            onPressed: () {
+              showBottomSheet(
                 context: context,
                 builder: (BuildContext context) {
                   return Container(
@@ -189,8 +187,8 @@ class _AboutPageState extends State<AboutPage> {
                 itemBuilder: (context, index) {
                   final data = contributors[index];
                   return Card(
-                    child: InkWell(
-                      onTap: () async {
+                    child: IconButton(
+                      onPressed: () async {
                         if (index == 0 && accountStore.now != null) {
                           //Tragic Life:輪播凱留TAG 10000+收藏的圖
                           try {
@@ -203,7 +201,7 @@ class _AboutPageState extends State<AboutPage> {
                               int i = Random()
                                   .nextInt(recommend.illusts.length - 1);
                               if (i < 0 || i >= recommend.illusts.length) i = 0;
-                              showModalBottomSheet(
+                              showBottomSheet(
                                   context: context,
                                   builder: (context) {
                                     return SafeArea(
@@ -228,7 +226,7 @@ class _AboutPageState extends State<AboutPage> {
                                 'day_r18', null);
                             Recommend recommend =
                                 Recommend.fromJson(response.data);
-                            showModalBottomSheet(
+                            showBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return SafeArea(
@@ -254,7 +252,7 @@ class _AboutPageState extends State<AboutPage> {
                             BotToast.showText(
                                 text: RA_Tips[Random().nextInt(7)]);
                           } else {
-                            showModalBottomSheet(
+                            showBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return SafeArea(
@@ -266,7 +264,7 @@ class _AboutPageState extends State<AboutPage> {
                           }
                         }
                       },
-                      child: Container(
+                      icon: Container(
                         width: 80,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -306,10 +304,10 @@ class _AboutPageState extends State<AboutPage> {
                 }),
           ),
           ListTile(
-            leading: Icon(Icons.rate_review),
+            leading: Icon(FluentIcons.rate),
             title: Text(I18n.of(context).rate_title),
             subtitle: Text(I18n.of(context).rate_message),
-            onTap: () async {
+            onPressed: () async {
               if (Platform.isIOS) {
                 var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
                 try {
@@ -320,16 +318,16 @@ class _AboutPageState extends State<AboutPage> {
           ),
           if (Platform.isAndroid) ...[
             ListTile(
-              leading: Icon(Icons.device_hub),
+              leading: Icon(FluentIcons.device_off),
               title: Text(I18n.of(context).repo_address),
               subtitle: Text('github.com/Notsfsssf/pixez-flutter'),
               trailing: Visibility(
                 child: NewVersionChip(),
                 visible: hasNewVersion,
               ),
-              onTap: () {
+              onPressed: () {
                 if (!Constants.isGooglePlay)
-                  showModalBottomSheet(
+                  showBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
@@ -343,14 +341,14 @@ class _AboutPageState extends State<AboutPage> {
                                 title: Text('Version ${Constants.tagName}'),
                                 subtitle: Text(
                                     I18n.of(context).go_to_project_address),
-                                onTap: () {
+                                onPressed: () {
                                   try {
                                     launch(
                                         'https://github.com/Notsfsssf/pixez-flutter');
                                   } catch (e) {}
                                 },
                                 trailing: IconButton(
-                                    icon: Icon(Icons.link),
+                                    icon: Icon(FluentIcons.link),
                                     onPressed: () {
                                       try {
                                         launch(
@@ -360,11 +358,16 @@ class _AboutPageState extends State<AboutPage> {
                               ),
                               ListTile(
                                 title: Text(I18n.of(context).check_for_updates),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => UpdatePage()));
+                                onPressed: () {
+                                  Leader.push(
+                                    context,
+                                    UpdatePage(),
+                                    icon: Icon(FluentIcons.update_restore),
+                                    title: Text(
+                                        I18n.of(context).check_for_updates),
+                                  );
                                 },
-                                trailing: Icon(Icons.update),
+                                trailing: Icon(FluentIcons.update_restore),
                               ),
                               ListTile(
                                 leading: CircleAvatar(
@@ -385,39 +388,39 @@ class _AboutPageState extends State<AboutPage> {
           Visibility(
             visible: false,
             child: ListTile(
-                leading: Icon(Icons.home),
+                leading: Icon(FluentIcons.home),
                 title: Text('GitHub Page'),
                 subtitle: Text('https://github.com/Notsfsssf'),
-                onTap: () async {}),
+                onPressed: () async {}),
           ),
           ListTile(
-            leading: Icon(Icons.email),
+            leading: Icon(FluentIcons.mail),
             title: Text(I18n.of(context).feedback),
             subtitle: Text('PxezFeedBack@outlook.com'),
           ),
           ListTile(
-            leading: Icon(Icons.stars),
+            leading: Icon(FluentIcons.like),
             title: Text(I18n.of(context).support),
             subtitle: Text(I18n.of(context).support_message),
           ),
           ListTile(
-            leading: Icon(Icons.favorite),
+            leading: Icon(FluentIcons.favorite_star),
             title: Text(I18n.of(context).thanks),
             subtitle: Text('感谢帮助我测试的弹幕委员会群友们\n感谢pixiv cat站主提供的图床'),
-            onTap: () {
-              if (Platform.isAndroid)
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => Scaffold(
-                          appBar: AppBar(),
-                          body: ThanksList(),
-                        )));
+            onPressed: () {
+              Leader.push(
+                context,
+                ScaffoldPage(content: ThanksList()),
+                icon: Icon(FluentIcons.favorite_star),
+                title: Text(I18n.of(context).thanks),
+              );
             },
           ),
           ListTile(
-            leading: Icon(Icons.share),
+            leading: Icon(FluentIcons.share),
             title: Text(I18n.of(context).share),
             subtitle: Text(I18n.of(context).share_this_app_link),
-            onTap: () {
+            onPressed: () {
               if (Platform.isIOS) {
                 Share.share('https://apps.apple.com/cn/app/pixez/id1494435126');
               }
@@ -437,18 +440,18 @@ class _AboutPageState extends State<AboutPage> {
               child: ListTile(
                 title: Text('AliPay'),
                 subtitle: Text('912756674@qq.com'),
-                onTap: () async {},
+                onPressed: () async {},
               ),
             ),
             Card(
               child: ListTile(
                 title: Text('Wechat Pay'),
                 subtitle: Text('tap'),
-                onTap: () async {
+                onPressed: () async {
                   showDialog(
                       context: context,
                       builder: (_) {
-                        return AlertDialog(
+                        return ContentDialog(
                           content: Image.asset(
                             'assets/images/weixin_qr.png',
                             width: 300,
@@ -466,7 +469,7 @@ class _AboutPageState extends State<AboutPage> {
                 subtitle: Text('如果你觉得这个应用还不错，支持一下开发者吧!'),
                 title: Text('支持开发者工作'),
                 trailing: Text('12￥'),
-                onTap: () async {
+                onPressed: () async {
                   BotToast.showText(text: 'try to Purchase');
                   for (var p in products) {
                     if (p.id == "support") {
@@ -485,7 +488,7 @@ class _AboutPageState extends State<AboutPage> {
                 subtitle: Text('如果你觉得这个应用非常不错，支持一下开发者吧！'),
                 title: Text('支持开发者工作'),
                 trailing: Text('25￥'),
-                onTap: () async {
+                onPressed: () async {
                   BotToast.showText(text: 'try to Purchase');
                   for (var p in products) {
                     if (p.id == "support1") {
@@ -504,12 +507,11 @@ class _AboutPageState extends State<AboutPage> {
             for (var i in products)
               Card(
                 margin: EdgeInsets.all(8.0),
-                elevation: 1.0,
                 child: ListTile(
                   leading: Icon(FontAwesomeIcons.coffee),
                   title: Text(i.description),
                   subtitle: Text(i.price),
-                  onTap: () {
+                  onPressed: () {
                     BotToast.showText(text: 'try to Purchase');
                     final PurchaseParam purchaseParam =
                         PurchaseParam(productDetails: i);

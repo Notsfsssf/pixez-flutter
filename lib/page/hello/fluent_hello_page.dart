@@ -3,28 +3,28 @@ import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/Init/guide_page.dart';
-import 'package:pixez/page/account/select/account_select_page.dart';
-import 'package:pixez/page/follow/follow_list.dart';
-import 'package:pixez/page/hello/new/illust/new_illust_page.dart';
-import 'package:pixez/page/hello/new/new_page.dart';
-import 'package:pixez/page/hello/ranking/rank_page.dart';
-import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
-import 'package:pixez/page/hello/setting/setting_page.dart';
+import 'package:pixez/page/fluent/Init/guide_page.dart';
+import 'package:pixez/page/fluent/account/select/account_select_page.dart';
+import 'package:pixez/page/fluent/follow/follow_list.dart';
+import 'package:pixez/page/fluent/hello/new/illust/new_illust_page.dart';
+import 'package:pixez/page/fluent/hello/new/new_page.dart';
+import 'package:pixez/page/fluent/hello/ranking/rank_page.dart';
+import 'package:pixez/page/fluent/hello/recom/recom_spotlight_page.dart';
+import 'package:pixez/page/fluent/hello/setting/setting_page.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/fluent/preview/preview_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
-import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/fluent/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
-import 'package:pixez/page/soup/soup_page.dart';
-import 'package:pixez/page/user/bookmark/bookmark_page.dart';
-import 'package:pixez/page/user/users_page.dart';
+import 'package:pixez/page/fluent/soup/soup_page.dart';
+import 'package:pixez/page/fluent/user/bookmark/bookmark_page.dart';
+import 'package:pixez/page/fluent/user/users_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -48,6 +48,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
 
   late PixEzNavigatorObserver _navobs;
   late Navigator _nav;
+  final BookmarkPageMethodRelay relay = BookmarkPageMethodRelay();
 
   late List<_PixEzPageItem> _pages;
   late List<_PixEzPageItem> _lastpages;
@@ -120,7 +121,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
       _PixEzPageItem(
         (context) => const Icon(FluentIcons.bookmarks),
         (context) => Text(I18n.of(context).quick_view),
-        NewPage(),
+        NewPage(relay: relay),
         items: [
           _PixEzPageItem(
             (context) => const Icon(FluentIcons.news),
@@ -133,7 +134,9 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
             Observer(builder: (context) {
               if (accountStore.now != null)
                 return BookmarkPage(
-                    isNested: false, id: int.parse(accountStore.now!.userId));
+                    relay: relay,
+                    isNested: false,
+                    id: int.parse(accountStore.now!.userId));
               else
                 return PreviewPage();
             }),
