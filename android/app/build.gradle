@@ -82,7 +82,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 10009180
-        versionName "0.9.18 WWW"
+        versionName "0.9.19 WWW"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {

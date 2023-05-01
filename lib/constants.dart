@@ -15,7 +15,7 @@
  */
 
 class Constants {
-  static String tagName = "0.9.18";
+  static String tagName = "0.9.19";
   static const isGooglePlay =
       bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);
   static int type = 0;
