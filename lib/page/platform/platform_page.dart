@@ -28,6 +28,7 @@ import 'package:pixez/open_setting_plugin.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -242,6 +243,26 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).display_mode),
                 subtitle: Text('${selected ?? ''}'),
               ),
+              if ((_androidInfo?.version.sdkInt ?? 0) >= 30)
+                Observer(
+                  builder: (context) {
+                    return SwitchListTile(
+                      secondary: Icon(Icons.photo_album),
+                      onChanged: (bool value) async {
+                        await userSetting.setImagePickerType(value ? 1 : 0);
+                      },
+                      title: InkWell(
+                        child: Text("Photo picker"),
+                        onTap: () {
+                          launch(
+                              "https://developer.android.com/training/data-storage/shared/photopicker");
+                        },
+                      ),
+                      subtitle: Text("use new system-level image selector"),
+                      value: userSetting.imagePickerType == 1,
+                    );
+                  },
+                ),
               if ((_androidInfo?.version.sdkInt ?? 0) > 30) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

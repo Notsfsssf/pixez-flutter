@@ -66,6 +66,7 @@ abstract class _UserSetting with Store {
   static const String H_CROSS_ADAPT_KEY = "cross_adapt";
   static const String H_CROSS_ADAPT_WIDTH_KEY = "cross_adapt_width";
   static const String DEFAULT_PRIVATE_LIKE_KEY = "default_private_like";
+  static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type";
   static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
 
   @observable
@@ -147,6 +148,8 @@ abstract class _UserSetting with Store {
   bool defaultPrivateLike = false;
   @observable
   bool longPressSaveConfirm = false;
+  @observable
+  int imagePickerType = 1;
 
   @observable
   String? format = "";
@@ -343,6 +346,7 @@ abstract class _UserSetting with Store {
     hCrossAdapterWidth = min(2160, max(100, hCrossAdapterV));
     defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
     longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
+    imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 1;
 
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
@@ -393,6 +397,16 @@ abstract class _UserSetting with Store {
         return 1;
     }
     return num;
+  }
+
+  @action
+  setImagePickerType(int value) async {
+    await prefs.setInt(IMAGE_PICKER_TYPE_KEY, value);
+    imagePickerType = value;
+  }
+
+  bool imagePickerHasChoose() {
+    return prefs.getInt(IMAGE_PICKER_TYPE_KEY) != null;
   }
 
   @action
