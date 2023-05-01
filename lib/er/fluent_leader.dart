@@ -1,32 +1,15 @@
-/*
- * Copyright (C) 2020. by perol_notsf, All rights reserved
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful, but WITHOUT ANY
- *  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- *  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License along with
- *  this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:pixez/constants.dart';
-import 'package:pixez/er/fluent_leader.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/page/hello/android_hello_page.dart';
-import 'package:pixez/page/hello/hello_page.dart';
+import 'package:pixez/page/hello/fluent_hello_page.dart';
 import 'package:pixez/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -35,45 +18,28 @@ import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Leader {
+class FluentLeader {
   static Future<void> pushUntilHome(BuildContext context) async {
-    if (Constants.isFluent) {
-      FluentLeader.pushUntilHome(context);
-      return;
-    }
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-          builder: (context) =>
-              Platform.isIOS ? HelloPage() : AndroidHelloPage()),
-      (route) => false,
+      FluentPageRoute(
+        builder: (context) => FluentHelloPage(),
+      ),
+      // ignore: unnecessary_null_comparison
+      (route) => route == null,
     );
   }
 
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
-    if (Constants.isFluent) {
-      FluentLeader.pushWithUri(context, link);
+    if (link.host == "eval" && link.scheme == "pixez") {
+      FluentLeader.push(
+          context,
+          SaveEvalPage(
+            eval: link.queryParameters["code"] != null
+                ? String.fromCharCodes(
+                    base64Decode(link.queryParameters["code"]!))
+                : null,
+          ));
       return;
-    }
-    if (link.host == "script" && link.scheme == "pixez") {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return SaveEvalPage(
-          eval: link.queryParameters["code"] != null
-              ? String.fromCharCodes(
-                  base64Decode(link.queryParameters["code"]!))
-              : null,
-        );
-      }));
-      return;
-    }
-    if (link.host == "i.pximg.net") {
-      final id = int.tryParse(
-          link.pathSegments.last.split(".").first.split("_").first);
-      if (id != null) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return IllustLightingPage(id: id);
-        }));
-        return;
-      }
     }
     if (link.host == "pixiv.me") {
       try {
@@ -88,17 +54,18 @@ class Leader {
         }
       } catch (e) {
         try {
-          launch(link.toString());
+          launchUrl(link);
         } catch (e) {}
       }
       return;
     }
     if (link.host.contains("pixivision.net")) {
-      Leader.push(
-          context,
-          SoupPage(
-              url: link.toString().replaceAll("pixez://", "https://"),
-              spotlight: null));
+      FluentLeader.push(
+        context,
+        SoupPage(
+            url: link.toString().replaceAll("pixez://", "https://"),
+            spotlight: null),
+      );
       return;
     }
     if (link.scheme == "pixiv") {
@@ -151,31 +118,20 @@ class Leader {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return IllustLightingPage(
-            id: id,
-          );
-        }));
+        FluentLeader.push(context, IllustLightingPage(id: id));
       } catch (e) {}
       return;
     } else if (link.host.contains('user')) {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
-          return UsersPage(
-            id: id,
-          );
-        }));
+        FluentLeader.push(context, UsersPage(id: id));
       } catch (e) {}
       return;
     } else if (link.host.contains("novel")) {
       try {
         int id = int.parse(link.pathSegments.last);
-        Navigator.of(context, rootNavigator: true)
-            .push(MaterialPageRoute(builder: (context) {
+        Navigator.of(context).push(PixEzPageRoute(builder: (context) {
           return NovelViewerPage(id: id);
         }));
         return;
@@ -189,10 +145,7 @@ class Leader {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return IllustLightingPage(id: id);
-            }));
+            FluentLeader.push(context, IllustLightingPage(id: id));
             return;
           } catch (e) {
             LPrinter.d(e);
@@ -205,10 +158,7 @@ class Leader {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                builder: (context) => UsersPage(
-                      id: id,
-                    )));
+            FluentLeader.push(context, UsersPage(id: id));
           } catch (e) {
             print(e);
           }
@@ -217,7 +167,12 @@ class Leader {
       if (link.queryParameters['illust_id'] != null) {
         try {
           var id = link.queryParameters['illust_id'];
-          Leader.push(context, IllustLightingPage(id: int.parse(id!)));
+          FluentLeader.push(
+            context,
+            IllustLightingPage(id: int.parse(id!)),
+            icon: Icon(FluentIcons.picture),
+            title: Text(I18n.of(context).illust_id + ': $id'),
+          );
           return;
         } catch (e) {}
       }
@@ -225,15 +180,9 @@ class Leader {
         try {
           var id = link.queryParameters['id'];
           if (!link.path.contains("novel"))
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return UsersPage(
-                id: int.parse(id!),
-              );
-            }));
+            FluentLeader.push(context, UsersPage(id: int.parse(id!)));
           else
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
+            Navigator.of(context).push(PixEzPageRoute(builder: (context) {
               return NovelViewerPage(
                 id: int.parse(id!),
                 novelStore: null,
@@ -247,29 +196,24 @@ class Leader {
         if (i == "i") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Leader.push(context, IllustLightingPage(id: id));
+            FluentLeader.push(
+              context,
+              IllustLightingPage(id: id),
+              icon: Icon(FluentIcons.picture),
+              title: Text(I18n.of(context).illust_id + ': $id'),
+            );
             return;
           } catch (e) {}
         } else if (i == "u") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return UsersPage(
-                id: id,
-              );
-            }));
+            FluentLeader.push(context, UsersPage(id: id));
             return;
           } catch (e) {}
         } else if (i == "tags") {
           try {
             String tag = link.pathSegments[link.pathSegments.length - 1];
-            Navigator.of(context, rootNavigator: true)
-                .push(MaterialPageRoute(builder: (context) {
-              return ResultPage(
-                word: tag,
-              );
-            }));
+            FluentLeader.push(context, ResultPage(word: tag));
           } catch (e) {}
         }
       }
@@ -278,30 +222,45 @@ class Leader {
 
   static Future<dynamic> pushWithScaffold(context, Widget widget,
       {Widget? icon, Widget? title}) {
-    if (Constants.isFluent) {
-      return FluentLeader.pushWithScaffold(context, widget,
-          icon: icon, title: title);
-    }
-    return Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Scaffold(
-              body: widget,
-            )));
+    return FluentLeader.push(
+      context,
+      ScaffoldPage(content: widget),
+      icon: icon,
+      title: title,
+    );
   }
 
   static Future<dynamic> push(
-    context,
+    BuildContext context,
     Widget widget, {
     Widget? icon,
     Widget? title,
     bool forceSkipWrap = false,
   }) {
-    if (Constants.isFluent) {
-      return FluentLeader.push(context, widget,
-          icon: icon, title: title, forceSkipWrap: forceSkipWrap);
+    final _final = forceSkipWrap
+        ? widget
+        : widget is ScaffoldPage
+            ? widget
+            : ScaffoldPage(
+                content: widget,
+                padding: EdgeInsets.all(0.0),
+              );
+
+    var state = context.findAncestorStateOfType<FluentHelloPageState>();
+    if (state == null) state = FluentHelloPageState.state;
+    assert(state != null);
+    if (icon == null || title == null) {
+      debugPrint('icon: $icon');
+      debugPrint('title: $title');
+      debugPrintStack();
     }
-    return Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Scaffold(
-              body: widget,
-            )));
+    return state!.push(
+      context,
+      PixEzPageRoute(
+        builder: (_) => _final,
+        icon: icon ?? const Icon(FluentIcons.unknown),
+        title: title ?? Text(I18n.of(context).undefined),
+      ),
+    );
   }
 }
