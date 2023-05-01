@@ -65,16 +65,18 @@ abstract class _AccountStoreBase with Store {
   @action
   fetch() async {
     feching = true;
-    await accountProvider.open();
-    List<AccountPersist> list = await accountProvider.getAllAccount();
-    accounts.clear();
-    accounts.addAll(list);
-    var pre = await SharedPreferences.getInstance();
-    var i = pre.getInt('account_select_num');
-    if (list.isNotEmpty) {
-      index = i ?? 0;
-      now = list[i ?? 0];
-      feching = false;
-    }
+    try {
+      await accountProvider.open();
+      List<AccountPersist> list = await accountProvider.getAllAccount();
+      accounts.clear();
+      accounts.addAll(list);
+      var pre = await SharedPreferences.getInstance();
+      var i = pre.getInt('account_select_num');
+      if (list.isNotEmpty) {
+        index = i ?? 0;
+        now = list[i ?? 0];
+      }
+    } catch (e) {}
+    feching = false;
   }
 }
