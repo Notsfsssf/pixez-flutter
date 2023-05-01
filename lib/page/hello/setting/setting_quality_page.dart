@@ -356,7 +356,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                             indicatorSize: MD2IndicatorSize.normal),
                         indicatorColor: Theme.of(context).colorScheme.secondary,
                         labelColor:
-                            Theme.of(context).textTheme.headline6!.color,
+                            Theme.of(context).textTheme.titleLarge!.color,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: [
                           Tab(
@@ -392,7 +392,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   ),
                   Observer(builder: (_) {
                     return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
@@ -432,7 +432,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   ),
                   Observer(builder: (_) {
                     return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
@@ -510,7 +510,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       isScrollable: true,
                       indicatorColor: Theme.of(context).colorScheme.secondary,
                       indicator: MD2Indicator(
@@ -875,7 +875,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               }),
             ),
           ),
-          if (Platform.isIOS) //TODO android flutter surface view secure
+          if (Platform.isIOS)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(

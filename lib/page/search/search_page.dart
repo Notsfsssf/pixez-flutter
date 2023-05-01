@@ -75,8 +75,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     _trendTagsStore.fetch();
   }
 
-  bool _isExpanded = false;
-
   @override
   void dispose() {
     _animationController.dispose();
@@ -98,7 +96,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0,
-                    color: Theme.of(context).textTheme.headline6!.color),
+                    color: Theme.of(context).textTheme.titleLarge!.color),
               ),
               padding: EdgeInsets.only(left: 16.0, bottom: 10.0),
             ),
@@ -136,7 +134,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           automaticallyImplyLeading: false,
           title: Text(
             I18n.of(context).search,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: <Widget>[
             IconButton(
@@ -181,7 +179,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         style: TextStyle(
                             fontSize: 16.0,
                             color:
-                                Theme.of(context).textTheme.headline5!.color),
+                                Theme.of(context).textTheme.headlineSmall!.color),
                       ),
                     ],
                   ),
@@ -284,17 +282,17 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           Icon(
                             Icons.delete_outline,
                             size: 18.0,
-                            color: Theme.of(context).textTheme.caption!.color,
+                            color: Theme.of(context).textTheme.bodySmall!.color,
                           ),
                           Text(
                             I18n.of(context).clear_search_tag_history,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText2!
+                                .bodyMedium!
                                 .copyWith(
                                     color: Theme.of(context)
                                         .textTheme
-                                        .caption!
+                                        .bodySmall!
                                         .color),
                           )
                         ],

@@ -135,7 +135,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           I18n.of(context).default_title,
                           style: TextStyle(
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color),
+                                  Theme.of(context).textTheme.bodyLarge!.color),
                         ),
                         selected: userSetting.pictureSource == ImageHost,
                         selectedTileColor:

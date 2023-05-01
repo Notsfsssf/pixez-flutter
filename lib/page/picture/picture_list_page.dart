@@ -49,6 +49,7 @@ class _PictureListPageState extends State<PictureListPage> {
   @override
   void initState() {
     _store = widget.store;
+    _iStores = widget.iStores;
     _lightingStore = widget.lightingStore;
     nowPosition = _iStores.indexOf(_store);
     _pageController = PageController(initialPage: nowPosition);
@@ -126,17 +127,28 @@ class PictureListNextPage extends StatefulWidget {
 
 class _PictureListNextPageState extends State<PictureListNextPage> {
   late LightingStore _lightingStore;
+  bool? loadResult;
   @override
   void initState() {
     _lightingStore = widget.lightingStore;
     super.initState();
-    _maybeFetch();
+    _maybeFetch(true);
   }
 
-  _maybeFetch() async {
+  _maybeFetch(bool firstIn) async {
     if (_lightingStore.nextUrl == null) return;
     try {
-      await _lightingStore.fetchNext();
+      if (!firstIn) {
+        setState(() {
+          loadResult = null;
+        });
+      }
+      final result = await _lightingStore.fetchNext();
+      if (mounted) {
+        setState(() {
+          loadResult = result;
+        });
+      }
     } catch (e) {}
   }
 
@@ -146,6 +158,22 @@ class _PictureListNextPageState extends State<PictureListNextPage> {
       return Scaffold(
         appBar: AppBar(),
         body: Center(child: Text("No More")),
+      );
+    }
+    if (loadResult == false) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Container(
+            child: Center(
+          child: Column(children: [
+            Text("Load Failed"),
+            TextButton(
+                onPressed: () {
+                  _maybeFetch(false);
+                },
+                child: Text("Retry"))
+          ]),
+        )),
       );
     }
     return Scaffold(

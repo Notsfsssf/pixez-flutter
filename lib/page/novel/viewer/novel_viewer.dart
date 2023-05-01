@@ -396,15 +396,15 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               children: [
                 TextSpan(
                   text: " ",
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
                     text: "${f.translatedName ?? "~"}",
-                    style: Theme.of(context).textTheme.caption)
+                    style: Theme.of(context).textTheme.bodySmall)
               ],
               style: Theme.of(context)
                   .textTheme
-                  .caption!
+                  .bodySmall!
                   .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
