@@ -36,6 +36,7 @@ import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -63,6 +64,8 @@ class MyHttpOverrides extends HttpOverrides {
 
 main() async {
   // HttpOverrides.global = new MyHttpOverrides();
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   WidgetsFlutterBinding.ensureInitialized();
   runApp(ProviderScope(
     child: MyApp(),

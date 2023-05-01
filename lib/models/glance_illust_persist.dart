@@ -17,7 +17,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 part 'glance_illust_persist.g.dart';
 
