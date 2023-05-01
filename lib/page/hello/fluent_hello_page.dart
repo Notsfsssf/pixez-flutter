@@ -163,24 +163,20 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
         const SettingPage(),
       ),
       _PixEzPageItem(
-        (context) => Observer(
-          builder: (context) => SizedBox(
-            height: 24,
-            width: 24,
-            child: CircleAvatar(
-              backgroundImage: PixivProvider.url(
-                accountStore.now?.userImage ??
-                    'https://s.pximg.net/common/images/no_profile.png',
-                preUrl: 'https://s.pximg.net/common/images/no_profile.png',
-              ),
-              radius: 100.0,
-              backgroundColor: FluentTheme.of(context).accentColor,
+        (context) => SizedBox(
+          height: 24,
+          width: 24,
+          child: CircleAvatar(
+            backgroundImage: PixivProvider.url(
+              accountStore.now?.userImage ??
+                  'https://s.pximg.net/common/images/no_profile.png',
+              preUrl: 'https://s.pximg.net/common/images/no_profile.png',
             ),
+            radius: 100.0,
+            backgroundColor: FluentTheme.of(context).accentColor,
           ),
         ),
-        (context) => Observer(
-          builder: (context) => Text(accountStore.now?.name ?? 'Account'),
-        ),
+        (context) => Text(accountStore.now?.name ?? 'Account'),
         AccountSelectPage(),
       ),
     ];

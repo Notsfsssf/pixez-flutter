@@ -17,7 +17,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
+import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class PictureListPage extends StatefulWidget {

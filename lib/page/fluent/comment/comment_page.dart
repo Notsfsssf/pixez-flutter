@@ -20,7 +20,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/comment_emoji_text.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
-import 'package:pixez/component/pixez_default_header.dart';
+import 'package:pixez/component/fluent/pixez_default_header.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';

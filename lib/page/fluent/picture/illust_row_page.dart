@@ -37,7 +37,7 @@ import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/fluent/picture/picture_list_page.dart';
 import 'package:pixez/page/fluent/picture/tag_for_illust_page.dart';
-import 'package:pixez/page/picture/ugoira_loader.dart';
+import 'package:pixez/page/fluent/picture/ugoira_loader.dart';
 import 'package:pixez/page/fluent/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/fluent/user/users_page.dart';
@@ -385,7 +385,9 @@ class _IllustRowPageState extends State<IllustRowPage>
                                 style: FluentTheme.of(context).typography.body!,
                               ),
                               onPressed: () {
-                                Leader.push(context, CommentPage(id: data.id));
+                                Leader.push(context, CommentPage(id: data.id),
+                                    icon: Icon(FluentIcons.comment),
+                                    title: Text(I18n.of(context).view_comment));
                               },
                             ),
                           ),
