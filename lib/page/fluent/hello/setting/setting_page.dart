@@ -165,9 +165,12 @@ class _SettingPageState extends State<SettingPage> {
               leading: Icon(FluentIcons.history),
               title: Text(I18n.of(context).history_record),
               onPressed: () {
-                // TODO
-                // Leader.push(context, Constants.type == 0 ? HistoryPage() : NovelHistory());
-                Leader.push(context, HistoryPage());
+                Leader.push(
+                  context,
+                  Constants.type == 0 ? HistoryPage() : NovelHistory(),
+                  icon: Icon(FluentIcons.history),
+                  title: Text(I18n.of(context).history_record),
+                );
               },
             ),
             ListTile(
@@ -185,17 +188,32 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.bookmarks),
               title: Text(I18n.of(context).favorited_tag),
-              onPressed: () => Leader.pushWithScaffold(context, BookTagPage()),
+              onPressed: () => Leader.pushWithScaffold(
+                context,
+                BookTagPage(),
+                icon: Icon(FluentIcons.bookmarks),
+                title: Text(I18n.of(context).favorited_tag),
+              ),
             ),
             ListTile(
               leading: Icon(FluentIcons.blocked),
               title: Text(I18n.of(context).shielding_settings),
-              onPressed: () => Leader.push(context, ShieldPage()),
+              onPressed: () => Leader.push(
+                context,
+                ShieldPage(),
+                icon: Icon(FluentIcons.blocked),
+                title: Text(I18n.of(context).shielding_settings),
+              ),
             ),
             ListTile(
               leading: Icon(FluentIcons.save),
               title: Text(I18n.of(context).task_progress),
-              onPressed: () => Leader.push(context, JobPage()),
+              onPressed: () => Leader.push(
+                context,
+                JobPage(),
+                icon: Icon(FluentIcons.save),
+                title: Text(I18n.of(context).task_progress),
+              ),
             ),
             ListTile(
               onPressed: () => _showClearCacheDialog(context),
@@ -210,28 +228,43 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.library),
               title: Text('Manga'),
-              onPressed: () => Leader.push(context, RecomMangaPage()),
+              onPressed: () => Leader.push(
+                context,
+                RecomMangaPage(),
+                title: Text('Manga'),
+                icon: Icon(FluentIcons.library),
+              ),
             ),
-            // TODO
-            // ListTile(
-            //   leading: Icon(FluentIcons.plain_text),
-            //   title: Text('Novel'),
-            //   onPressed: () => Navigator.of(context)
-            //       .pushReplacement(
-            //           FluentPageRoute(builder: (context) => NovelRail())),
-            // ),
+            ListTile(
+              leading: Icon(FluentIcons.plain_text),
+              title: Text('Novel'),
+              onPressed: () => Leader.push(
+                context,
+                NovelRail(),
+                title: Text('Novel'),
+                icon: Icon(FluentIcons.plain_text),
+              ),
+            ),
             if (kDebugMode)
               ListTile(
                 title: Text("网络诊断"),
                 onPressed: () {
-                  Leader.push(context, NetworkSettingPage());
+                  Leader.push(context, NetworkSettingPage(),
+                      title: Text("网络诊断"),
+                      icon: Icon(
+                        FluentIcons.bug,
+                      ));
                 },
               ),
             ListTile(
               leading: Icon(FluentIcons.message),
               title: Text(I18n.of(context).about),
-              onPressed: () =>
-                  Leader.push(context, AboutPage(newVersion: hasNewVersion)),
+              onPressed: () => Leader.push(
+                context,
+                AboutPage(newVersion: hasNewVersion),
+                icon: Icon(FluentIcons.message),
+                title: Text(I18n.of(context).about),
+              ),
               trailing: Visibility(
                 child: NewVersionChip(),
                 visible: hasNewVersion,
@@ -248,7 +281,12 @@ class _SettingPageState extends State<SettingPage> {
                 return ListTile(
                   leading: Icon(FluentIcons.signin),
                   title: Text(I18n.of(context).login),
-                  onPressed: () => Leader.push(context, LoginPage()),
+                  onPressed: () => Leader.push(
+                    context,
+                    LoginPage(),
+                    icon: Icon(FluentIcons.signin),
+                    title: Text(I18n.of(context).login),
+                  ),
                 );
             })
           ],

@@ -25,6 +25,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/page/fluent/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/fluent/network/network_page.dart';
+import 'package:pixez/page/fluent/platform/platform_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/link.dart';
 
@@ -135,6 +136,22 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         title: Text(I18n.of(context).quality_setting),
       ),
       children: [
+        ListTile(
+          title: Text(I18n.of(context).platform_special_setting),
+          trailing: Icon(FluentIcons.chevron_right_small),
+          subtitle: Text(
+            "For Desktop",
+            style: TextStyle(color: Colors.blue),
+          ),
+          onPressed: () {
+            Leader.push(
+              context,
+              PlatformPage(),
+              icon: Icon(FluentIcons.settings),
+              title: Text(I18n.of(context).platform_special_setting),
+            );
+          },
+        ),
         ListTile(
           title: Text(I18n.of(context).network),
           trailing: Icon(FluentIcons.chevron_right_small),
