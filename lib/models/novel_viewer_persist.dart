@@ -14,7 +14,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 
 part 'novel_viewer_persist.g.dart';
