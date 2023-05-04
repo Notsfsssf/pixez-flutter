@@ -31,8 +31,14 @@ void writeDataToFile(const std::string &target_path, const std::vector<uint8_t> 
 wchar_t *GetUserPicturesPath()
 {
   PWSTR picturesPath = nullptr;
-  if (SHGetKnownFolderPath(FOLDERID_Pictures, 0, nullptr, &picturesPath) != S_OK)
+  HRESULT result = SHGetKnownFolderPath(FOLDERID_SavedPictures, 0, nullptr, &picturesPath);
+
+  if (result != S_OK)
+    result = SHGetKnownFolderPath(FOLDERID_Pictures, 0, nullptr, &picturesPath);
+
+  if (result != S_OK)
     return nullptr;
+
   return picturesPath;
 }
 
@@ -64,7 +70,7 @@ void initDocumentMethodChannel(flutter::FlutterEngine *flutter_instance)
           wcstombs_s(&i, pMBBuffer, (size_t)100,
                      path, (size_t)100 - 1);
           std::string str(pMBBuffer);
-          str += "\\";
+          str += "\\Pixez\\";
           str += fileName;
           OutputDebugStringA(str.c_str());
           writeDataToFile(str, vector);

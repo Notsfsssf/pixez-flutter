@@ -47,6 +47,9 @@ class _ResultPageState extends State<ResultPage> {
   Widget build(BuildContext context) {
     return NavigationView(
       pane: NavigationPane(
+        displayMode: PaneDisplayMode.top,
+        selected: index,
+        onChanged: (value) => setState(() => index = value),
         items: [
           PaneItem(
             icon: Icon(FluentIcons.picture),

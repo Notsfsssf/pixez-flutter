@@ -567,16 +567,18 @@ class PixEzNavigatorObserver extends NavigatorObserver {
   /// 当有新的页面被推入时被激活
   @override
   void didPush(Route route, Route? previousRoute) {
-    assert(route is PixEzPageRoute);
-    _histories.add(route as PixEzPageRoute);
-    onPush(route, previousRoute as PixEzPageRoute?);
+    if (route is PixEzPageRoute) {
+      _histories.add(route);
+      onPush(route, previousRoute as PixEzPageRoute?);
+    }
   }
 
   /// 当有新的页面被弹出时被激活
   @override
   void didPop(Route route, Route? previousRoute) {
-    assert(route is PixEzPageRoute);
-    _histories.removeLast();
-    onPop(route as PixEzPageRoute, previousRoute as PixEzPageRoute?);
+    if (route is PixEzPageRoute) {
+      _histories.removeLast();
+      onPop(route, previousRoute as PixEzPageRoute?);
+    }
   }
 }
