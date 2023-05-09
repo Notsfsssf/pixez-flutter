@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide NestedScrollView;
@@ -270,54 +271,35 @@ class _UsersPageState extends State<UsersPage>
                                   ? userStore.userDetail!.profile
                                               .background_image_url !=
                                           null
-                                      ? IconButton(
-                                          onPressed: () {},
-                                          onLongPress: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return ContentDialog(
-                                                    title: Text(
-                                                        I18n.of(context).save),
-                                                    actions: [
-                                                      HyperlinkButton(
-                                                          onPressed: () async {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text(
-                                                              I18n.of(context)
-                                                                  .cancel)),
-                                                      HyperlinkButton(
-                                                          onPressed: () async {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            await _saveUserBg(
-                                                                userStore
-                                                                    .userDetail!
-                                                                    .profile
-                                                                    .background_image_url!);
-                                                          },
-                                                          child: Text(
-                                                              I18n.of(context)
-                                                                  .ok)),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          icon: CachedNetworkImage(
-                                            imageUrl: userStore.userDetail!
-                                                .profile.background_image_url!,
-                                            fit: BoxFit.fitWidth,
-                                            cacheManager: pixivCacheManager,
-                                            httpHeaders: Hoster.header(
-                                                url: userStore
+                                      ? ContextMenuArea(
+                                          child: IconButton(
+                                            onPressed: () {},
+                                            icon: CachedNetworkImage(
+                                              imageUrl: userStore
+                                                  .userDetail!
+                                                  .profile
+                                                  .background_image_url!,
+                                              fit: BoxFit.fitWidth,
+                                              cacheManager: pixivCacheManager,
+                                              httpHeaders: Hoster.header(
+                                                  url: userStore
+                                                      .userDetail!
+                                                      .profile
+                                                      .background_image_url),
+                                            ),
+                                          ),
+                                          builder: (context) => [
+                                            ListTile(
+                                              title:
+                                                  Text(I18n.of(context).save),
+                                              onPressed: () async {
+                                                await _saveUserBg(userStore
                                                     .userDetail!
                                                     .profile
-                                                    .background_image_url),
-                                          ),
+                                                    .background_image_url!);
+                                              },
+                                            )
+                                          ],
                                         )
                                       : Container(
                                           color: FluentTheme.of(context)

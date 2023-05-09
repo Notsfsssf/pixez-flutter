@@ -15,6 +15,7 @@
  */
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
@@ -153,41 +155,30 @@ class _IllustRowPageState extends State<IllustRowPage>
   Widget build(BuildContext context) {
     super.build(context);
     return ScaffoldPage(
-      // TODO
-      // extendBody: true,
-      // header: PageHeader(
-      //   elevation: 0.0,
-      //   // iconTheme: IconTheme.of(context).copyWith(color: FluentTheme.of(context).typography!.bodyText1!.color),
-      //   backgroundColor: Colors.transparent,
-      //   actions: [
-      //     IconButton(
-      //         icon: Icon(FluentIcons.more_vert),
-      //         onPressed: () {
-      //           buildshowBottomSheet(context, _illustStore.illusts!);
-      //         })
-      //   ],
-      // ),
-      // extendBodyBehindAppBar: true,
-      // floatingActionButton: GestureDetector(
-      //   onLongPress: () {
-      //     _showBookMarkTag();
-      //   },
-      //   child: Observer(builder: (context) {
-      //     return Visibility(
-      //       visible: _illustStore.errorMessage == null,
-      //       child: FloatingActionButton(
-      //         heroTag: widget.id,
-      //         backgroundColor: Colors.white,
-      //         onPressed: () => _illustStore.star(),
-      //         child: Observer(builder: (_) {
-      //           return StarIcon(
-      //             state: _illustStore.state,
-      //           );
-      //         }),
-      //       ),
-      //     );
-      //   }),
-      // ),
+      header: PageHeader(
+        commandBar: CommandBar(
+          primaryItems: [
+            CommandBarButton(
+              onPressed: _illustStore.star,
+              label: Text('Like'),
+              icon: Observer(
+                builder: (_) => StarIcon(
+                  state: _illustStore.state,
+                ),
+              ),
+            ),
+            CommandBarButton(
+              onPressed: _showBookMarkTag,
+              label: Text('BookMark Tag'),
+              icon: Observer(
+                builder: (_) => StarIcon(
+                  state: _illustStore.state,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       content: Observer(builder: (_) {
         if (!tempView)
           for (var i in muteStore.banillusts) {
@@ -417,23 +408,29 @@ class _IllustRowPageState extends State<IllustRowPage>
           var list = _aboutStore.illusts
               .map((element) => IllustStore(element.id, element))
               .toList();
-          return IconButton(
-            onPressed: () {
-              Leader.push(
-                  context,
-                  PictureListPage(
-                    iStores: list,
-                    lightingStore: null,
-                    store: list[index],
-                  ));
-            },
-            onLongPress: () {
-              saveStore.saveImage(_aboutStore.illusts[index]);
-            },
-            icon: PixivImage(
-              _aboutStore.illusts[index].imageUrls.squareMedium,
-              enableMemoryCache: false,
+          return ContextMenuArea(
+            child: IconButton(
+              onPressed: () {
+                Leader.push(
+                    context,
+                    PictureListPage(
+                      iStores: list,
+                      lightingStore: null,
+                      store: list[index],
+                    ));
+              },
+              icon: PixivImage(
+                _aboutStore.illusts[index].imageUrls.squareMedium,
+                enableMemoryCache: false,
+              ),
             ),
+            builder: (context) => [
+              ListTile(
+                title: Text(I18n.of(context).save),
+                onPressed: () =>
+                    saveStore.saveImage(_aboutStore.illusts[index]),
+              )
+            ],
           );
         }, childCount: _aboutStore.illusts.length),
         gridDelegate:
@@ -465,20 +462,41 @@ class _IllustRowPageState extends State<IllustRowPage>
             : SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                return IconButton(
-                    onLongPress: () {
-                      _pressSave(data, index);
-                    },
-                    onPressed: () {
-                      Leader.push(
-                          context,
-                          PhotoZoomPage(
-                            index: index,
-                            illusts: data,
-                          ));
-                    },
-                    icon: _buildIllustsItem(index, data, height));
-              }, childCount: data.metaPages.length)),
+                  return ContextMenuArea(
+                    child: IconButton(
+                      onPressed: () {
+                        Leader.push(
+                            context,
+                            PhotoZoomPage(
+                              index: index,
+                              illusts: data,
+                            ));
+                      },
+                      icon: _buildIllustsItem(index, data, height),
+                    ),
+                    builder: (context) => [
+                      if (data.metaPages.isNotEmpty)
+                        ListTile(
+                          title: Text(I18n.of(context).muti_choice_save),
+                          leading: Icon(
+                            FluentIcons.save,
+                          ),
+                          onPressed: () async {
+                            await _showMutiChoiceDialog(data, context);
+                          },
+                        ),
+                      ListTile(
+                        leading: Icon(FluentIcons.save),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          saveStore.saveImage(data, index: index);
+                        },
+                        title: Text(I18n.of(context).save),
+                      ),
+                    ],
+                  );
+                }, childCount: data.metaPages.length),
+              ),
     ];
   }
 
@@ -497,37 +515,56 @@ class _IllustRowPageState extends State<IllustRowPage>
             url = data.metaSinglePage!.originalImageUrl!;
         }
         Widget placeWidget = Container(height: height);
-        return IconButton(
-          onLongPress: () {
-            _pressSave(data, 0);
-          },
-          onPressed: () {
-            Leader.push(
-              context,
-              PhotoZoomPage(
-                index: 0,
-                illusts: data,
+        return ContextMenuArea(
+          child: IconButton(
+            onPressed: () {
+              Leader.push(
+                context,
+                PhotoZoomPage(
+                  index: 0,
+                  illusts: data,
+                ),
+                icon: Icon(FluentIcons.picture),
+                title: Text(I18n.of(context).illust_id + ': ${data.id}'),
+              );
+            },
+            icon: NullHero(
+              tag: widget.heroString,
+              child: PixivImage(
+                url,
+                fade: false,
+                width: MediaQuery.of(context).size.width,
+                placeWidget: (url != data.imageUrls.medium)
+                    ? PixivImage(
+                        data.imageUrls.medium,
+                        width: MediaQuery.of(context).size.width,
+                        placeWidget: placeWidget,
+                        fade: false,
+                      )
+                    : placeWidget,
               ),
-              icon: Icon(FluentIcons.picture),
-              title: Text(I18n.of(context).illust_id + ': ${data.id}'),
-            );
-          },
-          icon: NullHero(
-            tag: widget.heroString,
-            child: PixivImage(
-              url,
-              fade: false,
-              width: MediaQuery.of(context).size.width,
-              placeWidget: (url != data.imageUrls.medium)
-                  ? PixivImage(
-                      data.imageUrls.medium,
-                      width: MediaQuery.of(context).size.width,
-                      placeWidget: placeWidget,
-                      fade: false,
-                    )
-                  : placeWidget,
             ),
           ),
+          builder: (context) => [
+            if (data.metaPages.isNotEmpty)
+              ListTile(
+                title: Text(I18n.of(context).muti_choice_save),
+                leading: Icon(
+                  FluentIcons.save,
+                ),
+                onPressed: () async {
+                  await _showMutiChoiceDialog(data, context);
+                },
+              ),
+            ListTile(
+              leading: Icon(FluentIcons.save),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                saveStore.saveImage(data, index: 0);
+              },
+              title: Text(I18n.of(context).save),
+            ),
+          ],
         );
       },
     ));
@@ -629,90 +666,65 @@ class _IllustRowPageState extends State<IllustRowPage>
           );
   }
 
-  Future _longPressTag(BuildContext context, Tags f) async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ContentDialog(
-            title: Text(f.name),
-            actions: <Widget>[
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Text(I18n.of(context).ban),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Text(I18n.of(context).bookmark),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 2);
-                },
-                child: Text(I18n.of(context).copy),
-              ),
-            ],
+  Widget buildRow(BuildContext context, Tags f) {
+    return ContextMenuArea(
+      child: GestureDetector(
+        onTap: () {
+          Leader.push(
+            context,
+            ResultPage(
+              word: f.name,
+              translatedName: f.translatedName ?? "",
+            ),
+            icon: Icon(FluentIcons.show_results),
+            title: Text(I18n.of(context).tag + ' #${f.name}'),
           );
-        })) {
-      case 0:
-        {
-          muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName ?? ""));
-        }
-        break;
-      case 1:
-        {
-          bookTagStore.bookTag(f.name);
-        }
-        break;
-      case 2:
-        {
-          await Clipboard.setData(ClipboardData(text: f.name));
-          showSnackbar(
+        },
+        child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+                text: "#${f.name}",
+                children: [
+                  TextSpan(
+                    text: " ",
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
+                  TextSpan(
+                      text: "${f.translatedName ?? "~"}",
+                      style: FluentTheme.of(context).typography.caption)
+                ],
+                style: FluentTheme.of(context)
+                    .typography
+                    .caption!
+                    .copyWith(color: FluentTheme.of(context).accentColor))),
+      ),
+      builder: (context) => [
+        ListTile(
+          title: Text(I18n.of(context).ban),
+          onPressed: () {
+            muteStore.insertBanTag(BanTagPersist(
+                name: f.name, translateName: f.translatedName ?? ""));
+          },
+        ),
+        ListTile(
+          title: Text(I18n.of(context).bookmark),
+          onPressed: () {
+            bookTagStore.bookTag(f.name);
+          },
+        ),
+        ListTile(
+          title: Text(I18n.of(context).copy),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: f.name));
+            showSnackbar(
               context,
               Snackbar(
                 content: Text(I18n.of(context).copied_to_clipboard),
-              ));
-        }
-    }
-  }
-
-  Widget buildRow(BuildContext context, Tags f) {
-    return GestureDetector(
-      onLongPress: () async {
-        await _longPressTag(context, f);
-      },
-      onTap: () {
-        Leader.push(
-          context,
-          ResultPage(
-            word: f.name,
-            translatedName: f.translatedName ?? "",
-          ),
-          icon: Icon(FluentIcons.show_results),
-          title: Text(I18n.of(context).tag + ' #${f.name}'),
-        );
-      },
-      child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? "~"}",
-                    style: FluentTheme.of(context).typography.caption)
-              ],
-              style: FluentTheme.of(context)
-                  .typography
-                  .caption!
-                  .copyWith(color: FluentTheme.of(context).accentColor))),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -728,10 +740,13 @@ class _IllustRowPageState extends State<IllustRowPage>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-              child: GestureDetector(
-                onLongPress: () {
-                  userStore!.follow();
-                },
+              child: ContextMenuArea(
+                builder: (context) => [
+                  ListTile(
+                    title: Text(I18n.of(context).follow),
+                    onPressed: userStore!.follow,
+                  )
+                ],
                 child: Container(
                   height: 70,
                   width: 70,
@@ -818,57 +833,6 @@ class _IllustRowPageState extends State<IllustRowPage>
     });
   }
 
-  Future<void> _pressSave(Illusts illust, int index) async {
-    showBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
-          ),
-        ),
-        builder: (c1) {
-          return Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                illust.metaPages.isNotEmpty
-                    ? ListTile(
-                        title: Text(I18n.of(context).muti_choice_save),
-                        leading: Icon(
-                          FluentIcons.save,
-                        ),
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          _showMutiChoiceDialog(illust, context);
-                        },
-                      )
-                    : Container(),
-                ListTile(
-                  leading: Icon(FluentIcons.save),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    saveStore.saveImage(illust, index: index);
-                  },
-                  // onLongPress: () async {
-                  //   Navigator.of(context).pop();
-                  //   saveStore.saveImage(illust, index: index);
-                  // },
-                  title: Text(I18n.of(context).save),
-                ),
-                ListTile(
-                  leading: Icon(FluentIcons.cancel),
-                  onPressed: () => Navigator.of(context).pop(),
-                  title: Text(I18n.of(context).cancel),
-                ),
-                Container(
-                  height: MediaQuery.of(c1).padding.bottom,
-                )
-              ],
-            ),
-          );
-        });
-  }
-
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
     List<bool> indexs = [];
     bool allOn = false;
@@ -898,48 +862,56 @@ class _IllustRowPageState extends State<IllustRowPage>
                         itemBuilder: (context, index) {
                           final data = illust.metaPages[index];
                           return Container(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              onPressed: () {
-                                setDialogState(() {
-                                  indexs[index] = !indexs[index];
-                                });
-                              },
-                              onLongPress: () {
-                                Leader.push(
-                                  context,
-                                  PhotoZoomPage(index: index, illusts: illust),
-                                  icon: Icon(FluentIcons.picture),
-                                  title: Text(I18n.of(context).illust_id +
-                                      '${illust.id}'),
-                                );
-                              },
-                              icon: Stack(
-                                children: [
-                                  PixivImage(
-                                    data.imageUrls!.squareMedium,
-                                    placeWidget: Container(
-                                      child: Center(
-                                        child: Text(index.toString()),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ContextMenuArea(
+                                child: IconButton(
+                                  onPressed: () {
+                                    setDialogState(() {
+                                      indexs[index] = !indexs[index];
+                                    });
+                                  },
+                                  icon: Stack(
+                                    children: [
+                                      PixivImage(
+                                        data.imageUrls!.squareMedium,
+                                        placeWidget: Container(
+                                          child: Center(
+                                            child: Text(index.toString()),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Visibility(
+                                              visible: indexs[index],
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: Icon(
+                                                  FluentIcons.checkbox,
+                                                  color: Colors.green,
+                                                ),
+                                              ))),
+                                    ],
                                   ),
-                                  Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Visibility(
-                                          visible: indexs[index],
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Icon(
-                                              FluentIcons.checkbox,
-                                              color: Colors.green,
-                                            ),
-                                          ))),
+                                ),
+                                builder: (context) => [
+                                  ListTile(
+                                    title: Text('Open in zoom'),
+                                    onPressed: () => Leader.push(
+                                      context,
+                                      PhotoZoomPage(
+                                          index: index, illusts: illust),
+                                      icon: Icon(FluentIcons.picture),
+                                      title: Text(I18n.of(context).illust_id +
+                                          '${illust.id}'),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
-                          ));
+                          );
                         },
                         itemCount: illust.metaPages.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

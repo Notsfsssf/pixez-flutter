@@ -72,6 +72,7 @@ dependencies:
   flutter_acrylic: ^1.1.1
   window_manager: ^0.3.2
   file_picker: ^5.2.11
+  contextmenu: ^3.0.0
   # Windows Only
   win32: ^3.1.4 # windows_single_instance: ^0.1.5 依赖但支持使用更高版本的 win32库
   win32_registry: ^1.1.0
