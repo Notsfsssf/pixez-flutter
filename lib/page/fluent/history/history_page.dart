@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
@@ -53,7 +54,8 @@ class _HistoryPageState extends State<HistoryPage> {
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
-                return GestureDetector(
+                return ContextMenuArea(
+                  child: GestureDetector(
                     onTap: () {
                       Leader.push(
                           context,
@@ -62,8 +64,16 @@ class _HistoryPageState extends State<HistoryPage> {
                               store:
                                   IllustStore(reIllust[index].illustId, null)));
                     },
-                    onLongPress: () async {
-                      final result = await showDialog(
+                    child: Card(
+                      margin: EdgeInsets.all(8),
+                      child: PixivImage(reIllust[index].pictureUrl),
+                    ),
+                  ),
+                  builder: (context) => [
+                    ListTile(
+                      title: Text(I18n.of(context).delete),
+                      onPressed: () async {
+                        await showDialog(
                           context: context,
                           builder: (context) {
                             return ContentDialog(
@@ -78,19 +88,18 @@ class _HistoryPageState extends State<HistoryPage> {
                                 HyperlinkButton(
                                   child: Text(I18n.of(context).ok),
                                   onPressed: () {
-                                    Navigator.of(context).pop("OK");
+                                    _store.delete(reIllust[index].illustId);
+                                    Navigator.of(context).pop();
                                   },
                                 ),
                               ],
                             );
-                          });
-                      if (result == "OK") {
-                        _store.delete(reIllust[index].illustId);
-                      }
-                    },
-                    child: Card(
-                        margin: EdgeInsets.all(8),
-                        child: PixivImage(reIllust[index].pictureUrl)));
+                          },
+                        );
+                      },
+                    )
+                  ],
+                );
               });
         }
         return Center(

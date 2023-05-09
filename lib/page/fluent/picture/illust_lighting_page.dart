@@ -17,6 +17,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +27,7 @@ import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
@@ -216,85 +218,79 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return
-        //ScaffoldPage(
-        // TODO
-        // extendBody: true,
-        // extendBodyBehindAppBar: true,
-        // floatingActionButton: GestureDetector(
-        //   onLongPress: () {
-        //     _showBookMarkTag();
-        //   },
-        //   child: Observer(builder: (context) {
-        //     return Visibility(
-        //       visible: _illustStore.errorMessage == null,
-        //       child: FloatingActionButton(
-        //         heroTag: widget.id,
-        //         backgroundColor: Colors.white,
-        //         onPressed: () => _illustStore.star(
-        //             restrict:
-        //                 userSetting.defaultPrivateLike ? "private" : "public"),
-        //         child: Observer(builder: (_) {
-        //           return StarIcon(
-        //             state: _illustStore.state,
-        //           );
-        //         }),
-        //       ),
-        //     );
-        //   }),
-        // ),
-        // content:
-        Observer(builder: (_) {
-      if (!tempView)
-        for (var i in muteStore.banillusts) {
-          if (i.illustId == widget.id.toString()) {
-            return BanPage(
-              name: "${I18n.of(context).illust}\n${i.name}\n",
-              onPressed: () {
-                setState(() {
-                  tempView = true;
-                });
-              },
-            );
-          }
-        }
-      if (!tempView && _illustStore.illusts != null) {
-        for (var j in muteStore.banUserIds) {
-          if (j.userId == _illustStore.illusts!.user.id.toString()) {
-            return BanPage(
-              name: "${I18n.of(context).painter}\n${j.name}\n",
-              onPressed: () {
-                setState(() {
-                  tempView = true;
-                });
-              },
-            );
-          }
-        }
-        for (var t in muteStore.banTags) {
-          for (var t1 in _illustStore.illusts!.tags) {
-            if (t.name == t1.name)
+    return ScaffoldPage(
+      header: PageHeader(
+          commandBar: CommandBar(
+        primaryItems: [
+          if (_illustStore.errorMessage == null)
+            CommandBarButton(
+              onPressed: () => _illustStore.star(
+                  restrict:
+                      userSetting.defaultPrivateLike ? "private" : "public"),
+              label: Text('Star'),
+              icon: Observer(
+                builder: (_) {
+                  return StarIcon(
+                    state: _illustStore.state,
+                  );
+                },
+              ),
+            ),
+          CommandBarButton(
+              onPressed: _showBookMarkTag, label: Text(I18n.of(context).tag)),
+        ],
+      )),
+      content: Observer(builder: (_) {
+        if (!tempView)
+          for (var i in muteStore.banillusts) {
+            if (i.illustId == widget.id.toString()) {
               return BanPage(
-                name: "${I18n.of(context).tag}\n${t.name}\n",
+                name: "${I18n.of(context).illust}\n${i.name}\n",
                 onPressed: () {
                   setState(() {
                     tempView = true;
                   });
                 },
               );
+            }
+          }
+        if (!tempView && _illustStore.illusts != null) {
+          for (var j in muteStore.banUserIds) {
+            if (j.userId == _illustStore.illusts!.user.id.toString()) {
+              return BanPage(
+                name: "${I18n.of(context).painter}\n${j.name}\n",
+                onPressed: () {
+                  setState(() {
+                    tempView = true;
+                  });
+                },
+              );
+            }
+          }
+          for (var t in muteStore.banTags) {
+            for (var t1 in _illustStore.illusts!.tags) {
+              if (t.name == t1.name)
+                return BanPage(
+                  name: "${I18n.of(context).tag}\n${t.name}\n",
+                  onPressed: () {
+                    setState(() {
+                      tempView = true;
+                    });
+                  },
+                );
+            }
           }
         }
-      }
-      return Container(
-        child: Stack(
-          children: [
-            _buildContent(context, _illustStore.illusts),
-            _buildAppbar()
-          ],
-        ),
-      );
-    } //),
-            );
+        return Container(
+          child: Stack(
+            children: [
+              _buildContent(context, _illustStore.illusts),
+              _buildAppbar()
+            ],
+          ),
+        );
+      }),
+    );
   }
 
   Widget colorText(String text, BuildContext context) => Container(
@@ -419,7 +415,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     style: FluentTheme.of(context).typography.body!,
                   ),
                   onPressed: () {
-                    Leader.push(context, CommentPage(id: data.id));
+                    Leader.push(context, CommentPage(id: data.id),
+                        icon: Icon(FluentIcons.comment),
+                        title: Text(I18n.of(context).view_comment));
                   },
                 ),
               ),
@@ -432,30 +430,40 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ),
           ),
           SliverGrid(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                var list = _aboutStore.illusts
-                    .map((element) => IllustStore(element.id, element))
-                    .toList();
-                return IconButton(
-                  onPressed: () {
-                    Leader.push(
-                        context,
-                        PictureListPage(
-                          iStores: list,
-                          lightingStore: null,
-                          store: list[index],
-                        ));
-                  },
-                  onLongPress: () {
-                    saveStore.saveImage(_aboutStore.illusts[index]);
-                  },
-                  icon: PixivImage(
-                    _aboutStore.illusts[index].imageUrls.squareMedium,
-                    enableMemoryCache: false,
-                  ),
-                );
-              }, childCount: _aboutStore.illusts.length),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  var list = _aboutStore.illusts
+                      .map((element) => IllustStore(element.id, element))
+                      .toList();
+                  return ContextMenuArea(
+                    child: IconButton(
+                      onPressed: () {
+                        Leader.push(
+                            context,
+                            PictureListPage(
+                              iStores: list,
+                              lightingStore: null,
+                              store: list[index],
+                            ));
+                      },
+                      icon: PixivImage(
+                        _aboutStore.illusts[index].imageUrls.squareMedium,
+                        enableMemoryCache: false,
+                      ),
+                    ),
+                    builder: (context) => [
+                      ListTile(
+                        onPressed: () =>
+                            saveStore.saveImage(_aboutStore.illusts[index]),
+                        title: Text(
+                          I18n.of(context).save,
+                        ),
+                      )
+                    ],
+                  );
+                },
+                childCount: _aboutStore.illusts.length,
+              ),
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3))
         ],
@@ -496,52 +504,99 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     url = data.metaSinglePage!.originalImageUrl!;
                 }
                 Widget placeWidget = Container(height: height);
-                return IconButton(
-                  onLongPress: () {
-                    _pressSave(data, 0);
-                  },
-                  onPressed: () {
-                    Leader.push(
+                return ContextMenuArea(
+                  child: IconButton(
+                    onPressed: () {
+                      Leader.push(
                         context,
                         PhotoZoomPage(
                           index: 0,
                           illusts: data,
-                        ));
-                  },
-                  icon: NullHero(
-                    tag: widget.heroString,
-                    child: PixivImage(
-                      url,
-                      fade: false,
-                      width: MediaQuery.of(context).size.width,
-                      placeWidget: (url != data.imageUrls.medium)
-                          ? PixivImage(
-                              data.imageUrls.medium,
-                              width: MediaQuery.of(context).size.width,
-                              placeWidget: placeWidget,
-                              fade: false,
-                            )
-                          : placeWidget,
+                        ),
+                        icon: Icon(FluentIcons.picture),
+                        title:
+                            Text(I18n.of(context).illust_id + ': ${data.id}'),
+                      );
+                    },
+                    icon: NullHero(
+                      tag: widget.heroString,
+                      child: PixivImage(
+                        url,
+                        fade: false,
+                        width: MediaQuery.of(context).size.width,
+                        placeWidget: (url != data.imageUrls.medium)
+                            ? PixivImage(
+                                data.imageUrls.medium,
+                                width: MediaQuery.of(context).size.width,
+                                placeWidget: placeWidget,
+                                fade: false,
+                              )
+                            : placeWidget,
+                      ),
                     ),
                   ),
+                  builder: (context) => [
+                    if (data.metaPages.isNotEmpty)
+                      ListTile(
+                        title: Text(I18n.of(context).muti_choice_save),
+                        leading: Icon(
+                          FluentIcons.save,
+                        ),
+                        onPressed: () async {
+                          await _showMutiChoiceDialog(data, context);
+                        },
+                      ),
+                    ListTile(
+                      leading: Icon(FluentIcons.save),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        saveStore.saveImage(data, index: 0);
+                      },
+                      title: Text(I18n.of(context).save),
+                    ),
+                  ],
                 );
               }, childCount: 1))
             : SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                return IconButton(
-                    onLongPress: () {
-                      _pressSave(data, index);
-                    },
+                return ContextMenuArea(
+                  child: IconButton(
                     onPressed: () {
                       Leader.push(
-                          context,
-                          PhotoZoomPage(
+                        context,
+                        PhotoZoomPage(
                             index: index,
-                            illusts: data,
-                          ));
+                          illusts: data,
+                        ),
+                        icon: Icon(FluentIcons.picture),
+                        title:
+                            Text(I18n.of(context).illust_id + ': ${data.id}'),
+                      );
                     },
-                    icon: _buildIllustsItem(index, data, height));
+                    icon: _buildIllustsItem(index, data, height),
+                  ),
+                  builder: (context) => [
+                    if (data.metaPages.isNotEmpty)
+                      ListTile(
+                        title: Text(I18n.of(context).muti_choice_save),
+                        leading: Icon(
+                          FluentIcons.save,
+                        ),
+                        onPressed: () async {
+                          await _showMutiChoiceDialog(data, context);
+                        },
+                      ),
+                    ListTile(
+                      leading: Icon(FluentIcons.save),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        saveStore.saveImage(data, index: index);
+                      },
+                      title: Text(I18n.of(context).save),
+                    ),
+                  ],
+                );
               }, childCount: data.metaPages.length)),
     ];
   }
@@ -642,87 +697,64 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           );
   }
 
-  Future _longPressTag(BuildContext context, Tags f) async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ContentDialog(
-            title: Text(f.name),
-            actions: <Widget>[
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Text(I18n.of(context).ban),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Text(I18n.of(context).bookmark),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 2);
-                },
-                child: Text(I18n.of(context).copy),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        {
-          muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName ?? ""));
-        }
-        break;
-      case 1:
-        {
-          bookTagStore.bookTag(f.name);
-        }
-        break;
-      case 2:
-        {
-          await Clipboard.setData(ClipboardData(text: f.name));
-          showSnackbar(
-              context,
-              Snackbar(
-                content: Text(I18n.of(context).copied_to_clipboard),
-              ));
-        }
-    }
-  }
-
   Widget buildRow(BuildContext context, Tags f) {
-    return GestureDetector(
-      onLongPress: () async {
-        await _longPressTag(context, f);
-      },
-      onTap: () {
-        Leader.push(
+    return ContextMenuArea(
+      child: GestureDetector(
+        onTap: () {
+          Leader.push(
             context,
             ResultPage(
               word: f.name,
               translatedName: f.translatedName ?? "",
-            ));
-      },
-      child: RichText(
-          textAlign: TextAlign.start,
-          text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? "~"}",
-                    style: FluentTheme.of(context).typography.caption)
-              ],
-              style: FluentTheme.of(context)
-                  .typography
-                  .caption!
-                  .copyWith(color: FluentTheme.of(context).accentColor))),
+            ),
+            icon: Icon(FluentIcons.show_results),
+            title: Text(I18n.of(context).tag + ' #${f.name}'),
+          );
+        },
+        child: RichText(
+            textAlign: TextAlign.start,
+            text: TextSpan(
+                text: "#${f.name}",
+                children: [
+                  TextSpan(
+                    text: " ",
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
+                  TextSpan(
+                      text: "${f.translatedName ?? "~"}",
+                      style: FluentTheme.of(context).typography.caption)
+                ],
+                style: FluentTheme.of(context)
+                    .typography
+                    .caption!
+                    .copyWith(color: FluentTheme.of(context).accentColor))),
+      ),
+      builder: (context) => [
+        ListTile(
+          title: Text(I18n.of(context).ban),
+          onPressed: () {
+            muteStore.insertBanTag(BanTagPersist(
+                name: f.name, translateName: f.translatedName ?? ""));
+          },
+        ),
+        ListTile(
+          title: Text(I18n.of(context).bookmark),
+          onPressed: () {
+            bookTagStore.bookTag(f.name);
+          },
+        ),
+        ListTile(
+          title: Text(I18n.of(context).copy),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: f.name));
+            showSnackbar(
+                context,
+                Snackbar(
+                  content: Text(I18n.of(context).copied_to_clipboard),
+                ));
+          },
+        ),
+      ],
     );
   }
 
@@ -738,10 +770,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-              child: GestureDetector(
-                onLongPress: () {
-                  userStore!.follow();
-                },
+              child: ContextMenuArea(
+                builder: (context) => [
+                  ListTile(
+                    title: Text(I18n.of(context).follow),
+                    onPressed: userStore!.follow,
+                  )
+                ],
                 child: Container(
                   height: 70,
                   width: 70,
@@ -772,12 +807,16 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                             id: illust.user.id,
                             onTap: () async {
                               await Leader.push(
-                                  context,
-                                  UsersPage(
-                                    id: illust.user.id,
-                                    userStore: userStore,
-                                    heroTag: this.hashCode.toString(),
-                                  ));
+                                context,
+                                UsersPage(
+                                  id: illust.user.id,
+                                  userStore: userStore,
+                                  heroTag: this.hashCode.toString(),
+                                ),
+                                icon: Icon(FluentIcons.account_browser),
+                                title: Text(I18n.of(context).painter_id +
+                                    '${illust.user.id}'),
+                              );
                               _illustStore.illusts!.user.isFollowed =
                                   userStore!.isFollow;
                             },
@@ -827,57 +866,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     });
   }
 
-  Future<void> _pressSave(Illusts illust, int index) async {
-    showBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
-          ),
-        ),
-        builder: (c1) {
-          return Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                illust.metaPages.isNotEmpty
-                    ? ListTile(
-                        title: Text(I18n.of(context).muti_choice_save),
-                        leading: Icon(
-                          FluentIcons.save,
-                        ),
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          _showMutiChoiceDialog(illust, context);
-                        },
-                      )
-                    : Container(),
-                ListTile(
-                  leading: Icon(FluentIcons.save),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    saveStore.saveImage(illust, index: index);
-                  },
-                  // onLongPress: () async {
-                  //   Navigator.of(context).pop();
-                  //   saveStore.saveImage(illust, index: index);
-                  // },
-                  title: Text(I18n.of(context).save),
-                ),
-                ListTile(
-                  leading: Icon(FluentIcons.cancel),
-                  onPressed: () => Navigator.of(context).pop(),
-                  title: Text(I18n.of(context).cancel),
-                ),
-                Container(
-                  height: MediaQuery.of(c1).padding.bottom,
-                )
-              ],
-            ),
-          );
-        });
-  }
-
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
     List<bool> indexs = [];
     bool allOn = false;
@@ -907,33 +895,28 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         itemBuilder: (context, index) {
                           final data = illust.metaPages[index];
                           return Container(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              onPressed: () {
-                                setDialogState(() {
-                                  indexs[index] = !indexs[index];
-                                });
-                              },
-                              onLongPress: () {
-                                Leader.push(
-                                    context,
-                                    PhotoZoomPage(
-                                        index: index, illusts: illust));
-                              },
-                              icon: Stack(
-                                children: [
-                                  PixivImage(
-                                    data.imageUrls!.squareMedium,
-                                    placeWidget: Container(
-                                      child: Center(
-                                        child: Text(index.toString()),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ContextMenuArea(
+                                child: IconButton(
+                                  onPressed: () {
+                                    setDialogState(() {
+                                      indexs[index] = !indexs[index];
+                                    });
+                                  },
+                                  icon: Stack(
+                                    children: [
+                                      PixivImage(
+                                        data.imageUrls!.squareMedium,
+                                        placeWidget: Container(
+                                          child: Center(
+                                            child: Text(index.toString()),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Visibility(
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Visibility(
                                           visible: indexs[index],
                                           child: Padding(
                                             padding: const EdgeInsets.all(4.0),
@@ -941,11 +924,28 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                               FluentIcons.checkbox,
                                               color: Colors.green,
                                             ),
-                                          ))),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                builder: (context) => [
+                                  ListTile(
+                                    title: Text('Open in zoom'),
+                                    onPressed: () => Leader.push(
+                                      context,
+                                      PhotoZoomPage(
+                                          index: index, illusts: illust),
+                                      icon: Icon(FluentIcons.picture),
+                                      title: Text(I18n.of(context).illust_id +
+                                          '${illust.id}'),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
-                          ));
+                          );
                         },
                         itemCount: illust.metaPages.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

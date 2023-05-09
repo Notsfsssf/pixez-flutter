@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:share_plus/share_plus.dart';
@@ -158,24 +160,31 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                     }),
-                GestureDetector(
-                    child: IconButton(
-                        icon: Icon(
-                          FluentIcons.save,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_illusts.metaPages.isNotEmpty)
-                            saveStore.saveImage(widget.illusts, index: _index);
-                          else
-                            saveStore.saveImage(widget.illusts);
-                        }),
-                    onLongPress: () async {
+                ContextMenuArea(
+                  child: IconButton(
+                    icon: Icon(
+                      FluentIcons.save,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
                       if (_illusts.metaPages.isNotEmpty)
                         saveStore.saveImage(widget.illusts, index: _index);
                       else
                         saveStore.saveImage(widget.illusts);
-                    }),
+                    },
+                  ),
+                  builder: (context) => [
+                    ListTile(
+                      title: Text(I18n.of(context).save),
+                      onPressed: () async {
+                        if (_illusts.metaPages.isNotEmpty)
+                          saveStore.saveImage(widget.illusts, index: _index);
+                        else
+                          saveStore.saveImage(widget.illusts);
+                      },
+                    )
+                  ],
+                ),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,
                   duration: Duration(milliseconds: 500),
