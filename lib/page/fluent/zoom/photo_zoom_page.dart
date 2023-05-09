@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -58,6 +59,8 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
     super.dispose();
   }
 
+  final PhotoViewController _photoViewController = PhotoViewController();
+
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
@@ -67,13 +70,20 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
             : _illusts.imageUrls.large;
         return ScaffoldPage(
           bottomBar: _buildBottom(context),
-          content: Container(
+          content: Listener(
+            onPointerSignal: (event) {
+              if (event is PointerScrollEvent) {
+                _photoViewController.scale = (_photoViewController.scale ?? 0) -
+                    event.scrollDelta.dy / 1000;
+              }
+            },
             child: PhotoView(
               filterQuality: FilterQuality.high,
               initialScale: PhotoViewComputedScale.contained,
               heroAttributes: PhotoViewHeroAttributes(tag: url),
               imageProvider: PixivProvider.url(url),
               loadingBuilder: (context, event) => _buildLoading(event),
+              controller: _photoViewController,
             ),
           ),
         );
