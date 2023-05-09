@@ -97,6 +97,7 @@ dev_dependencies:
   json_serializable: ^6.6.1
   analyzer: ^5.7.1
   sqflite_common_ffi: ^2.2.5
+  msix: ^3.11.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -139,3 +140,21 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   generate: true
+
+msix_config:
+  display_name: Pixez
+  publisher_display_name: Perol_Notsfsssf
+  identity_name: com.perol.pixez
+  msix_version: 0.0.0.1
+  logo_path: .\windows\runner\resources\ic_launcher-msstore.png
+  trim_logo: false
+  capabilities: internetClient, picturesLibrary
+  languages: en-us, es-es, ja-jp, ko-kr, ru-ru, tr-tr, zh-cn, zh-tw
+  protocol_activation: pixiv, pixez
+  app_uri_handler_hosts: i.pximg.net, pixiv.me, pixivision.net
+  execution_alias: pixez
+  store: false
+  publisher: CN=舰队的偶像-岛风酱!, C=CN
+  sign_msix: true
+  certificate_path: .\cert.pfx
+  install_certificate: false
