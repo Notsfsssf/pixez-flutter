@@ -260,7 +260,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         home: Builder(builder: (context) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
-                statusBarColor: fluentui.Colors.transparent),
+                statusBarColor: Constants.disableWindowEffect
+                    ? null
+                    : fluentui.Colors.transparent),
             child: SplashPage(),
           );
         }),
@@ -270,7 +272,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             textDirection: TextDirection.ltr,
             child: fluentui.NavigationPaneTheme(
               data: fluentui.NavigationPaneThemeData(
-                backgroundColor: fluentui.Colors.transparent,
+                backgroundColor: Constants.disableWindowEffect
+                    ? null
+                    : fluentui.Colors.transparent,
               ),
               child: child,
             ),
