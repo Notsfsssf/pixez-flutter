@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:pixez/constants.dart';
@@ -14,6 +15,12 @@ import 'er/leader.dart';
 
 initFluent(List<String> args) async {
   Constants.isFluent = true;
+  if (kDebugMode) {
+    // 向操作系统注册协议
+    // 仅在调试时使用这个, 发布时使用msix 已经自动注册了所以不需要手动修改了
+    windows.registerProtocol('pixez', 'URL:Pixez protocol', '"%1"');
+    windows.registerProtocol('pixiv', 'URL:Pixiv protocol', '"%1"');
+  }
 
   if (Platform.isWindows) {
     databaseFactory.setDatabasesPath(windows.getAppDataFolderPath()!);
