@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/constants.dart';
@@ -202,7 +203,15 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
     return NavigationView(
       appBar: _buildAppBar(context),
       pane: _buildPane(context),
-      paneBodyBuilder: (item, widget) => _nav,
+      paneBodyBuilder: (item, widget) => Listener(
+        child: _nav,
+        onPointerDown: (event) {
+          if (event.buttons == kBackMouseButton &&
+              event.kind == PointerDeviceKind.mouse) {
+            _navobs.navigator?.maybePop(context);
+          }
+        },
+      ),
     );
   }
 
