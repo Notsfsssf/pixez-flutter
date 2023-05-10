@@ -42,6 +42,22 @@ wchar_t *GetUserPicturesPath()
   return picturesPath;
 }
 
+bool isDirectoryExist(const std::wstring &path)
+{
+  DWORD attr = GetFileAttributesW(path.c_str());
+  return (attr != INVALID_FILE_ATTRIBUTES) && (attr & FILE_ATTRIBUTE_DIRECTORY);
+}
+
+bool createDirectoryIfNotExist(const std::wstring &path)
+{
+  if (isDirectoryExist(path))
+  {
+    return true;
+  }
+  int status = CreateDirectoryW(path.c_str(), NULL);
+  return status != 0;
+}
+
 void initDocumentMethodChannel(flutter::FlutterEngine *flutter_instance)
 {
 
@@ -71,6 +87,11 @@ void initDocumentMethodChannel(flutter::FlutterEngine *flutter_instance)
                      path, (size_t)100 - 1);
           std::string str(pMBBuffer);
           str += "\\Pixez\\";
+          wchar_t fullPathBuf[100] = {0};
+          const wchar_t* sub = L"Pixez";
+          swprintf_s(fullPathBuf, 100, L"%s\\%s", path, sub);
+          std::wstring dirPath(fullPathBuf, wcslen(fullPathBuf)); 
+          createDirectoryIfNotExist(dirPath);
           str += fileName;
           OutputDebugStringA(str.c_str());
           writeDataToFile(str, vector);
