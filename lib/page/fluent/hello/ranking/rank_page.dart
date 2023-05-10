@@ -150,7 +150,7 @@ class _RankPageState extends State<RankPage>
           return TabView(
             closeButtonVisibility: CloseButtonVisibilityMode.never,
             currentIndex: index,
-            onChanged: (value) => index = value,
+            onChanged: (value) => setState(() => index = value),
             tabs: [
               for (int i = 0; i < titles.length; i++)
                 Tab(

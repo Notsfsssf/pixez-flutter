@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:share_plus/share_plus.dart';
@@ -56,6 +59,8 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
     super.dispose();
   }
 
+  final PhotoViewController _photoViewController = PhotoViewController();
+
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
@@ -65,13 +70,20 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
             : _illusts.imageUrls.large;
         return ScaffoldPage(
           bottomBar: _buildBottom(context),
-          content: Container(
+          content: Listener(
+            onPointerSignal: (event) {
+              if (event is PointerScrollEvent) {
+                _photoViewController.scale = (_photoViewController.scale ?? 0) -
+                    event.scrollDelta.dy / 1000;
+              }
+            },
             child: PhotoView(
               filterQuality: FilterQuality.high,
               initialScale: PhotoViewComputedScale.contained,
               heroAttributes: PhotoViewHeroAttributes(tag: url),
               imageProvider: PixivProvider.url(url),
               loadingBuilder: (context, event) => _buildLoading(event),
+              controller: _photoViewController,
             ),
           ),
         );
@@ -158,24 +170,31 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                     }),
-                GestureDetector(
-                    child: IconButton(
-                        icon: Icon(
-                          FluentIcons.save,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_illusts.metaPages.isNotEmpty)
-                            saveStore.saveImage(widget.illusts, index: _index);
-                          else
-                            saveStore.saveImage(widget.illusts);
-                        }),
-                    onLongPress: () async {
+                ContextMenuArea(
+                  child: IconButton(
+                    icon: Icon(
+                      FluentIcons.save,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
                       if (_illusts.metaPages.isNotEmpty)
                         saveStore.saveImage(widget.illusts, index: _index);
                       else
                         saveStore.saveImage(widget.illusts);
-                    }),
+                    },
+                  ),
+                  builder: (context) => [
+                    ListTile(
+                      title: Text(I18n.of(context).save),
+                      onPressed: () async {
+                        if (_illusts.metaPages.isNotEmpty)
+                          saveStore.saveImage(widget.illusts, index: _index);
+                        else
+                          saveStore.saveImage(widget.illusts);
+                      },
+                    )
+                  ],
+                ),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,
                   duration: Duration(milliseconds: 500),

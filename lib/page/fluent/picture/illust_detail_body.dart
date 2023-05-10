@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/gestures.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -52,15 +53,12 @@ class IllustDetailBody extends StatelessWidget {
 
   Widget _buildNameAvatar(
       BuildContext context, Illusts illust, IllustDetailStore _store) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-            child: GestureDetector(
-              onLongPress: () {
-                _store.followUser();
-              },
+    return ContextMenuArea(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
               child: Container(
                 height: 70,
                 width: 70,
@@ -91,34 +89,41 @@ class IllustDetailBody extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-            padding: EdgeInsets.all(8.0)),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  illust.title,
-                  style: TextStyle(color: FluentTheme.of(context).accentColor),
-                ),
-                Container(
-                  height: 4.0,
-                ),
-                Text(
-                  illust.user.name,
-                  style: FluentTheme.of(context).typography.body,
-                ),
-                Text(
-                  toShortTime(illust.createDate),
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-              ],
+              padding: EdgeInsets.all(8.0)),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    illust.title,
+                    style:
+                        TextStyle(color: FluentTheme.of(context).accentColor),
+                  ),
+                  Container(
+                    height: 4.0,
+                  ),
+                  Text(
+                    illust.user.name,
+                    style: FluentTheme.of(context).typography.body,
+                  ),
+                  Text(
+                    toShortTime(illust.createDate),
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
+      ),
+      builder: (context) => [
+        ListTile(
+          title: Text(I18n.of(context).follow),
+          onPressed: _store.followUser,
+        )
       ],
     );
   }
@@ -233,73 +238,51 @@ class IllustDetailBody extends StatelessWidget {
   }
 
   Widget buildRow(BuildContext context, Tags f) {
-    return GestureDetector(
-      onLongPress: () async {
-        await _longPressTag(context, f);
-      },
-      onTap: () {
-        Leader.push(
-            context,
-            ResultPage(
-              word: f.name,
-              translatedName: f.translatedName ?? "",
+    return ContextMenuArea(
+      child: GestureDetector(
+        onTap: () {
+          Leader.push(
+              context,
+              ResultPage(
+                word: f.name,
+                translatedName: f.translatedName ?? "",
+              ));
+        },
+        child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+                text: "#${f.name}",
+                children: [
+                  TextSpan(
+                    text: " ",
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
+                  TextSpan(
+                      text: "${f.translatedName ?? ""}",
+                      style: FluentTheme.of(context).typography.caption)
+                ],
+                style: FluentTheme.of(context)
+                    .typography
+                    .caption!
+                    .copyWith(color: FluentTheme.of(context).accentColor))),
+      ),
+      builder: (context) => [
+        ListTile(
+          title: Text(I18n.of(context).ban),
+          onPressed: () {
+            muteStore.insertBanTag(BanTagPersist(
+              name: f.name,
+              translateName: f.translatedName ?? "",
             ));
-      },
-      child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? ""}",
-                    style: FluentTheme.of(context).typography.caption)
-              ],
-              style: FluentTheme.of(context)
-                  .typography
-                  .caption!
-                  .copyWith(color: FluentTheme.of(context).accentColor))),
+          },
+        ),
+        ListTile(
+          title: Text(I18n.of(context).bookmark),
+          onPressed: () {
+            bookTagStore.bookTag(f.name);
+          },
+        ),
+      ],
     );
-  }
-
-  Future _longPressTag(BuildContext context, Tags f) async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ContentDialog(
-            title: Text(f.name),
-            actions: <Widget>[
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Text(I18n.of(context).ban),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Text(I18n.of(context).bookmark),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        {
-          muteStore.insertBanTag(BanTagPersist(
-            name: f.name,
-            translateName: f.translatedName ?? "",
-          ));
-        }
-        break;
-      case 1:
-        {
-          bookTagStore.bookTag(f.name);
-        }
-        break;
-    }
   }
 }

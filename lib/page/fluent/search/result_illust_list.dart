@@ -88,64 +88,29 @@ class _ResultIllustListState extends State<ResultIllustList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
+    return ScaffoldPage(
+      header: Align(
+        alignment: Alignment.centerRight,
+        child: Row(
+          children: [
+            IconButton(
+                icon: Icon(FluentIcons.date_time),
                 onPressed: () {
-                  Leader.push(
-                    context,
-                    SearchSuggestionPage(
-                      preword: widget.word,
-                    ),
-                    icon: Icon(FluentIcons.search),
-                    title: Text(I18n.of(context).search),
-                  );
-                },
-                icon: Container(
-                  width: MediaQuery.of(context).size.width * 2 / 3,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        widget.word,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(FluentIcons.date_time),
-                        onPressed: () {
-                          _buildShowDateRange(context);
-                        }),
-                    _buildStar(),
-                    IconButton(
-                        icon: Icon(FluentIcons.filter),
-                        onPressed: () {
-                          _buildShowBottomSheet(context);
-                          // _showMaterialBottom();
-                        }),
-                  ],
-                ),
-              )
-            ],
-          ),
-          Expanded(
-              child: LightingList(
-            source: futureGet,
-            scrollController: _scrollController,
-          ))
-        ],
+                  _buildShowDateRange(context);
+                }),
+            _buildStar(),
+            IconButton(
+                icon: Icon(FluentIcons.filter),
+                onPressed: () {
+                  _buildShowBottomSheet(context);
+                  // _showMaterialBottom();
+                }),
+          ],
+        ),
+      ),
+      content: LightingList(
+        source: futureGet,
+        scrollController: _scrollController,
       ),
     );
   }
