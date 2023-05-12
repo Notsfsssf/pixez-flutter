@@ -1,7 +1,4 @@
 #include "Saver.h"
-#include <shlobj.h>
-#include <iostream>
-#include <fstream>
 
 #include <flutter/binary_messenger.h>
 #include <flutter/standard_method_codec.h>
@@ -32,8 +29,15 @@ void Saver::initMethodChannel(flutter::FlutterEngine *flutter_instance)
                 auto name = arguments->find(flutter::EncodableValue("name"))->second;
                 std::vector<uint8_t> vector = std::get<std::vector<uint8_t>>(data);
                 std::string fileName = std::get<std::string>(name);
-                Saver::saveToPixezFolder(vector, fileName).get();
-                result->Success(true);
+                result->Success(Saver::save(vector, fileName).get());
+            }
+            else if (call.method_name().compare("exist") == 0)
+            {
+                OutputDebugString(TEXT("initDocumentMethodChannel:exist\n"));
+                const auto *arguments = std::get_if<flutter::EncodableMap>(call.arguments());
+                auto name = arguments->find(flutter::EncodableValue("name"))->second;
+                std::string fileName = std::get<std::string>(name);
+                result->Success(Saver::exist(fileName).get());
             }
             else
             {
@@ -42,14 +46,37 @@ void Saver::initMethodChannel(flutter::FlutterEngine *flutter_instance)
         });
 }
 
-concurrency::task<void> Saver::saveToPixezFolder(const std::vector<uint8_t> &data, const std::string &name)
+concurrency::task<bool> Saver::save(const std::vector<uint8_t> &data, const std::string &name)
 {
     using namespace winrt;
     using namespace Windows::Storage;
+    try
+    {
+        co_await winrt::resume_background();
+        auto base = KnownFolders::SavedPictures();
+        auto folder = co_await base.CreateFolderAsync(L"PixEz", CreationCollisionOption::OpenIfExists);
+        auto file = co_await folder.CreateFileAsync(to_hstring(name), CreationCollisionOption::ReplaceExisting);
+        co_await FileIO::WriteBytesAsync(file, data);
 
-    co_await winrt::resume_background();
-    auto base = KnownFolders::SavedPictures();
-    auto folder = co_await base.CreateFolderAsync(L"PixEz", CreationCollisionOption::OpenIfExists);
-    auto file = co_await folder.CreateFileAsync(to_hstring(name), CreationCollisionOption::ReplaceExisting);
-    co_await FileIO::WriteBytesAsync(file, data);
+        co_return true;
+    }
+    catch (...)
+    {
+        co_return false;
+    }
+}
+
+concurrency::task<bool> Saver::exist(const std::string &name)
+{
+    using namespace winrt;
+    using namespace Windows::Storage;
+    try
+    {
+        co_await StorageFile::GetFileFromPathAsync(to_hstring(name));
+        co_return true;
+    }
+    catch (...)
+    {
+        co_return false;
+    }
 }
