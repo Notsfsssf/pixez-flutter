@@ -9,6 +9,10 @@
 #include <flutter/method_result_functions.h>
 #include <flutter/encodable_value.h>
 
+#include <pplawait.h>
+#include <winrt/windows.foundation.h>
+#include <winrt/windows.storage.h>
+
 void Saver::initMethodChannel(flutter::FlutterEngine *flutter_instance)
 {
     const static std::string channel_name("com.perol.dev/save");
@@ -22,13 +26,13 @@ void Saver::initMethodChannel(flutter::FlutterEngine *flutter_instance)
         {
             if (call.method_name().compare("save") == 0)
             {
-                OutputDebugString(L"initDocumentMethodChannel:save");
+                OutputDebugString(TEXT("initDocumentMethodChannel:save\n"));
                 const auto *arguments = std::get_if<flutter::EncodableMap>(call.arguments());
                 auto data = arguments->find(flutter::EncodableValue("data"))->second;
                 auto name = arguments->find(flutter::EncodableValue("name"))->second;
                 std::vector<uint8_t> vector = std::get<std::vector<uint8_t>>(data);
                 std::string fileName = std::get<std::string>(name);
-                Saver::saveToPixezFolder(vector, fileName);
+                Saver::saveToPixezFolder(vector, fileName).get();
                 result->Success(true);
             }
             else
@@ -38,26 +42,14 @@ void Saver::initMethodChannel(flutter::FlutterEngine *flutter_instance)
         });
 }
 
-void Saver::saveToPixezFolder(const std::vector<uint8_t> &data, const std::string &name)
+concurrency::task<void> Saver::saveToPixezFolder(const std::vector<uint8_t> &data, const std::string &name)
 {
-    PWSTR picturesPath;
-    HRESULT result = SHGetKnownFolderPath(
-        FOLDERID_Pictures, 0, nullptr, &picturesPath);
-    if (!SUCCEEDED(result))
-    {
-        std::cerr << "Failed to get Pictures folder path" << std::endl;
-        return;
-    }
-    std::wstring pixezFolderPath = std::wstring(picturesPath) + L"\\Pixez";
-    CreateDirectoryW(pixezFolderPath.c_str(), nullptr);
-    std::wstring filePath = pixezFolderPath + L"\\" + std::wstring(name.begin(), name.end());
-    std::ofstream file(filePath, std::ofstream::binary);
-    if (!file.is_open())
-    {
-        std::cerr << "Failed to open file for writing" << std::endl;
-        return;
-    }
-    file.write(reinterpret_cast<const char *>(data.data()), sizeof(uint8_t) * data.size());
-    file.close();
-    CoTaskMemFree(picturesPath);
+    using namespace winrt;
+    using namespace Windows::Storage;
+
+    co_await winrt::resume_background();
+    auto base = KnownFolders::SavedPictures();
+    auto folder = co_await base.CreateFolderAsync(L"PixEz", CreationCollisionOption::OpenIfExists);
+    auto file = co_await folder.CreateFileAsync(to_hstring(name), CreationCollisionOption::ReplaceExisting);
+    co_await FileIO::WriteBytesAsync(file, data);
 }
