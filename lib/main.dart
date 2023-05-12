@@ -42,7 +42,6 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:pixez/windows.dart' as windows;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -94,7 +93,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   AppLifecycleState? _appState;
-  late fluentui.AccentColor _accentColor;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -149,9 +147,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     fetcher.start();
     super.initState();
     if (Platform.isIOS) WidgetsBinding.instance.addObserver(this);
-    if (Constants.isFluent) {
-      _accentColor = Color(windows.getAccentColor()).toAccentColor();
-    }
   }
 
   initMethod() async {
@@ -170,7 +165,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Constants.isFluent
-        ? _buildFluentUI(context)
+        ? buildFluentUI(context)
         : _buildMaterial(context);
   }
 
@@ -251,85 +246,5 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       });
     });
-  }
-
-  Widget _buildFluentUI(BuildContext context) {
-    return Observer(builder: (context) {
-      final botToastBuilder = BotToastInit();
-      return fluentui.FluentApp(
-        home: Builder(builder: (context) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-                statusBarColor: Constants.disableWindowEffect
-                    ? null
-                    : fluentui.Colors.transparent),
-            child: SplashPage(),
-          );
-        }),
-        builder: (context, child) {
-          child = botToastBuilder(context, child);
-          return Directionality(
-            textDirection: TextDirection.ltr,
-            child: fluentui.NavigationPaneTheme(
-              data: fluentui.NavigationPaneThemeData(
-                backgroundColor: Constants.disableWindowEffect
-                    ? null
-                    : fluentui.Colors.transparent,
-              ),
-              child: child,
-            ),
-          );
-        },
-        title: 'PixEz',
-        locale: userSetting.locale,
-        navigatorObservers: [
-          BotToastNavigatorObserver(),
-          routeObserver,
-        ],
-        themeMode: userSetting.themeMode,
-        darkTheme: fluentui.FluentThemeData(
-          brightness: Brightness.dark,
-          visualDensity: fluentui.VisualDensity.standard,
-          accentColor: _accentColor,
-          focusTheme: fluentui.FocusThemeData(
-            glowFactor: fluentui.is10footScreen(context) ? 2.0 : 0.0,
-          ),
-        ),
-        theme: fluentui.FluentThemeData(
-          brightness: Brightness.light,
-          visualDensity: fluentui.VisualDensity.standard,
-          accentColor: _accentColor,
-          focusTheme: fluentui.FocusThemeData(
-            glowFactor: fluentui.is10footScreen(context) ? 2.0 : 0.0,
-          ),
-        ),
-        localizationsDelegates: [
-          _FluentLocalizationsDelegate(),
-          ...AppLocalizations.localizationsDelegates
-        ],
-        supportedLocales: AppLocalizations.supportedLocales, // Add this line
-      );
-    });
-  }
-}
-
-class _FluentLocalizationsDelegate
-    extends LocalizationsDelegate<fluentui.FluentLocalizations> {
-  const _FluentLocalizationsDelegate();
-
-  @override
-  bool isSupported(Locale locale) {
-    return AppLocalizations.supportedLocales.contains(locale);
-  }
-
-  @override
-  Future<fluentui.FluentLocalizations> load(Locale locale) {
-    return fluentui.FluentLocalizations.delegate.load(locale);
-  }
-
-  @override
-  bool shouldReload(
-      covariant LocalizationsDelegate<fluentui.FluentLocalizations> old) {
-    return false;
   }
 }

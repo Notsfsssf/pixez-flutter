@@ -78,7 +78,6 @@ dependencies:
   contextmenu: ^3.0.0
   # Windows Only
   win32: ^4.1.4
-  win32_registry: ^1.1.0
   windows_single_instance: ^0.1.6 # TODO: 这里将来需要自己实现
 
 dependency_overrides:
