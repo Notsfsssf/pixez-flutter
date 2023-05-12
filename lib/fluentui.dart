@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
-import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/windows.dart' as windows;
@@ -33,11 +32,8 @@ initFluent(List<String> args) async {
         _argsParser(args);
       },
     );
-  } else if (!await FlutterSingleInstance.platform.isFirstInstance()) {
+  } else {
     // TODO: 在此处实现一个IPC服务，使PixEz能以单例模式运行
-    print("App is already running");
-
-    exit(0);
   }
 
   // Must add this line.
