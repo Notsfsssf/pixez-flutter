@@ -18,11 +18,8 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:fluent_ui/fluent_ui.dart' as fluentui;
-import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -185,9 +182,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 duration: const Duration(milliseconds: 500),
                 child: needShowMask
                     ? Container(
-                        color: material.Theme.of(context).canvasColor,
+                        color: Theme.of(context).canvasColor,
                         child: Center(
-                          child: Icon(material.Icons.privacy_tip_outlined),
+                          child: Icon(Icons.privacy_tip_outlined),
                         ),
                       )
                     : null,
@@ -215,15 +212,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             brightness: Brightness.dark,
           );
         }
-        return material.MaterialApp(
+        return MaterialApp(
           navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
           locale: userSetting.locale,
           home: Builder(builder: (context) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle(
-                  systemNavigationBarColor: material.Colors.transparent,
-                  systemNavigationBarDividerColor: material.Colors.transparent,
-                  statusBarColor: material.Colors.transparent,
+                  systemNavigationBarColor: Colors.transparent,
+                  systemNavigationBarDividerColor: Colors.transparent,
+                  statusBarColor: Colors.transparent,
                 ),
                 child: SplashPage());
           }),
@@ -234,12 +231,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return child;
           },
           themeMode: userSetting.themeMode,
-          theme: material.ThemeData.light()
+          theme: ThemeData.light()
               .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
-          darkTheme: material.ThemeData.dark().copyWith(
+          darkTheme: ThemeData.dark().copyWith(
               useMaterial3: true,
               scaffoldBackgroundColor:
-                  userSetting.isAMOLED ? material.Colors.black : null,
+                  userSetting.isAMOLED ? Colors.black : null,
               colorScheme: darkColorScheme),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales, // Add this line

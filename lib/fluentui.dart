@@ -7,7 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/fluent/splash/splash_page.dart';
-import 'package:pixez/platform_spec.dart';
+import 'package:pixez/platform/platform.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -38,7 +38,7 @@ initFluent(List<String> args) async {
       _fluentuiBgColor = Colors.transparent,
     );
 
-  if (accent != null) _accentColor = accent.toAccentColor();
+  _accentColor = accent.toAccentColor();
 
   debugPrint("背景特效: $effect; 暗色主题: $isDark; 强调色: $accent");
 

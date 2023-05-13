@@ -70,7 +70,7 @@ dependencies:
   sqflite: ^2.2.8+2
   dynamic_color: ^1.6.3
   # Design Style
-  fluent_ui: ^4.5.0
+  fluent_ui: ^4.6.0
   # Desktop Support
   flutter_acrylic: ^1.1.1
   window_manager: ^0.3.2
@@ -79,9 +79,12 @@ dependencies:
   system_theme: ^2.1.0
   # Windows Only
   win32: ^4.1.4
-  windows_single_instance: ^0.1.6 # TODO: 这里将来需要自己实现
+  windows_storage: ^0.0.2
+  windows_single_instance:
+    git: https://github.com/frg2089/flutter_windows_single_instance
 
 dependency_overrides:
+  win32: ^5.0.0
   extended_text_library:
     git: 
       url: https://github.com/fluttercandies/extended_text_library

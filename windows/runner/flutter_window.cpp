@@ -16,7 +16,6 @@
 #include <stdexcept>
 #include <stdlib.h>
 #include <stdio.h>
-#include "Saver.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
@@ -43,7 +42,6 @@ bool FlutterWindow::OnCreate()
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
-  Saver::initMethodChannel(flutter_controller_->engine());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]()
                                                       { this->Show(); });

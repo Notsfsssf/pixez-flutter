@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
-import 'package:pixez/windows.dart' as windows;
+import 'package:pixez/platform/windows/win32.dart' as windows;
+import 'package:pixez/platform/windows/paths.dart' as windows;
 import 'package:windows_single_instance/windows_single_instance.dart';
 import 'package:system_theme/system_theme.dart';
 

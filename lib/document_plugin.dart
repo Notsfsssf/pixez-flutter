@@ -13,21 +13,35 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/platform/windows/saver.dart' as windows;
 
 class DocumentPlugin {
   static const platform = const MethodChannel('com.perol.dev/save');
 
   static Future<bool?> save(Uint8List uint8list, String fileName,
       {bool clearOld = false, int? saveMode}) async {
-    return platform.invokeMethod<bool>('save', {
-      "data": uint8list,
-      "name": fileName,
-      "save_mode": saveMode ?? userSetting.saveMode,
-      "clear_old": clearOld
-    });
+    switch (Platform.operatingSystem) {
+      case "windows":
+        return await windows.Saver.save(
+          uint8list,
+          fileName,
+          clearOld: clearOld,
+          saveMode: saveMode,
+        );
+      case "linux":
+      case "macos":
+      default:
+        return platform.invokeMethod<bool>('save', {
+          "data": uint8list,
+          "name": fileName,
+          "save_mode": saveMode ?? userSetting.saveMode,
+          "clear_old": clearOld
+        });
+    }
   }
 
   static Future<bool?> permissionStatus() async {
@@ -38,11 +52,22 @@ class DocumentPlugin {
     return platform.invokeMethod<bool>('requestPermission');
   }
 
-  static Future<bool?> exist(String fileName, {int? saveMode}) =>
-      platform.invokeMethod<bool>("exist", {
-        "name": fileName,
-        "save_mode": saveMode ?? userSetting.saveMode,
-      });
+  static Future<bool?> exist(String fileName, {int? saveMode}) async {
+    switch (Platform.operatingSystem) {
+      case "windows":
+        return await windows.Saver.exist(
+          fileName,
+          saveMode: saveMode,
+        );
+      case "linux":
+      case "macos":
+      default:
+        return platform.invokeMethod<bool>("exist", {
+          "name": fileName,
+          "save_mode": saveMode ?? userSetting.saveMode,
+        });
+    }
+  }
 
   static Future<String?> getPath({int? saveMode}) =>
       platform.invokeMethod<String>("get_path", {
