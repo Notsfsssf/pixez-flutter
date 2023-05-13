@@ -16,7 +16,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 part 'tags.g.dart';
 

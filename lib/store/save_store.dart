@@ -275,7 +275,7 @@ abstract class _SaveStoreBase with Store {
       }
       return;
     } else {
-      //TODO OTHER PLATFORM
+      DocumentPlugin.save(uint8list, fileName);
     }
   }
 
