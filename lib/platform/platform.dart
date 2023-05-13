@@ -5,7 +5,6 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:pixez/platform/windows/win32.dart' as windows;
 import 'package:pixez/platform/windows/paths.dart' as windows;
 import 'package:windows_single_instance/windows_single_instance.dart';
-import 'package:system_theme/system_theme.dart';
 
 /// 这个函数是确保同一时间有且只有一个Pixez实例存在的
 ///
@@ -70,23 +69,4 @@ Future<WindowEffect> getEffect() async {
       debugPrint('Not Impliment');
       return WindowEffect.disabled;
   }
-}
-
-/// 获取当前系统是否使用暗色主题
-Future<bool> useDarkTheme() async {
-  return SystemTheme.isDarkMode;
-}
-
-/// 获取当前系统是否使用暗色主题
-Future<AccentColor> getAccentColor() async {
-  await SystemTheme.accentColor.load();
-  return AccentColor.swatch({
-    'darkest': SystemTheme.accentColor.darkest,
-    'darker': SystemTheme.accentColor.darker,
-    'dark': SystemTheme.accentColor.dark,
-    'normal': SystemTheme.accentColor.accent,
-    'light': SystemTheme.accentColor.light,
-    'lighter': SystemTheme.accentColor.lighter,
-    'lightest': SystemTheme.accentColor.lightest,
-  });
 }
