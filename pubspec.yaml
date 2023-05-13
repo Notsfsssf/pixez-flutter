@@ -76,6 +76,7 @@ dependencies:
   window_manager: ^0.3.2
   file_picker: ^5.2.11
   contextmenu: ^3.0.0
+  system_theme: ^2.1.0
   # Windows Only
   win32: ^4.1.4
   windows_single_instance: ^0.1.6 # TODO: 这里将来需要自己实现
