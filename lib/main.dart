@@ -68,9 +68,10 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 main(List<String> args) async {
-  // HttpOverrides.global = new MyHttpOverrides();
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -288,7 +289,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           visualDensity: fluentui.VisualDensity.standard,
           accentColor: _accentColor,
           focusTheme: fluentui.FocusThemeData(
-            glowFactor: fluentui.is10footScreen() ? 2.0 : 0.0,
+            glowFactor: fluentui.is10footScreen(context) ? 2.0 : 0.0,
           ),
         ),
         theme: fluentui.FluentThemeData(
@@ -296,7 +297,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           visualDensity: fluentui.VisualDensity.standard,
           accentColor: _accentColor,
           focusTheme: fluentui.FocusThemeData(
-            glowFactor: fluentui.is10footScreen() ? 2.0 : 0.0,
+            glowFactor: fluentui.is10footScreen(context) ? 2.0 : 0.0,
           ),
         ),
         localizationsDelegates: [

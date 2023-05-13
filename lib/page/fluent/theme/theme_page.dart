@@ -172,7 +172,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
     );
     if (result != null) {
       var data = <String>[
-        userSetting.themeData.accentColor.toString(),
+        userSetting.themeData.primaryColor.toString(),
         userSetting.themeData.primaryColor.toString(),
       ];
       data[index] = "(0x${result.value.toRadixString(16)})";

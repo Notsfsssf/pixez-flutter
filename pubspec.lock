@@ -324,18 +324,20 @@ packages:
   extended_text:
     dependency: "direct main"
     description:
-      name: extended_text
-      sha256: "3f555a60f63ff51d5080f5eed89e65bc18f17b69e01f4e16cadfd0cb3b49f42a"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "7399fef6cac58178f0a70b032e67f56678030552"
+      url: "https://github.com/VB10/extended_text"
+    source: git
     version: "10.0.1"
   extended_text_library:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: extended_text_library
-      sha256: "6d06b0ac53a09989e9864549f133c19c676d1456c5ee9470e2483f3cb1900f6e"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "2c46bdfb69e4329741d31044cd3b1c7a8ac0d9ee"
+      url: "https://github.com/fluttercandies/extended_text_library"
+    source: git
     version: "10.0.0"
   fake_async:
     dependency: transitive
@@ -381,18 +383,10 @@ packages:
     dependency: "direct main"
     description:
       name: fluent_ui
-      sha256: dad68fd0d7df9240232ec02f658c66256cda4722c922718a966f9878a36bd7a3
+      sha256: "88d6720cfded16f53ff83f0b6de3063d40664ee21696994fffc5efc5667b4fc5"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.0"
-  fluentui_system_icons:
-    dependency: "direct main"
-    description:
-      name: fluentui_system_icons
-      sha256: ae3685648c572fa8011cec8d59a36278fa500d29f7164d4e769551d48b3ce8af
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.200"
+    version: "4.6.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -1177,10 +1171,10 @@ packages:
     dependency: transitive
     description:
       name: scroll_pos
-      sha256: cfca311b6b8d51538ff90e206fbe6ce3b36e7125ea6da4a40eb626c7f9f083b1
+      sha256: "4246bff3afc779d87cdf650a67d42d67ae71b23ff020d14592e6b89e28a7f9cc"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.4.0"
   share_plus:
     dependency: "direct main"
     description:
@@ -1299,13 +1293,13 @@ packages:
     source: hosted
     version: "1.9.1"
   sqflite:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sqflite
-      sha256: "851d5040552cf911f4cabda08d003eca76b27da3ed0002978272e27c8fbf8ecc"
+      sha256: "3a82c9a216b46b88617e3714dd74227eaca20c501c4abcc213e56db26b9caa00"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.5"
+    version: "2.2.8+2"
   sqflite_common:
     dependency: transitive
     description:
@@ -1739,5 +1733,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=3.0.0-0 <4.0.0"
-  flutter: ">=3.7.0"
+  dart: "3.0.0"
+  flutter: ">=3.10.0"
