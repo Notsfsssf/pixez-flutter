@@ -75,15 +75,10 @@ class _NewPageState extends State<NewPage>
           children: <Widget>[
             AppBar(
               automaticallyImplyLeading: false,
-              elevation: 0.0,
               title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
                   controller: _tabController,
                   isScrollable: true,
-                  indicator: MD2Indicator(
-                      indicatorHeight: 3,
-                      indicatorColor: Theme.of(context).colorScheme.primary,
-                      indicatorSize: MD2IndicatorSize.normal),
                   onTap: (i) {
                     if (_tabController.index == i)
                       topStore.setTop((301 + i).toString());

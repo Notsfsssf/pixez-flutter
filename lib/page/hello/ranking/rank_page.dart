@@ -157,16 +157,10 @@ class _RankPageState extends State<RankPage>
                                   ? 0
                                   : appBarHeightNotifier.value,
                               child: AppBar(
-                                elevation: 0.0,
                                 title: TabBar(
                                   onTap: (i) => setState(() {
                                     this.index = i;
                                   }),
-                                  indicator: MD2Indicator(
-                                      indicatorHeight: 3,
-                                      indicatorColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      indicatorSize: MD2IndicatorSize.normal),
                                   indicatorSize: TabBarIndicatorSize.label,
                                   isScrollable: true,
                                   tabs: <Widget>[

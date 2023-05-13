@@ -17,8 +17,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluentui;
 import 'package:flutter/material.dart' as material;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -82,6 +84,8 @@ main(List<String> args) async {
     child: MyApp(),
   ));
 }
+
+const _brandBlue = Color(0xFF1E88E5);
 
 class MyApp extends StatefulWidget {
   @override
@@ -199,58 +203,53 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           return widget;
         }
       };
-      return material.MaterialApp(
-        navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-        locale: userSetting.locale,
-        home: Builder(builder: (context) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(
-                systemNavigationBarColor: material.Colors.transparent,
-                systemNavigationBarDividerColor: material.Colors.transparent,
-                statusBarColor: material.Colors.transparent,
-              ),
-              child: SplashPage());
-        }),
-        title: 'PixEz',
-        builder: (context, child) {
-          if (Platform.isIOS) child = myBuilder(context, child);
-          child = botToastBuilder(context, child);
-          return child;
-        },
-        themeMode: userSetting.themeMode,
-        theme: material.ThemeData.light().copyWith(
-            pageTransitionsTheme: material.PageTransitionsTheme(builders: {
-              TargetPlatform.android:
-                  material.FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.iOS: material.CupertinoPageTransitionsBuilder(),
-              TargetPlatform.macOS: material.CupertinoPageTransitionsBuilder(),
-            }),
-            primaryColor: userSetting.themeData.colorScheme.primary,
-            primaryColorLight: userSetting.themeData.colorScheme.primary,
-            primaryColorDark: userSetting.themeData.colorScheme.primary,
-            colorScheme: material.ThemeData.light().colorScheme.copyWith(
-                  secondary: userSetting.themeData.colorScheme.secondary,
-                  primary: userSetting.themeData.colorScheme.primary,
-                )),
-        darkTheme: material.ThemeData.dark().copyWith(
-          pageTransitionsTheme: material.PageTransitionsTheme(builders: {
-            TargetPlatform.android:
-                material.FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: material.CupertinoPageTransitionsBuilder(),
-            TargetPlatform.macOS: material.CupertinoPageTransitionsBuilder(),
+      return DynamicColorBuilder(
+          builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        ColorScheme lightColorScheme;
+        ColorScheme darkColorScheme;
+
+        if (lightDynamic != null && darkDynamic != null) {
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
+        } else {
+          lightColorScheme = ColorScheme.fromSeed(
+            seedColor: _brandBlue,
+          );
+          darkColorScheme = ColorScheme.fromSeed(
+            seedColor: _brandBlue,
+            brightness: Brightness.dark,
+          );
+        }
+        return material.MaterialApp(
+          navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
+          locale: userSetting.locale,
+          home: Builder(builder: (context) {
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  systemNavigationBarColor: material.Colors.transparent,
+                  systemNavigationBarDividerColor: material.Colors.transparent,
+                  statusBarColor: material.Colors.transparent,
+                ),
+                child: SplashPage());
           }),
-          scaffoldBackgroundColor:
-              userSetting.isAMOLED ? material.Colors.black : null,
-          primaryColor: userSetting.themeData.colorScheme.primary,
-          primaryColorLight: userSetting.themeData.colorScheme.primary,
-          primaryColorDark: userSetting.themeData.colorScheme.primary,
-          colorScheme: material.ThemeData.dark().colorScheme.copyWith(
-              secondary: userSetting.themeData.colorScheme.secondary,
-              primary: userSetting.themeData.colorScheme.primary),
-        ),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales, // Add this line
-      );
+          title: 'PixEz',
+          builder: (context, child) {
+            if (Platform.isIOS) child = myBuilder(context, child);
+            child = botToastBuilder(context, child);
+            return child;
+          },
+          themeMode: userSetting.themeMode,
+          theme: material.ThemeData.light()
+              .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
+          darkTheme: material.ThemeData.dark().copyWith(
+              useMaterial3: true,
+              scaffoldBackgroundColor:
+                  userSetting.isAMOLED ? material.Colors.black : null,
+              colorScheme: darkColorScheme),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales, // Add this line
+        );
+      });
     });
   }
 

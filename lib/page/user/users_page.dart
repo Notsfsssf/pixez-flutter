@@ -292,17 +292,11 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
             Theme.of(context).cardColor,
             TabBar(
               controller: _tabController,
-              indicator: MD2Indicator(
-                  indicatorHeight: 3,
-                  indicatorColor: Theme.of(context).colorScheme.primary,
-                  indicatorSize: MD2IndicatorSize.normal),
               onTap: (index) {
                 setState(() {
                   _tabIndex = index;
                 });
               },
-              labelColor: Theme.of(context).textTheme.bodyLarge!.color,
-              indicatorSize: TabBarIndicatorSize.label,
               tabs: [
                 GestureDetector(
                   onDoubleTap: () {

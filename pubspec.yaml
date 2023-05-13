@@ -68,6 +68,7 @@ dependencies:
   flutter_hooks: ^0.18.6
   hooks_riverpod: ^2.3.6
   sqflite: ^2.2.8+2
+  dynamic_color: ^1.6.3
   # Design Style
   fluent_ui: ^4.5.0
   # Desktop Support
