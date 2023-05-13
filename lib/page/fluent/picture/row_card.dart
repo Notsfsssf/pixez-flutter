@@ -56,8 +56,8 @@ class RowCard extends StatelessWidget {
             items: [
               MenuFlyoutItem(
                 text: Text(I18n.of(context).ban),
-                onPressed: () {
-                  muteStore.insertBanTag(BanTagPersist(
+                onPressed: () async {
+                  await muteStore.insertBanTag(BanTagPersist(
                     name: f.name,
                     translateName: f.translatedName ?? "",
                   ));
@@ -66,8 +66,8 @@ class RowCard extends StatelessWidget {
               ),
               MenuFlyoutItem(
                 text: Text(I18n.of(context).bookmark),
-                onPressed: () {
-                  bookTagStore.bookTag(f.name);
+                onPressed: () async {
+                  await bookTagStore.bookTag(f.name);
                   Navigator.of(context).pop();
                 },
               ),

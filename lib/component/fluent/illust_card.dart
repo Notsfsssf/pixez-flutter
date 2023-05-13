@@ -107,8 +107,8 @@ class _IllustCardState extends State<IllustCard> {
                     items: [
                       MenuFlyoutItem(
                         text: Text(I18n.of(context).save),
-                        onPressed: () {
-                          _onSave();
+                        onPressed: () async {
+                          await _onSave();
                           Navigator.of(context).pop();
                         },
                       )
@@ -256,15 +256,15 @@ class _IllustCardState extends State<IllustCard> {
               items: [
                 MenuFlyoutItem(
                   text: Text('Like'),
-                  onPressed: () {
-                    _onStar();
+                  onPressed: () async {
+                    await _onStar();
                     Navigator.of(context).pop();
                   },
                 ),
                 MenuFlyoutItem(
                   text: Text(I18n.of(context).save),
-                  onPressed: () {
-                    _onSave();
+                  onPressed: () async {
+                    await _onSave();
                     Navigator.of(context).pop();
                   },
                 ),

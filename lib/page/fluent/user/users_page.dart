@@ -310,11 +310,12 @@ class _UsersPageState extends State<UsersPage>
                                                           text: Text(
                                                               I18n.of(context)
                                                                   .save),
-                                                          onPressed: () {
-                                                            _saveUserBg(userStore
-                                                                .userDetail!
-                                                                .profile
-                                                                .background_image_url!);
+                                                          onPressed: () async {
+                                                            await _saveUserBg(
+                                                                userStore
+                                                                    .userDetail!
+                                                                    .profile
+                                                                    .background_image_url!);
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();

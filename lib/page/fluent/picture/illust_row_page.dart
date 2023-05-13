@@ -203,8 +203,8 @@ class _IllustRowPageState extends State<IllustRowPage>
                               MenuFlyout(color: Colors.transparent, items: [
                             MenuFlyoutItem(
                               text: Text(I18n.of(context).favorited_tag),
-                              onPressed: () {
-                                _showBookMarkTag();
+                              onPressed: () async {
+                                await _showBookMarkTag();
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -675,8 +675,8 @@ class _IllustRowPageState extends State<IllustRowPage>
               items: [
                 MenuFlyoutItem(
                   text: Text(I18n.of(context).follow),
-                  onPressed: () {
-                    userStore!.follow();
+                  onPressed: () async {
+                    await userStore!.follow();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -793,7 +793,7 @@ class _IllustCard extends StatelessWidget {
   final Illusts data;
   final IllustRowPage widget;
   final Widget icon;
-  final Future<Null> Function() onPressed;
+  final Future Function() onPressed;
 
   _IllustCard(
     this.index,
@@ -831,16 +831,15 @@ class _IllustCard extends StatelessWidget {
                   leading: Icon(
                     FluentIcons.save,
                   ),
-                  onPressed: () {
-                    onPressed();
+                  onPressed: () async {
+                    await onPressed();
                     Navigator.of(context).pop();
                   },
                 ),
               MenuFlyoutItem(
                 leading: Icon(FluentIcons.save),
                 onPressed: () async {
-                  Navigator.of(context).pop();
-                  saveStore.saveImage(data, index: index);
+                  await saveStore.saveImage(data, index: index);
                   Navigator.of(context).pop();
                 },
                 text: Text(I18n.of(context).save),
@@ -863,8 +862,9 @@ class _IllustCard extends StatelessWidget {
                 leading: Icon(
                   FluentIcons.share,
                 ),
-                onPressed: () {
-                  Share.share("https://www.pixiv.net/artworks/${widget.id}");
+                onPressed: () async {
+                  await Share.share(
+                      "https://www.pixiv.net/artworks/${widget.id}");
                   Navigator.of(context).pop();
                 },
               ),
@@ -883,8 +883,8 @@ class _IllustCard extends StatelessWidget {
               MenuFlyoutItem(
                 text: Text(I18n.of(context).ban),
                 leading: Icon(FluentIcons.brightness),
-                onPressed: () {
-                  muteStore.insertBanIllusts(BanIllustIdPersist(
+                onPressed: () async {
+                  await muteStore.insertBanIllusts(BanIllustIdPersist(
                       illustId: widget.id.toString(), name: data.title));
                   Navigator.of(context).pop();
                 },
@@ -990,16 +990,15 @@ class _IllustCard2 extends StatelessWidget {
                   leading: Icon(
                     FluentIcons.save,
                   ),
-                  onPressed: () {
-                    onPressed();
+                  onPressed: () async {
+                    await onPressed();
                     Navigator.of(context).pop();
                   },
                 ),
               MenuFlyoutItem(
                 leading: Icon(FluentIcons.save),
                 onPressed: () async {
-                  Navigator.of(context).pop();
-                  saveStore.saveImage(data, index: 0);
+                  await saveStore.saveImage(data, index: 0);
                   Navigator.of(context).pop();
                 },
                 text: Text(I18n.of(context).save),
@@ -1022,8 +1021,9 @@ class _IllustCard2 extends StatelessWidget {
                 leading: Icon(
                   FluentIcons.share,
                 ),
-                onPressed: () {
-                  Share.share("https://www.pixiv.net/artworks/${widget.id}");
+                onPressed: () async {
+                  await Share.share(
+                      "https://www.pixiv.net/artworks/${widget.id}");
                   Navigator.of(context).pop();
                 },
               ),
@@ -1042,8 +1042,8 @@ class _IllustCard2 extends StatelessWidget {
               MenuFlyoutItem(
                 text: Text(I18n.of(context).ban),
                 leading: Icon(FluentIcons.brightness),
-                onPressed: () {
-                  muteStore.insertBanIllusts(BanIllustIdPersist(
+                onPressed: () async {
+                  await muteStore.insertBanIllusts(BanIllustIdPersist(
                       illustId: widget.id.toString(), name: data.title));
                   Navigator.of(context).pop();
                 },
@@ -1142,8 +1142,8 @@ class _GridCard extends StatelessWidget {
             items: [
               MenuFlyoutItem(
                 text: Text('Open in zoom'),
-                onPressed: () {
-                  Leader.push(
+                onPressed: () async {
+                  await Leader.push(
                     context,
                     PhotoZoomPage(index: index, illusts: illust),
                     icon: Icon(FluentIcons.picture),
@@ -1201,8 +1201,8 @@ class _GridCard2 extends StatelessWidget {
             items: [
               MenuFlyoutItem(
                 text: Text(I18n.of(context).save),
-                onPressed: () {
-                  saveStore.saveImage(_aboutStore.illusts[index]);
+                onPressed: () async {
+                  await saveStore.saveImage(_aboutStore.illusts[index]);
                   Navigator.of(context).pop();
                 },
               )

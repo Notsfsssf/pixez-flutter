@@ -191,20 +191,22 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onSecondaryTapUp: (details) => _flyoutController.showFlyout(
                       position: getPosition(context, _flyoutKey, details),
                       barrierColor: Colors.black.withOpacity(0.1),
-                      builder: (context) =>
-                          MenuFlyout(color: Colors.transparent, items: [
-                        MenuFlyoutItem(
-                          text: Text(I18n.of(context).save),
-                          onPressed: () async {
-                            if (_illusts.metaPages.isNotEmpty)
-                              saveStore.saveImage(widget.illusts,
-                                  index: _index);
-                            else
-                              saveStore.saveImage(widget.illusts);
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ]),
+                      builder: (context) => MenuFlyout(
+                        color: Colors.transparent,
+                        items: [
+                          MenuFlyoutItem(
+                            text: Text(I18n.of(context).save),
+                            onPressed: () async {
+                              if (_illusts.metaPages.isNotEmpty)
+                                await saveStore.saveImage(widget.illusts,
+                                    index: _index);
+                              else
+                                await saveStore.saveImage(widget.illusts);
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

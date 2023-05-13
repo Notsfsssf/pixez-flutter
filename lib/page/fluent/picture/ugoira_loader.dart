@@ -85,10 +85,10 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   MenuFlyoutSeparator(),
                   MenuFlyoutItem(
                     text: Text(I18n.of(context).encode),
-                    onPressed: () {
+                    onPressed: () async {
                       try {
                         isEncoding = true;
-                        platform.invokeMethod('getBatteryLevel', {
+                        await platform.invokeMethod('getBatteryLevel', {
                           "path": _store.drawPool.first.parent.path,
                           "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
                               .frames.first.delay,
@@ -110,8 +110,8 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   ),
                   MenuFlyoutItem(
                     text: Text(I18n.of(context).export),
-                    onPressed: () {
-                      _store.export();
+                    onPressed: () async {
+                      await _store.export();
                       Navigator.of(context).pop();
                     },
                   ),

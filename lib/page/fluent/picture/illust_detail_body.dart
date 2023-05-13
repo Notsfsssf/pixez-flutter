@@ -132,8 +132,8 @@ class IllustDetailBody extends StatelessWidget {
             items: [
               MenuFlyoutItem(
                 text: Text(I18n.of(context).follow),
-                onPressed: () {
-                  _store.followUser();
+                onPressed: () async {
+                  await _store.followUser();
                   Navigator.of(context).pop();
                 },
               )
