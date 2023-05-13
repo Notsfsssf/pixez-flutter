@@ -9,14 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "60.0.0"
-  after_layout:
-    dependency: transitive
-    description:
-      name: after_layout
-      sha256: "95a1cb2ca1464f44f14769329fbf15987d20ab6c88f8fc5d359bd362be625f29"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   analyzer:
     dependency: "direct dev"
     description:
@@ -249,14 +241,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
-  contextmenu:
-    dependency: "direct main"
-    description:
-      name: contextmenu
-      sha256: e0c7d60e2fc9f316f5b03f5fe2c0f977d65125345d1a1f77eea02be612e32d0c
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   convert:
     dependency: transitive
     description:

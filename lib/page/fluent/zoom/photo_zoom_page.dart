@@ -1,18 +1,18 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:contextmenu/contextmenu.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:path/path.dart';
 
 class PhotoZoomPage extends StatefulWidget {
   final int index;
@@ -133,6 +133,8 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   bool shareShow = false;
   bool _loadSource = false;
 
+  final _flyoutController = FlyoutController();
+  final _flyoutKey = GlobalKey();
   Widget _buildBottom(BuildContext context) {
     return Container(
       child: Visibility(
@@ -170,30 +172,41 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                     }),
-                ContextMenuArea(
-                  child: IconButton(
-                    icon: Icon(
-                      FluentIcons.save,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      if (_illusts.metaPages.isNotEmpty)
-                        saveStore.saveImage(widget.illusts, index: _index);
-                      else
-                        saveStore.saveImage(widget.illusts);
-                    },
-                  ),
-                  builder: (context) => [
-                    ListTile(
-                      title: Text(I18n.of(context).save),
-                      onPressed: () async {
+                FlyoutTarget(
+                  key: _flyoutKey,
+                  controller: _flyoutController,
+                  child: GestureDetector(
+                    child: IconButton(
+                      icon: Icon(
+                        FluentIcons.save,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
                         if (_illusts.metaPages.isNotEmpty)
                           saveStore.saveImage(widget.illusts, index: _index);
                         else
                           saveStore.saveImage(widget.illusts);
                       },
-                    )
-                  ],
+                    ),
+                    onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+                      position: getPosition(context, _flyoutKey, details),
+                      barrierColor: Colors.black.withOpacity(0.1),
+                      builder: (context) =>
+                          MenuFlyout(color: Colors.transparent, items: [
+                        MenuFlyoutItem(
+                          text: Text(I18n.of(context).save),
+                          onPressed: () async {
+                            if (_illusts.metaPages.isNotEmpty)
+                              saveStore.saveImage(widget.illusts,
+                                  index: _index);
+                            else
+                              saveStore.saveImage(widget.illusts);
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ]),
+                    ),
+                  ),
                 ),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,

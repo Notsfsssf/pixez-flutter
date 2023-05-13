@@ -75,7 +75,6 @@ dependencies:
   flutter_acrylic: ^1.1.1
   window_manager: ^0.3.2
   file_picker: ^5.2.11
-  contextmenu: ^3.0.0
   # Windows Only
   win32: ^4.1.4
   windows_storage: ^0.0.2
