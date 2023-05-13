@@ -137,43 +137,36 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.cyan[500],
-      accentColor: Colors.cyan[400],
       indicatorColor: Colors.cyan[500],
     ),
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.pink[500],
-      accentColor: Colors.pink[400],
       indicatorColor: Colors.pink[500],
     ),
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.green[500],
-      accentColor: Colors.green[400],
       indicatorColor: Colors.green[600],
     ),
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.brown[500],
-      accentColor: Colors.brown[400],
       indicatorColor: Colors.brown[600],
     ),
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.purple[500],
-      accentColor: Colors.purple[400],
       indicatorColor: Colors.purple[600],
     ),
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.blue[500],
-      accentColor: Colors.blue[400],
       indicatorColor: Colors.blue[500],
     ),
     ThemeData(
       brightness: Brightness.light,
       primaryColor: Color(0xFFFB7299),
-      accentColor: Color(0xFFFB7299),
       indicatorColor: Color(0xFFFB7299),
     ),
   ];

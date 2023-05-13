@@ -16,7 +16,7 @@
 
 import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -310,7 +310,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 I18n.of(context).recommand_tag,
                 style: TextStyle(
                     fontSize: 16.0,
-                    color: Theme.of(context).textTheme.headline6!.color),
+                    color: Theme.of(context).textTheme.titleLarge!.color),
               ),
             ),
           ),

@@ -53,7 +53,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   badges: ^3.1.1
   image_picker: ^0.8.7+4
-  intl: ^0.17.0
+  intl: ^0.18.0
   quiver: ^3.2.1
   flutter_inappwebview_quill: ^5.4.6
   auto_animated: ^3.1.0
