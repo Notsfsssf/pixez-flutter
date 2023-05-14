@@ -58,8 +58,8 @@ _argsParser(List<String> args) async {
   }
 }
 
-Future _applyEffect(WindowEffect? effect, bool isDark) async {
-  effect ??= WindowEffect.disabled;
+Future _applyEffect(bool isDark) async {
+  final effect = await getEffect();
   debugPrint("背景特效: $effect; 暗色主题: $isDark;");
 
   if (effect != WindowEffect.disabled)
@@ -74,75 +74,65 @@ Future _applyEffect(WindowEffect? effect, bool isDark) async {
 }
 
 Widget buildFluentUI(BuildContext context) {
-  return FutureBuilder(
-    future: getEffect(),
-    builder: (context, snapshot) {
-      final mode = userSetting.themeMode;
-      final platformBrightness = MediaQuery.platformBrightnessOf(context);
-      final isDark = mode == ThemeMode.dark ||
-          (mode == ThemeMode.system && platformBrightness == Brightness.dark);
+  final mode = userSetting.themeMode;
+  final platformBrightness = MediaQuery.platformBrightnessOf(context);
+  final isDark = mode == ThemeMode.dark ||
+      (mode == ThemeMode.system && platformBrightness == Brightness.dark);
 
-      _applyEffect(
-          snapshot.connectionState == ConnectionState.done
-              ? snapshot.data
-              : null,
-          isDark);
+  _applyEffect(isDark);
 
-      return DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) {
-          return Observer(builder: (context) {
-            final botToastBuilder = BotToastInit();
-            return FluentApp(
-              home: Builder(builder: (context) {
-                return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle(statusBarColor: _fluentuiBgColor),
-                  child: SplashPage(),
-                );
-              }),
-              builder: (context, child) {
-                child = botToastBuilder(context, child);
-                return Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: NavigationPaneTheme(
-                    data: NavigationPaneThemeData(
-                        backgroundColor: _fluentuiBgColor),
-                    child: child,
-                  ),
-                );
-              },
-              title: 'PixEz',
-              locale: userSetting.locale,
-              navigatorObservers: [
-                BotToastNavigatorObserver(),
-                routeObserver,
-              ],
-              themeMode: userSetting.themeMode,
-              darkTheme: FluentThemeData(
-                brightness: Brightness.dark,
-                visualDensity: VisualDensity.standard,
-                accentColor: darkDynamic?.primary.toAccentColor(),
-                focusTheme: FocusThemeData(
-                  glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-                ),
-              ),
-              theme: FluentThemeData(
-                brightness: Brightness.light,
-                visualDensity: VisualDensity.standard,
-                accentColor: lightDynamic?.primary.toAccentColor(),
-                focusTheme: FocusThemeData(
-                  glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-                ),
-              ),
-              localizationsDelegates: [
-                _FluentLocalizationsDelegate(),
-                ...AppLocalizations.localizationsDelegates
-              ],
-              supportedLocales:
-                  AppLocalizations.supportedLocales, // Add this line
+  return DynamicColorBuilder(
+    builder: (lightDynamic, darkDynamic) {
+      return Observer(builder: (context) {
+        final botToastBuilder = BotToastInit();
+        return FluentApp(
+          home: Builder(builder: (context) {
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(statusBarColor: _fluentuiBgColor),
+              child: SplashPage(),
             );
-          });
-        },
-      );
+          }),
+          builder: (context, child) {
+            child = botToastBuilder(context, child);
+            return Directionality(
+              textDirection: TextDirection.ltr,
+              child: NavigationPaneTheme(
+                data:
+                    NavigationPaneThemeData(backgroundColor: _fluentuiBgColor),
+                child: child,
+              ),
+            );
+          },
+          title: 'PixEz',
+          locale: userSetting.locale,
+          navigatorObservers: [
+            BotToastNavigatorObserver(),
+            routeObserver,
+          ],
+          themeMode: userSetting.themeMode,
+          darkTheme: FluentThemeData(
+            brightness: Brightness.dark,
+            visualDensity: VisualDensity.standard,
+            accentColor: darkDynamic?.primary.toAccentColor(),
+            focusTheme: FocusThemeData(
+              glowFactor: is10footScreen(context) ? 2.0 : 0.0,
+            ),
+          ),
+          theme: FluentThemeData(
+            brightness: Brightness.light,
+            visualDensity: VisualDensity.standard,
+            accentColor: lightDynamic?.primary.toAccentColor(),
+            focusTheme: FocusThemeData(
+              glowFactor: is10footScreen(context) ? 2.0 : 0.0,
+            ),
+          ),
+          localizationsDelegates: [
+            _FluentLocalizationsDelegate(),
+            ...AppLocalizations.localizationsDelegates
+          ],
+          supportedLocales: AppLocalizations.supportedLocales, // Add this line
+        );
+      });
     },
   );
 }
