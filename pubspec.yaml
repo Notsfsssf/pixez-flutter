@@ -32,13 +32,13 @@ dependencies:
   archive: ^3.3.6
   url_launcher: ^6.1.10
   bot_toast: ^4.0.3
-  package_info_plus: ^3.0.3
+  package_info_plus: ^4.0.0
   uni_links2: ^0.6.0+2
   mobx: ^2.1.4
   flutter_mobx: ^2.0.6+5
   in_app_purchase: ^3.1.5
   flutter_widget_from_html: ^0.10.0
-  device_info_plus: ^8.2.2
+  device_info_plus: ^9.0.0
   flutter_displaymode: ^0.6.0
   receive_sharing_intent: ^1.4.5
   cached_network_image: ^3.2.3

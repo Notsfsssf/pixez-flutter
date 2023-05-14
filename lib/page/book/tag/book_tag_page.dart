@@ -15,7 +15,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
@@ -88,10 +87,6 @@ class _BookTagPageState extends State<BookTagPage>
             isScrollable: true,
             controller: _tabController,
             indicatorSize: TabBarIndicatorSize.label,
-            indicator: MD2Indicator(
-                indicatorHeight: 3,
-                indicatorColor: Theme.of(context).primaryColor,
-                indicatorSize: MD2IndicatorSize.normal),
             tabs: [
               for (var i in bookTagStore.bookTagList)
                 Tab(

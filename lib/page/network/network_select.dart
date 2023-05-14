@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
@@ -57,10 +56,6 @@ class _NetworkSelectPageState extends State<NetworkSelectPage>
                   padding: const EdgeInsets.all(8.0),
                   child: TabBar(
                     controller: tabController,
-                    indicator: MD2Indicator(
-                        indicatorHeight: 3,
-                        indicatorColor: Theme.of(context).colorScheme.secondary,
-                        indicatorSize: MD2IndicatorSize.normal),
                     indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
                       Tab(

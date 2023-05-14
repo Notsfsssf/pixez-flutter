@@ -36,11 +36,11 @@ class _SortGroupState extends State<SortGroup> {
     return SegmentedButton<int>(
       selected: {_index},
       segments: [
-        for (var i in widget.children)
+        for (var i in _children)
           ButtonSegment(value: widget.children.indexOf(i), label: Text(i)),
       ],
       onSelectionChanged: (i) {
-        widget.onChange(i);
+        widget.onChange(i.first);
         if (mounted) {
           setState(() {
             this._index = i.first;

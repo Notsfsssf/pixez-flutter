@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -349,14 +348,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   Observer(builder: (_) {
                     return Container(
                       child: TabBar(
-                        indicator: MD2Indicator(
-                            indicatorHeight: 3,
-                            indicatorColor:
-                                Theme.of(context).colorScheme.secondary,
-                            indicatorSize: MD2IndicatorSize.normal),
                         indicatorColor: Theme.of(context).colorScheme.secondary,
-                        labelColor:
-                            Theme.of(context).textTheme.titleLarge!.color,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: [
                           Tab(
@@ -394,12 +386,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
                       tabs: [
                         Tab(
                           text: I18n.of(context).medium,
@@ -434,12 +420,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
                       tabs: [
                         Tab(
                           text: I18n.of(context).medium,
@@ -512,12 +492,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       isScrollable: true,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
                       tabs: list,
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
@@ -583,13 +557,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       tabs: tablist,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
                       isScrollable: true,
                       onTap: (index) {
                         userSetting.setWelcomePageNum(index);
@@ -631,13 +599,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
                       tabs: tablist,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.normal),
                       isScrollable: true,
                       onTap: (index) {
                         userSetting.setPadMode(index);
@@ -666,12 +628,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.full),
                       tabs: [
                         Tab(
                           text: ' 2 ',
@@ -714,12 +670,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      indicator: MD2Indicator(
-                          indicatorHeight: 3,
-                          indicatorColor:
-                              Theme.of(context).colorScheme.secondary,
-                          indicatorSize: MD2IndicatorSize.full),
                       tabs: [
                         Tab(
                           text: ' 2 ',
@@ -938,13 +888,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         labelColor:
                             Theme.of(context).textTheme.headline6!.color,
                         indicatorSize: TabBarIndicatorSize.label,
-                        indicatorColor: Theme.of(context).colorScheme.secondary,
                         tabs: tablist,
-                        indicator: MD2Indicator(
-                            indicatorHeight: 3,
-                            indicatorColor:
-                                Theme.of(context).colorScheme.secondary,
-                            indicatorSize: MD2IndicatorSize.normal),
                         isScrollable: true,
                         onTap: (index) async {
                           try {

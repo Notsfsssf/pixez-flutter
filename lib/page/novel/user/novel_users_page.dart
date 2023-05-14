@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/component/md2_tab_indicator.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -160,16 +159,11 @@ class _NovelUsersPageState extends State<NovelUsersPage>
             Theme.of(context).cardColor,
             TabBar(
               controller: _tabController,
-              indicator: MD2Indicator(
-                  indicatorHeight: 3,
-                  indicatorColor: Theme.of(context).colorScheme.primary,
-                  indicatorSize: MD2IndicatorSize.normal),
               onTap: (index) {
                 setState(() {
                   _tabIndex = index;
                 });
               },
-              labelColor: Theme.of(context).textTheme.bodyLarge!.color,
               indicatorSize: TabBarIndicatorSize.label,
               tabs: [
                 GestureDetector(
