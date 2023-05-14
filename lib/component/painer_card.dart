@@ -47,8 +47,6 @@ class PainterCard extends StatelessWidget {
         }));
       },
       child: Card(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
         clipBehavior: Clip.antiAlias,
         child: Container(
           height: (MediaQuery.of(context).size.width - 4) / 3 + 80,

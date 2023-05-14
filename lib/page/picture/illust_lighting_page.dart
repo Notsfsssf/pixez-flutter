@@ -251,7 +251,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               visible: _illustStore.errorMessage == null,
               child: FloatingActionButton(
                 heroTag: widget.id,
-                backgroundColor: Colors.white,
                 onPressed: () => _illustStore.star(
                     restrict:
                         userSetting.defaultPrivateLike ? "private" : "public"),

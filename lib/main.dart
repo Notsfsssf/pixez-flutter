@@ -231,8 +231,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return child;
           },
           themeMode: userSetting.themeMode,
-          theme: ThemeData.light()
-              .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
+          theme: ThemeData.light().copyWith(
+              useMaterial3: true,
+              colorScheme: lightColorScheme,
+              scaffoldBackgroundColor: lightColorScheme.background),
           darkTheme: ThemeData.dark().copyWith(
               useMaterial3: true,
               scaffoldBackgroundColor:

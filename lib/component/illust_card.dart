@@ -174,10 +174,8 @@ class _IllustCardState extends State<IllustCard> {
         : store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
     return Card(
         margin: EdgeInsets.all(8.0),
-        elevation: 4.0,
         clipBehavior: Clip.antiAlias,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0))),
+        color: Theme.of(context).colorScheme.surface,
         child: _buildAnimationWraper(
           context,
           Column(
@@ -258,7 +256,6 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildBottom(BuildContext context) {
     return Container(
-      color: Theme.of(context).cardColor,
       child: Stack(
         children: <Widget>[
           Padding(

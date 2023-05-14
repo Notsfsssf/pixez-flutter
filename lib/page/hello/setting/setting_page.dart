@@ -113,7 +113,6 @@ class _SettingPageState extends State<SettingPage> {
                     IconButton(
                       icon: Icon(
                         Icons.palette,
-                        color: Theme.of(context).textTheme.bodyLarge!.color,
                       ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(

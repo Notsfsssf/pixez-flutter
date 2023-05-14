@@ -123,9 +123,6 @@ class _SoupPageState extends State<SoupPage> {
             },
             child: Card(
               clipBehavior: Clip.antiAlias,
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
               child: Column(
                 children: <Widget>[
                   ListTile(

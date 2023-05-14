@@ -12,41 +12,42 @@ class SortGroup extends StatefulWidget {
 }
 
 class _SortGroupState extends State<SortGroup> {
-  int _index = 0;
-  List<String> _children = [];
+  int index = 0;
 
   @override
   void initState() {
-    _children = widget.children;
     super.initState();
   }
 
   @override
-  void didUpdateWidget(covariant SortGroup oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.children != widget.children) {
-      setState(() {
-        _children = widget.children;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SegmentedButton<int>(
-      selected: {_index},
-      segments: [
-        for (var i in _children)
-          ButtonSegment(value: widget.children.indexOf(i), label: Text(i)),
+    return Wrap(
+      spacing: 8,
+      children: [
+        for (var i in widget.children)
+          ElevatedButton(
+            child: Text(
+              i,
+              style: TextStyle(
+                  color: index == widget.children.indexOf(i)
+                      ? Colors.white
+                      : Theme.of(context).textTheme.bodyLarge!.color),
+            ),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    index == widget.children.indexOf(i)
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).cardColor)),
+            onPressed: () {
+              int ii = widget.children.indexOf(i);
+              widget.onChange(ii);
+              if (mounted)
+                setState(() {
+                  this.index = ii;
+                });
+            },
+          )
       ],
-      onSelectionChanged: (i) {
-        widget.onChange(i.first);
-        if (mounted) {
-          setState(() {
-            this._index = i.first;
-          });
-        }
-      },
     );
   }
 }
