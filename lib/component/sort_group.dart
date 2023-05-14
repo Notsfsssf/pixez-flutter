@@ -4,10 +4,7 @@ class SortGroup extends StatefulWidget {
   final List<String> children;
   final Function onChange;
 
-  const SortGroup(
-      {Key? key,
-      required this.children,
-      required this.onChange})
+  const SortGroup({Key? key, required this.children, required this.onChange})
       : super(key: key);
 
   @override
@@ -15,42 +12,41 @@ class SortGroup extends StatefulWidget {
 }
 
 class _SortGroupState extends State<SortGroup> {
-  int index = 0;
+  int _index = 0;
+  List<String> _children = [];
 
   @override
   void initState() {
+    _children = widget.children;
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(covariant SortGroup oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.children != widget.children) {
+      setState(() {
+        _children = widget.children;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      children: [
+    return SegmentedButton<int>(
+      selected: {_index},
+      segments: [
         for (var i in widget.children)
-          ActionChip(
-            elevation: 4.0,
-            label: Text(
-              i,
-              style: TextStyle(
-                  color: index == widget.children.indexOf(i)
-                      ? Colors.white
-                      : Theme.of(context).textTheme.bodyLarge!.color),
-            ),
-            backgroundColor: index == widget.children.indexOf(i)
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
-            onPressed: () {
-              int ii = widget.children.indexOf(i);
-              widget.onChange(ii);
-              if (mounted)
-                setState(() {
-                  this.index = ii;
-                });
-            },
-          )
+          ButtonSegment(value: widget.children.indexOf(i), label: Text(i)),
       ],
+      onSelectionChanged: (i) {
+        widget.onChange(i);
+        if (mounted) {
+          setState(() {
+            this._index = i.first;
+          });
+        }
+      },
     );
   }
 }
