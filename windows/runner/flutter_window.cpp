@@ -17,66 +17,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void writeDataToFile(const std::string &target_path, const std::vector<uint8_t> &data)
-{
-  std::ofstream outfile(target_path, std::ios::binary | std::ios::out);
-
-  if (outfile.is_open())
-  {
-    outfile.write(reinterpret_cast<const char *>(data.data()), data.size());
-    outfile.close();
-  }
-}
-
-wchar_t *GetUserPicturesPath()
-{
-  PWSTR picturesPath = nullptr;
-  if (SHGetKnownFolderPath(FOLDERID_Pictures, 0, nullptr, &picturesPath) != S_OK)
-    return nullptr;
-  return picturesPath;
-}
-
-void initDocumentMethodChannel(flutter::FlutterEngine *flutter_instance)
-{
-
-  const static std::string channel_name("com.perol.dev/save");
-
-  auto channel =
-      std::make_unique<flutter::MethodChannel<>>(
-          flutter_instance->messenger(), channel_name,
-          &flutter::StandardMethodCodec::GetInstance());
-
-  channel->SetMethodCallHandler(
-      [](const flutter::MethodCall<> &call,
-         std::unique_ptr<flutter::MethodResult<>> result)
-      {
-        if (call.method_name().compare("save") == 0)
-        {
-          OutputDebugString(L"initDocumentMethodChannel:save");
-          const auto *arguments = std::get_if<flutter::EncodableMap>(call.arguments());
-          auto data = arguments->find(flutter::EncodableValue("data"))->second;
-          auto name = arguments->find(flutter::EncodableValue("name"))->second;
-          std::vector<uint8_t> vector = std::get<std::vector<uint8_t>>(data);
-          std::string fileName = std::get<std::string>(name);
-          wchar_t *path = GetUserPicturesPath();
-          char *pMBBuffer = (char *)malloc(100);
-          size_t i;
-          wcstombs_s(&i, pMBBuffer, (size_t)100,
-                     path, (size_t)100 - 1);
-          std::string str(pMBBuffer);
-          str += "\\";
-          str += fileName;
-          OutputDebugStringA(str.c_str());
-          writeDataToFile(str, vector);
-          result->Success(true);
-        }
-        else
-        {
-          result->Success("pass result here");
-        }
-      });
-}
-
 FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
 
@@ -102,7 +42,6 @@ bool FlutterWindow::OnCreate()
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
-  initDocumentMethodChannel(flutter_controller_->engine());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]()
                                                       { this->Show(); });

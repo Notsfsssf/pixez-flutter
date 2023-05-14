@@ -14,10 +14,11 @@
  *
  */
 
-import 'package:flutter/gestures.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:pixez/fluentui.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/er/leader.dart';
@@ -26,8 +27,9 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/fluent/comment/comment_page.dart';
-import 'package:pixez/page/picture/illust_detail_store.dart';
+import 'package:pixez/page/fluent/picture/row_card.dart';
 import 'package:pixez/page/fluent/search/result_page.dart';
+import 'package:pixez/page/picture/illust_detail_store.dart';
 
 class GestureMe extends GestureRecognizer {
   @override
@@ -50,76 +52,95 @@ class IllustDetailBody extends StatelessWidget {
         style: TextStyle(color: FluentTheme.of(context).accentColor),
       );
 
+  final _nameAvatarFlyoutController = FlyoutController();
+  final _nameAvatarFlyoutKey = GlobalKey();
   Widget _buildNameAvatar(
       BuildContext context, Illusts illust, IllustDetailStore _store) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-            child: GestureDetector(
-              onLongPress: () {
-                _store.followUser();
-              },
-              child: Container(
-                height: 70,
-                width: 70,
-                child: Stack(
-                  children: <Widget>[
-                    Center(
-                      child: SizedBox(
-                        height: 70,
-                        width: 70,
-                        child: Container(
-                          decoration: illust != null
-                              ? BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _store.isFollow
-                                      ? Colors.yellow
-                                      : FluentTheme.of(context).accentColor,
-                                )
-                              : BoxDecoration(),
+    return FlyoutTarget(
+      key: _nameAvatarFlyoutKey,
+      controller: _nameAvatarFlyoutController,
+      child: GestureDetector(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+                child: Container(
+                  height: 70,
+                  width: 70,
+                  child: Stack(
+                    children: <Widget>[
+                      Center(
+                        child: SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: Container(
+                            decoration: illust != null
+                                ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _store.isFollow
+                                        ? Colors.yellow
+                                        : FluentTheme.of(context).accentColor,
+                                  )
+                                : BoxDecoration(),
+                          ),
                         ),
                       ),
-                    ),
-                    Center(
-                      child: PainterAvatar(
-                        url: illust.user.profileImageUrls.medium,
-                        id: illust.user.id,
+                      Center(
+                        child: PainterAvatar(
+                          url: illust.user.profileImageUrls.medium,
+                          id: illust.user.id,
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+                padding: EdgeInsets.all(8.0)),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      illust.title,
+                      style:
+                          TextStyle(color: FluentTheme.of(context).accentColor),
+                    ),
+                    Container(
+                      height: 4.0,
+                    ),
+                    Text(
+                      illust.user.name,
+                      style: FluentTheme.of(context).typography.body,
+                    ),
+                    Text(
+                      toShortTime(illust.createDate),
+                      style: FluentTheme.of(context).typography.caption,
                     ),
                   ],
                 ),
               ),
             ),
-            padding: EdgeInsets.all(8.0)),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  illust.title,
-                  style: TextStyle(color: FluentTheme.of(context).accentColor),
-                ),
-                Container(
-                  height: 4.0,
-                ),
-                Text(
-                  illust.user.name,
-                  style: FluentTheme.of(context).typography.body,
-                ),
-                Text(
-                  toShortTime(illust.createDate),
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-              ],
-            ),
+          ],
+        ),
+        onSecondaryTapUp: (details) => _nameAvatarFlyoutController.showFlyout(
+          position: getPosition(context, _nameAvatarFlyoutKey, details),
+          builder: (context) => MenuFlyout(
+            color: Colors.transparent,
+            items: [
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).follow),
+                onPressed: () async {
+                  await _store.followUser();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -233,73 +254,6 @@ class IllustDetailBody extends StatelessWidget {
   }
 
   Widget buildRow(BuildContext context, Tags f) {
-    return GestureDetector(
-      onLongPress: () async {
-        await _longPressTag(context, f);
-      },
-      onTap: () {
-        Leader.push(
-            context,
-            ResultPage(
-              word: f.name,
-              translatedName: f.translatedName ?? "",
-            ));
-      },
-      child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: FluentTheme.of(context).typography.caption,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? ""}",
-                    style: FluentTheme.of(context).typography.caption)
-              ],
-              style: FluentTheme.of(context)
-                  .typography
-                  .caption!
-                  .copyWith(color: FluentTheme.of(context).accentColor))),
-    );
-  }
-
-  Future _longPressTag(BuildContext context, Tags f) async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ContentDialog(
-            title: Text(f.name),
-            actions: <Widget>[
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Text(I18n.of(context).ban),
-              ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Text(I18n.of(context).bookmark),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        {
-          muteStore.insertBanTag(BanTagPersist(
-            name: f.name,
-            translateName: f.translatedName ?? "",
-          ));
-        }
-        break;
-      case 1:
-        {
-          bookTagStore.bookTag(f.name);
-        }
-        break;
-    }
+    return RowCard(f);
   }
 }

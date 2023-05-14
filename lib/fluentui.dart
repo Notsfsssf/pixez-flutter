@@ -1,38 +1,33 @@
-import 'dart:io';
-
+import 'package:bot_toast/bot_toast.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
-import 'package:flutter_single_instance/flutter_single_instance.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/windows.dart' as windows;
+import 'package:pixez/page/fluent/splash/splash_page.dart';
+import 'package:pixez/platform/platform.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'er/leader.dart';
 
+Color? _fluentuiBgColor = null;
+
 initFluent(List<String> args) async {
   Constants.isFluent = true;
-  // 向操作系统注册协议
-  registerProtocol('pixez', 'URL:Pixez protocol', '--uri:"%1"');
-  registerProtocol('pixiv', 'URL:Pixiv protocol', '--uri:"%1"');
-
-  if (Platform.isWindows) {
-    // 使同一时间只允许运行一个PixEz实例
-    await WindowsSingleInstance.ensureSingleInstance(
-      args,
-      "Pixez::{fe97f8e1-32e5-44ec-9bfb-cde274b87f61}",
-      onSecondWindow: (args) {
-        debugPrint("从另一实例接收到的参数: $args");
-        _argsParser(args);
-      },
-    );
-  } else if (!await FlutterSingleInstance.platform.isFirstInstance()) {
-    // TODO: 在此处实现一个IPC服务，使PixEz能以单例模式运行
-    print("App is already running");
-
-    exit(0);
-  }
+  await singleInstance(
+    args,
+    "Pixez::{fe97f8e1-32e5-44ec-9bfb-cde274b87f61}",
+    (args) {
+      debugPrint("从另一实例接收到的参数: $args");
+      _argsParser(args);
+    },
+  );
+  final dbPath = await getDBPath();
+  if (dbPath != null) databaseFactory.setDatabasesPath(dbPath);
 
   // Must add this line.
   await windowManager.ensureInitialized();
@@ -42,38 +37,9 @@ initFluent(List<String> args) async {
       center: true,
       skipTaskbar: false,
       minimumSize: const Size(350, 600),
-      backgroundColor: Colors.transparent,
     ),
     () async {
-      await windowManager.setBackgroundColor(Colors.transparent);
-
-      WindowEffect effect = WindowEffect.disabled;
-
-      switch (Platform.operatingSystem) {
-        case "windows":
-          // 根据系统版本号自动使用不同的效果
-          // TODO： 改为从用户设置中读取
-          if (windows.isBuildOrGreater(22523)) {
-            effect = WindowEffect.tabbed;
-          } else if (windows.isBuildOrGreater(22000)) {
-            effect = WindowEffect.mica;
-          } else if (windows.isBuildOrGreater(17134)) {
-            effect = WindowEffect.acrylic;
-          }
-          break;
-        case "linux":
-        case "macos":
-        default:
-      }
-
-      final dark = Platform.isWindows ? windows.isDarkMode() : true;
-
-      debugPrint("使用的背景特效: $effect; 暗色主题: ${dark};");
       await Window.initialize();
-      await Window.setEffect(
-        effect: effect,
-        dark: dark,
-      );
 
       await windowManager.show();
       await windowManager.focus();
@@ -81,31 +47,138 @@ initFluent(List<String> args) async {
   );
 }
 
-void registerProtocol(String scheme, String desc, String template) {
-  if (Platform.isWindows) {
-    windows.registerProtocol(scheme, desc, template);
-    return;
-  }
-  // TODO: https://pub.dev/packages/protocol_handler
-  print("尚不支持在当前平台上注册链接协议");
-}
-
 // 解析命令行参数字符串
 _argsParser(List<String> args) async {
   if (args.length < 1) return;
 
-  const arg = '--uri';
-  String uri;
-  final item = args.firstWhere((i) => i.startsWith(arg));
-  if (item.contains('$arg:') || item.startsWith('$arg=')) {
-    uri = item.substring(arg.length + 1);
-  } else {
-    final index = args.indexOf(item);
-    uri = args[index + 1];
+  final uri = Uri.tryParse(args[0]);
+  if (uri != null) {
+    debugPrint("::_argsParser(): 合法的Uri: \"${uri}\"");
+    Leader.pushWithUri(routeObserver.navigator!.context, uri);
   }
-  final _uri = Uri.tryParse(uri);
-  if (_uri != null) {
-    debugPrint("::_argsParser(): 合法的Uri: \"${_uri}\"");
-    Leader.pushWithUri(routeObserver.navigator!.context, _uri);
+}
+
+Future _applyEffect(WindowEffect? effect, bool isDark) async {
+  effect ??= WindowEffect.disabled;
+  debugPrint("背景特效: $effect; 暗色主题: $isDark;");
+
+  if (effect != WindowEffect.disabled)
+    await windowManager.setBackgroundColor(
+      _fluentuiBgColor = Colors.transparent,
+    );
+
+  await Window.setEffect(
+    effect: effect,
+    dark: isDark,
+  );
+}
+
+Widget buildFluentUI(BuildContext context) {
+  return FutureBuilder(
+    future: getEffect(),
+    builder: (context, snapshot) {
+      final mode = userSetting.themeMode;
+      final platformBrightness = MediaQuery.platformBrightnessOf(context);
+      final isDark = mode == ThemeMode.dark ||
+          (mode == ThemeMode.system && platformBrightness == Brightness.dark);
+
+      _applyEffect(
+          snapshot.connectionState == ConnectionState.done
+              ? snapshot.data
+              : null,
+          isDark);
+
+      return DynamicColorBuilder(
+        builder: (lightDynamic, darkDynamic) {
+          return Observer(builder: (context) {
+            final botToastBuilder = BotToastInit();
+            return FluentApp(
+              home: Builder(builder: (context) {
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle(statusBarColor: _fluentuiBgColor),
+                  child: SplashPage(),
+                );
+              }),
+              builder: (context, child) {
+                child = botToastBuilder(context, child);
+                return Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: NavigationPaneTheme(
+                    data: NavigationPaneThemeData(
+                        backgroundColor: _fluentuiBgColor),
+                    child: child,
+                  ),
+                );
+              },
+              title: 'PixEz',
+              locale: userSetting.locale,
+              navigatorObservers: [
+                BotToastNavigatorObserver(),
+                routeObserver,
+              ],
+              themeMode: userSetting.themeMode,
+              darkTheme: FluentThemeData(
+                brightness: Brightness.dark,
+                visualDensity: VisualDensity.standard,
+                accentColor: darkDynamic?.primary.toAccentColor(),
+                focusTheme: FocusThemeData(
+                  glowFactor: is10footScreen(context) ? 2.0 : 0.0,
+                ),
+              ),
+              theme: FluentThemeData(
+                brightness: Brightness.light,
+                visualDensity: VisualDensity.standard,
+                accentColor: lightDynamic?.primary.toAccentColor(),
+                focusTheme: FocusThemeData(
+                  glowFactor: is10footScreen(context) ? 2.0 : 0.0,
+                ),
+              ),
+              localizationsDelegates: [
+                _FluentLocalizationsDelegate(),
+                ...AppLocalizations.localizationsDelegates
+              ],
+              supportedLocales:
+                  AppLocalizations.supportedLocales, // Add this line
+            );
+          });
+        },
+      );
+    },
+  );
+}
+
+class _FluentLocalizationsDelegate
+    extends LocalizationsDelegate<FluentLocalizations> {
+  const _FluentLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) {
+    return AppLocalizations.supportedLocales.contains(locale);
   }
+
+  @override
+  Future<FluentLocalizations> load(Locale locale) {
+    return FluentLocalizations.delegate.load(locale);
+  }
+
+  @override
+  bool shouldReload(covariant LocalizationsDelegate<FluentLocalizations> old) {
+    return false;
+  }
+}
+
+Offset? getPosition(
+  BuildContext context,
+  GlobalKey flyoutKey,
+  TapUpDetails tapUpDetails,
+) {
+  final targetContext = flyoutKey.currentContext;
+  if (targetContext == null) return null;
+
+  // This calculates the position of the flyout according to the parent navigator
+  final box = targetContext.findRenderObject() as RenderBox;
+  return box.localToGlobal(
+    tapUpDetails.localPosition,
+    ancestor: Navigator.of(context).context.findRenderObject(),
+  );
 }

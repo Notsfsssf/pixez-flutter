@@ -18,10 +18,11 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
+import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -45,6 +46,8 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       );
 
+  final _flyoutController = FlyoutController();
+  final _flyoutKey = GlobalKey();
   Widget buildBody() => Observer(builder: (context) {
         var reIllust = _store.data.reversed.toList();
         if (reIllust.isNotEmpty) {
@@ -53,7 +56,10 @@ class _HistoryPageState extends State<HistoryPage> {
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
-                return GestureDetector(
+                return FlyoutTarget(
+                  key: _flyoutKey,
+                  controller: _flyoutController,
+                  child: GestureDetector(
                     onTap: () {
                       Leader.push(
                           context,
@@ -62,35 +68,51 @@ class _HistoryPageState extends State<HistoryPage> {
                               store:
                                   IllustStore(reIllust[index].illustId, null)));
                     },
-                    onLongPress: () async {
-                      final result = await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return ContentDialog(
-                              title: Text("${I18n.of(context).delete}?"),
-                              actions: <Widget>[
-                                HyperlinkButton(
-                                  child: Text(I18n.of(context).cancel),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                HyperlinkButton(
-                                  child: Text(I18n.of(context).ok),
-                                  onPressed: () {
-                                    Navigator.of(context).pop("OK");
-                                  },
-                                ),
-                              ],
-                            );
-                          });
-                      if (result == "OK") {
-                        _store.delete(reIllust[index].illustId);
-                      }
-                    },
+                    onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+                      position: getPosition(context, _flyoutKey, details),
+                      barrierColor: Colors.black.withOpacity(0.1),
+                      builder: (context) => MenuFlyout(
+                        color: Colors.transparent,
+                        items: [
+                          MenuFlyoutItem(
+                            text: Text(I18n.of(context).delete),
+                            onPressed: () async {
+                              await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ContentDialog(
+                                    title: Text("${I18n.of(context).delete}?"),
+                                    actions: <Widget>[
+                                      HyperlinkButton(
+                                        child: Text(I18n.of(context).cancel),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      HyperlinkButton(
+                                        child: Text(I18n.of(context).ok),
+                                        onPressed: () {
+                                          _store
+                                              .delete(reIllust[index].illustId);
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      ),
+                    ),
                     child: Card(
-                        margin: EdgeInsets.all(8),
-                        child: PixivImage(reIllust[index].pictureUrl)));
+                      margin: EdgeInsets.all(8),
+                      child: PixivImage(reIllust[index].pictureUrl),
+                    ),
+                  ),
+                );
               });
         }
         return Center(

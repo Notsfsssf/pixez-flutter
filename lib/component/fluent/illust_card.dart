@@ -15,7 +15,6 @@
  */
 
 import 'dart:ffi';
-import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -25,6 +24,7 @@ import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -32,7 +32,6 @@ import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/fluent/picture/picture_list_page.dart';
 import 'package:pixez/page/fluent/picture/tag_for_illust_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class IllustCard extends StatefulWidget {
   final IllustStore store;
@@ -56,7 +55,6 @@ class _IllustCardState extends State<IllustCard> {
   late List<IllustStore>? iStores;
   late String tag;
   late LightingStore _lightingStore;
-  late FlyoutController _flyoutController;
 
   @override
   void initState() {
@@ -64,7 +62,6 @@ class _IllustCardState extends State<IllustCard> {
     iStores = widget.iStores;
     _lightingStore = widget.lightingStore;
     tag = this.hashCode.toString();
-    _flyoutController = FlyoutController();
     super.initState();
   }
 
@@ -78,30 +75,54 @@ class _IllustCardState extends State<IllustCard> {
 
   @override
   void dispose() {
-    _flyoutController.dispose();
     super.dispose();
   }
 
+  final _flyoutController = FlyoutController();
+  final _flyoutKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     if (userSetting.hIsNotAllow)
       for (int i = 0; i < store.illusts!.tags.length; i++) {
         if (store.illusts!.tags[i].name.startsWith('R-18'))
-          return IconButton(
-            onPressed: () => _buildTap(context),
-            onLongPress: () => _onLongPressSave(),
-            icon: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                const Radius.circular(4.0),
+          return FlyoutTarget(
+            key: _flyoutKey,
+            controller: _flyoutController,
+            child: GestureDetector(
+              child: IconButton(
+                onPressed: () => _buildTap(context),
+                icon: ClipRRect(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(4.0),
+                  ),
+                  child: Image.asset('assets/images/h.jpg'),
+                ),
               ),
-              child: Image.asset('assets/images/h.jpg'),
+              onSecondaryTapUp: (details) {
+                _flyoutController.showFlyout(
+                  position: getPosition(context, _flyoutKey, details),
+                  barrierColor: Colors.black.withOpacity(0.1),
+                  builder: (context) => MenuFlyout(
+                    color: Colors.transparent,
+                    items: [
+                      MenuFlyoutItem(
+                        text: Text(I18n.of(context).save),
+                        onPressed: () async {
+                          await _onSave();
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  ),
+                );
+              },
             ),
           );
       }
     return buildInkWell(context);
   }
 
-  _onLongPressSave() async {
+  _onSave() async {
     if (userSetting.longPressSaveConfirm) {
       final result = await showDialog<Bool>(
           context: context,
@@ -212,69 +233,68 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
     return FlyoutTarget(
+      key: _flyoutKey,
       controller: _flyoutController,
-      child: GestureDetector(
-        child: ButtonTheme(
-          data: ButtonThemeData(
-            iconButtonStyle: ButtonStyle(
-              padding: ButtonState.all(EdgeInsets.zero),
-            ),
+      child: ButtonTheme(
+        data: ButtonThemeData(
+          iconButtonStyle: ButtonStyle(
+            padding: ButtonState.all(EdgeInsets.zero),
           ),
+        ),
+        child: GestureDetector(
           child: IconButton(
             icon: child,
-            onLongPress: () {
-              _buildLongPressToSaveHint();
-            },
             onPressed: () {
               _buildInkTap(context, tag);
             },
           ),
-        ),
-        onSecondaryTap: () {
-          _flyoutController.showFlyout(
-            autoModeConfiguration: FlyoutAutoConfiguration(
-              preferredMode: FlyoutPlacementMode.right,
-            ),
+          onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+            position: getPosition(context, _flyoutKey, details),
+            barrierColor: Colors.black.withOpacity(0.1),
             builder: (context) => MenuFlyout(
+              color: Colors.transparent,
               items: [
                 MenuFlyoutItem(
+                  text: Text('Like'),
+                  onPressed: () async {
+                    await _onStar();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                MenuFlyoutItem(
                   text: Text(I18n.of(context).save),
-                  onPressed: _buildLongPressToSaveHint,
-                )
+                  onPressed: () async {
+                    await _onSave();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                MenuFlyoutItem(
+                  text: Text(I18n.of(context).favorited_tag),
+                  onPressed: () async {
+                    final result = await showBottomSheet(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      isScrollControlled: true,
+                      builder: (_) => TagForIllustPage(id: store.illusts!.id),
+                    );
+                    if (result?.isNotEmpty ?? false) {
+                      LPrinter.d(result);
+                      String restrict = result['restrict'];
+                      List<String>? tags = result['tags'];
+                      store.star(restrict: restrict, tags: tags, force: true);
+                    }
+                    Navigator.of(context).pop();
+                  },
+                ),
               ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
-  }
-
-  _buildLongPressToSaveHint() async {
-    if (Platform.isIOS) {
-      final pref = await SharedPreferences.getInstance();
-      final firstLongPress = await pref.getBool("first_long_press") ?? true;
-      if (firstLongPress) {
-        await pref.setBool("first_long_press", false);
-        final result = await showDialog(
-            context: context,
-            builder: (context) {
-              return ContentDialog(
-                title: Text('长按保存'),
-                content: Text('长按卡片将会保存插画到相册'),
-                actions: <Widget>[
-                  HyperlinkButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(I18n.of(context).ok))
-                ],
-              );
-            });
-      }
-      await saveStore.saveImage(store.illusts!);
-    } else {
-      _onLongPressSave();
-    }
   }
 
   Future _buildInkTap(BuildContext context, String heroTag) {
@@ -299,6 +319,18 @@ class _IllustCardState extends State<IllustCard> {
       icon: Icon(FluentIcons.picture),
       title: Text(I18n.of(context).illust_id + ': ${store.illusts!.id}'),
     );
+  }
+
+  _onStar() async {
+    store.star(restrict: userSetting.defaultPrivateLike ? "private" : "public");
+    if (!userSetting.followAfterStar) {
+      return;
+    }
+    bool success = await store.followAfterStar();
+    if (success) {
+      BotToast.showText(
+          text: "${store.illusts!.user.name} ${I18n.of(context).followed}");
+    }
   }
 
   Widget _buildBottom(BuildContext context) {
@@ -335,37 +367,7 @@ class _IllustCardState extends State<IllustCard> {
                   state: store.state,
                 );
               }),
-              onTap: () async {
-                store.star(
-                    restrict:
-                        userSetting.defaultPrivateLike ? "private" : "public");
-                if (!userSetting.followAfterStar) {
-                  return;
-                }
-                bool success = await store.followAfterStar();
-                if (success) {
-                  BotToast.showText(
-                      text:
-                          "${store.illusts!.user.name} ${I18n.of(context).followed}");
-                }
-              },
-              onLongPress: () async {
-                final result = await showBottomSheet(
-                  context: context,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  isScrollControlled: true,
-                  builder: (_) => TagForIllustPage(id: store.illusts!.id),
-                );
-                if (result?.isNotEmpty ?? false) {
-                  LPrinter.d(result);
-                  String restrict = result['restrict'];
-                  List<String>? tags = result['tags'];
-                  store.star(restrict: restrict, tags: tags, force: true);
-                }
-              },
+              onTap: _onStar,
             ),
           )
         ],

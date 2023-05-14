@@ -16,15 +16,16 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/null_hero.dart';
-import 'package:pixez/component/fluent/painter_avatar.dart';
-import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
-import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class SoupPage extends StatefulWidget {
   final String url;
@@ -50,98 +51,111 @@ class _SoupPageState extends State<SoupPage> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
+      header: PageHeader(
+        title: Text(widget.spotlight!.pureTitle),
+        commandBar: widget.spotlight != null
+            ? CommandBar(
+                primaryItems: [
+                  CommandBarButton(
+                    icon: Icon(FluentIcons.share),
+                    onPressed: () async {
+                      var url = widget.spotlight!.articleUrl;
+                      await launchUrl(Uri.tryParse(url)!);
+                    },
+                  )
+                ],
+              )
+            : null,
+      ),
       content: Observer(builder: (context) {
-        return NestedScrollView(
-          body: buildBlocProvider(),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              // TODO
-              // if (widget.spotlight != null)
-              //   SliverAppBar(
-              //     pinned: true,
-              //     expandedHeight: 200.0,
-              //     flexibleSpace: FlexibleSpaceBar(
-              //       centerTitle: true,
-              //       title: Text(widget.spotlight!.pureTitle),
-              //       background: NullHero(
-              //         tag: widget.heroTag,
-              //         child: PixivImage(
-              //           widget.spotlight!.thumbnail,
-              //           fit: BoxFit.cover,
-              //           height: 200,
-              //         ),
-              //       ),
-              //     ),
-              //     actions: <Widget>[
-              //       IconButton(
-              //         icon: Icon(FluentIcons.share),
-              //         onPressed: () async {
-              //           var url = widget.spotlight!.articleUrl;
-              //           await launch(url);
-              //         },
-              //       )
-              //     ],
-              //   )
-              // else
-              PageHeader()
-            ];
-          },
-        );
+        return buildBlocProvider();
       }),
     );
   }
 
   Widget buildBlocProvider() {
     if (_soupStore.amWorks.isEmpty) return Container();
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        return Builder(builder: (context) {
-          if (index == 0) {
-            if (_soupStore.description == null ||
-                _soupStore.description!.isEmpty)
-              return Container(
-                height: 1,
-              );
-            return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(_soupStore.description ?? ''),
-              ),
-            );
-          }
-          AmWork amWork = _soupStore.amWorks[index - 1];
-          return IconButton(
-            onPressed: () {
-              int id = int.parse(Uri.parse(amWork.arworkLink!).pathSegments[
-                  Uri.parse(amWork.arworkLink!).pathSegments.length - 1]);
-              Navigator.of(context)
-                  .push(FluentPageRoute(builder: (BuildContext context) {
-                return IllustLightingPage(
-                  id: id,
-                  store: IllustStore(id, null),
-                );
-              }));
-            },
-            icon: Card(
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: PainterAvatar(
-                      url: amWork.userImage!,
-                      id: int.parse(Uri.parse(amWork.userLink!).pathSegments[
-                          Uri.parse(amWork.userLink!).pathSegments.length - 1]),
+    final count = (MediaQuery.of(context).orientation == Orientation.portrait)
+        ? userSetting.crossCount
+        : userSetting.hCrossCount;
+
+    return CustomScrollView(
+      slivers: [
+        SliverWaterfallFlow(
+          gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+            crossAxisCount: count,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return Builder(builder: (context) {
+                if (index == 0) {
+                  if (_soupStore.description == null ||
+                      _soupStore.description!.isEmpty)
+                    return Container(
+                      height: 1,
+                    );
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(_soupStore.description ?? ''),
                     ),
-                    title: Text(amWork.title!),
-                    subtitle: Text(amWork.user!),
+                  );
+                }
+                AmWork amWork = _soupStore.amWorks[index - 1];
+                return Card(
+                  padding: EdgeInsets.zero,
+                  margin: EdgeInsets.all(8.0),
+                  child: ButtonTheme(
+                    data: ButtonThemeData(
+                        iconButtonStyle: ButtonStyle(
+                      padding: ButtonState.all(EdgeInsets.zero),
+                    )),
+                    child: IconButton(
+                      onPressed: () {
+                        int id = int.parse(Uri.parse(amWork.arworkLink!)
+                                .pathSegments[
+                            Uri.parse(amWork.arworkLink!).pathSegments.length -
+                                1]);
+                        Navigator.of(context, rootNavigator: true).push(
+                            FluentPageRoute(builder: (BuildContext context) {
+                          return IllustLightingPage(
+                            id: id,
+                            store: IllustStore(id, null),
+                          );
+                        }));
+                      },
+                      icon: Column(
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: const Radius.circular(4.0),
+                              topRight: const Radius.circular(4.0),
+                            ),
+                            child: PixivImage(amWork.showImage!),
+                          ),
+                          ListTile(
+                            leading: PainterAvatar(
+                              url: amWork.userImage!,
+                              id: int.parse(Uri.parse(amWork.userLink!)
+                                  .pathSegments[Uri.parse(amWork.userLink!)
+                                      .pathSegments
+                                      .length -
+                                  1]),
+                            ),
+                            title: Text(amWork.title!),
+                            subtitle: Text(amWork.user!),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  PixivImage(amWork.showImage!),
-                ],
-              ),
-            ),
-          );
-        });
-      },
-      itemCount: _soupStore.amWorks.length + 1,
+                );
+              });
+            },
+            childCount: _soupStore.amWorks.length + 1,
+          ),
+        )
+      ],
     );
   }
 }

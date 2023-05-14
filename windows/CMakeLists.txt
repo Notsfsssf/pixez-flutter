@@ -15,7 +15,7 @@ message("| |    _| |_/ /^\\ \\| |___./ /___")
 message("\\_|    \\___/\\/   \\/\\____/\\_____/")
 message("")
 message("")
-message("Pixez for Windows Desktop Application (Win32)")
+message("Pixez for Windows Desktop Application (WinRT)")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -112,3 +112,4 @@ install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   COMPONENT Runtime)
 
 file(COPY "${CMAKE_SOURCE_DIR}/sqlite3.dll" DESTINATION "${CMAKE_BINARY_DIR}/runner/Debug")
+file(COPY "${CMAKE_SOURCE_DIR}/sqlite3.dll" DESTINATION "${CMAKE_BINARY_DIR}/runner/Release")

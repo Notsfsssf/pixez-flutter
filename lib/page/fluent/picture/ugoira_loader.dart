@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
+import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -38,6 +39,8 @@ class UgoiraLoader extends StatefulWidget {
 
 class _UgoiraLoaderState extends State<UgoiraLoader> {
   late UgoiraStore _store;
+  final _flyoutController = FlyoutController();
+  final _flyoutKey = GlobalKey();
 
   @override
   void initState() {
@@ -54,72 +57,11 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
       double height = MediaQuery.of(context).size.width *
           (widget.illusts.height.toDouble() / widget.illusts.width.toDouble());
       if (_store.status == UgoiraStatus.play) {
-        return IconButton(
-          onPressed: () {},
-          onLongPress: () async {
-            if (isEncoding) return;
-            final result = await showBottomSheet(
-                context: context,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                ),
-                builder: (context) {
-                  return SafeArea(
-                      child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: Text(I18n.of(context).encode_message),
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).encode),
-                        onPressed: () {
-                          Navigator.of(context).pop('OK');
-                        },
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).export),
-                        onPressed: () {
-                          Navigator.of(context).pop('EXPORT');
-                        },
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).cancel),
-                        onPressed: () {
-                          Navigator.of(context).pop('SOURCE');
-                        },
-                      ),
-                    ],
-                  ));
-                });
-            if (result == "OK") {
-              try {
-                isEncoding = true;
-                platform.invokeMethod('getBatteryLevel', {
-                  "path": _store.drawPool.first.parent.path,
-                  "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata.frames
-                      .first.delay,
-                  "delay_array": _store
-                      .ugoiraMetadataResponse!.ugoiraMetadata.frames
-                      .map((e) => e.delay)
-                      .toList(),
-                  "name": userSetting.singleFolder
-                      ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
-                      : "${widget.id}",
-                });
-                BotToast.showCustomText(
-                    toastBuilder: (_) => Text("encoding..."));
-              } on PlatformException {
-                isEncoding = false;
-              }
-            } else if (result == "SOURCE") {
-            } else if (result == "EXPORT") {
-              _store.export();
-            }
-          },
-          icon: UgoiraWidget(
+        return FlyoutTarget(
+          key: _flyoutKey,
+          controller: _flyoutController,
+          child: GestureDetector(
+            child: UgoiraWidget(
               delay: _store
                   .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
               ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
@@ -128,7 +70,55 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   (widget.illusts.height.toDouble() /
                           widget.illusts.width.toDouble()) *
                       MediaQuery.of(context).size.width.toDouble()),
-              drawPools: _store.drawPool),
+              drawPools: _store.drawPool,
+            ),
+            onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+              position: getPosition(context, _flyoutKey, details),
+              barrierColor: Colors.black.withOpacity(0.1),
+              builder: (context) => MenuFlyout(
+                color: Colors.transparent,
+                items: [
+                  MenuFlyoutItem(
+                    text: Text(I18n.of(context).encode_message),
+                    onPressed: () {},
+                  ),
+                  MenuFlyoutSeparator(),
+                  MenuFlyoutItem(
+                    text: Text(I18n.of(context).encode),
+                    onPressed: () async {
+                      try {
+                        isEncoding = true;
+                        await platform.invokeMethod('getBatteryLevel', {
+                          "path": _store.drawPool.first.parent.path,
+                          "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
+                              .frames.first.delay,
+                          "delay_array": _store
+                              .ugoiraMetadataResponse!.ugoiraMetadata.frames
+                              .map((e) => e.delay)
+                              .toList(),
+                          "name": userSetting.singleFolder
+                              ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
+                              : "${widget.id}",
+                        });
+                        BotToast.showCustomText(
+                            toastBuilder: (_) => Text("encoding..."));
+                      } on PlatformException {
+                        isEncoding = false;
+                      }
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  MenuFlyoutItem(
+                    text: Text(I18n.of(context).export),
+                    onPressed: () async {
+                      await _store.export();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
         );
       }
       if (_store.status == UgoiraStatus.progress)
