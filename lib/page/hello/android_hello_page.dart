@@ -62,6 +62,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     isFullscreen.value = !isFullscreen.value;
   }
 
+  // M3暂时移除处理
   // 获取bottomNavigator的高度，方便实现基础的动画
   void initBottomNavigatorHeight() {
     Size? bottomNavigatorSize =
@@ -118,12 +119,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildScaffold(BuildContext context) {
-    // 如果没有获取到底部导航的高度，在重新渲染的时候会尝试获取底部导航的高度
-    if (bottomNavigatorHeight == null) {
-      Timer(const Duration(milliseconds: 0), () {
-        initBottomNavigatorHeight();
-      });
-    }
+    // // 如果没有获取到底部导航的高度，在重新渲染的时候会尝试获取底部导航的高度
+    // if (bottomNavigatorHeight == null) {
+    //   Timer(const Duration(milliseconds: 0), () {
+    //     initBottomNavigatorHeight();
+    //   });
+    // }
     return Scaffold(
         body: _buildPageContent(context),
         extendBody: true,
@@ -134,45 +135,33 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             toggleFullscreen: toggleFullscreen,
           ),
         ),
-        bottomNavigationBar: ValueListenableBuilder<bool>(
-            valueListenable: isFullscreen,
-            builder: (BuildContext context, bool isFullscreen, Widget? child) =>
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  height: isFullscreen ? 0 : bottomNavigatorHeight,
-                  key: bottomNavigatorKey,
-                  child: NavigationBar(
-                    destinations: [
-                      NavigationDestination(
-                          icon: Icon(Icons.home), label: I18n.of(context).home),
-                      NavigationDestination(
-                          icon: Icon(
-                            Icons.leaderboard,
-                          ),
-                          label: I18n.of(context).rank),
-                      NavigationDestination(
-                          icon: Icon(Icons.favorite),
-                          label: I18n.of(context).quick_view),
-                      NavigationDestination(
-                          icon: Icon(Icons.search),
-                          label: I18n.of(context).search),
-                      NavigationDestination(
-                          icon: Icon(Icons.more_horiz),
-                          label: I18n.of(context).more)
-                    ],
-                    selectedIndex: index,
-                    onDestinationSelected: (index) {
-                      if (this.index == index) {
-                        topStore.setTop("${index + 1}00");
-                      }
-                      setState(() {
-                        this.index = index;
-                      });
-                      if (_pageController.hasClients)
-                        _pageController.jumpToPage(index);
-                    },
-                  ),
-                )));
+        bottomNavigationBar: NavigationBar(
+          destinations: [
+            NavigationDestination(
+                icon: Icon(Icons.home), label: I18n.of(context).home),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.leaderboard,
+                ),
+                label: I18n.of(context).rank),
+            NavigationDestination(
+                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+            NavigationDestination(
+                icon: Icon(Icons.search), label: I18n.of(context).search),
+            NavigationDestination(
+                icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+          ],
+          selectedIndex: index,
+          onDestinationSelected: (index) {
+            if (this.index == index) {
+              topStore.setTop("${index + 1}00");
+            }
+            setState(() {
+              this.index = index;
+            });
+            if (_pageController.hasClients) _pageController.jumpToPage(index);
+          },
+        ));
   }
 
   Widget _buildPadScafford(BuildContext context, BoxConstraints constraint) {
