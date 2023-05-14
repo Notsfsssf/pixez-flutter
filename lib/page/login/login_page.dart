@@ -84,10 +84,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          primaryColor: Theme.of(context).colorScheme.secondary,
-          brightness: Theme.of(context).brightness),
+    return Container(
       child: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: SingleChildScrollView(
@@ -112,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: EdgeInsets.all(10),
                           ),
-                          ElevatedButton(
+                          FilledButton(
                               child: Text(
                                 I18n.of(context).login,
                               ),
@@ -123,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                                   _launch(url);
                                 } catch (e) {}
                               }),
-                          ElevatedButton(
+                          FilledButton(
                             onPressed: () async {
                               try {
                                 String url =

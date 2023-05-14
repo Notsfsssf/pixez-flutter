@@ -61,11 +61,11 @@ class _StarIconState extends State<StarIcon> {
       case 0:
         return Icon(
           Icons.favorite_border,
-          color: Theme.of(context).colorScheme.surfaceTint,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         );
       case 1:
         return Icon(Icons.favorite,
-            color: Theme.of(context).colorScheme.surfaceTint);
+            color: Theme.of(context).colorScheme.onSurfaceVariant);
       default:
         return Icon(
           Icons.favorite,
