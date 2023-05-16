@@ -18,7 +18,7 @@ import 'package:pixez/page/fluent/hello/new/new_page.dart';
 import 'package:pixez/page/fluent/hello/ranking/rank_page.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_page.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
+import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/fluent/preview/preview_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/fluent/search/result_page.dart';
@@ -357,7 +357,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
                 .toList(),
           ),
           icon: Icon(FluentIcons.search),
-          title: Text("搜索"),
+          title: Text(I18n.of(context).search),
         );
       } else {
         BotToast.showText(text: "0 result");

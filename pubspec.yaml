@@ -80,6 +80,7 @@ dependencies:
   windows_storage: ^0.0.2
   windows_single_instance:
     git: https://github.com/frg2089/flutter_windows_single_instance
+  image_picker_windows: ^0.1.0+6
 
 dependency_overrides:
   win32: ^5.0.0
@@ -96,7 +97,7 @@ dev_dependencies:
   json_serializable: ^6.6.1
   analyzer: ^5.7.1
   sqflite_common_ffi: ^2.2.5
-  msix: ^3.11.1
+  msix: ^3.12.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
