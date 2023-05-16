@@ -24,9 +24,9 @@ get _showBottomSheet {
 
 List<Contributor> contributors = [
   Contributor(
-      'Tragic Life',
+    'Tragic Life',
     'https://avatars.githubusercontent.com/u/16817202?v=4',
-      'https://github.com/TragicLifeHu',
+    'https://github.com/TragicLifeHu',
     '🌍',
     onPressed: (context) async {
       //Tragic Life:輪播凱留TAG 10000+收藏的圖
@@ -45,7 +45,7 @@ List<Contributor> contributors = [
           i++;
         }
       }
-      
+
       _showBottomSheet(
         context: context,
         builder: (context) {
@@ -96,15 +96,15 @@ List<Contributor> contributors = [
     },
   ),
   Contributor(
-      'karin722',
+    'karin722',
     'https://avatars.githubusercontent.com/u/54385201?v=4',
-      'http://ivtune.net/',
+    'http://ivtune.net/',
     '🌍',
   ),
   Contributor(
-      'Romani-Archman',
+    'Romani-Archman',
     'https://avatars.githubusercontent.com/u/68731023?v=4',
-      'http://archman.fun/',
+    'http://archman.fun/',
     '📖',
     onPressed: (context) async {
       //GC:摸一摸可爱的鱼
@@ -135,21 +135,21 @@ List<Contributor> contributors = [
     },
   ),
   Contributor(
-      'Henry-ZHR',
+    'Henry-ZHR',
     'https://avatars.githubusercontent.com/u/51886614?v=4',
-      'https://github.com/Henry-ZHR',
+    'https://github.com/Henry-ZHR',
     '💻',
   ),
   Contributor(
-      'Takase',
+    'Takase',
     'https://avatars.githubusercontent.com/u/20792268?v=4',
-      'https://github.com/takase1121',
+    'https://github.com/takase1121',
     '🌍',
   ),
   Contributor(
-      'ChsBuffer',
+    'ChsBuffer',
     'https://avatars.githubusercontent.com/u/33744752?v=4',
-      'https://github.com/chsbuffer',
+    'https://github.com/chsbuffer',
     '💻',
   ),
   Contributor(
@@ -159,16 +159,22 @@ List<Contributor> contributors = [
     '🌍',
   ),
   Contributor(
-      "Scighost",
-      "https://avatars.githubusercontent.com/u/61003590?v=4",
-      'https://github.com/Scighost',
+    "Scighost",
+    "https://avatars.githubusercontent.com/u/61003590?v=4",
+    'https://github.com/Scighost',
     '💻',
   ),
   Contributor(
-      "sheason2019",
-      "https://avatars.githubusercontent.com/u/73812146?v=4",
-      'https://github.com/sheason2019',
+    "sheason2019",
+    "https://avatars.githubusercontent.com/u/73812146?v=4",
+    'https://github.com/sheason2019',
     '💻',
+  ),
+  Contributor(
+    "frg2089",
+    "https://avatars.githubusercontent.com/u/42184238?v=4",
+    'https://github.com/frg2089',
+    '💻🪟',
   ),
 ];
 
