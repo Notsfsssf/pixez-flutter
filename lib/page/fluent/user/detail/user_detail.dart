@@ -42,136 +42,135 @@ class _UserDetailPageState extends State<UserDetailPage> {
     var detail = widget.userDetail;
     var profile = widget.userDetail.profile;
     var public = widget.userDetail.profile_publicity;
-    return widget.userDetail != null
-        ? SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Padding(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: widget.userDetail.user.comment != null &&
-                                widget.userDetail.user.comment!.isNotEmpty
-                            ? SelectableHtml(
-                                data: widget.userDetail.user.comment!)
-                            : SelectableHtml(
-                                data: '~',
-                              )),
+                  child: widget.userDetail.user.comment != null &&
+                          widget.userDetail.user.comment!.isNotEmpty
+                      ? SelectableHtml(data: widget.userDetail.user.comment!)
+                      : SelectableHtml(
+                          data: '~',
+                        )),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Table(
+              children: [
+                TableRow(children: [
+                  Text(I18n.of(context).nickname),
+                  Text(detail.user.name, textAlign: TextAlign.center)
+                ]),
+                TableRow(children: [
+                  Text(I18n.of(context).painter_id),
+                  HyperlinkButton(
+                      child: Text(detail.user.id.toString()),
+                      onPressed: () {
+                        try {
+                          Clipboard.setData(
+                            ClipboardData(text: detail.user.id.toString()),
+                          );
+                        } catch (e) {}
+                      }),
+                ]),
+                TableRow(children: [
+                  Text(I18n.of(context).total_follow_users),
+                  HyperlinkButton(
+                      child: Text(detail.profile.total_follow_users.toString()),
+                      onPressed: () {
+                        Leader.push(
+                          context,
+                          ScaffoldPage(
+                            header: PageHeader(
+                              title: Text(I18n.of(context).followed),
+                            ),
+                            content: FollowList(
+                              id: widget.userDetail.user.id,
+                            ),
+                          ),
+                          icon: Icon(FluentIcons.follow_user),
+                          title: Text(I18n.of(context).followed),
+                        );
+                      }),
+                ]),
+                TableRow(children: [
+                  Text(I18n.of(context).total_mypixiv_users),
+                  HyperlinkButton(
+                      child:
+                          Text(detail.profile.total_mypixiv_users.toString()),
+                      onPressed: () {
+                        Leader.push(
+                          context,
+                          ScaffoldPage(
+                            header: PageHeader(
+                              title: Text(I18n.of(context).followed),
+                            ),
+                            content: FollowList(
+                              id: widget.userDetail.user.id,
+                              isFollowMe: true,
+                            ),
+                          ),
+                          icon: Icon(FluentIcons.follow_user),
+                          title: Text(I18n.of(context).followed),
+                        );
+                      }),
+                ]),
+                TableRow(children: [
+                  Text(I18n.of(context).twitter_account),
+                  HyperlinkButton(
+                      child: Text(profile.twitter_account ?? ""),
+                      onPressed: () async {
+                        final url = profile.twitter_url;
+                        if (url == null) return;
+
+                        try {
+                          await launchUrlString(url);
+                        } catch (e) {
+                          Share.share(url);
+                        }
+                      }),
+                ]),
+                TableRow(children: [
+                  Text(I18n.of(context).gender),
+                  Text(
+                    detail.profile.gender ?? '',
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Table(
-                    children: [
-                      TableRow(children: [
-                        Text(I18n.of(context).nickname),
-                        Text(detail.user.name)
-                      ]),
-                      TableRow(children: [
-                        Text(I18n.of(context).painter_id),
-                        HyperlinkButton(
-                            child: Text(detail.user.id.toString()),
-                            onPressed: () {
-                              try {
-                                Clipboard.setData(ClipboardData(
-                                    text: detail.user.id.toString()));
-                              } catch (e) {}
-                            }),
-                      ]),
-                      TableRow(children: [
-                        Text(I18n.of(context).total_follow_users),
-                        HyperlinkButton(
-                            child: Text(
-                                detail.profile.total_follow_users.toString()),
-                            onPressed: () {
-                              Leader.push(
-                                context,
-                                ScaffoldPage(
-                                  header: PageHeader(
-                                    title: Text(I18n.of(context).followed),
-                                  ),
-                                  content: FollowList(
-                                    id: widget.userDetail.user.id,
-                                  ),
-                                ),
-                                icon: Icon(FluentIcons.follow_user),
-                                title: Text(I18n.of(context).followed),
-                              );
-                            }),
-                      ]),
-                      TableRow(children: [
-                        Text(I18n.of(context).total_mypixiv_users),
-                        HyperlinkButton(
-                            child: Text(
-                                detail.profile.total_mypixiv_users.toString()),
-                            onPressed: () {
-                              Leader.push(
-                                context,
-                                ScaffoldPage(
-                                  header: PageHeader(
-                                    title: Text(I18n.of(context).followed),
-                                  ),
-                                  content: FollowList(
-                                    id: widget.userDetail.user.id,
-                                    isFollowMe: true,
-                                  ),
-                                ),
-                                icon: Icon(FluentIcons.follow_user),
-                                title: Text(I18n.of(context).followed),
-                              );
-                            }),
-                      ]),
-                      TableRow(children: [
-                        Text(I18n.of(context).twitter_account),
-                        HyperlinkButton(
-                            child: Text(profile.twitter_account ?? ""),
-                            onPressed: () async {
-                              final url = profile.twitter_url;
-                              if (url != null) {
-                                try {
-                                  if (Platform.isIOS) {
-                                    await launchUrlString(url,
-                                        mode: LaunchMode.externalApplication);
-                                  } else {
-                                    await launch(url);
-                                  }
-                                } catch (e) {
-                                  Share.share(url);
-                                }
-                              }
-                            }),
-                      ]),
-                      TableRow(children: [
-                        Text(I18n.of(context).gender),
-                        Text(detail.profile.gender!),
-                      ]),
-                      TableRow(children: [
-                        Text(I18n.of(context).job),
-                        Text(detail.profile.job!),
-                      ]),
-                      TableRow(children: [
-                        Text('Pawoo'),
-                        HyperlinkButton(
-                            child: Text(public.pawoo ? 'Link' : 'none'),
-                            onPressed: () async {
-                              if (!public.pawoo) return;
-                              var url = detail.profile.pawoo_url;
-                              try {
-                                await launch(url!);
-                              } catch (e) {}
-                            }),
-                      ]),
-                    ],
+                ]),
+                TableRow(children: [
+                  Text(I18n.of(context).job),
+                  Text(
+                    detail.profile.job ?? '',
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                Container(
-                  height: 200,
-                )
+                ]),
+                TableRow(children: [
+                  Text('Pawoo'),
+                  HyperlinkButton(
+                      child: Text(public.pawoo ? 'Link' : 'none'),
+                      onPressed: () async {
+                        if (!public.pawoo) return;
+                        var url = detail.profile.pawoo_url;
+                        if (url == null) return;
+                        try {
+                          await launchUrlString(url);
+                        } catch (e) {}
+                      }),
+                ]),
               ],
             ),
+          ),
+          Container(
+            height: 200,
           )
-        : Container();
+        ],
+      ),
+    );
   }
 }

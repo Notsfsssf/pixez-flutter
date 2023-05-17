@@ -42,6 +42,7 @@ import 'package:pixez/page/fluent/shield/shield_page.dart';
 import 'package:pixez/page/fluent/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/fluent/user/detail/user_detail.dart';
 import 'package:pixez/page/fluent/user/works/works_page.dart';
+import 'package:pixez/page/fluent/zoom/zoom_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -178,204 +179,108 @@ class _UsersPageState extends State<UsersPage>
           )),
         );
       }
-      return ScaffoldPage(
-        header: PageHeader(
-          commandBar: CommandBar(
-            mainAxisAlignment: MainAxisAlignment.end,
-            primaryItems: [
-              CommandBarButton(
-                  icon: Icon(FluentIcons.share),
-                  onPressed: () =>
-                      Share.share('https://www.pixiv.net/users/${widget.id}')),
-            ],
-            secondaryItems: [
-              CommandBarButton(
-                label: Text(I18n.of(context).quietly_follow),
-                onPressed: () {
-                  userStore.follow(needPrivate: true);
-                },
-              ),
-              CommandBarButton(
-                label: Text(I18n.of(context).block_user),
-                onPressed: () async {
-                  final result = await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return ContentDialog(
-                          title: Text('${I18n.of(context).block_user}?'),
-                          actions: <Widget>[
-                            HyperlinkButton(
-                              child: Text("OK"),
-                              onPressed: () {
-                                Navigator.of(context).pop("OK");
-                              },
-                            ),
-                            HyperlinkButton(
-                              child: Text("CANCEL"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        );
-                      });
-                  if (result == "OK") {
-                    await muteStore.insertBanUserId(
-                        widget.id.toString(), userStore.userDetail!.user.name);
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-              CommandBarButton(
-                label: Text(I18n.of(context).copymessage),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(
-                      text:
-                          'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
-                  BotToast.showText(text: I18n.of(context).copied_to_clipboard);
-                },
-              ),
-              CommandBarButton(
-                label: Text(I18n.of(context).report),
-                onPressed: () {
-                  Reporter.show(
-                      context,
-                      () async => await muteStore.insertBanUserId(
-                          widget.id.toString(),
-                          userStore.userDetail!.user.name));
-                },
-              ),
-            ],
-          ),
-        ),
-        content: NavigationView(
-          pane: NavigationPane(
-            displayMode: PaneDisplayMode.top,
-            selected: _tabIndex,
-            onChanged: (value) => setState(() {
-              _tabIndex = value;
-            }),
-            items: [
-              PaneItem(
+      return NavigationView(
+        pane: NavigationPane(
+          displayMode: PaneDisplayMode.top,
+          selected: _tabIndex,
+          onChanged: (value) {
+            if (value > 2) return;
+            _tabIndex = value;
+            setState(() {});
+          },
+          items: [
+            PaneItem(
                 icon: Icon(FluentIcons.info),
                 title: Text(I18n.of(context).detail),
-                body: ListView(
-                  children: [
-                    Container(
-                      height: 300,
-                      color: FluentTheme.of(context).cardColor,
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).padding.top + 180,
-                              child: userStore.userDetail != null
-                                  ? userStore.userDetail!.profile
-                                              .background_image_url !=
-                                          null
-                                      ? FlyoutTarget(
-                                          key: _flyoutKey,
-                                          controller: _flyoutController,
-                                          child: GestureDetector(
-                                              child: IconButton(
-                                                onPressed: () {},
-                                                icon: CachedNetworkImage(
-                                                  imageUrl: userStore
-                                                      .userDetail!
-                                                      .profile
-                                                      .background_image_url!,
-                                                  fit: BoxFit.fitWidth,
-                                                  cacheManager:
-                                                      pixivCacheManager,
-                                                  httpHeaders: Hoster.header(
-                                                      url: userStore
-                                                          .userDetail!
-                                                          .profile
-                                                          .background_image_url),
-                                                ),
-                                              ),
-                                              onSecondaryTapUp: (details) =>
-                                                  _flyoutController.showFlyout(
-                                                    position: getPosition(
-                                                        context,
-                                                        _flyoutKey,
-                                                        details),
-                                                    barrierColor: Colors.black
-                                                        .withOpacity(0.1),
-                                                    builder: (context) =>
-                                                        MenuFlyout(
-                                                      color: Colors.transparent,
-                                                      items: [
-                                                        MenuFlyoutItem(
-                                                          text: Text(
-                                                              I18n.of(context)
-                                                                  .save),
-                                                          onPressed: () async {
-                                                            await _saveUserBg(
-                                                                userStore
-                                                                    .userDetail!
-                                                                    .profile
-                                                                    .background_image_url!);
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
-                                        )
-                                      : Container(
-                                          color: FluentTheme.of(context)
-                                              .accentColor,
-                                        )
-                                  : Container()),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                _buildHeader(context),
-                                Container(
-                                  color: FluentTheme.of(context).cardColor,
-                                  child: Column(
-                                    children: <Widget>[
-                                      _buildNameFollow(context),
-                                      _buildComment(context)
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                body: _buildDetail(context)),
+            PaneItem(
+              icon: Icon(FluentIcons.picture_library),
+              title: Text(I18n.of(context).works),
+              body: WorksPage(
+                id: widget.id,
+              ),
+            ),
+            PaneItem(
+              icon: Icon(FluentIcons.bookmarks),
+              title: Text(I18n.of(context).bookmark),
+              body: BookmarkPage(
+                isNested: true,
+                id: widget.id,
+                relay: _bookmarkPageMethodRelay,
+              ),
+            ),
+          ],
+          footerItems: [
+            PaneItemAction(
+              icon: Icon(FluentIcons.share),
+              onTap: () =>
+                  Share.share('https://www.pixiv.net/users/${widget.id}'),
+            ),
+            PaneItemExpander(
+              icon: Container(),
+              body: Container(),
+              items: [
+                PaneItemAction(
+                  icon: Container(),
+                  title: Text(I18n.of(context).quietly_follow),
+                  onTap: () {
+                    userStore.follow(needPrivate: true);
+                  },
+                ),
+                PaneItemAction(
+                  icon: Container(),
+                  title: Text(I18n.of(context).block_user),
+                  onTap: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => ContentDialog(
+                        title: Text('${I18n.of(context).block_user}?'),
+                        actions: <Widget>[
+                          FilledButton(
+                            child: Text(I18n.of(context).ok),
+                            onPressed: () async {
+                              await muteStore.insertBanUserId(
+                                  widget.id.toString(),
+                                  userStore.userDetail!.user.name);
+                              Navigator.of(context).pop();
+                            },
                           ),
+                          Button(
+                            child: Text(I18n.of(context).cancel),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
                         ],
                       ),
-                    ),
-                    userStore.userDetail != null
-                        ? UserDetailPage(userDetail: userStore.userDetail!)
-                        : Container()
-                  ],
+                    );
+                  },
                 ),
-              ),
-              PaneItem(
-                icon: Icon(FluentIcons.picture_library),
-                title: Text(I18n.of(context).works),
-                body: WorksPage(
-                  id: widget.id,
+                PaneItemAction(
+                  icon: Container(),
+                  title: Text(I18n.of(context).copymessage),
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(
+                        text:
+                            'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
+                    BotToast.showText(
+                        text: I18n.of(context).copied_to_clipboard);
+                  },
                 ),
-              ),
-              PaneItem(
-                icon: Icon(FluentIcons.bookmarks),
-                title: Text(I18n.of(context).bookmark),
-                body: BookmarkPage(
-                  isNested: true,
-                  id: widget.id,
-                  relay: _bookmarkPageMethodRelay,
+                PaneItemAction(
+                  icon: Container(),
+                  title: Text(I18n.of(context).report),
+                  onTap: () {
+                    Reporter.show(
+                        context,
+                        () async => await muteStore.insertBanUserId(
+                            widget.id.toString(),
+                            userStore.userDetail!.user.name));
+                  },
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
 
         // SafeArea(
@@ -452,7 +357,7 @@ class _UsersPageState extends State<UsersPage>
       color: FluentTheme.of(context).cardColor,
       width: MediaQuery.of(context).size.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -512,6 +417,20 @@ class _UsersPageState extends State<UsersPage>
   }
 
   Widget _buildHeader(BuildContext context) {
+    final follow = () {
+      if (accountStore.now == null) return;
+
+      if (int.parse(accountStore.now!.userId) != widget.id) {
+        userStore.follow(needPrivate: false);
+      } else {
+        showSnackbar(
+            context,
+            Snackbar(
+                content:
+                    Text('Who is the most beautiful person in the world?')));
+      }
+    };
+
     Widget w = Container(
       child: Observer(
         builder: (_) => Row(
@@ -535,12 +454,12 @@ class _UsersPageState extends State<UsersPage>
                           return ContentDialog(
                             title: Text(I18n.of(context).save_painter_avatar),
                             actions: [
-                              HyperlinkButton(
+                              Button(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
                                   },
                                   child: Text(I18n.of(context).cancel)),
-                              HyperlinkButton(
+                              FilledButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
                                     await _saveUserC();
@@ -564,40 +483,12 @@ class _UsersPageState extends State<UsersPage>
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
                       child: userStore.isFollow
                           ? FilledButton(
-                              onPressed: () {
-                                if (accountStore.now != null) {
-                                  if (int.parse(accountStore.now!.userId) !=
-                                      widget.id) {
-                                    userStore.follow(needPrivate: false);
-                                  } else {
-                                    showSnackbar(
-                                        context,
-                                        Snackbar(
-                                            content: Text(
-                                                'Who is the most beautiful person in the world?')));
-                                  }
-                                }
-                              },
+                              onPressed: follow,
                               child: Text(I18n.of(context).followed),
                             )
                           : OutlinedButton(
-                              onPressed: () {
-                                if (accountStore.now != null) {
-                                  if (int.parse(accountStore.now!.userId) !=
-                                      widget.id) {
-                                    userStore.follow(needPrivate: false);
-                                  } else {
-                                    showSnackbar(
-                                        context,
-                                        Snackbar(
-                                            content: Text(
-                                                'Who is the most beautiful person in the world?')));
-                                  }
-                                }
-                              },
-                              child: Text(
-                                I18n.of(context).follow,
-                              ),
+                              onPressed: follow,
+                              child: Text(I18n.of(context).follow),
                             ),
                     ),
             )
@@ -613,7 +504,9 @@ class _UsersPageState extends State<UsersPage>
           child: SizedBox(
             height: 55.0,
             child: Container(
-              color: FluentTheme.of(context).cardColor,
+              color: FluentTheme.of(context)
+                  .acrylicBackgroundColor
+                  .withOpacity(.5),
             ),
           ),
         ),
@@ -708,5 +601,104 @@ class _UsersPageState extends State<UsersPage>
     } catch (e) {
       print(e);
     }
+  }
+
+  _buildBackground(BuildContext context) {
+    return FlyoutTarget(
+      key: _flyoutKey,
+      controller: _flyoutController,
+      child: GestureDetector(
+        child: CachedNetworkImage(
+          imageUrl: userStore.userDetail!.profile.background_image_url!,
+          fit: BoxFit.fitWidth,
+          cacheManager: pixivCacheManager,
+          httpHeaders: Hoster.header(
+            url: userStore.userDetail!.profile.background_image_url,
+          ),
+        ),
+        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+          position: getPosition(context, _flyoutKey, details),
+          barrierColor: Colors.black.withOpacity(0.1),
+          builder: (context) => MenuFlyout(
+            color: Colors.transparent,
+            items: [
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).show),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await Leader.push(
+                      context,
+                      ZoomPage(
+                          url: userStore
+                              .userDetail!.profile.background_image_url!),
+                      icon: Icon(FluentIcons.picture),
+                      title: Text(I18n.of(context).painter +
+                          (userStore.userDetail?.user.id.toString() ?? '')));
+                },
+              ),
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).save),
+                onPressed: () async {
+                  await _saveUserBg(
+                      userStore.userDetail!.profile.background_image_url!);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _buildDetail(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    if (width >= 1008) {
+      width -= kOpenNavigationPaneWidth;
+    } else if (width > 640) {
+      width -= kCompactNavigationPaneWidth;
+    }
+    const height = 300.0;
+    final nobg = userStore.userDetail?.profile.background_image_url == null;
+
+    final background = nobg
+        ? Container(color: FluentTheme.of(context).accentColor)
+        : _buildBackground(context);
+
+    return ListView(
+      children: [
+        Container(
+          height: height * (nobg ? .55 : 1),
+          color: FluentTheme.of(context).cardColor,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                width: width,
+                height: height * (nobg ? .3 : .75),
+                child: background,
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _buildHeader(context),
+                    Container(
+                      height: height * .25,
+                      color: FluentTheme.of(context).cardColor,
+                      child: _buildNameFollow(context),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        userStore.userDetail != null
+            ? UserDetailPage(userDetail: userStore.userDetail!)
+            : Container()
+      ],
+    );
   }
 }
