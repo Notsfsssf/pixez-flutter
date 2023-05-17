@@ -70,19 +70,19 @@ dependencies:
   sqflite: ^2.2.8+2
   dynamic_color: ^1.6.3
   # Design Style
-  fluent_ui: ^4.6.0
+  fluent_ui: ^4.6.1
   # Desktop Support
-  flutter_acrylic: ^1.1.1
+  flutter_acrylic: ^1.1.2
   window_manager: ^0.3.2
-  file_picker: ^5.2.11
   # Windows Only
   win32: ^4.1.4
   windows_storage: ^0.0.2
   windows_single_instance:
     git: https://github.com/frg2089/flutter_windows_single_instance
+  image_picker_windows: ^0.1.0+6
 
 dependency_overrides:
-  win32: ^5.0.0
+  win32: ^5.0.2
   extended_text_library:
     git: 
       url: https://github.com/fluttercandies/extended_text_library
@@ -96,7 +96,7 @@ dev_dependencies:
   json_serializable: ^6.6.1
   analyzer: ^5.7.1
   sqflite_common_ffi: ^2.2.5
-  msix: ^3.11.1
+  msix: ^3.12.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

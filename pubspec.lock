@@ -53,10 +53,10 @@ packages:
     dependency: transitive
     description:
       name: audio_session
-      sha256: e4acc4e9eaa32436dfc5d7aed7f0a370f2d7bb27ee27de30d6c4f220c2a05c73
+      sha256: "97317505460ab705e8e186e87a3924d67c74d8c8a07cbc087e3b988bbce7cfaa"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.13"
+    version: "0.1.14"
   auto_animated:
     dependency: "direct main"
     description:
@@ -387,14 +387,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
-  file_picker:
-    dependency: "direct main"
+  file_selector_platform_interface:
+    dependency: transitive
     description:
-      name: file_picker
-      sha256: c7a8e25ca60e7f331b153b0cb3d405828f18d3e72a6fa1d9440c86556fffc877
+      name: file_selector_platform_interface
+      sha256: "98b3f98effcc135bd951b34b575886620ce208d3ff60e3b61cbaea9e2e00f54b"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "2.4.1"
+  file_selector_windows:
+    dependency: transitive
+    description:
+      name: file_selector_windows
+      sha256: "8bbcc82fe0d3cdf5ae5c289492ddfd703ec028028d9f194dbceae04cfbde1c48"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.2+2"
   fixnum:
     dependency: transitive
     description:
@@ -407,10 +415,10 @@ packages:
     dependency: "direct main"
     description:
       name: fluent_ui
-      sha256: "88d6720cfded16f53ff83f0b6de3063d40664ee21696994fffc5efc5667b4fc5"
+      sha256: "860606280da3b5d49920c36a0aee7b456c1a1c01e67c907184c409ccb4153b34"
       url: "https://pub.dev"
     source: hosted
-    version: "4.6.0"
+    version: "4.6.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -735,6 +743,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.3"
+  image_picker_windows:
+    dependency: "direct main"
+    description:
+      name: image_picker_windows
+      sha256: f0d7547808d2613014869108e28a976413c146a775bcb5a9e54a534ff08dd97f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0+6"
   in_app_purchase:
     dependency: "direct main"
     description:
@@ -811,26 +827,26 @@ packages:
     dependency: transitive
     description:
       name: just_audio
-      sha256: "7e6d31508dacd01a066e3889caf6282e5f1eb60707c230203b21a83af5c55586"
+      sha256: d7ff71169927a2237c902aef6baf2f69d063d4c427590dee479d279d4d57c984
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.32"
+    version: "0.9.33"
   just_audio_platform_interface:
     dependency: transitive
     description:
       name: just_audio_platform_interface
-      sha256: eff112d5138bea3ba544b6338b1e0537a32b5e1425e4d0dc38f732771cda7c84
+      sha256: d8409da198bbc59426cd45d4c92fca522a2ec269b576ce29459d6d6fcaeb44df
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.0"
+    version: "4.2.1"
   just_audio_web:
     dependency: transitive
     description:
       name: just_audio_web
-      sha256: "89d8db6f19f3821bb6bf908c4bfb846079afb2ab575b783d781a6bf119e3abaf"
+      sha256: ff62f733f437b25a0ff590f0e295fa5441dcb465f1edbdb33b3dea264705bc13
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.7"
+    version: "0.4.8"
   logging:
     dependency: transitive
     description:
@@ -907,10 +923,10 @@ packages:
     dependency: "direct dev"
     description:
       name: msix
-      sha256: "254594e8ede1902122f5a98fe5c0623c531edb346fd35d91575546e8f7e93570"
+      sha256: "88ee83949d87dc635ffd51d7c17ef222390e5067693cc248046661b12a353d13"
       url: "https://pub.dev"
     source: hosted
-    version: "3.12.1"
+    version: "3.12.2"
   nested:
     dependency: transitive
     description:
@@ -1712,10 +1728,10 @@ packages:
     dependency: "direct main"
     description:
       name: win32
-      sha256: "1a2b223d727763433987bfb61916404272342812cc7b88c3b77b2ba25010e90a"
+      sha256: "6ca3aaab1790eeb1f5cad232e33d9c53ba66e884dd3e7686c4e730bffc45f1a3"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.2"
   win32_registry:
     dependency: transitive
     description:
@@ -1806,5 +1822,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: "3.0.0"
+  dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.10.0"

@@ -11,14 +11,13 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/fluent/Init/guide_page.dart';
-import 'package:pixez/page/fluent/account/select/account_select_page.dart';
 import 'package:pixez/page/fluent/follow/follow_list.dart';
 import 'package:pixez/page/fluent/hello/new/illust/new_illust_page.dart';
-import 'package:pixez/page/fluent/hello/new/new_page.dart';
 import 'package:pixez/page/fluent/hello/ranking/rank_page.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_page.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
+import 'package:pixez/page/fluent/login/login_page.dart';
+import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/fluent/preview/preview_page.dart';
 import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/fluent/search/result_page.dart';
@@ -91,8 +90,9 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
       observers: [_navobs],
       onGenerateRoute: (settings) {
         final widget = _getPage(index);
+        assert(widget != null);
         return PixEzPageRoute(
-          builder: (context) => widget,
+          builder: (context) => widget!,
           index: index,
           settings: settings,
         );
@@ -122,7 +122,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
       _PixEzPageItem(
         (context) => const Icon(FluentIcons.bookmarks),
         (context) => Text(I18n.of(context).quick_view),
-        NewPage(relay: relay),
+        null,
         items: [
           _PixEzPageItem(
             (context) => const Icon(FluentIcons.news),
@@ -167,18 +167,24 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
         (context) => SizedBox(
           height: 24,
           width: 24,
-          child: CircleAvatar(
-            backgroundImage: PixivProvider.url(
-              accountStore.now?.userImage ??
-                  'https://s.pximg.net/common/images/no_profile.png',
-              preUrl: 'https://s.pximg.net/common/images/no_profile.png',
+          child: Observer(
+            builder: (context) => CircleAvatar(
+              backgroundImage: PixivProvider.url(
+                accountStore.now?.userImage ??
+                    'https://s.pximg.net/common/images/no_profile.png',
+                preUrl: 'https://s.pximg.net/common/images/no_profile.png',
+              ),
+              radius: 100.0,
+              backgroundColor: FluentTheme.of(context).accentColor,
             ),
-            radius: 100.0,
-            backgroundColor: FluentTheme.of(context).accentColor,
           ),
         ),
         (context) => Text(accountStore.now?.name ?? 'Account'),
-        AccountSelectPage(),
+        Builder(
+          builder: (context) => accountStore.now != null
+              ? UsersPage(id: int.parse(accountStore.now!.userId))
+              : LoginPage(),
+        ),
       ),
     ];
   }
@@ -357,7 +363,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
                 .toList(),
           ),
           icon: Icon(FluentIcons.search),
-          title: Text("搜索"),
+          title: Text(I18n.of(context).search),
         );
       } else {
         BotToast.showText(text: "0 result");
@@ -432,37 +438,36 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
         _getItemByPixivisionId(id),
       ]);
     }
-    if (_suggestionStore.autoWords?.tags.isNotEmpty ?? false) {
-      _suggestList.addAll(_suggestionStore.autoWords!.tags.map((e) {
-        var text = e.name;
-        if (e.translated_name != null) text += "\n ${e.translated_name}";
-        return AutoSuggestBoxItem(
-          label: text,
-          value: e.name,
-          onSelected: () {
-            if (tagGroup.length > 1) {
-              tagGroup.last = e.name;
-              var text = tagGroup.join(" ");
-              _filter.text = text;
-              _filter.selection =
-                  TextSelection.fromPosition(TextPosition(offset: text.length));
-              setState(() {});
-            } else {
-              FocusScope.of(context).unfocus();
-              Leader.push(
-                context,
-                ResultPage(
-                  word: e.name,
-                  translatedName: e.translated_name ?? '',
-                ),
-                icon: Icon(FluentIcons.search),
-                title: Text('${I18n.of(context).search}: ${text}'),
-              );
-            }
-          },
-        );
-      }));
-    }
+    if (_suggestionStore.autoWords?.tags.isNotEmpty != true) return;
+    _suggestList.addAll(_suggestionStore.autoWords!.tags.map((e) {
+      var text = e.name;
+      if (e.translated_name != null) text += "\n ${e.translated_name}";
+      return AutoSuggestBoxItem(
+        label: text,
+        value: e.name,
+        onSelected: () {
+          if (tagGroup.length > 1) {
+            tagGroup.last = e.name;
+            var text = tagGroup.join(" ");
+            _filter.text = text;
+            _filter.selection =
+                TextSelection.fromPosition(TextPosition(offset: text.length));
+            setState(() {});
+          } else {
+            FocusScope.of(context).unfocus();
+            Leader.push(
+              context,
+              ResultPage(
+                word: e.name,
+                translatedName: e.translated_name ?? '',
+              ),
+              icon: Icon(FluentIcons.search),
+              title: Text('${I18n.of(context).search}: ${text}'),
+            );
+          }
+        },
+      );
+    }));
   }
 
   int _getIndex(int? index) => index ?? getItemCount(_pages);
@@ -473,9 +478,10 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
 
     assert(index < getItemCount(_pages) + getItemCount(_lastpages));
 
-    setState(() => this.index = index);
-
     final widget = _getPage(index);
+    if (widget == null) return;
+
+    setState(() => this.index = index);
 
     assert(_navobs.navigator != null);
     _navobs.navigator!.push(PixEzPageRoute(
@@ -508,7 +514,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   }
 
   /// 根据index获取不同页
-  Widget _getPage(int index) => index >= getItemCount(_pages)
+  Widget? _getPage(int index) => index >= getItemCount(_pages)
       ? _many(_lastpages)[index - getItemCount(_pages)].page
       : _many(_pages)[index].page;
 
@@ -520,7 +526,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
 class _PixEzPageItem {
   final Widget Function(BuildContext) icon;
   final Widget Function(BuildContext) title;
-  final Widget page;
+  final Widget? page;
   final List<_PixEzPageItem> items;
 
   _PixEzPageItem(this.icon, this.title, this.page,
