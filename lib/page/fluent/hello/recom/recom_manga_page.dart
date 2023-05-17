@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
@@ -60,7 +61,12 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
                         child: IconButton(
                             onPressed: () {
                               Leader.push(
-                                  context, IllustLightingPage(id: illust!.id));
+                                context,
+                                IllustLightingPage(id: illust.id),
+                                icon: Icon(FluentIcons.picture),
+                                title: Text(I18n.of(context).illust_id +
+                                    ': ${illust.id}'),
+                              );
                             },
                             icon: PixivImage(illust!.imageUrls.medium)),
                       );
