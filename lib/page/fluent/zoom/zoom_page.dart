@@ -50,15 +50,6 @@ class _ZoomPageState extends State<ZoomPage> {
           },
         ),
       ),
-      bottomBar: Visibility(
-        visible: fabvisible,
-        child: IconButton(
-          icon: Icon(FluentIcons.back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
     );
   }
 }
