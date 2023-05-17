@@ -21,6 +21,7 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust_persist.dart';
 import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -46,74 +47,21 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       );
 
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   Widget buildBody() => Observer(builder: (context) {
-        var reIllust = _store.data.reversed.toList();
+        final count =
+            (MediaQuery.of(context).orientation == Orientation.portrait)
+                ? userSetting.crossCount
+                : userSetting.hCrossCount;
+
+        final reIllust = _store.data.reversed.toList();
         if (reIllust.isNotEmpty) {
           return GridView.builder(
-              itemCount: reIllust.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemBuilder: (context, index) {
-                return FlyoutTarget(
-                  key: _flyoutKey,
-                  controller: _flyoutController,
-                  child: GestureDetector(
-                    onTap: () {
-                      Leader.push(
-                          context,
-                          IllustLightingPage(
-                              id: reIllust[index].illustId,
-                              store:
-                                  IllustStore(reIllust[index].illustId, null)));
-                    },
-                    onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-                      position: getPosition(context, _flyoutKey, details),
-                      barrierColor: Colors.black.withOpacity(0.1),
-                      builder: (context) => MenuFlyout(
-                        color: Colors.transparent,
-                        items: [
-                          MenuFlyoutItem(
-                            text: Text(I18n.of(context).delete),
-                            onPressed: () async {
-                              await showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return ContentDialog(
-                                    title: Text("${I18n.of(context).delete}?"),
-                                    actions: <Widget>[
-                                      HyperlinkButton(
-                                        child: Text(I18n.of(context).cancel),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      HyperlinkButton(
-                                        child: Text(I18n.of(context).ok),
-                                        onPressed: () {
-                                          _store
-                                              .delete(reIllust[index].illustId);
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                    child: Card(
-                      margin: EdgeInsets.all(8),
-                      child: PixivImage(reIllust[index].pictureUrl),
-                    ),
-                  ),
-                );
-              });
+            itemCount: reIllust.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: count),
+            itemBuilder: (context, index) =>
+                _HistoryItem(reIllust, index, _store),
+          );
         }
         return Center(
           child: Container(),
@@ -191,5 +139,77 @@ class _HistoryPageState extends State<HistoryPage> {
     if (result == "OK") {
       _store.deleteAll();
     }
+  }
+}
+
+class _HistoryItem extends StatelessWidget {
+  final _flyoutController = FlyoutController();
+  final _flyoutKey = GlobalKey();
+  final List<IllustPersist> reIllust;
+  final int index;
+  final HistoryStore _store;
+
+  _HistoryItem(this.reIllust, this.index, this._store);
+  @override
+  Widget build(BuildContext context) {
+    return FlyoutTarget(
+      key: _flyoutKey,
+      controller: _flyoutController,
+      child: GestureDetector(
+        onTap: () {
+          Leader.push(
+            context,
+            IllustLightingPage(
+                id: reIllust[index].illustId,
+                store: IllustStore(reIllust[index].illustId, null)),
+            icon: Icon(FluentIcons.picture),
+            title: Text(
+                I18n.of(context).illust_id + ': ${reIllust[index].illustId}'),
+          );
+        },
+        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+          position: getPosition(context, _flyoutKey, details),
+          barrierColor: Colors.black.withOpacity(0.1),
+          builder: (context) => MenuFlyout(
+            color: Colors.transparent,
+            items: [
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).delete),
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return ContentDialog(
+                        title: Text("${I18n.of(context).delete}?"),
+                        actions: <Widget>[
+                          HyperlinkButton(
+                            child: Text(I18n.of(context).cancel),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          HyperlinkButton(
+                            child: Text(I18n.of(context).ok),
+                            onPressed: () {
+                              _store.delete(reIllust[index].illustId);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        ),
+        child: Card(
+          margin: EdgeInsets.all(8),
+          child: PixivImage(reIllust[index].pictureUrl),
+        ),
+      ),
+    );
   }
 }
