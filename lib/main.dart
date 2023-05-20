@@ -212,35 +212,38 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             brightness: Brightness.dark,
           );
         }
-        return MaterialApp(
-          navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-          locale: userSetting.locale,
-          home: Builder(builder: (context) {
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.transparent,
-                  systemNavigationBarDividerColor: Colors.transparent,
-                  statusBarColor: Colors.transparent,
-                ),
-                child: SplashPage());
-          }),
-          title: 'PixEz',
-          builder: (context, child) {
-            if (Platform.isIOS) child = myBuilder(context, child);
-            child = botToastBuilder(context, child);
-            return child;
-          },
-          themeMode: userSetting.themeMode,
-          theme: ThemeData.light()
-              .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
-          darkTheme: ThemeData.dark().copyWith(
-              useMaterial3: true,
-              scaffoldBackgroundColor:
-                  userSetting.isAMOLED ? Colors.black : null,
-              colorScheme: darkColorScheme),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales, // Add this line
-        );
+        return Observer(builder: (_) {
+          return MaterialApp(
+            navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
+            locale: userSetting.locale,
+            home: Builder(builder: (context) {
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle(
+                    systemNavigationBarColor: Colors.transparent,
+                    systemNavigationBarDividerColor: Colors.transparent,
+                    statusBarColor: Colors.transparent,
+                  ),
+                  child: SplashPage());
+            }),
+            title: 'PixEz',
+            builder: (context, child) {
+              if (Platform.isIOS) child = myBuilder(context, child);
+              child = botToastBuilder(context, child);
+              return child;
+            },
+            themeMode: userSetting.themeMode,
+            theme: ThemeData.light()
+                .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
+            darkTheme: ThemeData.dark().copyWith(
+                useMaterial3: true,
+                scaffoldBackgroundColor:
+                    userSetting.isAMOLED ? Colors.black : null,
+                colorScheme: darkColorScheme),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales:
+                AppLocalizations.supportedLocales, // Add this line
+          );
+        });
       });
     });
   }

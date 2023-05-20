@@ -46,10 +46,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   waterfall_flow: ^3.0.2
   animations: ^2.0.7
-  extended_text: 
-    git: 
-      url: https://github.com/VB10/extended_text
-      ref: master
+  extended_text: ^11.0.0-dev.1
   font_awesome_flutter: ^10.1.0
   json_annotation: ^4.8.0
   flutter_staggered_animations: ^1.1.1
@@ -83,10 +80,6 @@ dependencies:
 
 dependency_overrides:
   win32: ^5.0.2
-  extended_text_library:
-    git: 
-      url: https://github.com/fluttercandies/extended_text_library
-      ref: master
 
 dev_dependencies:
   flutter_test:

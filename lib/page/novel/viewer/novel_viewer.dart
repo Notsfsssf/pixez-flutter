@@ -263,8 +263,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: ExtendedText(
                       _novelStore.novelTextResponse!.novelText,
-                      selectionControls: TranslateTextSelectionControls(),
-                      selectionEnabled: true,
                       specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
                       style: _textStyle,
                     ),

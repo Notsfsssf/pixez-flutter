@@ -213,28 +213,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ExtendedTextSelectionPointerHandler(
-      builder: (states) {
-        return Listener(
-          child: _buildBody(context),
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (value) {
-            for (var state in states) {
-              if (!state.containsPosition(value.position)) {
-                state.clearSelection();
-              }
-            }
-            if (_focusNode.hasFocus) _focusNode.unfocus();
-          },
-          onPointerMove: (value) {
-            for (var state in states) {
-              state.clearSelection();
-            }
-            if (_focusNode.hasFocus) _focusNode.unfocus();
-          },
-        );
-      },
-    );
+    return _buildBody(context);
   }
 
   Widget _buildBody(BuildContext context) {
@@ -321,7 +300,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     return ExtendedText(
       text,
       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-      selectionEnabled: true,
     );
   }
 
@@ -850,7 +828,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     child: ExtendedText(
                       illust.title,
                       style: Theme.of(context).textTheme.bodyMedium,
-                      selectionEnabled: true,
                     ),
                   ),
                   Container(
@@ -864,7 +841,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         style: TextStyle(
                             color:
                                 Theme.of(context).textTheme.bodySmall!.color),
-                        selectionEnabled: true,
                       ),
                     ),
                   ),
