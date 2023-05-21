@@ -319,7 +319,7 @@ class _CommentPageState extends State<CommentPage> {
                                                     .toShortTime(),
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .caption,
+                                                    .bodySmall,
                                               ),
                                             )
                                           ],

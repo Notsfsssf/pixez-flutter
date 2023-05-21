@@ -349,18 +349,18 @@ packages:
     dependency: "direct main"
     description:
       name: extended_text
-      sha256: bc07967ea5fdcdd324a9a356695ea2e058aae51a19f999041e1f542dcfc4953d
+      sha256: "75ddf28ce7d5be33a050ff2179b6567b4b98e6225ad3e61e4c3748f7448c25f7"
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.0-dev.1"
+    version: "11.0.0"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
-      sha256: b5563a564bc6504ae6152a56133fb18dbcacc98d4907992f2713886620d2c26b
+      sha256: "1d80dafa7c87a18104c6d475d3ffdfa6be29e10531d3af8f6474f0c7243fb281"
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.0-dev.1"
+    version: "11.0.0"
   fake_async:
     dependency: transitive
     description:

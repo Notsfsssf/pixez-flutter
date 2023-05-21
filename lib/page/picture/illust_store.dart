@@ -41,18 +41,7 @@ abstract class _IllustStoreBase with Store {
   int state = 0;
 
   void dispose() {
-    // if (illusts != null) {
-    //   if (illusts!.pageCount != 1) {
-    //     for (var i in illusts!.metaPages) {
-    //       // if (illusts!.metaPages.indexOf(i) == 0) continue;
-    //       // final provider = ExtendedNetworkImageProvider(
-    //       //     userSetting.pictureQuality == 0
-    //       //         ? i.imageUrls!.medium
-    //       //         : i.imageUrls!.large);
-    //       // provider.evict();
-    //     }
-    //   }
-    // }
+
   }
 
   _IllustStoreBase(this.id, this.illusts) {

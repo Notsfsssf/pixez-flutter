@@ -18,7 +18,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -218,88 +217,97 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   Widget _buildBody(BuildContext context) {
     return Container(
-      child: Scaffold(
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        floatingActionButton: GestureDetector(
-          onLongPress: () {
-            _showBookMarkTag();
-          },
-          child: Observer(builder: (context) {
-            return Visibility(
-              visible: _illustStore.errorMessage == null,
-              child: FloatingActionButton(
-                heroTag: widget.id,
-                onPressed: () => _illustStore.star(
-                    restrict:
-                        userSetting.defaultPrivateLike ? "private" : "public"),
-                child: Observer(builder: (_) {
-                  return StarIcon(
-                    state: _illustStore.state,
-                  );
-                }),
-              ),
-            );
-          }),
-        ),
-        body: Observer(builder: (_) {
-          if (!tempView)
-            for (var i in muteStore.banillusts) {
-              if (i.illustId == widget.id.toString()) {
-                return BanPage(
-                  name: "${I18n.of(context).illust}\n${i.name}\n",
-                  onPressed: () {
-                    setState(() {
-                      tempView = true;
-                    });
-                  },
-                );
-              }
-            }
-          if (!tempView && _illustStore.illusts != null) {
-            for (var j in muteStore.banUserIds) {
-              if (j.userId == _illustStore.illusts!.user.id.toString()) {
-                return BanPage(
-                  name: "${I18n.of(context).painter}\n${j.name}\n",
-                  onPressed: () {
-                    setState(() {
-                      tempView = true;
-                    });
-                  },
-                );
-              }
-            }
-            for (var t in muteStore.banTags) {
-              for (var t1 in _illustStore.illusts!.tags) {
-                if (t.name == t1.name)
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          extendBody: true,
+          extendBodyBehindAppBar: true,
+          floatingActionButton: GestureDetector(
+            onLongPress: () {
+              _showBookMarkTag();
+            },
+            child: Observer(builder: (context) {
+              return Visibility(
+                visible: _illustStore.errorMessage == null,
+                child: FloatingActionButton(
+                  heroTag: widget.id,
+                  onPressed: () => _illustStore.star(
+                      restrict: userSetting.defaultPrivateLike
+                          ? "private"
+                          : "public"),
+                  child: Observer(builder: (_) {
+                    return StarIcon(
+                      state: _illustStore.state,
+                    );
+                  }),
+                ),
+              );
+            }),
+          ),
+          body: Observer(builder: (_) {
+            if (!tempView)
+              for (var i in muteStore.banillusts) {
+                if (i.illustId == widget.id.toString()) {
                   return BanPage(
-                    name: "${I18n.of(context).tag}\n${t.name}\n",
+                    name: "${I18n.of(context).illust}\n${i.name}\n",
                     onPressed: () {
                       setState(() {
                         tempView = true;
                       });
                     },
                   );
+                }
+              }
+            if (!tempView && _illustStore.illusts != null) {
+              for (var j in muteStore.banUserIds) {
+                if (j.userId == _illustStore.illusts!.user.id.toString()) {
+                  return BanPage(
+                    name: "${I18n.of(context).painter}\n${j.name}\n",
+                    onPressed: () {
+                      setState(() {
+                        tempView = true;
+                      });
+                    },
+                  );
+                }
+              }
+              for (var t in muteStore.banTags) {
+                for (var t1 in _illustStore.illusts!.tags) {
+                  if (t.name == t1.name)
+                    return BanPage(
+                      name: "${I18n.of(context).tag}\n${t.name}\n",
+                      onPressed: () {
+                        setState(() {
+                          tempView = true;
+                        });
+                      },
+                    );
+                }
               }
             }
-          }
-          return Container(
-            child: Stack(
-              children: [
-                _buildContent(context, _illustStore.illusts),
-                _buildAppbar()
-              ],
-            ),
-          );
-        }),
+            return Container(
+              child: Stack(
+                children: [
+                  _buildContent(context, _illustStore.illusts),
+                  _buildAppbar()
+                ],
+              ),
+            );
+          }),
+        ),
       ),
     );
   }
 
   Widget colorText(String text, BuildContext context) {
-    return ExtendedText(
-      text,
-      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+    return SelectionArea(
+      child: Text(
+        text,
+        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      ),
     );
   }
 
@@ -824,8 +832,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    child: ExtendedText(
+                  SelectionArea(
+                    child: Text(
                       illust.title,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
@@ -835,8 +843,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   ),
                   Hero(
                     tag: illust.user.name + this.hashCode.toString(),
-                    child: Container(
-                      child: ExtendedText(
+                    child: SelectionArea(
+                      child: Text(
                         illust.user.name,
                         style: TextStyle(
                             color:
