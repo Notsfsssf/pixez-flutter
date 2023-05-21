@@ -859,6 +859,25 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               ),
             ),
           ),
+          if (Platform.isAndroid && false) // TODO
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: ListTile(
+                    trailing: Icon(Icons.keyboard_arrow_right),
+                    title: Text(I18n.of(context).network),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NetworkPage(
+                                automaticallyImplyLeading: true,
+                              )));
+                    },
+                  ),
+                ),
+              ),
+            ),
           if (_widgetTypeIndex != -1)
             Padding(
               padding: EdgeInsets.all(8.0),

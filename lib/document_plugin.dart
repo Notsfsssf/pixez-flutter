@@ -44,6 +44,13 @@ class DocumentPlugin {
     }
   }
 
+  static Future<bool?> openSave(Uint8List uint8list, String fileName) {
+    return platform.invokeMethod<bool>('openSave', {
+      "data": uint8list,
+      "name": fileName,
+    });
+  }
+
   static Future<bool?> permissionStatus() async {
     return platform.invokeMethod<bool>('permissionStatus');
   }

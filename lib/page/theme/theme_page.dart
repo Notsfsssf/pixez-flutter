@@ -68,7 +68,7 @@ class _ColorPickPageState extends State<ColorPickPage> {
       indicatorColor: Colors.blue[500],
     ),
     ThemeData(
-      brightness: Brightness.light,
+      brightness: Brightness.light, 
       primaryColor: Color(0xFFFB7299),
       indicatorColor: Color(0xFFFB7299),
     ),
