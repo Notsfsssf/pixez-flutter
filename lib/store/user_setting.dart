@@ -68,6 +68,7 @@ abstract class _UserSetting with Store {
   static const String DEFAULT_PRIVATE_LIKE_KEY = "default_private_like";
   static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type";
   static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
+  static const String USE_DYNAMIC_COLOR_KEY = "use_dynamic_color";
 
   @observable
   int crossAdapterWidth = 100;
@@ -244,7 +245,16 @@ abstract class _UserSetting with Store {
       primaryColor: Colors.blue[400]);
 
   @observable
+  bool useDynamicColor = true;
+
+  @observable
   ThemeMode themeMode = ThemeMode.system;
+
+  @action
+  setUseDynamicColor(bool value) async {
+    await prefs.setBool(USE_DYNAMIC_COLOR_KEY, value);
+    useDynamicColor = value;
+  }
 
   @action
   setThemeMode(int themeMode) async {
@@ -354,6 +364,7 @@ abstract class _UserSetting with Store {
         break;
       }
     }
+    useDynamicColor = prefs.getBool(USE_DYNAMIC_COLOR_KEY) ?? true;
     var colors = prefs.getStringList(THEME_DATA_KEY);
     if (colors != null) {
       if (colors.length < 2) {
@@ -411,7 +422,6 @@ abstract class _UserSetting with Store {
 
   @action
   setThemeData(List<String> data) async {
-    Colors.black.computeLuminance();
     await prefs.setStringList(THEME_DATA_KEY, data);
     themeData = ThemeData(
       brightness: Brightness.light,

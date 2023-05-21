@@ -29,7 +29,6 @@ import 'package:pixez/main.dart';
 import 'package:image/image.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'sauce_store.g.dart';
 

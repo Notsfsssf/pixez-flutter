@@ -213,99 +213,67 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                   ),
                   Tab(text: I18n.of(context).dark)
                 ])),
-        body: ListView(
-          children: <Widget>[
-            Observer(builder: (_) {
-              return Card(
-                  child: SwitchListTile(
-                value: userSetting.isAMOLED,
-                onChanged: (v) => userSetting.setIsAMOLED(v),
-                title: Text("AMOLED"),
-              ));
-            }),
-            Card(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    Theme.of(context).colorScheme.secondary.toString(),
-                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        _pickColorData(0, Theme.of(context).colorScheme.secondary);
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Observer(builder: (_) {
+                return Card(
+                    child: SwitchListTile(
+                  value: userSetting.isAMOLED,
+                  onChanged: (v) => userSetting.setIsAMOLED(v),
+                  title: Text("AMOLED"),
+                ));
+              }),
+            ),
+            SliverToBoxAdapter(
+              child: Observer(builder: (_) {
+                return Card(
+                    child: SwitchListTile(
+                  value: userSetting.useDynamicColor,
+                  onChanged: (v) => userSetting.setUseDynamicColor(v),
+                  title: Text("Dynamic color"),
+                ));
+              }),
+            ),
+            SliverGrid.count(
+              crossAxisCount: 3,
+              children: [
+                Container(
+                  margin: EdgeInsets.all(16),
+                  child: InkWell(
+                      onTap: () async {
+                        Color? result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => ColorPickPage(
+                                    initialColor: userSetting
+                                        .themeData.colorScheme.primary)));
+                        if (result != null) {
+                          final data = [
+                            "(0x${result.value.toRadixString(16)})",
+                            "(0x${result.value.toRadixString(16)})"
+                          ];
+                          userSetting.setThemeData(data);
+                        }
                       },
-                      child: Container(
-                        height: 30,
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Center(child: Text("accentColor")),
+                      child: Container(child: Center(child: Icon(Icons.add)))),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(context).textTheme.bodyLarge!.color!,
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        _pickColorData(1, Theme.of(context).primaryColor);
-                      },
-                      child: Container(
-                        height: 30,
-                        color: Theme.of(context).primaryColor,
-                        child: Center(child: Text("primaryColor")),
-                      ),
-                    ),
-                  ],
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      )),
                 ),
+                for (final i in skinList)
+                  Container(
+                    margin: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: i.primaryColor,
+                    ),
+                  )
               ],
-            )),
-            GridView.builder(
-                shrinkWrap: true,
-                itemCount: skinList.length,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  final skin = skinList[index];
-                  return Card(
-                      child: InkWell(
-                    onTap: () {
-                      userSetting.setThemeData(<String>[
-                        skin.colorScheme.secondary.toString(),
-                        skin.primaryColor.toString(),
-                      ]);
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            skin.colorScheme.secondary.toString(),
-                            style: TextStyle(color: skin.colorScheme.secondary),
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                              height: 30,
-                              color: skin.primaryColor,
-                              child: Center(child: Text("primaryColor")),
-                            ),
-                            Container(
-                              height: 30,
-                              color: skin.colorScheme.secondary,
-                              child: Center(child: Text("accentColor")),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ));
-                })
+            )
           ],
         ),
       );

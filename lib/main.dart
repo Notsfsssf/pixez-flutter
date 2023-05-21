@@ -56,15 +56,6 @@ OnezeroClient onezeroClient = OnezeroClient();
 final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
 
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
-
 main(List<String> args) async {
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
@@ -107,28 +98,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // CustomFooter _buildCustomFooter() {
-  //   return CustomFooter(
-  //     builder: (BuildContext context, LoadStatus? mode) {
-  //       Widget body;
-  //       if (mode == LoadStatus.idle) {
-  //         body = Text(I18n.of(context).pull_up_to_load_more);
-  //       } else if (mode == LoadStatus.loading) {
-  //         body = CircularProgressIndicator();
-  //       } else if (mode == LoadStatus.failed) {
-  //         body = Text(I18n.of(context).loading_failed_retry_message);
-  //       } else if (mode == LoadStatus.canLoading) {
-  //         body = Text(I18n.of(context).let_go_and_load_more);
-  //       } else {
-  //         body = Text(I18n.of(context).no_more_data);
-  //       }
-  //       return Container(
-  //         height: 55.0,
-  //         child: Center(child: body),
-  //       );
-  //     },
-  //   );
-  // }
   @override
   void initState() {
     Hoster.init();
@@ -199,51 +168,50 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         ColorScheme lightColorScheme;
         ColorScheme darkColorScheme;
-
-        if (lightDynamic != null && darkDynamic != null) {
+        if (userSetting.useDynamicColor &&
+            lightDynamic != null &&
+            darkDynamic != null) {
           lightColorScheme = lightDynamic.harmonized();
           darkColorScheme = darkDynamic.harmonized();
         } else {
+          Color primary = userSetting.themeData.colorScheme.primary;
           lightColorScheme = ColorScheme.fromSeed(
-            seedColor: _brandBlue,
+            seedColor: primary,
           );
           darkColorScheme = ColorScheme.fromSeed(
-            seedColor: _brandBlue,
+            seedColor: primary,
             brightness: Brightness.dark,
           );
         }
-        return Observer(builder: (_) {
-          return MaterialApp(
-            navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-            locale: userSetting.locale,
-            home: Builder(builder: (context) {
-              return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle(
-                    systemNavigationBarColor: Colors.transparent,
-                    systemNavigationBarDividerColor: Colors.transparent,
-                    statusBarColor: Colors.transparent,
-                  ),
-                  child: SplashPage());
-            }),
-            title: 'PixEz',
-            builder: (context, child) {
-              if (Platform.isIOS) child = myBuilder(context, child);
-              child = botToastBuilder(context, child);
-              return child;
-            },
-            themeMode: userSetting.themeMode,
-            theme: ThemeData.light()
-                .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
-            darkTheme: ThemeData.dark().copyWith(
-                useMaterial3: true,
-                scaffoldBackgroundColor:
-                    userSetting.isAMOLED ? Colors.black : null,
-                colorScheme: darkColorScheme),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales:
-                AppLocalizations.supportedLocales, // Add this line
-          );
-        });
+        return MaterialApp(
+          navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
+          locale: userSetting.locale,
+          home: Builder(builder: (context) {
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  systemNavigationBarColor: Colors.transparent,
+                  systemNavigationBarDividerColor: Colors.transparent,
+                  statusBarColor: Colors.transparent,
+                ),
+                child: SplashPage());
+          }),
+          title: 'PixEz',
+          builder: (context, child) {
+            if (Platform.isIOS) child = myBuilder(context, child);
+            child = botToastBuilder(context, child);
+            return child;
+          },
+          themeMode: userSetting.themeMode,
+          theme: ThemeData.light()
+              .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
+          darkTheme: ThemeData.dark().copyWith(
+              useMaterial3: true,
+              scaffoldBackgroundColor:
+                  userSetting.isAMOLED ? Colors.black : null,
+              colorScheme: darkColorScheme),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales, // Add this line
+        );
       });
     });
   }
