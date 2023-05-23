@@ -173,7 +173,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
                                 onPressed: () async {
                                   Navigator.of(ctx).pop();
                                   await accountStore.deleteAll();
-                                  final result = await Leader.push(
+                                  await Leader.push(
                                       context, AccountDeletionPage());
                                   Navigator.of(context).pop();
                                 },

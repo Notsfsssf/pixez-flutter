@@ -199,7 +199,7 @@ class ApiClient {
         data: {"a": a, "b": b}..removeWhere((k, v) => v == null));
   }
 
-  Map<String, dynamic> notNullMap(Map<String, dynamic?> map) {
+  Map<String, dynamic> notNullMap(Map<String, dynamic> map) {
     return map..removeWhere((k, v) => v == null);
   }
 

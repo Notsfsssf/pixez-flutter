@@ -34,7 +34,7 @@ showPathDialog(BuildContext context, {bool isFirst = false}) async {
 }
 
 class SaveModeChoicePage extends StatefulWidget {
-  bool isFirst;
+  final bool isFirst;
 
   SaveModeChoicePage({Key? key, required this.isFirst}) : super(key: key);
 

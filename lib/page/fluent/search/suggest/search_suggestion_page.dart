@@ -163,6 +163,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                               );
                             },
                           );
+                        return ListTile();
                       }, childCount: 3),
                     ),
                     visible: idV,

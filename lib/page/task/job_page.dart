@@ -245,144 +245,146 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
       );
     return ListView.builder(
       itemBuilder: (context, index) {
-        TaskPersist taskPersist = trueList[index];
-        JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
-        if (currentIndex != 0) {
-          if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
-            return Visibility(
-              child: Container(
-                height: 0,
-              ),
-              visible: false,
-            );
-        }
-        return Card(
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12))),
-          child: OpenContainer(
-            openElevation: 0.0,
-            closedElevation: 0.0,
-            closedColor: Colors.transparent,
-            openColor: Colors.transparent,
-            openBuilder: (context, closedContainer) {
-              return IllustLightingPage(id: taskPersist.illustId);
+        return _buildItem(trueList, index);
+      },
+      itemCount: trueList.length,
+    );
+  }
+
+  Widget _buildItem(List<TaskPersist> trueList, int index) {
+    TaskPersist taskPersist = trueList[index];
+    JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
+    if (currentIndex != 0) {
+      if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
+        return Visibility(
+          child: Container(
+            height: 0,
+          ),
+          visible: false,
+        );
+    }
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12))),
+      child: OpenContainer(
+        openElevation: 0.0,
+        closedElevation: 0.0,
+        closedColor: Colors.transparent,
+        openColor: Colors.transparent,
+        openBuilder: (context, closedContainer) {
+          return IllustLightingPage(id: taskPersist.illustId);
+        },
+        closedBuilder: (context, openContainer) {
+          return InkWell(
+            onTap: () {
+              openContainer();
             },
-            closedBuilder: (context, openContainer) {
-              return InkWell(
-                onTap: () {
-                  openContainer();
-                },
-                child: Row(
-                  children: [
-                    Container(
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            child: PixivImage(
-                              taskPersist.medium ?? taskPersist.url,
-                              fit: BoxFit.cover,
+            child: Row(
+              children: [
+                Container(
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        child: PixivImage(
+                          taskPersist.medium ?? taskPersist.url,
+                          fit: BoxFit.cover,
+                          height: 100,
+                          width: 100,
+                        ),
+                      ),
+                      (jobEntity != null && jobEntity.status != 2)
+                          ? Container(
+                              height: 100,
+                              width: 100,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value: ((jobEntity.min ?? 0.0) /
+                                          ((jobEntity.max ?? 0.0)))
+                                      .toDouble(),
+                                  backgroundColor: Colors.grey[200],
+                                ),
+                              ),
+                            )
+                          : Container(
                               height: 100,
                               width: 100,
                             ),
-                          ),
-                          (jobEntity != null && jobEntity.status != 2)
-                              ? Container(
-                                  height: 100,
-                                  width: 100,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      value: ((jobEntity.min ?? 0.0) /
-                                              ((jobEntity.max ?? 0.0)))
-                                          .toDouble(),
-                                      backgroundColor: Colors.grey[200],
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  height: 100,
-                                  width: 100,
-                                ),
-                        ],
-                      ),
-                      width: 100,
-                      height: 100,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    ],
+                  ),
+                  width: 100,
+                  height: 100,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    taskPersist.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.clip,
-                                  ),
-                                ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                taskPersist.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: _buildStatusWidget(
-                                    jobEntity?.status ?? taskPersist.status),
-                              ),
-                            ],
+                            ),
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              taskPersist.userName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 12),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(" "),
-                              Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        _retryJob(taskPersist);
-                                      },
-                                      icon: Icon(Icons.refresh)),
-                                  IconButton(
-                                      onPressed: () {
-                                        _deleteJob(taskPersist);
-                                      },
-                                      icon: Icon(Icons.delete)),
-                                ],
-                              )
-                            ],
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: _buildStatusWidget(
+                                jobEntity?.status ?? taskPersist.status),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          taskPersist.userName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 12),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(" "),
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    _retryJob(taskPersist);
+                                  },
+                                  icon: Icon(Icons.refresh)),
+                              IconButton(
+                                  onPressed: () {
+                                    _deleteJob(taskPersist);
+                                  },
+                                  icon: Icon(Icons.delete)),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            },
-          ),
-        );
-      },
-      itemCount: trueList.length,
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 

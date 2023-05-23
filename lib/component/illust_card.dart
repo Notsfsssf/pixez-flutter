@@ -213,7 +213,7 @@ class _IllustCardState extends State<IllustCard> {
       final firstLongPress = await pref.getBool("first_long_press") ?? true;
       if (firstLongPress) {
         await pref.setBool("first_long_press", false);
-        final result = await showDialog(
+        await showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(

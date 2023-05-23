@@ -67,7 +67,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   onPressed: () async {
                     try {
                       final name = _userNameController.text.trim();
-                      if (name == null || name.isEmpty) return;
+                      if (name.isEmpty) return;
                       final response =
                           await AccountClient().createProvisionalAccount(name);
                       print(response.data);

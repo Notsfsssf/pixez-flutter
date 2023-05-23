@@ -24,7 +24,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/custom_icon.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -238,22 +237,22 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     });
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
         .listen((List<SharedMediaFile> value) {
-      if (value != null)
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return SauceNaoPage(
-            path: value.first.path,
-          );
-        }));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return SauceNaoPage(
+          path: value.first.path,
+        );
+      }));
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      if (value != null && value.isNotEmpty)
+      if (value.isNotEmpty) {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return SauceNaoPage(
             path: value.first.path,
           );
         }));
+      }
     });
     initPlatform();
     // 利用事件循环的顺序使UI初始化完毕后获取AppBar的高度

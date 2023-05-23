@@ -154,6 +154,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                                       )));
                             },
                           );
+                        return ListTile();
                       }, childCount: 3),
                     ),
                     visible: idV,
@@ -208,11 +209,11 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           systemNavigationBarDividerColor: Colors.transparent,
           statusBarColor: Colors.transparent),
       iconTheme:
-          IconThemeData(color: Theme.of(context).textTheme.bodyText1!.color),
+          IconThemeData(color: Theme.of(context).textTheme.bodyLarge!.color),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.close,
-              color: Theme.of(context).textTheme.bodyText1!.color),
+              color: Theme.of(context).textTheme.bodyLarge!.color),
           onPressed: () {
             _filter.clear();
           },
@@ -231,7 +232,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         cursorColor: Theme.of(context).iconTheme.color,
         style: Theme.of(context)
             .textTheme
-            .subtitle1!
+            .titleMedium!
             .copyWith(color: Theme.of(context).iconTheme.color),
         onTap: () {
           FocusScope.of(context).requestFocus(node);

@@ -18,7 +18,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
-import 'package:quiver/iterables.dart';
 
 class BookTagPage extends StatefulWidget {
   @override
