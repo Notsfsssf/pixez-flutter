@@ -158,7 +158,6 @@ create table $tableAccount (
   Future<TaskPersist> insert(TaskPersist todo) async {
     todo.id = await db.insert(tableAccount, todo.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    fetcher.localQueue.add(todo);
     return todo;
   }
 
@@ -187,34 +186,17 @@ create table $tableAccount (
   Future<int> remove(int id) async {
     final result =
         await db.delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
-    fetcher.localQueue.removeWhere((element) => element.id == id);
     return result;
   }
 
   Future<int> deleteAll() async {
     final result = await db.delete(tableAccount);
-    fetcher.localQueue.clear();
     return result;
   }
 
   Future<int> update(TaskPersist todo) async {
     final result = await db.update(tableAccount, todo.toJson(),
         where: '$columnId = ?', whereArgs: [todo.id]);
-    try {
-      var firstWhere =
-          fetcher.localQueue.firstWhere((element) => element.id == todo.id);
-      firstWhere.id = todo.id;
-      firstWhere.title = todo.title;
-      firstWhere.url = todo.url;
-      firstWhere.fileName = todo.fileName;
-      firstWhere.illustId = todo.illustId;
-      firstWhere.sanityLevel = todo.sanityLevel;
-      firstWhere.status = todo.status;
-      firstWhere.userId = todo.userId;
-      firstWhere.userName = todo.userName;
-      firstWhere.medium = todo.medium;
-    } catch (e) {}
-
     return result;
   }
 
@@ -236,8 +218,32 @@ create table $tableAccount (
       orderBy: "${columnId} ASC",
     );
     var list = maps.map((e) => TaskPersist.fromJson(e)).toList();
-    fetcher.localQueue.clear();
-    fetcher.localQueue.addAll(list);
+    return list;
+  }
+
+  Future<List<TaskPersist>> getDownloadTask(int page, int status) async {
+    final LIMIT = 16;
+    List<Map<String, dynamic>> maps = await db.query(
+      tableAccount,
+      columns: [
+        columnId,
+        columnUserId,
+        columnIllustId,
+        columnTitle,
+        columnUserName,
+        columnUrl,
+        columnFileName,
+        columnSanityLevel,
+        columnStatus,
+        columnMedium
+      ],
+      orderBy: "${columnId} ASC",
+      limit: LIMIT,
+      offset: (page - 1) * LIMIT,
+      where: status == 10 ? null : '$columnStatus = ?',
+      whereArgs: status == 10 ? null : [status],
+    );
+    var list = maps.map((e) => TaskPersist.fromJson(e)).toList();
     return list;
   }
 }

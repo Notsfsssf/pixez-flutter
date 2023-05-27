@@ -16,6 +16,7 @@
 import 'dart:async';
 
 import 'package:animations/animations.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
@@ -40,11 +41,14 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   void dispose() {
     rotationController.dispose();
     _timer?.cancel();
+    _easyRefreshController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
+    _easyRefreshController = EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
     rotationController = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
 
@@ -52,25 +56,60 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     initMethod();
   }
 
+  int STATUS_ALL = 10;
+
   initMethod() async {
     await taskPersistProvider.open();
-    await taskPersistProvider.getAllAccount();
-    if (mounted) {
-      setState(() {
-        _list = fetcher.localQueue;
-      });
-    }
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
-      fetchLocal();
+      _fetchLocal();
     });
   }
 
-  fetchLocal() async {
-    List<TaskPersist> results = fetcher.localQueue;
+  _fetchLocal() async {
+    if (mounted) {
+      setState(() {
+        _map = fetcher.jobMaps;
+      });
+    }
+  }
+
+  _refresh() async {
+    _page = 0;
+    final results = await taskPersistProvider.getDownloadTask(
+        _page, toTaskStatus(currentIndex));
     if (mounted) {
       setState(() {
         _list = results;
       });
+      _easyRefreshController.finishRefresh();
+    }
+  }
+
+  _next() async {
+    _page++;
+    final results = await taskPersistProvider.getDownloadTask(
+        _page, toTaskStatus(currentIndex));
+    if (mounted) {
+      setState(() {
+        _list += results;
+        if (results.length < 16)
+          _easyRefreshController.finishLoad(IndicatorResult.noMore);
+        else
+          _easyRefreshController.finishLoad();
+      });
+    }
+  }
+
+  int toTaskStatus(int index) {
+    switch (index) {
+      case 1:
+        return 1;
+      case 2:
+        return 2;
+      case 3:
+        return 3;
+      default:
+        return STATUS_ALL;
     }
   }
 
@@ -215,6 +254,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   }
 
   int currentIndex = 0;
+  int _page = 0;
 
   Widget _buildTopChip() {
     return Padding(
@@ -229,6 +269,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
         onChange: (index) {
           setState(() {
             this.currentIndex = index;
+            _refresh();
           });
         },
       ),
@@ -237,22 +278,74 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
 
   Widget _body() {
     final trueList = asc ? _list.reversed.toList() : _list;
-    if (trueList.isEmpty)
-      return Container(
-        child: Center(
-          child: Text("[ ]"),
-        ),
-      );
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return _buildItem(trueList, index);
+    return EasyRefresh(
+      controller: _easyRefreshController,
+      onRefresh: () {
+        _refresh();
       },
-      itemCount: trueList.length,
+      onLoad: () {
+        _next();
+      },
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          if (trueList.isEmpty)
+            return Container(
+              height: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Text(
+                  "[ ]",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            );
+          return _buildListItem(trueList[index], index);
+        },
+        itemCount: (trueList.isEmpty) ? 1 : trueList.length,
+      ),
     );
   }
 
-  Widget _buildItem(List<TaskPersist> trueList, int index) {
-    TaskPersist taskPersist = trueList[index];
+  late EasyRefreshController _easyRefreshController;
+  Map<String, JobEntity> _map = {};
+
+  Widget _buildListItem(TaskPersist taskPersist, int index) {
+    JobEntity? jobEntity = _map[taskPersist.url];
+    if (currentIndex != 0) {
+      if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
+        return Visibility(
+          child: Container(
+            height: 0,
+          ),
+          visible: false,
+        );
+    }
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Container(
+        child: Stack(
+          children: [
+            ListTile(
+              title: Text(taskPersist.title),
+              subtitle: Text(taskPersist.userName),
+              trailing: Text(toMessage(jobEntity?.status ?? taskPersist.status)),
+            ),
+            if (jobEntity != null)
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: LinearProgressIndicator(
+                  value: ((jobEntity.min ?? 0.0) / ((jobEntity.max ?? 0.0)))
+                      .toDouble(),
+                ),
+              )
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _itemSimple = true;
+
+  Widget _buildItem(TaskPersist taskPersist, int index) {
     JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
     if (currentIndex != 0) {
       if ((jobEntity?.status ?? taskPersist.status) != currentIndex)

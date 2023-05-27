@@ -93,7 +93,6 @@ class TaskBean {
 class Fetcher {
   BuildContext? context;
   List<TaskBean> queue = [];
-  List<TaskPersist> localQueue = [];
   ReceivePort receivePort = ReceivePort();
   SendPort? sendPortToChild;
   Isolate? isolate;

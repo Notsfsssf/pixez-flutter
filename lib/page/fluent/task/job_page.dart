@@ -59,7 +59,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     await taskPersistProvider.getAllAccount();
     if (mounted) {
       setState(() {
-        _list = fetcher.localQueue;
+        _list = [];
       });
     }
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
@@ -69,7 +69,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   }
 
   fetchLocal() async {
-    List<TaskPersist> results = fetcher.localQueue;
+    List<TaskPersist> results = [];
     if (mounted) {
       setState(() {
         _list = results;

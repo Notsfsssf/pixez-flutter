@@ -84,7 +84,10 @@ class _LightingListState extends State<LightingList> {
 
   _fetch() async {
     await _store.fetch(force: true);
-    if (!_isNested && _store.errorMessage == null && !_store.iStores.isEmpty) {
+    if (!_isNested &&
+        _store.errorMessage == null &&
+        !_store.iStores.isEmpty &&
+        _scrollController.hasClients) {
       _scrollController.position.jumpTo(0.0);
     }
   }

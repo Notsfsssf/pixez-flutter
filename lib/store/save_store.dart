@@ -142,7 +142,7 @@ abstract class _SaveStoreBase with Store {
                                   final result = await fetcher
                                       .taskPersistProvider
                                       .remove(id);
-                                  _joinOnDart(entity.url, entity.illusts,
+                                  _joinQueue(entity.url, entity.illusts,
                                       entity.fileName);
                                 }
                               }
@@ -195,7 +195,7 @@ abstract class _SaveStoreBase with Store {
     return directory;
   }
 
-  _joinOnDart(String url, Illusts illusts, String fileName) async {
+  _joinQueue(String url, Illusts illusts, String fileName) async {
     final result = await fetcher.taskPersistProvider.getAccount(url);
     if (result != null) {
       streamController.add(SaveStream(SaveState.INQUEUE, illusts,
@@ -216,11 +216,6 @@ abstract class _SaveStoreBase with Store {
       await fetcher.taskPersistProvider.insert(taskPersist);
       fetcher.save(url, illusts, fileName);
     } catch (e) {}
-  }
-
-  _joinQueue(String url, Illusts illusts, String fileName) async {
-    _joinOnDart(url, illusts, fileName);
-    return;
   }
 
   _saveInternal(String url, Illusts illusts, String fileName, int index,
