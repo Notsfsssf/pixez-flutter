@@ -90,7 +90,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             duration: Duration(seconds: 1),
             content: Text(I18n.of(context).return_again_to_exit),
           ));
-          // BotToast.showText(text: I18n.of(context).return_again_to_exit);
           return false;
         }
         return true;
@@ -99,11 +98,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         if (accountStore.now != null &&
             (Platform.isIOS || Platform.isAndroid)) {
           return _buildScaffold(context);
-          // return LayoutBuilder(builder: (context, constraint) {
-          //   if (constraint.maxHeight > constraint.maxWidth)
-          //     return _buildPadScafford(context, constraint);
-          //   return _buildScaffold(context);
-          // });
         }
         if (accountStore.now == null && accountStore.feching) {
           return Scaffold(
@@ -161,26 +155,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             if (_pageController.hasClients) _pageController.jumpToPage(index);
           },
         ));
-  }
-
-  Widget _buildPadScafford(BuildContext context, BoxConstraints constraint) {
-    double radio = constraint.maxHeight / constraint.maxWidth;
-    double width = radio * constraint.maxHeight;
-    return Stack(children: [
-      _buildScaffold(context),
-      Container(
-        width: width,
-        child: Navigator(
-          onGenerateRoute: (RouteSettings routeSettings) {
-            return PageRouteBuilder(pageBuilder: (BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation) {
-              return Container();
-            });
-          },
-        ),
-      )
-    ]);
   }
 
   Widget _buildPageContent(BuildContext context) {

@@ -72,8 +72,6 @@ main(List<String> args) async {
   ));
 }
 
-const _brandBlue = Color(0xFF1E88E5);
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();

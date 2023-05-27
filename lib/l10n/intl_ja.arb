@@ -266,5 +266,7 @@
   "ai_work_display_settings" : "AI 生成作品の表示設定",
   "make_works_with_ai_generated_flags_invisible": "AI 生成作品に設定されている作品を非表示にする",
   "script_page_hint": "この機能は js スクリプトによってイラストを保存する際のファイル名をカスタマイズするためのものです。よく分からない方はこの機能を使用しないことをおすすめします。\n\n右上の十字ボタンをクリックすると、初期設定に戻すことができます。",
-  "long_press_save_confirm": "画像長押しで保存する際に確認する"
+  "long_press_save_confirm": "画像長押しで保存する際に確認する",
+  "dynamic_color": "Dynamic color",
+  "seed_color": "Seed color"
 }

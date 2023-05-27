@@ -23,31 +23,32 @@ class _SortGroupState extends State<SortGroup> {
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 8,
-      children: [
-        for (var i in widget.children)
-          ElevatedButton(
-            child: Text(
-              i,
-              style: TextStyle(
-                  color: index == widget.children.indexOf(i)
-                      ? Colors.white
-                      : Theme.of(context).textTheme.bodyLarge!.color),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    index == widget.children.indexOf(i)
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).cardColor)),
-            onPressed: () {
-              int ii = widget.children.indexOf(i);
-              widget.onChange(ii);
-              if (mounted)
-                setState(() {
-                  this.index = ii;
-                });
-            },
-          )
-      ],
+      children: [for (var i in widget.children) _buildChip(i, context)],
+    );
+  }
+
+  Widget _buildChip(String i, BuildContext context) {
+    final bgColor = index == widget.children.indexOf(i)
+        ? Colors.white
+        : Theme.of(context).textTheme.bodyLarge!.color;
+    return ElevatedButton(
+      child: Text(
+        i,
+        style: TextStyle(color: bgColor),
+      ),
+      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+              index == widget.children.indexOf(i)
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).cardColor)),
+      onPressed: () {
+        int ii = widget.children.indexOf(i);
+        widget.onChange(ii);
+        if (mounted)
+          setState(() {
+            this.index = ii;
+          });
+      },
     );
   }
 }

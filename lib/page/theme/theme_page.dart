@@ -243,7 +243,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                     await userSetting.setUseDynamicColor(v);
                     topStore.setTop("main");
                   },
-                  title: Text("Dynamic color"),
+                  title: Text(I18n.of(context).dynamic_color),
                 )),
               ),
               if (!userSetting.useDynamicColor)
@@ -259,7 +259,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                               borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
-                      title: Text("Seed Color"),
+                      title: Text(I18n.of(context).seed_color),
                       onTap: () {
                         _pickColor();
                       },

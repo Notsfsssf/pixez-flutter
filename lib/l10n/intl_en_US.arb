@@ -266,5 +266,7 @@
   "ai_work_display_settings" : "AI generated works display settings",
   "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible",
   "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
-  "long_press_save_confirm": "long press to save confirm"
+  "long_press_save_confirm": "long press to save confirm",
+  "dynamic_color": "Dynamic color",
+  "seed_color": "Seed color"
 }

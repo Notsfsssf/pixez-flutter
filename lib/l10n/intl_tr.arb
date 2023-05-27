@@ -266,5 +266,7 @@
   "ai_work_display_settings" : "AI tarafından oluşturulmuş çalışmalar için görünüm ayarları",
   "make_works_with_ai_generated_flags_invisible": "AI tarafından oluşturulmuş etiketine sahip çalışmaları gösterme",
   "script_page_hint": "Bu işlev, illüstrasyonları JS script'ini özelleştirerek kaydedildiğinde dosya adını ele alması için dizayn edilmiştir . Prensibi bilmiyorsanız, lütfen denemeyin. Varsayılan ayarları sağ üst köşede bulunan çarpıya basarak geri yükleyebilirsiniz.",
-  "long_press_save_confirm": "Görsele uzun süre basılı tutulduğunda cihaza kaydedilip kaydedilmeyeceğini sor"
+  "long_press_save_confirm": "Görsele uzun süre basılı tutulduğunda cihaza kaydedilip kaydedilmeyeceğini sor",
+  "dynamic_color": "Dynamic color",
+  "seed_color": "Seed color"
 }
