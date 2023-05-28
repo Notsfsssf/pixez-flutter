@@ -16,7 +16,6 @@
 import 'dart:async';
 
 import 'package:animations/animations.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
@@ -36,30 +35,38 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
   Timer? _timer;
   late AnimationController rotationController;
-
-  @override
-  void dispose() {
-    rotationController.dispose();
-    _timer?.cancel();
-    _easyRefreshController.dispose();
-    super.dispose();
-  }
+  ScrollController _scrollController = ScrollController();
+  Map<String, JobEntity> _map = {};
+  bool _itemSimple = true;
+  int STATUS_ALL = 10;
 
   @override
   void initState() {
-    _easyRefreshController = EasyRefreshController(
-        controlFinishLoad: true, controlFinishRefresh: true);
     rotationController = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
-
+    _scrollController.addListener(() async {
+      if (_scrollController.hasClients) {
+        if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent) {
+          await _next();
+        }
+      }
+    });
     super.initState();
     initMethod();
   }
 
-  int STATUS_ALL = 10;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    rotationController.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
 
   initMethod() async {
     await taskPersistProvider.open();
+    _refresh();
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
       _fetchLocal();
     });
@@ -75,27 +82,40 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
 
   _refresh() async {
     _page = 0;
+    _endOfPage = false;
     final results = await taskPersistProvider.getDownloadTask(
-        _page, toTaskStatus(currentIndex));
+        _page, toTaskStatus(currentIndex), asc);
     if (mounted) {
       setState(() {
         _list = results;
       });
-      _easyRefreshController.finishRefresh();
     }
   }
 
+  _reQueryFilter() async {
+    final results = await taskPersistProvider.getDownloadTask(
+        _page, toTaskStatus(currentIndex), asc);
+    if (mounted) {
+      setState(() {
+        _list = results;
+      });
+    }
+  }
+
+  bool _nextLoading = false;
+  bool _endOfPage = false;
+
   _next() async {
+    if (_nextLoading || _endOfPage) return;
+    _nextLoading = true;
     _page++;
     final results = await taskPersistProvider.getDownloadTask(
-        _page, toTaskStatus(currentIndex));
+        _page, toTaskStatus(currentIndex), asc);
+    _endOfPage = results.length < 16;
+    _nextLoading = false;
     if (mounted) {
       setState(() {
         _list += results;
-        if (results.length < 16)
-          _easyRefreshController.finishLoad(IndicatorResult.noMore);
-        else
-          _easyRefreshController.finishLoad();
       });
     }
   }
@@ -166,6 +186,13 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
         elevation: 0,
         title: Text(I18n.of(context).task_progress),
         actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _itemSimple = !_itemSimple;
+                });
+              },
+              icon: (_itemSimple ? Icon(Icons.hide_image) : Icon(Icons.image))),
           RotationTransition(
             turns: Tween(begin: 0.0, end: 0.5).animate(rotationController),
             child: IconButton(
@@ -177,6 +204,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                   setState(() {
                     asc = !asc;
                   });
+                  _reQueryFilter();
                 },
                 icon: Icon(Icons.sort)),
           ),
@@ -267,9 +295,23 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
           I18n.of(context).failed,
         ],
         onChange: (index) {
+          _scrollController.jumpTo(0);
           setState(() {
             this.currentIndex = index;
-            _refresh();
+            if (currentIndex == 1) {
+              _list = fetcher.queue
+                  .map((e) => TaskPersist(
+                      userName: e.illusts?.user.name ?? "",
+                      title: e.illusts?.title ?? "",
+                      url: e.url ?? "",
+                      userId: e.illusts?.user.id ?? 0,
+                      illustId: e.illusts?.id ?? 0,
+                      fileName: e.fileName ?? "",
+                      status: 1))
+                  .toList();
+            } else {
+              _refresh();
+            }
           });
         },
       ),
@@ -278,75 +320,30 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
 
   Widget _body() {
     final trueList = asc ? _list.reversed.toList() : _list;
-    return EasyRefresh(
-      controller: _easyRefreshController,
-      onRefresh: () {
-        _refresh();
-      },
-      onLoad: () {
-        _next();
-      },
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          if (trueList.isEmpty)
-            return Container(
-              height: MediaQuery.of(context).size.width,
-              child: Center(
-                child: Text(
-                  "[ ]",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+    return ListView.builder(
+      controller: _scrollController,
+      itemBuilder: (context, index) {
+        if (trueList.isEmpty)
+          return Container(
+            height: MediaQuery.of(context).size.width,
+            child: Center(
+              child: Text(
+                "[ ]",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontSize: 24),
               ),
-            );
-          return _buildListItem(trueList[index], index);
-        },
-        itemCount: (trueList.isEmpty) ? 1 : trueList.length,
-      ),
-    );
-  }
-
-  late EasyRefreshController _easyRefreshController;
-  Map<String, JobEntity> _map = {};
-
-  Widget _buildListItem(TaskPersist taskPersist, int index) {
-    JobEntity? jobEntity = _map[taskPersist.url];
-    if (currentIndex != 0) {
-      if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
-        return Visibility(
-          child: Container(
-            height: 0,
-          ),
-          visible: false,
-        );
-    }
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Container(
-        child: Stack(
-          children: [
-            ListTile(
-              title: Text(taskPersist.title),
-              subtitle: Text(taskPersist.userName),
-              trailing: Text(toMessage(jobEntity?.status ?? taskPersist.status)),
             ),
-            if (jobEntity != null)
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: LinearProgressIndicator(
-                  value: ((jobEntity.min ?? 0.0) / ((jobEntity.max ?? 0.0)))
-                      .toDouble(),
-                ),
-              )
-          ],
-        ),
-      ),
+          );
+        return _buildItem(trueList[index], index);
+      },
+      itemCount: (trueList.isEmpty) ? 1 : trueList.length,
     );
   }
-
-  bool _itemSimple = true;
 
   Widget _buildItem(TaskPersist taskPersist, int index) {
-    JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
+    JobEntity? jobEntity = _map[taskPersist.url];
     if (currentIndex != 0) {
       if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
         return Visibility(
@@ -374,105 +371,147 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
             onTap: () {
               openContainer();
             },
-            child: Row(
+            child: Stack(
               children: [
-                Container(
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        child: PixivImage(
-                          taskPersist.medium ?? taskPersist.url,
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                        ),
-                      ),
-                      (jobEntity != null && jobEntity.status != 2)
-                          ? Container(
-                              height: 100,
-                              width: 100,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  value: ((jobEntity.min ?? 0.0) /
-                                          ((jobEntity.max ?? 0.0)))
-                                      .toDouble(),
-                                  backgroundColor: Colors.grey[200],
+                Row(
+                  children: [
+                    (!_itemSimple)
+                        ? Container(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 100,
+                                  width: 100,
+                                  child: PixivImage(
+                                    taskPersist.medium ?? taskPersist.url,
+                                    fit: BoxFit.cover,
+                                    height: 100,
+                                    width: 100,
+                                  ),
+                                ),
+                                (jobEntity != null && jobEntity.status != 2)
+                                    ? Container(
+                                        height: 100,
+                                        width: 100,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            value: ((jobEntity.min ?? 0.0) /
+                                                    ((jobEntity.max ?? 0.0)))
+                                                .toDouble(),
+                                            backgroundColor: Colors.grey[200],
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: 100,
+                                        width: 100,
+                                      ),
+                              ],
+                            ),
+                            width: 100,
+                            height: 100,
+                          )
+                        : Container(
+                            width: 8,
+                          ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    taskPersist.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.clip,
+                                  ),
                                 ),
                               ),
-                            )
-                          : Container(
-                              height: 100,
-                              width: 100,
-                            ),
-                    ],
-                  ),
-                  width: 100,
-                  height: 100,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                taskPersist.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
+                              if (_itemSimple) ...[
+                                InkWell(
+                                    onTap: () {
+                                      _retryJob(taskPersist);
+                                    },
+                                    child: Icon(Icons.refresh)),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                      onTap: () {
+                                        _deleteJob(taskPersist);
+                                      },
+                                      child: Icon(Icons.delete)),
+                                ),
+                              ],
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: _buildStatusWidget(
+                                    jobEntity?.status ?? taskPersist.status),
                               ),
-                            ),
+                            ],
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: _buildStatusWidget(
-                                jobEntity?.status ?? taskPersist.status),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              taskPersist.userName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontSize: 12),
+                            ),
                           ),
+                          (!_itemSimple)
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(" "),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              _retryJob(taskPersist);
+                                            },
+                                            icon: Icon(Icons.refresh)),
+                                        IconButton(
+                                            onPressed: () {
+                                              _deleteJob(taskPersist);
+                                            },
+                                            icon: Icon(Icons.delete)),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : Container(
+                                  height: 10,
+                                ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          taskPersist.userName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 12),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(" "),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    _retryJob(taskPersist);
-                                  },
-                                  icon: Icon(Icons.refresh)),
-                              IconButton(
-                                  onPressed: () {
-                                    _deleteJob(taskPersist);
-                                  },
-                                  icon: Icon(Icons.delete)),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                (jobEntity != null && jobEntity.status != 2)
+                    ? Positioned(
+                        left: 0.0,
+                        right: 0.0,
+                        bottom: 0.0,
+                        child: LinearProgressIndicator(
+                          value: ((jobEntity.min ?? 0.0) /
+                                  ((jobEntity.max ?? 0.0)))
+                              .toDouble(),
+                          backgroundColor: Colors.grey[200],
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           );
@@ -484,6 +523,9 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   Future _deleteJob(TaskPersist persist) async {
     await taskPersistProvider.remove(persist.id!);
     fetcher.jobMaps.remove(persist.url);
+    setState(() {
+      _list.removeWhere((element) => element.id == persist.id);
+    });
   }
 
   Future _retryJob(TaskPersist persist) async {
@@ -491,6 +533,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     await _deleteJob(persist);
     final taskPersist = persist;
     await taskPersistProvider.insert(taskPersist);
-    fetcher.save(persist.url, taskPersist.toIllusts(), persist.fileName);
+    await fetcher.save(persist.url, taskPersist.toIllusts(), persist.fileName);
+    _refresh();
   }
 }

@@ -42,7 +42,6 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                   I18n.of(context).bookmark),
               actions: [
                 Switch(
-                  activeColor: Theme.of(context).canvasColor,
                   onChanged: (bool value) {
                     _store.setRestrict(value);
                   },
@@ -55,36 +54,29 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                     })
               ],
             ),
-            Theme(
-              data: Theme.of(context)
-                  .copyWith(primaryColor: Theme.of(context).colorScheme.secondary),
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme:  Theme.of(context).colorScheme.copyWith(primary:  Theme.of(context).colorScheme.secondary),
-                  ),
-                  child: TextField(
-                    controller: textEditingController,
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () {
-                        final value = textEditingController.value.text.trim();
-                        if (value.isNotEmpty)
-                          _store.insert(TagsR(isRegistered: true, name: value));
-                        textEditingController.clear();
-                      },
-                    )),
-                  ),
-                ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                controller: textEditingController,
+                decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    final value = textEditingController.value.text.trim();
+                    if (value.isNotEmpty)
+                      _store.insert(TagsR(isRegistered: true, name: value));
+                    textEditingController.clear();
+                  },
+                )),
               ),
             ),
             Expanded(
               child: _store.errorMessage == null
                   ? ListView.builder(
                       padding: EdgeInsets.all(2.0).copyWith(
-                        bottom: (MediaQuery.maybeOf(context)?.padding.bottom ?? 0.0) + 2.0,
+                        bottom: (MediaQuery.maybeOf(context)?.padding.bottom ??
+                                0.0) +
+                            2.0,
                       ),
                       itemCount: _store.checkList.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -92,7 +84,7 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                           children: [
                             Expanded(
                               child: InkWell(
-                                onTap:(){
+                                onTap: () {
                                   _store.check(index, !_store.checkList[index]);
                                 },
                                 child: Padding(
@@ -105,7 +97,8 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                               onChanged: (bool? value) {
                                 _store.check(index, value!);
                               },
-                              activeColor: Theme.of(context).colorScheme.secondary,
+                              activeColor:
+                                  Theme.of(context).colorScheme.secondary,
                               value: _store.checkList[index],
                             )
                           ],
@@ -125,7 +118,9 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(':(',
-                                  style: Theme.of(context).textTheme.headlineMedium),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium),
                             ),
                             TextButton(
                                 onPressed: () {
