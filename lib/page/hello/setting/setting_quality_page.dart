@@ -744,7 +744,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.isBangs,
                     title: Text(I18n.of(context).special_shaped_screen),
                     subtitle: Text('--v--'),
@@ -759,7 +758,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.longPressSaveConfirm,
                     title: Text(I18n.of(context).long_press_save_confirm),
                     onChanged: (value) async {
@@ -773,7 +771,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.hIsNotAllow,
                     title: Text('H是不行的！'),
                     onChanged: (value) async {
@@ -788,7 +785,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.isReturnAgainToExit,
                     title: Text(I18n.of(context).return_again_to_exit),
                     onChanged: (value) async {
@@ -802,7 +798,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.followAfterStar,
                     title: Text(I18n.of(context).follow_after_star),
                     onChanged: (value) async {
@@ -816,7 +811,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             child: Card(
               child: Observer(builder: (_) {
                 return SwitchListTile(
-                    activeColor: Theme.of(context).colorScheme.secondary,
                     value: userSetting.defaultPrivateLike,
                     title: Text(I18n.of(context).private_like_by_default),
                     onChanged: (value) async {
@@ -831,7 +825,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               child: Card(
                 child: Observer(builder: (_) {
                   return SwitchListTile(
-                      activeColor: Theme.of(context).colorScheme.secondary,
                       value: userSetting.nsfwMask,
                       title: Text("最近任务遮罩"),
                       onChanged: (value) async {

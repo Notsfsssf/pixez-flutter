@@ -86,7 +86,6 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           onPressed: () {
             _sauceStore.findImage();
           },
-          backgroundColor: Theme.of(context).colorScheme.secondary,
           child: Icon(Icons.add_photo_alternate),
         ),
         body: Container(

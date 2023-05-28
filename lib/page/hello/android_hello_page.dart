@@ -112,12 +112,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildScaffold(BuildContext context) {
-    // // 如果没有获取到底部导航的高度，在重新渲染的时候会尝试获取底部导航的高度
-    // if (bottomNavigatorHeight == null) {
-    //   Timer(const Duration(milliseconds: 0), () {
-    //     initBottomNavigatorHeight();
-    //   });
-    // }
+    if (bottomNavigatorHeight == null) {
+      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 58;
+    }
     return Scaffold(
         body: _buildPageContent(context),
         extendBody: true,
@@ -414,17 +411,15 @@ class _AnimatedToggleFullscreenFABState
     return SlideTransition(
       position: _offsetAnimation,
       child: SizedBox(
-          height: 65,
-          width: 65,
           child: FloatingActionButton(
-            onPressed: () {
-              widget.toggleFullscreen();
-            },
-            child: Container(
-                child: Icon(
-              Icons.close_fullscreen,
-            )),
-          )),
+        onPressed: () {
+          widget.toggleFullscreen();
+        },
+        child: Container(
+            child: Icon(
+          Icons.close_fullscreen,
+        )),
+      )),
     );
   }
 }
