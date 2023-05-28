@@ -50,29 +50,12 @@ class AndroidHelloPage extends StatefulWidget {
 class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late List<Widget> _pageList;
   DateTime? _preTime;
-
-  // key 用来获取高度以实现一些基础的动画
-  GlobalKey bottomNavigatorKey = GlobalKey();
   double? bottomNavigatorHeight = null;
 
   ValueNotifier<bool> isFullscreen = ValueNotifier(false);
 
   void toggleFullscreen() {
     isFullscreen.value = !isFullscreen.value;
-  }
-
-  // M3暂时移除处理
-  // 获取bottomNavigator的高度，方便实现基础的动画
-  void initBottomNavigatorHeight() {
-    Size? bottomNavigatorSize =
-        bottomNavigatorKey.currentContext?.findRenderObject()?.paintBounds.size;
-    print('bottomNavigatorSize is ' + bottomNavigatorSize.toString());
-    if (bottomNavigatorSize != null) {
-      setState(() {
-        bottomNavigatorHeight = bottomNavigatorSize.height;
-        print('get height is ' + bottomNavigatorSize.height.toString());
-      });
-    }
   }
 
   @override
@@ -113,7 +96,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     if (bottomNavigatorHeight == null) {
-      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 58;
+      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
     }
     return Scaffold(
         body: _buildPageContent(context),
@@ -125,33 +108,44 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             toggleFullscreen: toggleFullscreen,
           ),
         ),
-        bottomNavigationBar: NavigationBar(
-          destinations: [
-            NavigationDestination(
-                icon: Icon(Icons.home), label: I18n.of(context).home),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.leaderboard,
-                ),
-                label: I18n.of(context).rank),
-            NavigationDestination(
-                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
-            NavigationDestination(
-                icon: Icon(Icons.search), label: I18n.of(context).search),
-            NavigationDestination(
-                icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
-          ],
-          selectedIndex: index,
-          onDestinationSelected: (index) {
-            if (this.index == index) {
-              topStore.setTop("${index + 1}00");
-            }
-            setState(() {
-              this.index = index;
-            });
-            if (_pageController.hasClients) _pageController.jumpToPage(index);
-          },
-        ));
+        bottomNavigationBar: ValueListenableBuilder<bool>(
+            valueListenable: isFullscreen,
+            builder: (BuildContext context, bool isFullscreen, Widget? child) =>
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  height: isFullscreen ? 0 : bottomNavigatorHeight,
+                  child: _buildNavigationBar(context),
+                )));
+  }
+
+  NavigationBar _buildNavigationBar(BuildContext context) {
+    return NavigationBar(
+      destinations: [
+        NavigationDestination(
+            icon: Icon(Icons.home), label: I18n.of(context).home),
+        NavigationDestination(
+            icon: Icon(
+              Icons.leaderboard,
+            ),
+            label: I18n.of(context).rank),
+        NavigationDestination(
+            icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+        NavigationDestination(
+            icon: Icon(Icons.search), label: I18n.of(context).search),
+        NavigationDestination(
+            icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+      ],
+      selectedIndex: index,
+      onDestinationSelected: (index) {
+        if (this.index == index) {
+          topStore.setTop("${index + 1}00");
+        }
+        setState(() {
+          this.index = index;
+        });
+        if (_pageController.hasClients) _pageController.jumpToPage(index);
+      },
+    );
   }
 
   Widget _buildPageContent(BuildContext context) {
@@ -226,10 +220,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       }
     });
     initPlatform();
-    // 利用事件循环的顺序使UI初始化完毕后获取AppBar的高度
-    Timer(const Duration(milliseconds: 0), () {
-      initBottomNavigatorHeight();
-    });
   }
 
   VoidCallback? _LinkCloser = null;
