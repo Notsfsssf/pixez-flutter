@@ -135,6 +135,7 @@ class Fetcher {
               queue.removeWhere((element) => element.url == taskBean.url);
               LPrinter.d("c ${queue.length}");
             }
+            fetcher.jobMaps.removeWhere((key, value) => key == taskBean.url);
             nextJob();
             _complete(taskBean.url!, taskBean.savePath!, taskBean.fileName!,
                 taskBean.illusts!);
@@ -146,6 +147,7 @@ class Fetcher {
               queue.removeWhere((element) => element.url == taskBean.url);
               LPrinter.d("c ${queue.length}");
             }
+            fetcher.jobMaps.removeWhere((key, value) => key == taskBean.url);
             nextJob();
             _errorD(taskBean.url!);
             break;

@@ -36,7 +36,6 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   Timer? _timer;
   late AnimationController rotationController;
   ScrollController _scrollController = ScrollController();
-  Map<String, JobEntity> _map = {};
   bool _itemSimple = true;
   int STATUS_ALL = 10;
 
@@ -75,7 +74,19 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   _fetchLocal() async {
     if (mounted) {
       setState(() {
-        _map = fetcher.jobMaps;
+        if (currentIndex == 1) {
+          _list = fetcher.queue
+              .where((element) => fetcher.urlPool.contains(element.url))
+              .map((e) => TaskPersist(
+                  userName: e.illusts?.user.name ?? "",
+                  title: e.illusts?.title ?? "",
+                  url: e.url ?? "",
+                  userId: e.illusts?.user.id ?? 0,
+                  illustId: e.illusts?.id ?? 0,
+                  fileName: e.fileName ?? "",
+                  status: 1))
+              .toList();
+        }
       });
     }
   }
@@ -300,6 +311,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
             this.currentIndex = index;
             if (currentIndex == 1) {
               _list = fetcher.queue
+                  .where((element) => fetcher.urlPool.contains(element.url))
                   .map((e) => TaskPersist(
                       userName: e.illusts?.user.name ?? "",
                       title: e.illusts?.title ?? "",
@@ -343,7 +355,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildItem(TaskPersist taskPersist, int index) {
-    JobEntity? jobEntity = _map[taskPersist.url];
+    JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
     if (currentIndex != 0) {
       if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
         return Visibility(
@@ -523,6 +535,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   Future _deleteJob(TaskPersist persist) async {
     await taskPersistProvider.remove(persist.id!);
     fetcher.jobMaps.remove(persist.url);
+    fetcher.queue.removeWhere((element) => element.url == persist.url);
     setState(() {
       _list.removeWhere((element) => element.id == persist.id);
     });

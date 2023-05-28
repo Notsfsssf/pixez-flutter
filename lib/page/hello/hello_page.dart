@@ -120,29 +120,33 @@ class _HelloPageState extends State<HelloPage> {
           itemBuilder: (context, index) {
             return _lists[index];
           }),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).colorScheme.secondary,
-          currentIndex: index,
-          onTap: (index) {
-            setState(() {
-              this.index = index;
-            });
-            if (_pageController.hasClients) _pageController.jumpToPage(index);
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: I18n.of(context).home),
-            BottomNavigationBarItem(
-                icon: Icon(CustomIcons.leaderboard),
-                label: I18n.of(context).rank),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.bookmark), label: I18n.of(context).quick_view),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), label: I18n.of(context).search),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: I18n.of(context).setting),
-          ]),
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(
+              icon: Icon(Icons.home), label: I18n.of(context).home),
+          NavigationDestination(
+              icon: Icon(
+                Icons.leaderboard,
+              ),
+              label: I18n.of(context).rank),
+          NavigationDestination(
+              icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+          NavigationDestination(
+              icon: Icon(Icons.search), label: I18n.of(context).search),
+          NavigationDestination(
+              icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+        ],
+        selectedIndex: index,
+        onDestinationSelected: (value) {
+          if (this.index == index) {
+            topStore.setTop("${index + 1}00");
+          }
+          setState(() {
+            this.index = value;
+          });
+          if (_pageController.hasClients) _pageController.jumpToPage(index);
+        },
+      ),
     );
   }
 }

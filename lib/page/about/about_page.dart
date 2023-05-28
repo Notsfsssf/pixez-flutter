@@ -195,7 +195,6 @@ class _AboutPageState extends State<AboutPage> {
                         width: 80,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
                               children: [
