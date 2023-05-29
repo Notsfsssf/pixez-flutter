@@ -138,6 +138,11 @@ create table $tableAccount (
         .delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
   }
 
+    Future<int> deleteByUserId(String userId) async {
+    return await db
+        .delete(tableAccount, where: '$columnUserId = ?', whereArgs: [userId]);
+  }
+
   Future<int> deleteAll() async {
     return await db.delete(tableAccount);
   }

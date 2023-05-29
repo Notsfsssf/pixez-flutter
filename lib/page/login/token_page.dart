@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
@@ -50,6 +49,7 @@ class _TokenPageState extends State<TokenPage> {
                   final user = accountResponse.user;
                   AccountProvider accountProvider = new AccountProvider();
                   await accountProvider.open();
+                  await accountProvider.deleteByUserId(user.id);
                   var accountPersist = AccountPersist(
                       userId: user.id,
                       userImage: user.profileImageUrls.px170x170,
