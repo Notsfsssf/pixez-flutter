@@ -25,6 +25,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
+import 'package:pixez/page/login/token_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/weiss_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => AboutPage()));
-                  })
+                  })2222
             ],
           ),
         ),
@@ -130,6 +131,12 @@ class _LoginPageState extends State<LoginPage> {
                               } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),
+                          ),
+                          OutlinedButton(
+                            onPressed: () async {
+                              Leader.push(context, TokenPage());
+                            },
+                            child: Text("Token"),
                           ),
                           TextButton(
                             child: Text(

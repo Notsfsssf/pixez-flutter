@@ -14,8 +14,11 @@
  *
  */
 
+import 'dart:ffi';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -159,6 +162,28 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   labelText: 'Email',
                 ),
               ),
+              if (accountStore.now != null &&
+                  accountStore.now!.isMailAuthorized == 1)
+                InkWell(
+                  onTap: () async {
+                    Clipboard.setData(
+                        ClipboardData(text: accountStore.now!.refreshToken));
+                    BotToast.showText(text: "Copied to clipboard");
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Token export",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Icon(Icons.arrow_forward_ios)
+                      ],
+                    ),
+                  ),
+                ),
               InkWell(
                 onTap: () {
                   showDialog(
