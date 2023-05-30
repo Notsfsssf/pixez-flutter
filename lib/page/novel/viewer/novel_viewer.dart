@@ -185,91 +185,93 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 ],
               ),
               extendBodyBehindAppBar: true,
-              body: ListView(
-                padding: EdgeInsets.all(0.0),
-                controller: _controller,
-                children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).padding.top + 100,
-                  ),
-                  Center(
-                      child: Container(
-                          height: 160,
-                          child:
-                              PixivImage(_novelStore.novel!.imageUrls.medium))),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
-                    child: Text(
-                      "${_novelStore.novel!.title}",
-                      style: Theme.of(context).textTheme.titleMedium,
+              body: Scrollbar(
+                child: ListView(
+                  padding: EdgeInsets.all(0.0),
+                  controller: _controller,
+                  children: <Widget>[
+                    Container(
+                      height: MediaQuery.of(context).padding.top + 100,
                     ),
-                  ),
-                  //MARK DETAIL NUM,
-                  _buildNumItem(
-                      _novelStore.novelTextResponse!, _novelStore.novel!),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      "${_novelStore.novel!.createDate}",
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 2,
-                        runSpacing: 0,
-                        children: [
-                          if (_novelStore.novel!.NovelAIType == 2)
-                            Text("${I18n.of(context).ai_generated}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary)),
-                          for (var f in _novelStore.novel!.tags)
-                            buildRow(context, f)
-                        ],
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SelectableHtml(
-                            data: _novelStore.novel?.caption ?? ""),
+                    Center(
+                        child: Container(
+                            height: 160,
+                            child: PixivImage(
+                                _novelStore.novel!.imageUrls.medium))),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
+                      child: Text(
+                        "${_novelStore.novel!.title}",
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
                     ),
-                  ),
-                  TextButton(
-                      onPressed: () {
-                        Leader.push(
-                            context,
-                            CommentPage(
-                              id: _novelStore.id,
-                              type: CommentArtWorkType.NOVEL,
-                            ));
-                      },
-                      child: Text(I18n.of(context).view_comment)),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ExtendedText(
-                      _novelStore.novelTextResponse!.novelText,
-                      specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
-                      style: _textStyle,
+                    //MARK DETAIL NUM,
+                    _buildNumItem(
+                        _novelStore.novelTextResponse!, _novelStore.novel!),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        "${_novelStore.novel!.createDate}",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
                     ),
-                  ),
-                  Container(
-                    height: 10,
-                  ),
-                ],
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 2,
+                          runSpacing: 0,
+                          children: [
+                            if (_novelStore.novel!.NovelAIType == 2)
+                              Text("${I18n.of(context).ai_generated}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary)),
+                            for (var f in _novelStore.novel!.tags)
+                              buildRow(context, f)
+                          ],
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SelectableHtml(
+                              data: _novelStore.novel?.caption ?? ""),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                      ),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Leader.push(
+                              context,
+                              CommentPage(
+                                id: _novelStore.id,
+                                type: CommentArtWorkType.NOVEL,
+                              ));
+                        },
+                        child: Text(I18n.of(context).view_comment)),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ExtendedText(
+                        _novelStore.novelTextResponse!.novelText,
+                        specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
+                        style: _textStyle,
+                      ),
+                    ),
+                    Container(
+                      height: 10 + MediaQuery.of(context).padding.bottom,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
