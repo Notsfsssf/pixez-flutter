@@ -151,6 +151,8 @@ abstract class _UserSetting with Store {
   bool longPressSaveConfirm = false;
   @observable
   int imagePickerType = 1;
+  @observable
+  int themeInitState = 0;
 
   @observable
   String? format = "";
@@ -312,52 +314,9 @@ abstract class _UserSetting with Store {
   }
 
   @action
-  Future<void> init() async {
+  askInit() async {
     prefs = await SharedPreferences.getInstance();
-    disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
-    zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
-    singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
-    displayMode = prefs.getInt('display_mode');
-    hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
-    welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
-    crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
-    hCrossCount = prefs.getInt(H_CROSS_COUNT_KEY) ?? 4;
-    pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
-    mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
-    isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
-    isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
-    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY);
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
-    maxRunningTask = prefs.getInt(MAX_RUNNING_TASK_KEY) ?? 2;
-    isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
-    isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
-    overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
-    followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
-    nsfwMask = prefs.getBool(NSFW_MASK_KEY) ?? false;
-    novelFontsize = prefs.getDouble(NOVEL_FONT_SIZE_KEY) ?? 16.0;
-    novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
-    saveMode = prefs.getInt(SAVE_MODE_KEY) ??
-        (isHelplessWay == null ? 0 : (isHelplessWay! ? 2 : 1));
-    pictureSource = disableBypassSni
-        ? ImageHost
-        : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
-    splashStore.setHost(pictureSource!);
-    saveEffect = prefs.getInt(SAVE_EFFECT_KEY) ?? 0;
-    saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
-    padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
-    copyInfoText = prefs.getString(COPY_INFO_TEXT_KEY) ?? copyInfoText;
-    fileNameEval = prefs.getInt("file_name_eval") ?? 0;
-    nameEval = prefs.getString(NAME_EVAL_KEY);
-    crossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
-    hCrossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
-    final crossAdapterV = prefs.getInt(CROSS_ADAPT_WIDTH_KEY) ?? 100;
-    final hCrossAdapterV = prefs.getInt(H_CROSS_ADAPT_WIDTH_KEY) ?? 100;
-    crossAdapterWidth = min(2160, max(100, crossAdapterV));
-    hCrossAdapterWidth = min(2160, max(100, hCrossAdapterV));
-    defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
-    longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
-    imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 1;
-
     for (var i in ThemeMode.values) {
       if (i.index == themeModeIndex) {
         this.themeMode = i;
@@ -381,6 +340,59 @@ abstract class _UserSetting with Store {
         }
       }
     }
+    isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
+    languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
+    ApiClient.Accept_Language = languageList[languageNum];
+    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
+        ApiClient.Accept_Language;
+    locale = iSupportedLocales[languageNum];
+    crossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
+    hCrossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
+    final crossAdapterV = prefs.getInt(CROSS_ADAPT_WIDTH_KEY) ?? 100;
+    final hCrossAdapterV = prefs.getInt(H_CROSS_ADAPT_WIDTH_KEY) ?? 100;
+    crossAdapterWidth = min(2160, max(100, crossAdapterV));
+    hCrossAdapterWidth = min(2160, max(100, hCrossAdapterV));
+    crossCount = prefs.getInt(CROSS_COUNT_KEY) ?? 2;
+    hCrossCount = prefs.getInt(H_CROSS_COUNT_KEY) ?? 4;
+    welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
+    disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
+    padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
+    themeInitState = 1;
+  }
+
+  @action
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+    zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
+    singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
+    displayMode = prefs.getInt('display_mode');
+    hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
+    pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
+    mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
+    isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
+    isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY);
+    maxRunningTask = prefs.getInt(MAX_RUNNING_TASK_KEY) ?? 2;
+    isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
+    isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
+    overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
+    followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
+    nsfwMask = prefs.getBool(NSFW_MASK_KEY) ?? false;
+    novelFontsize = prefs.getDouble(NOVEL_FONT_SIZE_KEY) ?? 16.0;
+    novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
+    saveMode = prefs.getInt(SAVE_MODE_KEY) ??
+        (isHelplessWay == null ? 0 : (isHelplessWay! ? 2 : 1));
+    pictureSource = disableBypassSni
+        ? ImageHost
+        : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
+    splashStore.setHost(pictureSource!);
+    saveEffect = prefs.getInt(SAVE_EFFECT_KEY) ?? 0;
+    saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
+    copyInfoText = prefs.getString(COPY_INFO_TEXT_KEY) ?? copyInfoText;
+    fileNameEval = prefs.getInt("file_name_eval") ?? 0;
+    nameEval = prefs.getString(NAME_EVAL_KEY);
+    defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
+    longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
+    imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 1;
     if (Platform.isAndroid) {
       try {
         var modeList = await FlutterDisplayMode.supported;
@@ -389,13 +401,8 @@ abstract class _UserSetting with Store {
         }
       } catch (e) {}
     }
-    languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     format = prefs.getString(SAVE_FORMAT_KEY);
     if (format == null || format!.isEmpty) format = intialFormat;
-    ApiClient.Accept_Language = languageList[languageNum];
-    apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
-        ApiClient.Accept_Language;
-    locale = iSupportedLocales[languageNum];
   }
 
   int toRealLanguageNum(int num) {

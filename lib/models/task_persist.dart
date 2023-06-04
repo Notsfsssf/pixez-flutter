@@ -13,7 +13,6 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:path/path.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

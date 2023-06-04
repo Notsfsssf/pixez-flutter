@@ -201,12 +201,6 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   AppBar _buildAppBar(context) {
     return AppBar(
       title: _textField(context, TextInputType.text, focusNode),
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
-      systemOverlayStyle: SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarDividerColor: Colors.transparent,
-          statusBarColor: Colors.transparent),
       iconTheme:
           IconThemeData(color: Theme.of(context).textTheme.bodyLarge!.color),
       actions: <Widget>[

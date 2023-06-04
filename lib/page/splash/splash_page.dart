@@ -35,8 +35,8 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     if (accountStore.now != null)
-      lightingStore = LightingStore(
-          ApiSource(futureGet: () => apiClient.getRecommend()));
+      lightingStore =
+          LightingStore(ApiSource(futureGet: () => apiClient.getRecommend()));
     controller =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
     initMethod();
@@ -49,16 +49,26 @@ class _SplashPageState extends State<SplashPage>
   bool isPush = false;
 
   initMethod() {
-    userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
-      if (userSetting.disableBypassSni) {
-        apiClient.httpClient.options.baseUrl =
-            'https://${ApiClient.BASE_API_URL_HOST}';
-        oAuthClient.httpClient.options.baseUrl =
-            'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-        Leader.pushUntilHome(context);
-        isPush = true;
-      }
-    });
+    if (!userSetting.disableBypassSni) {
+      //ugly,consider refactor with other state management
+      userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
+        if (userSetting.disableBypassSni) {
+          apiClient.httpClient.options.baseUrl =
+              'https://${ApiClient.BASE_API_URL_HOST}';
+          oAuthClient.httpClient.options.baseUrl =
+              'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
+          Leader.pushUntilHome(context);
+          isPush = true;
+        }
+      });
+    } else {
+      apiClient.httpClient.options.baseUrl =
+          'https://${ApiClient.BASE_API_URL_HOST}';
+      oAuthClient.httpClient.options.baseUrl =
+          'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
+      Leader.pushUntilHome(context);
+      isPush = true;
+    }
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
       if (mounted && !isPush) {
         Leader.pushUntilHome(context);

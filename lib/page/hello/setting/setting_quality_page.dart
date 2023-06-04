@@ -348,6 +348,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   Observer(builder: (_) {
                     return Container(
                       child: TabBar(
+                        dividerColor: Colors.transparent,
                         indicatorColor: Theme.of(context).colorScheme.secondary,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: [
@@ -385,6 +386,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   Observer(builder: (_) {
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.titleLarge!.color,
+                      dividerColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
                         Tab(
@@ -419,6 +421,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   Observer(builder: (_) {
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.titleLarge!.color,
+                      dividerColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
                         Tab(
@@ -491,6 +494,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.titleLarge!.color,
+                      dividerColor: Colors.transparent,
                       isScrollable: true,
                       tabs: list,
                       onTap: (index) async {
@@ -557,6 +561,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                      dividerColor: Colors.transparent,
                       tabs: tablist,
                       isScrollable: true,
                       onTap: (index) {
@@ -599,6 +604,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     child: TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                      dividerColor: Colors.transparent,
                       tabs: tablist,
                       isScrollable: true,
                       onTap: (index) {
@@ -628,6 +634,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                      dividerColor: Colors.transparent,
                       tabs: [
                         Tab(
                           text: ' 2 ',
@@ -670,6 +677,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     return TabBar(
                       labelColor: Theme.of(context).textTheme.headline6!.color,
                       indicatorSize: TabBarIndicatorSize.label,
+                      dividerColor: Colors.transparent,
                       tabs: [
                         Tab(
                           text: ' 2 ',
@@ -899,6 +907,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       child: TabBar(
                         labelColor:
                             Theme.of(context).textTheme.headline6!.color,
+                        dividerColor: Colors.transparent,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: tablist,
                         isScrollable: true,

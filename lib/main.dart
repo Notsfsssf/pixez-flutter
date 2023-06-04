@@ -108,6 +108,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
     Hoster.init();
     Hoster.syncRemote();
+    userSetting.askInit();
     userSetting.init();
     accountStore.fetch();
     bookTagStore.init();
@@ -128,6 +129,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Widget _buildMaterial(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ));
     final botToastBuilder = BotToastInit();
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
@@ -149,6 +156,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
       }
       return Observer(builder: (_) {
+        if (userSetting.themeInitState != 1) {
+          return Container(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
         return MaterialApp(
           navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
           locale: userSetting.locale,
@@ -158,11 +170,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   systemNavigationBarColor: Colors.transparent,
                   systemNavigationBarDividerColor: Colors.transparent,
                   statusBarColor: Colors.transparent,
-                  systemNavigationBarContrastEnforced: false,
-                  systemNavigationBarIconBrightness:
-                      Theme.of(context).brightness == Brightness.light
-                          ? Brightness.dark
-                          : Brightness.light,
                 ),
                 child: SplashPage());
           }),
@@ -179,6 +186,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               useMaterial3: true,
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,
+              tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
               colorScheme: darkColorScheme),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

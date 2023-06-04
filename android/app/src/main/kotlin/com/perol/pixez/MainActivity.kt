@@ -33,17 +33,16 @@ import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
+import androidx.lifecycle.lifecycleScope
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -111,9 +110,11 @@ class MainActivity : FlutterFragmentActivity() {
             0 -> {
                 return exist(name)
             }
+
             2 -> {
                 return File("$helplessPath/$name").exists()
             }
+
             else -> {
                 val treeDocument = DocumentFile.fromTreeUri(
                     this@MainActivity,
@@ -223,12 +224,14 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     private fun wr(data: ByteArray, uri: Uri) {
-        contentResolver.openOutputStream(uri, "w")?.write(data)
+        contentResolver.openOutputStream(uri, "w")?.use {
+            it.write(data)
+        }
     }
 
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
 
-    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         sharedPreferences =
             this.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -275,7 +278,7 @@ class MainActivity : FlutterFragmentActivity() {
                 try {
                     startActivity(intent)
 
-                } catch (throwable: Throwable) {
+                } catch (_: Throwable) {
                 }
             }
         }
@@ -293,6 +296,7 @@ class MainActivity : FlutterFragmentActivity() {
                         pendingPickResult = result
                     }
                 }
+
                 "permissionStatus" -> {
                     if (Build.VERSION.SDK_INT >= 33) {
                         val checkSelfPermission = ContextCompat.checkSelfPermission(
@@ -302,6 +306,7 @@ class MainActivity : FlutterFragmentActivity() {
                         result.success(checkSelfPermission == PackageManager.PERMISSION_GRANTED)
                     }
                 }
+
                 "save" -> {
                     val data = call.argument<ByteArray>("data")!!
                     val name = call.argument<String>("name")!!
@@ -312,13 +317,13 @@ class MainActivity : FlutterFragmentActivity() {
                     if (savingPools.contains(name))
                         return@setMethodCallHandler;
                     savingPools.add(name)
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch {
                         try {
                             when (saveMode) {
                                 0 -> {
                                     val path = withContext(Dispatchers.IO) {
                                         save(data, name)
-                                    }
+                                    } ?: return@launch
                                     MediaScannerConnection.scanFile(
                                         this@MainActivity,
                                         arrayOf(path),
@@ -329,6 +334,7 @@ class MainActivity : FlutterFragmentActivity() {
                                     ) { _, _ ->
                                     }
                                 }
+
                                 2 -> {
                                     if (helplessPath == null) {
                                         helplessPath =
@@ -368,6 +374,7 @@ class MainActivity : FlutterFragmentActivity() {
                                     }
 
                                 }
+
                                 1 -> {
                                     withContext(Dispatchers.IO) {
                                         writeFileUri(name, clearOld)?.let {
@@ -378,25 +385,27 @@ class MainActivity : FlutterFragmentActivity() {
                             }
                             result.success(true)
                         } catch (e: Throwable) {
-                            Log.d("x=====", "${e.localizedMessage}")
+                            Log.d("x=====", "${e.message}")
                         } finally {
                             savingPools.remove(name)
                         }
                     }
                 }
+
                 "get_path" -> {
                     saveMode = call.argument<Int>("save_mode") ?: 0
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch {
                         val path = withContext(Dispatchers.IO) {
                             getPath()
                         }
                         result.success(path)
                     }
                 }
+
                 "exist" -> {
                     val name = call.argument<String>("name")!!
                     saveMode = call.argument<Int>("save_mode") ?: 0
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch {
                         val isFileExist = withContext(Dispatchers.IO) {
                             try {
                                 return@withContext isFileExist(name)
@@ -406,6 +415,7 @@ class MainActivity : FlutterFragmentActivity() {
                         result.success(isFileExist)
                     }
                 }
+
                 "choice_folder" -> {
                     saveMode = call.argument<Int>("save_mode") ?: 0
                     choiceFolder()
@@ -422,7 +432,7 @@ class MainActivity : FlutterFragmentActivity() {
                 val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!
                 val delayArray = call.argument<List<Int>>("delay_array")!!
-                GlobalScope.launch(Dispatchers.Main) {
+                lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
                         encodeGif(name, path, delay, delayArray)
                     }
@@ -447,19 +457,22 @@ class MainActivity : FlutterFragmentActivity() {
             PICK_IMAGE_FILE -> if (resultCode == Activity.RESULT_OK) {
                 data?.data?.also { uri ->
                     Log.d("flutter.store_path", uri.toString())
-                    val dataR = applicationContext.contentResolver.openInputStream(uri)?.readBytes()
-                    pendingResult?.success(dataR)
-                    pendingResult = null
+                    applicationContext.contentResolver.openInputStream(uri)?.use {
+                        val dataR = it.readBytes()
+                        pendingPickResult?.success(dataR)
+                        pendingPickResult = null
+                    }
                 }
             } else {
                 pendingResult?.success(null)
                 pendingResult = null
             }
+
             OPEN_DOCUMENT_TREE_CODE ->
                 if (resultCode == Activity.RESULT_OK) {
                     data?.data?.also { uri ->
                         Log.d("flutter.store_path", uri.toString())
-                        if (uri.toString().toLowerCase(Locale.ROOT).contains("download")) {
+                        if (uri.toString().lowercase().contains("download")) {
                             Toast.makeText(
                                 applicationContext,
                                 getString(R.string.do_not_choice_download_folder_message),
@@ -527,9 +540,9 @@ class MainActivity : FlutterFragmentActivity() {
                     if (exist(fileName))
                         return
                 }
-/*                if (!tempFile.exists()) {
-                    tempFile.createNewFile()
-                }*/
+                /*                if (!tempFile.exists()) {
+                                    tempFile.createNewFile()
+                                }*/
                 Log.d("tempFile path:", tempFile.path)
                 val listFiles = it.listFiles()
                 if (listFiles == null || listFiles.isEmpty()) {
@@ -541,7 +554,7 @@ class MainActivity : FlutterFragmentActivity() {
                         arrayFile.add(i)
                     }
                 }
-                arrayFile.sortWith(Comparator { o1, o2 -> o1.name.compareTo(o2.name) })
+                arrayFile.sortWith { o1, o2 -> o1.name.compareTo(o2.name) }
                 val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
                 val encoder = GifEncoder()
                 encoder.init(
@@ -562,15 +575,16 @@ class MainActivity : FlutterFragmentActivity() {
                 }
                 encoder.close()
                 if (saveMode == 0) {
-                    val path = save(tempFile.readBytes(), fileName)
-                    MediaScannerConnection.scanFile(
-                        this@MainActivity,
-                        arrayOf(path),
-                        arrayOf(
-                            MimeTypeMap.getSingleton()
-                                .getMimeTypeFromExtension(File(path).extension)
-                        )
-                    ) { _, _ ->
+                    save(tempFile.readBytes(), fileName)?.let {
+                        MediaScannerConnection.scanFile(
+                            this@MainActivity,
+                            arrayOf(it),
+                            arrayOf(
+                                MimeTypeMap.getSingleton()
+                                    .getMimeTypeFromExtension(File(it).extension)
+                            )
+                        ) { _, _ ->
+                        }
                     }
                     return
                 }
@@ -592,8 +606,9 @@ class MainActivity : FlutterFragmentActivity() {
                     return
                 }
                 val uri = writeFileUri(fileName)
-                contentResolver.openOutputStream(uri!!, "w")
-                    ?.write(tempFile.inputStream().readBytes())
+                contentResolver.openOutputStream(uri!!, "w")?.use { outputStream ->
+                    outputStream.write(tempFile.inputStream().readBytes())
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 tempFile.delete()
