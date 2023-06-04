@@ -44,7 +44,7 @@ class _SplashPageState extends State<SplashPage>
     controller.forward();
   }
 
-  late ReactionDisposer reactionDisposer, userDisposer;
+  ReactionDisposer? reactionDisposer, userDisposer;
 
   bool isPush = false;
 
@@ -62,12 +62,14 @@ class _SplashPageState extends State<SplashPage>
         }
       });
     } else {
-      apiClient.httpClient.options.baseUrl =
-          'https://${ApiClient.BASE_API_URL_HOST}';
-      oAuthClient.httpClient.options.baseUrl =
-          'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
-      Leader.pushUntilHome(context);
-      isPush = true;
+      Future.delayed(Duration(microseconds: 100), () {
+        apiClient.httpClient.options.baseUrl =
+            'https://${ApiClient.BASE_API_URL_HOST}';
+        oAuthClient.httpClient.options.baseUrl =
+            'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
+        Leader.pushUntilHome(context);
+        isPush = true;
+      });
     }
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
       if (mounted && !isPush) {
@@ -81,8 +83,8 @@ class _SplashPageState extends State<SplashPage>
   @override
   void dispose() {
     controller.dispose();
-    userDisposer();
-    reactionDisposer();
+    if (userDisposer != null) userDisposer!();
+    if (reactionDisposer != null) reactionDisposer!();
     super.dispose();
   }
 
