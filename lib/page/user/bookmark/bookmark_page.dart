@@ -18,16 +18,19 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/sort_group.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/river/river_page.dart';
 import 'package:pixez/page/user/bookmark/tag/user_bookmark_tag_page.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -128,6 +131,16 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 });
             },
           ),
+          if (kDebugMode)
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton.filled(
+                onPressed: () {
+                  Leader.push(context, RiverPage());
+                },
+                icon: Icon(Icons.last_page),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: InkWell(

@@ -281,6 +281,13 @@ class ApiClient {
             notNullMap({"user_id": user_id, "type": type, "offset": offset}));
   }
 
+  Future<Response> getBookmarksIllustsOffset(
+      int user_id, String restrict, String? tag, int? offset) async {
+    return httpClient.get("/v1/user/bookmarks/illust",
+        queryParameters:
+            notNullMap({"user_id": user_id, "restrict": restrict, "tag": tag, "offset": offset}));
+  }
+
   Future<Response> getUserNovels(int user_id) async {
     return httpClient.get("/v1/user/novels?filter=for_android",
         queryParameters: {"user_id": user_id});

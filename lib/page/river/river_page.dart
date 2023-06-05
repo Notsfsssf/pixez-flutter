@@ -9,67 +9,48 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/river/river_provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
-final illustsProvider =
-    StateNotifierProvider<IllustListNotifier, IllustListState>((ref) {
-  return IllustListNotifier(ref);
-});
-
 class RiverPage extends HookConsumerWidget {
+  final illustsProvider =
+      StateNotifierProvider<IllustListNotifier, IllustListState>((ref) {
+    return IllustListNotifier(ref);
+  });
+
   @override
   Widget build(Object context, WidgetRef ref) {
     final provider = ref.watch(illustsProvider);
     final illusts = provider.illusts;
+    final offset = provider.offset;
     final scrollController = useScrollController();
     useEffect(() {
-      scrollController.addListener(() {
-        if (scrollController.hasClients) {
-          if (scrollController.position.atEdge) {
-            if (scrollController.position.pixels != 0) {
-              ref.read(illustsProvider.notifier).next();
-            } else if (scrollController.position.pixels == 0) {
-              ref.read(illustsProvider.notifier).pre();
-            }
-          }
-        }
-      });
-      ref.read(illustsProvider.notifier).fetch(offset: 30);
-    }, [scrollController]);
+      ref.read(illustsProvider.notifier).fetch(offset: 0);
+    }, []);
     // ref.read(illustsProvider.notifier).fetch();
 
-    return Stack(
-      children: [
-        CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            SliverToBoxAdapter(
-              child: _buildTopIndicator(),
-            ),
-            SliverWaterfallFlow(
-              gridDelegate: _buildGridDelegate(ref.context),
-              delegate: _buildSliverChildBuilderDelegate(ref.context, illusts),
-            )
-          ],
-        ),
-        Container(
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                clipBehavior: Clip.antiAlias,
-                child: Container(
-                  height: 60,
-                  width: 60,
-                  color: Theme.of(ref.context).canvasColor,
-                  child: Center(child: Text("0")),
-                ),
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("${offset ?? 0}"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                ref.read(illustsProvider.notifier).fetch(offset: offset ?? 0);
+              },
+              icon: Icon(Icons.next_plan))
+        ],
+      ),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              SliverWaterfallFlow(
+                gridDelegate: _buildGridDelegate(ref.context),
+                delegate:
+                    _buildSliverChildBuilderDelegate(ref.context, illusts),
+              )
+            ],
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
