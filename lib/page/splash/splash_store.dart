@@ -41,7 +41,7 @@ abstract class _SplashStoreBase with Store {
   hello() async {
     maybeFetch();
     Future.delayed(Duration(seconds: 2), () {
-      helloWord = ' w(ﾟДﾟ)w ';
+      helloWord = 'w(ﾟДﾟ)w';
     });
   }
 

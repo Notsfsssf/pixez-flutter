@@ -99,21 +99,30 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
     }
     return Scaffold(
-        body: _buildPageContent(context),
-        extendBody: true,
-        floatingActionButton: ValueListenableBuilder<bool>(
-          valueListenable: isFullscreen,
-          builder: (context, value, child) => AnimatedToggleFullscreenFAB(
-            isFullscreen: value,
-            toggleFullscreen: toggleFullscreen,
-          ),
+        body: Stack(
+          children: [
+            _buildPageContent(context),
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 16,
+              right: 16,
+              child: ValueListenableBuilder(
+                valueListenable: isFullscreen,
+                builder: (context, value, child) {
+                  return AnimatedToggleFullscreenFAB(
+                      isFullscreen: value, toggleFullscreen: toggleFullscreen);
+                },
+              ),
+            )
+          ],
         ),
+        extendBody: true,
         bottomNavigationBar: ValueListenableBuilder<bool>(
             valueListenable: isFullscreen,
             builder: (BuildContext context, bool isFullscreen, Widget? child) =>
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 400),
-                  height: isFullscreen ? 0 : bottomNavigatorHeight,
+                  transform: Matrix4.translationValues(
+                      0, isFullscreen ? bottomNavigatorHeight! : 0, 0),
                   child: _buildNavigationBar(context),
                 )));
   }
@@ -398,18 +407,21 @@ class _AnimatedToggleFullscreenFABState
     } else {
       _controller.reverse();
     }
-    return SlideTransition(
-      position: _offsetAnimation,
-      child: SizedBox(
-          child: FloatingActionButton(
-        onPressed: () {
-          widget.toggleFullscreen();
-        },
-        child: Container(
-            child: Icon(
-          Icons.close_fullscreen,
+    return Visibility(
+      visible: widget.isFullscreen,
+      child: SlideTransition(
+        position: _offsetAnimation,
+        child: SizedBox(
+            child: FloatingActionButton(
+          onPressed: () {
+            widget.toggleFullscreen();
+          },
+          child: Container(
+              child: Icon(
+            Icons.close_fullscreen,
+          )),
         )),
-      )),
+      ),
     );
   }
 }

@@ -61,9 +61,6 @@ class _RankPageState extends State<RankPage>
   late StreamSubscription<String> subscription;
   String? dateTime;
 
-  GlobalKey appBarKey = GlobalKey();
-  ValueNotifier<double?> appBarHeightNotifier = ValueNotifier(null);
-
   @override
   void dispose() {
     subscription.cancel();
@@ -98,29 +95,8 @@ class _RankPageState extends State<RankPage>
   int index = 0;
   int tapCount = 0;
 
-  // 获取AppBar的高度，方便实现动画
-  Future<double> initAppBarHeight() async {
-    Size? appBarSize =
-        appBarKey.currentContext?.findRenderObject()?.paintBounds.size;
-    if (appBarSize != null) {
-      return appBarSize.height;
-    } else {
-      return 0;
-    }
-  }
-
-  // 切换全屏状态
-  void toggleFullscreen() async {
-    if (appBarHeightNotifier.value == null) {
-      appBarHeightNotifier.value = await initAppBarHeight();
-      // 这里比较hack，因为需要等待appbarHeight从null到固定double类型的重绘
-      // 等待50ms使组件重渲染完毕。
-      Timer(const Duration(milliseconds: 50), () {
-        toggleFullscreen();
-      });
-      return;
-    }
-    widget.toggleFullscreen!();
+  toggleFullscreen() {
+    if (widget.toggleFullscreen != null) widget.toggleFullscreen!();
   }
 
   @override
@@ -142,60 +118,56 @@ class _RankPageState extends State<RankPage>
           length: rankStore.modeList.length,
           child: Column(
             children: <Widget>[
-              ValueListenableBuilder<double?>(
-                valueListenable: appBarHeightNotifier,
-                builder: (BuildContext context, double? value, Widget? child) =>
-                    ValueListenableBuilder<bool>(
-                        valueListenable: widget.isFullscreen,
-                        builder: (BuildContext context, bool? isFullscreen,
-                                Widget? child) =>
-                            AnimatedContainer(
-                              key: appBarKey,
-                              duration: const Duration(milliseconds: 400),
-                              height: isFullscreen != null && isFullscreen
-                                  ? 0
-                                  : appBarHeightNotifier.value,
-                              child: AppBar(
-                                title: TabBar(
-                                  onTap: (i) => setState(() {
-                                    this.index = i;
-                                  }),
-                                  indicatorSize: TabBarIndicatorSize.label,
-                                  isScrollable: true,
-                                  tabs: <Widget>[
-                                    for (var i in titles)
-                                      Tab(
-                                        text: i,
-                                      ),
-                                  ],
+              ValueListenableBuilder<bool>(
+                  valueListenable: widget.isFullscreen,
+                  builder: (BuildContext context, bool? isFullscreen,
+                          Widget? child) =>
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 400),
+                        height: isFullscreen == false
+                            ? (kToolbarHeight +
+                                MediaQuery.of(context).padding.top)
+                            : 0,
+                        child: AppBar(
+                          title: TabBar(
+                            onTap: (i) => setState(() {
+                              this.index = i;
+                            }),
+                            indicatorSize: TabBarIndicatorSize.label,
+                            isScrollable: true,
+                            tabs: <Widget>[
+                              for (var i in titles)
+                                Tab(
+                                  text: i,
                                 ),
-                                actions: <Widget>[
-                                  if (widget.toggleFullscreen != null)
-                                    IconButton(
-                                      icon: Icon(Icons.fullscreen),
-                                      onPressed: () {
-                                        toggleFullscreen();
-                                      },
-                                    ),
-                                  Visibility(
-                                    visible: index < rankStore.modeList.length,
-                                    child: IconButton(
-                                      icon: Icon(Icons.date_range),
-                                      onPressed: () async {
-                                        await _showTimePicker(context);
-                                      },
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.undo),
-                                    onPressed: () {
-                                      rankStore.reset();
-                                    },
-                                  )
-                                ],
+                            ],
+                          ),
+                          actions: <Widget>[
+                            if (widget.toggleFullscreen != null)
+                              IconButton(
+                                icon: Icon(Icons.fullscreen),
+                                onPressed: () {
+                                  toggleFullscreen();
+                                },
                               ),
-                            )),
-              ),
+                            Visibility(
+                              visible: index < rankStore.modeList.length,
+                              child: IconButton(
+                                icon: Icon(Icons.date_range),
+                                onPressed: () async {
+                                  await _showTimePicker(context);
+                                },
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.undo),
+                              onPressed: () {
+                                rankStore.reset();
+                              },
+                            )
+                          ],
+                        ),
+                      )),
               Expanded(
                 child: TabBarView(children: [
                   for (var element in rankStore.modeList)

@@ -42,10 +42,11 @@ class JsEvalPlugin(val activity: FragmentActivity) {
     }
 
     fun eval(json: String, jsString: String, part: Int, mime: String) = callbackFlow {
+        val escapedJson = json.replace("\\", "\\\\").replace("'", "\\'")
         webview.evaluateJavascript(
             """
-            ${jsString}
-            javascript:eval(JSON.parse('${json}'), ${part}, '${mime}')
+        ${jsString}
+        javascript:eval(JSON.parse('$escapedJson'), $part, '$mime')
         """.trimIndent()
         ) { v ->
             trySend((v ?: "").trim('"'))
