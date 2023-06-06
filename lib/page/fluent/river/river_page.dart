@@ -26,9 +26,7 @@ class RiverPage extends HookConsumerWidget {
           if (scrollController.position.atEdge) {
             if (scrollController.position.pixels != 0) {
               ref.read(illustsProvider.notifier).next();
-            } else if (scrollController.position.pixels == 0) {
-              ref.read(illustsProvider.notifier).pre();
-            }
+            } 
           }
         }
       });
