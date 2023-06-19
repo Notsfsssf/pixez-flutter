@@ -91,7 +91,10 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         body: Container(
             child: Column(
           children: [
-            Divider(),
+            Container(
+              height: 1,
+              color: Theme.of(context).dividerColor,
+            ),
             Expanded(
               child: CustomScrollView(
                 slivers: [
