@@ -25,6 +25,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
+import 'package:pixez/page/hello/setting/data_export_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
@@ -860,25 +861,22 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               ),
             ),
           ),
-          if (Platform.isAndroid && false) // TODO
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: ListTile(
-                    trailing: Icon(Icons.keyboard_arrow_right),
-                    title: Text(I18n.of(context).network),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NetworkPage(
-                                automaticallyImplyLeading: true,
-                              )));
-                    },
-                  ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: ListTile(
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                  title: Text("App data"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DataExportPage()));
+                  },
                 ),
               ),
             ),
+          ),
           if (_widgetTypeIndex != -1)
             Padding(
               padding: EdgeInsets.all(8.0),

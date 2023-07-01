@@ -3,19 +3,17 @@ package com.perol.pixez
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import io.flutter.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.io.FileInputStream
 import java.io.FileOutputStream
 
 object Safer {
     private const val SAF_CHANNEL = "com.perol.dev/saf"
     private const val CREATE_FILE_CODE = 1111
+    private const val OPEN_FILE_CODE = 2222
     private var pendingResult: MethodChannel.Result? = null
-    private var pendingWriteResult: MethodChannel.Result? = null
 
     fun bindChannel(activity: Activity, flutterEngine: FlutterEngine) {
         MethodChannel(
@@ -29,12 +27,23 @@ object Safer {
                     val mimeType = call.argument<String>("mimeType")!!
                     activity.createFile(name, mimeType)
                 }
+
                 "writeUri" -> {
-                    pendingWriteResult = result
+                    pendingResult = result
                     val uriString = call.argument<String>("uri")!!
                     val byteArray = call.argument<ByteArray>("data")!!
                     val uri = Uri.parse(uriString)
                     activity.writeUri(uri, byteArray)
+                }
+
+                "openFile" -> {
+                    pendingResult = result
+                    val type = call.argument<String>("type")
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        this.type = type
+                    }
+                    activity.startActivityForResult(intent, OPEN_FILE_CODE)
                 }
             }
         }
@@ -50,6 +59,7 @@ object Safer {
     }
 
     fun bindResult(
+        activity: Activity,
         requestCode: Int, resultCode: Int,
         data: Intent?
     ) {
@@ -61,6 +71,23 @@ object Safer {
                         pendingResult?.success(uriString)
                         pendingResult = null
                         return
+                    }
+                }
+
+                OPEN_FILE_CODE -> {
+                    try {
+                        val uri = data!!.data!!
+                        val contentResolver = activity.contentResolver
+                        contentResolver.openFileDescriptor(uri, "r")!!.use {
+                            FileInputStream(it.fileDescriptor).use {
+                                val byteArray = it.readBytes()
+                                pendingResult?.success(byteArray)
+                                pendingResult = null
+                                return
+                            }
+                        }
+                    } catch (e: Throwable) {
+                        Log.d("Safer", "bindResult: ${e.message}")
                     }
                 }
             }
@@ -76,11 +103,11 @@ object Safer {
                     it.write(byteArray)
                 }
             }
-            pendingWriteResult?.success("${uri}")
-            pendingWriteResult = null
+            pendingResult?.success("${uri}")
+            pendingResult = null
         } catch (e: Throwable) {
-            pendingWriteResult?.error("d", "d", "d")
-            pendingWriteResult = null
+            pendingResult?.error("d", "d", "d")
+            pendingResult = null
         }
     }
 }

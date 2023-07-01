@@ -164,6 +164,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       },
       onPageChanged: (index) {
         setState(() {
+          
           this.index = index;
         });
       },

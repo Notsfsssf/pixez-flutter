@@ -452,7 +452,7 @@ class MainActivity : FlutterFragmentActivity() {
         data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        Safer.bindResult(requestCode, resultCode, data)
+        Safer.bindResult(this, requestCode, resultCode, data)
         when (requestCode) {
             PICK_IMAGE_FILE -> if (resultCode == Activity.RESULT_OK) {
                 data?.data?.also { uri ->

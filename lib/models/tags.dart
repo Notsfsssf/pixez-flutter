@@ -106,6 +106,15 @@ create table $tableTag (
     return tag;
   }
 
+  Future<void> insertAll(List<TagsPersist> tags) async {
+    await db.transaction((txn) async {
+      for (var tag in tags) {
+        await txn.insert(tableTag, tag.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+    });
+  }
+
   Future<TagsPersist?> getTodo(int id) async {
     List<Map<String, dynamic>> maps = await db.query(tableTag,
         columns: [columnId, columnName, columnTranslatedName, columnType],
