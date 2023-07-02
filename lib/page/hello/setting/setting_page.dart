@@ -233,7 +233,7 @@ class _SettingPageState extends State<SettingPage> {
                     ListTile(
                       onTap: () => Leader.push(context, DataExportPage()),
                       title: Text(I18n.of(context).app_data),
-                      leading: Icon(Icons.folder),
+                      leading: Icon(Icons.folder_open_rounded),
                     ),
                   ],
                 ),
