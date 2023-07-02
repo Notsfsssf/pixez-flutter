@@ -48,6 +48,7 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
+import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -133,6 +134,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     _aboutStore =
         IllustAboutStore(widget.id, refreshController: _refreshController);
     super.initState();
+    supportTranslateCheck();
   }
 
   @override
@@ -302,6 +304,46 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     );
   }
 
+  bool supportTranslate = false;
+  String _selectedText = "";
+
+  Future<void> supportTranslateCheck() async {
+    if (!Platform.isAndroid) return;
+    bool results = await SupportorPlugin.processText();
+    if (mounted) {
+      setState(() {
+        supportTranslate = results;
+      });
+    }
+  }
+
+  AdaptiveTextSelectionToolbar _buildSelectionMenu(
+      SelectableRegionState editableTextState, BuildContext context) {
+    final List<ContextMenuButtonItem> buttonItems =
+        editableTextState.contextMenuButtonItems;
+    if (supportTranslate) {
+      buttonItems.insert(
+        buttonItems.length,
+        ContextMenuButtonItem(
+          label: I18n.of(context).translate,
+          onPressed: () async {
+            final selectionText = _selectedText;
+            if (Platform.isIOS) {
+              Share.share(selectionText);
+              return;
+            }
+            await SupportorPlugin.start(selectionText);
+            ContextMenuController.removeAny();
+          },
+        ),
+      );
+    }
+    return AdaptiveTextSelectionToolbar.buttonItems(
+      anchors: editableTextState.contextMenuAnchors,
+      buttonItems: buttonItems,
+    );
+  }
+
   Widget colorText(String text, BuildContext context) {
     return SelectionArea(
       child: Text(
@@ -407,8 +449,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SelectionArea(
-                  selectionControls: TextSelectionFix.buildControls(context),
                   focusNode: _focusNode,
+                  onSelectionChanged: (value) {
+                    _selectedText = value?.plainText ?? "";
+                  },
+                  contextMenuBuilder: (context, selectableRegionState) {
+                    return _buildSelectionMenu(selectableRegionState, context);
+                  },
                   child: SelectableHtml(
                     data: data.caption.isEmpty ? "~" : data.caption,
                   ),

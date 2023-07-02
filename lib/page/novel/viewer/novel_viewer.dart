@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -40,6 +41,7 @@ import 'package:pixez/page/novel/search/novel_result_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
+import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as Path;
 
@@ -60,6 +62,19 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   ReactionDisposer? _offsetDisposer;
   double _localOffset = 0.0;
 
+  bool supportTranslate = false;
+  String _selectedText = "";
+
+  Future<void> initMethod() async {
+    if (!Platform.isAndroid) return;
+    bool results = await SupportorPlugin.processText();
+    if (mounted) {
+      setState(() {
+        supportTranslate = results;
+      });
+    }
+  }
+
   @override
   void initState() {
     _novelStore = widget.novelStore ?? NovelStore(widget.id, null);
@@ -69,6 +84,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
     });
     _novelStore.fetch();
     super.initState();
+    initMethod();
   }
 
   @override
@@ -135,7 +151,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               _localOffset = _controller!.offset;
             });
           }
-          return SelectionArea(
+          return Container(
             child: Scaffold(
               appBar: AppBar(
                 elevation: 0.0,
@@ -242,8 +258,17 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: SelectableHtml(
-                              data: _novelStore.novel?.caption ?? ""),
+                          child: SelectionArea(
+                            onSelectionChanged: (value) {
+                              _selectedText = value?.plainText ?? "";
+                            },
+                            contextMenuBuilder: (context, editableTextState) {
+                              return _buildSelectionMenu(
+                                  editableTextState, context);
+                            },
+                            child: SelectableHtml(
+                                data: _novelStore.novel?.caption ?? ""),
+                          ),
                         ),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0)),
@@ -261,10 +286,19 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         child: Text(I18n.of(context).view_comment)),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: ExtendedText(
-                        _novelStore.novelTextResponse!.novelText,
-                        specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
-                        style: _textStyle,
+                      child: SelectionArea(
+                        onSelectionChanged: (value) {
+                          _selectedText = value?.plainText ?? "";
+                        },
+                        contextMenuBuilder: (context, editableTextState) {
+                          return _buildSelectionMenu(
+                              editableTextState, context);
+                        },
+                        child: ExtendedText(
+                          _novelStore.novelTextResponse!.novelText,
+                          specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
+                          style: _textStyle,
+                        ),
                       ),
                     ),
                     Container(
@@ -288,6 +322,33 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           ),
         );
       },
+    );
+  }
+
+  AdaptiveTextSelectionToolbar _buildSelectionMenu(
+      SelectableRegionState editableTextState, BuildContext context) {
+    final List<ContextMenuButtonItem> buttonItems =
+        editableTextState.contextMenuButtonItems;
+    if (supportTranslate) {
+      buttonItems.insert(
+        buttonItems.length,
+        ContextMenuButtonItem(
+          label: I18n.of(context).translate,
+          onPressed: () async {
+            final selectionText = _selectedText;
+            if (Platform.isIOS) {
+              Share.share(selectionText);
+              return;
+            }
+            await SupportorPlugin.start(selectionText);
+            ContextMenuController.removeAny();
+          },
+        ),
+      );
+    }
+    return AdaptiveTextSelectionToolbar.buttonItems(
+      anchors: editableTextState.contextMenuAnchors,
+      buttonItems: buttonItems,
     );
   }
 

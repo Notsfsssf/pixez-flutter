@@ -19,6 +19,7 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
         </intent>
+        <package android:name="com.google.android.apps.translate"/>
     </queries>
 
     <application
