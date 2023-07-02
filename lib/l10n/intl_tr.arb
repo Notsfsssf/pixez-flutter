@@ -22,7 +22,7 @@
   "choice_you_like": "Görünür etiketler",
   "choose_directory": "Klasör seç",
   "clear": "Temizle",
-  "clear_all_cache": "Tüm önbellek temizlensin mi?",
+  "clear_all_cache": "Tüm önbelleği temizle",
   "clear_completed_tasks": "Tümünü temizle",
   "clearn_cache": "Önbelleği temizle",
   "clearn_cache_hint": "GIF'lerin oynamasıyla ilgili bir sorun yaşıyorsanız bunu deneyin",
@@ -269,11 +269,11 @@
   "long_press_save_confirm": "Görsele uzun süre basılı tutulduğunda cihaza kaydedilip kaydedilmeyeceğini sor",
   "dynamic_color": "Dinamik renk",
   "seed_color": "Ana renk",
-  "app_data": "App data",
-  "export_title": "Export",
-  "import_title": "Import",
-  "export_bookmark_tag": "Export bookmark tags",
-  "export_tag_history": "Export tag history",
-  "import_bookmark_tag": "Import bookmark tags",
-  "import_tag_history": "Import tag history"
+  "app_data": "Uygulama verileri",
+  "export_title": "Dışa Aktar",
+  "import_title": "İçe Aktar",
+  "export_bookmark_tag": "Yer imi etiketlerini dışa aktar",
+  "export_tag_history": "Etiket geçmişini dışa aktar",
+  "import_bookmark_tag": "Yer imi etiketlerini içe aktar",
+  "import_tag_history": "Etiket geçmişini içe aktar"
 }
