@@ -76,12 +76,12 @@ abstract class _TagHistoryStoreBase with Store {
     final json = utf8.decode(result);
     final decoder = JsonDecoder();
     final map = decoder.convert(json);
-    final data = ExportTagHistoryData.fromJson(map);
-    if (data.type != EXPORT_TYPE) return;
+    final data = ExportData.fromJson(map);
+    if (data.tagHisotry == null) return;
     final tagList = tags.map((element) => element.name);
-    data.data.removeWhere((element) => tagList.contains(element.name));
+    data.tagHisotry!.removeWhere((element) => tagList.contains(element.name));
     await tagsPersistProvider.open();
-    await tagsPersistProvider.insertAll(data.data.toList());
+    await tagsPersistProvider.insertAll(data.tagHisotry!.toList());
     await fetch();
   }
 
@@ -90,7 +90,7 @@ abstract class _TagHistoryStoreBase with Store {
     final uriStr =
         await SAFPlugin.createFile("tag_history.json", "application/json");
     if (uriStr == null) return;
-    final exportData = ExportTagHistoryData(data: tags, type: EXPORT_TYPE);
+    final exportData = ExportData(tagHisotry: tags);
     await SAFPlugin.writeUri(
         uriStr, Uint8List.fromList(utf8.encode(jsonEncode(exportData))));
   }

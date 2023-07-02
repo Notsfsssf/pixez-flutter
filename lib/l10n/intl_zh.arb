@@ -268,5 +268,12 @@
   "script_page_hint": "这个功能旨在通过自定义js script来处理保存插画时的文件名，如果不清楚原理请不要随意尝试,可以通过点击右上角叉号来恢复默认设定",
   "long_press_save_confirm": "长按保存时确认",
   "dynamic_color": "动态取色",
-  "seed_color": "种子颜色"
+  "seed_color": "种子颜色",
+  "app_data": "应用数据",
+  "export_title": "导出",
+  "import_title": "导入",
+  "export_bookmark_tag": "导出收藏标签",
+  "export_tag_history": "导出标签历史",
+  "import_bookmark_tag": "导入收藏标签",
+  "import_tag_history": "导入标签历史"
 }

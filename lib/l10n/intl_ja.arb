@@ -268,5 +268,12 @@
   "script_page_hint": "この機能は js スクリプトによってイラストを保存する際のファイル名をカスタマイズするためのものです。よく分からない方はこの機能を使用しないことをおすすめします。\n\n右上の十字ボタンをクリックすると、初期設定に戻すことができます。",
   "long_press_save_confirm": "画像長押しで保存する際に確認する",
   "dynamic_color": "Dynamic color",
-  "seed_color": "Seed color"
+  "seed_color": "Seed color",
+  "app_data": "App data",
+  "export_title": "Export",
+  "import_title": "Import",
+  "export_bookmark_tag": "Export bookmark tags",
+  "export_tag_history": "Export tag history",
+  "import_bookmark_tag": "Import bookmark tags",
+  "import_tag_history": "Import tag history"
 }

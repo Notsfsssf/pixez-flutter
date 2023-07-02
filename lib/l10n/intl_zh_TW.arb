@@ -268,5 +268,12 @@
   "script_page_hint": "這個功能旨在通過自訂 JavaScript 腳本來處理儲存插畫時的檔名，如果不清楚原理，請不要隨意嘗試；可以通過點按右上角叉號恢復預設組態",
   "long_press_save_confirm": "按住儲存時進行確認",
   "dynamic_color": "動態取色",
-  "seed_color": "種子顏色"
+  "seed_color": "種子顏色",
+  "app_data": "應用數據",
+  "export_title": "導出",
+  "import_title": "導入",
+  "export_bookmark_tag": "導出收藏標籤",
+  "export_tag_history": "導出標籤歷史",
+  "import_bookmark_tag": "導入收藏標籤",
+  "import_tag_history": "導入標籤歷史"
 }

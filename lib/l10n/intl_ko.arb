@@ -268,5 +268,12 @@
   "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
   "long_press_save_confirm": "long press to save confirm",
   "dynamic_color": "Dynamic color",
-  "seed_color": "Seed color"
+  "seed_color": "Seed color",
+  "app_data": "App data",
+  "export_title": "Export",
+  "import_title": "Import",
+  "export_bookmark_tag": "Export bookmark tags",
+  "export_tag_history": "Export tag history",
+  "import_bookmark_tag": "Import bookmark tags",
+  "import_tag_history": "Import tag history"
 }

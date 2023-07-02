@@ -4,14 +4,14 @@ import 'package:pixez/models/tags.dart';
 part 'export_tag_history_data.g.dart';
 
 @JsonSerializable()
-class ExportTagHistoryData {
-  List<TagsPersist> data = [];
-  String type = "tag_history";
+class ExportData {
+  List<TagsPersist>? tagHisotry;
+  List<String>? bookTags;
 
-  ExportTagHistoryData({required this.data, required this.type});
+  ExportData({this.tagHisotry, this.bookTags});
 
-  factory ExportTagHistoryData.fromJson(Map<String, dynamic> json) =>
-      _$ExportTagHistoryDataFromJson(json);
+  factory ExportData.fromJson(Map<String, dynamic> json) =>
+      _$ExportDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ExportTagHistoryDataToJson(this);
+  Map<String, dynamic> toJson() => _$ExportDataToJson(this);
 }

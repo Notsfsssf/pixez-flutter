@@ -35,6 +35,7 @@ import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
 import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/recom/recom_manga_page.dart';
+import 'package:pixez/page/hello/setting/data_export_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
@@ -230,9 +231,9 @@ class _SettingPageState extends State<SettingPage> {
                       onTap: () => Leader.push(context, JobPage()),
                     ),
                     ListTile(
-                      onTap: () => _showClearCacheDialog(context),
-                      title: Text(I18n.of(context).clearn_cache),
-                      leading: Icon(Icons.clear),
+                      onTap: () => Leader.push(context, DataExportPage()),
+                      title: Text(I18n.of(context).app_data),
+                      leading: Icon(Icons.folder),
                     ),
                   ],
                 ),
