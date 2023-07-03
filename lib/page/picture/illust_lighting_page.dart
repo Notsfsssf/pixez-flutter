@@ -55,9 +55,14 @@ class IllustLightingPage extends StatefulWidget {
   final int id;
   final String? heroString;
   final IllustStore? store;
+  final GestureDragEndCallback? onHorizontalDragEnd;
 
   const IllustLightingPage(
-      {Key? key, required this.id, this.heroString, this.store})
+      {Key? key,
+      required this.id,
+      this.heroString,
+      this.store,
+      this.onHorizontalDragEnd})
       : super(key: key);
 
   @override
@@ -89,6 +94,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
       id: widget.id,
       store: widget.store,
       heroString: widget.heroString,
+      onHorizontalDragEnd: widget.onHorizontalDragEnd,
     );
   }
 
@@ -97,6 +103,7 @@ class _IllustLightingPageState extends State<IllustLightingPage> {
       id: widget.id,
       store: widget.store,
       heroString: widget.heroString,
+      onHorizontalDragEnd: widget.onHorizontalDragEnd,
     );
   }
 }
@@ -105,9 +112,14 @@ class IllustVerticalPage extends StatefulWidget {
   final int id;
   final String? heroString;
   final IllustStore? store;
+  final GestureDragEndCallback? onHorizontalDragEnd;
 
   const IllustVerticalPage(
-      {Key? key, required this.id, this.heroString, this.store})
+      {Key? key,
+      required this.id,
+      this.heroString,
+      this.store,
+      this.onHorizontalDragEnd})
       : super(key: key);
 
   @override
@@ -230,6 +242,11 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           floatingActionButton: GestureDetector(
             onLongPress: () {
               _showBookMarkTag();
+            },
+            onHorizontalDragEnd: (DragEndDetails detail) {
+              if (widget.onHorizontalDragEnd != null) {
+                widget.onHorizontalDragEnd!(detail);
+              }
             },
             child: Observer(builder: (context) {
               return Visibility(
