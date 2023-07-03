@@ -14,11 +14,9 @@
  *
  */
 
-import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:package_info_plus/package_info_plus.dart';

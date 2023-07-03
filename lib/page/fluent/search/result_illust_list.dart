@@ -18,14 +18,12 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/fluent_lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/search/result_illust_store.dart';
-import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 
 class ResultIllustList extends StatefulWidget {
   final String word;
