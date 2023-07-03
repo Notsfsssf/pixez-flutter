@@ -81,8 +81,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 10009230
-        versionName "0.9.23 ee"
+        versionCode 10009240
+        versionName "0.9.24 Fly, My Wings"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {
