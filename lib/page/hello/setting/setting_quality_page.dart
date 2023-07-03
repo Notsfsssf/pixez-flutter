@@ -861,22 +861,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: ListTile(
-                  trailing: Icon(Icons.keyboard_arrow_right),
-                  title: Text("App data"),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DataExportPage()));
-                  },
-                ),
-              ),
-            ),
-          ),
           if (_widgetTypeIndex != -1)
             Padding(
               padding: EdgeInsets.all(8.0),

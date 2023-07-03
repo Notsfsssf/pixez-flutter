@@ -122,7 +122,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               SliverToBoxAdapter(
                 child: SearchBar(
                   onSaucenao: () {
-                    _sauceStore.findImage();
+                    _sauceStore.findImage(context: context);
                   },
                 ),
               )

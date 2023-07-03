@@ -52,7 +52,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
       }
     });
     if (widget.path != null) {
-      _store.findImage(path: widget.path);
+      _store.findImage(context: context, path: widget.path);
     }
   }
 
@@ -63,7 +63,7 @@ class _SauceNaoPageState extends State<SauceNaoPage> {
         child: Icon(Icons.add_photo_alternate),
         backgroundColor: Theme.of(context).colorScheme.secondary,
         onPressed: () {
-          _store.findImage();
+          _store.findImage(context: context);
         },
       ),
       appBar: AppBar(
