@@ -49,8 +49,14 @@ class IllustRowPage extends StatefulWidget {
   final int id;
   final String? heroString;
   final IllustStore? store;
+  final GestureDragEndCallback? onHorizontalDragEnd;
 
-  const IllustRowPage({Key? key, required this.id, this.heroString, this.store})
+  const IllustRowPage(
+      {Key? key,
+      required this.id,
+      this.heroString,
+      this.store,
+      this.onHorizontalDragEnd})
       : super(key: key);
 
   @override
@@ -161,6 +167,11 @@ class _IllustRowPageState extends State<IllustRowPage>
       floatingActionButton: GestureDetector(
         onLongPress: () {
           _showBookMarkTag();
+        },
+        onHorizontalDragEnd: (details) {
+          if (widget.onHorizontalDragEnd != null) {
+            widget.onHorizontalDragEnd!(details);
+          }
         },
         child: Observer(builder: (context) {
           return Visibility(

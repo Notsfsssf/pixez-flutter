@@ -275,5 +275,7 @@
   "export_bookmark_tag": "導出收藏標籤",
   "export_tag_history": "導出標籤歷史",
   "import_bookmark_tag": "導入收藏標籤",
-  "import_tag_history": "導入標籤歷史"
+  "import_tag_history": "導入標籤歷史",
+  "photo_picker": "圖片選擇器",
+  "photo_picker_subtitle": "使用新型圖片選擇器"
 }

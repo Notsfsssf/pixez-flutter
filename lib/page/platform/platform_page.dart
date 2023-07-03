@@ -252,13 +252,13 @@ class _PlatformPageState extends State<PlatformPage> {
                         await userSetting.setImagePickerType(value ? 1 : 0);
                       },
                       title: InkWell(
-                        child: Text("Photo picker"),
+                        child: Text(I18n.of(context).photo_picker),
                         onTap: () {
                           launch(
                               "https://developer.android.com/training/data-storage/shared/photopicker");
                         },
                       ),
-                      subtitle: Text("use new system-level image selector"),
+                      subtitle: Text(I18n.of(context).photo_picker_subtitle),
                       value: userSetting.imagePickerType == 1,
                     );
                   },

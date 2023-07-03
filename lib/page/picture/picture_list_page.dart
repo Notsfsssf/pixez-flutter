@@ -65,34 +65,24 @@ class _PictureListPageState extends State<PictureListPage> {
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width / 2;
-    return Stack(
-      children: [
-        Observer(builder: (_) {
-          return PageView.builder(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              if (index == _iStores.length && _lightingStore != null) {
-                return PictureListNextPage(
-                  lightingStore: _lightingStore!,
-                );
-              }
-              final f = _iStores[index];
-              String? tag = nowPosition == index ? widget.heroString : null;
-              return IllustLightingPage(
-                id: f.id,
-                heroString: tag,
-                store: f,
-              );
-            },
-            itemCount: _iStores.length + 1,
-          );
-        }),
-        Container(
-          margin: EdgeInsets.all(24),
-          child: GestureDetector(
-            onHorizontalDragEnd: (DragEndDetails detail) {
-              final pixelsPerSecond = detail.velocity.pixelsPerSecond;
+    return Observer(builder: (_) {
+      return PageView.builder(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          if (index == _iStores.length && _lightingStore != null) {
+            return PictureListNextPage(
+              lightingStore: _lightingStore!,
+            );
+          }
+          final f = _iStores[index];
+          String? tag = nowPosition == index ? widget.heroString : null;
+          return IllustLightingPage(
+            id: f.id,
+            heroString: tag,
+            store: f,
+            onHorizontalDragEnd: (details) {
+              final pixelsPerSecond = details.velocity.pixelsPerSecond;
               if (pixelsPerSecond.dy.abs() > pixelsPerSecond.dx.abs()) return;
               if (pixelsPerSecond.dx.abs() > screenWidth) {
                 int result = nowPosition;
@@ -110,10 +100,11 @@ class _PictureListPageState extends State<PictureListPage> {
                 });
               }
             },
-          ),
-        )
-      ],
-    );
+          );
+        },
+        itemCount: _iStores.length + 1,
+      );
+    });
   }
 }
 
