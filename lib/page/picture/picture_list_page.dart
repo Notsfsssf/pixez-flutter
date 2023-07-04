@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
@@ -68,7 +69,9 @@ class _PictureListPageState extends State<PictureListPage> {
     return Observer(builder: (_) {
       return PageView.builder(
         controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
+        physics: userSetting.swipeChangeArtwork
+            ? null
+            : NeverScrollableScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
           if (index == _iStores.length && _lightingStore != null) {
             return PictureListNextPage(
@@ -82,29 +85,32 @@ class _PictureListPageState extends State<PictureListPage> {
             heroString: tag,
             store: f,
             onHorizontalDragEnd: (details) {
-              final pixelsPerSecond = details.velocity.pixelsPerSecond;
-              if (pixelsPerSecond.dy.abs() > pixelsPerSecond.dx.abs()) return;
-              if (pixelsPerSecond.dx.abs() > screenWidth) {
-                int result = nowPosition;
-                if (pixelsPerSecond.dx < 0)
-                  result++;
-                else
-                  result--;
-                _pageController.animateToPage(result,
-                    duration: Duration(milliseconds: 200),
-                    curve: Curves.easeInOut);
-                if (result >= _iStores.length) result = _iStores.length - 1;
-                if (result < 0) result = 0;
-                setState(() {
-                  nowPosition = result;
-                });
-              }
+              _onDrag(details);
             },
           );
         },
         itemCount: _iStores.length + 1,
       );
     });
+  }
+
+  _onDrag(DragEndDetails details) {
+    final pixelsPerSecond = details.velocity.pixelsPerSecond;
+    if (pixelsPerSecond.dy.abs() > pixelsPerSecond.dx.abs()) return;
+    if (pixelsPerSecond.dx.abs() > screenWidth) {
+      int result = nowPosition;
+      if (pixelsPerSecond.dx < 0)
+        result++;
+      else
+        result--;
+      _pageController.animateToPage(result,
+          duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+      if (result >= _iStores.length) result = _iStores.length - 1;
+      if (result < 0) result = 0;
+      setState(() {
+        nowPosition = result;
+      });
+    }
   }
 }
 

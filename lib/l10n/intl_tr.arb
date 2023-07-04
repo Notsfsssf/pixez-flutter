@@ -277,5 +277,6 @@
   "import_bookmark_tag": "Yer imi etiketlerini içe aktar",
   "import_tag_history": "Etiket geçmişini içe aktar",
   "photo_picker": "Photo picker",
-  "photo_picker_subtitle": "use new system-level image selector"
+  "photo_picker_subtitle": "use new system-level image selector",
+  "swipe_to_switch_artworks": "Swipe to switch artworks"
 }

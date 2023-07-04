@@ -277,5 +277,6 @@
   "import_bookmark_tag": "Import bookmark tags",
   "import_tag_history": "Import tag history",
   "photo_picker": "Photo picker",
-  "photo_picker_subtitle": "Use new system-level image selector"
+  "photo_picker_subtitle": "Use new system-level image selector",
+  "swipe_to_switch_artworks": "Swipe to switch artworks"
 }

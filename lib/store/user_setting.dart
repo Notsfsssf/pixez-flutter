@@ -69,6 +69,7 @@ abstract class _UserSetting with Store {
   static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type";
   static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
   static const String USE_DYNAMIC_COLOR_KEY = "use_dynamic_color";
+  static const String SWIPE_CHANGE_ARTWORK_KEY = "swipe_change_artwork";
 
   @observable
   int crossAdapterWidth = 100;
@@ -153,6 +154,8 @@ abstract class _UserSetting with Store {
   int imagePickerType = 1;
   @observable
   int themeInitState = 0;
+  @observable
+  bool swipeChangeArtwork = false;
 
   @observable
   String? format = "";
@@ -314,6 +317,12 @@ abstract class _UserSetting with Store {
   }
 
   @action
+  setSwipeChangeArtwork(bool v) async {
+    await prefs.setBool(SWIPE_CHANGE_ARTWORK_KEY, v);
+    swipeChangeArtwork = v;
+  }
+
+  @action
   askInit() async {
     prefs = await SharedPreferences.getInstance();
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
@@ -393,6 +402,7 @@ abstract class _UserSetting with Store {
     defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
     longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
     imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 1;
+    swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
     if (Platform.isAndroid) {
       try {
         var modeList = await FlutterDisplayMode.supported;
