@@ -176,7 +176,7 @@ class _HelloPageState extends State<HelloPage> {
                   child: accountStore.now != null
                       ? PainterAvatar(
                           url: accountStore.now!.userImage,
-                          id: accountStore.now!.id ?? 0)
+                          id: int.tryParse(accountStore.now!.userId) ?? 0)
                       : Container(),
                 ),
               ),
