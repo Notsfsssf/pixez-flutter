@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/leader.dart';
@@ -108,45 +109,127 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView.builder(
-          itemCount: 5,
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() {
-              this.index = index;
-            });
-          },
-          itemBuilder: (context, index) {
-            return _lists[index];
-          }),
-      bottomNavigationBar: NavigationBar(
-        destinations: [
-          NavigationDestination(
-              icon: Icon(Icons.home), label: I18n.of(context).home),
-          NavigationDestination(
-              icon: Icon(
-                Icons.leaderboard,
+    return LayoutBuilder(builder: (context, constraints) {
+      final wide = constraints.maxWidth > constraints.maxHeight;
+      return Scaffold(
+        body: Row(
+          children: <Widget>[
+            if (wide) ..._buildRail(context),
+            Expanded(
+              child: _buildPageView(context),
+            ),
+          ],
+        ),
+        bottomNavigationBar: wide ? null : _buildNavigationBar(context),
+      );
+    });
+  }
+
+  List<Widget> _buildRail(BuildContext context) {
+    return [
+      Stack(
+        children: [
+          NavigationRail(
+            selectedIndex: index,
+            labelType: NavigationRailLabelType.all,
+            onDestinationSelected: (int index) {
+              _pageController.jumpToPage(index);
+              setState(() {
+                index = index;
+              });
+            },
+            destinations: <NavigationRailDestination>[
+              NavigationRailDestination(
+                  icon: Icon(Icons.home), label: Text(I18n.of(context).home)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.leaderboard),
+                  label: Text(I18n.of(context).rank)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.favorite),
+                  label: Text(I18n.of(context).quick_view)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.search),
+                  label: Text(I18n.of(context).search)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.more_horiz),
+                  label: Text(I18n.of(context).more)),
+            ],
+          ),
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 4.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  ),
+                ),
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: accountStore.now != null
+                      ? PainterAvatar(
+                          url: accountStore.now!.userImage,
+                          id: accountStore.now!.id ?? 0)
+                      : Container(),
+                ),
               ),
-              label: I18n.of(context).rank),
-          NavigationDestination(
-              icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
-          NavigationDestination(
-              icon: Icon(Icons.search), label: I18n.of(context).search),
-          NavigationDestination(
-              icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+            ),
+          ),
         ],
-        selectedIndex: index,
-        onDestinationSelected: (value) {
-          if (this.index == index) {
-            topStore.setTop("${index + 1}00");
-          }
-          setState(() {
-            this.index = value;
-          });
-          if (_pageController.hasClients) _pageController.jumpToPage(index);
-        },
       ),
+      const VerticalDivider(thickness: 1, width: 1),
+    ];
+  }
+
+  NavigationBar _buildNavigationBar(BuildContext context) {
+    return NavigationBar(
+      destinations: [
+        NavigationDestination(
+            icon: Icon(Icons.home), label: I18n.of(context).home),
+        NavigationDestination(
+            icon: Icon(
+              Icons.leaderboard,
+            ),
+            label: I18n.of(context).rank),
+        NavigationDestination(
+            icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+        NavigationDestination(
+            icon: Icon(Icons.search), label: I18n.of(context).search),
+        NavigationDestination(
+            icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+      ],
+      selectedIndex: index,
+      onDestinationSelected: (value) {
+        if (this.index == index) {
+          topStore.setTop("${index + 1}00");
+        }
+        setState(() {
+          this.index = value;
+        });
+        if (_pageController.hasClients) _pageController.jumpToPage(index);
+      },
     );
+  }
+
+  PageView _buildPageView(BuildContext context) {
+    return PageView.builder(
+        key: PageStorageKey<String>("hello"),
+        itemCount: 5,
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            this.index = index;
+          });
+        },
+        itemBuilder: (context, index) {
+          return _lists[index];
+        });
   }
 }
