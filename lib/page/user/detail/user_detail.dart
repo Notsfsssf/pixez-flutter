@@ -60,9 +60,15 @@ class _UserDetailPageState extends State<UserDetailPage> {
       return SafeArea(
         top: false,
         bottom: false,
-        child: Builder(builder: (context) {
-          return _buildScrollView(context, detail, profile, public);
-        }),
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: Builder(builder: (context) {
+            return _buildScrollView(context, detail, profile, public);
+          }),
+        ),
       );
     return _buildScrollView(context, detail, profile, public);
   }
@@ -80,14 +86,16 @@ class _UserDetailPageState extends State<UserDetailPage> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: widget.userDetail?.user.comment != null &&
-                          widget.userDetail?.user.comment!.isNotEmpty == true
-                      ? SelectableHtml(data: widget.userDetail!.user.comment!)
-                      : SelectableHtml(
-                          data: '~',
-                        )),
+              child: SelectionArea(
+                child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: widget.userDetail?.user.comment != null &&
+                            widget.userDetail?.user.comment!.isNotEmpty == true
+                        ? SelectableHtml(data: widget.userDetail!.user.comment!)
+                        : SelectableHtml(
+                            data: '~',
+                          )),
+              ),
             ),
           ),
         ),

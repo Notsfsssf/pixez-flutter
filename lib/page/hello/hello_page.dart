@@ -220,7 +220,6 @@ class _HelloPageState extends State<HelloPage> {
 
   PageView _buildPageView(BuildContext context) {
     return PageView.builder(
-        key: PageStorageKey<String>("hello"),
         itemCount: 5,
         controller: _pageController,
         onPageChanged: (index) {

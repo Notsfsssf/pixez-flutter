@@ -337,7 +337,11 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           onPressed: () async {
             final selectionText = _selectedText;
             if (Platform.isIOS) {
-              Share.share(selectionText);
+              final box = context.findRenderObject() as RenderBox?;
+              final pos = box != null
+                  ? box.localToGlobal(Offset.zero) & box.size
+                  : null;
+              Share.share(selectionText, sharePositionOrigin: pos);
               return;
             }
             await SupportorPlugin.start(selectionText);

@@ -272,146 +272,157 @@ class _IllustRowPageState extends State<IllustRowPage>
     final screenHeight = MediaQuery.of(context).size.height;
     final height = (radio * expectWidth);
     final centerType = height <= screenHeight;
-    return Container(
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: expectWidth,
-                child: CustomScrollView(
-                    slivers: [..._buildPhotoList(data, centerType, height)]),
-              ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).cardColor,
-                  child: EasyRefresh(
-                    controller: _refreshController,
-                    onLoad: () {
-                      _aboutStore.next();
-                    },
-                    child: CustomScrollView(
-                      controller: _scrollController,
-                      slivers: [
-                        SliverToBoxAdapter(
-                            child: Container(
-                                height: MediaQuery.of(context).padding.top)),
-                        SliverToBoxAdapter(
-                          child: _buildNameAvatar(context, data),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(I18n.of(context).illust_id),
-                                    Container(
-                                      width: 10.0,
-                                    ),
-                                    colorText(data.id.toString(), context),
-                                    Container(
-                                      width: 20.0,
-                                    ),
-                                    Text(I18n.of(context).pixel),
-                                    Container(
-                                      width: 10.0,
-                                    ),
-                                    colorText(
-                                        "${data.width}x${data.height}", context)
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(I18n.of(context).total_view),
-                                    Container(
-                                      width: 10.0,
-                                    ),
-                                    colorText(
-                                        data.totalView.toString(), context),
-                                    Container(
-                                      width: 20.0,
-                                    ),
-                                    Text(I18n.of(context).total_bookmark),
-                                    Container(
-                                      width: 10.0,
-                                    ),
-                                    colorText("${data.totalBookmarks}", context)
-                                  ],
-                                ),
-                              ],
-                            ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Container(
+        child: Stack(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: expectWidth,
+                  child: CustomScrollView(
+                      slivers: [..._buildPhotoList(data, centerType, height)]),
+                ),
+                Expanded(
+                  child: Container(
+                    color: Theme.of(context).cardColor,
+                    child: EasyRefresh(
+                      controller: _refreshController,
+                      onLoad: () {
+                        _aboutStore.next();
+                      },
+                      child: CustomScrollView(
+                        controller: _scrollController,
+                        slivers: [
+                          SliverToBoxAdapter(
+                              child: Container(
+                                  height: MediaQuery.of(context).padding.top)),
+                          SliverToBoxAdapter(
+                            child: _buildNameAvatar(context, data),
                           ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: 2,
-                              runSpacing: 0,
-                              children: [
-                                if (data.illustAIType == 2)
-                                  Text("${I18n.of(context).ai_generated}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary)),
-                                for (var f in data.tags) buildRow(context, f)
-                              ],
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Card(
+                          SliverToBoxAdapter(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: SelectableHtml(
-                                data: data.caption.isEmpty ? "~" : data.caption,
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(I18n.of(context).illust_id),
+                                      Container(
+                                        width: 10.0,
+                                      ),
+                                      colorText(data.id.toString(), context),
+                                      Container(
+                                        width: 20.0,
+                                      ),
+                                      Text(I18n.of(context).pixel),
+                                      Container(
+                                        width: 10.0,
+                                      ),
+                                      colorText("${data.width}x${data.height}",
+                                          context)
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(I18n.of(context).total_view),
+                                      Container(
+                                        width: 10.0,
+                                      ),
+                                      colorText(
+                                          data.totalView.toString(), context),
+                                      Container(
+                                        width: 20.0,
+                                      ),
+                                      Text(I18n.of(context).total_bookmark),
+                                      Container(
+                                        width: 10.0,
+                                      ),
+                                      colorText(
+                                          "${data.totalBookmarks}", context)
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextButton(
-                              child: Text(
-                                I18n.of(context).view_comment,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyLarge!,
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 2,
+                                runSpacing: 0,
+                                children: [
+                                  if (data.illustAIType == 2)
+                                    Text("${I18n.of(context).ai_generated}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary)),
+                                  for (var f in data.tags) buildRow(context, f)
+                                ],
                               ),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        CommentPage(
-                                          id: data.id,
-                                        )));
-                              },
                             ),
                           ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(I18n.of(context).about_picture),
+                          SliverToBoxAdapter(
+                            child: Card(
+                              child: SelectionArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SelectableHtml(
+                                    data: data.caption.isEmpty
+                                        ? "~"
+                                        : data.caption,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        _buildRecom()
-                      ],
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextButton(
+                                child: Text(
+                                  I18n.of(context).view_comment,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyLarge!,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          CommentPage(
+                                            id: data.id,
+                                          )));
+                                },
+                              ),
+                            ),
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(I18n.of(context).about_picture),
+                            ),
+                          ),
+                          _buildRecom()
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1025,17 +1036,25 @@ class _IllustRowPageState extends State<IllustRowPage>
                           Navigator.of(context).pop();
                         },
                       ),
-                      ListTile(
-                        title: Text(I18n.of(context).share),
-                        leading: Icon(
-                          Icons.share,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Share.share(
-                              "https://www.pixiv.net/artworks/${widget.id}");
-                        },
-                      ),
+                      Builder(builder: (context) {
+                        return ListTile(
+                          title: Text(I18n.of(context).share),
+                          leading: Icon(
+                            Icons.share,
+                          ),
+                          onTap: () {
+                            final box =
+                                context.findRenderObject() as RenderBox?;
+                            final pos = box != null
+                                ? box.localToGlobal(Offset.zero) & box.size
+                                : null;
+                            Navigator.of(context).pop();
+                            Share.share(
+                                "https://www.pixiv.net/artworks/${widget.id}",
+                                sharePositionOrigin: pos);
+                          },
+                        );
+                      }),
                       ListTile(
                         leading: Icon(
                           Icons.link,

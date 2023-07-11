@@ -346,7 +346,11 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           onPressed: () async {
             final selectionText = _selectedText;
             if (Platform.isIOS) {
-              Share.share(selectionText);
+              final box = context.findRenderObject() as RenderBox?;
+              final pos = box != null
+                  ? box.localToGlobal(Offset.zero) & box.size
+                  : null;
+              Share.share(selectionText, sharePositionOrigin: pos);
               return;
             }
             await SupportorPlugin.start(selectionText);
@@ -1137,17 +1141,25 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           Navigator.of(context).pop();
                         },
                       ),
-                      ListTile(
-                        title: Text(I18n.of(context).share),
-                        leading: Icon(
-                          Icons.share,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Share.share(
-                              "https://www.pixiv.net/artworks/${widget.id}");
-                        },
-                      ),
+                      Builder(builder: (context) {
+                        return ListTile(
+                          title: Text(I18n.of(context).share),
+                          leading: Icon(
+                            Icons.share,
+                          ),
+                          onTap: () {
+                            final box =
+                                context.findRenderObject() as RenderBox?;
+                            final pos = box != null
+                                ? box.localToGlobal(Offset.zero) & box.size
+                                : null;
+                            Navigator.of(context).pop();
+                            Share.share(
+                                "https://www.pixiv.net/artworks/${widget.id}",
+                                sharePositionOrigin: pos);
+                          },
+                        );
+                      }),
                       ListTile(
                         leading: Icon(
                           Icons.link,
