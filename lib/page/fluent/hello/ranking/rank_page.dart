@@ -192,7 +192,7 @@ class _RankPageState extends State<RankPage>
                         });
                       }
                     },
-                    startYear: 2007,
+                    startDate: DateTime(2007, 8),
                   ),
           );
         } else {
