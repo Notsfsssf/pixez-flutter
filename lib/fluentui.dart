@@ -6,18 +6,18 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/fluent/splash/splash_page.dart';
 import 'package:pixez/platform/platform.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'er/leader.dart';
-
 Color? _fluentuiBgColor = null;
 
 initFluent(List<String> args) async {
-  Constants.isFluent = true;
+  if (!Constants.isFluent) return;
+
   await singleInstance(
     args,
     "Pixez::{fe97f8e1-32e5-44ec-9bfb-cde274b87f61}",
@@ -59,6 +59,8 @@ _argsParser(List<String> args) async {
 }
 
 Future _applyEffect(bool isDark) async {
+  if (!Constants.isFluent) return;
+
   final effect = await getEffect();
   debugPrint("背景特效: $effect; 暗色主题: $isDark;");
 
@@ -74,6 +76,8 @@ Future _applyEffect(bool isDark) async {
 }
 
 Widget buildFluentUI(BuildContext context) {
+  if (!Constants.isFluent) return Container();
+
   final mode = userSetting.themeMode;
   final platformBrightness = MediaQuery.platformBrightnessOf(context);
   final isDark = mode == ThemeMode.dark ||
