@@ -181,9 +181,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                   ),
                   onSecondaryTapUp: (details) => _flyoutController.showFlyout(
                     position: getPosition(context, _flyoutKey, details),
-                    barrierColor: Colors.black.withOpacity(0.1),
                     builder: (context) => MenuFlyout(
-                      color: Colors.transparent,
                       items: [
                         MenuFlyoutItem(
                           text: Text(I18n.of(context).favorited_tag),
@@ -513,9 +511,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           ),
           onSecondaryTapUp: (details) => _nameAvatarFlyoutController.showFlyout(
             position: getPosition(context, _nameAvatarFlyoutKey, details),
-            barrierColor: Colors.black.withOpacity(0.1),
             builder: (context) => MenuFlyout(
-              color: Colors.transparent,
               items: [
                 MenuFlyoutItem(
                   text: Text(I18n.of(context).follow),
@@ -832,9 +828,7 @@ class IllustItem extends StatelessWidget {
         ),
         onSecondaryTapUp: (details) => _flyoutController.showFlyout(
           position: getPosition(context, _flyoutKey, details),
-          barrierColor: Colors.black.withOpacity(0.1),
           builder: (context) => MenuFlyout(
-            color: Colors.transparent,
             items: [
               if (data.metaPages.isNotEmpty)
                 MenuFlyoutItem(
@@ -974,9 +968,7 @@ class MoreItem extends StatelessWidget {
         ),
         onSecondaryTapUp: (details) => _flyoutController.showFlyout(
           position: getPosition(context, _flyoutKey, details),
-          barrierColor: Colors.black.withOpacity(0.1),
           builder: (context) => MenuFlyout(
-            color: Colors.transparent,
             items: [
               MenuFlyoutItem(
                 text: Text(I18n.of(context).save),

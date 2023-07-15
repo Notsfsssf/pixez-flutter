@@ -101,9 +101,7 @@ class _IllustCardState extends State<IllustCard> {
               onSecondaryTapUp: (details) {
                 _flyoutController.showFlyout(
                   position: getPosition(context, _flyoutKey, details),
-                  barrierColor: Colors.black.withOpacity(0.1),
                   builder: (context) => MenuFlyout(
-                    color: Colors.transparent,
                     items: [
                       MenuFlyoutItem(
                         text: Text(I18n.of(context).save),
@@ -250,9 +248,7 @@ class _IllustCardState extends State<IllustCard> {
           ),
           onSecondaryTapUp: (details) => _flyoutController.showFlyout(
             position: getPosition(context, _flyoutKey, details),
-            barrierColor: Colors.black.withOpacity(0.1),
             builder: (context) => MenuFlyout(
-              color: Colors.transparent,
               items: [
                 MenuFlyoutItem(
                   text: Text('Like'),
