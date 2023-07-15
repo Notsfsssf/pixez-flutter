@@ -63,9 +63,7 @@ main(List<String> args) async {
   }
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await initFluent(args);
-  }
+  await initFluent(args);
 
   runApp(ProviderScope(
     child: MyApp(),

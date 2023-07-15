@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 class Constants {
   static String tagName = "0.9.25";
   static const isGooglePlay =
@@ -22,5 +24,6 @@ class Constants {
   static String? code_verifier = null;
 
   /// 为true表示使用FluentUI 否则为false。可以用来判断是否是Desktop平台
-  static bool isFluent = false;
+  static bool isFluent =
+      Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 }

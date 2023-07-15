@@ -133,31 +133,31 @@ class ThemePage extends StatefulWidget {
 
 class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   final skinList = [
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFF26C6DA).toAccentColor(),
     ),
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFFEC407A).toAccentColor(),
     ),
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFF66BB6A).toAccentColor(),
     ),
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFF8D6E63).toAccentColor(),
     ),
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFFAB47BC).toAccentColor(),
     ),
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFF42A5F5).toAccentColor(),
     ),
-    ThemeData(
+    FluentThemeData(
       brightness: Brightness.light,
       accentColor: Color(0xFFFB7299).toAccentColor(),
     ),

@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBody(BuildContext context) {
     return FluentTheme(
-      data: ThemeData(
+      data: FluentThemeData(
           accentColor: FluentTheme.of(context).accentColor,
           brightness: FluentTheme.of(context).brightness),
       child: Padding(
