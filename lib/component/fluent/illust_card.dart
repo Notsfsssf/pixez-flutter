@@ -267,14 +267,10 @@ class _IllustCardState extends State<IllustCard> {
                 MenuFlyoutItem(
                   text: Text(I18n.of(context).favorited_tag),
                   onPressed: () async {
-                    final result = await showBottomSheet(
+                    final result = await showDialog<dynamic>(
                       context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      isScrollControlled: true,
-                      builder: (_) => TagForIllustPage(id: store.illusts!.id),
+                      builder: (context) =>
+                          TagForIllustPage(id: store.illusts!.id),
                     );
                     if (result?.isNotEmpty ?? false) {
                       LPrinter.d(result);

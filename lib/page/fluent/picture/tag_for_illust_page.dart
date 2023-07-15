@@ -31,37 +31,30 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return Container(
-        child: Column(
-          children: <Widget>[
-            PageHeader(
-              title: Text((_store.restrict == "public"
-                      ? I18n.of(context).public
-                      : I18n.of(context).private) +
-                  I18n.of(context).bookmark),
-              commandBar: CommandBarCard(
-                child: Row(
-                  children: [
-                    ToggleSwitch(
-                      onChanged: (bool value) {
-                        _store.setRestrict(value);
-                      },
-                      checked: _store.restrict == "public",
-                    ),
-                    IconButton(
-                      icon: Icon(FluentIcons.check_mark),
-                      onPressed: () {
-                        confirm();
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextBox(
+    return ContentDialog(
+      title: Row(
+        children: [
+          ToggleSwitch(
+            onChanged: (bool value) {
+              _store.setRestrict(value);
+            },
+            checked: _store.restrict == "public",
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 16.0),
+            child: Text((_store.restrict == "public"
+                ? I18n.of(context).public
+                : I18n.of(context).private)),
+          ),
+          Text(I18n.of(context).bookmark)
+        ],
+      ),
+      content: Observer(builder: (_) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: <Widget>[
+              TextBox(
                 controller: textEditingController,
                 suffix: IconButton(
                   icon: Icon(FluentIcons.add),
@@ -73,75 +66,79 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                   },
                 ),
               ),
-            ),
-            Expanded(
-              child: _store.errorMessage == null
-                  ? ListView.builder(
-                      padding: EdgeInsets.all(2.0).copyWith(
-                        bottom: (MediaQuery.maybeOf(context)?.padding.bottom ??
-                                0.0) +
-                            2.0,
+              _store.checkList.length == 0
+                  ? Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Center(
+                        child: ProgressRing(),
                       ),
-                      itemCount: _store.checkList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: IconButton(
-                                onPressed: () {
-                                  _store.check(index, !_store.checkList[index]);
-                                },
-                                icon: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(_store.tags[index].name),
+                    )
+                  : Expanded(
+                      child: _store.errorMessage == null
+                          ? ListView.builder(
+                              padding: EdgeInsets.all(2.0).copyWith(
+                                top: 8.0,
+                              ),
+                              itemCount: _store.checkList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 8.0),
+                                  child: Checkbox(
+                                    onChanged: (bool? value) {
+                                      _store.check(index, value!);
+                                    },
+                                    content: Text(_store.tags[index].name),
+                                    checked: _store.checkList[index],
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
+                              child: Container(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      height: 50,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(':(',
+                                          style: FluentTheme.of(context)
+                                              .typography
+                                              .title),
+                                    ),
+                                    HyperlinkButton(
+                                        onPressed: () {
+                                          _store.fetch();
+                                        },
+                                        child: Text(I18n.of(context).retry)),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Text('${_store.errorMessage}'),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
-                            Checkbox(
-                              onChanged: (bool? value) {
-                                _store.check(index, value!);
-                              },
-                              // activeColor: FluentTheme.of(context).accentColor,
-                              checked: _store.checkList[index],
-                            )
-                          ],
-                        );
-                      },
-                    )
-                  : Container(
-                      child: Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              height: 50,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(':(',
-                                  style:
-                                      FluentTheme.of(context).typography.title),
-                            ),
-                            HyperlinkButton(
-                                onPressed: () {
-                                  _store.fetch();
-                                },
-                                child: Text(I18n.of(context).retry)),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text('${_store.errorMessage}'),
-                            )
-                          ],
-                        ),
-                      ),
                     ),
-            )
-          ],
+            ],
+          ),
+        );
+      }),
+      actions: [
+        FilledButton(
+          child: Text(I18n.of(context).ok),
+          onPressed: confirm,
         ),
-      );
-    });
+        Button(
+          child: Text(I18n.of(context).cancel),
+          onPressed: Navigator.of(context).pop,
+        )
+      ],
+    );
   }
 
   confirm() async {
