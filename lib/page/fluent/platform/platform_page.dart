@@ -81,20 +81,21 @@ class _PlatformPageState extends State<PlatformPage> {
       content: Observer(builder: (_) {
         return ListView(
           children: <Widget>[
-            ListTile(
-              leading: Icon(FluentIcons.folder),
-              title: Text(I18n.of(context).save_path),
-              subtitle: Text(path),
-              onPressed: () async {
-                await showPathDialog(context);
-                final path = await DocumentPlugin.getPath();
-                if (mounted) {
-                  setState(() {
-                    this.path = path!;
-                  });
-                }
-              },
-            ),
+            // TODO: 此处是指定文件保存位置相关的代码 目前不考虑实现
+            // ListTile(
+            //   leading: Icon(FluentIcons.folder),
+            //   title: Text(I18n.of(context).save_path),
+            //   subtitle: Text(path),
+            //   onPressed: () async {
+            //     await showPathDialog(context);
+            //     final path = await DocumentPlugin.getPath();
+            //     if (mounted) {
+            //       setState(() {
+            //         this.path = path!;
+            //       });
+            //     }
+            //   },
+            // ),
             ListTile(
               leading: Icon(FluentIcons.format_painter),
               title: Text(I18n.of(context).save_format),
