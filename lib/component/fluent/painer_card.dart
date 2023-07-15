@@ -33,13 +33,6 @@ class PainterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    if (width >= 1008) {
-      width -= kOpenNavigationPaneWidth;
-    } else if (width > 640) {
-      width -= kCompactNavigationPaneWidth;
-    }
-    final height = (width - 4) / 3 + 80;
     return Container(
       margin: EdgeInsets.all(4.0),
       child: ButtonTheme(
@@ -66,22 +59,24 @@ class PainterCard extends StatelessWidget {
                 icon: Icon(FluentIcons.account_browser));
           },
           icon: Container(
-            height: height,
-            child: CustomScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              slivers: [
-                SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      if (index >= user.illusts.length) return Container();
-                      return PixivImage(
-                        user.illusts[index].imageUrls.squareMedium,
-                        fit: BoxFit.cover,
-                      );
-                    }, childCount: user.illusts.length)),
-                SliverToBoxAdapter(child: buildPadding(context))
-              ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              child: CustomScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                slivers: [
+                  SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        if (index >= user.illusts.length) return Container();
+                        return PixivImage(
+                          user.illusts[index].imageUrls.squareMedium,
+                          fit: BoxFit.cover,
+                        );
+                      }, childCount: user.illusts.length)),
+                  SliverToBoxAdapter(child: buildPadding(context))
+                ],
+              ),
             ),
           ),
         ),

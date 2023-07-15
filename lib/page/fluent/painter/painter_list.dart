@@ -86,20 +86,29 @@ class _PainterListState extends State<PainterList> {
         onLoad: () => _painterListStore.next(),
         onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty
-            ? ListView.builder(
-                controller: _scrollController,
-                padding: EdgeInsets.all(0),
-                itemBuilder: (context, index) {
-                  if (index == 0 && widget.header != null) {
-                    return widget.header!;
-                  }
-
-                  if (widget.header != null) return _itemBuilder(index - 1);
-                  return _itemBuilder(index);
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth;
+                  return CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      if (widget.header != null)
+                        SliverToBoxAdapter(
+                          child: widget.header,
+                        ),
+                      SliverGrid.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: (width / 300).floor(),
+                          childAspectRatio: 1.60,
+                        ),
+                        itemBuilder: (context, index) {
+                          return _itemBuilder(index);
+                        },
+                        itemCount: _painterListStore.users.length,
+                      ),
+                    ],
+                  );
                 },
-                itemCount: widget.header == null
-                    ? _painterListStore.users.length
-                    : _painterListStore.users.length + 1,
               )
             : Container(),
       );
