@@ -206,18 +206,18 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationView(
-      appBar: _buildAppBar(context),
-      pane: _buildPane(context),
-      paneBodyBuilder: (item, widget) => Listener(
-        child: _nav,
-        onPointerDown: (event) {
-          if (event.buttons == kBackMouseButton &&
-              event.kind == PointerDeviceKind.mouse) {
-            _navobs.navigator?.maybePop(context);
-          }
-        },
+    return Listener(
+      child: NavigationView(
+        appBar: _buildAppBar(context),
+        pane: _buildPane(context),
+        paneBodyBuilder: (item, widget) => _nav,
       ),
+      onPointerDown: (event) {
+        if (event.buttons == kBackMouseButton &&
+            event.kind == PointerDeviceKind.mouse) {
+          _navobs.navigator?.maybePop(null);
+        }
+      },
     );
   }
 
