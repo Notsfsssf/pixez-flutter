@@ -38,48 +38,45 @@ class _IllustRowPageState extends IllustItemsPageState {
           child: ProgressRing(),
         ),
       );
-    var expectWidth = MediaQuery.of(context).size.width * 0.7;
-    var leftWidth = MediaQuery.of(context).size.width - expectWidth;
-    final atLeastWidth = 320.0;
-    if (leftWidth < atLeastWidth) {
-      leftWidth = atLeastWidth;
-      expectWidth = MediaQuery.of(context).size.width - leftWidth;
-    }
-    final radio = (data.height.toDouble() / data.width);
-    final screenHeight = MediaQuery.of(context).size.height;
-    final height = (radio * expectWidth);
-    final centerType = height <= screenHeight;
 
-    var imageWidth = MediaQuery.of(context).size.width - 300 - 320;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final expectWidth = constraints.maxWidth - 300;
+        final radio = (data.height.toDouble() / data.width);
+        final screenHeight = constraints.maxHeight;
+        final height = (radio * expectWidth);
+        final centerType = height <= screenHeight;
 
-    return Container(
-      child: Row(
-        children: [
-          Container(
-            width: imageWidth > 300 ? imageWidth : expectWidth,
-            child: CustomScrollView(
-                slivers: [...buildPhotoList(data, centerType, height)]),
-          ),
-          Expanded(
-            child: Container(
-              color: FluentTheme.of(context).cardColor,
-              margin: EdgeInsets.only(right: 4.0),
-              child: EasyRefresh(
-                controller: refreshController,
-                onLoad: () {
-                  aboutStore.next();
-                },
+        return Container(
+          child: Row(
+            children: [
+              Container(
+                width: expectWidth,
                 child: CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
-                    ...buildDetail(context, data),
-                  ],
+                    slivers: [...buildPhotoList(data, centerType, height)]),
+              ),
+              Expanded(
+                child: Container(
+                  color: FluentTheme.of(context).cardColor,
+                  margin: EdgeInsets.only(right: 4.0),
+                  child: EasyRefresh(
+                    controller: refreshController,
+                    onLoad: () {
+                      aboutStore.next();
+                    },
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      slivers: [
+                        ...buildDetail(context, data),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

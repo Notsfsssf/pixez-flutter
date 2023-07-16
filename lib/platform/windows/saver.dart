@@ -35,6 +35,6 @@ class Saver {
     final list = await folder
         ?.createFileQueryOverloadDefault()
         ?.getFilesAsyncDefaultStartAndCount();
-    return list?.any((i) => i.name == fileName);
+    return list?.any((i) => i?.name == fileName);
   }
 }

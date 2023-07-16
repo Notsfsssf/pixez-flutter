@@ -38,20 +38,24 @@ class _IllustVerticalPageState extends IllustItemsPageState {
           child: ProgressRing(),
         ),
       );
-    final height = ((data.height.toDouble() / data.width) *
-        MediaQuery.of(context).size.width);
-    return EasyRefresh(
-      controller: refreshController,
-      onLoad: () {
-        aboutStore.next();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height =
+            ((data.height.toDouble() / data.width) * constraints.maxWidth);
+        return EasyRefresh(
+          controller: refreshController,
+          onLoad: () {
+            aboutStore.next();
+          },
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              ...buildPhotoList(data, false, height),
+              ...buildDetail(context, data)
+            ],
+          ),
+        );
       },
-      child: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          ...buildPhotoList(data, false, height),
-          ...buildDetail(context, data)
-        ],
-      ),
     );
   }
 }

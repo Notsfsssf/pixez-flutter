@@ -20,6 +20,7 @@ import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/illust_card.dart';
 import 'package:pixez/component/fluent/pixez_default_header.dart';
@@ -29,6 +30,7 @@ import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_user_road.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -237,100 +239,145 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               ));
   }
 
-  Widget _buidTagSpotlightRow(BuildContext context) {
-    var expectCardWidget = MediaQuery.of(context).size.width * 0.7;
-    expectCardWidget = expectCardWidget > 244 ? 244 : expectCardWidget;
-    final expectCardHeight = expectCardWidget * 0.525;
-    return Container(
-      height: expectCardHeight,
-      padding: EdgeInsets.only(left: 0.0),
-      child: spotlightStore.articles.isNotEmpty
-          ? ListView.builder(
-              itemBuilder: (context, index) {
-                final spotlight = spotlightStore.articles[index];
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Hero(
-                    tag: "spotlight_image_${spotlight.hashCode}",
-                    child: ButtonTheme(
-                      data: ButtonThemeData(
-                        iconButtonStyle: ButtonStyle(
-                          padding: ButtonState.all(EdgeInsets.zero),
-                          backgroundColor: ButtonState.all(Colors.transparent),
+  Widget _buidTagSpotlightRow(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          var expectCardWidget = constraints.maxWidth * 0.7;
+          expectCardWidget = expectCardWidget > 244 ? 244 : expectCardWidget;
+          final expectCardHeight = expectCardWidget * 0.525;
+          return Container(
+            height: expectCardHeight,
+            padding: EdgeInsets.only(left: 0.0),
+            child: spotlightStore.articles.isNotEmpty
+                ? ListView.builder(
+                    itemBuilder: (context, index) {
+                      final spotlight = spotlightStore.articles[index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 4.0, vertical: 8.0),
+                        child: Hero(
+                          tag: "spotlight_image_${spotlight.hashCode}",
+                          child: ButtonTheme(
+                            data: ButtonThemeData(
+                              iconButtonStyle: ButtonStyle(
+                                padding: ButtonState.all(EdgeInsets.zero),
+                                backgroundColor:
+                                    ButtonState.all(Colors.transparent),
+                              ),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                Leader.push(
+                                  context,
+                                  SoupPage(
+                                    url: spotlight.articleUrl,
+                                    spotlight: spotlight,
+                                    heroTag:
+                                        'spotlight_image_${spotlight.hashCode}',
+                                  ),
+                                  icon: const Icon(FluentIcons.image_pixel),
+                                  title: Text(
+                                      "${I18n.of(context).spotlight}: ${spotlight.id}"),
+                                );
+                              },
+                              icon: ClipRRect(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(4.0),
+                                  ),
+                                  child: _buildContent(
+                                    expectCardWidget,
+                                    expectCardHeight,
+                                    spotlight,
+                                  )),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: spotlightStore.articles.length,
+                    scrollDirection: Axis.horizontal,
+                  )
+                : Container(),
+          );
+        },
+      );
+
+  Widget _buildContent(double expectCardWidget, double expectCardHeight,
+      SpotlightArticle spotlight) {
+    return Builder(
+      builder: (context) {
+        double opacity = 0.5;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return MouseRegion(
+              onEnter: (e) {
+                setState(() {
+                  opacity = 0.6;
+                });
+              },
+              onExit: (e) {
+                setState(() {
+                  opacity = 0.5;
+                });
+              },
+              child: Container(
+                width: expectCardWidget,
+                height: expectCardHeight,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: PixivProvider.url(
+                      spotlight.thumbnail,
+                    ),
+                  ),
+                ),
+                child: Container(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.0),
+                            Colors.black.withOpacity(opacity),
+                          ],
                         ),
                       ),
-                      child: IconButton(
-                        onPressed: () {
-                          Leader.push(
-                            context,
-                            SoupPage(
-                              url: spotlight.articleUrl,
-                              spotlight: spotlight,
-                              heroTag: 'spotlight_image_${spotlight.hashCode}',
-                            ),
-                            icon: const Icon(FluentIcons.image_pixel),
-                            title: Text(
-                                "${I18n.of(context).spotlight}: ${spotlight.id}"),
-                          );
-                        },
-                        icon: Container(
-                            width: expectCardWidget,
-                            height: expectCardHeight,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: PixivProvider.url(
-                                        spotlight.thumbnail))),
-                            child: Container(
-                                child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withOpacity(0.0),
-                                    Colors.black.withOpacity(0.5),
-                                  ],
-                                )),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "${spotlight.title}",
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal,
-                                            // shadows: [
-                                            //   Shadow(
-                                            //       color: Colors.black,
-                                            //       offset: Offset(0.5, 0.5),
-                                            //       blurRadius: 1.0)
-                                            // ]
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "${spotlight.title}",
+                                maxLines: 2,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  // shadows: [
+                                  //   Shadow(
+                                  //       color: Colors.black,
+                                  //       offset: Offset(0.5, 0.5),
+                                  //       blurRadius: 1.0)
+                                  // ]
                                 ),
                               ),
-                            ))),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                );
-              },
-              itemCount: spotlightStore.articles.length,
-              scrollDirection: Axis.horizontal,
-            )
-          : Container(),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

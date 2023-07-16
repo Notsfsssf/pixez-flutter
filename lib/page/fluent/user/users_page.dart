@@ -353,12 +353,13 @@ class _UsersPageState extends State<UsersPage>
   }
 
   Widget _buildNameFollow(BuildContext context) {
-    return Container(
-      color: FluentTheme.of(context).cardColor,
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: Column(
+    return LayoutBuilder(
+      builder: (context, constraints) => Container(
+        color: FluentTheme.of(context).cardColor,
+        width: constraints.maxWidth,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               NullHero(
@@ -389,26 +390,30 @@ class _UsersPageState extends State<UsersPage>
                   style: FluentTheme.of(context).typography.caption,
                 ),
               )
-            ]),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildComment(BuildContext context) {
-    return Container(
-      color: FluentTheme.of(context).cardColor,
-      width: MediaQuery.of(context).size.width,
-      height: 60,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-        child: SelectionContainer.disabled(
-          child: SingleChildScrollView(
-            child: Text(
-              userStore.userDetail == null
-                  ? ""
-                  : '${userStore.userDetail!.user.comment}',
-              style: FluentTheme.of(context).typography.caption,
-              overflow: TextOverflow.ellipsis,
+    return LayoutBuilder(
+      builder: (context, constraints) => Container(
+        color: FluentTheme.of(context).cardColor,
+        width: constraints.maxWidth,
+        height: 60,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+          child: SelectionContainer.disabled(
+            child: SingleChildScrollView(
+              child: Text(
+                userStore.userDetail == null
+                    ? ""
+                    : '${userStore.userDetail!.user.comment}',
+                style: FluentTheme.of(context).typography.caption,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ),
@@ -618,9 +623,7 @@ class _UsersPageState extends State<UsersPage>
         ),
         onSecondaryTapUp: (details) => _flyoutController.showFlyout(
           position: getPosition(context, _flyoutKey, details),
-          barrierColor: Colors.black.withOpacity(0.1),
           builder: (context) => MenuFlyout(
-            color: Colors.transparent,
             items: [
               MenuFlyoutItem(
                 text: Text(I18n.of(context).show),
@@ -651,54 +654,52 @@ class _UsersPageState extends State<UsersPage>
     );
   }
 
-  _buildDetail(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    if (width >= 1008) {
-      width -= kOpenNavigationPaneWidth;
-    } else if (width > 640) {
-      width -= kCompactNavigationPaneWidth;
-    }
-    const height = 300.0;
-    final nobg = userStore.userDetail?.profile.background_image_url == null;
+  _buildDetail(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          const height = 300.0;
+          final nobg =
+              userStore.userDetail?.profile.background_image_url == null;
 
-    final background = nobg
-        ? Container(color: FluentTheme.of(context).accentColor)
-        : _buildBackground(context);
+          final background = nobg
+              ? Container(color: FluentTheme.of(context).accentColor)
+              : _buildBackground(context);
 
-    return ListView(
-      children: [
-        Container(
-          height: height * (nobg ? .55 : 1),
-          color: FluentTheme.of(context).cardColor,
-          child: Stack(
-            children: <Widget>[
+          return ListView(
+            children: [
               Container(
-                width: width,
-                height: height * (nobg ? .3 : .75),
-                child: background,
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                height: height * (nobg ? .55 : 1),
+                color: FluentTheme.of(context).cardColor,
+                child: Stack(
                   children: <Widget>[
-                    _buildHeader(context),
                     Container(
-                      height: height * .25,
-                      color: FluentTheme.of(context).cardColor,
-                      child: _buildNameFollow(context),
+                      width: width,
+                      height: height * (nobg ? .3 : .75),
+                      child: background,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _buildHeader(context),
+                          Container(
+                            height: height * .25,
+                            color: FluentTheme.of(context).cardColor,
+                            child: _buildNameFollow(context),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
+              userStore.userDetail != null
+                  ? UserDetailPage(userDetail: userStore.userDetail!)
+                  : Container()
             ],
-          ),
-        ),
-        userStore.userDetail != null
-            ? UserDetailPage(userDetail: userStore.userDetail!)
-            : Container()
-      ],
-    );
-  }
+          );
+        },
+      );
 }

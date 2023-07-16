@@ -101,9 +101,7 @@ class _IllustCardState extends State<IllustCard> {
               onSecondaryTapUp: (details) {
                 _flyoutController.showFlyout(
                   position: getPosition(context, _flyoutKey, details),
-                  barrierColor: Colors.black.withOpacity(0.1),
                   builder: (context) => MenuFlyout(
-                    color: Colors.transparent,
                     items: [
                       MenuFlyoutItem(
                         text: Text(I18n.of(context).save),
@@ -250,9 +248,7 @@ class _IllustCardState extends State<IllustCard> {
           ),
           onSecondaryTapUp: (details) => _flyoutController.showFlyout(
             position: getPosition(context, _flyoutKey, details),
-            barrierColor: Colors.black.withOpacity(0.1),
             builder: (context) => MenuFlyout(
-              color: Colors.transparent,
               items: [
                 MenuFlyoutItem(
                   text: Text('Like'),
@@ -271,14 +267,10 @@ class _IllustCardState extends State<IllustCard> {
                 MenuFlyoutItem(
                   text: Text(I18n.of(context).favorited_tag),
                   onPressed: () async {
-                    final result = await showBottomSheet(
+                    final result = await showDialog<dynamic>(
                       context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      isScrollControlled: true,
-                      builder: (_) => TagForIllustPage(id: store.illusts!.id),
+                      builder: (context) =>
+                          TagForIllustPage(id: store.illusts!.id),
                     );
                     if (result?.isNotEmpty ?? false) {
                       LPrinter.d(result);

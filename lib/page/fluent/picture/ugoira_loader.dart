@@ -53,108 +53,106 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      double height = MediaQuery.of(context).size.width *
-          (widget.illusts.height.toDouble() / widget.illusts.width.toDouble());
-      if (_store.status == UgoiraStatus.play) {
-        return FlyoutTarget(
-          key: _flyoutKey,
-          controller: _flyoutController,
-          child: GestureDetector(
-            child: UgoiraWidget(
-              delay: _store
-                  .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
-              ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
-              size: Size(
-                  MediaQuery.of(context).size.width.toDouble(),
-                  (widget.illusts.height.toDouble() /
-                          widget.illusts.width.toDouble()) *
-                      MediaQuery.of(context).size.width.toDouble()),
-              drawPools: _store.drawPool,
-            ),
-            onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-              position: getPosition(context, _flyoutKey, details),
-              barrierColor: Colors.black.withOpacity(0.1),
-              builder: (context) => MenuFlyout(
-                color: Colors.transparent,
-                items: [
-                  MenuFlyoutItem(
-                    text: Text(I18n.of(context).encode_message),
-                    onPressed: () {},
-                  ),
-                  MenuFlyoutSeparator(),
-                  MenuFlyoutItem(
-                    text: Text(I18n.of(context).encode),
-                    onPressed: () async {
-                      try {
-                        isEncoding = true;
-                        await platform.invokeMethod('getBatteryLevel', {
-                          "path": _store.drawPool.first.parent.path,
-                          "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
-                              .frames.first.delay,
-                          "delay_array": _store
-                              .ugoiraMetadataResponse!.ugoiraMetadata.frames
-                              .map((e) => e.delay)
-                              .toList(),
-                          "name": userSetting.singleFolder
-                              ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
-                              : "${widget.id}",
-                        });
-                        BotToast.showCustomText(
-                            toastBuilder: (_) => Text("encoding..."));
-                      } on PlatformException {
-                        isEncoding = false;
-                      }
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  MenuFlyoutItem(
-                    text: Text(I18n.of(context).export),
-                    onPressed: () async {
-                      await _store.export();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      return Observer(builder: (_) {
+        double height = widget.illusts.height.toDouble() /
+            widget.illusts.width.toDouble() *
+            width;
+        if (_store.status == UgoiraStatus.play) {
+          return FlyoutTarget(
+            key: _flyoutKey,
+            controller: _flyoutController,
+            child: GestureDetector(
+              child: UgoiraWidget(
+                delay: _store
+                    .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+                ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
+                size: Size(width, height),
+                drawPools: _store.drawPool,
+              ),
+              onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+                position: getPosition(context, _flyoutKey, details),
+                builder: (context) => MenuFlyout(
+                  items: [
+                    MenuFlyoutItem(
+                      text: Text(I18n.of(context).encode_message),
+                      onPressed: () {},
+                    ),
+                    MenuFlyoutSeparator(),
+                    MenuFlyoutItem(
+                      text: Text(I18n.of(context).encode),
+                      onPressed: () async {
+                        try {
+                          isEncoding = true;
+                          await platform.invokeMethod('getBatteryLevel', {
+                            "path": _store.drawPool.first.parent.path,
+                            "delay": _store.ugoiraMetadataResponse!
+                                .ugoiraMetadata.frames.first.delay,
+                            "delay_array": _store
+                                .ugoiraMetadataResponse!.ugoiraMetadata.frames
+                                .map((e) => e.delay)
+                                .toList(),
+                            "name": userSetting.singleFolder
+                                ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
+                                : "${widget.id}",
+                          });
+                          BotToast.showCustomText(
+                              toastBuilder: (_) => Text("encoding..."));
+                        } on PlatformException {
+                          isEncoding = false;
+                        }
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    MenuFlyoutItem(
+                      text: Text(I18n.of(context).export),
+                      onPressed: () async {
+                        await _store.export();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
+          );
+        }
+        if (_store.status == UgoiraStatus.progress)
+          return Column(
+            children: <Widget>[
+              PixivImage(widget.illusts.imageUrls.medium),
+              ProgressBar(value: _store.count / _store.total)
+            ],
+          );
+        return Container(
+          height: height + 72.0,
+          child: Stack(
+            children: <Widget>[
+              PixivImage(
+                widget.illusts.imageUrls.medium,
+                height: height,
+                width: width,
+                placeWidget: Container(
+                  height: height,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 72.0,
+                  width: 72.0,
+                  child: IconButton(
+                      icon: Icon(FluentIcons.play),
+                      onPressed: () {
+                        _store.downloadAndUnzip();
+                      }),
+                ),
+              )
+            ],
           ),
         );
-      }
-      if (_store.status == UgoiraStatus.progress)
-        return Column(
-          children: <Widget>[
-            PixivImage(widget.illusts.imageUrls.medium),
-            ProgressBar(value: _store.count / _store.total)
-          ],
-        );
-      return Container(
-        height: height + 72.0,
-        child: Stack(
-          children: <Widget>[
-            PixivImage(
-              widget.illusts.imageUrls.medium,
-              height: height,
-              width: MediaQuery.of(context).size.width,
-              placeWidget: Container(
-                height: height,
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 72.0,
-                width: 72.0,
-                child: IconButton(
-                    icon: Icon(FluentIcons.play),
-                    onPressed: () {
-                      _store.downloadAndUnzip();
-                    }),
-              ),
-            )
-          ],
-        ),
-      );
+      });
     });
   }
 }
