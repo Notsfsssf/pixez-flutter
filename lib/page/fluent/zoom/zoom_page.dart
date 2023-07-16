@@ -206,12 +206,14 @@ class PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Opacity(
-          opacity: ((scale - 1.0) /
-                  ((MediaQuery.of(context).size.height / widget.height) - 1.0))
-              .clamp(0.0, 1.0),
-          child: Container(
-            color: Colors.black,
+        LayoutBuilder(
+          builder: (context, constraints) => Opacity(
+            opacity: ((scale - 1.0) /
+                    ((constraints.maxHeight / widget.height) - 1.0))
+                .clamp(0.0, 1.0),
+            child: Container(
+              color: Colors.black,
+            ),
           ),
         ),
         Positioned(
