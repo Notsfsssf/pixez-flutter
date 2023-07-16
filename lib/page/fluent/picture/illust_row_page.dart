@@ -41,7 +41,7 @@ class _IllustRowPageState extends IllustItemsPageState {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final expectWidth = constraints.maxWidth * 0.7;
+        final expectWidth = constraints.maxWidth - 300;
         final radio = (data.height.toDouble() / data.width);
         final screenHeight = constraints.maxHeight;
         final height = (radio * expectWidth);

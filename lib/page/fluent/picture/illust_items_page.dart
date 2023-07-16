@@ -283,29 +283,31 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
             url = data.metaSinglePage!.originalImageUrl!;
         }
         Widget placeWidget = Container(height: height);
-        return IllustItem(
-          0,
-          data,
-          widget,
-          icon: NullHero(
-            tag: widget.heroString,
-            child: PixivImage(
-              url,
-              fade: false,
-              width: MediaQuery.of(context).size.width,
-              placeWidget: (url != data.imageUrls.medium)
-                  ? PixivImage(
-                      data.imageUrls.medium,
-                      width: MediaQuery.of(context).size.width,
-                      placeWidget: placeWidget,
-                      fade: false,
-                    )
-                  : placeWidget,
+        return LayoutBuilder(
+          builder: (context, constraints) => IllustItem(
+            0,
+            data,
+            widget,
+            icon: NullHero(
+              tag: widget.heroString,
+              child: PixivImage(
+                url,
+                fade: false,
+                width: constraints.maxWidth,
+                placeWidget: (url != data.imageUrls.medium)
+                    ? PixivImage(
+                        data.imageUrls.medium,
+                        width: constraints.maxWidth,
+                        placeWidget: placeWidget,
+                        fade: false,
+                      )
+                    : placeWidget,
+              ),
             ),
+            onMultiSavePressed: () async {
+              await showMutiChoiceDialog(data, context);
+            },
           ),
-          onMultiSavePressed: () async {
-            await showMutiChoiceDialog(data, context);
-          },
         );
       },
     ));
@@ -346,28 +348,32 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
       else
         url = illust.metaPages[index].imageUrls!.original;
       if (index == 0)
-        return NullHero(
-          child: PixivImage(
-            url,
-            placeWidget: PixivImage(
-              illust.metaPages[index].imageUrls!.medium,
-              width: MediaQuery.of(context).size.width,
+        return LayoutBuilder(
+          builder: (context, constraints) => NullHero(
+            child: PixivImage(
+              url,
+              placeWidget: PixivImage(
+                illust.metaPages[index].imageUrls!.medium,
+                width: constraints.maxWidth,
+                fade: false,
+              ),
+              width: constraints.maxWidth,
               fade: false,
             ),
-            width: MediaQuery.of(context).size.width,
-            fade: false,
+            tag: widget.heroString,
           ),
-          tag: widget.heroString,
         );
-      return PixivImage(
-        url,
-        fade: false,
-        width: MediaQuery.of(context).size.width,
-        placeWidget: Container(
-          height: height,
-          child: Center(
-            child:
-                Text('$index', style: FluentTheme.of(context).typography.title),
+      return LayoutBuilder(
+        builder: (context, constraints) => PixivImage(
+          url,
+          fade: false,
+          width: constraints.maxWidth,
+          placeWidget: Container(
+            height: height,
+            child: Center(
+              child: Text('$index',
+                  style: FluentTheme.of(context).typography.title),
+            ),
           ),
         ),
       );
@@ -539,76 +545,67 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
         builder: (context) {
           return StatefulBuilder(builder: (context, setDialogState) {
             return ContentDialog(
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    I18n.of(context).muti_choice_save,
+                    style: FluentTheme.of(context)
+                        .typography
+                        .title
+                        ?.copyWith(color: FluentTheme.of(context).accentColor),
+                  ),
+                  Text(illust.title),
+                ],
+              ),
               content: SafeArea(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  child: Column(
-                    children: [
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                I18n.of(context).muti_choice_save,
-                                style: FluentTheme.of(context)
-                                    .typography
-                                    .body
-                                    ?.copyWith(
-                                      color:
-                                          FluentTheme.of(context).accentColor,
-                                    ),
-                              ),
-                              Text(
-                                illust.title,
-                                style: FluentTheme.of(context)
-                                    .typography
-                                    .bodyLarge,
-                              ),
-                            ],
+                child: LayoutBuilder(
+                  builder: (context, constraints) => SizedBox(
+                    height: constraints.maxHeight > 500
+                        ? constraints.maxHeight * 0.5
+                        : constraints.maxHeight,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: GridView.builder(
+                            itemBuilder: (context, index) {
+                              final data = illust.metaPages[index];
+                              return Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: buildMultiChoiceItem(
+                                    data,
+                                    index,
+                                    indexs,
+                                    illust,
+                                    onChanged: (value) {
+                                      setDialogState(() {
+                                        indexs[index] = value ?? false;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: illust.metaPages.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: GridView.builder(
-                          itemBuilder: (context, index) {
-                            final data = illust.metaPages[index];
-                            return Container(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: buildMultiChoiceItem(
-                                  data,
-                                  index,
-                                  indexs,
-                                  illust,
-                                  onChanged: (value) {
-                                    setDialogState(() {
-                                      indexs[index] = value ?? false;
-                                    });
-                                  },
-                                ),
-                              ),
-                            );
+                        Checkbox(
+                          checked: allOn,
+                          content: Text(I18n.of(context).all),
+                          onChanged: (value) {
+                            allOn = value ?? false;
+                            for (var i = 0; i < indexs.length; i++) {
+                              indexs[i] = allOn;
+                            }
+                            setDialogState(() {});
                           },
-                          itemCount: illust.metaPages.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2),
-                        ),
-                      ),
-                      Checkbox(
-                        checked: allOn,
-                        content: Text(I18n.of(context).all),
-                        onChanged: (value) {
-                          allOn = value ?? false;
-                          for (var i = 0; i < indexs.length; i++) {
-                            indexs[i] = allOn;
-                          }
-                          setDialogState(() {});
-                        },
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

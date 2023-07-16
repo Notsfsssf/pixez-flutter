@@ -51,8 +51,8 @@ class _SettingCrossAdpaterPageState extends State<SettingCrossAdpaterPage> {
       header: PageHeader(
         title: const Text('Cross Adapter'),
       ),
-      content: Builder(builder: (_) {
-        final screenWidth = MediaQuery.of(context).size.width;
+      content: LayoutBuilder(builder: (_, constraints) {
+        final screenWidth = constraints.maxWidth;
         return Container(
           child: CustomScrollView(
             slivers: [

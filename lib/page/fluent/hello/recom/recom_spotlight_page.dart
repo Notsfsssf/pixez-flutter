@@ -239,62 +239,67 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               ));
   }
 
-  Widget _buidTagSpotlightRow(BuildContext context) {
-    var expectCardWidget = MediaQuery.of(context).size.width * 0.7;
-    expectCardWidget = expectCardWidget > 244 ? 244 : expectCardWidget;
-    final expectCardHeight = expectCardWidget * 0.525;
-    return Container(
-      height: expectCardHeight,
-      padding: EdgeInsets.only(left: 0.0),
-      child: spotlightStore.articles.isNotEmpty
-          ? ListView.builder(
-              itemBuilder: (context, index) {
-                final spotlight = spotlightStore.articles[index];
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-                  child: Hero(
-                    tag: "spotlight_image_${spotlight.hashCode}",
-                    child: ButtonTheme(
-                      data: ButtonThemeData(
-                        iconButtonStyle: ButtonStyle(
-                          padding: ButtonState.all(EdgeInsets.zero),
-                          backgroundColor: ButtonState.all(Colors.transparent),
+  Widget _buidTagSpotlightRow(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          var expectCardWidget = constraints.maxWidth * 0.7;
+          expectCardWidget = expectCardWidget > 244 ? 244 : expectCardWidget;
+          final expectCardHeight = expectCardWidget * 0.525;
+          return Container(
+            height: expectCardHeight,
+            padding: EdgeInsets.only(left: 0.0),
+            child: spotlightStore.articles.isNotEmpty
+                ? ListView.builder(
+                    itemBuilder: (context, index) {
+                      final spotlight = spotlightStore.articles[index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 4.0, vertical: 8.0),
+                        child: Hero(
+                          tag: "spotlight_image_${spotlight.hashCode}",
+                          child: ButtonTheme(
+                            data: ButtonThemeData(
+                              iconButtonStyle: ButtonStyle(
+                                padding: ButtonState.all(EdgeInsets.zero),
+                                backgroundColor:
+                                    ButtonState.all(Colors.transparent),
+                              ),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                Leader.push(
+                                  context,
+                                  SoupPage(
+                                    url: spotlight.articleUrl,
+                                    spotlight: spotlight,
+                                    heroTag:
+                                        'spotlight_image_${spotlight.hashCode}',
+                                  ),
+                                  icon: const Icon(FluentIcons.image_pixel),
+                                  title: Text(
+                                      "${I18n.of(context).spotlight}: ${spotlight.id}"),
+                                );
+                              },
+                              icon: ClipRRect(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(4.0),
+                                  ),
+                                  child: _buildContent(
+                                    expectCardWidget,
+                                    expectCardHeight,
+                                    spotlight,
+                                  )),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          Leader.push(
-                            context,
-                            SoupPage(
-                              url: spotlight.articleUrl,
-                              spotlight: spotlight,
-                              heroTag: 'spotlight_image_${spotlight.hashCode}',
-                            ),
-                            icon: const Icon(FluentIcons.image_pixel),
-                            title: Text(
-                                "${I18n.of(context).spotlight}: ${spotlight.id}"),
-                          );
-                        },
-                        icon: ClipRRect(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(4.0),
-                            ),
-                            child: _buildContent(
-                              expectCardWidget,
-                              expectCardHeight,
-                              spotlight,
-                            )),
-                      ),
-                    ),
-                  ),
-                );
-              },
-              itemCount: spotlightStore.articles.length,
-              scrollDirection: Axis.horizontal,
-            )
-          : Container(),
-    );
-  }
+                      );
+                    },
+                    itemCount: spotlightStore.articles.length,
+                    scrollDirection: Axis.horizontal,
+                  )
+                : Container(),
+          );
+        },
+      );
 
   Widget _buildContent(double expectCardWidget, double expectCardHeight,
       SpotlightArticle spotlight) {
