@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 
@@ -36,12 +37,12 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
         ),
         child: IconButton(
           onPressed: () {
-            // TODO: Icon & Title
             Leader.push(
-                context,
-                RecomUserPage(
-                  recomUserStore: _recomUserStore,
-                ));
+              context,
+              RecomUserPage(recomUserStore: _recomUserStore),
+              icon: Icon(FluentIcons.account_browser),
+              title: Text(I18n.of(context).recommend_for_you),
+            );
           },
           icon: Row(
             children: [

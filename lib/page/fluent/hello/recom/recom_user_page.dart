@@ -17,6 +17,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/painer_card.dart';
+import 'package:pixez/component/fluent/pixez_default_header.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 
@@ -54,26 +55,32 @@ class _RecomUserPageState extends State<RecomUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return ScaffoldPage(
-        header: PageHeader(
-          title: Text(I18n.of(context).recommend_for_you),
-        ),
-        content: EasyRefresh(
-          controller: _refreshController,
-          onRefresh: () => _recomUserStore.fetch(),
-          onLoad: () => _recomUserStore.next(),
-          refreshOnStart: widget.recomUserStore == null,
-          child: ListView.builder(
-              itemCount: _recomUserStore.users.length,
-              itemBuilder: (context, index) {
-                final data = _recomUserStore.users[index];
-                return PainterCard(
-                  user: data,
-                );
-              }),
-        ),
-      );
-    });
+    return ScaffoldPage(
+      header: PageHeader(
+        title: Text(I18n.of(context).recommend_for_you),
+      ),
+      content: Observer(
+        builder: (context) {
+          return EasyRefresh(
+            controller: _refreshController,
+            header: PixezDefault.header(context),
+            onRefresh: () => _recomUserStore.fetch(),
+            onLoad: () => _recomUserStore.next(),
+            child: LayoutBuilder(
+              builder: (context, constraints) => GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: (constraints.maxWidth / 300).floor(),
+                  childAspectRatio: 1.60,
+                ),
+                itemBuilder: (context, index) => PainterCard(
+                  user: _recomUserStore.users[index],
+                ),
+                itemCount: _recomUserStore.users.length,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
