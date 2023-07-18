@@ -18,17 +18,6 @@ class RowCard extends StatelessWidget {
     return ContextMenu(
       child: FocusWrap(
         child: GestureDetector(
-          onTap: () {
-            Leader.push(
-              context,
-              ResultPage(
-                word: f.name,
-                translatedName: f.translatedName ?? "",
-              ),
-              icon: Icon(FluentIcons.show_results),
-              title: Text(I18n.of(context).tag + ' #${f.name}'),
-            );
-          },
           child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -46,7 +35,9 @@ class RowCard extends StatelessWidget {
                       .typography
                       .caption!
                       .copyWith(color: FluentTheme.of(context).accentColor))),
+          onTap: () => _invoke(context),
         ),
+        onInvoke: () => _invoke(context),
       ),
       items: [
         MenuFlyoutItem(
@@ -79,6 +70,18 @@ class RowCard extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+
+  _invoke(BuildContext context) {
+    Leader.push(
+      context,
+      ResultPage(
+        word: f.name,
+        translatedName: f.translatedName ?? "",
+      ),
+      icon: Icon(FluentIcons.show_results),
+      title: Text(I18n.of(context).tag + ' #${f.name}'),
     );
   }
 }
