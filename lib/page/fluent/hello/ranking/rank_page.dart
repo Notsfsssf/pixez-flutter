@@ -84,6 +84,16 @@ class _RankPageState extends State<RankPage>
         topStore.setTop((201 + index).toString());
       }
     });
+
+    Future.delayed(
+      Duration.zero,
+      () {
+        if (rankStore.inChoice || rankStore.modeList.isEmpty) {
+          final rankListMean = I18n.of(context).mode_list.split(' ');
+          _choicePage(context, rankListMean);
+        }
+      },
+    );
   }
 
   String? toRequestDate(DateTime dateTime) {
