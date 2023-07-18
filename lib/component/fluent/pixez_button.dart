@@ -8,7 +8,7 @@ class PixEzButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(4.0),
         child: ButtonTheme(
           data: ButtonThemeData(
             iconButtonStyle: ButtonStyle(

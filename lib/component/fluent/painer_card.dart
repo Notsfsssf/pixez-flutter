@@ -16,6 +16,7 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
+import 'package:pixez/component/fluent/pixez_button.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -33,54 +34,39 @@ class PainterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(4.0),
-      child: ButtonTheme(
-        data: ButtonThemeData(
-          iconButtonStyle: ButtonStyle(
-            padding: ButtonState.all(EdgeInsets.zero),
-          ),
-        ),
-        child: IconButton(
-          onPressed: () {
-            Widget widget;
-            if (isNovel) {
-              widget = NovelUsersPage(
-                id: user.user.id,
-              );
-            } else {
-              widget = UsersPage(
-                id: user.user.id,
-                userStore: UserStore(user.user.id, user: user.user),
-              );
-            }
-            Leader.push(context, widget,
-                title: Text(I18n.of(context).painter_id + ': ${user.user.id}'),
-                icon: Icon(FluentIcons.account_browser));
-          },
-          icon: Container(
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
-              child: CustomScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                slivers: [
-                  SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3),
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        if (index >= user.illusts.length) return Container();
-                        return PixivImage(
-                          user.illusts[index].imageUrls.squareMedium,
-                          fit: BoxFit.cover,
-                        );
-                      }, childCount: user.illusts.length)),
-                  SliverToBoxAdapter(child: buildPadding(context))
-                ],
-              ),
-            ),
-          ),
-        ),
+    return PixEzButton(
+      child: CustomScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        slivers: [
+          SliverGrid(
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                if (index >= user.illusts.length) return Container();
+                return PixivImage(
+                  user.illusts[index].imageUrls.squareMedium,
+                  fit: BoxFit.cover,
+                );
+              }, childCount: user.illusts.length)),
+          SliverToBoxAdapter(child: buildPadding(context))
+        ],
       ),
+      onPressed: () {
+        Widget widget;
+        if (isNovel) {
+          widget = NovelUsersPage(
+            id: user.user.id,
+          );
+        } else {
+          widget = UsersPage(
+            id: user.user.id,
+            userStore: UserStore(user.user.id, user: user.user),
+          );
+        }
+        Leader.push(context, widget,
+            title: Text(I18n.of(context).painter_id + ': ${user.user.id}'),
+            icon: Icon(FluentIcons.account_browser));
+      },
     );
   }
 
