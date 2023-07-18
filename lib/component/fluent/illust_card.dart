@@ -19,19 +19,19 @@ import 'dart:ffi';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/null_hero.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
-import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/fluent/picture/picture_list_page.dart';
 import 'package:pixez/page/fluent/picture/tag_for_illust_page.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 
 class IllustCard extends StatefulWidget {
   final IllustStore store;
@@ -78,43 +78,30 @@ class _IllustCardState extends State<IllustCard> {
     super.dispose();
   }
 
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     if (userSetting.hIsNotAllow)
       for (int i = 0; i < store.illusts!.tags.length; i++) {
         if (store.illusts!.tags[i].name.startsWith('R-18'))
-          return FlyoutTarget(
-            key: _flyoutKey,
-            controller: _flyoutController,
-            child: GestureDetector(
-              child: IconButton(
-                onPressed: () => _buildTap(context),
-                icon: ClipRRect(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(4.0),
-                  ),
-                  child: Image.asset('assets/images/h.jpg'),
+          return ContextMenu(
+            child: IconButton(
+              onPressed: () => _buildTap(context),
+              icon: ClipRRect(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
                 ),
+                child: Image.asset('assets/images/h.jpg'),
               ),
-              onSecondaryTapUp: (details) {
-                _flyoutController.showFlyout(
-                  position: getPosition(context, _flyoutKey, details),
-                  builder: (context) => MenuFlyout(
-                    items: [
-                      MenuFlyoutItem(
-                        text: Text(I18n.of(context).save),
-                        onPressed: () async {
-                          await _onSave();
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  ),
-                );
-              },
             ),
+            items: [
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).save),
+                onPressed: () async {
+                  await _onSave();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
           );
       }
     return buildInkWell(context);
@@ -230,62 +217,52 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
-    return FlyoutTarget(
-      key: _flyoutKey,
-      controller: _flyoutController,
+    return ContextMenu(
       child: ButtonTheme(
         data: ButtonThemeData(
           iconButtonStyle: ButtonStyle(
             padding: ButtonState.all(EdgeInsets.zero),
           ),
         ),
-        child: GestureDetector(
-          child: IconButton(
-            icon: child,
-            onPressed: () {
-              _buildInkTap(context, tag);
-            },
-          ),
-          onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-            position: getPosition(context, _flyoutKey, details),
-            builder: (context) => MenuFlyout(
-              items: [
-                MenuFlyoutItem(
-                  text: Text('Like'),
-                  onPressed: () async {
-                    await _onStar();
-                    Navigator.of(context).pop();
-                  },
-                ),
-                MenuFlyoutItem(
-                  text: Text(I18n.of(context).save),
-                  onPressed: () async {
-                    await _onSave();
-                    Navigator.of(context).pop();
-                  },
-                ),
-                MenuFlyoutItem(
-                  text: Text(I18n.of(context).favorited_tag),
-                  onPressed: () async {
-                    final result = await showDialog<dynamic>(
-                      context: context,
-                      builder: (context) =>
-                          TagForIllustPage(id: store.illusts!.id),
-                    );
-                    if (result?.isNotEmpty ?? false) {
-                      LPrinter.d(result);
-                      String restrict = result['restrict'];
-                      List<String>? tags = result['tags'];
-                      store.star(restrict: restrict, tags: tags, force: true);
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
+        child: IconButton(
+          icon: child,
+          onPressed: () {
+            _buildInkTap(context, tag);
+          },
         ),
       ),
+      items: [
+        MenuFlyoutItem(
+          text: Text('Like'),
+          onPressed: () async {
+            await _onStar();
+            Navigator.of(context).pop();
+          },
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).save),
+          onPressed: () async {
+            await _onSave();
+            Navigator.of(context).pop();
+          },
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).favorited_tag),
+          onPressed: () async {
+            final result = await showDialog<dynamic>(
+              context: context,
+              builder: (context) => TagForIllustPage(id: store.illusts!.id),
+            );
+            if (result?.isNotEmpty ?? false) {
+              LPrinter.d(result);
+              String restrict = result['restrict'];
+              List<String>? tags = result['tags'];
+              store.star(restrict: restrict, tags: tags, force: true);
+            }
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 

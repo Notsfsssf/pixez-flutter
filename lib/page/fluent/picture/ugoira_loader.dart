@@ -18,9 +18,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
-import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -39,8 +39,6 @@ class UgoiraLoader extends StatefulWidget {
 
 class _UgoiraLoaderState extends State<UgoiraLoader> {
   late UgoiraStore _store;
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
 
   @override
   void initState() {
@@ -60,62 +58,53 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
             widget.illusts.width.toDouble() *
             width;
         if (_store.status == UgoiraStatus.play) {
-          return FlyoutTarget(
-            key: _flyoutKey,
-            controller: _flyoutController,
-            child: GestureDetector(
-              child: UgoiraWidget(
-                delay: _store
-                    .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
-                ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
-                size: Size(width, height),
-                drawPools: _store.drawPool,
-              ),
-              onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-                position: getPosition(context, _flyoutKey, details),
-                builder: (context) => MenuFlyout(
-                  items: [
-                    MenuFlyoutItem(
-                      text: Text(I18n.of(context).encode_message),
-                      onPressed: () {},
-                    ),
-                    MenuFlyoutSeparator(),
-                    MenuFlyoutItem(
-                      text: Text(I18n.of(context).encode),
-                      onPressed: () async {
-                        try {
-                          isEncoding = true;
-                          await platform.invokeMethod('getBatteryLevel', {
-                            "path": _store.drawPool.first.parent.path,
-                            "delay": _store.ugoiraMetadataResponse!
-                                .ugoiraMetadata.frames.first.delay,
-                            "delay_array": _store
-                                .ugoiraMetadataResponse!.ugoiraMetadata.frames
-                                .map((e) => e.delay)
-                                .toList(),
-                            "name": userSetting.singleFolder
-                                ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
-                                : "${widget.id}",
-                          });
-                          BotToast.showCustomText(
-                              toastBuilder: (_) => Text("encoding..."));
-                        } on PlatformException {
-                          isEncoding = false;
-                        }
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    MenuFlyoutItem(
-                      text: Text(I18n.of(context).export),
-                      onPressed: () async {
-                        await _store.export();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
-              ),
+          return ContextMenu(
+            child: UgoiraWidget(
+              delay: _store
+                  .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+              ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
+              size: Size(width, height),
+              drawPools: _store.drawPool,
             ),
+            items: [
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).encode_message),
+                onPressed: () {},
+              ),
+              MenuFlyoutSeparator(),
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).encode),
+                onPressed: () async {
+                  try {
+                    isEncoding = true;
+                    await platform.invokeMethod('getBatteryLevel', {
+                      "path": _store.drawPool.first.parent.path,
+                      "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
+                          .frames.first.delay,
+                      "delay_array": _store
+                          .ugoiraMetadataResponse!.ugoiraMetadata.frames
+                          .map((e) => e.delay)
+                          .toList(),
+                      "name": userSetting.singleFolder
+                          ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
+                          : "${widget.id}",
+                    });
+                    BotToast.showCustomText(
+                        toastBuilder: (_) => Text("encoding..."));
+                  } on PlatformException {
+                    isEncoding = false;
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+              MenuFlyoutItem(
+                text: Text(I18n.of(context).export),
+                onPressed: () async {
+                  await _store.export();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           );
         }
         if (_store.status == UgoiraStatus.progress)

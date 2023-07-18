@@ -7,8 +7,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
-import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -133,8 +133,6 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   bool shareShow = false;
   bool _loadSource = false;
 
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   Widget _buildBottom(BuildContext context) {
     return Container(
       child: Visibility(
@@ -172,41 +170,32 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                     }),
-                FlyoutTarget(
-                  key: _flyoutKey,
-                  controller: _flyoutController,
-                  child: GestureDetector(
-                    child: IconButton(
-                      icon: Icon(
-                        FluentIcons.save,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        if (_illusts.metaPages.isNotEmpty)
-                          saveStore.saveImage(widget.illusts, index: _index);
-                        else
-                          saveStore.saveImage(widget.illusts);
-                      },
+                ContextMenu(
+                  child: IconButton(
+                    icon: Icon(
+                      FluentIcons.save,
+                      color: Colors.white,
                     ),
-                    onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-                      position: getPosition(context, _flyoutKey, details),
-                      builder: (context) => MenuFlyout(
-                        items: [
-                          MenuFlyoutItem(
-                            text: Text(I18n.of(context).save),
-                            onPressed: () async {
-                              if (_illusts.metaPages.isNotEmpty)
-                                await saveStore.saveImage(widget.illusts,
-                                    index: _index);
-                              else
-                                await saveStore.saveImage(widget.illusts);
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
-                      ),
-                    ),
+                    onPressed: () {
+                      if (_illusts.metaPages.isNotEmpty)
+                        saveStore.saveImage(widget.illusts, index: _index);
+                      else
+                        saveStore.saveImage(widget.illusts);
+                    },
                   ),
+                  items: [
+                    MenuFlyoutItem(
+                      text: Text(I18n.of(context).save),
+                      onPressed: () async {
+                        if (_illusts.metaPages.isNotEmpty)
+                          await saveStore.saveImage(widget.illusts,
+                              index: _index);
+                        else
+                          await saveStore.saveImage(widget.illusts);
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
                 ),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,
