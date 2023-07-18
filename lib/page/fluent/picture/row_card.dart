@@ -16,74 +16,89 @@ class RowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isFocus = false;
     return FlyoutTarget(
       key: _flyoutKey,
       controller: _flyoutController,
-      child: GestureDetector(
-        onTap: () {
-          Leader.push(
-            context,
-            ResultPage(
-              word: f.name,
-              translatedName: f.translatedName ?? "",
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Focus(
+            onFocusChange: (v) => setState(() {
+              isFocus = v;
+            }),
+            child: FocusBorder(
+              child: GestureDetector(
+                onTap: () {
+                  Leader.push(
+                    context,
+                    ResultPage(
+                      word: f.name,
+                      translatedName: f.translatedName ?? "",
+                    ),
+                    icon: Icon(FluentIcons.show_results),
+                    title: Text(I18n.of(context).tag + ' #${f.name}'),
+                  );
+                },
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                        text: "#${f.name}",
+                        children: [
+                          TextSpan(
+                            text: " ",
+                            style: FluentTheme.of(context).typography.caption,
+                          ),
+                          TextSpan(
+                              text: "${f.translatedName ?? "~"}",
+                              style: FluentTheme.of(context).typography.caption)
+                        ],
+                        style: FluentTheme.of(context)
+                            .typography
+                            .caption!
+                            .copyWith(
+                                color: FluentTheme.of(context).accentColor))),
+                onSecondaryTapUp: (details) => _flyoutController.showFlyout(
+                  position: getPosition(context, _flyoutKey, details),
+                  builder: (context) => MenuFlyout(
+                    items: [
+                      MenuFlyoutItem(
+                        text: Text(I18n.of(context).ban),
+                        onPressed: () async {
+                          await muteStore.insertBanTag(BanTagPersist(
+                            name: f.name,
+                            translateName: f.translatedName ?? "",
+                          ));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      MenuFlyoutItem(
+                        text: Text(I18n.of(context).bookmark),
+                        onPressed: () async {
+                          await bookTagStore.bookTag(f.name);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      MenuFlyoutItem(
+                        text: Text(I18n.of(context).copy),
+                        onPressed: () async {
+                          await Clipboard.setData(ClipboardData(text: f.name));
+                          showSnackbar(
+                              context,
+                              InfoBar(
+                                title:
+                                    Text(I18n.of(context).copied_to_clipboard),
+                              ));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              focused: isFocus,
             ),
-            icon: Icon(FluentIcons.show_results),
-            title: Text(I18n.of(context).tag + ' #${f.name}'),
           );
         },
-        child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-                text: "#${f.name}",
-                children: [
-                  TextSpan(
-                    text: " ",
-                    style: FluentTheme.of(context).typography.caption,
-                  ),
-                  TextSpan(
-                      text: "${f.translatedName ?? "~"}",
-                      style: FluentTheme.of(context).typography.caption)
-                ],
-                style: FluentTheme.of(context)
-                    .typography
-                    .caption!
-                    .copyWith(color: FluentTheme.of(context).accentColor))),
-        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-          position: getPosition(context, _flyoutKey, details),
-          builder: (context) => MenuFlyout(
-            items: [
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).ban),
-                onPressed: () async {
-                  await muteStore.insertBanTag(BanTagPersist(
-                    name: f.name,
-                    translateName: f.translatedName ?? "",
-                  ));
-                  Navigator.of(context).pop();
-                },
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).bookmark),
-                onPressed: () async {
-                  await bookTagStore.bookTag(f.name);
-                  Navigator.of(context).pop();
-                },
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).copy),
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: f.name));
-                  showSnackbar(
-                      context,
-                      Snackbar(
-                        content: Text(I18n.of(context).copied_to_clipboard),
-                      ));
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
