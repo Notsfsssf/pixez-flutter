@@ -38,19 +38,23 @@ class SpotLightPage extends StatelessWidget {
         _refreshController.callLoad();
       }
     });
+    _spotlightStore.fetch();
     return Observer(builder: (_) {
       return ScaffoldPage(
         header: PageHeader(
           title: Text(I18n.of(context).spotlight),
-          commandBar: CommandBar(primaryItems: [
-            CommandBarButton(
-              icon: Icon(FluentIcons.up),
-              onPressed: () {
-                _controller.animateTo(0,
-                    duration: Duration(seconds: 1), curve: Curves.ease);
-              },
-            )
-          ]),
+          commandBar: CommandBar(
+            mainAxisAlignment: MainAxisAlignment.end,
+            primaryItems: [
+              CommandBarButton(
+                icon: Icon(FluentIcons.up),
+                onPressed: () {
+                  _controller.animateTo(0,
+                      duration: Duration(seconds: 1), curve: Curves.ease);
+                },
+              )
+            ],
+          ),
         ),
         content: EasyRefresh(
             onLoad: () => _spotlightStore.next(),
@@ -60,7 +64,7 @@ class SpotLightPage extends StatelessWidget {
             controller: _refreshController,
             child: WaterfallFlow.builder(
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
+                  crossAxisCount: 4),
               controller: _controller,
               itemBuilder: (BuildContext context, int index) {
                 return SpotlightCard(

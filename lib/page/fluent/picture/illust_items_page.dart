@@ -4,6 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/ban_page.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/null_hero.dart';
@@ -12,7 +13,6 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
@@ -101,8 +101,6 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     super.dispose();
   }
 
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -154,46 +152,37 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
             buildContent(context, illustStore.illusts),
             Container(
               margin: EdgeInsets.only(right: 8.0, bottom: 8.0),
-              child: FlyoutTarget(
-                key: _flyoutKey,
-                controller: _flyoutController,
-                child: GestureDetector(
-                  child: ButtonTheme(
-                    child: IconButton(
-                      icon: Observer(
-                        builder: (_) => StarIcon(
-                          state: illustStore.state,
-                        ),
-                      ),
-                      onPressed: illustStore.star,
-                    ),
-                    data: ButtonThemeData(
-                      iconButtonStyle: ButtonStyle(
-                        backgroundColor: ButtonState.all(
-                          FluentTheme.of(context).inactiveBackgroundColor,
-                        ),
-                        shadowColor: ButtonState.all(
-                          FluentTheme.of(context).shadowColor,
-                        ),
-                        shape: ButtonState.all(CircleBorder()),
+              child: ContextMenu(
+                child: ButtonTheme(
+                  child: IconButton(
+                    icon: Observer(
+                      builder: (_) => StarIcon(
+                        state: illustStore.state,
                       ),
                     ),
+                    onPressed: illustStore.star,
                   ),
-                  onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-                    position: getPosition(context, _flyoutKey, details),
-                    builder: (context) => MenuFlyout(
-                      items: [
-                        MenuFlyoutItem(
-                          text: Text(I18n.of(context).favorited_tag),
-                          onPressed: () async {
-                            await showBookMarkTag();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
+                  data: ButtonThemeData(
+                    iconButtonStyle: ButtonStyle(
+                      backgroundColor: ButtonState.all(
+                        FluentTheme.of(context).inactiveBackgroundColor,
+                      ),
+                      shadowColor: ButtonState.all(
+                        FluentTheme.of(context).shadowColor,
+                      ),
+                      shape: ButtonState.all(CircleBorder()),
                     ),
                   ),
                 ),
+                items: [
+                  MenuFlyoutItem(
+                    text: Text(I18n.of(context).favorited_tag),
+                    onPressed: () async {
+                      await showBookMarkTag();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
             )
           ],
@@ -417,8 +406,6 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     return RowCard(f);
   }
 
-  final _nameAvatarFlyoutController = FlyoutController();
-  final _nameAvatarFlyoutKey = GlobalKey();
   Widget buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
       userStore = UserStore(illust.user.id, user: illust.user);
@@ -426,110 +413,101 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
       });
-      return FlyoutTarget(
-        controller: _nameAvatarFlyoutController,
-        key: _nameAvatarFlyoutKey,
-        child: GestureDetector(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                  child: Container(
-                    height: 70,
-                    width: 70,
-                    child: Stack(
-                      children: <Widget>[
-                        Center(
-                          child: SizedBox(
-                            height: 70,
-                            width: 70,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: userStore!.isFollow
-                                    ? Colors.yellow
-                                    : FluentTheme.of(context).accentColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Hero(
-                            tag: illust.user.profileImageUrls.medium +
-                                this.hashCode.toString(),
-                            child: PainterAvatar(
-                              url: illust.user.profileImageUrls.medium,
-                              id: illust.user.id,
-                              onTap: () async {
-                                await Leader.push(
-                                  context,
-                                  UsersPage(
-                                    id: illust.user.id,
-                                    userStore: userStore,
-                                    heroTag: this.hashCode.toString(),
-                                  ),
-                                  icon: Icon(FluentIcons.account_browser),
-                                  title: Text(I18n.of(context).painter_id +
-                                      '${illust.user.id}'),
-                                );
-                                illustStore.illusts!.user.isFollowed =
-                                    userStore!.isFollow;
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  padding: EdgeInsets.all(8.0)),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+      return ContextMenu(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+                child: Container(
+                  height: 70,
+                  width: 70,
+                  child: Stack(
                     children: <Widget>[
-                      Text(
-                        illust.title,
-                        style: TextStyle(
-                            color: FluentTheme.of(context).accentColor),
-                      ),
-                      Container(
-                        height: 4.0,
-                      ),
-                      Hero(
-                        tag: illust.user.name + this.hashCode.toString(),
-                        child: Text(
-                          illust.user.name,
-                          style: FluentTheme.of(context).typography.body,
+                      Center(
+                        child: SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: userStore!.isFollow
+                                  ? Colors.yellow
+                                  : FluentTheme.of(context).accentColor,
+                            ),
+                          ),
                         ),
                       ),
-                      Text(
-                        illust.createDate.toShortTime(),
-                        style: FluentTheme.of(context).typography.caption,
+                      Center(
+                        child: Hero(
+                          tag: illust.user.profileImageUrls.medium +
+                              this.hashCode.toString(),
+                          child: PainterAvatar(
+                            url: illust.user.profileImageUrls.medium,
+                            id: illust.user.id,
+                            onTap: () async {
+                              await Leader.push(
+                                context,
+                                UsersPage(
+                                  id: illust.user.id,
+                                  userStore: userStore,
+                                  heroTag: this.hashCode.toString(),
+                                ),
+                                icon: Icon(FluentIcons.account_browser),
+                                title: Text(I18n.of(context).painter_id +
+                                    '${illust.user.id}'),
+                              );
+                              illustStore.illusts!.user.isFollowed =
+                                  userStore!.isFollow;
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          onSecondaryTapUp: (details) => _nameAvatarFlyoutController.showFlyout(
-            position: getPosition(context, _nameAvatarFlyoutKey, details),
-            builder: (context) => MenuFlyout(
-              items: [
-                MenuFlyoutItem(
-                  text: Text(I18n.of(context).follow),
-                  onPressed: () async {
-                    await userStore!.follow();
-                    Navigator.of(context).pop();
-                  },
+                padding: EdgeInsets.all(8.0)),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      illust.title,
+                      style:
+                          TextStyle(color: FluentTheme.of(context).accentColor),
+                    ),
+                    Container(
+                      height: 4.0,
+                    ),
+                    Hero(
+                      tag: illust.user.name + this.hashCode.toString(),
+                      child: Text(
+                        illust.user.name,
+                        style: FluentTheme.of(context).typography.body,
+                      ),
+                    ),
+                    Text(
+                      illust.createDate.toShortTime(),
+                      style: FluentTheme.of(context).typography.caption,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
+        items: [
+          MenuFlyoutItem(
+            text: Text(I18n.of(context).follow),
+            onPressed: () async {
+              await userStore!.follow();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       );
     });
   }
@@ -788,8 +766,6 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
 }
 
 class IllustItem extends StatelessWidget {
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   final int index;
   final Illusts data;
   final IllustItemsPage widget;
@@ -805,134 +781,122 @@ class IllustItem extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return FlyoutTarget(
-      key: _flyoutKey,
-      controller: _flyoutController,
-      child: GestureDetector(
-        child: IconButton(
-          onPressed: () {
-            Leader.push(
-              context,
-              PhotoZoomPage(
-                index: index,
-                illusts: data,
-              ),
-              icon: Icon(FluentIcons.picture),
-              title: Text(I18n.of(context).illust_id + ': ${data.id}'),
-            );
-          },
-          icon: icon,
-        ),
-        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-          position: getPosition(context, _flyoutKey, details),
-          builder: (context) => MenuFlyout(
-            items: [
-              if (data.metaPages.isNotEmpty)
-                MenuFlyoutItem(
-                  text: Text(I18n.of(context).muti_choice_save),
-                  leading: Icon(
-                    FluentIcons.save,
-                  ),
-                  onPressed: () async {
-                    await onMultiSavePressed();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              MenuFlyoutItem(
-                leading: Icon(FluentIcons.save),
-                onPressed: () async {
-                  await saveStore.saveImage(data, index: index);
-                  Navigator.of(context).pop();
-                },
-                text: Text(I18n.of(context).save),
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).copymessage),
-                leading: Icon(
-                  FluentIcons.library,
-                ),
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(
-                      text:
-                          'title:${data.title}\npainter:${data.user.name}\nillust id:${widget.id}'));
-                  BotToast.showText(text: I18n.of(context).copied_to_clipboard);
-                  Navigator.of(context).pop();
-                },
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).share),
-                leading: Icon(
-                  FluentIcons.share,
-                ),
-                onPressed: () async {
-                  await Share.share(
-                      "https://www.pixiv.net/artworks/${widget.id}");
-                  Navigator.of(context).pop();
-                },
-              ),
-              MenuFlyoutItem(
-                leading: Icon(
-                  FluentIcons.link,
-                ),
-                text: Text(I18n.of(context).link),
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(
-                      text: "https://www.pixiv.net/artworks/${widget.id}"));
-                  BotToast.showText(text: I18n.of(context).copied_to_clipboard);
-                  Navigator.of(context).pop();
-                },
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).ban),
-                leading: Icon(FluentIcons.brightness),
-                onPressed: () async {
-                  await muteStore.insertBanIllusts(BanIllustIdPersist(
-                      illustId: widget.id.toString(), name: data.title));
-                  Navigator.of(context).pop();
-                },
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).report),
-                leading: Icon(FluentIcons.report_document),
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return ContentDialog(
-                        title: Text(I18n.of(context).report),
-                        content: Text(I18n.of(context).report_message),
-                        actions: <Widget>[
-                          HyperlinkButton(
-                            child: Text(I18n.of(context).cancel),
-                            onPressed: () {
-                              Navigator.of(context).pop("CANCEL");
-                            },
-                          ),
-                          HyperlinkButton(
-                            child: Text(I18n.of(context).ok),
-                            onPressed: () {
-                              Navigator.of(context).pop("OK");
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-        ),
+    return ContextMenu(
+      child: IconButton(
+        onPressed: () {
+          Leader.push(
+            context,
+            PhotoZoomPage(
+              index: index,
+              illusts: data,
+            ),
+            icon: Icon(FluentIcons.picture),
+            title: Text(I18n.of(context).illust_id + ': ${data.id}'),
+          );
+        },
+        icon: icon,
       ),
+      items: [
+        if (data.metaPages.isNotEmpty)
+          MenuFlyoutItem(
+            text: Text(I18n.of(context).muti_choice_save),
+            leading: Icon(
+              FluentIcons.save,
+            ),
+            onPressed: () async {
+              await onMultiSavePressed();
+              Navigator.of(context).pop();
+            },
+          ),
+        MenuFlyoutItem(
+          leading: Icon(FluentIcons.save),
+          onPressed: () async {
+            await saveStore.saveImage(data, index: index);
+            Navigator.of(context).pop();
+          },
+          text: Text(I18n.of(context).save),
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).copymessage),
+          leading: Icon(
+            FluentIcons.library,
+          ),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(
+                text:
+                    'title:${data.title}\npainter:${data.user.name}\nillust id:${widget.id}'));
+            BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+            Navigator.of(context).pop();
+          },
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).share),
+          leading: Icon(
+            FluentIcons.share,
+          ),
+          onPressed: () async {
+            await Share.share("https://www.pixiv.net/artworks/${widget.id}");
+            Navigator.of(context).pop();
+          },
+        ),
+        MenuFlyoutItem(
+          leading: Icon(
+            FluentIcons.link,
+          ),
+          text: Text(I18n.of(context).link),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(
+                text: "https://www.pixiv.net/artworks/${widget.id}"));
+            BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+            Navigator.of(context).pop();
+          },
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).ban),
+          leading: Icon(FluentIcons.brightness),
+          onPressed: () async {
+            await muteStore.insertBanIllusts(BanIllustIdPersist(
+                illustId: widget.id.toString(), name: data.title));
+            Navigator.of(context).pop();
+          },
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).report),
+          leading: Icon(FluentIcons.report_document),
+          onPressed: () async {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return ContentDialog(
+                  title: Text(I18n.of(context).report),
+                  content: Text(I18n.of(context).report_message),
+                  actions: <Widget>[
+                    HyperlinkButton(
+                      child: Text(I18n.of(context).cancel),
+                      onPressed: () {
+                        Navigator.of(context).pop("CANCEL");
+                      },
+                    ),
+                    HyperlinkButton(
+                      child: Text(I18n.of(context).ok),
+                      onPressed: () {
+                        Navigator.of(context).pop("OK");
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            Navigator.of(context).pop();
+          },
+        )
+      ],
     );
   }
 }
 
 /// 相关图片
 class MoreItem extends StatelessWidget {
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   final int index;
   final List<IllustStore> list;
   final IllustAboutStore _aboutStore;
@@ -944,40 +908,31 @@ class MoreItem extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    return FlyoutTarget(
-      controller: _flyoutController,
-      key: _flyoutKey,
-      child: GestureDetector(
-        child: IconButton(
-          onPressed: () {
-            Leader.push(
-                context,
-                PictureListPage(
-                  iStores: list,
-                  lightingStore: null,
-                  store: list[index],
-                ));
-          },
-          icon: PixivImage(
-            _aboutStore.illusts[index].imageUrls.squareMedium,
-            enableMemoryCache: false,
-          ),
-        ),
-        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-          position: getPosition(context, _flyoutKey, details),
-          builder: (context) => MenuFlyout(
-            items: [
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).save),
-                onPressed: () async {
-                  await saveStore.saveImage(_aboutStore.illusts[index]);
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
+    return ContextMenu(
+      child: IconButton(
+        onPressed: () {
+          Leader.push(
+              context,
+              PictureListPage(
+                iStores: list,
+                lightingStore: null,
+                store: list[index],
+              ));
+        },
+        icon: PixivImage(
+          _aboutStore.illusts[index].imageUrls.squareMedium,
+          enableMemoryCache: false,
         ),
       ),
+      items: [
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).save),
+          onPressed: () async {
+            await saveStore.saveImage(_aboutStore.illusts[index]);
+            Navigator.of(context).pop();
+          },
+        )
+      ],
     );
   }
 }

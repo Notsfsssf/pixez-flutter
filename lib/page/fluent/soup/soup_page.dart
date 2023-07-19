@@ -16,12 +16,15 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/component/fluent/painter_avatar.dart';
+import 'package:pixez/component/fluent/pixez_button.dart';
+import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
+import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -55,6 +58,7 @@ class _SoupPageState extends State<SoupPage> {
         title: Text(widget.spotlight!.pureTitle),
         commandBar: widget.spotlight != null
             ? CommandBar(
+                mainAxisAlignment: MainAxisAlignment.end,
                 primaryItems: [
                   CommandBarButton(
                     icon: Icon(FluentIcons.share),
@@ -102,53 +106,41 @@ class _SoupPageState extends State<SoupPage> {
                   );
                 }
                 AmWork amWork = _soupStore.amWorks[index - 1];
-                return Card(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.all(8.0),
-                  child: ButtonTheme(
-                    data: ButtonThemeData(
-                        iconButtonStyle: ButtonStyle(
-                      padding: ButtonState.all(EdgeInsets.zero),
-                    )),
-                    child: IconButton(
-                      onPressed: () {
-                        int id = int.parse(Uri.parse(amWork.arworkLink!)
-                                .pathSegments[
-                            Uri.parse(amWork.arworkLink!).pathSegments.length -
-                                1]);
-                        Navigator.of(context, rootNavigator: true).push(
-                            FluentPageRoute(builder: (BuildContext context) {
-                          return IllustLightingPage(
-                            id: id,
-                            store: IllustStore(id, null),
-                          );
-                        }));
-                      },
-                      icon: Column(
-                        children: <Widget>[
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: const Radius.circular(4.0),
-                              topRight: const Radius.circular(4.0),
-                            ),
-                            child: PixivImage(amWork.showImage!),
+                return PixEzButton(
+                  child: Card(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: <Widget>[
+                        PixivImage(amWork.showImage!),
+                        ListTile(
+                          leading: PainterAvatar(
+                            url: amWork.userImage!,
+                            id: int.parse(Uri.parse(amWork.userLink!)
+                                .pathSegments[Uri.parse(amWork.userLink!)
+                                    .pathSegments
+                                    .length -
+                                1]),
                           ),
-                          ListTile(
-                            leading: PainterAvatar(
-                              url: amWork.userImage!,
-                              id: int.parse(Uri.parse(amWork.userLink!)
-                                  .pathSegments[Uri.parse(amWork.userLink!)
-                                      .pathSegments
-                                      .length -
-                                  1]),
-                            ),
-                            title: Text(amWork.title!),
-                            subtitle: Text(amWork.user!),
-                          ),
-                        ],
-                      ),
+                          title: Text(amWork.title!),
+                          subtitle: Text(amWork.user!),
+                        ),
+                      ],
                     ),
                   ),
+                  onPressed: () {
+                    int id = int.parse(Uri.parse(amWork.arworkLink!)
+                            .pathSegments[
+                        Uri.parse(amWork.arworkLink!).pathSegments.length - 1]);
+                    Leader.push(
+                      context,
+                      IllustLightingPage(
+                        id: id,
+                        store: IllustStore(id, null),
+                      ),
+                      icon: Icon(FluentIcons.picture),
+                      title: Text(I18n.of(context).illust_id + ': ${id}'),
+                    );
+                  },
                 );
               });
             },

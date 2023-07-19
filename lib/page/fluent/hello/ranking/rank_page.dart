@@ -17,17 +17,12 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/fluent/hello/ranking/ranking_mode/rank_mode_page.dart';
-
-/* TODO
- * 这个页面需要重新设计，不可以简单的照搬原来的设计。
- * see https://learn.microsoft.com/zh-cn/windows/apps/design/basics/navigation-basics
- * 我认为现在的设计不能满足一致性。
- */
 
 class RankPage extends StatefulWidget {
   late ValueNotifier<bool> isFullscreen;
@@ -89,6 +84,16 @@ class _RankPageState extends State<RankPage>
         topStore.setTop((201 + index).toString());
       }
     });
+
+    Future.delayed(
+      Duration.zero,
+      () {
+        if (rankStore.inChoice || rankStore.modeList.isEmpty) {
+          final rankListMean = I18n.of(context).mode_list.split(' ');
+          _choicePage(context, rankListMean);
+        }
+      },
+    );
   }
 
   String? toRequestDate(DateTime dateTime) {
@@ -131,123 +136,180 @@ class _RankPageState extends State<RankPage>
   Widget build(BuildContext context) {
     super.build(context);
     final rankListMean = I18n.of(context).mode_list.split(' ');
-    return ScaffoldPage(
-      content: Observer(builder: (_) {
-        if (rankStore.inChoice) {
-          return _buildChoicePage(context, rankListMean);
-        }
-        if (rankStore.modeList.isNotEmpty) {
-          var list = I18n.of(context).mode_list.split(' ');
-          List<String> titles = [];
-          for (var i = 0; i < rankStore.modeList.length; i++) {
-            int index = modeList.indexOf(rankStore.modeList[i]);
-            if (index < 0) {
-              debugPrint(rankStore.modeList[i] + ' is -1');
-              continue;
-            }
-            titles.add(list[index]);
-          }
-          return TabView(
-            closeButtonVisibility: CloseButtonVisibilityMode.never,
-            currentIndex: index,
-            onChanged: (value) => setState(() => index = value),
-            tabs: [
-              for (int i = 0; i < titles.length; i++)
-                Tab(
-                  text: Text(titles[i]),
-                  body: RankModePage(
-                    date: dateTime,
-                    mode: rankStore.modeList[i],
-                    index: i,
-                  ),
-                ),
-            ],
-            header: CommandBar(
-              primaryItems: [
-                if (widget.toggleFullscreen != null)
-                  CommandBarButton(
-                    icon: Icon(FluentIcons.full_screen),
-                    onPressed: () {
-                      toggleFullscreen();
-                    },
-                  ),
-                CommandBarButton(
-                  icon: Icon(FluentIcons.undo),
-                  onPressed: () {
-                    rankStore.reset();
-                  },
-                )
-              ],
-              overflowBehavior: CommandBarOverflowBehavior.noWrap,
+    return Observer(builder: (_) {
+      if (rankStore.inChoice) {
+        return Container(
+          child: Center(
+            child: FilledButton(
+              child: Text(I18n.of(context).choice_you_like),
+              onPressed: () => _choicePage(context, rankListMean),
             ),
-            footer: index >= rankStore.modeList.length
-                ? Container()
-                : DatePicker(
-                    selected: nowDateTime,
-                    onChanged: (date) {
-                      if (mounted) {
-                        nowDateTime = date;
-                        setState(() {
-                          this.dateTime = toRequestDate(date);
-                        });
-                      }
-                    },
-                    startDate: DateTime(2007, 8),
-                  ),
-          );
-        } else {
-          return _buildChoicePage(context, rankListMean);
+          ),
+        );
+      }
+      if (rankStore.modeList.isNotEmpty) {
+        var list = I18n.of(context).mode_list.split(' ');
+        List<String> titles = [];
+        for (var i = 0; i < rankStore.modeList.length; i++) {
+          int index = modeList.indexOf(rankStore.modeList[i]);
+          if (index < 0) {
+            debugPrint(rankStore.modeList[i] + ' is -1');
+            continue;
+          }
+          titles.add(list[index]);
         }
-      }),
-    );
+        return NavigationView(
+          pane: NavigationPane(
+              header: CommandBar(
+                primaryItems: [
+                  if (widget.toggleFullscreen != null)
+                    CommandBarButton(
+                      icon: Icon(FluentIcons.full_screen),
+                      onPressed: () {
+                        toggleFullscreen();
+                      },
+                    ),
+                  CommandBarButton(
+                    icon: Icon(FluentIcons.reset),
+                    onPressed: () {
+                      rankStore.reset();
+                      _choicePage(context, rankListMean);
+                    },
+                  )
+                ],
+                overflowBehavior: CommandBarOverflowBehavior.noWrap,
+              ),
+              selected: index,
+              onChanged: (value) => setState(() => index = value),
+              displayMode: PaneDisplayMode.top,
+              items: [
+                for (int i = 0; i < titles.length; i++)
+                  PaneItem(
+                    icon: Icon(FluentIcons.context_menu),
+                    title: Text(titles[i]),
+                    body: RankModePage(
+                      date: dateTime,
+                      mode: rankStore.modeList[i],
+                      index: i,
+                    ),
+                  ),
+              ],
+              footerItems: [
+                PaneItemAction(
+                  icon: Icon(FluentIcons.date_time),
+                  onTap: () => _showTimePicker(context),
+                )
+              ]),
+        );
+      } else {
+        return Container(
+          child: Center(
+            child: FilledButton(
+              child: Text(I18n.of(context).choice_you_like),
+              onPressed: () => _choicePage(context, rankListMean),
+            ),
+          ),
+        );
+      }
+    });
   }
 
-  Widget _buildChoicePage(BuildContext context, List<String> rankListMean) {
-    return ScaffoldPage(
-      header: PageHeader(
+  void _choicePage(BuildContext context, List<String> rankListMean) {
+    showDialog(
+      context: context,
+      builder: (context) => ContentDialog(
         title: Text(I18n.of(context).choice_you_like),
-        commandBar: CommandBar(
-          mainAxisAlignment: MainAxisAlignment.end,
-          primaryItems: [
-            CommandBarButton(
-              icon: Icon(FluentIcons.save),
-              onPressed: () async {
-                await rankStore.saveChange(boolList);
-                rankStore.inChoice = false;
-              },
-            )
-          ],
-        ),
-      ),
-      content: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Wrap(
-          spacing: 4,
-          children: [
-            for (var e in rankListMean)
-              Container(
-                margin: EdgeInsets.all(8),
+        content: StatefulBuilder(
+          builder: (context, setState) => ListView.builder(
+            itemCount: rankListMean.length,
+            itemBuilder: (context, index) {
+              final value = rankListMean[index];
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                 child: Checkbox(
-                  content: Text(e),
-                  checked: _rankFilters.contains(e),
+                  content: Text(value),
+                  checked: _rankFilters.contains(value),
                   onChanged: (v) {
-                    boolList[rankListMean.indexOf(e)] = v ?? false;
+                    boolList[rankListMean.indexOf(value)] = v ?? false;
                     if (v ?? false) {
                       setState(() {
-                        _rankFilters.add(e);
+                        _rankFilters.add(value);
                       });
                     } else {
                       setState(() {
-                        _rankFilters.remove(e);
+                        _rankFilters.remove(value);
                       });
                     }
                   },
                 ),
-              ),
-          ],
+              );
+            },
+          ),
         ),
+        actions: [
+          FilledButton(
+            child: Text(I18n.of(context).ok),
+            onPressed: () async {
+              await rankStore.saveChange(boolList);
+              rankStore.inChoice = false;
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
     );
+  }
+
+  Future _showTimePicker(BuildContext context) async {
+    // TODO: fluent_ui的日期选择器好像有点问题
+    var nowdate = DateTime.now();
+    var date = await material.showDatePicker(
+        context: context,
+        initialDate: nowDateTime,
+        locale: userSetting.locale,
+        firstDate: DateTime(2007, 8),
+        //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
+        lastDate: nowdate);
+    if (date != null && mounted) {
+      nowDateTime = date;
+      setState(() {
+        this.dateTime = toRequestDate(date);
+      });
+    }
+
+    // DateTime? current = null;
+    // showDialog(
+    //   context: context,
+    //   builder: (context) => ContentDialog(
+    //     title: Text('Choice a Date'),
+    //     content: Container(
+    //       child: DatePicker(
+    //         selected: current,
+    //         startDate: DateTime(2007, 8),
+    //       ),
+    //       width: 300,
+    //     ),
+    //     actions: [
+    //       Button(
+    //         child: Text(I18n.of(context).cancel),
+    //         onPressed: () => Navigator.of(context).pop(),
+    //       ),
+    //       FilledButton(
+    //         child: Text(I18n.of(context).ok),
+    //         onPressed: () {
+    //           if (mounted && current != null) {
+    //             nowDateTime = current;
+    //             setState(() {
+    //               this.dateTime = toRequestDate(current);
+    //             });
+    //           }
+    //           Navigator.of(context).pop();
+    //         },
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   List<String> _rankFilters = [];

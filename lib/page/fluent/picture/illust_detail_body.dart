@@ -18,7 +18,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
-import 'package:pixez/fluentui.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/er/leader.dart';
@@ -49,95 +49,83 @@ class IllustDetailBody extends StatelessWidget {
         style: TextStyle(color: FluentTheme.of(context).accentColor),
       );
 
-  final _nameAvatarFlyoutController = FlyoutController();
-  final _nameAvatarFlyoutKey = GlobalKey();
   Widget _buildNameAvatar(
       BuildContext context, Illusts illust, IllustDetailStore _store) {
-    return FlyoutTarget(
-      key: _nameAvatarFlyoutKey,
-      controller: _nameAvatarFlyoutController,
-      child: GestureDetector(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-                child: Container(
-                  height: 70,
-                  width: 70,
-                  child: Stack(
-                    children: <Widget>[
-                      Center(
-                        child: SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: Container(
-                            decoration: illust != null
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _store.isFollow
-                                        ? Colors.yellow
-                                        : FluentTheme.of(context).accentColor,
-                                  )
-                                : BoxDecoration(),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: PainterAvatar(
-                          url: illust.user.profileImageUrls.medium,
-                          id: illust.user.id,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                padding: EdgeInsets.all(8.0)),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
+    return ContextMenu(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+              child: Container(
+                height: 70,
+                width: 70,
+                child: Stack(
                   children: <Widget>[
-                    Text(
-                      illust.title,
-                      style:
-                          TextStyle(color: FluentTheme.of(context).accentColor),
+                    Center(
+                      child: SizedBox(
+                        height: 70,
+                        width: 70,
+                        child: Container(
+                          decoration: illust != null
+                              ? BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _store.isFollow
+                                      ? Colors.yellow
+                                      : FluentTheme.of(context).accentColor,
+                                )
+                              : BoxDecoration(),
+                        ),
+                      ),
                     ),
-                    Container(
-                      height: 4.0,
-                    ),
-                    Text(
-                      illust.user.name,
-                      style: FluentTheme.of(context).typography.body,
-                    ),
-                    Text(
-                      toShortTime(illust.createDate),
-                      style: FluentTheme.of(context).typography.caption,
+                    Center(
+                      child: PainterAvatar(
+                        url: illust.user.profileImageUrls.medium,
+                        id: illust.user.id,
+                      ),
                     ),
                   ],
                 ),
               ),
+              padding: EdgeInsets.all(8.0)),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    illust.title,
+                    style:
+                        TextStyle(color: FluentTheme.of(context).accentColor),
+                  ),
+                  Container(
+                    height: 4.0,
+                  ),
+                  Text(
+                    illust.user.name,
+                    style: FluentTheme.of(context).typography.body,
+                  ),
+                  Text(
+                    toShortTime(illust.createDate),
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-        onSecondaryTapUp: (details) => _nameAvatarFlyoutController.showFlyout(
-          position: getPosition(context, _nameAvatarFlyoutKey, details),
-          builder: (context) => MenuFlyout(
-            color: Colors.transparent,
-            items: [
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).follow),
-                onPressed: () async {
-                  await _store.followUser();
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
           ),
-        ),
+        ],
       ),
+      items: [
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).follow),
+          onPressed: () async {
+            await _store.followUser();
+            Navigator.of(context).pop();
+          },
+        )
+      ],
     );
   }
 

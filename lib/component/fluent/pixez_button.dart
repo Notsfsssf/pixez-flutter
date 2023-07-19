@@ -1,0 +1,27 @@
+import 'package:fluent_ui/fluent_ui.dart';
+
+class PixEzButton extends StatelessWidget {
+  final Widget child;
+  final void Function() onPressed;
+
+  const PixEzButton({super.key, required this.child, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: ButtonTheme(
+          data: ButtonThemeData(
+            iconButtonStyle: ButtonStyle(
+              padding: ButtonState.all(EdgeInsets.zero),
+            ),
+          ),
+          child: IconButton(
+            icon: ClipRRect(
+              borderRadius: const BorderRadius.all(const Radius.circular(4.0)),
+              child: child,
+            ),
+            onPressed: onPressed,
+          ),
+        ),
+      );
+}

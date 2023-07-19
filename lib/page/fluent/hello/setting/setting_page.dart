@@ -14,13 +14,9 @@
  *
  */
 
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/fluent/new_version_chip.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/constants.dart';
@@ -29,21 +25,21 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/fluent/about/about_page.dart';
 import 'package:pixez/page/fluent/account/edit/account_edit_page.dart';
 import 'package:pixez/page/fluent/account/select/account_select_page.dart';
 import 'package:pixez/page/fluent/book/tag/book_tag_page.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_manga_page.dart';
+import 'package:pixez/page/fluent/hello/setting/data_export_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/fluent/history/history_page.dart';
 import 'package:pixez/page/fluent/login/login_page.dart';
 import 'package:pixez/page/fluent/network/network_setting_page.dart';
-import 'package:pixez/page/novel/history/novel_history_page.dart';
-import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/fluent/shield/shield_page.dart';
 import 'package:pixez/page/fluent/task/job_page.dart';
 import 'package:pixez/page/fluent/theme/theme_page.dart';
+import 'package:pixez/page/novel/history/novel_history_page.dart';
+import 'package:pixez/page/novel/novel_rail.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -216,9 +212,14 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ),
             ListTile(
-              onPressed: () => _showClearCacheDialog(context),
-              title: Text(I18n.of(context).clearn_cache),
-              leading: Icon(FluentIcons.clear),
+              leading: Icon(FluentIcons.database),
+              title: Text(I18n.of(context).app_data),
+              onPressed: () => Leader.push(
+                context,
+                DataExportPage(),
+                icon: Icon(FluentIcons.database),
+                title: Text(I18n.of(context).app_data),
+              ),
             ),
           ],
         ),
@@ -333,19 +334,6 @@ class _SettingPageState extends State<SettingPage> {
     }
   }
 
-  _showMessage(BuildContext context) async {
-    final link =
-        "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
-    try {
-      final dio = Dio(BaseOptions(baseUrl: link));
-      Response response = await dio.get("");
-      final data = response.data as Map;
-      print("${data['doh']}");
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Future _showLogoutDialog(BuildContext context) async {
     final result = await showDialog(
         context: context,
@@ -376,81 +364,6 @@ class _SettingPageState extends State<SettingPage> {
         break;
       case "CANCEL":
         {}
-        break;
-    }
-  }
-
-  _showCacheBottomSheet(BuildContext context) async {
-    final result = await showDialog(
-        context: context,
-        // shape: const RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.only(
-        //         topLeft: Radius.circular(16.0),
-        //         topRight: Radius.circular(16.0))),
-        builder: (context) {
-          return SafeArea(
-              child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(I18n.of(context).clear_all_cache),
-              ),
-              Slider(
-                value: 1,
-                onChanged: (v) {},
-              ),
-              ListTile(
-                title: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-              ListTile(
-                title: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ));
-        });
-  }
-
-  Future _showClearCacheDialog(BuildContext context) async {
-    final result = await showDialog(
-        builder: (BuildContext context) {
-          return ContentDialog(
-            title: Text(I18n.of(context).clear_all_cache),
-            actions: <Widget>[
-              HyperlinkButton(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop("CANCEL");
-                },
-              ),
-              HyperlinkButton(
-                child: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-            ],
-          );
-        },
-        context: context);
-    switch (result) {
-      case "OK":
-        {
-          try {
-            Directory tempDir = await getTemporaryDirectory();
-            tempDir.deleteSync(recursive: true);
-            GlanceIllustPersistProvider glanceIllustPersistProvider =
-                GlanceIllustPersistProvider();
-            await glanceIllustPersistProvider.open();
-            await glanceIllustPersistProvider.deleteAll();
-            await glanceIllustPersistProvider.close();
-          } catch (e) {}
-        }
         break;
     }
   }

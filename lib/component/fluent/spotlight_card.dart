@@ -17,6 +17,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:pixez/component/fluent/pixez_button.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/leader.dart';
@@ -31,62 +32,46 @@ class SpotlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(4.0),
-      child: GestureDetector(
-        onTap: () async {
-          Leader.push(context,
-              SoupPage(url: spotlight.articleUrl, spotlight: spotlight));
-        },
-        child: Container(
-          height: 230,
+    return PixEzButton(
+      child: Container(
+        height: 200,
+        child: Card(
+          padding: EdgeInsets.zero,
           child: Stack(
             children: <Widget>[
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: 160.0,
-                  height: 90.0,
-                  decoration: BoxDecoration(
-                      color: FluentTheme.of(context).cardColor,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                  child: Align(
-                    alignment: AlignmentDirectional.bottomCenter,
-                    child: ListTile(
-                        title: Text(
-                          spotlight.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          spotlight.pureTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )),
+                child: ListTile(
+                  title: Text(
+                    spotlight.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    spotlight.pureTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
               Align(
                 alignment: Alignment.topCenter,
-                child: Card(
-                  child: Container(
-                    child: CachedNetworkImage(
-                      imageUrl: spotlight.thumbnail,
-                      httpHeaders: Hoster.header(url: spotlight.thumbnail),
-                      fit: BoxFit.cover,
-                      height: 150.0,
-                      cacheManager: pixivCacheManager,
-                      width: 150.0,
-                    ),
-                    height: 150.0,
-                    width: 150.0,
-                  ),
+                child: CachedNetworkImage(
+                  imageUrl: spotlight.thumbnail,
+                  httpHeaders: Hoster.header(url: spotlight.thumbnail),
+                  fit: BoxFit.cover,
+                  height: 150.0,
+                  cacheManager: pixivCacheManager,
                 ),
               )
             ],
           ),
         ),
       ),
+      onPressed: () async {
+        Leader.push(
+            context, SoupPage(url: spotlight.articleUrl, spotlight: spotlight));
+      },
     );
   }
 }

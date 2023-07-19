@@ -16,9 +16,10 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
+import 'package:pixez/component/fluent/pixez_button.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust_persist.dart';
@@ -143,8 +144,6 @@ class _HistoryPageState extends State<HistoryPage> {
 }
 
 class _HistoryItem extends StatelessWidget {
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   final List<IllustPersist> reIllust;
   final int index;
   final HistoryStore _store;
@@ -152,11 +151,10 @@ class _HistoryItem extends StatelessWidget {
   _HistoryItem(this.reIllust, this.index, this._store);
   @override
   Widget build(BuildContext context) {
-    return FlyoutTarget(
-      key: _flyoutKey,
-      controller: _flyoutController,
-      child: GestureDetector(
-        onTap: () {
+    return ContextMenu(
+      child: PixEzButton(
+        child: PixivImage(reIllust[index].pictureUrl),
+        onPressed: () {
           Leader.push(
             context,
             IllustLightingPage(
@@ -167,47 +165,38 @@ class _HistoryItem extends StatelessWidget {
                 I18n.of(context).illust_id + ': ${reIllust[index].illustId}'),
           );
         },
-        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-          position: getPosition(context, _flyoutKey, details),
-          builder: (context) => MenuFlyout(
-            items: [
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).delete),
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return ContentDialog(
-                        title: Text("${I18n.of(context).delete}?"),
-                        actions: <Widget>[
-                          HyperlinkButton(
-                            child: Text(I18n.of(context).cancel),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          HyperlinkButton(
-                            child: Text(I18n.of(context).ok),
-                            onPressed: () {
-                              _store.delete(reIllust[index].illustId);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-        ),
-        child: Card(
-          margin: EdgeInsets.all(8),
-          child: PixivImage(reIllust[index].pictureUrl),
-        ),
       ),
+      items: [
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).delete),
+          onPressed: () async {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return ContentDialog(
+                  title: Text("${I18n.of(context).delete}?"),
+                  actions: <Widget>[
+                    HyperlinkButton(
+                      child: Text(I18n.of(context).cancel),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    HyperlinkButton(
+                      child: Text(I18n.of(context).ok),
+                      onPressed: () {
+                        _store.delete(reIllust[index].illustId);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            Navigator.of(context).pop();
+          },
+        )
+      ],
     );
   }
 }

@@ -15,6 +15,7 @@
  */
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:pixez/component/fluent/focus_wrap.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/page/fluent/user/users_page.dart';
@@ -38,22 +39,28 @@ class _PainterAvatarState extends State<PainterAvatar> {
     Leader.push(context, UsersPage(id: widget.id));
   }
 
+  _onTap() {
+    if (widget.onTap == null)
+      pushToUserPage();
+    else
+      widget.onTap!();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          if (widget.onTap == null) {
-            pushToUserPage();
-          } else
-            widget.onTap!();
-        },
+    return FocusWrap(
+      onInvoke: _onTap,
+      child: GestureDetector(
+        onTap: _onTap,
         child: widget.size == null
             ? SizedBox(
                 height: 60,
                 width: 60,
                 child: CircleAvatar(
-                  backgroundImage:
-                      PixivProvider.url(widget.url, preUrl: widget.url),
+                  backgroundImage: PixivProvider.url(
+                    widget.url,
+                    preUrl: widget.url,
+                  ),
                   radius: 100.0,
                   backgroundColor: FluentTheme.of(context).accentColor,
                 ),
@@ -64,12 +71,15 @@ class _PainterAvatarState extends State<PainterAvatar> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: PixivProvider.url(
-                        widget.url,
-                        preUrl: widget.url,
-                      ),
-                      fit: BoxFit.cover),
+                    image: PixivProvider.url(
+                      widget.url,
+                      preUrl: widget.url,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ));
+              ),
+      ),
+    );
   }
 }

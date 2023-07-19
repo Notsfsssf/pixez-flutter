@@ -20,9 +20,9 @@ import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/illust_card.dart';
+import 'package:pixez/component/fluent/pixez_button.dart';
 import 'package:pixez/component/fluent/pixez_default_header.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
@@ -33,10 +33,10 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_user_road.dart';
-import 'package:pixez/page/hello/recom/recom_user_store.dart';
-import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:pixez/page/fluent/soup/soup_page.dart';
 import 'package:pixez/page/fluent/spotlight/spotlight_page.dart';
+import 'package:pixez/page/hello/recom/recom_user_store.dart';
+import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomSpolightPage extends StatefulWidget {
@@ -97,36 +97,20 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
   bool backToTopVisible = false;
 
   Widget buildEasyRefresh(BuildContext context) {
-    return Stack(
-      children: [
-        // NestedScrollView(
-        //   headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        //     SliverAppBar(
-        //       elevation: 0.0,
-        //       titleSpacing: 0.0,
-        //       automaticallyImplyLeading: false,
-        //       backgroundColor: FluentTheme.of(context).canvasColor,
-        //       title: Text(""),
-        //     )
-        //   ],
-        //   body: ListView(),
-        // ),
-        EasyRefresh.builder(
-          controller: _easyRefreshController,
-          callLoadOverOffset: Platform.isIOS ? 2 : 5,
-          header: PixezDefault.header(context),
-          onRefresh: () async {
-            await fetchT();
-          },
-          refreshOnStart: true,
-          onLoad: () async {
-            await _lightingStore.fetchNext();
-          },
-          childBuilder: (context, physics) => Observer(
-            builder: (context) => _buildWaterFall(context, physics),
-          ),
-        ),
-      ],
+    return EasyRefresh.builder(
+      controller: _easyRefreshController,
+      callLoadOverOffset: Platform.isIOS ? 2 : 5,
+      header: PixezDefault.header(context),
+      onRefresh: () async {
+        await fetchT();
+      },
+      refreshOnStart: true,
+      onLoad: () async {
+        await _lightingStore.fetchNext();
+      },
+      childBuilder: (context, physics) => Observer(
+        builder: (context) => _buildWaterFall(context, physics),
+      ),
     );
   }
 
@@ -264,7 +248,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                                     ButtonState.all(Colors.transparent),
                               ),
                             ),
-                            child: IconButton(
+                            child: PixEzButton(
                               onPressed: () {
                                 Leader.push(
                                   context,
@@ -279,15 +263,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                                       "${I18n.of(context).spotlight}: ${spotlight.id}"),
                                 );
                               },
-                              icon: ClipRRect(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(4.0),
-                                  ),
-                                  child: _buildContent(
-                                    expectCardWidget,
-                                    expectCardHeight,
-                                    spotlight,
-                                  )),
+                              child: _buildContent(
+                                expectCardWidget,
+                                expectCardHeight,
+                                spotlight,
+                              ),
                             ),
                           ),
                         ),

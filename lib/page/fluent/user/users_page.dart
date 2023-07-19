@@ -25,6 +25,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/component/null_hero.dart';
@@ -32,7 +33,6 @@ import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -65,8 +65,6 @@ class _UsersPageState extends State<UsersPage>
   bool backToTopVisible = false;
   BookmarkPageMethodRelay _bookmarkPageMethodRelay = BookmarkPageMethodRelay();
 
-  final _flyoutController = FlyoutController();
-  final _flyoutKey = GlobalKey();
   @override
   void initState() {
     userStore = widget.userStore ?? UserStore(widget.id);
@@ -609,48 +607,38 @@ class _UsersPageState extends State<UsersPage>
   }
 
   _buildBackground(BuildContext context) {
-    return FlyoutTarget(
-      key: _flyoutKey,
-      controller: _flyoutController,
-      child: GestureDetector(
-        child: CachedNetworkImage(
-          imageUrl: userStore.userDetail!.profile.background_image_url!,
-          fit: BoxFit.fitWidth,
-          cacheManager: pixivCacheManager,
-          httpHeaders: Hoster.header(
-            url: userStore.userDetail!.profile.background_image_url,
-          ),
-        ),
-        onSecondaryTapUp: (details) => _flyoutController.showFlyout(
-          position: getPosition(context, _flyoutKey, details),
-          builder: (context) => MenuFlyout(
-            items: [
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).show),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await Leader.push(
-                      context,
-                      ZoomPage(
-                          url: userStore
-                              .userDetail!.profile.background_image_url!),
-                      icon: Icon(FluentIcons.picture),
-                      title: Text(I18n.of(context).painter +
-                          (userStore.userDetail?.user.id.toString() ?? '')));
-                },
-              ),
-              MenuFlyoutItem(
-                text: Text(I18n.of(context).save),
-                onPressed: () async {
-                  await _saveUserBg(
-                      userStore.userDetail!.profile.background_image_url!);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
+    return ContextMenu(
+      child: CachedNetworkImage(
+        imageUrl: userStore.userDetail!.profile.background_image_url!,
+        fit: BoxFit.fitWidth,
+        cacheManager: pixivCacheManager,
+        httpHeaders: Hoster.header(
+          url: userStore.userDetail!.profile.background_image_url,
         ),
       ),
+      items: [
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).show),
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await Leader.push(
+                context,
+                ZoomPage(
+                    url: userStore.userDetail!.profile.background_image_url!),
+                icon: Icon(FluentIcons.picture),
+                title: Text(I18n.of(context).painter +
+                    (userStore.userDetail?.user.id.toString() ?? '')));
+          },
+        ),
+        MenuFlyoutItem(
+          text: Text(I18n.of(context).save),
+          onPressed: () async {
+            await _saveUserBg(
+                userStore.userDetail!.profile.background_image_url!);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 
