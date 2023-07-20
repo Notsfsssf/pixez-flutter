@@ -38,24 +38,16 @@ class _HistoryPageState extends State<HistoryPage> {
   final HistoryStore _store = historyStore..fetch();
   late TextEditingController _textEditingController;
 
-  Widget buildAppBarUI(context) => Container(
-        child: Padding(
-          child: Text(
-            I18n.of(context).history,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
-          ),
-          padding: EdgeInsets.only(left: 20.0, top: 30.0, bottom: 30.0),
-        ),
-      );
+  Widget buildBody() => Observer(
+        builder: (context) {
+          final count =
+              (MediaQuery.of(context).orientation == Orientation.portrait)
+                  ? userSetting.crossCount
+                  : userSetting.hCrossCount;
 
-  Widget buildBody() => Observer(builder: (context) {
-        final count =
-            (MediaQuery.of(context).orientation == Orientation.portrait)
-                ? userSetting.crossCount
-                : userSetting.hCrossCount;
+          final reIllust = _store.data.reversed.toList();
+          if (reIllust.isEmpty) return Container();
 
-        final reIllust = _store.data.reversed.toList();
-        if (reIllust.isNotEmpty) {
           return GridView.builder(
             itemCount: reIllust.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -63,11 +55,8 @@ class _HistoryPageState extends State<HistoryPage> {
             itemBuilder: (context, index) =>
                 _HistoryItem(reIllust, index, _store),
           );
-        }
-        return Center(
-          child: Container(),
-        );
-      });
+        },
+      );
 
   @override
   void initState() {
@@ -85,7 +74,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return ScaffoldPage(
       header: PageHeader(
-        title: TextBox(
+        title: Text(I18n.of(context).history),
+        commandBar: TextBox(
           controller: _textEditingController,
           onChanged: (word) {
             if (word.trim().isNotEmpty) {
@@ -95,21 +85,36 @@ class _HistoryPageState extends State<HistoryPage> {
             }
           },
           placeholder: I18n.of(context).search_word_hint,
-        ),
-        commandBar: CommandBar(primaryItems: [
-          CommandBarButton(
-            icon: Icon(FluentIcons.chrome_close),
+          prefix: IconButton(
+            icon: Icon(FluentIcons.delete),
+            onPressed: () async {
+              final result = await showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) => ContentDialog(
+                  title: Text('Clear All History?'),
+                  actions: [
+                    Button(
+                      child: Text(I18n.of(context).cancel),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    FilledButton(
+                      child: Text(I18n.of(context).ok),
+                      onPressed: () => Navigator.of(context).pop('ok'),
+                    ),
+                  ],
+                ),
+              );
+              if (result == 'ok') _cleanAll(context);
+            },
+          ),
+          suffix: IconButton(
+            icon: Icon(FluentIcons.clear),
             onPressed: () {
               _textEditingController.clear();
             },
           ),
-          CommandBarButton(
-            icon: Icon(FluentIcons.delete),
-            onPressed: () {
-              _cleanAll(context);
-            },
-          )
-        ]),
+        ),
       ),
       content: buildBody(),
     );
