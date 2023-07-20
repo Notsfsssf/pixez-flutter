@@ -3,12 +3,18 @@ import 'package:fluent_ui/fluent_ui.dart';
 class PixEzButton extends StatelessWidget {
   final Widget child;
   final void Function() onPressed;
+  final bool noPadding;
 
-  const PixEzButton({super.key, required this.child, required this.onPressed});
+  const PixEzButton({
+    super.key,
+    required this.child,
+    required this.onPressed,
+    this.noPadding = false,
+  });
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: noPadding ? EdgeInsets.zero : const EdgeInsets.all(4.0),
         child: ButtonTheme(
           data: ButtonThemeData(
             iconButtonStyle: ButtonStyle(

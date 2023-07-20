@@ -51,76 +51,17 @@ class _AccountEditPageState extends State<AccountEditPage> {
     super.initState();
   }
 
-  bool _obscureText = true;
-
-  void _toggle() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: PageHeader(
-        title: Text(I18n.of(context).account_message),
-        commandBar: CommandBar(primaryItems: [
-          CommandBarButton(
-            icon: Icon(FluentIcons.save),
-            onPressed: () async {
-              if (_oldPasswordController.text.isEmpty ||
-                  _emailController.text.isEmpty) {
-                return;
-              }
-              if (_emailController.text.isNotEmpty &&
-                  !_emailController.text.contains('@')) {
-                BotToast.showCustomText(
-                  toastBuilder: (_) => Align(
-                    alignment: Alignment(0, 0.8),
-                    child: Card(
-                      child: ListTile(
-                          leading: Icon(FluentIcons.error),
-                          title: Text("Email format error")),
-                    ),
-                  ),
-                );
-                return;
-              }
-              bool success = await _accountEditStore.fetch(
-                  (_emailController.value.text.isEmpty
-                      ? null
-                      : _emailController.value.text)!,
-                  _passwordController.value.text.isEmpty
-                      ? null
-                      : _passwordController.value.text,
-                  _oldPasswordController.value.text,
-                  null);
-              if (success) {
-                if (accountStore.now != null) {
-                  if (_passwordController.text.isNotEmpty) {
-                    accountStore.now!.passWord = _passwordController.text;
-                  }
-                  if (_emailController.text.isNotEmpty) {
-                    accountStore.now!.mailAddress = _emailController.text;
-                  }
-                  accountStore.updateSingle(accountStore.now!);
-                }
-              } else {
-                showSnackbar(
-                    context,
-                    Snackbar(
-                      content: Text('${_accountEditStore.errorString}'),
-                    ));
-              }
-            },
-          )
-        ]),
-      ),
-      content: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            InfoLabel(
+    return ContentDialog(
+      title: Text(I18n.of(context).account_message),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0)
+                .copyWith(top: 0, bottom: 4.0),
+            child: InfoLabel(
               label: 'Account',
               child: TextBox(
                 controller: _accountController,
@@ -128,85 +69,135 @@ class _AccountEditPageState extends State<AccountEditPage> {
                 placeholder: 'Account',
               ),
             ),
-            InfoLabel(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+            child: InfoLabel(
               label: I18n.of(context).current_password,
-              child: TextBox(
-                obscureText: _obscureText,
+              child: PasswordBox(
                 controller: _oldPasswordController,
                 placeholder: I18n.of(context).current_password,
-                suffix: IconButton(
-                    icon: Icon(
-                      _obscureText
-                          ? FluentIcons.show_visual_filter
-                          : FluentIcons.hide_visual_filter,
-                    ),
-                    onPressed: _toggle),
               ),
             ),
-            InfoLabel(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+            child: InfoLabel(
               label: I18n.of(context).new_password,
-              child: TextBox(
+              child: PasswordBox(
                 controller: _passwordController,
                 placeholder: I18n.of(context).new_password,
               ),
             ),
-            InfoLabel(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+            child: InfoLabel(
               label: 'Email',
               child: TextBox(
                 controller: _emailController,
                 placeholder: 'Email',
               ),
             ),
-            IconButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (ctx) {
-                      return ContentDialog(
-                        title: Text("${I18n.of(ctx).account_deletion}?"),
-                        content:
-                            Text("${I18n.of(ctx).account_deletion_subtitle}"),
-                        actions: [
-                          HyperlinkButton(
-                              onPressed: () async {
-                                Navigator.of(ctx).pop();
-                                await accountStore.deleteAll();
-                                await Leader.push(
-                                  context,
-                                  AccountDeletionPage(),
-                                  icon: Icon(FluentIcons.account_management),
-                                  title:
-                                      Text(I18n.of(context).account_deletion),
-                                );
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(I18n.of(ctx).ok)),
-                          HyperlinkButton(
-                              onPressed: () {
-                                Navigator.of(ctx).pop();
-                              },
-                              child: Text(I18n.of(ctx).cancel)),
-                        ],
-                      );
-                    });
-              },
-              icon: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      I18n.of(context).account_deletion,
-                      style: FluentTheme.of(context).typography.title,
+          ),
+          ListTile(
+            title: Text(I18n.of(context).account_deletion),
+            trailing: Icon(FluentIcons.open_in_new_window),
+            onPressed: () => showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (ctx) {
+                return ContentDialog(
+                  title: Text("${I18n.of(ctx).account_deletion}?"),
+                  content: Text("${I18n.of(ctx).account_deletion_subtitle}"),
+                  actions: [
+                    Button(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Text(I18n.of(ctx).cancel),
                     ),
-                    Icon(FluentIcons.navigate_forward)
+                    FilledButton(
+                      onPressed: () async {
+                        Navigator.of(ctx).pop();
+                        await accountStore.deleteAll();
+                        await Leader.push(
+                          context,
+                          AccountDeletionPage(),
+                          icon: Icon(FluentIcons.account_management),
+                          title: Text(I18n.of(context).account_deletion),
+                        );
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(ctx).ok),
+                    ),
                   ],
-                ),
-              ),
-            )
-          ],
-        ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
+      actions: [
+        Button(
+          child: Text(I18n.of(context).cancel),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        FilledButton(
+          child: Text(I18n.of(context).save),
+          onPressed: () async {
+            if (_oldPasswordController.text.isEmpty ||
+                _emailController.text.isEmpty) {
+              Navigator.of(context).pop();
+              return;
+            }
+            if (_emailController.text.isNotEmpty &&
+                !_emailController.text.contains('@')) {
+              BotToast.showCustomText(
+                toastBuilder: (_) => Align(
+                  alignment: Alignment(0, 0.8),
+                  child: Card(
+                    child: ListTile(
+                        leading: Icon(FluentIcons.error),
+                        title: Text("Email format error")),
+                  ),
+                ),
+              );
+              Navigator.of(context).pop();
+              return;
+            }
+            bool success = await _accountEditStore.fetch(
+                (_emailController.value.text.isEmpty
+                    ? null
+                    : _emailController.value.text)!,
+                _passwordController.value.text.isEmpty
+                    ? null
+                    : _passwordController.value.text,
+                _oldPasswordController.value.text,
+                null);
+            if (success) {
+              if (accountStore.now != null) {
+                if (_passwordController.text.isNotEmpty) {
+                  accountStore.now!.passWord = _passwordController.text;
+                }
+                if (_emailController.text.isNotEmpty) {
+                  accountStore.now!.mailAddress = _emailController.text;
+                }
+                accountStore.updateSingle(accountStore.now!);
+              }
+            } else {
+              showSnackbar(
+                context,
+                InfoBar(
+                  title: Text('Error'),
+                  content: Text('${_accountEditStore.errorString}'),
+                ),
+              );
+            }
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }

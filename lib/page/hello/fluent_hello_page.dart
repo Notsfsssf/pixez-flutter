@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/component/fluent/search_box.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/fluent/Init/guide_page.dart';
@@ -17,12 +16,7 @@ import 'package:pixez/page/fluent/hello/ranking/rank_page.dart';
 import 'package:pixez/page/fluent/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_page.dart';
 import 'package:pixez/page/fluent/login/login_page.dart';
-import 'package:pixez/page/fluent/picture/illust_lighting_page.dart';
 import 'package:pixez/page/fluent/preview/preview_page.dart';
-import 'package:pixez/page/saucenao/sauce_store.dart';
-import 'package:pixez/page/fluent/search/result_page.dart';
-import 'package:pixez/page/search/suggest/suggestion_store.dart';
-import 'package:pixez/page/fluent/soup/soup_page.dart';
 import 'package:pixez/page/fluent/user/bookmark/bookmark_page.dart';
 import 'package:pixez/page/fluent/user/users_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,13 +32,6 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   late int index;
   late PageController _pageController;
   static FluentHelloPageState? state;
-  // 搜索建议列表
-  final List<AutoSuggestBoxItem> _suggestList = List.empty(growable: true);
-  final TextEditingController _filter = TextEditingController();
-  final SuggestionStore _suggestionStore = SuggestionStore();
-  final SauceStore _sauceStore = SauceStore();
-  final FocusNode focusNode = FocusNode();
-  final tagGroup = [];
 
   late PixEzNavigatorObserver _navobs;
   late Navigator _nav;
@@ -70,7 +57,6 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   @override
   void initState() {
     state = this;
-    _initSearch();
     Constants.type = 0;
     fetcher.context = context;
     index = userSetting.welcomePageNum;
@@ -281,27 +267,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
       //     ),
       //   ],
       // ),
-      autoSuggestBox: AutoSuggestBox(
-        items: _suggestList,
-        controller: _filter,
-        onChanged: _onAutoSuggestBoxChanged,
-        placeholder: I18n.of(context).search,
-        leadingIcon: IconButton(
-          icon: const Icon(FluentIcons.image_search),
-          onPressed: _searchFromImage,
-        ),
-        trailingIcon: IconButton(
-          icon: const Icon(FluentIcons.search),
-          onPressed: () {
-            Leader.push(
-              context,
-              ResultPage(word: _filter.text),
-              icon: const Icon(FluentIcons.search),
-              title: Text('搜索 ${_filter.text}'),
-            );
-          },
-        ),
-      ),
+      autoSuggestBox: SearchBox(),
       selected: index,
       onChanged: _changedPage,
       items: [
@@ -352,124 +318,6 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
     return result;
   }
 
-  _initSearch() {
-    _sauceStore.observableStream.listen((event) {
-      if (event != null && _sauceStore.results.isNotEmpty) {
-        Leader.push(
-          context,
-          PageView(
-            children: _sauceStore.results
-                .map((element) => IllustLightingPage(id: element))
-                .toList(),
-          ),
-          icon: Icon(FluentIcons.search),
-          title: Text(I18n.of(context).search),
-        );
-      } else {
-        BotToast.showText(text: "0 result");
-      }
-    });
-    var query = '';
-    var tags = query
-        .split(" ")
-        .map((e) => e.trim())
-        .takeWhile((value) => value.isNotEmpty);
-    if (tags.length > 1) tagGroup.addAll(tags);
-  }
-
-  AutoSuggestBoxItem _getItemByIllustId(int id) {
-    final text = '${I18n.of(context).illust_id}: ${id}';
-    return AutoSuggestBoxItem(
-      label: text,
-      value: id,
-      onSelected: () => Leader.push(
-        context,
-        IllustLightingPage(id: id),
-        icon: const Icon(FluentIcons.image_pixel),
-        title: Text(text),
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem _getItemByPainterId(int id) {
-    final text = '${I18n.of(context).painter_id}: ${id}';
-    return AutoSuggestBoxItem(
-      label: text,
-      value: id,
-      onSelected: () => Leader.push(
-        context,
-        UsersPage(id: id),
-        icon: const Icon(FluentIcons.image_pixel),
-        title: Text(text),
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem _getItemByPixivisionId(int id) {
-    final text = 'Pixivision Id: ${id}';
-    return AutoSuggestBoxItem(
-      label: text,
-      value: id,
-      onSelected: () => Leader.push(
-        context,
-        SoupPage(
-          url: "https://www.pixivision.net/zh/a/${id}",
-          spotlight: null,
-        ),
-        icon: const Icon(FluentIcons.image_pixel),
-        title: Text(text),
-      ),
-    );
-  }
-
-  _onAutoSuggestBoxChanged(String text, TextChangedReason reason) {
-    if (reason == TextChangedReason.suggestionChosen) {
-      _filter.text = '';
-      return;
-    }
-    _suggestList.clear();
-    if (text.isEmpty || text == '') return;
-
-    final id = int.tryParse(text);
-    if (id != null) {
-      _suggestList.addAll([
-        _getItemByIllustId(id),
-        _getItemByPainterId(id),
-        _getItemByPixivisionId(id),
-      ]);
-    }
-    if (_suggestionStore.autoWords?.tags.isNotEmpty != true) return;
-    _suggestList.addAll(_suggestionStore.autoWords!.tags.map((e) {
-      var text = e.name;
-      if (e.translated_name != null) text += "\n ${e.translated_name}";
-      return AutoSuggestBoxItem(
-        label: text,
-        value: e.name,
-        onSelected: () {
-          if (tagGroup.length > 1) {
-            tagGroup.last = e.name;
-            var text = tagGroup.join(" ");
-            _filter.text = text;
-            _filter.selection =
-                TextSelection.fromPosition(TextPosition(offset: text.length));
-            setState(() {});
-          } else {
-            FocusScope.of(context).unfocus();
-            Leader.push(
-              context,
-              ResultPage(
-                word: e.name,
-                translatedName: e.translated_name ?? '',
-              ),
-              icon: Icon(FluentIcons.search),
-              title: Text('${I18n.of(context).search}: ${text}'),
-            );
-          }
-        },
-      );
-    }));
-  }
-
   int _getIndex(int? index) => index ?? getItemCount(_pages);
 
   /// 切换页面
@@ -517,10 +365,6 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   Widget? _getPage(int index) => index >= getItemCount(_pages)
       ? _many(_lastpages)[index - getItemCount(_pages)].page
       : _many(_pages)[index].page;
-
-  _searchFromImage() {
-    _sauceStore.findImage();
-  }
 }
 
 class _PixEzPageItem {

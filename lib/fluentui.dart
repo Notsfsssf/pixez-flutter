@@ -160,19 +160,3 @@ class _FluentLocalizationsDelegate
     return false;
   }
 }
-
-Offset? getPosition(
-  BuildContext context,
-  GlobalKey flyoutKey,
-  TapUpDetails tapUpDetails,
-) {
-  final targetContext = flyoutKey.currentContext;
-  if (targetContext == null) return null;
-
-  // This calculates the position of the flyout according to the parent navigator
-  final box = targetContext.findRenderObject() as RenderBox;
-  return box.localToGlobal(
-    tapUpDetails.localPosition,
-    ancestor: Navigator.of(context).context.findRenderObject(),
-  );
-}

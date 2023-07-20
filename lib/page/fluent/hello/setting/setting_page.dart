@@ -103,56 +103,57 @@ class _SettingPageState extends State<SettingPage> {
                 FluentIcons.color,
                 color: FluentTheme.of(context).typography.body?.color,
               ),
-              onPressed: () {
-                Leader.push(context, ThemePage());
-              },
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => ThemePage(),
+                useRootNavigator: false,
+              ),
             ),
           ],
         ),
       ),
       children: [
         Observer(builder: (context) {
-          if (accountStore.now != null)
-            return SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      leading: PainterAvatar(
-                        url: accountStore.now!.userImage,
-                        id: int.parse(accountStore.now!.userId),
-                      ),
-                      title: Text(accountStore.now!.name,
-                          style: FluentTheme.of(context).typography.title),
-                      subtitle: Text(
-                        accountStore.now!.mailAddress,
-                        style: FluentTheme.of(context).typography.caption,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(FluentPageRoute(builder: (_) {
-                          return AccountSelectPage();
-                        }));
-                      },
+          if (accountStore.now == null) return Container();
+          return SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    leading: PainterAvatar(
+                      url: accountStore.now!.userImage,
+                      id: int.parse(accountStore.now!.userId),
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(FluentIcons.account_management),
-                    title: Text(I18n.of(context).account_message),
+                    title: Text(accountStore.now!.name,
+                        style: FluentTheme.of(context).typography.title),
+                    subtitle: Text(
+                      accountStore.now!.mailAddress,
+                      style: FluentTheme.of(context).typography.caption,
+                    ),
                     onPressed: () {
-                      Leader.push(
-                        context,
-                        AccountEditPage(),
-                        icon: Icon(FluentIcons.account_management),
-                        title: Text(I18n.of(context).account_message),
+                      showDialog(
+                        context: context,
+                        builder: (context) => AccountSelectPage(),
+                        useRootNavigator: false,
                       );
                     },
-                  )
-                ],
-              ),
-            );
-          return Container();
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(FluentIcons.account_management),
+                  title: Text(I18n.of(context).account_message),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AccountEditPage(),
+                      useRootNavigator: false,
+                    );
+                  },
+                )
+              ],
+            ),
+          );
         }),
         Divider(),
         Column(
@@ -160,6 +161,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.history),
               title: Text(I18n.of(context).history_record),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () {
                 Leader.push(
                   context,
@@ -172,6 +174,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.settings),
               title: Text(I18n.of(context).quality_setting),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () {
                 Leader.push(
                   context,
@@ -184,6 +187,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.bookmarks),
               title: Text(I18n.of(context).favorited_tag),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.pushWithScaffold(
                 context,
                 BookTagPage(),
@@ -194,26 +198,25 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.blocked),
               title: Text(I18n.of(context).shielding_settings),
-              onPressed: () => Leader.push(
-                context,
-                ShieldPage(),
-                icon: Icon(FluentIcons.blocked),
-                title: Text(I18n.of(context).shielding_settings),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => ShieldPage(),
+                useRootNavigator: false,
               ),
             ),
             ListTile(
               leading: Icon(FluentIcons.save),
               title: Text(I18n.of(context).task_progress),
-              onPressed: () => Leader.push(
-                context,
-                JobPage(),
-                icon: Icon(FluentIcons.save),
-                title: Text(I18n.of(context).task_progress),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => JobPage(),
+                useRootNavigator: false,
               ),
             ),
             ListTile(
               leading: Icon(FluentIcons.database),
               title: Text(I18n.of(context).app_data),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 DataExportPage(),
@@ -229,6 +232,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.library),
               title: Text('Manga'),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 RecomMangaPage(),
@@ -239,6 +243,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.plain_text),
               title: Text('Novel'),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 NovelRail(),
@@ -250,11 +255,11 @@ class _SettingPageState extends State<SettingPage> {
               ListTile(
                 title: Text("网络诊断"),
                 onPressed: () {
-                  Leader.push(context, NetworkSettingPage(),
-                      title: Text("网络诊断"),
-                      icon: Icon(
-                        FluentIcons.bug,
-                      ));
+                  showDialog(
+                    context: context,
+                    builder: (context) => NetworkSettingPage(),
+                    useRootNavigator: false,
+                  );
                 },
               ),
             ListTile(
@@ -266,9 +271,14 @@ class _SettingPageState extends State<SettingPage> {
                 icon: Icon(FluentIcons.message),
                 title: Text(I18n.of(context).about),
               ),
-              trailing: Visibility(
-                child: NewVersionChip(),
-                visible: hasNewVersion,
+              trailing: Row(
+                children: [
+                  Visibility(
+                    child: NewVersionChip(),
+                    visible: hasNewVersion,
+                  ),
+                  Icon(FluentIcons.chevron_right),
+                ],
               ),
             ),
             Observer(builder: (context) {
@@ -282,6 +292,7 @@ class _SettingPageState extends State<SettingPage> {
                 return ListTile(
                   leading: Icon(FluentIcons.signin),
                   title: Text(I18n.of(context).login),
+                  trailing: Icon(FluentIcons.chevron_right),
                   onPressed: () => Leader.push(
                     context,
                     LoginPage(),
@@ -309,13 +320,13 @@ class _SettingPageState extends State<SettingPage> {
               height: 400,
             ),
             actions: <Widget>[
-              HyperlinkButton(
+              Button(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              HyperlinkButton(
+              FilledButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
@@ -341,13 +352,13 @@ class _SettingPageState extends State<SettingPage> {
           return ContentDialog(
             title: Text(I18n.of(context).logout),
             actions: <Widget>[
-              HyperlinkButton(
+              Button(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              HyperlinkButton(
+              FilledButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");

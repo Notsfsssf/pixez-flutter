@@ -221,12 +221,14 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   List<Widget> buildPhotoList(Illusts data, bool centerType, double height) {
     return [
       if (data.type == "ugoira")
-        SliverToBoxAdapter(
-          child: NullHero(
-            tag: widget.heroString,
-            child: UgoiraLoader(
-              id: widget.id,
-              illusts: data,
+        SliverFillRemaining(
+          child: Center(
+            child: NullHero(
+              tag: widget.heroString,
+              child: UgoiraLoader(
+                id: widget.id,
+                illusts: data,
+              ),
             ),
           ),
         ),

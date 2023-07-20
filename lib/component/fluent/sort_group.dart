@@ -44,14 +44,16 @@ class _SortGroupState extends State<SortGroup> {
         });
     };
     if (index == widget.children.indexOf(i))
-      return Chip.selected(
-        text: text,
-        onPressed: onPressed,
+      return ToggleButton(
+        checked: true,
+        child: text,
+        onChanged: (v) => onPressed(),
       );
     else
-      return Chip(
-        text: text,
-        onPressed: onPressed,
+      return ToggleButton(
+        checked: false,
+        child: text,
+        onChanged: (v) => onPressed(),
       );
   }
 }

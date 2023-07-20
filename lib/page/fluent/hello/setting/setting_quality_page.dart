@@ -14,20 +14,20 @@
  *
  */
 
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/fluent/pixez_button.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/fluent/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/fluent/network/network_page.dart';
 import 'package:pixez/page/fluent/platform/platform_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingQualityPage extends StatefulWidget {
   @override
@@ -36,7 +36,7 @@ class SettingQualityPage extends StatefulWidget {
 
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
-  late List<LangSponsor> _languageTranlator;
+  late Widget _languageTranlator;
 
   final _typeList = ["rank", "follow_illust", "recom"];
   SharedPreferences? _pref;
@@ -44,7 +44,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
 
   @override
   void initState() {
-    _languageTranlator = _langsponsors[userSetting.languageNum];
+    _buildLanguageTranlators();
     _initData();
     super.initState();
   }
@@ -59,75 +59,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       });
     }
   }
-
-  final _langsponsors = [
-    [
-      LangSponsor(
-        name: 'Xian',
-        avatar: 'https://avatars.githubusercontent.com/u/34748039',
-        uri: 'https://github.com/itzXian',
-      ),
-      LangSponsor(
-        name: 'Takase',
-        avatar: 'https://avatars.githubusercontent.com/u/20792268',
-        uri: 'https://github.com/takase1121',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'Skimige',
-        avatar: 'https://avatars.githubusercontent.com/u/9017470',
-        uri: 'https://github.com/Skimige',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'Tragic Life',
-        avatar: 'https://avatars.githubusercontent.com/u/16817202',
-        uri: 'https://github.com/TragicLifeHu',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'karin722',
-        avatar: 'https://avatars.githubusercontent.com/u/54385201',
-        uri: 'https://github.com/karin722',
-      ),
-      LangSponsor(
-        name: 'arrow2nd',
-        avatar: 'https://avatars.githubusercontent.com/u/44780846',
-        uri: 'https://github.com/arrow2nd',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'San Kang',
-        avatar: 'https://avatars.githubusercontent.com/u/40086827',
-        uri: 'https://github.com/RivMt',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'Vlad Afonin',
-        avatar: 'https://avatars.githubusercontent.com/u/20505643',
-        uri: 'https://github.com/mytecor',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'SugarBlank',
-        avatar: 'https://avatars.githubusercontent.com/u/64178604',
-        uri: 'https://github.com/SugarBlank',
-      ),
-    ],
-    [
-      LangSponsor(
-        name: 'KYOYA',
-        avatar: 'https://avatars.githubusercontent.com/u/63583961',
-        uri: 'https://github.com/kyoyacchi',
-      ),
-    ],
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -237,39 +168,16 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           title: Text("Language"),
           trailing: Row(
             children: [
-              ..._languageTranlator.map(
-                (i) => Link(
-                  uri: Uri.parse(i.uri),
-                  builder: (context, open) => IconButton(
-                    onPressed: open,
-                    icon: Row(children: [
-                      CircleAvatar(backgroundImage: NetworkImage(i.avatar)),
-                      Padding(
-                        padding: EdgeInsets.only(left: 8),
-                        child: Text(i.name),
-                      ),
-                    ]),
-                  ),
-                ),
-              ),
+              _languageTranlator,
               Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Icon(FluentIcons.translate),
               ),
               Observer(builder: (_) {
-                const list = [
-                  "en-US",
-                  "zh-CN",
-                  "zh-TW",
-                  "ja",
-                  "ko",
-                  "ru",
-                  "es",
-                  "tr",
-                ];
                 return ComboBox<int>(
                   value: userSetting.languageNum,
-                  items: list
+                  items: Languages.map((e) => e.language)
+                      .toList()
                       .asMap()
                       .entries
                       .map((i) => ComboBoxItem(
@@ -280,7 +188,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   onChanged: (index) async {
                     await userSetting.setLanguageNum(index!);
                     setState(() {
-                      _languageTranlator = _langsponsors[index];
+                      _buildLanguageTranlators();
                     });
                   },
                 );
@@ -291,20 +199,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ListTile(
           title: Text(I18n.of(context).welcome_page),
           trailing: Observer(builder: (_) {
-            final tablist = Platform.isAndroid
-                ? [
-                    I18n.of(context).home,
-                    I18n.of(context).rank,
-                    I18n.of(context).quick_view,
-                    I18n.of(context).search,
-                    I18n.of(context).setting,
-                  ]
-                : [
-                    I18n.of(context).home,
-                    I18n.of(context).quick_view,
-                    I18n.of(context).search,
-                    I18n.of(context).setting,
-                  ];
+            final tablist = [
+              I18n.of(context).home,
+              I18n.of(context).rank,
+              I18n.of(context).quick_view,
+              I18n.of(context).setting,
+            ];
             return ComboBox<int>(
               value: userSetting.welcomePageNum,
               items: tablist
@@ -537,15 +437,32 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       ],
     );
   }
-}
 
-class LangSponsor {
-  final String name;
-  final String avatar;
-  final String uri;
-  LangSponsor({
-    required this.name,
-    required this.avatar,
-    required this.uri,
-  });
+  void _buildLanguageTranlators() {
+    final langsponsors =
+        Languages[userSetting.languageNum].sponsors;
+    _languageTranlator = Row(
+      children: [
+        for (final langsponsor in langsponsors)
+          PixEzButton(
+            onPressed: () {
+              try {
+                launchUrl(Uri.dataFromString(langsponsor.uri));
+              } catch (e) {}
+            },
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundImage: NetworkImage(langsponsor.avatar),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(langsponsor.name),
+                )
+              ],
+            ),
+          ),
+      ],
+    );
+  }
 }

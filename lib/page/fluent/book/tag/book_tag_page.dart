@@ -13,6 +13,8 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:collection';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
@@ -26,32 +28,18 @@ class BookTagPage extends StatefulWidget {
 
 class _BookTagPageState extends State<BookTagPage>
     with TickerProviderStateMixin {
-  bool edit = false;
+  int _index = 0;
+  late Map<String, bool> _tags;
 
   @override
   Widget build(BuildContext context) {
-    if (edit)
-      return Observer(builder: (context) {
-        return ScaffoldPage(
-          header: PageHeader(
-            title: Text(I18n.of(context).choice_you_like),
-            commandBar: CommandBar(primaryItems: [
-              CommandBarButton(
-                  icon: Icon(FluentIcons.save),
-                  onPressed: () {
-                    setState(() {
-                      edit = false;
-                    });
-                  })
-            ]),
-          ),
-          content: Expanded(child: _buildTagChip()),
-        );
-      });
-
     return Observer(builder: (_) {
       return NavigationView(
         pane: NavigationPane(
+          selected: _index,
+          onChanged: (value) => setState(() {
+            _index = value;
+          }),
           items: [
             for (var i in bookTagStore.bookTagList)
               PaneItem(
@@ -60,76 +48,68 @@ class _BookTagPageState extends State<BookTagPage>
                 title: Text(i),
               )
           ],
-          header: IconButton(
-              icon: Icon(FluentIcons.undo),
-              onPressed: () {
-                setState(() {
-                  edit = true;
-                });
-              }),
+          footerItems: [
+            PaneItemAction(
+              icon: Icon(FluentIcons.edit),
+              onTap: () => _showEditDialog(context),
+            ),
+          ],
           displayMode: PaneDisplayMode.top,
         ),
-        appBar: NavigationAppBar(
-            leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(FluentIcons.closed_caption),
-        )),
-        // Drawer(
-        //   child: ListView(
-        //     children: [
-        //       for (var j in bookTagStore.bookTagList)
-        //         ListTile(
-        //           title: Text(j),
-        //           onTap: () {
-        //             _tabController
-        //                 .animateTo(bookTagStore.bookTagList.indexOf(j));
-        //           },
-        //         )
-        //     ],
-        //   ),
-        // ),
       );
     });
   }
 
-  Widget _buildTagChip() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Wrap(
-            spacing: 2.0,
-            children: [
-              for (var i in bookTagStore.bookTagList)
-                ToggleSwitch(
-                    content: Text(i),
-                    checked: true,
-                    onChanged: (v) {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return ContentDialog(
-                              title: Text(I18n.of(context).delete + "$i?"),
-                              actions: [
-                                HyperlinkButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(I18n.of(context).cancel)),
-                                HyperlinkButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      bookTagStore.unBookTag(i);
-                                    },
-                                    child: Text(I18n.of(context).ok)),
-                              ],
-                            );
-                          });
-                    })
-            ],
+  void _showEditDialog(BuildContext context) {
+    _tags = HashMap.fromEntries(
+      bookTagStore.bookTagList.map((i) => MapEntry(i, true)),
+    );
+
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => ContentDialog(
+        title: Text(I18n.of(context).choice_you_like),
+        content: _buildTagChip(),
+        actions: [
+          Button(
+            child: Text(I18n.of(context).cancel),
+            onPressed: Navigator.of(context).pop,
+          ),
+          FilledButton(
+            child: Text(I18n.of(context).ok),
+            onPressed: () {
+              _tags.entries
+                  .where((i) => !i.value)
+                  .map((i) => i.key)
+                  .forEach(bookTagStore.unBookTag);
+              Navigator.of(context).pop();
+            },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTagChip() {
+    return StatefulBuilder(
+      builder: (context, setState) => SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i in _tags.entries)
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Checkbox(
+                  content: Text(i.key),
+                  checked: i.value,
+                  onChanged: (v) => setState(() {
+                    _tags[i.key] = v ?? false;
+                  }),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

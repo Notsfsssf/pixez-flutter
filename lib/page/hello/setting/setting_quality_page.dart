@@ -24,8 +24,8 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
+import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
-import 'package:pixez/page/hello/setting/data_export_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
@@ -49,7 +49,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
 
   @override
   void initState() {
-    _languageTranlator = _group[userSetting.languageNum];
+    _buildLanguageTranlators();
     _initData();
     super.initState();
   }
@@ -68,227 +68,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       });
     }
   }
-
-  var _group = [
-    Row(
-      children: [
-        InkWell(
-          onTap: () {
-            try {
-              if (Platform.isAndroid && !Constants.isGooglePlay)
-                launch('https://github.com/itzXian');
-            } catch (e) {}
-          },
-          child: Row(
-            children: <Widget>[
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://avatars1.githubusercontent.com/u/34748039?s=400&u=9e784e6754531c9ecadc5d92ed6bc58647053657&v=4'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Xian'),
-              ),
-            ],
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            try {
-              if (Platform.isAndroid && !Constants.isGooglePlay)
-                launch('https://github.com/takase1121');
-            } catch (e) {}
-          },
-          child: Row(
-            children: <Widget>[
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://avatars0.githubusercontent.com/u/20792268?s=400&u=0abbfec835713da83699ec3a6ae619df4a72a722&v=4'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Takase'),
-              ),
-              Icon(Icons.translate)
-            ],
-          ),
-        ),
-      ],
-    ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/Skimige');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars0.githubusercontent.com/u/9017470?s=460&v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Skimige'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
-    ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/TragicLifeHu');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars3.githubusercontent.com/u/16817202?s=460&v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Tragic Life'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
-    ),
-    Row(
-      children: <Widget>[
-        InkWell(
-          onTap: () {
-            try {
-              if (Platform.isAndroid && !Constants.isGooglePlay)
-                launch('https://github.com/karin722');
-            } catch (e) {}
-          },
-          child: Row(children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://avatars3.githubusercontent.com/u/54385201?s=460&v=4'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                'karin722',
-                style: TextStyle(fontSize: 12),
-              ),
-            )
-          ]),
-        ),
-        InkWell(
-          onTap: () {
-            try {
-              if (Platform.isAndroid && !Constants.isGooglePlay)
-                launch('https://github.com/arrow2nd');
-            } catch (e) {}
-          },
-          child: Row(children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://avatars.githubusercontent.com/u/44780846?v=4'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                'arrow2nd',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-          ]),
-        ),
-        Icon(Icons.translate)
-      ],
-    ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/RivMt');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars3.githubusercontent.com/u/40086827?s=460&v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('San Kang'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
-    ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/mytecor');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars.githubusercontent.com/u/20505643?v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Vlad Afonin'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
-    ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/SugarBlank');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars.githubusercontent.com/u/64178604?v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('SugarBlank'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
-    ),
-    InkWell(
-      onTap: () {
-        try {
-          if (Platform.isAndroid && !Constants.isGooglePlay)
-            launch('https://github.com/kyoyacchi');
-        } catch (e) {}
-      },
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://avatars.githubusercontent.com/u/63583961?v=4'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('KYOYA'),
-          ),
-          Icon(Icons.translate)
-        ],
-      ),
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -464,32 +243,9 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   padding: EdgeInsets.all(16),
                 ),
                 Observer(builder: (_) {
-                  var list = [
-                    Tab(
-                      text: "en-US",
-                    ),
-                    Tab(
-                      text: "zh-CN",
-                    ),
-                    Tab(
-                      text: "zh-TW",
-                    ),
-                    Tab(
-                      text: "ja",
-                    ),
-                    Tab(
-                      text: "ko",
-                    ),
-                    Tab(
-                      text: "ru",
-                    ),
-                    Tab(
-                      text: "es",
-                    ),
-                    Tab(
-                      text: "tr",
-                    )
-                  ];
+                  var list = Languages.map(
+                    (e) => Tab(text: e.language),
+                  ).toList();
                   return Theme(
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
@@ -501,7 +257,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       onTap: (index) async {
                         await userSetting.setLanguageNum(index);
                         setState(() {
-                          _languageTranlator = _group[index];
+                          _buildLanguageTranlators();
                         });
                       },
                       controller: TabController(
@@ -926,6 +682,36 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             ),
         ]),
       ),
+    );
+  }
+
+  void _buildLanguageTranlators() {
+    final langsponsors =
+        Languages[userSetting.languageNum].sponsors;
+    _languageTranlator = Row(
+      children: [
+        for (final langsponsor in langsponsors)
+          InkWell(
+            onTap: () {
+              try {
+                if (Platform.isAndroid && !Constants.isGooglePlay)
+                  launchUrl(Uri.dataFromString(langsponsor.uri));
+              } catch (e) {}
+            },
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundImage: NetworkImage(langsponsor.avatar),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(langsponsor.name),
+                ),
+                if (langsponsor == langsponsors.last) Icon(Icons.translate)
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

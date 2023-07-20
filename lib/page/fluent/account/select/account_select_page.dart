@@ -38,50 +38,57 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      return ScaffoldPage(
-        content: Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              AccountPersist accountPersist = accountStore.accounts[index];
-              return ListTile(
-                leading: PainterAvatar(
-                  url: accountStore.accounts[index].userImage,
-                  id: int.parse(accountStore.accounts[index].userId),
-                ),
-                title: Text(accountPersist.name),
-                subtitle: Text(accountPersist.mailAddress),
-                trailing:
-                    accountStore.accounts.indexOf(accountStore.now) == index
-                        ? Icon(FluentIcons.check_mark)
-                        : IconButton(
-                            icon: Icon(FluentIcons.delete),
-                            onPressed: () {
-                              accountStore.deleteSingle(accountPersist.id!);
-                            },
-                          ),
-                onPressed: () async {
-                  if (accountStore.accounts.indexOf(accountStore.now) !=
-                      index) {
-                    await accountStore.select(index);
-                    setState(() {});
-                  }
-                },
-              );
-            },
-            itemCount: accountStore.accounts.length,
-          ),
+      return ContentDialog(
+        content: ListView.builder(
+          itemBuilder: (context, index) {
+            AccountPersist accountPersist = accountStore.accounts[index];
+            return ListTile(
+              leading: PainterAvatar(
+                url: accountStore.accounts[index].userImage,
+                id: int.parse(accountStore.accounts[index].userId),
+              ),
+              title: Text(accountPersist.name),
+              subtitle: Text(accountPersist.mailAddress),
+              trailing: accountStore.accounts.indexOf(accountStore.now) == index
+                  ? Icon(FluentIcons.check_mark)
+                  : IconButton(
+                      icon: Icon(FluentIcons.delete),
+                      onPressed: () {
+                        accountStore.deleteSingle(accountPersist.id!);
+                      },
+                    ),
+              onPressed: () async {
+                if (accountStore.accounts.indexOf(accountStore.now) != index) {
+                  await accountStore.select(index);
+                  setState(() {});
+                }
+              },
+            );
+          },
+          itemCount: accountStore.accounts.length,
         ),
-        header: PageHeader(
+        title: PageHeader(
           title: Text(I18n.of(context).account_change),
-          commandBar: CommandBar(primaryItems: [
-            CommandBarButton(
-              icon: Icon(FluentIcons.add),
-              onPressed: () => Leader.push(context, LoginPage(),
+          commandBar: CommandBar(
+              mainAxisAlignment: MainAxisAlignment.end,
+              primaryItems: [
+                CommandBarButton(
                   icon: Icon(FluentIcons.add),
-                  title: Text(I18n.of(context).login)),
-            )
-          ]),
+                  onPressed: () => Leader.push(
+                    context,
+                    LoginPage(),
+                    icon: Icon(FluentIcons.add),
+                    title: Text(I18n.of(context).login),
+                  ),
+                )
+              ]),
         ),
+        actions: [
+          FilledButton(
+            child: Text(I18n.of(context).ok),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
       );
     });
   }
