@@ -63,32 +63,35 @@ class _NetworkPageState extends State<NetworkPage> {
                     onChanged: (value) async {
                       if (value) {
                         final result = await showDialog(
-                            context: context,
-                            builder: (_) {
-                              return ContentDialog(
-                                title: Text(I18n.of(context).please_note_that),
-                                content: Text(
-                                    I18n.of(context).please_note_that_content),
-                                actions: <Widget>[
-                                  HyperlinkButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(I18n.of(context).cancel)),
-                                  HyperlinkButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop('OK');
-                                      },
-                                      child: Text(I18n.of(context).ok)),
-                                ],
-                              );
-                            });
-                        if (result == 'OK') {
-                          userSetting.setDisableBypassSni(value);
-                        }
-                      } else {
-                        userSetting.setDisableBypassSni(value);
+                          context: context,
+                          useRootNavigator: false,
+                          builder: (_) {
+                            return ContentDialog(
+                              title: Text(I18n.of(context).please_note_that),
+                              content: Text(
+                                I18n.of(context).please_note_that_content,
+                              ),
+                              actions: <Widget>[
+                                Button(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(I18n.of(context).cancel),
+                                ),
+                                Button(
+                                  onPressed: () {
+                                    Navigator.of(context).pop('OK');
+                                  },
+                                  child: Text(I18n.of(context).ok),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (result != 'OK') return;
                       }
+
+                      userSetting.setDisableBypassSni(value);
                     });
               }),
             )),
