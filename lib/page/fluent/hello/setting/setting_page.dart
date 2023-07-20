@@ -202,11 +202,10 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.save),
               title: Text(I18n.of(context).task_progress),
-              onPressed: () => Leader.push(
-                context,
-                JobPage(),
-                icon: Icon(FluentIcons.save),
-                title: Text(I18n.of(context).task_progress),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => JobPage(),
+                useRootNavigator: false,
               ),
             ),
             ListTile(
