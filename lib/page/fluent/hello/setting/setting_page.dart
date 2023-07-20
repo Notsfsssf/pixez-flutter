@@ -103,9 +103,11 @@ class _SettingPageState extends State<SettingPage> {
                 FluentIcons.color,
                 color: FluentTheme.of(context).typography.body?.color,
               ),
-              onPressed: () {
-                Leader.push(context, ThemePage());
-              },
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => ThemePage(),
+                useRootNavigator: false,
+              ),
             ),
           ],
         ),

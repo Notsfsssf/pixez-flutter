@@ -16,7 +16,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
@@ -39,81 +38,83 @@ class _ColorPickPageState extends State<ColorPickPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: PageHeader(
+    return ContentDialog(
+      title: PageHeader(
         title: Text(I18n.of(context).pick_a_color),
-        commandBar: CommandBar(primaryItems: [
-          CommandBarButton(
-              icon: Icon(FluentIcons.edit),
-              onPressed: () async {
-                final TextEditingController textEditingController =
-                    TextEditingController(
-                        text: pickerColor.value
-                            .toString()
-                            .toLowerCase()
-                            .replaceAll('color(0xff', '')
-                            .replaceAll(')', ''));
+        commandBar: CommandBar(
+          primaryItems: [
+            CommandBarButton(
+                icon: Icon(FluentIcons.edit),
+                onPressed: () async {
+                  final TextEditingController textEditingController =
+                      TextEditingController(
+                          text: pickerColor.value
+                              .toString()
+                              .toLowerCase()
+                              .replaceAll('color(0xff', '')
+                              .replaceAll(')', ''));
 
-                String? result = await showDialog<String>(
-                    context: context,
-                    builder: (context) {
-                      return ContentDialog(
-                        title: Text("16 radix RGB"),
-                        content: TextBox(
-                            controller: textEditingController,
-                            maxLength: 6,
-                            prefix: Text("color(0xff"),
-                            suffix: Text(")")),
-                        actions: <Widget>[
-                          HyperlinkButton(
-                              onPressed: () {
-                                final result = textEditingController.text
-                                    .trim()
-                                    .toLowerCase();
-                                if (result.length != 6) {
-                                  return;
-                                }
-                                Navigator.of(context)
-                                    .pop("color(0xff${result})");
-                              },
-                              child: Text(I18n.of(context).ok)),
-                          HyperlinkButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(I18n.of(context).cancel)),
-                        ],
-                      );
-                    });
-                if (result == null) return;
-                Color color = _stringToColor(result); //迅速throw出来
-                setState(() {
-                  pickerColor = color;
-                });
-              }),
-          CommandBarButton(
-              icon: Icon(FluentIcons.save),
-              onPressed: () {
-                Navigator.of(context).pop(pickerColor);
-              }),
-        ]),
+                  String? result = await showDialog<String>(
+                      context: context,
+                      builder: (context) {
+                        return ContentDialog(
+                          title: Text("16 radix RGB"),
+                          content: TextBox(
+                              controller: textEditingController,
+                              maxLength: 6,
+                              prefix: Text("color(0xff"),
+                              suffix: Text(")")),
+                          actions: <Widget>[
+                            Button(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(I18n.of(context).cancel)),
+                            FilledButton(
+                                onPressed: () {
+                                  final result = textEditingController.text
+                                      .trim()
+                                      .toLowerCase();
+                                  if (result.length != 6) {
+                                    return;
+                                  }
+                                  Navigator.of(context)
+                                      .pop("color(0xff${result})");
+                                },
+                                child: Text(I18n.of(context).ok)),
+                          ],
+                        );
+                      });
+                  if (result == null) return;
+                  Color color = _stringToColor(result); //迅速throw出来
+                  setState(() {
+                    pickerColor = color;
+                  });
+                }),
+          ],
+        ),
       ),
-      content: ListView(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        children: <Widget>[
-          ColorPicker(
-            enableAlpha: false,
-            pickerColor: pickerColor,
-            onColorChanged: (Color color) {
-              setState(() {
-                pickerColor = color;
-              });
-            },
-            showLabel: true,
-            pickerAreaHeightPercent: 0.8,
-          ),
-        ],
+      content: Container(
+        width: 800,
+        child: ColorPicker(
+          enableAlpha: false,
+          pickerColor: pickerColor,
+          onColorChanged: (Color color) {
+            setState(() {
+              pickerColor = color;
+            });
+          },
+          pickerAreaHeightPercent: 0.8,
+        ),
       ),
+      actions: [
+        FilledButton(
+          child: Text(I18n.of(context).save),
+          onPressed: () {
+            Navigator.of(context).pop(pickerColor);
+          },
+        ),
+      ],
     );
   }
 
@@ -164,20 +165,20 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   ];
 
   Future<void> _pickColorData(int index, Color pickerColor) async {
-    Color? result = await Leader.push(
-      context,
-      ColorPickPage(initialColor: pickerColor),
-      icon: Icon(FluentIcons.color),
-      title: Text(I18n.of(context).pick_a_color),
-    );
-    if (result != null) {
-      var data = <String>[
-        userSetting.themeData.primaryColor.toString(),
-        userSetting.themeData.primaryColor.toString(),
-      ];
-      data[index] = "(0x${result.value.toRadixString(16)})";
-      userSetting.setThemeData(data);
-    }
+    // TODO: 不支持 Color Picker
+    // Color? result = await showDialog(
+    //   context: context,
+    //   builder: (context) => ColorPickPage(initialColor: pickerColor),
+    //   useRootNavigator: false,
+    // );
+    // if (result != null) {
+    //   var data = <String>[
+    //     userSetting.themeData.primaryColor.toString(),
+    //     userSetting.themeData.primaryColor.toString(),
+    //   ];
+    //   data[index] = "(0x${result.value.toRadixString(16)})";
+    //   userSetting.setThemeData(data);
+    // }
   }
 
   @override
@@ -188,8 +189,8 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      return ScaffoldPage(
-        header: PageHeader(title: Text(I18n.of(context).skin)),
+      return ContentDialog(
+        title: Text(I18n.of(context).skin),
         content: ListView(
           children: <Widget>[
             ComboBox<int>(
@@ -237,16 +238,6 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                         child: Center(child: Text("accentColor")),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        _pickColorData(1, FluentTheme.of(context).accentColor);
-                      },
-                      icon: Container(
-                        height: 30,
-                        color: FluentTheme.of(context).accentColor,
-                        child: Center(child: Text("primaryColor")),
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -260,44 +251,48 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   final skin = skinList[index];
                   return Card(
-                      child: IconButton(
-                    onPressed: () {
-                      userSetting.setThemeData(<String>[
-                        skin.accentColor.toString(),
-                        skin.accentColor.toString(),
-                      ]);
-                    },
-                    icon: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            skin.accentColor.toString(),
-                            style: TextStyle(color: skin.accentColor),
+                    margin: const EdgeInsets.all(2.0),
+                    padding: EdgeInsets.zero,
+                    child: IconButton(
+                      onPressed: () {
+                        userSetting.setThemeData(<String>[
+                          skin.accentColor.toString(),
+                          skin.accentColor.toString(),
+                        ]);
+                      },
+                      icon: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              skin.accentColor.toString(),
+                              style: TextStyle(color: skin.accentColor),
+                            ),
                           ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                              height: 30,
-                              color: skin.accentColor,
-                              child: Center(child: Text("primaryColor")),
-                            ),
-                            Container(
-                              height: 30,
-                              color: skin.accentColor,
-                              child: Center(child: Text("accentColor")),
-                            ),
-                          ],
-                        ),
-                      ],
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Container(
+                                height: 30,
+                                color: skin.accentColor,
+                                child: Center(child: Text("accentColor")),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ));
+                  );
                 })
           ],
         ),
+        actions: [
+          FilledButton(
+            child: Text(I18n.of(context).ok),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
       );
     });
   }
