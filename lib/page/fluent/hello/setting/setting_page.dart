@@ -159,6 +159,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.history),
               title: Text(I18n.of(context).history_record),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () {
                 Leader.push(
                   context,
@@ -171,6 +172,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.settings),
               title: Text(I18n.of(context).quality_setting),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () {
                 Leader.push(
                   context,
@@ -183,6 +185,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.bookmarks),
               title: Text(I18n.of(context).favorited_tag),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.pushWithScaffold(
                 context,
                 BookTagPage(),
@@ -211,6 +214,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.database),
               title: Text(I18n.of(context).app_data),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 DataExportPage(),
@@ -226,6 +230,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.library),
               title: Text('Manga'),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 RecomMangaPage(),
@@ -236,6 +241,7 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.plain_text),
               title: Text('Novel'),
+              trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 NovelRail(),
@@ -248,10 +254,10 @@ class _SettingPageState extends State<SettingPage> {
                 title: Text("网络诊断"),
                 onPressed: () {
                   showDialog(
-                context: context,
-                builder: (context) => NetworkSettingPage(),
-                useRootNavigator: false,
-              );
+                    context: context,
+                    builder: (context) => NetworkSettingPage(),
+                    useRootNavigator: false,
+                  );
                 },
               ),
             ListTile(
@@ -263,9 +269,14 @@ class _SettingPageState extends State<SettingPage> {
                 icon: Icon(FluentIcons.message),
                 title: Text(I18n.of(context).about),
               ),
-              trailing: Visibility(
-                child: NewVersionChip(),
-                visible: hasNewVersion,
+              trailing: Row(
+                children: [
+                  Visibility(
+                    child: NewVersionChip(),
+                    visible: hasNewVersion,
+                  ),
+                  Icon(FluentIcons.chevron_right),
+                ],
               ),
             ),
             Observer(builder: (context) {
@@ -279,6 +290,7 @@ class _SettingPageState extends State<SettingPage> {
                 return ListTile(
                   leading: Icon(FluentIcons.signin),
                   title: Text(I18n.of(context).login),
+                  trailing: Icon(FluentIcons.chevron_right),
                   onPressed: () => Leader.push(
                     context,
                     LoginPage(),
