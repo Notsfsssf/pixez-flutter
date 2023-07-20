@@ -306,13 +306,13 @@ class _SettingPageState extends State<SettingPage> {
               height: 400,
             ),
             actions: <Widget>[
-              HyperlinkButton(
+              Button(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              HyperlinkButton(
+              FilledButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
@@ -338,13 +338,13 @@ class _SettingPageState extends State<SettingPage> {
           return ContentDialog(
             title: Text(I18n.of(context).logout),
             actions: <Widget>[
-              HyperlinkButton(
+              Button(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop("CANCEL");
                 },
               ),
-              HyperlinkButton(
+              FilledButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");
