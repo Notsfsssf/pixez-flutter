@@ -112,48 +112,46 @@ class _SettingPageState extends State<SettingPage> {
       ),
       children: [
         Observer(builder: (context) {
-          if (accountStore.now != null)
-            return SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      leading: PainterAvatar(
-                        url: accountStore.now!.userImage,
-                        id: int.parse(accountStore.now!.userId),
-                      ),
-                      title: Text(accountStore.now!.name,
-                          style: FluentTheme.of(context).typography.title),
-                      subtitle: Text(
-                        accountStore.now!.mailAddress,
-                        style: FluentTheme.of(context).typography.caption,
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AccountSelectPage(),
-                          useRootNavigator: false,
-                        );
-                      },
+          if (accountStore.now == null) return Container();
+          return SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    leading: PainterAvatar(
+                      url: accountStore.now!.userImage,
+                      id: int.parse(accountStore.now!.userId),
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(FluentIcons.account_management),
-                    title: Text(I18n.of(context).account_message),
+                    title: Text(accountStore.now!.name,
+                        style: FluentTheme.of(context).typography.title),
+                    subtitle: Text(
+                      accountStore.now!.mailAddress,
+                      style: FluentTheme.of(context).typography.caption,
+                    ),
                     onPressed: () {
-                      Leader.push(
-                        context,
-                        AccountEditPage(),
-                        icon: Icon(FluentIcons.account_management),
-                        title: Text(I18n.of(context).account_message),
+                      showDialog(
+                        context: context,
+                        builder: (context) => AccountSelectPage(),
+                        useRootNavigator: false,
                       );
                     },
-                  )
-                ],
-              ),
-            );
-          return Container();
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(FluentIcons.account_management),
+                  title: Text(I18n.of(context).account_message),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AccountEditPage(),
+                      useRootNavigator: false,
+                    );
+                  },
+                )
+              ],
+            ),
+          );
         }),
         Divider(),
         Column(
