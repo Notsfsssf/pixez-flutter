@@ -193,11 +193,10 @@ class _SettingPageState extends State<SettingPage> {
             ListTile(
               leading: Icon(FluentIcons.blocked),
               title: Text(I18n.of(context).shielding_settings),
-              onPressed: () => Leader.push(
-                context,
-                ShieldPage(),
-                icon: Icon(FluentIcons.blocked),
-                title: Text(I18n.of(context).shielding_settings),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => ShieldPage(),
+                useRootNavigator: false,
               ),
             ),
             ListTile(

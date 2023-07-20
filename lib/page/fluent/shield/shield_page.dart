@@ -41,76 +41,73 @@ class _ShieldPageState extends State<ShieldPage> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
-        return ScaffoldPage(
-            header: PageHeader(
-              title: Text(I18n.of(context).shielding_settings),
-              // actions: [
-              //   // IconButton(
-              //   //     onPressed: () {
-              //   //       muteStore.export();
-              //   //     },
-              //   //     icon: Icon(Icons.expand_circle_down_outlined))
-              // ],
-            ),
-            content: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(I18n.of(context).tag),
-                    Container(
-                      child: Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        direction: Axis.horizontal,
-                        children: <Widget>[
-                          ...muteStore.banTags
-                              .map((f) => Chip(
-                                    onPressed: () => deleteTag(context, f),
-                                    text: Text(f.name),
-                                  ))
-                              .toList()
-                        ],
-                      ),
-                    ),
-                    Divider(),
-                    Text(I18n.of(context).painter),
-                    Container(
-                      child: Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        direction: Axis.horizontal,
-                        children: muteStore.banUserIds
-                            .map((f) => Chip(
-                                  onPressed: () => _deleteUserIdTag(context, f),
-                                  text: Text(f.name ?? ""),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                    Divider(),
-                    Text(I18n.of(context).illust),
-                    Container(
-                      child: Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        direction: Axis.horizontal,
-                        children: <Widget>[
-                          ...muteStore.banillusts
-                              .map((f) => Chip(
-                                    onPressed: () => _deleteIllust(context, f),
-                                    text: Text(f.name),
-                                  ))
-                              .toList()
-                        ],
-                      ),
-                    ),
-                  ],
+        return ContentDialog(
+          title: Text(I18n.of(context).shielding_settings),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(I18n.of(context).tag),
+                Container(
+                  child: Wrap(
+                    spacing: 2.0,
+                    runSpacing: 2.0,
+                    direction: Axis.horizontal,
+                    children: muteStore.banTags
+                        .map(
+                          (f) => Button(
+                            onPressed: () => deleteTag(context, f),
+                            child: Text(f.name),
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
-              ),
-            ));
+                Divider(),
+                Text(I18n.of(context).painter),
+                Container(
+                  child: Wrap(
+                    spacing: 2.0,
+                    runSpacing: 2.0,
+                    direction: Axis.horizontal,
+                    children: muteStore.banUserIds
+                        .map(
+                          (f) => Button(
+                            onPressed: () => _deleteUserIdTag(context, f),
+                            child: Text(f.name ?? ""),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                Divider(),
+                Text(I18n.of(context).illust),
+                Container(
+                  child: Wrap(
+                    spacing: 2.0,
+                    runSpacing: 2.0,
+                    direction: Axis.horizontal,
+                    children: muteStore.banillusts
+                        .map(
+                          (f) => Button(
+                            onPressed: () => _deleteIllust(context, f),
+                            child: Text(f.name),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            FilledButton(
+              child: Text(I18n.of(context).ok),
+              onPressed: Navigator.of(context).pop,
+            ),
+          ],
+        );
       },
     );
   }
@@ -118,23 +115,24 @@ class _ShieldPageState extends State<ShieldPage> {
   Future deleteTag(BuildContext context, BanTagPersist f) async {
     final result = await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) {
         return ContentDialog(
           title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
-          actions: <Widget>[
-            HyperlinkButton(
+          actions: [
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FilledButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
               child: Text(I18n.of(context).ok),
             ),
-            HyperlinkButton(
-              child: Text(I18n.of(context).cancel),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
           ],
         );
       },
@@ -151,23 +149,24 @@ class _ShieldPageState extends State<ShieldPage> {
   Future _deleteIllust(BuildContext context, BanIllustIdPersist f) async {
     final result = await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) {
         return ContentDialog(
           title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
-          actions: <Widget>[
-            HyperlinkButton(
+          actions: [
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FilledButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
               child: Text(I18n.of(context).ok),
             ),
-            HyperlinkButton(
-              child: Text(I18n.of(context).cancel),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
           ],
         );
       },
@@ -184,23 +183,24 @@ class _ShieldPageState extends State<ShieldPage> {
   Future _deleteUserIdTag(BuildContext context, BanUserIdPersist f) async {
     final result = await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) {
         return ContentDialog(
           title: Text(I18n.of(context).delete),
           content: Text('Delete this tag?'),
-          actions: <Widget>[
-            HyperlinkButton(
+          actions: [
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FilledButton(
               onPressed: () {
                 Navigator.pop(context, "OK");
               },
               child: Text(I18n.of(context).ok),
             ),
-            HyperlinkButton(
-              child: Text(I18n.of(context).cancel),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
           ],
         );
       },
