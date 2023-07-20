@@ -202,6 +202,7 @@ class _SearchBoxState extends State<StatefulWidget> {
           _getItemByPainterId(id),
           _getItemByPixivisionId(id),
         ]);
+        setState(() {});
       }
 
       if (_suggestionStore.autoWords?.tags.isNotEmpty != true) return;
@@ -278,8 +279,8 @@ class _SearchBoxState extends State<StatefulWidget> {
   AutoSuggestBoxItem<String> _getItemByIllustId(int id) {
     final text = '${I18n.of(context).illust_id}: ${id}';
     return _buildItem(
-      title: I18n.of(context).illust_id,
-      subtitle: id.toString(),
+      title: id.toString(),
+      subtitle: I18n.of(context).illust_id,
       onSelected: () => Leader.push(
         context,
         IllustLightingPage(id: id),
@@ -292,8 +293,8 @@ class _SearchBoxState extends State<StatefulWidget> {
   AutoSuggestBoxItem<String> _getItemByPainterId(int id) {
     final text = '${I18n.of(context).painter_id}: ${id}';
     return _buildItem(
-      title: I18n.of(context).painter_id,
-      subtitle: id.toString(),
+      title: id.toString(),
+      subtitle: I18n.of(context).painter_id,
       onSelected: () => Leader.push(
         context,
         UsersPage(id: id),
@@ -306,8 +307,8 @@ class _SearchBoxState extends State<StatefulWidget> {
   AutoSuggestBoxItem<String> _getItemByPixivisionId(int id) {
     final text = 'Pixivision Id: ${id}';
     return _buildItem(
-      title: 'Pixivision Id',
-      subtitle: id.toString(),
+      title: id.toString(),
+      subtitle: 'Pixivision Id',
       onSelected: () => Leader.push(
         context,
         SoupPage(
