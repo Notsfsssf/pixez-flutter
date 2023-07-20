@@ -247,11 +247,11 @@ class _SettingPageState extends State<SettingPage> {
               ListTile(
                 title: Text("网络诊断"),
                 onPressed: () {
-                  Leader.push(context, NetworkSettingPage(),
-                      title: Text("网络诊断"),
-                      icon: Icon(
-                        FluentIcons.bug,
-                      ));
+                  showDialog(
+                context: context,
+                builder: (context) => NetworkSettingPage(),
+                useRootNavigator: false,
+              );
                 },
               ),
             ListTile(

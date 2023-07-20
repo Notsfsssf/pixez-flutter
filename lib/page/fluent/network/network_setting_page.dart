@@ -6,6 +6,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -82,7 +83,8 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
+    return ContentDialog(
+      title: Text("网络诊断"),
       content: ListView(
         children: [
           ListTile(
@@ -107,6 +109,12 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
           Text(message),
         ],
       ),
+      actions: [
+        FilledButton(
+          child: Text(I18n.of(context).ok),
+          onPressed: Navigator.of(context).pop,
+        ),
+      ],
     );
   }
 
