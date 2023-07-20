@@ -130,10 +130,11 @@ class _SettingPageState extends State<SettingPage> {
                         style: FluentTheme.of(context).typography.caption,
                       ),
                       onPressed: () {
-                        Navigator.of(context)
-                            .push(FluentPageRoute(builder: (_) {
-                          return AccountSelectPage();
-                        }));
+                        showDialog(
+                          context: context,
+                          builder: (context) => AccountSelectPage(),
+                          useRootNavigator: false,
+                        );
                       },
                     ),
                   ),
