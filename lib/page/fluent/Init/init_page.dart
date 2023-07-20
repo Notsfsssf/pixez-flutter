@@ -17,6 +17,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/about/languages.dart';
 
 class InitPage extends StatefulWidget {
   @override
@@ -24,16 +25,7 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-  final languageList = [
-    'en-US',
-    'zh-CN',
-    'zh-TW',
-    'ja',
-    'ko',
-    'ru',
-    'es',
-    'tr'
-  ];
+  final languageList = Languages.map((e) => e.language).toList();
   var currentIndex = 0;
 
   @override

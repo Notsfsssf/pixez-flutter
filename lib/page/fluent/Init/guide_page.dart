@@ -5,6 +5,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/fluent/Init/init_page.dart';
 import 'package:pixez/page/fluent/network/network_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,15 +81,8 @@ class _GuidePageState extends State<GuidePage> {
                         await prefs.setInt(
                             'language_num', userSetting.languageNum);
                         //有可能用户啥都没选
-                        final languageList = [
-                          'en-US',
-                          'zh-CN',
-                          'zh-TW',
-                          'ja',
-                          'ko',
-                          'ru',
-                          'es'
-                        ];
+                        final languageList =
+                            Languages.map((e) => e.language).toList();
                         ApiClient.Accept_Language =
                             languageList[userSetting.languageNum];
                         apiClient.httpClient.options

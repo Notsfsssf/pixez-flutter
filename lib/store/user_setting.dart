@@ -24,6 +24,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/about/languages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_setting.g.dart';
@@ -501,27 +502,10 @@ abstract class _UserSetting with Store {
     singleFolder = value;
   }
 
-  final languageList = [
-    'en-US',
-    'zh-CN',
-    'zh-TW',
-    'ja',
-    'ko',
-    'ru',
-    'es',
-    'tr'
-  ];
+  final languageList = Languages.map((e) => e.language).toList();
 
-  List<Locale> iSupportedLocales = <Locale>[
-    Locale('en', 'US'),
-    Locale('zh', 'CN'),
-    Locale('zh', 'TW'),
-    Locale('ja'),
-    Locale('ko'),
-    Locale('ru'),
-    Locale('es'),
-    Locale('tr')
-  ];
+  List<Locale> iSupportedLocales =
+      Languages.map((e) => e.locale).toList();
 
   @action
   setLanguageNum(int value) async {
