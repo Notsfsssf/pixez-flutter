@@ -55,27 +55,29 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
     super.dispose();
   }
 
-  _buildActionText(String text) => Chip(
-      text: Text("$text"),
-      onPressed: () {
-        if (_textEditingController.selection.end == -1) return;
-        var insertText = "{$text}";
-        if (text == "_") insertText = "_";
-        final textSelection = _textEditingController.selection;
-        _textEditingController.text = _textEditingController.text
-            .replaceRange(textSelection.start, textSelection.end, insertText);
-        _textEditingController.selection = textSelection.copyWith(
-            baseOffset: textSelection.start + insertText.length,
-            extentOffset: textSelection.start + insertText.length);
-      });
+  _buildActionText(String text) => Button(
+        child: Text("$text"),
+        onPressed: () {
+          if (_textEditingController.selection.end == -1) return;
+          var insertText = "{$text}";
+          if (text == "_") insertText = "_";
+          final textSelection = _textEditingController.selection;
+          _textEditingController.text = _textEditingController.text
+              .replaceRange(textSelection.start, textSelection.end, insertText);
+          _textEditingController.selection = textSelection.copyWith(
+              baseOffset: textSelection.start + insertText.length,
+              extentOffset: textSelection.start + insertText.length);
+        },
+      );
   String intialFormat = "{illust_id}_p{part}";
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: PageHeader(
+    return ContentDialog(
+      title: PageHeader(
         title: Text(I18n.of(context).save_format),
         commandBar: CommandBar(
+          mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
             CommandBarButton(
               icon: Icon(FluentIcons.refresh),
@@ -107,79 +109,83 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
         ),
       ),
       content: Container(
-        child: ListView(children: [
-          // ListTile(
-          //   onTap: () {
-          //     Leader.push(context, SaveEvalPage());
-          //   },
-          //   title: Text("EVAL"),
-          //   subtitle: Text("Eval"),
-          // ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InfoLabel(
-              label: 'File Name Format',
-              child: TextBox(
-                controller: _textEditingController,
-                placeholder: 'Input File Name Format',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 4.0,
-              children: <Widget>[
-                _buildActionText("title"),
-                _buildActionText("_"),
-                _buildActionText("part"),
-                _buildActionText("illust_id"),
-                _buildActionText("user_id"),
-                _buildActionText("user_name"),
-              ],
-            ),
-          ),
-          Observer(builder: (_) {
-            return ToggleSwitch(
-              content: Text(I18n.of(context).clear_old_format_file +
-                  '\n' +
-                  I18n.of(context).clear_old_format_file_message),
-              onChanged: (bool value) {
-                userSetting.setIsClearnOldFormatFile(value);
-              },
-              checked: userSetting.isClearOldFormatFile,
-            );
-          }),
-          Table(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TableRow(children: [
-                Text("Name"),
-                Text("Result"),
-              ]),
-              TableRow(children: [
-                Text('{illust_id}'),
-                Text(I18n.of(context).illust_id),
-              ]),
-              TableRow(children: [
-                Text('{title}'),
-                Text(I18n.of(context).title),
-              ]),
-              TableRow(children: [
-                Text('{user_id}'),
-                Text(I18n.of(context).painter_id),
-              ]),
-              TableRow(children: [
-                Text('{user_name}'),
-                Text(I18n.of(context).painter_name),
-              ]),
-              TableRow(children: [
-                Text('part'),
-                Text(I18n.of(context).which_part),
-              ]),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InfoLabel(
+                  label: 'File Name Format',
+                  child: TextBox(
+                    controller: _textEditingController,
+                    placeholder: 'Input File Name Format',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  spacing: 4.0,
+                  children: <Widget>[
+                    _buildActionText("title"),
+                    _buildActionText("_"),
+                    _buildActionText("part"),
+                    _buildActionText("illust_id"),
+                    _buildActionText("user_id"),
+                    _buildActionText("user_name"),
+                  ],
+                ),
+              ),
+              Observer(builder: (_) {
+                return ToggleSwitch(
+                  content: Text(I18n.of(context).clear_old_format_file +
+                      '\n' +
+                      I18n.of(context).clear_old_format_file_message),
+                  onChanged: (bool value) {
+                    userSetting.setIsClearnOldFormatFile(value);
+                  },
+                  checked: userSetting.isClearOldFormatFile,
+                );
+              }),
+              Table(
+                children: [
+                  TableRow(children: [
+                    Text("Name"),
+                    Text("Result"),
+                  ]),
+                  TableRow(children: [
+                    Text('{illust_id}'),
+                    Text(I18n.of(context).illust_id),
+                  ]),
+                  TableRow(children: [
+                    Text('{title}'),
+                    Text(I18n.of(context).title),
+                  ]),
+                  TableRow(children: [
+                    Text('{user_id}'),
+                    Text(I18n.of(context).painter_id),
+                  ]),
+                  TableRow(children: [
+                    Text('{user_name}'),
+                    Text(I18n.of(context).painter_name),
+                  ]),
+                  TableRow(children: [
+                    Text('part'),
+                    Text(I18n.of(context).which_part),
+                  ]),
+                ],
+              )
             ],
-          )
-        ]),
+          ),
+        ),
       ),
+      actions: [
+        FilledButton(
+          child: Text(I18n.of(context).ok),
+          onPressed: Navigator.of(context).pop,
+        ),
+      ],
     );
   }
 }

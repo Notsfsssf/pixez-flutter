@@ -31,8 +31,12 @@ class _SettingPrefsPageState extends State<SettingPrefsPage> {
                 _buildRow(I18n.of(context).select_language,
                     subtitle: userSetting.languageList[userSetting.languageNum],
                     onTap: () {
-                  // TODO: Icon & Title
-                  Leader.push(context, SettingLanguagePage());
+                  Leader.push(
+                    context,
+                    SettingLanguagePage(),
+                    icon: Icon(FluentIcons.locale_language),
+                    title: Text(I18n.of(context).select_language),
+                  );
                 }),
               ]),
             ),
@@ -50,20 +54,32 @@ class _SettingPrefsPageState extends State<SettingPrefsPage> {
                 _buildRow(I18n.of(context).illustration_detail_page_quality,
                     subtitle: userSetting.languageList[userSetting.languageNum],
                     onTap: () {
-                  // TODO: Icon & Title
-                  Leader.push(context, SettingLanguagePage());
+                  Leader.push(
+                    context,
+                    SettingLanguagePage(),
+                    icon: Icon(FluentIcons.locale_language),
+                    title: Text(I18n.of(context).select_language),
+                  );
                 }),
                 _buildRow(I18n.of(context).manga_detail_page_quality,
                     subtitle: userSetting.languageList[userSetting.languageNum],
                     onTap: () {
-                  // TODO: Icon & Title
-                  Leader.push(context, SettingLanguagePage());
+                  Leader.push(
+                    context,
+                    SettingLanguagePage(),
+                    icon: Icon(FluentIcons.locale_language),
+                    title: Text(I18n.of(context).select_language),
+                  );
                 }),
                 _buildRow(I18n.of(context).large_preview_zoom_quality,
                     subtitle: userSetting.languageList[userSetting.languageNum],
                     onTap: () {
-                  // TODO: Icon & Title
-                  Leader.push(context, SettingLanguagePage());
+                  Leader.push(
+                    context,
+                    SettingLanguagePage(),
+                    icon: Icon(FluentIcons.locale_language),
+                    title: Text(I18n.of(context).select_language),
+                  );
                 }),
               ]),
             ),
@@ -167,9 +183,9 @@ class _SettingSelectPageState extends State<SettingSelectPage> {
 
 class SettingSelectRow extends StatefulWidget {
   final String title;
-  bool select;
-  GestureTapCallback? onTap;
-  SettingSelectRow(
+  final bool select;
+  final GestureTapCallback? onTap;
+  const SettingSelectRow(
       {Key? key, required this.title, required this.select, this.onTap})
       : super(key: key);
 
@@ -207,9 +223,9 @@ class _SettingSelectRowState extends State<SettingSelectRow> {
 
 class SettingRow extends StatefulWidget {
   final String title;
-  String? subTitle;
-  GestureTapCallback? onTap;
-  SettingRow({Key? key, required this.title, this.subTitle, this.onTap})
+  final String? subTitle;
+  final GestureTapCallback? onTap;
+  const SettingRow({Key? key, required this.title, this.subTitle, this.onTap})
       : super(key: key);
 
   @override

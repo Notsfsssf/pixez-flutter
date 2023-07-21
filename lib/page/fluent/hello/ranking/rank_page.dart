@@ -17,7 +17,7 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' as material;
+import 'package:flutter/material.dart' show showDatePicker;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -25,16 +25,7 @@ import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/fluent/hello/ranking/ranking_mode/rank_mode_page.dart';
 
 class RankPage extends StatefulWidget {
-  late ValueNotifier<bool> isFullscreen;
-  late Function? toggleFullscreen;
-  RankPage({
-    Key? key,
-    ValueNotifier<bool>? isFullscreen,
-    this.toggleFullscreen,
-  }) : super(key: key) {
-    this.isFullscreen =
-        isFullscreen == null ? ValueNotifier(false) : isFullscreen;
-  }
+  const RankPage({super.key});
 
   @override
   _RankPageState createState() => _RankPageState();
@@ -96,10 +87,7 @@ class _RankPageState extends State<RankPage>
     );
   }
 
-  String? toRequestDate(DateTime dateTime) {
-    if (dateTime == null) {
-      return null;
-    }
+  String toRequestDate(DateTime dateTime) {
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
@@ -116,20 +104,6 @@ class _RankPageState extends State<RankPage>
     } else {
       return 0;
     }
-  }
-
-  // 切换全屏状态
-  void toggleFullscreen() async {
-    if (appBarHeightNotifier.value == null) {
-      appBarHeightNotifier.value = await initAppBarHeight();
-      // 这里比较hack，因为需要等待appbarHeight从null到固定double类型的重绘
-      // 等待50ms使组件重渲染完毕。
-      Timer(const Duration(milliseconds: 50), () {
-        toggleFullscreen();
-      });
-      return;
-    }
-    widget.toggleFullscreen!();
   }
 
   @override
@@ -162,13 +136,6 @@ class _RankPageState extends State<RankPage>
           pane: NavigationPane(
               header: CommandBar(
                 primaryItems: [
-                  if (widget.toggleFullscreen != null)
-                    CommandBarButton(
-                      icon: Icon(FluentIcons.full_screen),
-                      onPressed: () {
-                        toggleFullscreen();
-                      },
-                    ),
                   CommandBarButton(
                     icon: Icon(FluentIcons.reset),
                     onPressed: () {
@@ -264,7 +231,7 @@ class _RankPageState extends State<RankPage>
   Future _showTimePicker(BuildContext context) async {
     // TODO: fluent_ui的日期选择器好像有点问题
     var nowdate = DateTime.now();
-    var date = await material.showDatePicker(
+    var date = await showDatePicker(
         context: context,
         initialDate: nowDateTime,
         locale: userSetting.locale,

@@ -16,11 +16,12 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart' show SelectionArea;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
-import 'package:pixez/component/selectable_html.dart';
+import 'package:pixez/component/fluent/selectable_html.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/illust.dart';
@@ -67,14 +68,12 @@ class IllustDetailBody extends StatelessWidget {
                         height: 70,
                         width: 70,
                         child: Container(
-                          decoration: illust != null
-                              ? BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _store.isFollow
-                                      ? Colors.yellow
-                                      : FluentTheme.of(context).accentColor,
-                                )
-                              : BoxDecoration(),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _store.isFollow
+                                ? Colors.yellow
+                                : FluentTheme.of(context).accentColor,
+                          ),
                         ),
                       ),
                     ),
@@ -141,101 +140,103 @@ class IllustDetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final IllustDetailStore _store = IllustDetailStore(illust);
-    return Observer(builder: (context) {
-      return Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            _buildNameAvatar(context, illust, _store),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(I18n.of(context).illust_id),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText(illust.id.toString(), context),
-                      Container(
-                        width: 20.0,
-                      ),
-                      Text(I18n.of(context).pixel),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText("${illust.width}x${illust.height}", context)
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(I18n.of(context).total_view),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText(illust.totalView.toString(), context),
-                      Container(
-                        width: 20.0,
-                      ),
-                      Text(I18n.of(context).total_bookmark),
-                      Container(
-                        width: 10.0,
-                      ),
-                      colorText("${illust.totalBookmarks}", context)
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 2, // gap between adjacent chips
-                runSpacing: 0, // gap between lines
-                children: [
-                  if (illust.illustAIType == 2)
-                    Text("${I18n.of(context).ai_generated}",
-                        style: FluentTheme.of(context)
-                            .typography
-                            .caption!
-                            .copyWith(
-                                color: FluentTheme.of(context).accentColor)),
-                  for (var f in illust.tags) buildRow(context, f)
-                ],
-              ),
-            ),
-            Card(
-              child: Padding(
+    return SelectionArea(
+      child: Observer(builder: (context) {
+        return Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _buildNameAvatar(context, illust, _store),
+              Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SelectableHtml(
-                  data: illust.caption.isEmpty ? "~" : illust.caption,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(I18n.of(context).illust_id),
+                        Container(
+                          width: 10.0,
+                        ),
+                        colorText(illust.id.toString(), context),
+                        Container(
+                          width: 20.0,
+                        ),
+                        Text(I18n.of(context).pixel),
+                        Container(
+                          width: 10.0,
+                        ),
+                        colorText("${illust.width}x${illust.height}", context)
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(I18n.of(context).total_view),
+                        Container(
+                          width: 10.0,
+                        ),
+                        colorText(illust.totalView.toString(), context),
+                        Container(
+                          width: 20.0,
+                        ),
+                        Text(I18n.of(context).total_bookmark),
+                        Container(
+                          width: 10.0,
+                        ),
+                        colorText("${illust.totalBookmarks}", context)
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: HyperlinkButton(
-                child: Text(I18n.of(context).view_comment,
-                    textAlign: TextAlign.center,
-                    style: FluentTheme.of(context).typography.body!),
-                onPressed: () {
-                  Leader.push(
-                      context,
-                      CommentPage(
-                        id: illust.id,
-                      ));
-                },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 2, // gap between adjacent chips
+                  runSpacing: 0, // gap between lines
+                  children: [
+                    if (illust.illustAIType == 2)
+                      Text("${I18n.of(context).ai_generated}",
+                          style: FluentTheme.of(context)
+                              .typography
+                              .caption!
+                              .copyWith(
+                                  color: FluentTheme.of(context).accentColor)),
+                    for (var f in illust.tags) buildRow(context, f)
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
-      );
-    });
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableHtml(
+                    data: illust.caption.isEmpty ? "~" : illust.caption,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: HyperlinkButton(
+                  child: Text(I18n.of(context).view_comment,
+                      textAlign: TextAlign.center,
+                      style: FluentTheme.of(context).typography.body!),
+                  onPressed: () {
+                    Leader.push(
+                        context,
+                        CommentPage(
+                          id: illust.id,
+                        ));
+                  },
+                ),
+              )
+            ],
+          ),
+        );
+      }),
+    );
   }
 
   Widget buildRow(BuildContext context, Tags f) {

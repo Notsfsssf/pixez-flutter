@@ -40,7 +40,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
 
   _apiCheck() async {
     try {
-      Response response = await apiClient.walkthroughIllusts();
+      await apiClient.walkthroughIllusts();
       setState(() {
         apiStatus = 1;
       });
@@ -58,12 +58,13 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
       var dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       String trueUrl = url.replaceFirst(ImageHost, host);
       dio.httpClientAdapter = IOHttpClientAdapter()
-        ..onHttpClientCreate = (client) {
-          client.badCertificateCallback =
-              (X509Certificate cert, String host, int port) => true;
-          return client;
+        ..createHttpClient = () {
+          return HttpClient()
+            ..idleTimeout = Duration(seconds: 3)
+            ..badCertificateCallback =
+                (X509Certificate cert, String host, int port) => true;
         };
-      Response response = await dio
+      await dio
           .download(trueUrl, (await getTemporaryDirectory()).path + "/s.png",
               onReceiveProgress: (min, max) {
         throw ok();
@@ -126,14 +127,6 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
     } else {
       return Icon(FluentIcons.error);
     }
-  }
-
-  _showApiDialog() {
-    showBottomSheet(
-        context: context,
-        builder: (context) {
-          return SafeArea(child: Container());
-        });
   }
 }
 

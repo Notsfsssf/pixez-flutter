@@ -89,7 +89,7 @@ dev_dependencies:
   json_serializable: ^6.6.1
   analyzer: ^5.7.1
   sqflite_common_ffi: ^2.2.5
-  msix: ^3.12.2
+  msix: ^3.16.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

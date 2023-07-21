@@ -1,14 +1,15 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' show SelectionArea;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/fluent/ban_page.dart';
 import 'package:pixez/component/fluent/context_menu.dart';
 import 'package:pixez/component/fluent/painter_avatar.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
+import 'package:pixez/component/fluent/selectable_html.dart';
 import 'package:pixez/component/null_hero.dart';
-import 'package:pixez/component/selectable_html.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -726,10 +727,12 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
       ),
       SliverToBoxAdapter(
         child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SelectableHtml(
-              data: data.caption.isEmpty ? "~" : data.caption,
+          child: SelectionArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SelectableHtml(
+                data: data.caption.isEmpty ? "~" : data.caption,
+              ),
             ),
           ),
         ),

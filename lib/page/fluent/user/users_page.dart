@@ -280,74 +280,8 @@ class _UsersPageState extends State<UsersPage>
             ),
           ],
         ),
-
-        // SafeArea(
-        //   child: NavigationView(
-        //     pane: NavigationPane(
-        //       selected: _tabIndex,
-        //       items: [
-        //         PaneItem(
-        //           icon: Icon(FluentIcons.picture_library),
-        //           title: Text(I18n.of(context).works),
-        //           body: WorksPage(
-        //             id: widget.id,
-        //           ),
-        //         ),
-        //         PaneItem(
-        //           icon: Icon(FluentIcons.bookmarks),
-        //           title: Text(I18n.of(context).bookmark),
-        //           body: BookmarkPage(
-        //             isNested: true,
-        //             id: widget.id,
-        //             relay: _bookmarkPageMethodRelay,
-        //           ),
-        //         ),
-        //         PaneItem(
-        //           icon: Icon(FluentIcons.info),
-        //           title: Text(I18n.of(context).detail),
-        //           body: userStore.userDetail != null
-        //               ? UserDetailPage(userDetail: userStore.userDetail!)
-        //               : Container(),
-        //         )
-        //       ],
-        //       footerItems: [
-        //         if (_tabIndex == 1)
-        //           PaneItemAction(
-        //             icon: Icon(FluentIcons.sort),
-        //             onTap: () async => await _bookmarkPageMethodRelay.sort(),
-        //           )
-        //       ],
-        //       displayMode: PaneDisplayMode.top,
-        //     ),
-        //   ),
-        // ),
       );
     });
-
-    // NestedScrollView(
-    //   // pinnedHeaderSliverHeightBuilder: () =>
-    //   //     MediaQuery.of(context).padding.top + kToolbarHeight + 46.0,
-    //   controller: _scrollController,
-    //   // innerScrollPositionKeyBuilder: () =>
-    //   //     Key("Tab${_tabController.index}"),
-    //   body: SafeArea(
-    //     child: _topVert(context),
-    //   ),
-    //   headerSliverBuilder: (BuildContext context, bool? innerBoxIsScrolled) {
-    //     return [
-    //       //   ),
-    //       // ),
-    //       // TODO
-    //       // SliverPersistentHeader(
-    //       //   delegate: StickyTabBarDelegate(
-    //       //     child:
-
-    //       //   ),
-    //       //   pinned: true,
-    //       // ),
-    //     ];
-    //   },
-    // );
   }
 
   Widget _buildNameFollow(BuildContext context) {
@@ -395,30 +329,6 @@ class _UsersPageState extends State<UsersPage>
     );
   }
 
-  Widget _buildComment(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => Container(
-        color: FluentTheme.of(context).cardColor,
-        width: constraints.maxWidth,
-        height: 60,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-          child: SelectionContainer.disabled(
-            child: SingleChildScrollView(
-              child: Text(
-                userStore.userDetail == null
-                    ? ""
-                    : '${userStore.userDetail!.user.comment}',
-                style: FluentTheme.of(context).typography.caption,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildHeader(BuildContext context) {
     final follow = () {
       if (accountStore.now == null) return;
@@ -427,10 +337,11 @@ class _UsersPageState extends State<UsersPage>
         userStore.follow(needPrivate: false);
       } else {
         showSnackbar(
-            context,
-            Snackbar(
-                content:
-                    Text('Who is the most beautiful person in the world?')));
+          context,
+          InfoBar(
+            title: Text('Who is the most beautiful person in the world?'),
+          ),
+        );
       }
     };
 
@@ -553,15 +464,16 @@ class _UsersPageState extends State<UsersPage>
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni) {
         dio.httpClientAdapter = IOHttpClientAdapter()
-          ..onHttpClientCreate = (client) {
-            client.badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;
-            return client;
+          ..createHttpClient = () {
+            return HttpClient()
+              ..idleTimeout = Duration(seconds: 3)
+              ..badCertificateCallback =
+                  (X509Certificate cert, String host, int port) => true;
           };
       }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
-      if (file != null && file.existsSync()) {
+      if (file.existsSync()) {
         await saveStore.saveToGallery(
             file.readAsBytesSync(),
             Illusts(

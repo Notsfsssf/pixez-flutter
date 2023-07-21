@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -67,32 +69,31 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         title: Text(I18n.of(context).quality_setting),
       ),
       children: [
-        ListTile(
-          title: Text(I18n.of(context).platform_special_setting),
-          trailing: Icon(FluentIcons.chevron_right_small),
-          subtitle: Text(
-            "For Desktop",
-            style: TextStyle(color: Colors.blue),
+        if (Platform.isWindows)
+          ListTile(
+            title: Text(I18n.of(context).platform_special_setting),
+            subtitle: Text(
+              "For Windows",
+              style: TextStyle(color: Colors.blue),
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => PlatformPage(),
+                useRootNavigator: false,
+              );
+            },
           ),
-          onPressed: () {
-            Leader.push(
-              context,
-              PlatformPage(),
-              icon: Icon(FluentIcons.settings),
-              title: Text(I18n.of(context).platform_special_setting),
-            );
-          },
-        ),
         ListTile(
           title: Text(I18n.of(context).network),
-          trailing: Icon(FluentIcons.chevron_right_small),
+          trailing: Icon(FluentIcons.chevron_right),
           onPressed: () {
             Leader.push(
               context,
               NetworkPage(
                 automaticallyImplyLeading: true,
               ),
-              icon: Icon(FluentIcons.chevron_right_small),
+              icon: Icon(FluentIcons.chevron_right),
               title: Text(I18n.of(context).network),
             );
           },
@@ -395,7 +396,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 );
               },
               title: Text(I18n.of(context).share_info_format),
-              trailing: Icon(FluentIcons.forward),
+              trailing: Icon(FluentIcons.chevron_right),
             );
           },
         ),
@@ -439,15 +440,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   }
 
   void _buildLanguageTranlators() {
-    final langsponsors =
-        Languages[userSetting.languageNum].sponsors;
+    final langsponsors = Languages[userSetting.languageNum].sponsors;
     _languageTranlator = Row(
       children: [
         for (final langsponsor in langsponsors)
           PixEzButton(
             onPressed: () {
               try {
-                launchUrl(Uri.dataFromString(langsponsor.uri));
+                launchUrl(Uri.parse(langsponsor.uri));
               } catch (e) {}
             },
             child: Row(

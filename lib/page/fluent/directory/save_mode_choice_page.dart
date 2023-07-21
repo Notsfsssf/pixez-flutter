@@ -27,7 +27,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'directory_page.dart';
 
 showPathDialog(BuildContext context, {bool isFirst = false}) async {
-  // TODO: Icon & Title
   return Leader.push(
     context,
     SaveModeChoicePage(
@@ -39,7 +38,7 @@ showPathDialog(BuildContext context, {bool isFirst = false}) async {
 }
 
 class SaveModeChoicePage extends StatefulWidget {
-  bool isFirst;
+  final bool isFirst;
 
   SaveModeChoicePage({Key? key, required this.isFirst}) : super(key: key);
 
@@ -51,14 +50,11 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
     with SingleTickerProviderStateMixin {
   int groupValue = 0;
   late AnimationController _animationController;
-  late Animation<Color?> _animation;
 
   @override
   void initState() {
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    _animation = ColorTween(begin: Colors.blue, end: Colors.red)
-        .animate(_animationController);
     _animationController.addListener(() {
       setState(() {});
     });
@@ -132,15 +128,13 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                         _animationController.forward();
                       }
                     }),
-                // TODO: 应该想办法塞CommandBar里
                 IconButton(
                     icon: Icon(FluentIcons.book_answers),
-                    onPressed: () {
-                      Constants.isGooglePlay || userSetting.disableBypassSni
-                          ? launch(
-                              "https://developer.android.com/training/data-storage/shared/documents-files")
-                          : launch(
-                              "https://developer.android.google.cn/training/data-storage/shared/documents-files");
+                    onPressed: () async {
+                      await launchUrl(Uri.parse(Constants.isGooglePlay ||
+                              userSetting.disableBypassSni
+                          ? "https://developer.android.com/training/data-storage/shared/documents-files"
+                          : "https://developer.android.google.cn/training/data-storage/shared/documents-files"));
                       Navigator.of(context).pop();
                     }),
                 IconButton(

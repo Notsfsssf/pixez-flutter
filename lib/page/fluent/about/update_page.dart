@@ -16,6 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' show SelectionArea;
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/about/last_release.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -54,58 +55,62 @@ class _UpdatePageState extends State<UpdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: PageHeader(
-        title: Text(I18n.of(context).update),
-        commandBar: CommandBar(primaryItems: [
-          CommandBarButton(
-              onPressed: () {
-                setState(() {
-                  error = null;
-                  lastRelease = null;
-                });
-                initData();
-              },
-              icon: Icon(FluentIcons.refresh),
-              label: Text(I18n.of(context).refresh))
-        ]),
+    return SelectionArea(
+      child: ScaffoldPage(
+        header: PageHeader(
+          title: Text(I18n.of(context).update),
+          commandBar: CommandBar(primaryItems: [
+            CommandBarButton(
+                onPressed: () {
+                  setState(() {
+                    error = null;
+                    lastRelease = null;
+                  });
+                  initData();
+                },
+                icon: Icon(FluentIcons.refresh),
+                label: Text(I18n.of(context).refresh))
+          ]),
+        ),
+        content: lastRelease == null
+            ? Builder(builder: (_) {
+                return error == null
+                    ? Container(
+                        child: Center(
+                          child: ProgressRing(),
+                        ),
+                      )
+                    : Container(
+                        child: Center(
+                          child: Text(error.toString()),
+                        ),
+                      );
+              })
+            : ListView(
+                children: <Widget>[
+                  ListTile(
+                    title: Text(I18n.of(context).latest_version),
+                    subtitle: Text(lastRelease!.tagName),
+                  ),
+                  ListTile(
+                    title: Text(I18n.of(context).download_address),
+                    subtitle: SelectableText(
+                        lastRelease!.assets.first.browserDownloadUrl),
+                    onPressed: () async {
+                      try {
+                        await launchUrl(Uri.parse(
+                            lastRelease!.assets.first.browserDownloadUrl));
+                      } catch (e) {}
+                    },
+                  ),
+                  ListTile(
+                    title:
+                        Text(I18n.of(context).new_version_update_information),
+                    subtitle: Text(lastRelease!.body),
+                  )
+                ],
+              ),
       ),
-      content: lastRelease == null
-          ? Builder(builder: (_) {
-              return error == null
-                  ? Container(
-                      child: Center(
-                        child: ProgressRing(),
-                      ),
-                    )
-                  : Container(
-                      child: Center(
-                        child: Text(error.toString()),
-                      ),
-                    );
-            })
-          : ListView(
-              children: <Widget>[
-                ListTile(
-                  title: Text(I18n.of(context).latest_version),
-                  subtitle: Text(lastRelease!.tagName),
-                ),
-                ListTile(
-                  title: Text(I18n.of(context).download_address),
-                  subtitle: SelectableText(
-                      lastRelease!.assets.first.browserDownloadUrl),
-                  onPressed: () {
-                    try {
-                      launch(lastRelease!.assets.first.browserDownloadUrl);
-                    } catch (e) {}
-                  },
-                ),
-                ListTile(
-                  title: Text(I18n.of(context).new_version_update_information),
-                  subtitle: Text(lastRelease!.body),
-                )
-              ],
-            ),
     );
   }
 }

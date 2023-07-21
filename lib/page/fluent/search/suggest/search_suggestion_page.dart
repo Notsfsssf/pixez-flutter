@@ -16,7 +16,6 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -87,127 +86,132 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
       return ScaffoldPage(
         header: _buildAppBar(context),
         content: Container(
-            child: Column(
-          children: [
-            Divider(),
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Wrap(
-                        spacing: 10,
-                        children: [
-                          for (String i in tagGroup)
-                            Chip(
-                                text: Text(i),
+          child: Column(
+            children: [
+              Divider(),
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Wrap(
+                          spacing: 10,
+                          children: [
+                            for (String i in tagGroup)
+                              Button(
+                                child: Text(i),
                                 onPressed: () {
                                   final start = _filter.text.indexOf(i);
                                   if (start != -1)
                                     _filter.selection =
-                                        TextSelection.fromPosition(TextPosition(
-                                            offset: start + i.length));
-                                })
-                        ],
+                                        TextSelection.fromPosition(
+                                      TextPosition(
+                                        offset: start + i.length,
+                                      ),
+                                    );
+                                },
+                              )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SliverVisibility(
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        if (index == 0)
-                          return ListTile(
-                            title: Text(_filter.text),
-                            subtitle: Text(I18n.of(context).illust_id),
-                            onPressed: () {
-                              Leader.push(
-                                context,
-                                IllustLightingPage(
-                                  id: int.tryParse(_filter.text)!,
-                                ),
-                                icon: const Icon(FluentIcons.picture),
-                                title: Text(_filter.text),
-                              );
-                            },
-                          );
-                        if (index == 1)
-                          return ListTile(
-                            title: Text(_filter.text),
-                            subtitle: Text(I18n.of(context).painter_id),
-                            onPressed: () {
-                              Leader.push(
-                                context,
-                                UsersPage(
-                                  id: int.tryParse(_filter.text)!,
-                                ),
-                                icon: const Icon(FluentIcons.picture),
-                                title: Text(_filter.text),
-                              );
-                            },
-                          );
-                        if (index == 2 && _filter.text.length < 5)
-                          return ListTile(
-                            title: Text(_filter.text),
-                            subtitle: Text("Pixivision Id"),
-                            onPressed: () {
-                              Leader.push(
-                                context,
-                                SoupPage(
-                                  url:
-                                      "https://www.pixivision.net/zh/a/${_filter.text.trim()}",
-                                  spotlight: null,
-                                ),
-                                icon: const Icon(FluentIcons.picture),
-                                title: Text(_filter.text),
-                              );
-                            },
-                          );
-                        return ListTile();
-                      }, childCount: 3),
+                    SliverVisibility(
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          if (index == 0)
+                            return ListTile(
+                              title: Text(_filter.text),
+                              subtitle: Text(I18n.of(context).illust_id),
+                              onPressed: () {
+                                Leader.push(
+                                  context,
+                                  IllustLightingPage(
+                                    id: int.tryParse(_filter.text)!,
+                                  ),
+                                  icon: const Icon(FluentIcons.picture),
+                                  title: Text(_filter.text),
+                                );
+                              },
+                            );
+                          if (index == 1)
+                            return ListTile(
+                              title: Text(_filter.text),
+                              subtitle: Text(I18n.of(context).painter_id),
+                              onPressed: () {
+                                Leader.push(
+                                  context,
+                                  UsersPage(
+                                    id: int.tryParse(_filter.text)!,
+                                  ),
+                                  icon: const Icon(FluentIcons.picture),
+                                  title: Text(_filter.text),
+                                );
+                              },
+                            );
+                          if (index == 2 && _filter.text.length < 5)
+                            return ListTile(
+                              title: Text(_filter.text),
+                              subtitle: Text("Pixivision Id"),
+                              onPressed: () {
+                                Leader.push(
+                                  context,
+                                  SoupPage(
+                                    url:
+                                        "https://www.pixivision.net/zh/a/${_filter.text.trim()}",
+                                    spotlight: null,
+                                  ),
+                                  icon: const Icon(FluentIcons.picture),
+                                  title: Text(_filter.text),
+                                );
+                              },
+                            );
+                          return ListTile();
+                        }, childCount: 3),
+                      ),
+                      visible: idV,
                     ),
-                    visible: idV,
-                  ),
-                  if (_suggestionStore.autoWords != null &&
-                      _suggestionStore.autoWords!.tags.isNotEmpty)
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final tags = _suggestionStore.autoWords!.tags;
-                        return ListTile(
-                          onPressed: () {
-                            if (tagGroup.length > 1) {
-                              tagGroup.last = tags[index].name;
-                              var text = tagGroup.join(" ");
-                              _filter.text = text;
-                              _filter.selection = TextSelection.fromPosition(
-                                  TextPosition(offset: text.length));
-                              setState(() {});
-                            } else {
-                              FocusScope.of(context).unfocus();
-                              Leader.push(
-                                context,
-                                ResultPage(
-                                  word: tags[index].name,
-                                  translatedName:
-                                      tags[index].translated_name ?? "",
-                                ),
-                                icon: Icon(FluentIcons.search),
-                                title: Text(I18n.of(context).search +
-                                    " " +
-                                    tags[index].name),
-                              );
-                            }
-                          },
-                          title: Text(tags[index].name),
-                          subtitle: Text(tags[index].translated_name ?? ""),
-                        );
-                      }, childCount: _suggestionStore.autoWords!.tags.length),
-                    ),
-                ],
+                    if (_suggestionStore.autoWords != null &&
+                        _suggestionStore.autoWords!.tags.isNotEmpty)
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final tags = _suggestionStore.autoWords!.tags;
+                          return ListTile(
+                            onPressed: () {
+                              if (tagGroup.length > 1) {
+                                tagGroup.last = tags[index].name;
+                                var text = tagGroup.join(" ");
+                                _filter.text = text;
+                                _filter.selection = TextSelection.fromPosition(
+                                    TextPosition(offset: text.length));
+                                setState(() {});
+                              } else {
+                                FocusScope.of(context).unfocus();
+                                Leader.push(
+                                  context,
+                                  ResultPage(
+                                    word: tags[index].name,
+                                    translatedName:
+                                        tags[index].translated_name ?? "",
+                                  ),
+                                  icon: Icon(FluentIcons.search),
+                                  title: Text(I18n.of(context).search +
+                                      " " +
+                                      tags[index].name),
+                                );
+                              }
+                            },
+                            title: Text(tags[index].name),
+                            subtitle: Text(tags[index].translated_name ?? ""),
+                          );
+                        }, childCount: _suggestionStore.autoWords!.tags.length),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        )),
+            ],
+          ),
+        ),
       );
     });
   }
