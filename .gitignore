@@ -77,3 +77,6 @@
 /.vscode/
 misc/
 msic
+
+# Ignore Certificate
+*.pfx
