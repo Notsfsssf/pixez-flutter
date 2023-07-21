@@ -14,17 +14,15 @@
  *
  */
 
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/document_plugin.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/open_setting_plugin.dart';
-import 'package:pixez/page/fluent/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/fluent/hello/setting/save_format_page.dart';
 
 class PlatformPage extends StatefulWidget {
@@ -105,18 +103,19 @@ class _PlatformPageState extends State<PlatformPage> {
                 if (result is String) {
                   userSetting.setFormat(result);
                 }
-                // if (result != null) userSetting.setPath(result);
               },
             ),
             Observer(
               builder: (context) {
                 return ToggleSwitch(
-                  // TODO
-                  // secondary: Icon(FluentIcons.share),
                   onChanged: (bool value) async {
                     if (value) {
                       showSnackbar(
-                          context, Snackbar(content: Text("可能会造成保存等待时间过长")));
+                        context,
+                        InfoBar(
+                          title: Text("可能会造成保存等待时间过长"),
+                        ),
+                      );
                     }
                     await userSetting.setSingleFolder(value);
                   },
@@ -129,8 +128,6 @@ class _PlatformPageState extends State<PlatformPage> {
             Observer(
               builder: (context) {
                 return ToggleSwitch(
-                  // TODO
-                  // secondary: Icon(FluentIcons.folder_open),
                   onChanged: (bool value) async {
                     await userSetting.setOverSanityLevelFolder(value);
                   },

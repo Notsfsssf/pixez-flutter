@@ -96,9 +96,10 @@ class _UpdatePageState extends State<UpdatePage> {
                     title: Text(I18n.of(context).download_address),
                     subtitle: SelectableText(
                         lastRelease!.assets.first.browserDownloadUrl),
-                    onPressed: () {
+                    onPressed: () async {
                       try {
-                        launch(lastRelease!.assets.first.browserDownloadUrl);
+                        await launchUrl(Uri.parse(
+                            lastRelease!.assets.first.browserDownloadUrl));
                       } catch (e) {}
                     },
                   ),

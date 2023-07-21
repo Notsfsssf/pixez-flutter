@@ -55,19 +55,20 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
     super.dispose();
   }
 
-  _buildActionText(String text) => Chip(
-      text: Text("$text"),
-      onPressed: () {
-        if (_textEditingController.selection.end == -1) return;
-        var insertText = "{$text}";
-        if (text == "_") insertText = "_";
-        final textSelection = _textEditingController.selection;
-        _textEditingController.text = _textEditingController.text
-            .replaceRange(textSelection.start, textSelection.end, insertText);
-        _textEditingController.selection = textSelection.copyWith(
-            baseOffset: textSelection.start + insertText.length,
-            extentOffset: textSelection.start + insertText.length);
-      });
+  _buildActionText(String text) => Button(
+        child: Text("$text"),
+        onPressed: () {
+          if (_textEditingController.selection.end == -1) return;
+          var insertText = "{$text}";
+          if (text == "_") insertText = "_";
+          final textSelection = _textEditingController.selection;
+          _textEditingController.text = _textEditingController.text
+              .replaceRange(textSelection.start, textSelection.end, insertText);
+          _textEditingController.selection = textSelection.copyWith(
+              baseOffset: textSelection.start + insertText.length,
+              extentOffset: textSelection.start + insertText.length);
+        },
+      );
   String intialFormat = "{illust_id}_p{part}";
 
   @override

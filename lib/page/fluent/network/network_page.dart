@@ -15,7 +15,6 @@ class NetworkPage extends StatefulWidget {
 }
 
 class _NetworkPageState extends State<NetworkPage> {
-  late bool _automaticallyImplyLeading;
   late TextEditingController _textEditingController;
   bool _isCustom = false;
 
@@ -24,7 +23,6 @@ class _NetworkPageState extends State<NetworkPage> {
     _textEditingController = TextEditingController(
       text: userSetting.pictureSource,
     );
-    _automaticallyImplyLeading = widget.automaticallyImplyLeading ?? false;
     super.initState();
   }
 
@@ -180,7 +178,7 @@ class _NetworkPageState extends State<NetworkPage> {
                                           .contains(" ")) {
                                     showSnackbar(
                                       context,
-                                      Snackbar(content: Text("illegal")),
+                                      InfoBar(title: Text("illegal")),
                                     );
                                     return;
                                   }

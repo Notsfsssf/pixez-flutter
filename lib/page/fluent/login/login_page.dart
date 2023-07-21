@@ -21,7 +21,6 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/fluent/about/about_page.dart';
 import 'package:pixez/page/fluent/hello/setting/setting_quality_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -113,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                                 try {
                                   String url =
                                       await OAuthClient.generateWebviewUrl();
-                                  _launch(url);
+                                  await launchUrl(Uri.parse(url));
                                 } catch (e) {}
                               }),
                           FilledButton(
@@ -122,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                                 String url =
                                     await OAuthClient.generateWebviewUrl(
                                         create: true);
-                                _launch(url);
+                                await launchUrl(Uri.parse(url));
                               } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),
@@ -135,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                               final url =
                                   'https://www.pixiv.net/terms/?page=term';
                               try {
-                                await launch(url);
+                                await launchUrl(Uri.parse(url));
                               } catch (e) {}
                             },
                           ),
@@ -150,9 +149,5 @@ class _LoginPageState extends State<LoginPage> {
             )),
       ),
     );
-  }
-
-  _launch(url) async {
-    await launchUrlString(url);
   }
 }

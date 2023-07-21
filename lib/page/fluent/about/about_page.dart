@@ -22,6 +22,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:pixez/component/fluent/new_version_chip.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
@@ -31,7 +32,6 @@ import 'package:pixez/page/fluent/about/thanks_list.dart';
 import 'package:pixez/page/fluent/about/update_page.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 class AboutPage extends StatefulWidget {
   final bool? newVersion;
@@ -131,11 +131,11 @@ class _AboutPageState extends State<AboutPage> {
                 ),
                 builder: (BuildContext context) {
                   return IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (Platform.isAndroid)
-                        launch(Constants.isGooglePlay
+                        await launchUrl(Uri.parse(Constants.isGooglePlay
                             ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
-                            : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587");
+                            : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587"));
                     },
                     icon: Container(
                       child: Image.asset(
@@ -238,7 +238,7 @@ class _AboutPageState extends State<AboutPage> {
               if (Platform.isIOS) {
                 var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
                 try {
-                  await launch(url);
+                  await launchUrl(Uri.parse(url));
                 } catch (e) {}
               }
             },
@@ -268,18 +268,18 @@ class _AboutPageState extends State<AboutPage> {
                                 title: Text('Version ${Constants.tagName}'),
                                 subtitle: Text(
                                     I18n.of(context).go_to_project_address),
-                                onPressed: () {
+                                onPressed: () async {
                                   try {
-                                    launch(
-                                        'https://github.com/Notsfsssf/pixez-flutter');
+                                    await launchUrl(Uri.parse(
+                                        'https://github.com/Notsfsssf/pixez-flutter'));
                                   } catch (e) {}
                                 },
                                 trailing: IconButton(
                                     icon: Icon(FluentIcons.link),
-                                    onPressed: () {
+                                    onPressed: () async {
                                       try {
-                                        launch(
-                                            'https://github.com/Notsfsssf/pixez-flutter');
+                                        await launchUrl(Uri.parse(
+                                            'https://github.com/Notsfsssf/pixez-flutter'));
                                       } catch (e) {}
                                     }),
                               ),
@@ -435,7 +435,7 @@ class _AboutPageState extends State<AboutPage> {
               Card(
                 margin: EdgeInsets.all(8.0),
                 child: ListTile(
-                  leading: Icon(FontAwesomeIcons.coffee),
+                  leading: Icon(FontAwesomeIcons.mugSaucer),
                   title: Text(i.description),
                   subtitle: Text(i.price),
                   onPressed: () {

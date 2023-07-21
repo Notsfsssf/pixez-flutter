@@ -23,7 +23,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/models/user_detail.dart';
 import 'package:pixez/page/fluent/follow/follow_list.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserDetailPage extends StatefulWidget {
   final UserDetail userDetail;
@@ -130,7 +130,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           if (url == null) return;
 
                           try {
-                            await launchUrlString(url);
+                            await launchUrl(Uri.parse(url));
                           } catch (e) {
                             Share.share(url);
                           }
@@ -159,7 +159,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           var url = detail.profile.pawoo_url;
                           if (url == null) return;
                           try {
-                            await launchUrlString(url);
+                            await launchUrl(Uri.parse(url));
                           } catch (e) {}
                         }),
                   ]),

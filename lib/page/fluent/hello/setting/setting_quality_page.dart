@@ -447,7 +447,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           PixEzButton(
             onPressed: () {
               try {
-                launchUrl(Uri.dataFromString(langsponsor.uri));
+                launchUrl(Uri.parse(langsponsor.uri));
               } catch (e) {}
             },
             child: Row(

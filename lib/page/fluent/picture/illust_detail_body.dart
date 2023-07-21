@@ -68,14 +68,12 @@ class IllustDetailBody extends StatelessWidget {
                         height: 70,
                         width: 70,
                         child: Container(
-                          decoration: illust != null
-                              ? BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _store.isFollow
-                                      ? Colors.yellow
-                                      : FluentTheme.of(context).accentColor,
-                                )
-                              : BoxDecoration(),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _store.isFollow
+                                ? Colors.yellow
+                                : FluentTheme.of(context).accentColor,
+                          ),
                         ),
                       ),
                     ),

@@ -92,7 +92,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                           ..account = user.account
                           ..xRestrict = user.xRestrict);*/
                     } catch (e) {
-                      showSnackbar(context, Snackbar(content: Text("创建次数过多")));
+                      showSnackbar(context, InfoBar(title: Text("创建次数过多")));
                     }
                   },
                   child: Text("Start"),
@@ -107,7 +107,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   onPressed: () async {
                     final url = 'https://www.pixiv.net/terms/?page=term';
                     try {
-                      await launch(url);
+                      await launchUrl(Uri.parse(url));
                     } catch (e) {}
                   },
                 ),

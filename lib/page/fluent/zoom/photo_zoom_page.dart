@@ -219,8 +219,8 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                             targetFile.createSync(recursive: true);
                           }
                           file.file.copySync(targetPath);
-                          Share.shareFiles(
-                            [targetPath],
+                          Share.shareXFiles(
+                            [XFile(targetPath)],
                           );
                         } else {
                           BotToast.showText(text: "can not find image cache");
