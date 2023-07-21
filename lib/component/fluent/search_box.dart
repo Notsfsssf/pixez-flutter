@@ -94,39 +94,40 @@ class _SearchBoxState extends State<StatefulWidget> {
     _items.clear();
     _isLoading = true;
     setState(() {});
+    try {
+      if (text.isEmpty) {
+        await tagHistoryStore.fetch();
+        if (tagHistoryStore.tags.isEmpty) return;
 
-    if (text.isEmpty) {
-      await tagHistoryStore.fetch();
-      if (tagHistoryStore.tags.isEmpty) return [];
-
-      _items.addAll([
-        _getCleanHistoryItem(),
-        ...tagHistoryStore.tags.map(_getItemByTagsPersist),
-      ]);
-    } else if (text == '#') {
-      await _trendTagsStore.fetch();
-
-      _items.addAll(_trendTagsStore.trendTags.map(_getItemByTrendTags));
-    } else {
-      final id = int.tryParse(text);
-      if (id != null)
         _items.addAll([
-          _getItemByIllustId(id),
-          _getItemByPainterId(id),
-          _getItemByPixivisionId(id),
+          _getCleanHistoryItem(),
+          ...tagHistoryStore.tags.map(_getItemByTagsPersist),
         ]);
+      } else if (text == '#') {
+        await _trendTagsStore.fetch();
 
-      await _suggestionStore.fetch(text);
-      final autoWords = _suggestionStore.autoWords;
-      if (autoWords != null)
-        _items.addAll(autoWords.tags.map(_getItemByTags).toList());
+        _items.addAll(_trendTagsStore.trendTags.map(_getItemByTrendTags));
+      } else {
+        final id = int.tryParse(text);
+        if (id != null)
+          _items.addAll([
+            _getItemByIllustId(id),
+            _getItemByPainterId(id),
+            _getItemByPixivisionId(id),
+          ]);
+
+        await _suggestionStore.fetch(text);
+        final autoWords = _suggestionStore.autoWords;
+        if (autoWords != null)
+          _items.addAll(autoWords.tags.map(_getItemByTags).toList());
+      }
+    } finally {
+      _isLoading = false;
+      // HACK: 通知 AutoSuggestBox 使内部的 ListView 更新
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      _controller.notifyListeners();
+      setState(() {});
     }
-
-    _isLoading = false;
-    // HACK: 通知 AutoSuggestBox 使内部的 ListView 更新
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    _controller.notifyListeners();
-    setState(() {});
   }
 
   void _onAutoSuggestBoxChanged(String text, TextChangedReason reason) {
