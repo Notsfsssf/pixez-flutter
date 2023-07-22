@@ -416,7 +416,7 @@ class _UsersPageState extends State<UsersPage>
           padding: EdgeInsets.only(top: 25),
           alignment: Alignment.bottomCenter,
           child: SizedBox(
-            height: 55.0,
+            height: 60.0,
             child: Container(
               color: FluentTheme.of(context)
                   .acrylicBackgroundColor

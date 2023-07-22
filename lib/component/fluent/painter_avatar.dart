@@ -18,6 +18,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/component/fluent/focus_wrap.dart';
 import 'package:pixez/component/fluent/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/page/fluent/user/users_page.dart';
 
 class PainterAvatar extends StatefulWidget {
@@ -36,7 +37,12 @@ class PainterAvatar extends StatefulWidget {
 
 class _PainterAvatarState extends State<PainterAvatar> {
   void pushToUserPage() {
-    Leader.push(context, UsersPage(id: widget.id));
+    Leader.push(
+      context,
+      UsersPage(id: widget.id),
+      title: Text(I18n.of(context).painter_id + ': ${widget.id}'),
+      icon: Icon(FluentIcons.account_browser),
+    );
   }
 
   _onTap() {
