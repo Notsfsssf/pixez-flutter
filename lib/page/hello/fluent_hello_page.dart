@@ -428,7 +428,7 @@ class PixEzNavigatorObserver extends NavigatorObserver {
   void didPush(Route route, Route? previousRoute) {
     if (route is PixEzPageRoute) {
       _histories.add(route);
-      onPush(route, previousRoute as PixEzPageRoute?);
+      onPush(route, previousRoute is PixEzPageRoute ? previousRoute : null);
     }
   }
 
@@ -437,7 +437,7 @@ class PixEzNavigatorObserver extends NavigatorObserver {
   void didPop(Route route, Route? previousRoute) {
     if (route is PixEzPageRoute) {
       _histories.removeLast();
-      onPop(route, previousRoute as PixEzPageRoute?);
+      onPop(route, previousRoute is PixEzPageRoute ? previousRoute : null);
     }
   }
 }

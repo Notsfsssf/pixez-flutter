@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/component/fluent/pixez_button.dart';
@@ -89,44 +91,73 @@ class _SearchBoxState extends State<StatefulWidget> {
     );
   }
 
+  Timer? _delay;
+  bool _skipClear = false;
+  void _notifyFinished() {
+    _isLoading = false;
+    // HACK: 通知 AutoSuggestBox 使内部的 ListView 更新
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    _controller.notifyListeners();
+    if (!mounted) return;
+    setState(() {});
+  }
+
   Future _updateSuggestList() async {
+    if (!mounted) return;
     final text = _controller.text;
-    _items.clear();
+    if (!_skipClear || text.isEmpty) _items.clear();
+    _skipClear = false;
     _isLoading = true;
     setState(() {});
-    try {
-      if (text.isEmpty) {
-        await tagHistoryStore.fetch();
-        if (tagHistoryStore.tags.isEmpty) return;
 
+    if (text.isEmpty) {
+      // 如果搜索框为空则展示历史记录
+      await tagHistoryStore.fetch();
+      // 历史记录为空则不展示
+      if (tagHistoryStore.tags.isEmpty) return _notifyFinished();
+
+      _items.addAll([
+        _getCleanHistoryItem(),
+        ...tagHistoryStore.tags.map(_getItemByTagsPersist),
+      ]);
+      return _notifyFinished();
+    } else if (text.startsWith('#')) {
+      // 如果搜索框以 # 开头则展示标签
+
+      // 标签不能搜索所以跳过下一次的列表清除
+      _skipClear = true;
+      // 如果不是单独的 # 符号 则用户可能想要筛选标签结果
+      if (text != '#') return _notifyFinished();
+
+      await _trendTagsStore.fetch();
+
+      _items.addAll(_trendTagsStore.trendTags.map(_getItemByTrendTags));
+      _notifyFinished();
+    } else {
+      // 都不是则尝试搜索
+      // 如果输入了数字则展示快速跳转
+      final id = int.tryParse(text);
+      if (id != null) {
         _items.addAll([
-          _getCleanHistoryItem(),
-          ...tagHistoryStore.tags.map(_getItemByTagsPersist),
+          _getItemByIllustId(id),
+          _getItemByPainterId(id),
+          _getItemByPixivisionId(id),
         ]);
-      } else if (text == '#') {
-        await _trendTagsStore.fetch();
+        _notifyFinished();
+      }
 
-        _items.addAll(_trendTagsStore.trendTags.map(_getItemByTrendTags));
-      } else {
-        final id = int.tryParse(text);
-        if (id != null)
-          _items.addAll([
-            _getItemByIllustId(id),
-            _getItemByPainterId(id),
-            _getItemByPixivisionId(id),
-          ]);
+      // 取消挂起的异步搜索
+      _delay?.cancel();
 
+      // 创建新的异步搜索
+      _delay = Timer(const Duration(seconds: 1), () async {
         await _suggestionStore.fetch(text);
         final autoWords = _suggestionStore.autoWords;
         if (autoWords != null)
           _items.addAll(autoWords.tags.map(_getItemByTags).toList());
-      }
-    } finally {
-      _isLoading = false;
-      // HACK: 通知 AutoSuggestBox 使内部的 ListView 更新
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      _controller.notifyListeners();
-      setState(() {});
+
+        _notifyFinished();
+      });
     }
   }
 
@@ -145,6 +176,7 @@ class _SearchBoxState extends State<StatefulWidget> {
     required _SuggestItem value,
     String? subtitle = null,
     Widget? leading = null,
+    Widget? trailing = null,
     void Function()? onSelected,
     bool reverse = false,
   }) {
@@ -157,31 +189,43 @@ class _SearchBoxState extends State<StatefulWidget> {
               padding: EdgeInsets.only(right: 4.0),
               child: leading,
             ),
-          Text(
-            subtitle != null && subtitle.isNotEmpty && reverse
-                ? subtitle
-                : title,
-            style: reverse
-                ? null
-                : FluentTheme.of(context).typography.body?.copyWith(
-                      color: FluentTheme.of(context).accentColor,
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  subtitle != null && subtitle.isNotEmpty && reverse
+                      ? subtitle
+                      : title,
+                  style: reverse
+                      ? null
+                      : FluentTheme.of(context).typography.body?.copyWith(
+                            color: FluentTheme.of(context).accentColor,
+                          ),
+                ),
+                if (subtitle != null && subtitle.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(left: 4.0),
+                    child: Text(
+                      reverse ? title : subtitle,
+                      style: reverse
+                          ? FluentTheme.of(context).typography.body?.copyWith(
+                                color: FluentTheme.of(context).accentColor,
+                              )
+                          : null,
                     ),
+                  ),
+              ],
+            ),
           ),
-          if (subtitle != null && subtitle.isNotEmpty)
+          if (trailing != null)
             Padding(
               padding: EdgeInsets.only(left: 4.0),
-              child: Text(
-                reverse ? title : subtitle,
-                style: reverse
-                    ? FluentTheme.of(context).typography.body?.copyWith(
-                          color: FluentTheme.of(context).accentColor,
-                        )
-                    : null,
-              ),
+              child: trailing,
             ),
         ],
       ),
-      label: title,
+      label: "$title $subtitle",
       value: value,
       onSelected: onSelected,
     );
@@ -210,6 +254,7 @@ class _SearchBoxState extends State<StatefulWidget> {
 
   AutoSuggestBoxItem<_SuggestItem> _getCleanHistoryItem() {
     return _buildItem(
+      leading: Icon(FluentIcons.delete),
       title: I18n.of(context).clear_search_tag_history,
       value: _SuggestItem(type: _SuggestItemType.cleanHistory),
     );
@@ -220,8 +265,16 @@ class _SearchBoxState extends State<StatefulWidget> {
       title: tags.name,
       subtitle: tags.translatedName,
       value: _SuggestItem(
+        type: _SuggestItemType.history,
         word: tags.name,
         translated: tags.translatedName,
+      ),
+      trailing: PixEzButton(
+        child: Icon(FluentIcons.chrome_close),
+        onPressed: () {
+          if (tags.id != null) tagHistoryStore.delete(tags.id!);
+          _updateSuggestList();
+        },
       ),
     );
   }
@@ -229,7 +282,7 @@ class _SearchBoxState extends State<StatefulWidget> {
   AutoSuggestBoxItem<_SuggestItem> _getItemByTrendTags(TrendTags tags) {
     return _buildItem(
       title: "#${tags.tag}",
-      subtitle: tags.translatedName,
+      subtitle: tags.translatedName != null ? "#${tags.translatedName}" : null,
       leading: _buildTagImage(tags),
       value: _SuggestItem(
         word: tags.tag,
@@ -306,6 +359,7 @@ class _SearchBoxState extends State<StatefulWidget> {
     FocusScope.of(context).unfocus();
     switch (item.type) {
       case _SuggestItemType.normal:
+      case _SuggestItemType.history:
       case _SuggestItemType.tag:
         final prefix = item.type == _SuggestItemType.tag ? '#' : '';
         Leader.push(
@@ -353,8 +407,10 @@ class _SearchBoxState extends State<StatefulWidget> {
                   child: Text(I18n.of(context).cancel),
                 ),
                 FilledButton(
-                  onPressed: () {
-                    tagHistoryStore.deleteAll();
+                  onPressed: () async {
+                    await tagHistoryStore.deleteAll();
+                    _controller.clear();
+                    await _updateSuggestList();
                     Navigator.of(context).pop();
                   },
                   child: Text(I18n.of(context).ok),
@@ -370,6 +426,7 @@ class _SearchBoxState extends State<StatefulWidget> {
 
 enum _SuggestItemType {
   normal,
+  history,
   tag,
   illustId,
   painterId,
