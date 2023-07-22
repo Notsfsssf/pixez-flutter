@@ -98,6 +98,7 @@ class _SearchBoxState extends State<StatefulWidget> {
     // HACK: 通知 AutoSuggestBox 使内部的 ListView 更新
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     _controller.notifyListeners();
+    if (!mounted) return;
     setState(() {});
   }
 

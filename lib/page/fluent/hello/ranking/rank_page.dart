@@ -184,34 +184,40 @@ class _RankPageState extends State<RankPage>
   void _choicePage(BuildContext context, List<String> rankListMean) {
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => ContentDialog(
         title: Text(I18n.of(context).choice_you_like),
         content: StatefulBuilder(
-          builder: (context, setState) => ListView.builder(
-            itemCount: rankListMean.length,
-            itemBuilder: (context, index) {
-              final value = rankListMean[index];
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                child: Checkbox(
-                  content: Text(value),
-                  checked: _rankFilters.contains(value),
-                  onChanged: (v) {
-                    boolList[rankListMean.indexOf(value)] = v ?? false;
-                    if (v ?? false) {
-                      setState(() {
-                        _rankFilters.add(value);
-                      });
-                    } else {
-                      setState(() {
-                        _rankFilters.remove(value);
-                      });
-                    }
-                  },
-                ),
-              );
-            },
+          builder: (context, setState) => SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var value in rankListMean)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 2.0,
+                    ),
+                    child: Checkbox(
+                      content: Text(value),
+                      checked: _rankFilters.contains(value),
+                      onChanged: (v) {
+                        boolList[rankListMean.indexOf(value)] = v ?? false;
+                        if (v ?? false) {
+                          setState(() {
+                            _rankFilters.add(value);
+                          });
+                        } else {
+                          setState(() {
+                            _rankFilters.remove(value);
+                          });
+                        }
+                      },
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
         actions: [
