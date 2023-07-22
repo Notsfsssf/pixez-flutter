@@ -78,16 +78,15 @@ Future _applyEffect(bool isDark) async {
 Widget buildFluentUI(BuildContext context) {
   if (!Constants.isFluent) return Container();
 
-  final mode = userSetting.themeMode;
-  final platformBrightness = MediaQuery.platformBrightnessOf(context);
-  final isDark = mode == ThemeMode.dark ||
-      (mode == ThemeMode.system && platformBrightness == Brightness.dark);
-
-  _applyEffect(isDark);
-
   return DynamicColorBuilder(
     builder: (lightDynamic, darkDynamic) {
       return Observer(builder: (context) {
+        final mode = userSetting.themeMode;
+        final platformBrightness = MediaQuery.platformBrightnessOf(context);
+        final isDark = mode == ThemeMode.dark ||
+            (mode == ThemeMode.system && platformBrightness == Brightness.dark);
+
+        _applyEffect(isDark);
         final botToastBuilder = BotToastInit();
         return FluentApp(
           home: Builder(builder: (context) {
