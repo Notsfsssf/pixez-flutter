@@ -76,6 +76,17 @@ class _DataExportPageState extends State<DataExportPage> {
               ),
               Divider(),
               ListTile(
+                title: Text(I18n.of(context).export_title),
+                subtitle: Text(I18n.of(context).export_illust_history),
+                onTap: () async {
+                  try {
+                    await historyStore.exportData();
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+              ),
+              ListTile(
                 title: Text(I18n.of(context).clear_all_cache),
                 onTap: () async {
                   try {

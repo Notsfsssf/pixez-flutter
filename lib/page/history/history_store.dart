@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/illust_persist.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as Path;
+import '../../saf_plugin.dart';
 
 part 'history_store.g.dart';
 
@@ -53,5 +58,15 @@ abstract class _HistoryStoreBase with Store {
     await illustPersistProvider.open();
     await illustPersistProvider.deleteAll();
     await fetch();
+  }
+
+  Future<void> exportData() async {
+    final uriStr = await SAFPlugin.createFile("illustpresist.db", "application/vnd.sqlite3");
+    if (uriStr == null) return;
+    String databasesPath = (await getDatabasesPath());
+    String path = Path.join(databasesPath, 'illustpersist.db');
+    File databaseFile = File(path);
+    final exportData = databaseFile.readAsBytesSync();
+    await SAFPlugin.writeUri(uriStr, exportData);
   }
 }
