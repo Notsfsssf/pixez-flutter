@@ -4,7 +4,7 @@
 
 A 3rd-party pixiv client built with Flutter.
 
-Can access pixiv directly from Mainland China.
+Enables access to pixiv directly from Mainland China.
 
 # Download
 
@@ -20,17 +20,17 @@ Can access pixiv directly from Mainland China.
 
 # About this repository
 
-As you see, Flutter is a framework that helps developer to design UI fastly.
+Flutter is an app framework that greatly reduces the amount of time needed to develop an app.
 
 Its Hot Reload feature can shorten debug time greatly, making the process WYSIWYG.
 
-By using PlatformChannel, you can create specific functionalities for different platforms.
+PlatformChannel can create specific functionalities for different platforms.
 
 This app uses `mobx`, `flutter_bloc` (will be deprecated), `provider` to manage status, and `custompainter` to play ugoira.
 
 ## Contribute
 
-Currently we have those users who contribute to this project. Thanks for their participating!
+We'd like to give a special thanks to the contributors who have put in so much effort to bring the project to where it is today!
 
 <table>
   <tr>
@@ -45,18 +45,16 @@ Currently we have those users who contribute to this project. Thanks for their p
 
 If you are a developer, and you're willing to contribute to this project, please don't hesitate to submit a PR!
 
-This app also uses `flutter_intl` to localize. You're welcome to commit translation too.
+This app uses `flutter_intl` to localize. You're welcome to help out with translation, too.
 
 Got ideas about UI design? You're also welcome to share your opinions.
 
-# Communicate
+# Support
 
 We have a [manual and FAQ page here (Chinese only)](./FAQ.md).
 
 Mail Feedback: PxezFeedback@outlook.com
 
-Also, feedback on Telegram: [@PixEzViewer](https://t.me/PixEzViewer)
+Telegram channel: [@PixEzViewer](https://t.me/PixEzViewer) (Mainly Chinese, English welcomed)
 
-(Mainly Chinese, English welcomed)
-
-If you have questions about registering or 🔞, please don't ask for a solution, though.
+We do not provide support regarding registration or viewing of age-restricted content.
