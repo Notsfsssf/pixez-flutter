@@ -86,6 +86,18 @@ class _DataExportPageState extends State<DataExportPage> {
                   }
                 },
               ),
+              ListTile(
+                title: Text(I18n.of(context).import_title),
+                subtitle: Text(I18n.of(context).import_illust_history),
+                onTap: () async {
+                  try {
+                    await historyStore.importData();
+                  } catch (e) {
+                    print(e);
+                    BotToast.showText(text: e.toString());
+                  }
+                },
+              ),
               Divider(),
               ListTile(
                 title: Text(I18n.of(context).clear_all_cache),

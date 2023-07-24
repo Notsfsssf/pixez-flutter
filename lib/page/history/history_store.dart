@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/illust_persist.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as Path;
 import 'package:pixez/saf_plugin.dart';
 
 part 'history_store.g.dart';
@@ -62,6 +59,24 @@ abstract class _HistoryStoreBase with Store {
     await fetch();
   }
 
+  importData() async {
+    final result = await SAFPlugin.openFile();
+    if (result == null) return;
+    final json = utf8.decode(result);
+    final decoder = JsonDecoder();
+    List<dynamic> maps = decoder.convert(json);
+    maps.forEach((illust) {
+      var illustMap = Map.from(illust);
+      var illustPersist = IllustPersist(
+          illustId: illustMap['illust_id'],
+          userId: illustMap['user_id'],
+          pictureUrl: illustMap['picture_url'],
+          time: illustMap['time'],
+          title: illustMap['title'],
+          userName: illustMap['user_name']);
+      illustPersistProvider.insert(illustPersist);
+    });
+  }
   exportData() async {
     final uriStr =
         await SAFPlugin.createFile("illustpersist.json", "application/json");
