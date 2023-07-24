@@ -86,6 +86,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   }
                 },
               ),
+              Divider(),
               ListTile(
                 title: Text(I18n.of(context).clear_all_cache),
                 onTap: () async {
