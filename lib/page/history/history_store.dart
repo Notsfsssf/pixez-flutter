@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/illust.dart';
@@ -61,12 +63,12 @@ abstract class _HistoryStoreBase with Store {
   }
 
   exportData() async {
-    final uriStr = await SAFPlugin.createFile("illustpersist.db", "application/vnd.sqlite3");
+    final uriStr =
+        await SAFPlugin.createFile("illustpersist.json", "application/json");
     if (uriStr == null) return;
-    String databasesPath = (await getDatabasesPath());
-    String path = Path.join(databasesPath, 'illustpersist.db');
-    File databaseFile = File(path);
-    final exportData = databaseFile.readAsBytesSync();
-    await SAFPlugin.writeUri(uriStr, exportData);
+    await illustPersistProvider.open();
+    final exportData = await illustPersistProvider.getAllAccount();
+    await SAFPlugin.writeUri(uriStr,
+        Uint8List.fromList(utf8.encode(jsonEncode(exportData))));
   }
 }
