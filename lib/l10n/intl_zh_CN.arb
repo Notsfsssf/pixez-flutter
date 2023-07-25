@@ -274,8 +274,10 @@
   "import_title": "导入",
   "export_bookmark_tag": "导出收藏标签",
   "export_tag_history": "导出标签历史",
+  "export_illust_history": "导出浏览历史",
   "import_bookmark_tag": "导入收藏标签",
   "import_tag_history": "导入标签历史",
+  "import_illust_history": "导入浏览历史",
   "photo_picker": "图片选择器",
   "photo_picker_subtitle": "使用新式图片选择器",
   "swipe_to_switch_artworks": "横向滑动切换作品"

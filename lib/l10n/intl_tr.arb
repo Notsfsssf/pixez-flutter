@@ -274,8 +274,10 @@
   "import_title": "İçe Aktar",
   "export_bookmark_tag": "Yer imi etiketlerini dışa aktar",
   "export_tag_history": "Etiket geçmişini dışa aktar",
+  "export_illust_history": "Export browsing history",
   "import_bookmark_tag": "Yer imi etiketlerini içe aktar",
   "import_tag_history": "Etiket geçmişini içe aktar",
+  "import_illust_history": "Import browsing history",
   "photo_picker": "Photo picker",
   "photo_picker_subtitle": "use new system-level image selector",
   "swipe_to_switch_artworks": "Swipe to switch artworks"
