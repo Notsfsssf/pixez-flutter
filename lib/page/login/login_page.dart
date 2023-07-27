@@ -175,6 +175,14 @@ class _LoginPageState extends State<LoginPage> {
       }
       return;
     }
+    if (Platform.isMacOS) {
+      try {
+        CustomTabPlugin.launch(url);
+      } catch (e) {
+        BotToast.showText(text: e.toString());
+      }
+      return;
+    }
     if (!userSetting.disableBypassSni) {
       // await WeissServer.listener();
       await WeissPlugin.start();

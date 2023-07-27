@@ -1451,7 +1451,7 @@ packages:
     source: hosted
     version: "0.6.0+2"
   uni_links2_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uni_links2_platform_interface
       sha256: "3d8db90639b7fb07c0e11b44bdc29c77deec9d9f22a389144fa95f67bd273975"

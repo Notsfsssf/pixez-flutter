@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
@@ -98,33 +99,46 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     if (bottomNavigatorHeight == null) {
       bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
     }
-    return Scaffold(
-        body: Stack(
-          children: [
-            _buildPageContent(context),
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom + 16,
-              right: 16,
-              child: ValueListenableBuilder(
-                valueListenable: isFullscreen,
-                builder: (context, value, child) {
-                  return AnimatedToggleFullscreenFAB(
-                      isFullscreen: value, toggleFullscreen: toggleFullscreen);
-                },
-              ),
-            )
-          ],
-        ),
-        extendBody: true,
-        bottomNavigationBar: ValueListenableBuilder<bool>(
+    return LayoutBuilder(builder: (context, constraints) {
+      final wide = constraints.maxWidth > constraints.maxHeight;
+      return Scaffold(
+          body: Row(children: [
+            if (wide) ..._buildRail(context),
+            Expanded(child: _buildPageView(context))
+          ]),
+          extendBody: true,
+          bottomNavigationBar: wide
+              ? null
+              : ValueListenableBuilder<bool>(
+                  valueListenable: isFullscreen,
+                  builder: (BuildContext context, bool isFullscreen,
+                          Widget? child) =>
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 400),
+                        transform: Matrix4.translationValues(
+                            0, isFullscreen ? bottomNavigatorHeight! : 0, 0),
+                        child: _buildNavigationBar(context),
+                      )));
+    });
+  }
+
+  Widget _buildPageView(BuildContext context) {
+    return Stack(
+      children: [
+        _buildPageContent(context),
+        Positioned(
+          bottom: MediaQuery.of(context).padding.bottom + 16,
+          right: 16,
+          child: ValueListenableBuilder(
             valueListenable: isFullscreen,
-            builder: (BuildContext context, bool isFullscreen, Widget? child) =>
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  transform: Matrix4.translationValues(
-                      0, isFullscreen ? bottomNavigatorHeight! : 0, 0),
-                  child: _buildNavigationBar(context),
-                )));
+            builder: (context, value, child) {
+              return AnimatedToggleFullscreenFAB(
+                  isFullscreen: value, toggleFullscreen: toggleFullscreen);
+            },
+          ),
+        )
+      ],
+    );
   }
 
   NavigationBar _buildNavigationBar(BuildContext context) {
@@ -171,6 +185,69 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       controller: _pageController,
       itemCount: _pageList.length,
     );
+  }
+
+  List<Widget> _buildRail(BuildContext context) {
+    return [
+      Stack(
+        children: [
+          NavigationRail(
+            selectedIndex: index,
+            labelType: NavigationRailLabelType.all,
+            onDestinationSelected: (int index) {
+              _pageController.jumpToPage(index);
+              setState(() {
+                index = index;
+              });
+            },
+            destinations: <NavigationRailDestination>[
+              NavigationRailDestination(
+                  icon: Icon(Icons.home), label: Text(I18n.of(context).home)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.leaderboard),
+                  label: Text(I18n.of(context).rank)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.favorite),
+                  label: Text(I18n.of(context).quick_view)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.search),
+                  label: Text(I18n.of(context).search)),
+              NavigationRailDestination(
+                  icon: Icon(Icons.more_horiz),
+                  label: Text(I18n.of(context).more)),
+            ],
+          ),
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 4.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  ),
+                ),
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: accountStore.now != null
+                      ? PainterAvatar(
+                          url: accountStore.now!.userImage,
+                          id: int.tryParse(accountStore.now!.userId) ?? 0)
+                      : Container(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const VerticalDivider(thickness: 1, width: 1),
+    ];
   }
 
   late int index;
