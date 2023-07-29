@@ -420,10 +420,11 @@ packages:
   fluent_ui:
     dependency: "direct main"
     description:
-      name: fluent_ui
-      sha256: be237134ab215d4a1591307f6286f4aa53ed5a492c2ee56be5d86be344fd16db
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "24107412ba71f92c875466918f8abb25323f63f4"
+      url: "https://github.com/frg2089/fluent_ui.git"
+    source: git
     version: "4.7.0"
   flutter:
     dependency: "direct main"

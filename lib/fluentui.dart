@@ -100,8 +100,13 @@ Widget buildFluentUI(BuildContext context) {
             return Directionality(
               textDirection: TextDirection.ltr,
               child: NavigationPaneTheme(
-                data:
-                    NavigationPaneThemeData(backgroundColor: _fluentuiBgColor),
+                data: NavigationPaneThemeData(
+                  backgroundColor: _fluentuiBgColor,
+                  popupBackgroundColor:
+                      FluentTheme.of(context).brightness.isDark
+                          ? const Color(0xFF202020)
+                          : const Color(0xFFf7f7f7),
+                ),
                 child: child,
               ),
             );
