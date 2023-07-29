@@ -59,20 +59,7 @@ class MainFlutterWindow: NSWindow, FlutterStreamHandler {
         let eventChannel = FlutterEventChannel(name: "uni_links/events", binaryMessenger: flutterViewController.engine.binaryMessenger)
         eventChannel.setStreamHandler(self)
 
-        let documentChannel = FlutterMethodChannel(
-            name: "com.perol.dev/save",
-            binaryMessenger: flutterViewController.engine.binaryMessenger)
-        documentChannel.setMethodCallHandler { call, result in
-            if call.method == "save" {
-                if let map = call.arguments as? [String: Any] {
-                    if let uint8List = map["data"] as? FlutterStandardTypedData {
-                        let data = uint8List.data
-                        self.saveImageToPhotosLibrary1(imageData: data)
-                        result(true)
-                    }
-                }
-            }
-        }
+        DocumentPlugin.bind(controller: flutterViewController)
 
         RegisterGeneratedPlugins(registry: flutterViewController)
         super.awakeFromNib()

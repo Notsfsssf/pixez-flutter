@@ -43,5 +43,7 @@
 	<string>NSApplication</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need access to your photo library to save data.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to save data.</string>
 </dict>
 </plist>
