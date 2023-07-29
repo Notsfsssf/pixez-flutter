@@ -132,7 +132,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
         physics: physics,
         slivers: [
           SliverToBoxAdapter(
-            child: Container(height: MediaQuery.of(context).padding.top),
+            child: Container(height: 16.0),
           ),
           SliverToBoxAdapter(
             child: _buildFirstRow(context),
@@ -236,8 +236,11 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                     itemBuilder: (context, index) {
                       final spotlight = spotlightStore.articles[index];
                       return Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 4.0, vertical: 8.0),
+                        padding: EdgeInsets.only(
+                          top: 8.0,
+                          bottom: 8.0,
+                          right: 2.0,
+                        ),
                         child: Hero(
                           tag: "spotlight_image_${spotlight.hashCode}",
                           child: ButtonTheme(
