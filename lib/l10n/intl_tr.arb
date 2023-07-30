@@ -280,5 +280,6 @@
   "import_illust_history": "Göz atma geçmişini içe aktar",
   "photo_picker": "Görsel seçici",
   "photo_picker_subtitle": "yeni görsel seçicisini kullan",
-  "swipe_to_switch_artworks": "Görseller arası geçiş yapmak için kaydır"
+  "swipe_to_switch_artworks": "Görseller arası geçiş yapmak için kaydır",
+  "view_the_latest": "View the latest"
 }

@@ -50,134 +50,138 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      double height = MediaQuery.of(context).size.width *
-          (widget.illusts.height.toDouble() / widget.illusts.width.toDouble());
-      if (_store.status == UgoiraStatus.play) {
-        return InkWell(
-          onLongPress: () async {
-            if (isEncoding) return;
-            final result = await showModalBottomSheet(
-                context: context,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
+    return LayoutBuilder(builder: (context, constraints) {
+      final maxWidth = constraints.maxWidth;
+      return Observer(builder: (_) {
+        double height = maxWidth *
+            (widget.illusts.height.toDouble() /
+                widget.illusts.width.toDouble());
+        if (_store.status == UgoiraStatus.play) {
+          return InkWell(
+            onLongPress: () async {
+              if (isEncoding) return;
+              final result = await showModalBottomSheet(
+                  context: context,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  builder: (context) {
+                    return SafeArea(
+                        child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text(I18n.of(context).encode_message),
+                        ),
+                        ListTile(
+                          title: Text(I18n.of(context).encode),
+                          onTap: () {
+                            Navigator.of(context).pop('OK');
+                          },
+                        ),
+                        ListTile(
+                          title: Text(I18n.of(context).export),
+                          onTap: () {
+                            Navigator.of(context).pop('EXPORT');
+                          },
+                        ),
+                        ListTile(
+                          title: Text(I18n.of(context).cancel),
+                          onTap: () {
+                            Navigator.of(context).pop('SOURCE');
+                          },
+                        ),
+                      ],
+                    ));
+                  });
+              if (result == "OK") {
+                try {
+                  isEncoding = true;
+                  platform.invokeMethod('getBatteryLevel', {
+                    "path": _store.drawPool.first.parent.path,
+                    "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
+                        .frames.first.delay,
+                    "delay_array": _store
+                        .ugoiraMetadataResponse!.ugoiraMetadata.frames
+                        .map((e) => e.delay)
+                        .toList(),
+                    "name": userSetting.singleFolder
+                        ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
+                        : "${widget.id}",
+                  });
+                  BotToast.showCustomText(
+                      toastBuilder: (_) => Text("encoding..."));
+                } on PlatformException {
+                  isEncoding = false;
+                }
+              } else if (result == "SOURCE") {
+              } else if (result == "EXPORT") {
+                _store.export();
+              }
+            },
+            child: UgoiraWidget(
+                delay: _store
+                    .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+                ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
+                size: Size(
+                    maxWidth,
+                    (widget.illusts.height.toDouble() /
+                            widget.illusts.width.toDouble()) *
+                        maxWidth),
+                drawPools: _store.drawPool),
+          );
+        }
+        if (_store.status == UgoiraStatus.progress)
+          return Column(
+            children: <Widget>[
+              PixivImage(
+                widget.illusts.imageUrls.medium,
+                height: height,
+                width: maxWidth,
+                placeWidget: Container(
+                  height: height,
+                ),
+              ),
+              LinearProgressIndicator(
+                backgroundColor: Theme.of(context).cardColor,
+                valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).colorScheme.secondary),
+                value: _store.count / _store.total,
+              )
+            ],
+          );
+        return Container(
+          height: height + 72.0,
+          child: Stack(
+            children: <Widget>[
+              PixivImage(
+                widget.illusts.imageUrls.medium,
+                height: height,
+                width: maxWidth,
+                placeWidget: Container(
+                  height: height,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Material(
+                  child: Container(
+                    height: 72.0,
+                    width: 72.0,
+                    child: IconButton(
+                        icon: Icon(Icons.play_arrow),
+                        onPressed: () {
+                          _store.downloadAndUnzip();
+                        }),
                   ),
                 ),
-                builder: (context) {
-                  return SafeArea(
-                      child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: Text(I18n.of(context).encode_message),
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).encode),
-                        onTap: () {
-                          Navigator.of(context).pop('OK');
-                        },
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).export),
-                        onTap: () {
-                          Navigator.of(context).pop('EXPORT');
-                        },
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).cancel),
-                        onTap: () {
-                          Navigator.of(context).pop('SOURCE');
-                        },
-                      ),
-                    ],
-                  ));
-                });
-            if (result == "OK") {
-              try {
-                isEncoding = true;
-                platform.invokeMethod('getBatteryLevel', {
-                  "path": _store.drawPool.first.parent.path,
-                  "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata.frames
-                      .first.delay,
-                  "delay_array": _store
-                      .ugoiraMetadataResponse!.ugoiraMetadata.frames
-                      .map((e) => e.delay)
-                      .toList(),
-                  "name": userSetting.singleFolder
-                      ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
-                      : "${widget.id}",
-                });
-                BotToast.showCustomText(
-                    toastBuilder: (_) => Text("encoding..."));
-              } on PlatformException {
-                isEncoding = false;
-              }
-            } else if (result == "SOURCE") {
-            } else if (result == "EXPORT") {
-              _store.export();
-            }
-          },
-          child: UgoiraWidget(
-              delay: _store
-                  .ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
-              ugoiraMetadataResponse: _store.ugoiraMetadataResponse!,
-              size: Size(
-                  MediaQuery.of(context).size.width.toDouble(),
-                  (widget.illusts.height.toDouble() /
-                          widget.illusts.width.toDouble()) *
-                      MediaQuery.of(context).size.width.toDouble()),
-              drawPools: _store.drawPool),
+              )
+            ],
+          ),
         );
-      }
-      if (_store.status == UgoiraStatus.progress)
-        return Column(
-          children: <Widget>[
-            PixivImage(
-              widget.illusts.imageUrls.medium,
-              height: height,
-              width: MediaQuery.of(context).size.width,
-              placeWidget: Container(
-                height: height,
-              ),
-            ),
-            LinearProgressIndicator(
-              backgroundColor: Theme.of(context).cardColor,
-              valueColor: AlwaysStoppedAnimation(
-                  Theme.of(context).colorScheme.secondary),
-              value: _store.count / _store.total,
-            )
-          ],
-        );
-      return Container(
-        height: height + 72.0,
-        child: Stack(
-          children: <Widget>[
-            PixivImage(
-              widget.illusts.imageUrls.medium,
-              height: height,
-              width: MediaQuery.of(context).size.width,
-              placeWidget: Container(
-                height: height,
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Material(
-                child: Container(
-                  height: 72.0,
-                  width: 72.0,
-                  child: IconButton(
-                      icon: Icon(Icons.play_arrow),
-                      onPressed: () {
-                        _store.downloadAndUnzip();
-                      }),
-                ),
-              ),
-            )
-          ],
-        ),
-      );
+      });
     });
   }
 }

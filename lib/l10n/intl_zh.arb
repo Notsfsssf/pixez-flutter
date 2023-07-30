@@ -280,5 +280,6 @@
   "import_illust_history": "导入浏览历史",
   "photo_picker": "图片选择器",
   "photo_picker_subtitle": "使用新式图片选择器",
-  "swipe_to_switch_artworks": "横向滑动切换作品"
+  "swipe_to_switch_artworks": "横向滑动切换作品",
+  "view_the_latest": "查看最新一话"
 }

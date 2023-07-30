@@ -15,6 +15,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/i18n.dart';
@@ -81,35 +82,13 @@ class _NovelRailState extends State<NovelRail> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) =>
-                    Platform.isIOS ? HelloPage() : AndroidHelloPage()));
+                builder: (context) => Platform.isIOS || Platform.isMacOS
+                    ? HelloPage()
+                    : AndroidHelloPage()));
           },
           child: Icon(Icons.picture_in_picture),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).colorScheme.secondary,
-          currentIndex: selectedIndex,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: I18n.of(context).home),
-            BottomNavigationBarItem(
-                icon: Icon(CustomIcons.leaderboard),
-                label: I18n.of(context).rank),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.favorite), label: I18n.of(context).news),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), label: I18n.of(context).search),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: I18n.of(context).setting),
-          ],
-          onTap: (index) {
-            if (_pageController.hasClients) _pageController.jumpToPage(index);
-            setState(() {
-              selectedIndex = index;
-            });
-          },
-        ),
+        bottomNavigationBar: _buildNavigationBar(context),
         body: PageView.builder(
             itemCount: _pageList.length,
             controller: _pageController,
@@ -122,6 +101,36 @@ class _NovelRailState extends State<NovelRail> {
               return _pageList[index];
             }),
       ),
+    );
+  }
+
+  NavigationBar _buildNavigationBar(BuildContext context) {
+    return NavigationBar(
+      destinations: [
+        NavigationDestination(
+            icon: Icon(Icons.home), label: I18n.of(context).home),
+        NavigationDestination(
+            icon: Icon(
+              Icons.leaderboard,
+            ),
+            label: I18n.of(context).rank),
+        NavigationDestination(
+            icon: Icon(Icons.favorite), label: I18n.of(context).news),
+        NavigationDestination(
+            icon: Icon(Icons.search), label: I18n.of(context).search),
+        NavigationDestination(
+            icon: Icon(Icons.settings), label: I18n.of(context).setting)
+      ],
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (index) {
+        if (this.selectedIndex == index) {
+          topStore.setTop("${index + 1}00");
+        }
+        setState(() {
+          this.selectedIndex = index;
+        });
+        if (_pageController.hasClients) _pageController.jumpToPage(index);
+      },
     );
   }
 }

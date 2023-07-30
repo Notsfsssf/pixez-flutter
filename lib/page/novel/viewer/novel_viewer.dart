@@ -38,6 +38,7 @@ import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
+import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
@@ -222,6 +223,21 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
+                    if (_novelStore.novel?.series.id != null)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16.0, right: 16.0, top: 0.0, bottom: 0.0),
+                        child: InkWell(
+                          onTap: () {
+                            Leader.push(context,
+                                NovelSeriesPage(_novelStore.novel!.series.id!));
+                          },
+                          child: Text(
+                            "Series:${_novelStore.novel!.series.title}",
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                      ),
                     //MARK DETAIL NUM,
                     _buildNumItem(
                         _novelStore.novelTextResponse!, _novelStore.novel!),

@@ -284,8 +284,12 @@ class ApiClient {
   Future<Response> getBookmarksIllustsOffset(
       int user_id, String restrict, String? tag, int? offset) async {
     return httpClient.get("/v1/user/bookmarks/illust",
-        queryParameters:
-            notNullMap({"user_id": user_id, "restrict": restrict, "tag": tag, "offset": offset}));
+        queryParameters: notNullMap({
+          "user_id": user_id,
+          "restrict": restrict,
+          "tag": tag,
+          "offset": offset
+        }));
   }
 
   Future<Response> getUserNovels(int user_id) async {
@@ -601,5 +605,17 @@ class ApiClient {
     return httpClient.post('/v1/user/ai-show-settings/edit',
         data: notNullMap({"show_ai": show}),
         options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<Response> novelSeries(int id) async {
+    return httpClient.get('/v2/novel/series', queryParameters: {
+      'series_id': id,
+    });
+  }
+
+  Future<Response> nextNovelSeries(String id) async {
+    return httpClient.get('/v2/novel/series', queryParameters: {
+      'series_id': id,
+    });
   }
 }

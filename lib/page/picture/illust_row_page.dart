@@ -284,8 +284,13 @@ class _IllustRowPageState extends State<IllustRowPage>
               children: [
                 Container(
                   width: expectWidth,
-                  child: CustomScrollView(
-                      slivers: [..._buildPhotoList(data, centerType, height)]),
+                  child: CustomScrollView(slivers: [
+                    ..._buildPhotoList(data, centerType, height),
+                    SliverToBoxAdapter(
+                        child: Container(
+                      height: MediaQuery.of(context).padding.bottom,
+                    ))
+                  ]),
                 ),
                 Expanded(
                   child: Container(
