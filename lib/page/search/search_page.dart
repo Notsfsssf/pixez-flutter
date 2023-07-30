@@ -15,6 +15,7 @@
  */
 
 import 'dart:io';
+import 'dart:math';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -36,7 +37,8 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
+class _SearchPageState extends State<SearchPage>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   String editString = "";
   late TrendTagsStore _trendTagsStore;
   late AnimationController _animationController;
@@ -110,50 +112,55 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      if (accountStore.now != null)
-        return NestedScrollView(
-          body: _buildContent(context),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              SliverToBoxAdapter(
-                child: Container(height: MediaQuery.of(context).padding.top),
-              ),
-              SliverToBoxAdapter(
-                child: SearchBar(
-                  onSaucenao: () {
-                    _sauceStore.findImage(context: context);
-                  },
+    super.build(context);
+    return LayoutBuilder(builder: (context, snapshot) {
+      return Observer(builder: (_) {
+        if (accountStore.now != null)
+          return NestedScrollView(
+            body: _buildContent(context, snapshot),
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverToBoxAdapter(
+                  child: Container(height: MediaQuery.of(context).padding.top),
                 ),
+                SliverToBoxAdapter(
+                  child: SearchBar(
+                    onSaucenao: () {
+                      _sauceStore.findImage(context: context);
+                    },
+                  ),
+                )
+              ];
+            },
+          );
+        return Column(children: <Widget>[
+          AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              I18n.of(context).search,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.search,
+                ),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (context) => SearchSuggestionPage()));
+                },
               )
-            ];
-          },
-        );
-      return Column(children: <Widget>[
-        AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(
-            I18n.of(context).search,
-            style: Theme.of(context).textTheme.titleLarge,
+            ],
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.search,
-              ),
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                        builder: (context) => SearchSuggestionPage()));
-              },
-            )
-          ],
-        ),
-      ]);
+        ]);
+      });
     });
   }
 
-  RefreshIndicator _buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context, BoxConstraints snapshot) {
+    final rowCount = max(3, (snapshot.maxWidth / 200).floor());
     return RefreshIndicator(
       onRefresh: () {
         return _trendTagsStore.fetch();
@@ -178,8 +185,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         I18n.of(context).history,
                         style: TextStyle(
                             fontSize: 16.0,
-                            color:
-                                Theme.of(context).textTheme.headlineSmall!.color),
+                            color: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .color),
                       ),
                     ],
                   ),
@@ -383,7 +392,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                     );
                   }, childCount: _trendTagsStore.trendTags.length),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3)),
+                      crossAxisCount: rowCount)),
             ),
           if (Platform.isAndroid)
             SliverToBoxAdapter(
@@ -438,4 +447,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   }
 
   late TabController _tabController;
+
+  @override
+  bool get wantKeepAlive => true;
 }
