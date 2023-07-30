@@ -28,6 +28,7 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
 import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/setting/save_eval_page.dart';
+import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/search/result_page.dart';
@@ -43,8 +44,9 @@ class Leader {
     }
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-          builder: (context) =>
-              Platform.isIOS || Platform.isMacOS ? HelloPage() : AndroidHelloPage()),
+          builder: (context) => Platform.isIOS || Platform.isMacOS
+              ? HelloPage()
+              : AndroidHelloPage()),
       (route) => false,
     );
   }
@@ -53,6 +55,14 @@ class Leader {
     if (Constants.isFluent) {
       FluentLeader.pushWithUri(context, link);
       return;
+    }
+    // https://www.pixiv.net/novel/series/$id
+    if (link.path.contains("novel") && link.path.contains("series")) {
+      final id = int.tryParse(link.pathSegments.last);
+      if (id != null) {
+        Leader.push(context, NovelSeriesPage(id));
+        return;
+      }
     }
     if (link.host == "script" && link.scheme == "pixez") {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
