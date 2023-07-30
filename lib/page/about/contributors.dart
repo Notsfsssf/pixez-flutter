@@ -5,7 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluentui;
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart';
-import 'package:pixez/component/fluent/pixiv_image.dart' as fluentui;
+import 'package:pixez/fluent/component/pixiv_image.dart' as fluentui;
 import 'package:pixez/component/pixiv_image.dart' as material;
 import 'package:pixez/constants.dart';
 import 'package:pixez/main.dart';
@@ -49,7 +49,7 @@ List<Contributor> contributors = [
       _showBottomSheet(
         context: context,
         builder: (context) {
-          final url = recommend.illusts[0].imageUrls.medium;
+          final url = recommend.illusts[i].imageUrls.medium;
           return SafeArea(
             child: Constants.isFluent
                 ? fluentui.PixivImage(url)

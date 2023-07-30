@@ -17,7 +17,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/platform/windows/saver.dart' as windows;
+import 'package:pixez/fluent/platform/windows/saver.dart' as windows;
 
 class DocumentPlugin {
   static const platform = const MethodChannel('com.perol.dev/save');
