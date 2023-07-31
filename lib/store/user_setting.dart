@@ -17,6 +17,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
@@ -41,7 +42,6 @@ abstract class _UserSetting with Store {
   static const String H_CROSS_COUNT_KEY = "h_cross_count";
   static const String PICTURE_QUALITY_KEY = "picture_quality";
   static const String MANGA_QUALITY_KEY = "manga_quality";
-  static const String THEME_DATA_KEY = "theme_data";
   static const String IS_BANGS_KEY = "is_bangs";
   static const String IS_AMOLED_KEY = "is_amoled";
   static const String STORE_PATH_KEY = "save_store";
@@ -70,6 +70,7 @@ abstract class _UserSetting with Store {
   static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type";
   static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
   static const String USE_DYNAMIC_COLOR_KEY = "use_dynamic_color";
+  static const String SEED_COLOR_KEY = "seed_color";
   static const String SWIPE_CHANGE_ARTWORK_KEY = "swipe_change_artwork";
 
   @observable
@@ -243,12 +244,7 @@ abstract class _UserSetting with Store {
   }
 
   @observable
-  ThemeData themeData = ThemeData(
-      brightness: Brightness.light,
-      colorScheme: ThemeData()
-          .colorScheme
-          .copyWith(secondary: Colors.blue[400], primary: Colors.blue[400]),
-      primaryColor: Colors.blue[400]);
+  Color seedColor = Colors.blue[400]!;
 
   @observable
   bool useDynamicColor = true;
@@ -334,20 +330,12 @@ abstract class _UserSetting with Store {
       }
     }
     useDynamicColor = prefs.getBool(USE_DYNAMIC_COLOR_KEY) ?? true;
-    var colors = prefs.getStringList(THEME_DATA_KEY);
+    var colors = prefs.getInt(SEED_COLOR_KEY);
     if (colors != null) {
-      if (colors.length < 2) {
-        prefs.remove(THEME_DATA_KEY);
-      } else {
-        try {
-          themeData = ThemeData(
-              brightness: Brightness.light,
-              colorScheme: ThemeData().colorScheme.copyWith(
-                  secondary: _stringToColor(colors[0]),
-                  primary: _stringToColor(colors[0])));
-        } catch (e) {
-          print(e);
-        }
+      try {
+        seedColor = Color(colors);
+      } catch (e) {
+        print(e);
       }
     }
     isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
@@ -439,13 +427,9 @@ abstract class _UserSetting with Store {
   }
 
   @action
-  setThemeData(List<String> data) async {
-    await prefs.setStringList(THEME_DATA_KEY, data);
-    themeData = ThemeData(
-      brightness: Brightness.light,
-      colorScheme: ThemeData().colorScheme.copyWith(
-          secondary: _stringToColor(data[0]), primary: _stringToColor(data[0])),
-    );
+  setThemeData(Color data) async {
+    await prefs.setInt(SEED_COLOR_KEY, data.value);
+    seedColor = data;
   }
 
   @action
@@ -504,8 +488,7 @@ abstract class _UserSetting with Store {
 
   final languageList = Languages.map((e) => e.language).toList();
 
-  List<Locale> iSupportedLocales =
-      Languages.map((e) => e.locale).toList();
+  List<Locale> iSupportedLocales = Languages.map((e) => e.locale).toList();
 
   @action
   setLanguageNum(int value) async {

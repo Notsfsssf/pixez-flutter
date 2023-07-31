@@ -255,10 +255,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                     padding: EdgeInsets.zero,
                     child: IconButton(
                       onPressed: () {
-                        userSetting.setThemeData(<String>[
-                          skin.accentColor.toString(),
-                          skin.accentColor.toString(),
-                        ]);
+                        userSetting.setThemeData(skin.accentColor);
                       },
                       icon: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 
 part 'novel_series_detail.g.dart';

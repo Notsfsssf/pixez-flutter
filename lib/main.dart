@@ -134,26 +134,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       statusBarColor: Colors.transparent,
     ));
     final botToastBuilder = BotToastInit();
-    return DynamicColorBuilder(
-        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-      ColorScheme lightColorScheme;
-      ColorScheme darkColorScheme;
-      if (userSetting.useDynamicColor &&
-          lightDynamic != null &&
-          darkDynamic != null) {
-        lightColorScheme = lightDynamic.harmonized();
-        darkColorScheme = darkDynamic.harmonized();
-      } else {
-        Color primary = userSetting.themeData.colorScheme.primary;
-        lightColorScheme = ColorScheme.fromSeed(
-          seedColor: primary,
-        );
-        darkColorScheme = ColorScheme.fromSeed(
-          seedColor: primary,
-          brightness: Brightness.dark,
-        );
-      }
-      return Observer(builder: (_) {
+    return Observer(builder: (_) {
+      return DynamicColorBuilder(
+          builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        ColorScheme lightColorScheme;
+        ColorScheme darkColorScheme;
+        if (userSetting.useDynamicColor &&
+            lightDynamic != null &&
+            darkDynamic != null) {
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
+        } else {
+          Color primary = userSetting.seedColor;
+          lightColorScheme = ColorScheme.fromSeed(
+            seedColor: primary,
+          );
+          darkColorScheme = ColorScheme.fromSeed(
+            seedColor: primary,
+            brightness: Brightness.dark,
+          );
+        }
         if (userSetting.themeInitState != 1) {
           return Container(
             child: Center(child: CircularProgressIndicator()),
