@@ -450,9 +450,11 @@ class _NovelUsersPageState extends State<NovelUsersPage>
             children: <Widget>[
               NullHero(
                 tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
-                child: Text(
-                  userStore.user?.name ?? "",
-                  style: Theme.of(context).textTheme.titleLarge,
+                child: SelectionArea(
+                  child: Text(
+                    userStore.user?.name ?? "",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
               ),
               InkWell(
