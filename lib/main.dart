@@ -134,9 +134,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       statusBarColor: Colors.transparent,
     ));
     final botToastBuilder = BotToastInit();
-    return Observer(builder: (_) {
-      return DynamicColorBuilder(
-          builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+    return DynamicColorBuilder(
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      return Observer(builder: (context) {
         ColorScheme lightColorScheme;
         ColorScheme darkColorScheme;
         if (userSetting.useDynamicColor &&
