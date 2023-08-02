@@ -422,10 +422,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "24107412ba71f92c875466918f8abb25323f63f4"
-      url: "https://github.com/frg2089/fluent_ui.git"
+      resolved-ref: f14c46484cf102942638708653c1129ce10b680e
+      url: "https://github.com/bdlukaa/fluent_ui.git"
     source: git
-    version: "4.7.0"
+    version: "4.7.1"
   flutter:
     dependency: "direct main"
     description: flutter
