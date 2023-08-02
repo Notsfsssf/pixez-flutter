@@ -20,18 +20,18 @@ const a = const EventChannel("com.perol.dev/single_instance");
 initFluent(List<String> args) async {
   if (!Constants.isFluent) return;
 
+  // 这个函数是确保同一时间有且只有一个Pixez实例存在的
+  //
+  // 它需要将其他实例的命令行参数转发给第一个实例
+  // 然后结束自己的进程
   a.receiveBroadcastStream().listen(
-        (event) => print(event),
-      );
-
-  await singleInstance(
-    args,
-    "Pixez::{fe97f8e1-32e5-44ec-9bfb-cde274b87f61}",
-    (args) {
+    (event) {
+      final args = event.toString().split('\n');
       debugPrint("从另一实例接收到的参数: $args");
       _argsParser(args);
     },
   );
+
   final dbPath = await getDBPath();
   if (dbPath != null) databaseFactory.setDatabasesPath(dbPath);
 
@@ -60,6 +60,8 @@ _argsParser(List<String> args) async {
   final uri = Uri.tryParse(args[0]);
   if (uri != null) {
     debugPrint("::_argsParser(): 合法的Uri: \"${uri}\"");
+
+    windowManager.focus();
     Leader.pushWithUri(routeObserver.navigator!.context, uri);
   }
 }

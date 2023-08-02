@@ -1803,15 +1803,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.2"
-  windows_single_instance:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "39b825ea9c8afc07a10784a32feca357a7d33641"
-      url: "https://github.com/frg2089/flutter_windows_single_instance"
-    source: git
-    version: "0.1.6"
   windows_storage:
     dependency: "direct main"
     description:

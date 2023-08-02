@@ -76,8 +76,6 @@ dependencies:
   # Windows Only
   win32: ^4.1.4
   windows_storage: ^0.1.0
-  windows_single_instance:
-    git: https://github.com/frg2089/flutter_windows_single_instance
   image_picker_windows: ^0.2.1
 
 dependency_overrides:
