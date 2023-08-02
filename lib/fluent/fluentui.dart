@@ -15,8 +15,14 @@ import 'package:window_manager/window_manager.dart';
 
 Color? _fluentuiBgColor = null;
 
+const a = const EventChannel("com.perol.dev/single_instance");
+
 initFluent(List<String> args) async {
   if (!Constants.isFluent) return;
+
+  a.receiveBroadcastStream().listen(
+        (event) => print(event),
+      );
 
   await singleInstance(
     args,
