@@ -13,13 +13,24 @@
       "name": "Release",
       "request": "launch",
       "type": "dart",
-        "flutterMode": "release"
-      },
+      "flutterMode": "release"
+    },
     {
       "name": "Profile",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
+    },
+    {
+      "name": "Debug (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/windows/runner/Debug/pixez.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "internalConsole"
     }
-    ]
+  ]
 }
