@@ -17,19 +17,19 @@ class SingleInstancePlugin {
       (event) {
         final args = event.toString().split('\n');
         debugPrint("从另一实例接收到的参数: $args");
-        _argsParser(args, callback: callback);
+        argsParser(args, callback: callback);
       },
     );
     _isInitialized = true;
   }
 
   /// 解析命令行参数字符串
-  static void _argsParser(List<String> args, {Function()? callback}) async {
+  static void argsParser(List<String> args, {Function()? callback}) async {
     if (args.length < 1) return;
 
     final uri = Uri.tryParse(args[0]);
     if (uri != null) {
-      debugPrint("::_argsParser(): 合法的Uri: \"${uri}\"");
+      debugPrint("::argsParser(): 合法的Uri: \"${uri}\"");
 
       if (callback != null) callback();
       Leader.pushWithUri(routeObserver.navigator!.context, uri);

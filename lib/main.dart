@@ -68,11 +68,14 @@ main(List<String> args) async {
   await initFluent(args);
 
   runApp(ProviderScope(
-    child: MyApp(),
+    child: MyApp(arguments: args),
   ));
 }
 
 class MyApp extends StatefulWidget {
+  final List<String> arguments;
+
+  const MyApp({super.key, required this.arguments});
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -119,6 +122,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     fetcher.start();
     super.initState();
     if (Platform.isIOS) WidgetsBinding.instance.addObserver(this);
+
+    Future.delayed(Duration.zero, () {
+      SingleInstancePlugin.argsParser(widget.arguments);
+    });
   }
 
   @override
