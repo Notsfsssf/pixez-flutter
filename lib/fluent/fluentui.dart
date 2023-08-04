@@ -6,31 +6,16 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/er/leader.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/fluent/page/splash/splash_page.dart';
 import 'package:pixez/fluent/platform/platform.dart';
+import 'package:pixez/main.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 
 Color? _fluentuiBgColor = null;
 
-const a = const EventChannel("com.perol.dev/single_instance");
-
 initFluent(List<String> args) async {
   if (!Constants.isFluent) return;
-
-  // 这个函数是确保同一时间有且只有一个Pixez实例存在的
-  //
-  // 它需要将其他实例的命令行参数转发给第一个实例
-  // 然后结束自己的进程
-  a.receiveBroadcastStream().listen(
-    (event) {
-      final args = event.toString().split('\n');
-      debugPrint("从另一实例接收到的参数: $args");
-      _argsParser(args);
-    },
-  );
 
   final dbPath = await getDBPath();
   if (dbPath != null) databaseFactory.setDatabasesPath(dbPath);
@@ -51,19 +36,6 @@ initFluent(List<String> args) async {
       await windowManager.focus();
     },
   );
-}
-
-// 解析命令行参数字符串
-_argsParser(List<String> args) async {
-  if (args.length < 1) return;
-
-  final uri = Uri.tryParse(args[0]);
-  if (uri != null) {
-    debugPrint("::_argsParser(): 合法的Uri: \"${uri}\"");
-
-    windowManager.focus();
-    Leader.pushWithUri(routeObserver.navigator!.context, uri);
-  }
 }
 
 Future _applyEffect(bool isDark) async {
