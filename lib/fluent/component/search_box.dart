@@ -116,6 +116,7 @@ class _SearchBoxState extends State<StatefulWidget> {
       // 历史记录为空则不展示
       if (tagHistoryStore.tags.isEmpty) return _notifyFinished();
 
+      if (!mounted) return;
       _items.addAll([
         _getCleanHistoryItem(),
         ...tagHistoryStore.tags.map(_getItemByTagsPersist),
