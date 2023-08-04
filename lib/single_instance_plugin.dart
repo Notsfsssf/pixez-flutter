@@ -4,7 +4,7 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 
 class SingleInstancePlugin {
-  static final platform = const EventChannel("com.perol.dev/single_instance");
+  static final platform = const EventChannel("pixez/single_instance");
   static bool _isInitialized = false;
 
   // 这个函数是确保同一时间有且只有一个Pixez实例存在的
