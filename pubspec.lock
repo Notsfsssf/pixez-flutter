@@ -393,6 +393,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  file_selector_linux:
+    dependency: transitive
+    description:
+      name: file_selector_linux
+      sha256: "770eb1ab057b5ae4326d1c24cc57710758b9a46026349d021d6311bd27580046"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.2"
+  file_selector_macos:
+    dependency: transitive
+    description:
+      name: file_selector_macos
+      sha256: "4ada532862917bf16e3adb3891fe3a5917a58bae03293e497082203a80909412"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.3+1"
   file_selector_platform_interface:
     dependency: transitive
     description:
@@ -422,10 +438,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "24107412ba71f92c875466918f8abb25323f63f4"
-      url: "https://github.com/frg2089/fluent_ui.git"
+      resolved-ref: f14c46484cf102942638708653c1129ce10b680e
+      url: "https://github.com/bdlukaa/fluent_ui.git"
     source: git
-    version: "4.7.0"
+    version: "4.7.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -714,10 +730,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: "9978d3510af4e6a902e545ce19229b926e6de6a1828d6134d3aab2e129a4d270"
+      sha256: "6296e98782726d37f59663f0727d0e978eee1ced1ffed45ccaba591786a7f7b3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.7+5"
+    version: "1.0.1"
   image_picker_android:
     dependency: transitive
     description:
@@ -742,6 +758,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.8"
+  image_picker_linux:
+    dependency: transitive
+    description:
+      name: image_picker_linux
+      sha256: "02cbc21fe1706b97942b575966e5fbbeaac535e76deef70d3a242e4afb857831"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
+  image_picker_macos:
+    dependency: transitive
+    description:
+      name: image_picker_macos
+      sha256: cee2aa86c56780c13af2c77b5f2f72973464db204569e1ba2dd744459a065af4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -751,7 +783,7 @@ packages:
     source: hosted
     version: "2.8.0"
   image_picker_windows:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: image_picker_windows
       sha256: c3066601ea42113922232c7b7b3330a2d86f029f685bba99d82c30e799914952
@@ -1692,7 +1724,7 @@ packages:
     source: hosted
     version: "3.7.0"
   win32:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: win32
       sha256: dfdf0136e0aa7a1b474ea133e67cb0154a0acd2599c4f3ada3b49d38d38793ee
@@ -1715,127 +1747,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.5"
-  windows_applicationmodel:
-    dependency: transitive
-    description:
-      name: windows_applicationmodel
-      sha256: "498bc2716b43cdbdc5ee61cb97258e73441acd726822bd684a8c2878d8aec860"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_data:
-    dependency: transitive
-    description:
-      name: windows_data
-      sha256: ee50704f7495ca9327326d775baa6a9cc31c0dcca1fdf6b45f80ee4113de7847
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_devices:
-    dependency: transitive
-    description:
-      name: windows_devices
-      sha256: cd4ab71e44869b79800502965061eeff401d63797c82c81595874ebb7afdbd95
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_foundation:
-    dependency: transitive
-    description:
-      name: windows_foundation
-      sha256: dde381731e6f9e8128fcb8ada94c0a98abc2863d64d436b6b455cad5813fc939
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_globalization:
-    dependency: transitive
-    description:
-      name: windows_globalization
-      sha256: dcbe469c8d0b7bd8fe38df4d63710c430822dcd8ea8641e8db9603d1c9001ce3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_graphics:
-    dependency: transitive
-    description:
-      name: windows_graphics
-      sha256: "9106a833d887c9eb8b98bb419092e6b3735e20e4fd95b7e31f39334490138e61"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_media:
-    dependency: transitive
-    description:
-      name: windows_media
-      sha256: "529c9b6f8e9c6a698ef7ef28addc16e64d08b8052b5b2f2a061a87d6ac165b8b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_networking:
-    dependency: transitive
-    description:
-      name: windows_networking
-      sha256: "3d99cfe928b72dc278752d1e0b5c924af5ac359a11f9bc887f1b23898b9026cc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_perception:
-    dependency: transitive
-    description:
-      name: windows_perception
-      sha256: "4c34aee2bd9b0c52a7704c3d96923a9301fa3f7e893991eb194f8b9ea2e0fbe8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
-  windows_security:
-    dependency: transitive
-    description:
-      name: windows_security
-      sha256: "963ce67c64b83890396f67b2907e1528db0a35a1d69695851503c655c1c6ad1c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_services:
-    dependency: transitive
-    description:
-      name: windows_services
-      sha256: "6326783f6ffbf117a2ad1708303b2953ad853c146ed2a823e50908a2ef5c121d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
-  windows_single_instance:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "39b825ea9c8afc07a10784a32feca357a7d33641"
-      url: "https://github.com/frg2089/flutter_windows_single_instance"
-    source: git
-    version: "0.1.6"
-  windows_storage:
-    dependency: "direct main"
-    description:
-      name: windows_storage
-      sha256: c9c0ed7580b143fe06ffdd2a5847b5ae839e511f15622c9b835c1c3019ed5b5b
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_system:
-    dependency: transitive
-    description:
-      name: windows_system
-      sha256: ce2cf5cb0fab00ad25f09fd5b513012f4612d45eeec0bd7720b4d2e33cc6e7a7
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  windows_ui:
-    dependency: transitive
-    description:
-      name: windows_ui
-      sha256: b4b149ecfefec9e11dd5b1f07cdece836b2a9f8926dafea879c763e558792fd5
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   xdg_directories:
     dependency: transitive
     description:

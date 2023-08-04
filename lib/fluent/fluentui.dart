@@ -6,10 +6,9 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/er/leader.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/fluent/page/splash/splash_page.dart';
 import 'package:pixez/fluent/platform/platform.dart';
+import 'package:pixez/main.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -18,14 +17,6 @@ Color? _fluentuiBgColor = null;
 initFluent(List<String> args) async {
   if (!Constants.isFluent) return;
 
-  await singleInstance(
-    args,
-    "Pixez::{fe97f8e1-32e5-44ec-9bfb-cde274b87f61}",
-    (args) {
-      debugPrint("从另一实例接收到的参数: $args");
-      _argsParser(args);
-    },
-  );
   final dbPath = await getDBPath();
   if (dbPath != null) databaseFactory.setDatabasesPath(dbPath);
 
@@ -45,17 +36,6 @@ initFluent(List<String> args) async {
       await windowManager.focus();
     },
   );
-}
-
-// 解析命令行参数字符串
-_argsParser(List<String> args) async {
-  if (args.length < 1) return;
-
-  final uri = Uri.tryParse(args[0]);
-  if (uri != null) {
-    debugPrint("::_argsParser(): 合法的Uri: \"${uri}\"");
-    Leader.pushWithUri(routeObserver.navigator!.context, uri);
-  }
 }
 
 Future _applyEffect(bool isDark) async {
@@ -102,10 +82,6 @@ Widget buildFluentUI(BuildContext context) {
               child: NavigationPaneTheme(
                 data: NavigationPaneThemeData(
                   backgroundColor: _fluentuiBgColor,
-                  popupBackgroundColor:
-                      FluentTheme.of(context).brightness.isDark
-                          ? const Color(0xFF202020)
-                          : const Color(0xFFf7f7f7),
                 ),
                 child: child,
               ),

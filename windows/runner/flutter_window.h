@@ -7,6 +7,8 @@
 
 #include "win32_window.h"
 
+#include "SingleInstance.h"
+
 // A window that does nothing but host a Flutter view.
 class FlutterWindow : public Win32Window {
  public:

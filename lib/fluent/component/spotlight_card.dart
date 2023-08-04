@@ -21,6 +21,7 @@ import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/fluent/page/soup/soup_page.dart';
 
@@ -70,7 +71,11 @@ class SpotlightCard extends StatelessWidget {
       ),
       onPressed: () async {
         Leader.push(
-            context, SoupPage(url: spotlight.articleUrl, spotlight: spotlight));
+          context,
+          SoupPage(url: spotlight.articleUrl, spotlight: spotlight),
+          icon: const Icon(FluentIcons.image_pixel),
+          title: Text("${I18n.of(context).spotlight}: ${spotlight.id}"),
+        );
       },
     );
   }

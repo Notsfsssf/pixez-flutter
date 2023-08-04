@@ -1,19 +1,22 @@
-import 'package:windows_storage/windows_storage.dart';
 
-const _folder = '\\PixEz';
+part of 'windows.dart';
 
-String? getAppDataFolderPath() {
-  var path = UserDataPaths.getDefault()?.roamingAppData;
-  if (path == null) return null;
+class Paths {
+  static MethodChannel channel = MethodChannel("com.perol.dev/single_instance");
 
-  path += _folder;
-  return path;
-}
+  static Future<String?> getAppDataFolderPath() async {
+    try {
+      return await channel.invokeMethod("getAppDataFolderPath");
+    } catch (e) {
+      return null;
+    }
+  }
 
-String? getPicturesFolderPath() {
-  var path = UserDataPaths.getDefault()?.savedPictures;
-  if (path == null) return null;
-
-  path += _folder;
-  return path;
+  static Future<String?> getPicturesFolderPath() async {
+    try {
+      return await channel.invokeMethod("getPicturesFolderPath");
+    } catch (e) {
+      return null;
+    }
+  }
 }

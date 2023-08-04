@@ -17,6 +17,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "Paths.h"
+#include "Saver.h"
+#include "Info.h"
+
 FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
 
@@ -42,6 +46,11 @@ bool FlutterWindow::OnCreate()
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+
+  SingleInstance::Initialize(flutter_controller_->engine());
+  Paths::Initialize(flutter_controller_->engine());
+  Saver::Initialize(flutter_controller_->engine());
+  Info::Initialize(flutter_controller_->engine());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]()
                                                       { this->Show(); });

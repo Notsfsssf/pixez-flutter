@@ -5,17 +5,17 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/fluent/page/hello/fluent_hello_page.dart';
+import 'package:pixez/fluent/page/hello/setting/save_eval_page.dart';
+import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
+import 'package:pixez/fluent/page/search/result_page.dart';
+import 'package:pixez/fluent/page/soup/soup_page.dart';
+import 'package:pixez/fluent/page/user/users_page.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
-import 'package:pixez/fluent/page/hello/fluent_hello_page.dart';
-import 'package:pixez/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/search/result_page.dart';
-import 'package:pixez/page/soup/soup_page.dart';
-import 'package:pixez/page/user/users_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FluentLeader {
@@ -31,14 +31,15 @@ class FluentLeader {
 
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
     if (link.host == "eval" && link.scheme == "pixez") {
-      FluentLeader.push(
-          context,
-          SaveEvalPage(
-            eval: link.queryParameters["code"] != null
-                ? String.fromCharCodes(
-                    base64Decode(link.queryParameters["code"]!))
-                : null,
-          ));
+      showDialog(
+          context: context,
+          builder: (context) => SaveEvalPage(
+                eval: link.queryParameters["code"] != null
+                    ? String.fromCharCodes(
+                        base64Decode(link.queryParameters["code"]!))
+                    : null,
+              ),
+          useRootNavigator: false);
       return;
     }
     if (link.host == "pixiv.me") {
@@ -65,6 +66,8 @@ class FluentLeader {
         SoupPage(
             url: link.toString().replaceAll("pixez://", "https://"),
             spotlight: null),
+        icon: const Icon(FluentIcons.image_pixel),
+        title: Text("${I18n.of(context).spotlight}"),
       );
       return;
     }
@@ -118,14 +121,24 @@ class FluentLeader {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        FluentLeader.push(context, IllustLightingPage(id: id));
+        FluentLeader.push(
+          context,
+          IllustLightingPage(id: id),
+          icon: Icon(FluentIcons.picture),
+          title: Text(I18n.of(context).illust_id + ': $id'),
+        );
       } catch (e) {}
       return;
     } else if (link.host.contains('user')) {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        FluentLeader.push(context, UsersPage(id: id));
+        FluentLeader.push(
+          context,
+          UsersPage(id: id),
+          title: Text(I18n.of(context).painter_id + ': ${id}'),
+          icon: Icon(FluentIcons.account_browser),
+        );
       } catch (e) {}
       return;
     } else if (link.host.contains("novel")) {
@@ -145,7 +158,12 @@ class FluentLeader {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            FluentLeader.push(context, IllustLightingPage(id: id));
+            FluentLeader.push(
+              context,
+              IllustLightingPage(id: id),
+              icon: Icon(FluentIcons.picture),
+              title: Text(I18n.of(context).illust_id + ': $id'),
+            );
             return;
           } catch (e) {
             LPrinter.d(e);
@@ -158,7 +176,12 @@ class FluentLeader {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            FluentLeader.push(context, UsersPage(id: id));
+            FluentLeader.push(
+              context,
+              UsersPage(id: id),
+              title: Text(I18n.of(context).painter_id + ': ${id}'),
+              icon: Icon(FluentIcons.account_browser),
+            );
           } catch (e) {
             print(e);
           }
@@ -180,7 +203,12 @@ class FluentLeader {
         try {
           var id = link.queryParameters['id'];
           if (!link.path.contains("novel"))
-            FluentLeader.push(context, UsersPage(id: int.parse(id!)));
+            FluentLeader.push(
+              context,
+              UsersPage(id: int.parse(id!)),
+              title: Text(I18n.of(context).painter_id + ': ${id}'),
+              icon: Icon(FluentIcons.account_browser),
+            );
           else
             Navigator.of(context).push(PixEzPageRoute(builder: (context) {
               return NovelViewerPage(
@@ -207,13 +235,23 @@ class FluentLeader {
         } else if (i == "u") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            FluentLeader.push(context, UsersPage(id: id));
+            FluentLeader.push(
+              context,
+              UsersPage(id: id),
+              title: Text(I18n.of(context).painter_id + ': ${id}'),
+              icon: Icon(FluentIcons.account_browser),
+            );
             return;
           } catch (e) {}
         } else if (i == "tags") {
           try {
             String tag = link.pathSegments[link.pathSegments.length - 1];
-            FluentLeader.push(context, ResultPage(word: tag));
+            FluentLeader.push(
+              context,
+              ResultPage(word: tag),
+              icon: const Icon(FluentIcons.search),
+              title: Text('搜索 ${tag}'),
+            );
           } catch (e) {}
         }
       }

@@ -1,26 +1,16 @@
-import 'dart:ffi';
+part of 'windows.dart';
 
-import 'package:ffi/ffi.dart';
-import 'package:win32/win32.dart';
+class Win32 {
+  static MethodChannel channel = MethodChannel("com.perol.dev/win32");
 
-/// 判断系统build版本号是否大于 [build]
-bool isBuildOrGreater(int build) {
-  final lpVersionInformation = calloc<OSVERSIONINFOEX>()
-    ..ref.dwBuildNumber = build;
-
-  final dwlConditionMask = VerSetConditionMask(
-    0,
-    VER_BUILDNUMBER,
-    VER_GREATER_EQUAL,
-  );
-  try {
-    return VerifyVersionInfo(
-          lpVersionInformation,
-          VER_BUILDNUMBER,
-          dwlConditionMask,
-        ) ==
-        TRUE;
-  } finally {
-    free(lpVersionInformation);
+  /// 判断系统build版本号是否大于 [build]
+  static Future<bool> isBuildOrGreater(int build) async {
+    try {
+      return await channel.invokeMethod("isBuildOrGreater", {
+        'build': build
+      });
+    } catch (e) {
+      return false;
+    }
   }
 }

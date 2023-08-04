@@ -44,9 +44,9 @@ class Leader {
     }
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-          builder: (context) => Platform.isIOS || Platform.isMacOS
-              ? HelloPage()
-              : AndroidHelloPage()),
+        builder: (context) =>
+            Platform.isAndroid ? AndroidHelloPage() : HelloPage(),
+      ),
       (route) => false,
     );
   }

@@ -52,7 +52,7 @@ dependencies:
   json_annotation: ^4.8.0
   flutter_staggered_animations: ^1.1.1
   badges: ^3.1.1
-  image_picker: ^0.8.7+5
+  image_picker: ^1.0.1
   intl: ^0.18.0
   quiver: ^3.2.1
   flutter_inappwebview_quill: ^5.4.6
@@ -69,19 +69,10 @@ dependencies:
   dynamic_color: ^1.6.5
   # Design Style
   fluent_ui: 
-    git: https://github.com/frg2089/fluent_ui.git
+    git: https://github.com/bdlukaa/fluent_ui.git
   # Desktop Support
   flutter_acrylic: ^1.1.3
   window_manager: ^0.3.5
-  # Windows Only
-  win32: ^4.1.4
-  windows_storage: ^0.1.0
-  windows_single_instance:
-    git: https://github.com/frg2089/flutter_windows_single_instance
-  image_picker_windows: ^0.2.1
-
-dependency_overrides:
-  win32: ^5.0.2
 
 dev_dependencies:
   flutter_test:
