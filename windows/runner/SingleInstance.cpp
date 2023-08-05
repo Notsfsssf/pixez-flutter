@@ -8,7 +8,7 @@ LPCTSTR SingleInstance::pipePrefix = TEXT("\\\\.\\pipe\\");
 
 void SingleInstance::Initialize(flutter::FlutterEngine *engine)
 {
-  std::string channelName = "com.perol.dev/single_instance";
+  std::string channelName = "pixez/single_instance";
   const auto &codec = flutter::StandardMethodCodec::GetInstance();
 
   flutter::EventChannel<flutter::EncodableValue> channel(
