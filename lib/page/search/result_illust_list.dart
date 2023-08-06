@@ -152,9 +152,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
     DateTimeRange? dateTimeRange = await showDateRangePicker(
         context: context,
         initialDateRange: _dateTimeRange,
-        firstDate: DateTime.fromMillisecondsSinceEpoch(
-            DateTime.now().millisecondsSinceEpoch -
-                (24 * 60 * 60 * 365 * 1000 * 8)),
+        firstDate: DateTime(2007, 8),
         lastDate: DateTime.now());
     if (dateTimeRange != null) {
       _dateTimeRange = dateTimeRange;

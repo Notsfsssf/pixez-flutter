@@ -83,7 +83,8 @@ class _ShieldPageState extends State<ShieldPage> {
                       },
                     ),
                     ListTile(
-                      title: Text(I18n.of(context).make_works_with_ai_generated_flags_invisible),
+                      title: Text(I18n.of(context)
+                          .make_works_with_ai_generated_flags_invisible),
                       trailing: Switch(
                         value: muteStore.banAIIllust,
                         onChanged: (v) {
@@ -92,7 +93,16 @@ class _ShieldPageState extends State<ShieldPage> {
                       ),
                     ),
                     Divider(),
-                    Text(I18n.of(context).tag),
+                    Row(
+                      children: [
+                        Text(I18n.of(context).tag),
+                        IconButton(
+                            onPressed: () {
+                              _showBanTagAddDialog();
+                            },
+                            icon: Icon(Icons.add))
+                      ],
+                    ),
                     Container(
                       child: Wrap(
                         spacing: 2.0,
@@ -109,7 +119,16 @@ class _ShieldPageState extends State<ShieldPage> {
                       ),
                     ),
                     Divider(),
-                    Text(I18n.of(context).painter),
+                    Row(
+                      children: [
+                        Text(I18n.of(context).painter),
+                        Opacity(
+                          child: IconButton(
+                              onPressed: () {}, icon: Icon(Icons.add)),
+                          opacity: 0.0,
+                        )
+                      ],
+                    ),
                     Container(
                       child: Wrap(
                         spacing: 2.0,
@@ -124,7 +143,16 @@ class _ShieldPageState extends State<ShieldPage> {
                       ),
                     ),
                     Divider(),
-                    Text(I18n.of(context).illust),
+                    Row(
+                      children: [
+                        Text(I18n.of(context).illust),
+                        Opacity(
+                          child: IconButton(
+                              onPressed: () {}, icon: Icon(Icons.add)),
+                          opacity: 0.0,
+                        )
+                      ],
+                    ),
                     Container(
                       child: Wrap(
                         spacing: 2.0,
@@ -178,6 +206,40 @@ class _ShieldPageState extends State<ShieldPage> {
           muteStore.deleteBanTag(f.id!);
         }
         break;
+    }
+  }
+
+  _showBanTagAddDialog() async {
+    final controller = TextEditingController();
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Input"),
+            content: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                  hintText: I18n.of(context).tag,
+                  hintStyle: TextStyle(fontSize: 12)),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, controller.text);
+                },
+                child: Text(I18n.of(context).ok),
+              ),
+              TextButton(
+                child: Text(I18n.of(context).cancel),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+    if (result != null && result is String && result.isNotEmpty) {
+      muteStore.insertBanTag(BanTagPersist(name: result, translateName: ""));
     }
   }
 
