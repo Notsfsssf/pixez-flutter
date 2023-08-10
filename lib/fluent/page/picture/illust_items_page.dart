@@ -49,8 +49,8 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   UserStore? userStore;
   late IllustStore illustStore;
   late IllustAboutStore aboutStore;
-  final EasyRefreshController refreshController =EasyRefreshController(
-        controlFinishLoad: true, controlFinishRefresh: true);
+  final EasyRefreshController refreshController = EasyRefreshController(
+      controlFinishLoad: true, controlFinishRefresh: true);
   final ScrollController scrollController = ScrollController();
   bool tempView = false;
 
@@ -633,8 +633,10 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   }
 
   Future<void> showBookMarkTag() async {
-    final result =
-        await Leader.pushWithScaffold(context, TagForIllustPage(id: widget.id));
+    final result = await showDialog(
+      context: context,
+      builder: (context) => TagForIllustPage(id: widget.id),
+    );
     if (result is Map) {
       LPrinter.d(result);
       String restrict = result['restrict'];
@@ -908,12 +910,15 @@ class MoreItem extends StatelessWidget {
       child: IconButton(
         onPressed: () {
           Leader.push(
-              context,
-              PictureListPage(
-                iStores: list,
-                lightingStore: null,
-                store: list[index],
-              ));
+            context,
+            PictureListPage(
+              iStores: list,
+              lightingStore: null,
+              store: list[index],
+            ),
+            icon: const Icon(FluentIcons.picture),
+            title: Text(I18n.of(context).illust_id + ': ${list[index].id}'),
+          );
         },
         icon: PixivImage(
           _aboutStore.illusts[index].imageUrls.squareMedium,
