@@ -14,6 +14,7 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/fluent/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
@@ -48,8 +49,9 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   UserStore? userStore;
   late IllustStore illustStore;
   late IllustAboutStore aboutStore;
-  late ScrollController _scrollController;
-  late EasyRefreshController refreshController;
+  final EasyRefreshController refreshController =EasyRefreshController(
+        controlFinishLoad: true, controlFinishRefresh: true);
+  final ScrollController scrollController = ScrollController();
   bool tempView = false;
 
   @override
@@ -57,21 +59,12 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     // widget.relay.more =
     //     () => buildshowBottomSheet(context, _illustStore.illusts!);
 
-    refreshController = EasyRefreshController(
-        controlFinishLoad: true, controlFinishRefresh: true);
-    _scrollController = ScrollController();
     illustStore = widget.store ?? IllustStore(widget.id, null);
     illustStore.fetch();
     aboutStore =
         IllustAboutStore(widget.id, refreshController: refreshController);
 
-    // Load More Detecter
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels + 300 >
-          _scrollController.position.maxScrollExtent) {
-        refreshController.callLoad();
-      }
-    });
+    initializeScrollController(scrollController, aboutStore.next);
     super.initState();
   }
 
@@ -88,16 +81,16 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
 
   void _loadAbout() {
     if (mounted &&
-        _scrollController.hasClients &&
-        _scrollController.offset + 180 >=
-            _scrollController.position.maxScrollExtent &&
+        scrollController.hasClients &&
+        scrollController.offset + 180 >=
+            scrollController.position.maxScrollExtent &&
         aboutStore.illusts.isEmpty) aboutStore.fetch();
   }
 
   @override
   void dispose() {
     illustStore.dispose();
-    _scrollController.dispose();
+    scrollController.dispose();
     refreshController.dispose();
     super.dispose();
   }
@@ -198,8 +191,6 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           style: TextStyle(color: FluentTheme.of(context).accentColor),
         ),
       );
-
-  ScrollController scrollController = ScrollController();
 
   Widget buildContent(BuildContext context, Illusts? data);
 
