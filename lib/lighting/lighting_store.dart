@@ -111,8 +111,12 @@ abstract class _LightingStoreBase with Store {
     return true;
   }
 
+  bool _lock = false;
+
   @action
   Future<bool> fetch({String? url, bool force = false}) async {
+    if (_lock) return false;
+    _lock = true;
     nextUrl = null;
     errorMessage = null;
     refreshing = true;
@@ -147,6 +151,8 @@ abstract class _LightingStoreBase with Store {
       errorMessage = e.toString();
       easyRefreshController?.finishRefresh(IndicatorResult.fail);
       return false;
+    } finally {
+      _lock = false;
     }
   }
 
@@ -158,6 +164,8 @@ abstract class _LightingStoreBase with Store {
 
   @action
   Future<bool> fetchNext() async {
+    if (_lock) return false;
+    _lock = true;
     errorMessage = null;
     try {
       if (nextUrl != null && nextUrl!.isNotEmpty) {
@@ -178,6 +186,8 @@ abstract class _LightingStoreBase with Store {
     } catch (e) {
       easyRefreshController?.finishLoad(IndicatorResult.fail);
       return false;
+    } finally {
+      _lock = false;
     }
   }
 }
