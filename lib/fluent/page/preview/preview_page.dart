@@ -23,7 +23,7 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/page/login/login_page.dart';
-import 'package:pixez/fluent/utils.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';

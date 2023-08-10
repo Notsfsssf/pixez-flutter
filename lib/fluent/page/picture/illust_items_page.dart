@@ -14,7 +14,7 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/fluent/utils.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';

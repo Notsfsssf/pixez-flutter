@@ -30,7 +30,7 @@ import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/page/hello/recom/recom_user_road.dart';
 import 'package:pixez/fluent/page/soup/soup_page.dart';
 import 'package:pixez/fluent/page/spotlight/spotlight_page.dart';
-import 'package:pixez/fluent/utils.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';

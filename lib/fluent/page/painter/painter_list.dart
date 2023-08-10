@@ -19,7 +19,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/painer_card.dart';
 import 'package:pixez/fluent/component/pixez_default_header.dart';
-import 'package:pixez/fluent/utils.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
 

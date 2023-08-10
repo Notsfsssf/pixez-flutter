@@ -23,7 +23,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/fluent/component/illust_card.dart';
 import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/fluent/utils.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
