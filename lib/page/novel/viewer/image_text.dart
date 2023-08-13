@@ -199,3 +199,77 @@ class NovelSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     return null;
   }
 }
+
+// (newpage)
+// [chapter:本章标题]
+// [pixlvimage:作品1]
+// [jump:链接目标的页面編号]
+// [[jumpuri:标题 ＞ 链接目标的URL]]
+// [[rb:汉宇＞假名]]
+class NovelSpansGenerator {
+  final supportList = [];
+  List<InlineSpan> buildSpans(String source) {
+    String nowStr = '';
+    bool spanCollectStart = false;
+    List<InlineSpan> result = [];
+    for (var i = 0; i < source.length;) {
+      final posStr = source[i];
+      if (posStr == '[') {
+        spanCollectStart = true;
+        nowStr += posStr;
+      } else if (posStr == ']') {
+        spanCollectStart = false;
+        nowStr += posStr;
+        final span = _parseText(nowStr);
+        result.add(span);
+      } else if(!spanCollectStart) {
+        nowStr += posStr;
+        result.add(TextSpan(text: posStr));
+      }
+    }
+    return result;
+  }
+
+  InlineSpan _parseText(String spanStr) {
+    if (spanStr.startsWith('[newpage]')) {
+      return WidgetSpan(
+          child: Container(
+        child: Center(
+          child: Text('下一页'),
+        ),
+      ));
+    } else if (spanStr.startsWith('[chapter:')) {
+      final title = spanStr.replaceAll('[chapter:', '').replaceAll(']', '');
+      return TextSpan(text: title);
+    } else if (spanStr.startsWith('[pixlvimage:')) {
+      final String key = toString();
+      final flag = '[pixlvimage:';
+      String now = key.substring(flag.length + 1, key.indexOf("]"));
+      int trueId = 0;
+      if (now.contains('-')) {
+        trueId = int.tryParse(now.split('-').first)!;
+      }
+      return PixivImageSpan(trueId, key);
+    } else if (spanStr.startsWith('[[jumpuri:')) {
+      final String key = spanStr.toString();
+      final flag = '[[jumpuri:';
+      LPrinter.d(key);
+      String now = key.substring(flag.length + 1, key.indexOf("]"));
+      int? trueId = 0;
+      if (now.contains('>')) {
+        trueId = int.tryParse(now.split('>').last);
+      }
+      if (trueId == null) return TextSpan(text: key);
+      return PixivImageSpan(trueId, key);
+    } else if (spanStr.startsWith('[[rb:')) {
+      final String key = spanStr.toString();
+      final flag = '[[rb:';
+      final contentText =
+          key.replaceAll(flag, '').replaceAll(']', '').split('>');
+      final resultText = '${contentText.first}(${contentText.last})';
+      return TextSpan(text: resultText);
+    } else {
+      return TextSpan(text: spanStr);
+    }
+  }
+}
