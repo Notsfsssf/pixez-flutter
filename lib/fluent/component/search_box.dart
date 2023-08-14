@@ -23,11 +23,14 @@ class SearchBox extends StatefulWidget {
 }
 
 class _SearchBoxState extends State<StatefulWidget> {
+  final GlobalKey<AutoSuggestBoxState<_SuggestItem>> _key =
+      GlobalKey<AutoSuggestBoxState<_SuggestItem>>();
   final TextEditingController _controller = TextEditingController();
   final SuggestionStore _suggestionStore = SuggestionStore();
   final SauceStore _sauceStore = SauceStore();
   final TrendTagsStore _trendTagsStore = TrendTagsStore();
   final List<String> tagGroup = [];
+  final FocusNode _focusNode = FocusNode();
   List<AutoSuggestBoxItem<_SuggestItem>> _items = [];
   bool _isLoading = false;
 
@@ -49,16 +52,33 @@ class _SearchBoxState extends State<StatefulWidget> {
         BotToast.showText(text: "0 result");
       }
     });
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus && _key.currentState?.isOverlayVisible == false) {
+        _key.currentState?.showOverlay();
+      } else if (_key.currentState?.isOverlayVisible == true) {
+        _key.currentState?.dismissOverlay();
+      }
+    });
 
     super.initState();
     _updateSuggestList();
   }
 
   @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    _sauceStore.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AutoSuggestBox<_SuggestItem>(
+      key: _key,
       items: _items,
       controller: _controller,
+      focusNode: _focusNode,
       onChanged: _onAutoSuggestBoxChanged,
       onSelected: _onAutoSuggestBoxSelected,
       placeholder: I18n.of(context).search,
