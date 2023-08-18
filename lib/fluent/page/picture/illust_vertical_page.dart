@@ -16,6 +16,7 @@
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/fluent/page/picture/illust_items_page.dart';
 
@@ -47,12 +48,14 @@ class _IllustVerticalPageState extends IllustItemsPageState {
           onLoad: () {
             aboutStore.next();
           },
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              ...buildPhotoList(data, false, height),
-              ...buildDetail(context, data)
-            ],
+          child: Observer(
+            builder: (_) => CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                ...buildPhotoList(data, false, height),
+                ...buildDetail(context, data)
+              ],
+            ),
           ),
         );
       },

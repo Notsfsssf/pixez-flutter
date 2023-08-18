@@ -174,7 +174,7 @@ class _IllustCardState extends State<IllustCard> {
         heroString: tag,
       ),
       icon: const Icon(FluentIcons.picture),
-      title: Text(I18n.of(context).illust),
+      title: Text(I18n.of(context).illust_id + ': ${store.id}'),
     );
   }
 

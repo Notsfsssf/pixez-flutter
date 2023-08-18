@@ -438,10 +438,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f14c46484cf102942638708653c1129ce10b680e
+      resolved-ref: ec21338a8ae10106df4523b1acc53e7eb6c39c2a
       url: "https://github.com/bdlukaa/fluent_ui.git"
     source: git
-    version: "4.7.1"
+    version: "4.7.2"
   flutter:
     dependency: "direct main"
     description: flutter

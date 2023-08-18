@@ -31,8 +31,11 @@ abstract class _SpotlightStoreBase with Store {
 
   _SpotlightStoreBase(this._controller);
 
+  bool _lock = false;
   @action
-  Future<void> fetch() async {
+  Future<bool> fetch() async {
+    if (_lock) return false;
+    _lock = true;
     nextUrl = null;
     try {
       Response response = await client.getSpotlightArticles("all");
@@ -41,26 +44,40 @@ abstract class _SpotlightStoreBase with Store {
       articles.addAll(result.spotlightArticles);
       nextUrl = result.nextUrl;
       _controller?.finishRefresh(IndicatorResult.success);
+      return true;
     } catch (e) {
       _controller?.finishRefresh(IndicatorResult.fail);
+      return false;
+    } finally {
+      _lock = false;
     }
   }
 
   @action
-  next() async {
-    if (nextUrl != null && nextUrl!.isNotEmpty) {
-      try {
-        Response response = await client.getNext(nextUrl!);
-        final results = SpotlightResponse.fromJson(response.data);
-        nextUrl = results.nextUrl;
-        articles.addAll(results.spotlightArticles);
-        _controller?.finishLoad(
-            nextUrl == null ? IndicatorResult.noMore : IndicatorResult.success);
-      } catch (e) {
-        _controller?.finishLoad(IndicatorResult.fail);
+  Future<bool> next() async {
+    if (_lock) return false;
+    _lock = true;
+    try {
+      if (nextUrl != null && nextUrl!.isNotEmpty) {
+        try {
+          Response response = await client.getNext(nextUrl!);
+          final results = SpotlightResponse.fromJson(response.data);
+          nextUrl = results.nextUrl;
+          articles.addAll(results.spotlightArticles);
+          _controller?.finishLoad(nextUrl == null
+              ? IndicatorResult.noMore
+              : IndicatorResult.success);
+          return true;
+        } catch (e) {
+          _controller?.finishLoad(IndicatorResult.fail);
+          return false;
+        }
+      } else {
+        _controller?.finishLoad(IndicatorResult.noMore);
+        return true;
       }
-    } else {
-      _controller?.finishLoad(IndicatorResult.noMore);
+    } finally {
+      _lock = false;
     }
   }
 }

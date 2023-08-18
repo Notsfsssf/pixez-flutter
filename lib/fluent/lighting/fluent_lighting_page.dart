@@ -23,6 +23,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/fluent/component/illust_card.dart';
 import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -88,6 +89,8 @@ class _LightingListState extends State<LightingList> {
 
   ReactionDisposer? disposer;
 
+  void Function()? _disableListener;
+
   @override
   void initState() {
     _isNested = widget.isNested ?? false;
@@ -102,16 +105,13 @@ class _LightingListState extends State<LightingList> {
     _store.fetch();
 
     // Load More Detecter
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels + 300 >
-          _scrollController.position.maxScrollExtent) {
-        _refreshController.callLoad();
-      }
-    });
+    _disableListener =
+        initializeScrollController(_scrollController, _store.fetchNext);
   }
 
   @override
   void dispose() {
+    if (_disableListener != null) _disableListener!();
     if (widget.scrollController == null) {
       _scrollController.dispose();
     }

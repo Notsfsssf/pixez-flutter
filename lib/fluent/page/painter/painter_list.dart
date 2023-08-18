@@ -19,6 +19,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/painer_card.dart';
 import 'package:pixez/fluent/component/pixez_default_header.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
 
@@ -49,12 +50,7 @@ class _PainterListState extends State<PainterList> {
         PainterListStore(_easyRefreshController, widget.futureGet);
 
     // Load More Detecter
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels + 300 >
-          _scrollController.position.maxScrollExtent) {
-        _easyRefreshController.callLoad();
-      }
-    });
+    initializeScrollController(_scrollController, _painterListStore.next);
     super.initState();
     _painterListStore.fetch();
   }

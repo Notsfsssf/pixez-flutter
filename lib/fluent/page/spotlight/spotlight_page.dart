@@ -19,6 +19,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/fluent/component/spotlight_card.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -31,13 +32,7 @@ class SpotLightPage extends StatelessWidget {
         controlFinishLoad: true, controlFinishRefresh: true);
     final SpotlightStore _spotlightStore = SpotlightStore(_refreshController);
 
-    // Load More Detecter
-    _controller.addListener(() {
-      if (_controller.position.pixels + 300 >
-          _controller.position.maxScrollExtent) {
-        _refreshController.callLoad();
-      }
-    });
+    initializeScrollController(_controller, _spotlightStore.next);
     _spotlightStore.fetch();
     return Observer(builder: (_) {
       return ScaffoldPage(

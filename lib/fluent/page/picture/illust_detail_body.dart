@@ -225,10 +225,13 @@ class IllustDetailBody extends StatelessWidget {
                       style: FluentTheme.of(context).typography.body!),
                   onPressed: () {
                     Leader.push(
-                        context,
-                        CommentPage(
-                          id: illust.id,
-                        ));
+                      context,
+                      CommentPage(
+                        id: illust.id,
+                      ),
+                      icon: Icon(FluentIcons.comment),
+                      title: Text(I18n.of(context).view_comment),
+                    );
                   },
                 ),
               )

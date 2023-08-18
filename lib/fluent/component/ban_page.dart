@@ -15,9 +15,8 @@
  */
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:pixez/er/leader.dart';
-import 'package:pixez/i18n.dart';
 import 'package:pixez/fluent/page/shield/shield_page.dart';
+import 'package:pixez/i18n.dart';
 
 class BanPage extends StatefulWidget {
   final String name;
@@ -55,7 +54,10 @@ class _BanPageState extends State<BanPage> {
               child: FilledButton(
                 child: Text(I18n.of(context).shielding_settings),
                 onPressed: () {
-                  Leader.push(context, ShieldPage());
+                  showDialog(
+                    context: context,
+                    builder: (context) => ShieldPage(),
+                  );
                 },
               ),
             ),

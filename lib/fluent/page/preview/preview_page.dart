@@ -19,15 +19,16 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/er/leader.dart';
+import 'package:pixez/fluent/page/login/login_page.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/fluent/page/login/login_page.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class GoToLoginPage extends StatelessWidget {
@@ -119,14 +120,17 @@ class PreviewPage extends StatefulWidget {
 }
 
 class _PreviewPageState extends State<PreviewPage> {
-  LightingStore _lightingStore = LightingStore(
+  final LightingStore _lightingStore = LightingStore(
     ApiSource(futureGet: () => apiClient.walkthroughIllusts()),
   );
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     _lightingStore.easyRefreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
+    _lightingStore.fetch(url: "walkthrough");
+    initializeScrollController(_scrollController, _lightingStore.fetchNext);
 
     super.initState();
   }
@@ -134,6 +138,7 @@ class _PreviewPageState extends State<PreviewPage> {
   @override
   void dispose() {
     _lightingStore.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -157,6 +162,7 @@ class _PreviewPageState extends State<PreviewPage> {
           onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
           onLoad: () => _lightingStore.fetchNext(),
           child: WaterfallFlow.builder(
+            controller: _scrollController,
             shrinkWrap: true,
             gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
               crossAxisCount: count,

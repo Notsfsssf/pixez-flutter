@@ -21,20 +21,21 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/leader.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/fluent/component/illust_card.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/er/leader.dart';
-import 'package:pixez/exts.dart';
+import 'package:pixez/fluent/page/hello/recom/recom_user_road.dart';
+import 'package:pixez/fluent/page/soup/soup_page.dart';
+import 'package:pixez/fluent/page/spotlight/spotlight_page.dart';
+import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/fluent/page/hello/recom/recom_user_road.dart';
-import 'package:pixez/fluent/page/soup/soup_page.dart';
-import 'package:pixez/fluent/page/spotlight/spotlight_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -48,12 +49,16 @@ class RecomSpolightPage extends StatefulWidget {
 
 class _RecomSpolightPageState extends State<RecomSpolightPage>
     with AutomaticKeepAliveClientMixin {
-  late SpotlightStore spotlightStore;
-  late LightingStore _lightingStore;
-  late RecomUserStore _recomUserStore;
+  final SpotlightStore spotlightStore = SpotlightStore(null);
+  final LightingStore _lightingStore = LightingStore(
+    ApiForceSource(
+        futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
+  );
+  final RecomUserStore _recomUserStore = RecomUserStore();
   late StreamSubscription<String> subscription;
-  late EasyRefreshController _easyRefreshController;
-  late ScrollController _scrollController;
+  final EasyRefreshController _easyRefreshController = EasyRefreshController(
+      controlFinishLoad: true, controlFinishRefresh: true);
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -65,15 +70,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   @override
   void initState() {
-    _scrollController = ScrollController();
-    _easyRefreshController = EasyRefreshController(
-        controlFinishLoad: true, controlFinishRefresh: true);
-    _recomUserStore = RecomUserStore();
-    spotlightStore = SpotlightStore(null);
-    _lightingStore = LightingStore(
-      ApiForceSource(
-          futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
-    )..easyRefreshController = _easyRefreshController;
+    _lightingStore.easyRefreshController = _easyRefreshController;
+    initializeScrollController(_scrollController, _lightingStore.fetchNext);
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "100") {

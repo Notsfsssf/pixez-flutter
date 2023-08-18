@@ -41,8 +41,8 @@ abstract class _IllustAboutStoreBase with Store {
   ObservableList<Illusts> illusts = ObservableList();
 
   @action
-  fetch() async {
-    if (fetching) return;
+  Future<bool> fetch() async {
+    if (fetching) return false;
     fetching = true;
     errorMessage = null;
     try {
@@ -52,14 +52,19 @@ abstract class _IllustAboutStoreBase with Store {
       illusts.clear();
       illusts
           .addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
+      return true;
     } catch (e) {
       errorMessage = e.toString();
+      return false;
+    } finally {
+      fetching = false;
     }
-    fetching = false;
   }
 
   @action
-  next() async {
+  Future<bool> next() async {
+    if (fetching) return false;
+    fetching = true;
     try {
       Response response = _nextUrl == null || _nextUrl!.isEmpty
           ? await apiClient.getIllustRelated(id)
@@ -73,8 +78,12 @@ abstract class _IllustAboutStoreBase with Store {
       } else {
         refreshController?.finishLoad(IndicatorResult.success);
       }
+      return true;
     } catch (e) {
       refreshController?.finishLoad(IndicatorResult.fail);
+      return false;
+    } finally {
+      fetching = false;
     }
   }
 }

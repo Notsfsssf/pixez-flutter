@@ -243,6 +243,7 @@ Future _saffun(BuildContext context) async {
 }
 
 Future _helplessfun(BuildContext context, {bool isFirst = false}) async {
+  assert(false);
   await userSetting.setSaveMode(2);
   String? initPath =
       isFirst ? "/storage/emulated/0/Pictures/pixez" : null; //过时api只能硬编码

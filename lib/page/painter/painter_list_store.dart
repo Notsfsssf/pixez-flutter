@@ -17,8 +17,11 @@ abstract class _PainterListStoreBase with Store {
 
   _PainterListStoreBase(this._controller, this.source);
 
+  bool _lock = false;
   @action
-  fetch() async {
+  Future<bool> fetch() async {
+    if (_lock) return false;
+    _lock = true;
     nextUrl = null;
     try {
       Response response = await source();
@@ -29,27 +32,40 @@ abstract class _PainterListStoreBase with Store {
       users.clear();
       users.addAll(results);
       _controller.finishRefresh(IndicatorResult.success);
+      return true;
     } catch (e) {
       _controller.finishRefresh(IndicatorResult.fail);
+      return false;
+    } finally {
+      _lock = false;
     }
   }
 
   @action
-  next() async {
-    if (nextUrl != null && nextUrl!.isNotEmpty) {
-      try {
-        Response response = await apiClient.getNext(nextUrl!);
-        UserPreviewsResponse userPreviewsResponse =
-            UserPreviewsResponse.fromJson(response.data);
-        nextUrl = userPreviewsResponse.next_url;
-        final results = userPreviewsResponse.user_previews;
-        users.addAll(results);
-        _controller.finishLoad(IndicatorResult.success);
-      } catch (e) {
-        _controller.finishLoad(IndicatorResult.fail);
-      }
-    } else {
+  Future<bool> next() async {
+    if (_lock) return false;
+    _lock = true;
+    try {
+      if (nextUrl != null && nextUrl!.isNotEmpty) {
+        try {
+          Response response = await apiClient.getNext(nextUrl!);
+          UserPreviewsResponse userPreviewsResponse =
+              UserPreviewsResponse.fromJson(response.data);
+          nextUrl = userPreviewsResponse.next_url;
+          final results = userPreviewsResponse.user_previews;
+          users.addAll(results);
+          _controller.finishLoad(IndicatorResult.success);
+          return true;
+        } catch (e) {
+          _controller.finishLoad(IndicatorResult.fail);
+          return false;
+        }
+      } else {
         _controller.finishLoad(IndicatorResult.noMore);
+        return true;
+      }
+    } finally {
+      _lock = false;
     }
   }
 }
