@@ -17,9 +17,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -65,6 +63,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
 
   bool supportTranslate = false;
   String _selectedText = "";
+  NovelSpansGenerator _novelSpansGenerator = NovelSpansGenerator();
 
   Future<void> initMethod() async {
     if (!Platform.isAndroid) return;
@@ -107,7 +106,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
-        _textStyle = userSetting.novelTextStyle;
+        _textStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
+              fontSize: userSetting.novelFontsize,
+            );
         if (_novelStore.errorMessage != null) {
           return Scaffold(
             appBar: AppBar(
@@ -149,7 +150,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             _controller =
                 ScrollController(initialScrollOffset: _novelStore.bookedOffset);
             _controller?.addListener(() {
-              _localOffset = _controller!.offset;
+              if (_controller!.hasClients) _localOffset = _controller!.offset;
             });
           }
           return Container(
@@ -310,11 +311,20 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                           return _buildSelectionMenu(
                               editableTextState, context);
                         },
-                        child: ExtendedText(
-                          _novelStore.novelTextResponse!.novelText,
-                          specialTextSpanBuilder: NovelSpecialTextSpanBuilder(),
-                          style: _textStyle,
-                        ),
+                        child: RichText(
+                            selectionRegistrar:
+                                SelectionContainer.maybeOf(context),
+                            text: TextSpan(
+                                text: '',
+                                style: _textStyle,
+                                children: [
+                                  for (var span
+                                      in _novelSpansGenerator.buildSpans(
+                                          context,
+                                          _novelStore
+                                              .novelTextResponse!.novelText))
+                                    span
+                                ])),
                       ),
                     ),
                     Container(

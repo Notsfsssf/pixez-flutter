@@ -353,22 +353,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  extended_text:
-    dependency: "direct main"
-    description:
-      name: extended_text
-      sha256: dec14c9b36d9bbaaf007da5998f5dc72a2dbd5b877601d7b7970bb42524b3ced
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.0.1"
-  extended_text_library:
-    dependency: transitive
-    description:
-      name: extended_text_library
-      sha256: c06fbd8e3b6eedadf50cd6c109bbbd80921a6c43e4422d3b4ec9d4cb36ce4555
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.0.2"
   fake_async:
     dependency: transitive
     description:
