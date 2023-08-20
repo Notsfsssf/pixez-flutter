@@ -29,6 +29,7 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -246,18 +247,38 @@ class MainActivity : FlutterFragmentActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             SUPPORTER_CHANNEL
         ).setMethodCallHandler { call, result ->
+            if (call.method == "exit") {
+                finishAndRemoveTask()
+            }
             if (call.method == "process_text") {
                 try {
                     val queryIntentActivities =
-                        packageManager.queryIntentActivities(Intent().apply {
-                            type = "text/plain"
-                        }, 0)
-                    for (resolveInfo: ResolveInfo in queryIntentActivities) {
-                        if (resolveInfo.activityInfo.packageName.contains("com.google.android.apps.translate")) {
-                            result.success(true)
-                            return@setMethodCallHandler
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            packageManager.queryIntentActivities(
+                                Intent().apply {
+                                    type = "text/plain"
+                                    action = Intent.ACTION_PROCESS_TEXT
+                                },
+                                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+                            )
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                packageManager.queryIntentActivities(
+                                    Intent(Intent.ACTION_PROCESS_TEXT).apply {
+                                        type = "text/plain"
+                                    },
+                                    0
+                                )
+                            } else {
+                                packageManager.queryIntentActivities(
+                                    Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                    },
+                                    0
+                                )
+                            }
                         }
-                    }
+                    result.success(queryIntentActivities.isNotEmpty())
                 } catch (ignore: Throwable) {
 
                 }

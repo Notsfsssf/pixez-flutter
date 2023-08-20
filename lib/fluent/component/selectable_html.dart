@@ -18,9 +18,9 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:pixez/component/text_selection_toolbar.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
@@ -41,7 +41,35 @@ mixin SelectableHtmlTextFactory on WidgetFactory {
         textAlign: tsh.textAlign ?? TextAlign.start,
         textDirection: tsh.textDirection,
         textScaleFactor: 1.0,
-        selectionControls: TranslateTextSelectionControls(),
+        contextMenuBuilder: (context, editableTextState) {
+          final List<ContextMenuButtonItem> buttonItems =
+              editableTextState.contextMenuButtonItems;
+          buttonItems.insert(
+            buttonItems.length,
+            ContextMenuButtonItem(
+              label: I18n.of(context).translate,
+              onPressed: () async {
+                final TextEditingValue value =
+                    editableTextState.textEditingValue;
+                String selectionText = value.selection.textInside(value.text);
+                if (Platform.isIOS) {
+                  final box = context.findRenderObject() as RenderBox?;
+                  final pos = box != null
+                      ? box.localToGlobal(Offset.zero) & box.size
+                      : null;
+                  Share.share(selectionText, sharePositionOrigin: pos);
+                  return;
+                }
+                await SupportorPlugin.start(selectionText);
+                ContextMenuController.removeAny();
+              },
+            ),
+          );
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: editableTextState.contextMenuAnchors,
+            buttonItems: buttonItems,
+          );
+        },
         onSelectionChanged: selectableTextOnChanged,
       );
     }

@@ -18,4 +18,10 @@ class SupportorPlugin {
   static Future<void> start(String text) async {
     await platform.invokeMethod("process", {"text": text});
   }
+
+  static Future<void> existApp() async {
+    try {
+      await platform.invokeMethod("exist");
+    } catch (e) {}
+  }
 }

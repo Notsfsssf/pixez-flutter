@@ -20,6 +20,7 @@
             <action android:name="android.intent.action.VIEW" />
         </intent>
         <package android:name="com.google.android.apps.translate"/>
+        <package android:name="com.deepl.mobiletranslator"/>
     </queries>
 
     <application
