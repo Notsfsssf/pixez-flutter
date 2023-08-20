@@ -21,6 +21,7 @@
         </intent>
         <package android:name="com.google.android.apps.translate"/>
         <package android:name="com.deepl.mobiletranslator"/>
+        <package android:name="com.microsoft.translator"/>
     </queries>
 
     <application
