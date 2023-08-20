@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -46,6 +45,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
 
   @override
   void initState() {
+    idV = widget.preword != null && int.tryParse(widget.preword!) != null;
     _suggestionStore = SuggestionStore();
     _sauceStore = SauceStore();
     _sauceStore.observableStream.listen((event) {

@@ -37,6 +37,7 @@ import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links2/uni_links.dart';
@@ -312,6 +313,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   VoidCallback? _LinkCloser = null;
 
   _showChromeLink(String link) {
+    final numId = int.tryParse(link);
+    if (numId != null) {
+      Leader.push(
+          context,
+          SearchSuggestionPage(
+            preword: link,
+          ));
+      return;
+    }
     Uri? uri = Uri.tryParse(link);
     if (uri == null) return;
     if (uri.scheme == "pixiv") {
