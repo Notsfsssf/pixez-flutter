@@ -63,7 +63,9 @@ main(List<String> args) async {
     databaseFactory = databaseFactoryFfi;
   }
   WidgetsFlutterBinding.ensureInitialized();
-  SingleInstancePlugin.initialize();
+  if (Platform.isWindows) {
+    SingleInstancePlugin.initialize();
+  }
 
   await initFluent(args);
 
