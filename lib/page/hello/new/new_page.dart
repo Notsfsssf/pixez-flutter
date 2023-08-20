@@ -19,13 +19,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/hello/new/illust/new_illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
-import 'package:pixez/page/river/river_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
 
 class NewPage extends StatefulWidget {

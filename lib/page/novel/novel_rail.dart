@@ -15,9 +15,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/custom_icon.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';

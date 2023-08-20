@@ -85,9 +85,6 @@ class _RankPageState extends State<RankPage>
   }
 
   String? toRequestDate(DateTime dateTime) {
-    if (dateTime == null) {
-      return null;
-    }
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 

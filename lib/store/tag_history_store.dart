@@ -17,11 +17,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
-import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/saf_plugin.dart';
 
