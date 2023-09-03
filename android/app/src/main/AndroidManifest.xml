@@ -19,9 +19,10 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
         </intent>
-        <package android:name="com.google.android.apps.translate"/>
-        <package android:name="com.deepl.mobiletranslator"/>
-        <package android:name="com.microsoft.translator"/>
+
+        <package android:name="com.google.android.apps.translate" />
+        <package android:name="com.deepl.mobiletranslator" />
+        <package android:name="com.microsoft.translator" />
     </queries>
 
     <application
@@ -95,54 +96,36 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="script"
-                    android:scheme="pixez" />
-                <data
-                    android:host="pixiv.net"
-                    android:scheme="pixez" />
-                <data
-                    android:host="i.pximg.net"
-                    android:scheme="pixez" />
-                <data
-                    android:host="www.pixiv.net"
-                    android:scheme="pixez" />
-                <data
-                    android:host="www.pixiv.net"
-                    android:scheme="https" />
-                <data
-                    android:host="www.pixiv.net"
-                    android:scheme="http" />
-                <data
-                    android:host="pixiv.net"
-                    android:scheme="https" />
-                <data
-                    android:host="pixiv.net"
-                    android:scheme="http" />
-                <data
-                    android:host="pixiv.me"
-                    android:scheme="https" />
-                <data
-                    android:host="pixiv.me"
-                    android:scheme="http" />
-                <data
-                    android:host="www.pixiv.me"
-                    android:scheme="https" />
-                <data
-                    android:host="www.pixiv.me"
-                    android:scheme="http" />
-                <data
-                    android:host="i.pximg.net"
-                    android:scheme="https" />
-                <data
-                    android:host="users"
-                    android:scheme="pixiv" />
-                <data
-                    android:host="illusts"
-                    android:scheme="pixiv" />
-                <data
-                    android:host="account"
-                    android:scheme="pixiv" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="script" />
+                <data android:host="pixiv.net" />
+                <data android:host="i.pximg.net" />
+                <data android:host="www.pixiv.net" />
+                <data android:host="pixiv.me" />
+                <data android:host="www.pixiv.me" />
+                <data android:host="users" />
+                <data android:host="illusts" />
+                <data android:host="account" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="pixez" />
+                <data android:scheme="pixiv" />
+                <data android:host="script" />
+                <data android:host="pixiv.net" />
+                <data android:host="i.pximg.net" />
+                <data android:host="www.pixiv.net" />
+                <data android:host="pixiv.me" />
+                <data android:host="www.pixiv.me" />
+                <data android:host="users" />
+                <data android:host="illusts" />
+                <data android:host="account" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

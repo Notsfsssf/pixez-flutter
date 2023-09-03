@@ -71,163 +71,11 @@ class MainActivity : FlutterFragmentActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Aligns the Flutter view vertically with the window.
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Disable the Android splash screen fade out animation to avoid
-            // a flicker before the similar frame is drawn in Flutter.
             splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
         }
-
         super.onCreate(savedInstanceState)
-    }
-
-    private fun splicingUrl(parentUri: String, fileName: String) = if (parentUri.endsWith(":")) {
-        parentUri + fileName
-    } else {
-        "$parentUri/$fileName"
-    }
-
-    private fun choiceFolder(needHint: Boolean = true) {
-        if (saveMode == 2 || saveMode == 0) {
-            pendingPickResult?.success(true)
-            return
-        }
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        }
-        if (needHint)
-            Toast.makeText(
-                this,
-                getString(R.string.choose_a_suitable_image_storage_directory),
-                Toast.LENGTH_SHORT
-            ).show()
-        startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
-    }
-
-    private fun isFileExist(name: String): Boolean {
-        when (saveMode) {
-            0 -> {
-                return exist(name)
-            }
-
-            2 -> {
-                return File("$helplessPath/$name").exists()
-            }
-
-            else -> {
-                val treeDocument = DocumentFile.fromTreeUri(
-                    this@MainActivity,
-                    contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
-                        .first().uri
-                )!!
-                if (name.contains("/")) {
-                    val names = name.split("/")
-                    if (names.size >= 2) {
-                        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
-                        val folderName = names.first()
-                        val fName = names.last()
-                        val dirId = splicingUrl(treeId, folderName)
-                        val dirUri =
-                            DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
-                        val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
-                        return if (dirDocument == null || !dirDocument.exists()) {
-                            false
-                        } else if (dirDocument.isFile) {
-                            dirDocument.delete()
-                            false
-                        } else {
-                            val fileId = splicingUrl(dirId, fName)
-                            val fileUri =
-                                DocumentsContract.buildDocumentUriUsingTree(
-                                    treeDocument.uri,
-                                    fileId
-                                )
-                            val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-                            targetFile != null && targetFile.exists()
-                        }
-                    } else {
-                        return false
-                    }
-                }
-                val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
-                val fileId = splicingUrl(treeId, name)
-                val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
-                val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-                return targetFile != null && targetFile.exists()
-            }
-        }
-    }
-
-    private fun writeFileUri(fileName: String, clearOld: Boolean = false): Uri? {
-        val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith(
-                "jpeg",
-                ignoreCase = true
-            )
-        ) {
-            "image/jpg"
-        } else {
-            if (fileName.endsWith("png")) {
-                "image/png"
-            } else {
-                "image/gif"
-            }
-        }
-        val permissions =
-            contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
-        if (permissions.isEmpty()) {
-            choiceFolder()
-            return null
-        }
-        val parentUri =
-            permissions
-                .first().uri
-        val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
-        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
-
-        if (fileName.contains("/")) {
-            val names = fileName.split("/")
-            if (names.size >= 2) {
-                val fName = names.last()
-                val folderName = names.first()
-                if (clearOld && fName.contains("_p0"))
-                    treeDocument.findFile(fName.replace("_p0", ""))
-                var folderDocument = treeDocument.findFile(folderName)
-                if (folderDocument == null) {
-                    val tempFolderDocument = treeDocument.createDirectory(folderName)
-                    folderDocument = treeDocument.findFile(folderName)
-                    if (tempFolderDocument != null && folderDocument != null) {
-                        if (tempFolderDocument.uri != folderDocument.uri) {
-                            // 文件夹已经被创建过
-                            tempFolderDocument.delete()
-                        }
-                    }
-                }
-                val file = folderDocument?.findFile(fName)
-                if (file != null && file.exists()) {
-                    file.delete()
-                }
-                return folderDocument?.createFile(mimeType, fName)?.uri
-            }
-        }
-        if (clearOld && fileName.contains("_p0"))
-            treeDocument.findFile(fileName.replace("_p0", ""))
-        val fileId = splicingUrl(treeId, fileName)
-        val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
-        val targetFile = DocumentFile.fromSingleUri(this, fileUri)
-        if (targetFile != null) {
-            if (targetFile.exists()) {
-                targetFile.delete()
-            }
-        }
-        return treeDocument.createFile(mimeType, fileName)?.uri
-    }
-
-    private fun wr(data: ByteArray, uri: Uri) {
-        contentResolver.openOutputStream(uri, "w")?.use {
-            it.write(data)
-        }
     }
 
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
@@ -635,6 +483,153 @@ class MainActivity : FlutterFragmentActivity() {
                 tempFile.delete()
                 it.deleteRecursively()
             }
+        }
+    }
+
+    private fun splicingUrl(parentUri: String, fileName: String) = if (parentUri.endsWith(":")) {
+        parentUri + fileName
+    } else {
+        "$parentUri/$fileName"
+    }
+
+    private fun choiceFolder(needHint: Boolean = true) {
+        if (saveMode == 2 || saveMode == 0) {
+            pendingPickResult?.success(true)
+            return
+        }
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        if (needHint)
+            Toast.makeText(
+                this,
+                getString(R.string.choose_a_suitable_image_storage_directory),
+                Toast.LENGTH_SHORT
+            ).show()
+        startActivityForResult(intent, OPEN_DOCUMENT_TREE_CODE)
+    }
+
+    private fun isFileExist(name: String): Boolean {
+        when (saveMode) {
+            0 -> {
+                return exist(name)
+            }
+
+            2 -> {
+                return File("$helplessPath/$name").exists()
+            }
+
+            else -> {
+                val treeDocument = DocumentFile.fromTreeUri(
+                    this@MainActivity,
+                    contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+                        .first().uri
+                )!!
+                if (name.contains("/")) {
+                    val names = name.split("/")
+                    if (names.size >= 2) {
+                        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+                        val folderName = names.first()
+                        val fName = names.last()
+                        val dirId = splicingUrl(treeId, folderName)
+                        val dirUri =
+                            DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, dirId)
+                        val dirDocument = DocumentFile.fromSingleUri(this, dirUri)
+                        return if (dirDocument == null || !dirDocument.exists()) {
+                            false
+                        } else if (dirDocument.isFile) {
+                            dirDocument.delete()
+                            false
+                        } else {
+                            val fileId = splicingUrl(dirId, fName)
+                            val fileUri =
+                                DocumentsContract.buildDocumentUriUsingTree(
+                                    treeDocument.uri,
+                                    fileId
+                                )
+                            val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                            targetFile != null && targetFile.exists()
+                        }
+                    } else {
+                        return false
+                    }
+                }
+                val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+                val fileId = splicingUrl(treeId, name)
+                val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+                val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+                return targetFile != null && targetFile.exists()
+            }
+        }
+    }
+
+    private fun writeFileUri(fileName: String, clearOld: Boolean = false): Uri? {
+        val mimeType = if (fileName.endsWith("jpg", ignoreCase = true) || fileName.endsWith(
+                "jpeg",
+                ignoreCase = true
+            )
+        ) {
+            "image/jpg"
+        } else {
+            if (fileName.endsWith("png")) {
+                "image/png"
+            } else {
+                "image/gif"
+            }
+        }
+        val permissions =
+            contentResolver.persistedUriPermissions.takeWhile { it.isReadPermission && it.isWritePermission }
+        if (permissions.isEmpty()) {
+            choiceFolder()
+            return null
+        }
+        val parentUri =
+            permissions
+                .first().uri
+        val treeDocument = DocumentFile.fromTreeUri(this@MainActivity, parentUri)!!
+        val treeId = DocumentsContract.getTreeDocumentId(treeDocument.uri)
+
+        if (fileName.contains("/")) {
+            val names = fileName.split("/")
+            if (names.size >= 2) {
+                val fName = names.last()
+                val folderName = names.first()
+                if (clearOld && fName.contains("_p0"))
+                    treeDocument.findFile(fName.replace("_p0", ""))
+                var folderDocument = treeDocument.findFile(folderName)
+                if (folderDocument == null) {
+                    val tempFolderDocument = treeDocument.createDirectory(folderName)
+                    folderDocument = treeDocument.findFile(folderName)
+                    if (tempFolderDocument != null && folderDocument != null) {
+                        if (tempFolderDocument.uri != folderDocument.uri) {
+                            // 文件夹已经被创建过
+                            tempFolderDocument.delete()
+                        }
+                    }
+                }
+                val file = folderDocument?.findFile(fName)
+                if (file != null && file.exists()) {
+                    file.delete()
+                }
+                return folderDocument?.createFile(mimeType, fName)?.uri
+            }
+        }
+        if (clearOld && fileName.contains("_p0"))
+            treeDocument.findFile(fileName.replace("_p0", ""))
+        val fileId = splicingUrl(treeId, fileName)
+        val fileUri = DocumentsContract.buildDocumentUriUsingTree(treeDocument.uri, fileId)
+        val targetFile = DocumentFile.fromSingleUri(this, fileUri)
+        if (targetFile != null) {
+            if (targetFile.exists()) {
+                targetFile.delete()
+            }
+        }
+        return treeDocument.createFile(mimeType, fileName)?.uri
+    }
+
+    private fun wr(data: ByteArray, uri: Uri) {
+        contentResolver.openOutputStream(uri, "w")?.use {
+            it.write(data)
         }
     }
 }
