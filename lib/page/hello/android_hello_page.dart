@@ -401,22 +401,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       if (Platform.isAndroid && userSetting.saveMode != 1) {
         final info = await DeviceInfoPlugin().androidInfo;
-        if (info.version.sdkInt >= 33) {
-          final status = await DocumentPlugin.permissionStatus() ?? false;
-          if (!status) {
-            final grant = await DocumentPlugin.requestPermission();
-            if (grant != true) {
-              _showPermissionDenied();
-            }
-          }
-        } else {
-          var granted = await Permission.storage.status;
-          if (!granted.isGranted) {
-            var b = await Permission.storage.request();
-            if (!b.isGranted) {
-              _showPermissionDenied();
-              return;
-            }
+        Permission permission = (info.version.sdkInt >= 33)
+            ? Permission.photos
+            : Permission.storage;
+        var granted = await permission.status;
+        if (!granted.isGranted) {
+          var b = await permission.request();
+          if (!b.isGranted) {
+            _showPermissionDenied();
+            return;
           }
         }
       }

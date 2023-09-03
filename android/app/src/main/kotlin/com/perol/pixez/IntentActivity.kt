@@ -35,19 +35,12 @@ class IntentActivity : FragmentActivity() {
         parseIntent(intent)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        parseIntent(intent)
-    }
-
     private fun parseIntent(intent: Intent?) {
-        if (intent == null)
-            return
-        val iid = intent.getLongExtra("iid", 0)
+        val iid = intent?.getLongExtra("iid", 0)
         Log.d("IntentActivity", "Card app widget:${iid}")
-        textView?.text = iid.toString()
         val targetIntent = Intent(this, MainActivity::class.java)
         if (iid != 0L) {
+            textView?.text = iid.toString()
             targetIntent.action = Intent.ACTION_VIEW
             val uri = Uri.parse("pixez://www.pixiv.net/artworks/$iid")
             targetIntent.data = uri
