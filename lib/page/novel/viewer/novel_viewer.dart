@@ -311,20 +311,13 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                           return _buildSelectionMenu(
                               editableTextState, context);
                         },
-                        child: RichText(
-                            selectionRegistrar:
-                                SelectionContainer.maybeOf(context),
-                            text: TextSpan(
-                                text: '',
-                                style: _textStyle,
-                                children: [
-                                  for (var span
-                                      in _novelSpansGenerator.buildSpans(
-                                          context,
-                                          _novelStore
-                                              .novelTextResponse!.novelText))
-                                    span
-                                ])),
+                        child: Text.rich(
+                            TextSpan(text: '', style: _textStyle, children: [
+                          for (var span in _novelSpansGenerator.buildSpans(
+                              context,
+                              _novelStore.novelTextResponse!.novelText))
+                            span
+                        ])),
                       ),
                     ),
                     Container(
