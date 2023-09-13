@@ -145,7 +145,7 @@ extension IllustExts on Illusts {
             .toLowerCase()
             .contains("pxezfeedback@outlook.com") ==
         true) {
-      if (sanityLevel > 2) return true;
+      if (sanityLevel > 4) return true;
     }
     return false;
   }

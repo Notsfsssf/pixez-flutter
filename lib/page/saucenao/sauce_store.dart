@@ -63,7 +63,7 @@ abstract class SauceStoreBase with Store {
       {BuildContext? context, String? path, bool retry = false}) async {
     if (Platform.isAndroid && context != null) {
       final pre = await SharedPreferences.getInstance();
-      final skipAlert = pre.getBool("photo_picker_selected") ?? false;
+      final skipAlert = pre.getBool("photo_picker_type_selected") ?? false;
       if (!skipAlert) {
         await showDialog(
             context: context,
@@ -108,7 +108,7 @@ abstract class SauceStoreBase with Store {
                 ),
               );
             });
-        await pre.setBool("photo_picker_selected", true);
+        await pre.setBool("photo_picker_type_selected", true);
       }
     }
     notStart = false;

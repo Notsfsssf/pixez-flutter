@@ -152,7 +152,7 @@ abstract class _UserSetting with Store {
   @observable
   bool longPressSaveConfirm = false;
   @observable
-  int imagePickerType = 1;
+  int imagePickerType = 0;
   @observable
   int themeInitState = 0;
   @observable
@@ -389,7 +389,7 @@ abstract class _UserSetting with Store {
     nameEval = prefs.getString(NAME_EVAL_KEY);
     defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
     longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
-    imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 1;
+    imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 0;
     swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
     if (Platform.isAndroid) {
       try {
