@@ -66,7 +66,7 @@ abstract class _UserSetting with Store {
   static const String H_CROSS_ADAPT_KEY = "cross_adapt";
   static const String H_CROSS_ADAPT_WIDTH_KEY = "cross_adapt_width";
   static const String DEFAULT_PRIVATE_LIKE_KEY = "default_private_like";
-  static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type";
+  static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type_renew";
   static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
   static const String USE_DYNAMIC_COLOR_KEY = "use_dynamic_color";
   static const String SEED_COLOR_KEY = "seed_color";

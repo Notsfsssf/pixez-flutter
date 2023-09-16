@@ -243,26 +243,25 @@ class _PlatformPageState extends State<PlatformPage> {
                 title: Text(I18n.of(context).display_mode),
                 subtitle: Text('${selected ?? ''}'),
               ),
-              if ((_androidInfo?.version.sdkInt ?? 0) >= 30)
-                Observer(
-                  builder: (context) {
-                    return SwitchListTile(
-                      secondary: Icon(Icons.photo_album),
-                      onChanged: (bool value) async {
-                        await userSetting.setImagePickerType(value ? 1 : 0);
+              Observer(
+                builder: (context) {
+                  return SwitchListTile(
+                    secondary: Icon(Icons.photo_album),
+                    onChanged: (bool value) async {
+                      await userSetting.setImagePickerType(value ? 1 : 0);
+                    },
+                    title: InkWell(
+                      child: Text(I18n.of(context).photo_picker),
+                      onTap: () {
+                        launch(
+                            "https://developer.android.com/training/data-storage/shared/photopicker");
                       },
-                      title: InkWell(
-                        child: Text(I18n.of(context).photo_picker),
-                        onTap: () {
-                          launch(
-                              "https://developer.android.com/training/data-storage/shared/photopicker");
-                        },
-                      ),
-                      subtitle: Text(I18n.of(context).photo_picker_subtitle),
-                      value: userSetting.imagePickerType == 1,
-                    );
-                  },
-                ),
+                    ),
+                    subtitle: Text(I18n.of(context).photo_picker_subtitle),
+                    value: userSetting.imagePickerType == 1,
+                  );
+                },
+              ),
               if ((_androidInfo?.version.sdkInt ?? 0) > 30) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
