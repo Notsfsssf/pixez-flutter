@@ -25,12 +25,12 @@ dependencies:
     sdk: flutter
   dio: ^5.1.2
   crypto: ^3.0.2
-  path_provider: ^2.0.15
-  shared_preferences: ^2.2.0
+  path_provider: ^2.1.1
+  shared_preferences: ^2.2.1
   share_plus: ^7.1.0
-  permission_handler: ^10.4.3
+  permission_handler: ^11.0.0
   archive: ^3.3.7
-  url_launcher: ^6.1.12
+  url_launcher: ^6.1.14
   bot_toast: ^4.0.4
   package_info_plus: ^4.1.0
   uni_links2: ^0.6.0+2
@@ -52,7 +52,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   badges: ^3.1.1
   image_picker: ^1.0.4
-  intl: ^0.18.0
+  intl: ^0.18.1
   quiver: ^3.2.1
   flutter_inappwebview_quill: ^5.4.6
   auto_animated: ^3.1.0
