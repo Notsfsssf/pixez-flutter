@@ -78,6 +78,28 @@ class MainActivity : FlutterFragmentActivity() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        parseIntent(intent)
+        Log.d("Card app widget", "${intent}")
+    }
+
+    private fun parseIntent(intent: Intent?) {
+        val iid = intent?.getLongExtra("iid", 0)
+//        Log.d("IntentActivity", "Card app widget main:${iid}")
+//        val targetIntent = Intent(this, MainActivity::class.java)
+//        if (iid != 0L) {
+//            targetIntent.action = Intent.ACTION_VIEW
+//            val uri = Uri.parse("pixez://www.pixiv.net/artworks/$iid")
+//            targetIntent.data = uri
+//        }
+//        startActivity(targetIntent)
+    }
+
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

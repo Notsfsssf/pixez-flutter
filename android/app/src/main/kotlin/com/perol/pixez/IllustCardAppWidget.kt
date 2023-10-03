@@ -6,13 +6,12 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.util.TypedValue
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.widget.RemoteViewsCompat.setImageViewColorFilter
@@ -99,34 +98,34 @@ private fun updateWidget(
             .setHeader("User-Agent", "PixivIOSApp/5.8.0")
             .setHeader("host", Uri.parse(trueUrl).host!!)
             .listener(onError = { i, j ->
-                io.flutter.Log.e("Card app widget", "url error: ${trueUrl}", j.throwable)
+                Log.e("Card app widget", "url error: ${trueUrl}", j.throwable)
             })
             .target(object : coil.target.Target {
                 override fun onStart(placeholder: Drawable?) {
-                    io.flutter.Log.d("Card app widget", "url: ${trueUrl}")
+                    Log.d("Card app widget", "url: ${trueUrl}")
                 }
 
                 @SuppressLint("UnspecifiedImmutableFlag")
                 override fun onSuccess(result: Drawable) {
-                    io.flutter.Log.d("Card app widget", "url success: ${trueUrl}")
+                    Log.d("Card app widget", "url success: ${trueUrl}")
                     views.setImageViewBitmap(
                         R.id.appwidget_image,
                         (result as? BitmapDrawable)?.bitmap
                     )
-                    val intent = Intent(context, IntentActivity::class.java).apply {
+                    val intent = Intent(context, MainActivity::class.java).apply {
                         putExtra("iid", iId)
                     }
                     val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         PendingIntent.getActivity(
                             context,
-                            url.hashCode(),
+                            url.hashCode() + views.hashCode(),
                             intent,
                             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                         )
                     } else {
                         PendingIntent.getActivity(
                             context,
-                            url.hashCode(),
+                            url.hashCode() + views.hashCode(),
                             intent,
                             PendingIntent.FLAG_UPDATE_CURRENT
                         )
@@ -156,7 +155,7 @@ private fun updateWidget(
             .build()
         context.imageLoader.enqueue(request)
     } catch (throwable: Throwable) {
-        io.flutter.Log.d("Card app widget", throwable.toString())
+        Log.d("Card app widget", throwable.toString())
     }
 
 }

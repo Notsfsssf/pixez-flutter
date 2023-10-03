@@ -124,7 +124,7 @@ private fun updateWidget(
                         R.id.appwidget_image,
                         (result as? BitmapDrawable)?.bitmap
                     )
-                    val intent = Intent(context, IntentActivity::class.java).apply {
+                    val intent = Intent(context, MainActivity::class.java).apply {
                         putExtra("iid", iId)
                     }
                     val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
