@@ -29,7 +29,7 @@ dependencies:
   shared_preferences: ^2.2.1
   share_plus: ^7.1.0
   permission_handler: ^11.0.0
-  archive: ^3.3.7
+  archive: ^3.4.4
   url_launcher: ^6.1.14
   bot_toast: ^4.0.4
   package_info_plus: ^4.1.0
