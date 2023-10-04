@@ -16,6 +16,7 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/fluent/page/login/token_page.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/fluent/page/about/about_page.dart';
@@ -125,6 +126,14 @@ class _LoginPageState extends State<LoginPage> {
                               } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),
+                          ),
+                          Button(
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => TokenPage(),
+                              useRootNavigator: false,
+                            ),
+                            child: Text('Token'),
                           ),
                           HyperlinkButton(
                             child: Text(

@@ -16,6 +16,7 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -100,6 +101,16 @@ class _AccountEditPageState extends State<AccountEditPage> {
               ),
             ),
           ),
+          if (accountStore.now != null &&
+              accountStore.now!.isMailAuthorized == 1)
+            ListTile(
+              onPressed: () async {
+                Clipboard.setData(
+                    ClipboardData(text: accountStore.now!.refreshToken));
+                BotToast.showText(text: "Copied to clipboard");
+              },
+              title: Text("Token export"),
+            ),
           ListTile(
             title: Text(I18n.of(context).account_deletion),
             trailing: Icon(FluentIcons.open_in_new_window),
