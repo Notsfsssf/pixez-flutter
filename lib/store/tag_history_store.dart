@@ -88,7 +88,8 @@ abstract class _TagHistoryStoreBase with Store {
     final uriStr =
         await SAFPlugin.createFile("tag_history.json", "application/json");
     if (uriStr == null) return;
-    final exportData = ExportData(tagHisotry: tags);
+    await tagsPersistProvider.open();
+    final exportData = ExportData(tagHisotry: await tagsPersistProvider.getAllAccount());
     await SAFPlugin.writeUri(
         uriStr, Uint8List.fromList(utf8.encode(jsonEncode(exportData))));
   }
