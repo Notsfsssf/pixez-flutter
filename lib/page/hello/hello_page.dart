@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/deep_link_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -30,7 +31,6 @@ import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links2/uni_links.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -74,9 +74,9 @@ class _HelloPageState extends State<HelloPage> {
 
   Future<void> initLinksStream() async {
     try {
-      Uri? initialLink = await getInitialUri();
+      Uri? initialLink = await DeepLinkPlugin.getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = uriLinkStream
+      _sub =  DeepLinkPlugin.uriLinkStream
           .listen((Uri? link) => Leader.pushWithUri(context, link!));
     } catch (e) {
       print(e);

@@ -29,6 +29,7 @@ import Photos
         WidgetkitPlugin.bind(controller: controller)
         DocumentPlugin.bind(controller:controller)
         GeneratedPluginRegistrant.register(with: self)
+        DeepLinkPlugin.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     

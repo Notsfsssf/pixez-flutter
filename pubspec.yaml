@@ -33,8 +33,6 @@ dependencies:
   url_launcher: ^6.1.14
   bot_toast: ^4.0.4
   package_info_plus: ^4.1.0
-  uni_links2: ^0.6.0+2
-  uni_links2_platform_interface: ^1.0.0+2
   mobx: ^2.1.4
   flutter_mobx: ^2.0.6+5
   in_app_purchase: ^3.1.7
@@ -54,7 +52,7 @@ dependencies:
   image_picker: ^1.0.4
   intl: ^0.18.1
   quiver: ^3.2.1
-  flutter_inappwebview_quill: ^5.4.6
+  flutter_inappwebview: ^5.8.0
   auto_animated: ^3.1.0
   http: ^0.13.4
   dio_cache_interceptor: ^3.4.2

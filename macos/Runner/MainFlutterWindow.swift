@@ -56,7 +56,7 @@ class MainFlutterWindow: NSWindow, FlutterStreamHandler {
                 result(nil)
             }
         }
-        let eventChannel = FlutterEventChannel(name: "uni_links/events", binaryMessenger: flutterViewController.engine.binaryMessenger)
+        let eventChannel = FlutterEventChannel(name: "deep_links/events", binaryMessenger: flutterViewController.engine.binaryMessenger)
         eventChannel.setStreamHandler(self)
 
         DocumentPlugin.bind(controller: flutterViewController)

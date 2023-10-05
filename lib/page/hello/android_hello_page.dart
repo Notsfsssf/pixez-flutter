@@ -25,7 +25,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/document_plugin.dart';
+import 'package:pixez/deep_link_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -40,7 +40,6 @@ import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links2/uni_links.dart';
 
 class AndroidHelloPage extends StatefulWidget {
   const AndroidHelloPage({Key? key}) : super(key: key);
@@ -390,7 +389,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       Uri? initialLink =
           initLastLink != null ? Uri.tryParse(initLastLink) : null;
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = uriLinkStream
+      _sub = DeepLinkPlugin.uriLinkStream
           .listen((Uri? link) => Leader.pushWithUri(context, link!));
     } catch (e) {
       print(e);
