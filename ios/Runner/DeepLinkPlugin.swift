@@ -32,18 +32,21 @@ class DeepLinkPlugin : NSObject, FlutterPlugin, FlutterStreamHandler {
         let url = launchOptions[UIApplication.LaunchOptionsKey.url] as? URL
         initialLink = url?.absoluteString
         latestLink = initialLink
+        eventSink?(latestLink)
         return true
     }
     
     func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         latestLink = url.absoluteString
+        eventSink?(latestLink)
         return true
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             self.latestLink = userActivity.webpageURL?.absoluteString
-            if eventSink != nil {
+            eventSink?(latestLink)
+            if eventSink == nil {
                 self.initialLink = self.latestLink
             }
             return true
