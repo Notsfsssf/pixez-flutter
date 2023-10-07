@@ -23,7 +23,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
-  Future<String> getToken() async {
+  Future<String?> getToken() async {
     String? token = accountStore.now?.accessToken; //可能读的时候没有错的快，导致now为null
     String result;
     if (token != null)
@@ -32,6 +32,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
       AccountProvider accountProvider = AccountProvider();
       await accountProvider.open();
       final all = await accountProvider.getAllAccount();
+      if (all.isEmpty) return null;
       result = "Bearer " + all[accountStore.index].accessToken;
     }
     return result;
@@ -40,9 +41,13 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    if (!options.path.contains('v1/walkthrough/illusts'))
+    if (!options.path.contains('v1/walkthrough/illusts')) {
       options.headers[OAuthClient.AUTHORIZATION] = await getToken();
-    return handler.next(options); //continue
+      if (options.headers[OAuthClient.AUTHORIZATION] == null) {
+        return handler.reject(DioException(requestOptions: options));
+      }
+    }
+    return handler.next(options); 
   }
 
   int bti(bool bool) {
