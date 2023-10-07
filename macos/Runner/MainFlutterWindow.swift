@@ -49,7 +49,7 @@ class MainFlutterWindow: NSWindow, FlutterStreamHandler {
         }
 
         let uniLinksChannel = FlutterMethodChannel(
-            name: "uni_links/messages",
+            name: "deep_links/messages",
             binaryMessenger: flutterViewController.engine.binaryMessenger)
         uniLinksChannel.setMethodCallHandler { call, result in
             if call.method == "getInitialLink" {

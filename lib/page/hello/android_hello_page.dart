@@ -384,8 +384,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   initPlatform() async {
     try {
-      String? initLastLink = await MethodChannel('uni_links/messages')
-          .invokeMethod("getLatestLink");
+      String? initLastLink = await DeepLinkPlugin.getLatestLink();
       Uri? initialLink =
           initLastLink != null ? Uri.tryParse(initLastLink) : null;
       if (initialLink != null) Leader.pushWithUri(context, initialLink);

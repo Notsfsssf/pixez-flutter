@@ -9,6 +9,9 @@ class DeepLinkPlugin {
   static Future<String?> getInitialLink() =>
       _mChannel.invokeMethod<String?>('getInitialLink');
 
+  static Future<String?> getLatestLink() =>
+      _mChannel.invokeMethod<String?>('getLatestLink');
+
   static Future<Uri?> getInitialUri() async {
     final link = await getInitialLink();
     if (link == null) return null;
