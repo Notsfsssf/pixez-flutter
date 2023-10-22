@@ -229,10 +229,8 @@ class _IllustCardState extends State<IllustCard> {
               );
             });
       }
-      await saveStore.saveImage(store.illusts!);
-    } else {
-      _onLongPressSave();
     }
+    _onLongPressSave();
   }
 
   Future _buildInkTap(BuildContext context, String heroTag) {
