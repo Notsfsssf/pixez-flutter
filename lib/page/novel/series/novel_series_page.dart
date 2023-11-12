@@ -24,21 +24,49 @@ class NovelSeriesState {
   final NovelSeriesDetail novelSeriesDetail;
   final List<Novel> novels;
   final List<NovelStore> novelStores;
+  final String? nextUrl;
 
-  NovelSeriesState(this.novelSeriesDetail, this.novels, this.novelStores);
+  NovelSeriesState(
+      this.novelSeriesDetail, this.novels, this.novelStores, this.nextUrl);
 }
 
 class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
+  final EasyRefreshController refreshController = EasyRefreshController();
+
   Future<void> fetch(int id) async {
     try {
       final response = await apiClient.novelSeries(id);
       final detail = NovelSeriesResponse.fromJson(response.data);
       final list = detail.novels.map((e) => NovelStore(e.id, e)).toList();
-      final result =
-          NovelSeriesState(detail.novelSeriesDetail, detail.novels, list);
+      final result = NovelSeriesState(
+          detail.novelSeriesDetail, detail.novels, list, detail.nextUrl);
       state = result;
+      refreshController.finishRefresh();
     } catch (e) {
       print(e);
+      refreshController.finishRefresh(IndicatorResult.fail)
+    }
+  }
+
+  Future<void> onLoadNext() async {
+    if (state?.nextUrl != null) {
+      try {
+        final response = await apiClient.getNext(state!.nextUrl!);
+        final detail = NovelSeriesResponse.fromJson(response.data);
+        final list = detail.novels.map((e) => NovelStore(e.id, e)).toList();
+        final result = NovelSeriesState(
+            detail.novelSeriesDetail,
+            state!.novels + detail.novels,
+            state!.novelStores + list,
+            detail.nextUrl);
+        state = result;
+        refreshController.finishLoad(IndicatorResult.success, detail.nextUrl == null);
+      } catch (e) {
+        print(e);
+        refreshController.finishLoad(IndicatorResult.fail);
+      }
+    } else {
+      refreshController.finishLoad(IndicatorResult.success, true);
     }
   }
 
@@ -94,6 +122,10 @@ class NovelSeriesPage extends HookConsumerWidget {
       ),
       body: EasyRefresh(
         refreshOnStart: true,
+        controller: ref.read(novelSeriesProvider.notifier).refreshController,
+        onLoad: () async {
+          await ref.read(novelSeriesProvider.notifier).onLoadNext();
+        },
         child: Builder(builder: (context) {
           if (data != null)
             return Container(

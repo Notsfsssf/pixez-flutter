@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/common_back_area.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -246,6 +247,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           elevation: 0.0,
           forceElevated: innerBoxIsScrolled ?? false,
           expandedHeight: 280,
+          leading: CommonBackArea(),
           actions: <Widget>[
             Builder(builder: (context) {
               return IconButton(

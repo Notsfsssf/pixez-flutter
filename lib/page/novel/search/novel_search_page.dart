@@ -26,6 +26,7 @@ import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
+import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
@@ -144,6 +145,27 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                 ),
                 InkWell(
                     onTap: () {
+                      Leader.push(context, NovelSeriesPage(_id!));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("$_id"),
+                          Text(
+                            "Series Id",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )
+                        ],
+                      ),
+                    )),
+                Divider(
+                  height: 1,
+                ),
+                InkWell(
+                    onTap: () {
                       Leader.push(context, NovelUsersPage(id: _id!));
                     },
                     child: Padding(
@@ -193,7 +215,8 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
                             Icon(
                               Icons.delete_outline,
                               size: 18.0,
-                              color: Theme.of(context).textTheme.bodySmall!.color,
+                              color:
+                                  Theme.of(context).textTheme.bodySmall!.color,
                             ),
                             Text(
                               I18n.of(context).clear_search_tag_history,
