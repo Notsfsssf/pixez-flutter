@@ -38,6 +38,11 @@ abstract class _BookTagStoreBase with Store {
   }
 
   @action
+  Future<void> adjustBookTag(List<String> list) async {
+    await pre!.setStringList(BOOK_TAG_LIST, list);
+  }
+
+  @action
   reset() async {
     await pre!.remove(BOOK_TAG_LIST);
     bookTagList.clear();

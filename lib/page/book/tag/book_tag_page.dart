@@ -52,7 +52,6 @@ class _BookTagPageState extends State<BookTagPage>
               AppBar(
                 elevation: 0.0,
                 backgroundColor: Colors.transparent,
-                title: Text(I18n.of(context).choice_you_like),
                 actions: [
                   IconButton(
                       icon: Icon(Icons.save),
@@ -136,42 +135,63 @@ class _BookTagPageState extends State<BookTagPage>
   }
 
   Widget _buildTagChip() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Wrap(
-            spacing: 2.0,
-            children: [
-              for (var i in bookTagStore.bookTagList)
-                FilterChip(
-                    label: Text(i),
-                    selected: true,
-                    onSelected: (v) {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(I18n.of(context).delete + "$i?"),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(I18n.of(context).cancel)),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      bookTagStore.unBookTag(i);
-                                    },
-                                    child: Text(I18n.of(context).ok)),
-                              ],
-                            );
-                          });
-                    })
-            ],
+    final _items = bookTagStore.bookTagList;
+    return ReorderableListView(
+      children: <Widget>[
+        for (int index = 0; index < _items.length; index += 1)
+          Dismissible(
+            key: Key(_items[index]),
+            onDismissed: (direction) {
+              setState(() {
+                _items.removeAt(index);
+              });
+            },
+            confirmDismiss: (direction) async {
+              await _deleteConfirm(_items[index]);
+            },
+            background: Container(
+              color: Colors.red,
+              child: Icon(Icons.delete),
+            ),
+            child: ListTile(
+              key: Key('$index'),
+              title: Text('${_items[index]}'),
+            ),
           ),
-        ],
-      ),
+      ],
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final item = _items.removeAt(oldIndex);
+          _items.insert(newIndex, item);
+          bookTagStore.adjustBookTag(_items);
+        });
+      },
     );
+  }
+
+  Future _deleteConfirm(String i) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(I18n.of(context).delete + "$i?"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(I18n.of(context).cancel)),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    bookTagStore.unBookTag(i);
+                  },
+                  child: Text(I18n.of(context).ok)),
+            ],
+          );
+        });
   }
 }

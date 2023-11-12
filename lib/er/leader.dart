@@ -51,6 +51,10 @@ class Leader {
     );
   }
 
+  static popUtilHome(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
   static Future<void> pushWithUri(BuildContext context, Uri link) async {
     if (Constants.isFluent) {
       FluentLeader.pushWithUri(context, link);

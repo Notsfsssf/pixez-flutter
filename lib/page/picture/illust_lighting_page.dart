@@ -189,11 +189,15 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 6,
+                  ),
+                  BackButton()
+                ],
+                mainAxisSize: MainAxisSize.min,
+              ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
