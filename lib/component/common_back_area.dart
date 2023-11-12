@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pixez/er/leader.dart';
 
 class CommonBackArea extends StatefulWidget {
   const CommonBackArea({super.key});
@@ -18,6 +19,11 @@ class _CommonBackAreaState extends State<CommonBackArea> {
           width: 6,
         ),
         BackButton(),
+        IconButton(
+            onPressed: () {
+              Leader.pushUntilHome(context);
+            },
+            icon: Icon(Icons.home))
       ],
       mainAxisSize: MainAxisSize.min,
     );

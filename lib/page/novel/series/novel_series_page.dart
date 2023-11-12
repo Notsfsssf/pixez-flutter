@@ -44,7 +44,7 @@ class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
       refreshController.finishRefresh();
     } catch (e) {
       print(e);
-      refreshController.finishRefresh(IndicatorResult.fail)
+      refreshController.finishRefresh(IndicatorResult.fail);
     }
   }
 
@@ -60,7 +60,8 @@ class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
             state!.novelStores + list,
             detail.nextUrl);
         state = result;
-        refreshController.finishLoad(IndicatorResult.success, detail.nextUrl == null);
+        refreshController.finishLoad(
+            IndicatorResult.success, detail.nextUrl == null);
       } catch (e) {
         print(e);
         refreshController.finishLoad(IndicatorResult.fail);
