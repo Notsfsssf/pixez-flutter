@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
@@ -11,16 +10,20 @@ class CommonBackArea extends StatefulWidget {
 }
 
 class _CommonBackAreaState extends State<CommonBackArea> {
+  bool _isLongPress = false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: IconButton(
-        icon: BackButtonIcon(),
+        icon: _isLongPress ? Icon(Icons.home) : BackButtonIcon(),
         onPressed: () {
           Navigator.pop(context);
         },
       ),
       onLongPress: () {
+        setState(() {
+          _isLongPress = true;
+        });
         Leader.popUtilHome(context);
       },
     );
