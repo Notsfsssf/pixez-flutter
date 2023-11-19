@@ -13,19 +13,16 @@ class CommonBackArea extends StatefulWidget {
 class _CommonBackAreaState extends State<CommonBackArea> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 6,
-        ),
-        BackButton(),
-        IconButton(
-            onPressed: () {
-              Leader.pushUntilHome(context);
-            },
-            icon: Icon(Icons.home))
-      ],
-      mainAxisSize: MainAxisSize.min,
+    return GestureDetector(
+      child: IconButton(
+        icon: BackButtonIcon(),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      onLongPress: () {
+        Leader.popUtilHome(context);
+      },
     );
   }
 }
