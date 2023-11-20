@@ -37,27 +37,21 @@ List<Contributor> contributors = [
           await apiClient.getSearchIllust("キャル(プリコネ) 10000users入り");
       Recommend recommend = Recommend.fromJson(response.data);
       if (recommend.illusts.isEmpty) return;
-      int i = Random().nextInt(recommend.illusts.length - 1);
-      if (i < 0 || i >= recommend.illusts.length) i = 0;
-
-      if (_safeMode || userSetting.hIsNotAllow) {
-        while (recommend.illusts[i].tags.any((i) => i.name == "R-18")) {
-          i++;
-        }
-      }
-      if (i >= recommend.illusts.length) i = 0;
+      final targetIllusts = _safeMode || userSetting.hIsNotAllow
+          ? recommend.illusts.where((element) => !element.tags.any((i) => i.name == "R-18")).toList()
+          : recommend.illusts;
+      if (targetIllusts.isEmpty) return;
+      final url = targetIllusts[Random().nextInt(targetIllusts.length)]
+          .imageUrls
+          .medium;
 
       _showBottomSheet(
         context: context,
         builder: (context) {
-          final url = recommend.illusts[i].imageUrls.medium;
-          final isH = recommend.illusts[i].tags.any((i) => i.name == "R-18");
           return SafeArea(
-            child: isH && userSetting.hIsNotAllow
-                ? Image.asset('assets/images/h.jpg')
-                : Constants.isFluent
-                    ? fluentui.PixivImage(url)
-                    : material.PixivImage(url),
+            child: Constants.isFluent
+                ? fluentui.PixivImage(url)
+                : material.PixivImage(url),
           );
         },
       );
@@ -83,7 +77,7 @@ List<Contributor> contributors = [
       //XIAN:随机加载一张色图
       if (accountStore.now == null) return;
       if (_safeMode) return;
-      if (userSetting.hIsNotAllow)
+      if (userSetting.hIsNotAllow) {
         _showBottomSheet(
             context: context,
             builder: (context) {
@@ -91,6 +85,8 @@ List<Contributor> contributors = [
                 child: Image.asset('assets/images/h.jpg'),
               );
             });
+        return;
+      }
       final response = await apiClient.getIllustRanking('day_r18', null);
       Recommend recommend = Recommend.fromJson(response.data);
       _showBottomSheet(
