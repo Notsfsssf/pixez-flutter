@@ -40,20 +40,24 @@ List<Contributor> contributors = [
       int i = Random().nextInt(recommend.illusts.length - 1);
       if (i < 0 || i >= recommend.illusts.length) i = 0;
 
-      if (_safeMode) {
+      if (_safeMode || userSetting.hIsNotAllow) {
         while (recommend.illusts[i].tags.any((i) => i.name == "R-18")) {
           i++;
         }
       }
+      if (i >= recommend.illusts.length) i = 0;
 
       _showBottomSheet(
         context: context,
         builder: (context) {
           final url = recommend.illusts[i].imageUrls.medium;
+          final isH = recommend.illusts[i].tags.any((i) => i.name == "R-18");
           return SafeArea(
-            child: Constants.isFluent
-                ? fluentui.PixivImage(url)
-                : material.PixivImage(url),
+            child: isH && userSetting.hIsNotAllow
+                ? Image.asset('assets/images/h.jpg')
+                : Constants.isFluent
+                    ? fluentui.PixivImage(url)
+                    : material.PixivImage(url),
           );
         },
       );
@@ -79,7 +83,14 @@ List<Contributor> contributors = [
       //XIAN:随机加载一张色图
       if (accountStore.now == null) return;
       if (_safeMode) return;
-
+      if (userSetting.hIsNotAllow)
+        _showBottomSheet(
+            context: context,
+            builder: (context) {
+              return SafeArea(
+                child: Image.asset('assets/images/h.jpg'),
+              );
+            });
       final response = await apiClient.getIllustRanking('day_r18', null);
       Recommend recommend = Recommend.fromJson(response.data);
       _showBottomSheet(
