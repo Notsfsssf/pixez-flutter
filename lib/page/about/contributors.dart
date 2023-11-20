@@ -37,19 +37,19 @@ List<Contributor> contributors = [
           await apiClient.getSearchIllust("キャル(プリコネ) 10000users入り");
       Recommend recommend = Recommend.fromJson(response.data);
       if (recommend.illusts.isEmpty) return;
-      int i = Random().nextInt(recommend.illusts.length - 1);
-      if (i < 0 || i >= recommend.illusts.length) i = 0;
-
-      if (_safeMode) {
-        while (recommend.illusts[i].tags.any((i) => i.name == "R-18")) {
-          i++;
-        }
-      }
+      final targetIllusts = _safeMode
+          ? recommend.illusts
+              .where((element) => !element.tags.any((i) => i.name == "R-18"))
+              .toList()
+          : recommend.illusts;
+      if (targetIllusts.isEmpty) return;
+      final url = targetIllusts[Random().nextInt(targetIllusts.length)]
+          .imageUrls
+          .medium;
 
       _showBottomSheet(
         context: context,
         builder: (context) {
-          final url = recommend.illusts[i].imageUrls.medium;
           return SafeArea(
             child: Constants.isFluent
                 ? fluentui.PixivImage(url)
