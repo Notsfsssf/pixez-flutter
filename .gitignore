@@ -40,6 +40,7 @@
 **/android/local.properties
 **/android/key.properties
 **/android/**/GeneratedPluginRegistrant.java
+local.properties
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
