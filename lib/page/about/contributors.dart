@@ -38,7 +38,9 @@ List<Contributor> contributors = [
       Recommend recommend = Recommend.fromJson(response.data);
       if (recommend.illusts.isEmpty) return;
       final targetIllusts = _safeMode || userSetting.hIsNotAllow
-          ? recommend.illusts.where((element) => !element.tags.any((i) => i.name == "R-18")).toList()
+          ? recommend.illusts
+              .where((element) => !element.tags.any((i) => i.name == "R-18"))
+              .toList()
           : recommend.illusts;
       if (targetIllusts.isEmpty) return;
       final url = targetIllusts[Random().nextInt(targetIllusts.length)]
