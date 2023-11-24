@@ -122,7 +122,7 @@ class _IllustCardState extends State<IllustCard> {
       }
     }
     saveStore.saveImage(store.illusts!);
-    if (userSetting.starAfterSave) {
+    if (userSetting.starAfterSave && (store.state == 0)) {
       store.star(
           restrict: userSetting.defaultPrivateLike ? "private" : "public");
     }
@@ -290,6 +290,9 @@ class _IllustCardState extends State<IllustCard> {
                 );
               }),
               onTap: () async {
+                if (userSetting.saveAfterStar && (store.state == 0)) {
+                  saveStore.saveImage(store.illusts!);
+                }
                 store.star(
                     restrict:
                         userSetting.defaultPrivateLike ? "private" : "public");
@@ -300,9 +303,6 @@ class _IllustCardState extends State<IllustCard> {
                         text:
                             "${store.illusts!.user.name} ${I18n.of(context).followed}");
                   }
-                }
-                if (userSetting.saveAfterStar) {
-                  saveStore.saveImage(store.illusts!);
                 }
               },
               onLongPress: () async {
