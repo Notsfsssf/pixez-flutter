@@ -250,10 +250,16 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 visible: _illustStore.errorMessage == null,
                 child: FloatingActionButton(
                   heroTag: widget.id,
-                  onPressed: () => _illustStore.star(
-                      restrict: userSetting.defaultPrivateLike
-                          ? "private"
-                          : "public"),
+                  onPressed: () {
+                    if (userSetting.saveAfterStar &&
+                        (_illustStore.state == 0)) {
+                      saveStore.saveImage(_illustStore.illusts!);
+                    }
+                    _illustStore.star(
+                        restrict: userSetting.defaultPrivateLike
+                            ? "private"
+                            : "public");
+                  },
                   child: Observer(builder: (_) {
                     return StarIcon(
                       state: _illustStore.state,
@@ -550,6 +556,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       if (!result) {
                         return;
                       }
+                    }
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
                     }
                     saveStore.saveImage(_aboutStore.illusts[index]);
                   },
