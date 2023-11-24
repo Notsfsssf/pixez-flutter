@@ -1092,6 +1092,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       title: Text(I18n.of(context).save),
                       onTap: () {
                         Navigator.of(context).pop("OK");
+                        if (userSetting.starAfterSave &&
+                            (_illustStore.state == 0)) {
+                          _illustStore.star(
+                              restrict: userSetting.defaultPrivateLike
+                                  ? "private"
+                                  : "public");
+                        }
                       },
                     ),
                   ],
