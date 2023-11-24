@@ -557,6 +557,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         return;
                       }
                     }
+                    // TODO
                     if (userSetting.starAfterSave &&
                         (_illustStore.state == 0)) {
                       _illustStore.star(
@@ -1252,6 +1253,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       LPrinter.d(result);
       String restrict = result['restrict'];
       List<String>? tags = result['tags'];
+      if (userSetting.saveAfterStar && (_illustStore.state == 0)) {
+        saveStore.saveImage(_illustStore.illusts!);
+      }
       _illustStore.star(restrict: restrict, tags: tags, force: true);
     }
   }
