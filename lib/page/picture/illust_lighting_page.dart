@@ -557,9 +557,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         return;
                       }
                     }
-                    // TODO
                     if (userSetting.starAfterSave &&
                         (_illustStore.state == 0)) {
+                      print(123456);
                       _illustStore.star(
                           restrict: userSetting.defaultPrivateLike
                               ? "private"
@@ -972,6 +972,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   onTap: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                   },
                   onLongPress: () async {
                     Navigator.of(context).pop();
