@@ -1,11 +1,11 @@
-arguments=
+arguments=--init-script C\:\\Users\\27929\\AppData\\Roaming\\Code\\User\\globalStorage\\redhat.java\\1.24.0\\config_win\\org.eclipse.osgi\\57\\0\\.cp\\gradle\\init\\init.gradle --init-script C\:\\Users\\27929\\AppData\\Roaming\\Code\\User\\globalStorage\\redhat.java\\1.24.0\\config_win\\org.eclipse.osgi\\57\\0\\.cp\\gradle\\protobuf\\init.gradle
 auto.sync=false
 build.scans.enabled=false
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 connection.project.dir=
 eclipse.preferences.version=1
-gradle.user.home=
-java.home=C\:/Program Files/Microsoft/jdk-11.0.12.7-hotspot
+gradle.user.home=D\:/LocalWarehouse
+java.home=C\:/Program Files/Java/jdk-17.0.3.1
 jvm.arguments=
 offline.mode=false
 override.workspace.settings=true

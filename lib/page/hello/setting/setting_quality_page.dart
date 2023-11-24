@@ -614,6 +614,38 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
+              child: Observer(
+                builder: (_) {
+                  return SwitchListTile(
+                    value: userSetting.saveAfterStar,
+                    title: Text("收藏后自动下载"),
+                    onChanged: (value) async {
+                      userSetting.setSaveAfterStar(value);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Observer(
+                builder: (_) {
+                  return SwitchListTile(
+                    value: userSetting.starAfterSave,
+                    title: Text("下载后自动收藏"),
+                    onChanged: (value) async {
+                      userSetting.setStarAfterSave(value);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Observer(
@@ -686,8 +718,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   }
 
   void _buildLanguageTranlators() {
-    final langsponsors =
-        Languages[userSetting.languageNum].sponsors;
+    final langsponsors = Languages[userSetting.languageNum].sponsors;
     _languageTranlator = Row(
       children: [
         for (final langsponsor in langsponsors)

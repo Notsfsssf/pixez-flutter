@@ -56,6 +56,8 @@ abstract class _UserSetting with Store {
       "is_over_sanity_level_folder";
   static const String MAX_RUNNING_TASK_KEY = "max_running_task";
   static const String NSFW_MASK_KEY = "nsfw_mask";
+  static const String SAVE_AFTER_STAR = "save_after_star";
+  static const String STAR_AFTER_SAVE = "star_after_save";
   static const String SAVE_EFFECT_KEY = "save_effect";
   static const String SAVE_EFFECT_ENABLE_KEY = "save_effect_enable";
   static const String PAD_MODE_KEY = "pad_mode";
@@ -137,6 +139,10 @@ abstract class _UserSetting with Store {
   int maxRunningTask = 2;
   @observable
   bool nsfwMask = false;
+  @observable
+  bool saveAfterStar = false;
+  @observable
+  bool starAfterSave = false;
   @observable
   int saveEffect = 0;
   @observable
@@ -374,6 +380,8 @@ abstract class _UserSetting with Store {
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;
     nsfwMask = prefs.getBool(NSFW_MASK_KEY) ?? false;
+    saveAfterStar = prefs.getBool(SAVE_AFTER_STAR) ?? false;
+    starAfterSave = prefs.getBool(STAR_AFTER_SAVE) ?? false;
     novelFontsize = prefs.getDouble(NOVEL_FONT_SIZE_KEY) ?? 16.0;
     novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
     saveMode = prefs.getInt(SAVE_MODE_KEY) ??
@@ -515,6 +523,18 @@ abstract class _UserSetting with Store {
   Future<void> changeNsfwMask(bool value) async {
     await prefs.setBool(NSFW_MASK_KEY, value);
     nsfwMask = value;
+  }
+
+  @action
+  Future<void> setSaveAfterStar(bool value) async {
+    await prefs.setBool(SAVE_AFTER_STAR, value);
+    saveAfterStar = value;
+  }
+
+  @action
+  Future<void> setStarAfterSave(bool value) async {
+    await prefs.setBool(STAR_AFTER_SAVE, value);
+    starAfterSave = value;
   }
 
   @action
