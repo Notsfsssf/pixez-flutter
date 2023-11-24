@@ -493,6 +493,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                           PhotoZoomPage(
                             index: index,
                             illusts: data,
+                            illustStore: _illustStore,
                           ));
                     },
                     child: _buildIllustsItem(index, data, height));
@@ -525,6 +526,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                 PhotoZoomPage(
                   index: 0,
                   illusts: data,
+                  illustStore: _illustStore,
                 ));
           },
           child: NullHero(
@@ -920,7 +922,10 @@ class _IllustRowPageState extends State<IllustRowPage>
                                 Leader.push(
                                     context,
                                     PhotoZoomPage(
-                                        index: index, illusts: illust));
+                                      index: index,
+                                      illusts: illust,
+                                      illustStore: _illustStore,
+                                    ));
                               },
                               child: Stack(
                                 children: [

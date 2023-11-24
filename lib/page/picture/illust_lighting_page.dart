@@ -559,7 +559,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     }
                     if (userSetting.starAfterSave &&
                         (_illustStore.state == 0)) {
-                      print(123456);
                       _illustStore.star(
                           restrict: userSetting.defaultPrivateLike
                               ? "private"
@@ -621,6 +620,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         PhotoZoomPage(
                           index: 0,
                           illusts: data,
+                          illustStore: _illustStore,
                         ));
                   },
                   child: NullHero(
@@ -654,6 +654,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           PhotoZoomPage(
                             index: index,
                             illusts: data,
+                            illustStore: _illustStore,
                           ));
                     },
                     child: _buildIllustsItem(index, data, height));
@@ -1041,7 +1042,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                 Leader.push(
                                     context,
                                     PhotoZoomPage(
-                                        index: index, illusts: illust));
+                                      index: index,
+                                      illusts: illust,
+                                      illustStore: _illustStore,
+                                    ));
                               },
                               child: Stack(
                                 children: [

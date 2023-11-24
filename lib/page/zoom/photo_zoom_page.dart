@@ -8,14 +8,20 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/page/picture/illust_store.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart';
 
 class PhotoZoomPage extends StatefulWidget {
   final int index;
   final Illusts illusts;
+  final IllustStore illustStore;
 
-  const PhotoZoomPage({Key? key, required this.index, required this.illusts})
+  const PhotoZoomPage(
+      {Key? key,
+      required this.index,
+      required this.illusts,
+      required this.illustStore})
       : super(key: key);
 
   @override
@@ -177,6 +183,13 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                             saveStore.saveImage(widget.illusts, index: _index);
                           else
                             saveStore.saveImage(widget.illusts);
+                          if (userSetting.starAfterSave &&
+                              (widget.illustStore.state == 0)) {
+                            widget.illustStore.star(
+                                restrict: userSetting.defaultPrivateLike
+                                    ? "private"
+                                    : "public");
+                          }
                         }),
                     onLongPress: () async {
                       if (_illusts.metaPages.isNotEmpty)
