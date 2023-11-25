@@ -250,10 +250,16 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 visible: _illustStore.errorMessage == null,
                 child: FloatingActionButton(
                   heroTag: widget.id,
-                  onPressed: () => _illustStore.star(
-                      restrict: userSetting.defaultPrivateLike
-                          ? "private"
-                          : "public"),
+                  onPressed: () {
+                    if (userSetting.saveAfterStar &&
+                        (_illustStore.state == 0)) {
+                      saveStore.saveImage(_illustStore.illusts!);
+                    }
+                    _illustStore.star(
+                        restrict: userSetting.defaultPrivateLike
+                            ? "private"
+                            : "public");
+                  },
                   child: Observer(builder: (_) {
                     return StarIcon(
                       state: _illustStore.state,
@@ -551,6 +557,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         return;
                       }
                     }
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                     saveStore.saveImage(_aboutStore.illusts[index]);
                   },
                   child: PixivImage(
@@ -607,6 +620,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         PhotoZoomPage(
                           index: 0,
                           illusts: data,
+                          illustStore: _illustStore,
                         ));
                   },
                   child: NullHero(
@@ -640,6 +654,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           PhotoZoomPage(
                             index: index,
                             illusts: data,
+                            illustStore: _illustStore,
                           ));
                     },
                     child: _buildIllustsItem(index, data, height));
@@ -958,6 +973,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   onTap: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                   },
                   onLongPress: () async {
                     Navigator.of(context).pop();
@@ -1020,7 +1042,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                 Leader.push(
                                     context,
                                     PhotoZoomPage(
-                                        index: index, illusts: illust));
+                                      index: index,
+                                      illusts: illust,
+                                      illustStore: _illustStore,
+                                    ));
                               },
                               child: Stack(
                                 children: [
@@ -1071,6 +1096,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       title: Text(I18n.of(context).save),
                       onTap: () {
                         Navigator.of(context).pop("OK");
+                        if (userSetting.starAfterSave &&
+                            (_illustStore.state == 0)) {
+                          _illustStore.star(
+                              restrict: userSetting.defaultPrivateLike
+                                  ? "private"
+                                  : "public");
+                        }
                       },
                     ),
                   ],
@@ -1239,6 +1271,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       LPrinter.d(result);
       String restrict = result['restrict'];
       List<String>? tags = result['tags'];
+      if (userSetting.saveAfterStar && (_illustStore.state == 0)) {
+        saveStore.saveImage(_illustStore.illusts!);
+      }
       _illustStore.star(restrict: restrict, tags: tags, force: true);
     }
   }

@@ -122,6 +122,10 @@ class _IllustCardState extends State<IllustCard> {
       }
     }
     saveStore.saveImage(store.illusts!);
+    if (userSetting.starAfterSave && (store.state == 0)) {
+      store.star(
+          restrict: userSetting.defaultPrivateLike ? "private" : "public");
+    }
   }
 
   Future _buildTap(BuildContext context) {
@@ -286,17 +290,19 @@ class _IllustCardState extends State<IllustCard> {
                 );
               }),
               onTap: () async {
+                if (userSetting.saveAfterStar && (store.state == 0)) {
+                  saveStore.saveImage(store.illusts!);
+                }
                 store.star(
                     restrict:
                         userSetting.defaultPrivateLike ? "private" : "public");
-                if (!userSetting.followAfterStar) {
-                  return;
-                }
-                bool success = await store.followAfterStar();
-                if (success) {
-                  BotToast.showText(
-                      text:
-                          "${store.illusts!.user.name} ${I18n.of(context).followed}");
+                if (userSetting.followAfterStar) {
+                  bool success = await store.followAfterStar();
+                  if (success) {
+                    BotToast.showText(
+                        text:
+                            "${store.illusts!.user.name} ${I18n.of(context).followed}");
+                  }
                 }
               },
               onLongPress: () async {
