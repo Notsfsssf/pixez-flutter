@@ -37,7 +37,7 @@ List<Contributor> contributors = [
           await apiClient.getSearchIllust("キャル(プリコネ) 10000users入り");
       Recommend recommend = Recommend.fromJson(response.data);
       if (recommend.illusts.isEmpty) return;
-      final targetIllusts = _safeMode
+      final targetIllusts = _safeMode || userSetting.hIsNotAllow
           ? recommend.illusts
               .where((element) => !element.tags.any((i) => i.name == "R-18"))
               .toList()
@@ -79,7 +79,16 @@ List<Contributor> contributors = [
       //XIAN:随机加载一张色图
       if (accountStore.now == null) return;
       if (_safeMode) return;
-
+      if (userSetting.hIsNotAllow) {
+        _showBottomSheet(
+            context: context,
+            builder: (context) {
+              return SafeArea(
+                child: Image.asset('assets/images/h.jpg'),
+              );
+            });
+        return;
+      }
       final response = await apiClient.getIllustRanking('day_r18', null);
       Recommend recommend = Recommend.fromJson(response.data);
       _showBottomSheet(
