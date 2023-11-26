@@ -17,7 +17,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/fluent/component/pixez_default_header.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/fluent/component/spotlight_card.dart';
 import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';

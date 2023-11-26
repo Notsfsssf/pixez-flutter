@@ -27,7 +27,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/fluent/fluentui.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';

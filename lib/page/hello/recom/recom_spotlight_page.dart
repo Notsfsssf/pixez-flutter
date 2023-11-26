@@ -112,6 +112,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           controller: _easyRefreshController,
           callLoadOverOffset: Platform.isIOS ? 2 : 5,
           header: PixezDefault.header(context),
+          footer: PixezDefault.footer(context),
           onRefresh: () async {
             await fetchT();
           },
