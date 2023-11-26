@@ -76,6 +76,7 @@ class _NewPageState extends State<NewPage>
               automaticallyImplyLeading: false,
               title: TabBar(
                   indicatorSize: TabBarIndicatorSize.label,
+                  tabAlignment: TabAlignment.start,
                   controller: _tabController,
                   isScrollable: true,
                   onTap: (i) {

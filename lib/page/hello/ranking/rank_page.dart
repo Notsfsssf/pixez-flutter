@@ -130,6 +130,7 @@ class _RankPageState extends State<RankPage>
                             onTap: (i) => setState(() {
                               this.index = i;
                             }),
+                            tabAlignment: TabAlignment.start,
                             indicatorSize: TabBarIndicatorSize.label,
                             isScrollable: true,
                             tabs: <Widget>[

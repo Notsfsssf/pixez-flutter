@@ -176,10 +176,11 @@ class _NetworkPageState extends State<NetworkPage> {
                                       _textEditingController.text
                                           .trim()
                                           .contains(" ")) {
-                                    showSnackbar(
-                                      context,
-                                      InfoBar(title: Text("illegal")),
-                                    );
+                                    displayInfoBar(context,
+                                        builder: (context, VoidCallback) =>
+                                            InfoBar(
+                                              title: Text('illegal'),
+                                            ));
                                     return;
                                   }
                                   await userSetting.setPictureSource(

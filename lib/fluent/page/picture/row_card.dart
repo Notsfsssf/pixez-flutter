@@ -61,11 +61,10 @@ class RowCard extends StatelessWidget {
           text: Text(I18n.of(context).copy),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: f.name));
-            showSnackbar(
-                context,
-                InfoBar(
-                  title: Text(I18n.of(context).copied_to_clipboard),
-                ));
+            displayInfoBar(context,
+                builder: (context, VoidCallback) => InfoBar(
+                      title: Text(I18n.of(context).copied_to_clipboard),
+                    ));
             Navigator.of(context).pop();
           },
         ),

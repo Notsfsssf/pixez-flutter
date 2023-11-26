@@ -25,66 +25,6 @@ import 'package:pixez/supportor_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
-mixin SelectableHtmlTextFactory on WidgetFactory {
-  bool get selectableText => true;
-
-  SelectionChangedCallback? get selectableTextOnChanged => null;
-
-  @override
-  Widget? buildText(BuildMetadata meta, TextStyleHtml tsh, InlineSpan text) {
-    if (selectableText &&
-        meta.overflow == TextOverflow.clip &&
-        text is TextSpan) {
-      return SelectableText.rich(
-        text,
-        maxLines: meta.maxLines > 0 ? meta.maxLines : null,
-        textAlign: tsh.textAlign ?? TextAlign.start,
-        textDirection: tsh.textDirection,
-        textScaleFactor: 1.0,
-        contextMenuBuilder: (context, editableTextState) {
-          final List<ContextMenuButtonItem> buttonItems =
-              editableTextState.contextMenuButtonItems;
-          buttonItems.insert(
-            buttonItems.length,
-            ContextMenuButtonItem(
-              label: I18n.of(context).translate,
-              onPressed: () async {
-                final TextEditingValue value =
-                    editableTextState.textEditingValue;
-                String selectionText = value.selection.textInside(value.text);
-                if (Platform.isIOS) {
-                  final box = context.findRenderObject() as RenderBox?;
-                  final pos = box != null
-                      ? box.localToGlobal(Offset.zero) & box.size
-                      : null;
-                  Share.share(selectionText, sharePositionOrigin: pos);
-                  return;
-                }
-                await SupportorPlugin.start(selectionText);
-                ContextMenuController.removeAny();
-              },
-            ),
-          );
-          return AdaptiveTextSelectionToolbar.buttonItems(
-            anchors: editableTextState.contextMenuAnchors,
-            buttonItems: buttonItems,
-          );
-        },
-        onSelectionChanged: selectableTextOnChanged,
-      );
-    }
-
-    return super.buildText(meta, tsh, text);
-  }
-}
-
-class SelectableHtmlWidgetFactory extends WidgetFactory
-    with SelectableHtmlTextFactory {
-  @override
-  SelectionChangedCallback? get selectableTextOnChanged =>
-      (selection, cause) {};
-}
-
 class SelectableHtml extends StatefulWidget {
   final String data;
 
@@ -115,8 +55,6 @@ class _SelectableHtmlState extends State<SelectableHtml> {
           }
           return null;
         },
-        factoryBuilder:
-            supportTranslate ? () => SelectableHtmlWidgetFactory() : (null),
         onTapUrl: (String url) async {
           try {
             LPrinter.d("html tap url: $url");

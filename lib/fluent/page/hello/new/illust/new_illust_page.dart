@@ -117,56 +117,57 @@ class _NewIllustPageState extends State<NewIllustPage> {
       child: IconButton(
           icon: Icon(FluentIcons.list),
           onPressed: () {
-            showBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                ),
-                context: context,
-                builder: (context) => SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(I18n.of(context).all),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = ApiForceSource(
-                                    futureGet: (e) => apiClient
-                                        .getFollowIllusts('all', force: e),
-                                    glanceKey: "follow_illust");
-                              });
-                            },
-                          ),
-                          ListTile(
-                            title: Text(I18n.of(context).public),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = ApiForceSource(
-                                    futureGet: (e) => apiClient
-                                        .getFollowIllusts('public', force: e),
-                                    glanceKey: "follow_illust");
-                              });
-                            },
-                          ),
-                          ListTile(
-                            title: Text(I18n.of(context).private),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                futureGet = ApiForceSource(
-                                    futureGet: (e) => apiClient
-                                        .getFollowIllusts('private', force: e),
-                                    glanceKey: "follow_illust");
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ));
+            //TODO 
+            // showBottomSheet(
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.vertical(
+            //         top: Radius.circular(16),
+            //       ),
+            //     ),
+            //     context: context,
+            //     builder: (context) => SafeArea(
+            //           child: Column(
+            //             mainAxisSize: MainAxisSize.min,
+            //             children: <Widget>[
+            //               ListTile(
+            //                 title: Text(I18n.of(context).all),
+            //                 onPressed: () {
+            //                   Navigator.of(context).pop();
+            //                   setState(() {
+            //                     futureGet = ApiForceSource(
+            //                         futureGet: (e) => apiClient
+            //                             .getFollowIllusts('all', force: e),
+            //                         glanceKey: "follow_illust");
+            //                   });
+            //                 },
+            //               ),
+            //               ListTile(
+            //                 title: Text(I18n.of(context).public),
+            //                 onPressed: () {
+            //                   Navigator.of(context).pop();
+            //                   setState(() {
+            //                     futureGet = ApiForceSource(
+            //                         futureGet: (e) => apiClient
+            //                             .getFollowIllusts('public', force: e),
+            //                         glanceKey: "follow_illust");
+            //                   });
+            //                 },
+            //               ),
+            //               ListTile(
+            //                 title: Text(I18n.of(context).private),
+            //                 onPressed: () {
+            //                   Navigator.of(context).pop();
+            //                   setState(() {
+            //                     futureGet = ApiForceSource(
+            //                         futureGet: (e) => apiClient
+            //                             .getFollowIllusts('private', force: e),
+            //                         glanceKey: "follow_illust");
+            //                   });
+            //                 },
+            //               ),
+            //             ],
+            //           ),
+            //         ));
           }),
     ));
   }

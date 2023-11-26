@@ -336,12 +336,10 @@ class _UsersPageState extends State<UsersPage>
       if (int.parse(accountStore.now!.userId) != widget.id) {
         userStore.follow(needPrivate: false);
       } else {
-        showSnackbar(
-          context,
-          InfoBar(
-            title: Text('Who is the most beautiful person in the world?'),
-          ),
-        );
+        displayInfoBar(context,
+            builder: (context, VoidCallback) => InfoBar(
+                  title: Text('Who is the most beautiful person in the world?'),
+                ));
       }
     };
 

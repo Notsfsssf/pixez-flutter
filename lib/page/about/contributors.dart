@@ -16,9 +16,10 @@ import 'package:pixez/network/api_client.dart';
 final bool _safeMode = Platform.isIOS || Constants.isGooglePlay;
 
 get _showBottomSheet {
-  if (Constants.isFluent)
-    return fluentui.showBottomSheet;
-  else
+  //TODO
+  // if (Constants.isFluent)
+  //   return fluentui.showBottomSheet;
+  // else
     return material.showBottomSheet;
 }
 

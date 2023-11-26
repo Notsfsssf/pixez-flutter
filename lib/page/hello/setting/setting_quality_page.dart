@@ -359,7 +359,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       dividerColor: Colors.transparent,
                       tabs: tablist,
@@ -432,7 +432,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   Icon(Icons.stay_primary_landscape),
                   Observer(builder: (_) {
                     return TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       dividerColor: Colors.transparent,
                       tabs: [
@@ -618,7 +618,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 builder: (_) {
                   return SwitchListTile(
                     value: userSetting.saveAfterStar,
-                    title: Text("收藏后自动下载"),
+                    title: Text('收藏并自动下载'),
                     onChanged: (value) async {
                       userSetting.setSaveAfterStar(value);
                     },

@@ -197,13 +197,11 @@ class _AccountEditPageState extends State<AccountEditPage> {
                 accountStore.updateSingle(accountStore.now!);
               }
             } else {
-              showSnackbar(
-                context,
-                InfoBar(
-                  title: Text('Error'),
-                  content: Text('${_accountEditStore.errorString}'),
-                ),
-              );
+              displayInfoBar(context,
+                  builder: (context, VoidCallback) => InfoBar(
+                        title: Text('Error'),
+                        content: Text('${_accountEditStore.errorString}'),
+                      ));
             }
             Navigator.of(context).pop();
           },

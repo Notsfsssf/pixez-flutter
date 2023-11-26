@@ -440,40 +440,41 @@ class _CommentPageState extends State<CommentPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: IconButton(
                 onPressed: () {
-                  showBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                      ),
-                      builder: (context) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              title: Text(I18n.of(context).ban),
-                              onPressed: () async {
-                                Navigator.of(context).pop();
-                                await muteStore.insertComment(comment);
-                              },
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).report),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Reporter.show(
-                                    context,
-                                    () async =>
-                                        await muteStore.insertComment(comment));
-                              },
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).padding.bottom,
-                            )
-                          ],
-                        );
-                      });
+                  //TODO
+                  // showBottomSheet(
+                  //     context: context,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.vertical(
+                  //         top: Radius.circular(16),
+                  //       ),
+                  //     ),
+                  //     builder: (context) {
+                  //       return Column(
+                  //         mainAxisSize: MainAxisSize.min,
+                  //         children: [
+                  //           ListTile(
+                  //             title: Text(I18n.of(context).ban),
+                  //             onPressed: () async {
+                  //               Navigator.of(context).pop();
+                  //               await muteStore.insertComment(comment);
+                  //             },
+                  //           ),
+                  //           ListTile(
+                  //             title: Text(I18n.of(context).report),
+                  //             onPressed: () {
+                  //               Navigator.of(context).pop();
+                  //               Reporter.show(
+                  //                   context,
+                  //                   () async =>
+                  //                       await muteStore.insertComment(comment));
+                  //             },
+                  //           ),
+                  //           Container(
+                  //             height: MediaQuery.of(context).padding.bottom,
+                  //           )
+                  //         ],
+                  //       );
+                  //     });
                 },
                 icon: Icon(FluentIcons.more)),
           )

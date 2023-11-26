@@ -111,12 +111,10 @@ class _PlatformPageStateWindow extends State<PlatformPage> {
                       checked: userSetting.singleFolder,
                       onChanged: (bool value) async {
                         if (value) {
-                          showSnackbar(
-                            context,
-                            InfoBar(
-                              title: Text("可能会造成保存等待时间过长"),
-                            ),
-                          );
+                          displayInfoBar(context,
+                              builder: (context, VoidCallback) => InfoBar(
+                                    title: Text('可能会造成保存等待时间过长'),
+                                  ));
                         }
                         await userSetting.setSingleFolder(value);
                       },

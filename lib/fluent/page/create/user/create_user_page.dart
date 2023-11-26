@@ -92,7 +92,10 @@ class _CreateUserPageState extends State<CreateUserPage> {
                           ..account = user.account
                           ..xRestrict = user.xRestrict);*/
                     } catch (e) {
-                      showSnackbar(context, InfoBar(title: Text("创建次数过多")));
+                      displayInfoBar(context,
+                          builder: (context, VoidCallback) => InfoBar(
+                                title: Text('创建次数过多'),
+                              ));
                     }
                   },
                   child: Text("Start"),

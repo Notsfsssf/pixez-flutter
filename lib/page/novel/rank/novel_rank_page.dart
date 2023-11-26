@@ -33,9 +33,6 @@ class _NovelRankPageState extends State<NovelRankPage> {
   }
 
   String? toRequestDate(DateTime dateTime) {
-    if (dateTime == null) {
-      return null;
-    }
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
