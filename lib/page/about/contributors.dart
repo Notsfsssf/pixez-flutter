@@ -16,10 +16,27 @@ import 'package:pixez/network/api_client.dart';
 final bool _safeMode = Platform.isIOS || Constants.isGooglePlay;
 
 get _showBottomSheet {
-  //TODO
-  // if (Constants.isFluent)
-  //   return fluentui.showBottomSheet;
-  // else
+  if (Constants.isFluent)
+    return ({
+      required BuildContext context,
+      required WidgetBuilder builder,
+      Color? backgroundColor,
+      double? elevation,
+      ShapeBorder? shape,
+      Clip? clipBehavior,
+      BoxConstraints? constraints,
+      bool? enableDrag,
+      AnimationController? transitionAnimationController,
+    }) =>
+        fluentui.showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => Padding(
+            padding: EdgeInsets.all(128),
+            child: builder(context),
+          ),
+        );
+  else
     return material.showBottomSheet;
 }
 
