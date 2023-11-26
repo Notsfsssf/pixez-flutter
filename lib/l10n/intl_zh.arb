@@ -284,9 +284,9 @@
   "view_the_latest": "查看最新一话",
   "automatically_download_when_bookmarking": "Automatically download when bookmarking",
   "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
-  "footer_loading": "Loading...",
-  "successed": "Successed",
-  "failed": "Failed",
-  "reply": "Reply",
-  "reply_to": "Reply to"
+  "footer_loading": "加载中...",
+  "successed": "加载成功",
+  "failed": "加载失败",
+  "reply": "回复",
+  "reply_to": "回复给"
 }

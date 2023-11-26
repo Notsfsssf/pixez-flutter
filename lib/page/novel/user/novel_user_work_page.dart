@@ -17,6 +17,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
@@ -61,9 +62,10 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
             onRefresh: () {
               _store.fetch();
             },
-            header: ClassicHeader(
+            header: PixezDefault.header(context,
                 position: IndicatorPosition.locator, safeArea: false),
-            footer: ClassicFooter(
+            footer: PixezDefault.footer(
+              context,
               position: IndicatorPosition.locator,
             ),
             childBuilder: (_, phy) {

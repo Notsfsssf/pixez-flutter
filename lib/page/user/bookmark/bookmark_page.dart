@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
@@ -222,9 +223,10 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
                 onRefresh: () {
                   _store.fetch(force: true);
                 },
-                header: ClassicHeader(
+                header: PixezDefault.header(context,
                     position: IndicatorPosition.locator, safeArea: false),
-                footer: ClassicFooter(
+                footer: PixezDefault.footer(
+                  context,
                   position: IndicatorPosition.locator,
                 ),
                 childBuilder: (context, phy) {

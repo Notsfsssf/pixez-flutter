@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
+import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -124,11 +125,13 @@ class _WorksPageState extends State<WorksPage> {
                 onRefresh: () {
                   _store.fetch(force: true);
                 },
-                header: ClassicHeader(
+                header: PixezDefault.header(
+                  context,
                   position: IndicatorPosition.locator,
                   safeArea: false,
                 ),
-                footer: ClassicFooter(
+                footer: PixezDefault.footer(
+                  context,
                   position: IndicatorPosition.locator,
                 ),
                 childBuilder: (context, phy) {
