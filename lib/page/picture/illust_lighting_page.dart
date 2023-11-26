@@ -32,6 +32,7 @@ import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
+import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_illust_id.dart';
@@ -391,6 +392,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       );
     return EasyRefresh(
       controller: _refreshController,
+      header: PixezDefault.header(context),
+      footer: PixezDefault.footer(context),
       onLoad: () {
         _aboutStore.next();
       },

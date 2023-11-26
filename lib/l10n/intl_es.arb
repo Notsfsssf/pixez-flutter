@@ -272,5 +272,12 @@
   "photo_picker": "Photo picker",
   "photo_picker_subtitle": "Use new system-level image selector",
   "swipe_to_switch_artworks": "Swipe to switch artworks",
-  "view_the_latest": "View the latest"
+  "view_the_latest": "View the latest",
+  "automatically_download_when_bookmarking": "Automatically download when bookmarking",
+  "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
+  "footer_loading": "Loading...",
+  "successed": "Successed",
+  "failed": "Failed",
+  "reply": "Reply",
+  "reply_to": "Reply to"
 }

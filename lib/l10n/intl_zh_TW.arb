@@ -281,5 +281,12 @@
   "photo_picker": "圖片選擇器",
   "photo_picker_subtitle": "使用新版圖片選擇器",
   "swipe_to_switch_artworks": "橫向滑動切換作品",
-  "view_the_latest": "觀看最新一話"
+  "view_the_latest": "觀看最新一話",
+  "automatically_download_when_bookmarking": "Automatically download when bookmarking",
+  "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
+  "footer_loading": "Loading...",
+  "successed": "Successed",
+  "failed": "Failed",
+  "reply": "Reply",
+  "reply_to": "Reply to"
 }

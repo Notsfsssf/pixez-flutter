@@ -281,5 +281,12 @@
   "photo_picker": "Görsel seçici",
   "photo_picker_subtitle": "yeni görsel seçicisini kullan",
   "swipe_to_switch_artworks": "Görseller arası geçiş yapmak için kaydır",
-  "view_the_latest": "En sonuncuyu görüntüle"
+  "view_the_latest": "En sonuncuyu görüntüle",
+  "automatically_download_when_bookmarking": "Automatically download when bookmarking",
+  "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
+  "footer_loading": "Loading...",
+  "successed": "Successed",
+  "failed": "Failed",
+  "reply": "Reply",
+  "reply_to": "Reply to"
 }

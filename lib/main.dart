@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,6 +27,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/fluent/component/pixez_default_header.dart';
 import 'package:pixez/fluent/fluentui.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/history/history_store.dart';
@@ -189,10 +191,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return child;
           },
           themeMode: userSetting.themeMode,
-          theme: ThemeData.light()
-              .copyWith(useMaterial3: true, colorScheme: lightColorScheme),
+          theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
           darkTheme: ThemeData.dark().copyWith(
-              useMaterial3: true,
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,
               tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),

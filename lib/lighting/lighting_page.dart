@@ -151,6 +151,7 @@ class _LightingListState extends State<LightingList> {
         child: EasyRefresh.builder(
           controller: _refreshController,
           header: PixezDefault.header(context),
+          footer: PixezDefault.footer(context),
           scrollController: _scrollController,
           onRefresh: () {
             _store.fetch(force: true);

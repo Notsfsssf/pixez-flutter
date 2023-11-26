@@ -405,7 +405,7 @@ class _CommentPageState extends State<CommentPage> {
                                   controller: _editController,
                                   decoration: InputDecoration(
                                       labelText:
-                                          "Reply to ${parentCommentName == null ? "illust" : parentCommentName}",
+                                          "${I18n.of(context).reply_to} ${parentCommentName == null ? "illust" : parentCommentName}",
                                       suffixIcon: IconButton(
                                           icon: Icon(
                                             Icons.reply,
@@ -474,7 +474,7 @@ class _CommentPageState extends State<CommentPage> {
               });
             },
             child: Text(
-              widget.isReplay ? "" : "Reply",
+              widget.isReplay ? "" : I18n.of(context).reply,
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
             )),
         if (!widget.isReplay)
