@@ -122,31 +122,27 @@ class _AboutPageState extends State<AboutPage> {
             title: Text('Perol_Notsfsssf'),
             subtitle: Text(I18n.of(context).perol_message),
             onPressed: () {
-              //TODO
-              // showBottomSheet(
-              //   context: context,
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.vertical(
-              //       top: Radius.circular(16),
-              //     ),
-              //   ),
-              //   builder: (BuildContext context) {
-              //     return IconButton(
-              //       onPressed: () async {
-              //         if (Platform.isAndroid)
-              //           await launchUrl(Uri.parse(Constants.isGooglePlay
-              //               ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
-              //               : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587"));
-              //       },
-              //       icon: Container(
-              //         child: Image.asset(
-              //           'assets/images/liz.png',
-              //           fit: BoxFit.cover,
-              //         ),
-              //       ),
-              //     );
-              //   },
-              // );
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) => Padding(
+                  padding: EdgeInsets.all(128),
+                  child: IconButton(
+                    onPressed: () async {
+                      if (Platform.isAndroid)
+                        await launchUrl(Uri.parse(Constants.isGooglePlay
+                            ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
+                            : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587"));
+                    },
+                    icon: Container(
+                      child: Image.asset(
+                        'assets/images/liz.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              );
             },
           ),
           ListTile(
@@ -156,18 +152,16 @@ class _AboutPageState extends State<AboutPage> {
             title: Text('Right now'),
             subtitle: Text(I18n.of(context).right_now_message),
             onPressed: () {
-              //TODO
-              // showBottomSheet(
-              //   context: context,
-              //   builder: (BuildContext context) {
-              //     return Container(
-              //       height: 200.0,
-              //       child: Center(
-              //         child: Text("这里空空的，这个设计师显然没有什么话要说"),
-              //       ),
-              //     );
-              //   },
-              // );
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) => Container(
+                  height: 200.0,
+                  child: Center(
+                    child: Text("这里空空的，这个设计师显然没有什么话要说"),
+                  ),
+                ),
+              );
             },
           ),
           Padding(
@@ -255,64 +249,59 @@ class _AboutPageState extends State<AboutPage> {
                 visible: hasNewVersion,
               ),
               onPressed: () {
-                if (!Constants.isGooglePlay) {
-                  //TODO
-                  // showBottomSheet(
-                  //     context: context,
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.vertical(
-                  //             top: Radius.circular(16.0))),
-                  //     builder: (_) {
-                  //       return SafeArea(
-                  //         child: Column(
-                  //           mainAxisSize: MainAxisSize.min,
-                  //           children: <Widget>[
-                  //             ListTile(
-                  //               title: Text('Version ${Constants.tagName}'),
-                  //               subtitle: Text(
-                  //                   I18n.of(context).go_to_project_address),
-                  //               onPressed: () async {
-                  //                 try {
-                  //                   await launchUrl(Uri.parse(
-                  //                       'https://github.com/Notsfsssf/pixez-flutter'));
-                  //                 } catch (e) {}
-                  //               },
-                  //               trailing: IconButton(
-                  //                   icon: Icon(FluentIcons.link),
-                  //                   onPressed: () async {
-                  //                     try {
-                  //                       await launchUrl(Uri.parse(
-                  //                           'https://github.com/Notsfsssf/pixez-flutter'));
-                  //                     } catch (e) {}
-                  //                   }),
-                  //             ),
-                  //             ListTile(
-                  //               title: Text(I18n.of(context).check_for_updates),
-                  //               onPressed: () {
-                  //                 Leader.push(
-                  //                   context,
-                  //                   UpdatePage(),
-                  //                   icon: Icon(FluentIcons.update_restore),
-                  //                   title: Text(
-                  //                       I18n.of(context).check_for_updates),
-                  //                 );
-                  //               },
-                  //               trailing: Icon(FluentIcons.update_restore),
-                  //             ),
-                  //             ListTile(
-                  //               leading: CircleAvatar(
-                  //                 backgroundImage: NetworkImage(
-                  //                     'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4'),
-                  //               ),
-                  //               title: Text('Skimige'),
-                  //               subtitle:
-                  //                   Text(I18n.of(context).skimige_message),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       );
-                  //     });
-                }
+                if (!Constants.isGooglePlay)
+                  showDialog(
+                      context: context,
+                      builder: (_) {
+                        return SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text('Version ${Constants.tagName}'),
+                                subtitle: Text(
+                                    I18n.of(context).go_to_project_address),
+                                onPressed: () async {
+                                  try {
+                                    await launchUrl(Uri.parse(
+                                        'https://github.com/Notsfsssf/pixez-flutter'));
+                                  } catch (e) {}
+                                },
+                                trailing: IconButton(
+                                    icon: Icon(FluentIcons.link),
+                                    onPressed: () async {
+                                      try {
+                                        await launchUrl(Uri.parse(
+                                            'https://github.com/Notsfsssf/pixez-flutter'));
+                                      } catch (e) {}
+                                    }),
+                              ),
+                              ListTile(
+                                title: Text(I18n.of(context).check_for_updates),
+                                onPressed: () {
+                                  Leader.push(
+                                    context,
+                                    UpdatePage(),
+                                    icon: Icon(FluentIcons.update_restore),
+                                    title: Text(
+                                        I18n.of(context).check_for_updates),
+                                  );
+                                },
+                                trailing: Icon(FluentIcons.update_restore),
+                              ),
+                              ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      'https://avatars1.githubusercontent.com/u/9017470?s=400&v=4'),
+                                ),
+                                title: Text('Skimige'),
+                                subtitle:
+                                    Text(I18n.of(context).skimige_message),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
               },
             )
           ],
