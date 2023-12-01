@@ -4,6 +4,11 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 
+final hIsNotAllowedImage = Container(
+  color: Colors.white,
+  child: Image.asset('assets/images/h.jpg'),
+);
+
 class PixivImageShielded extends StatefulWidget {
   final String url;
   final List<Tags> tags;
@@ -39,10 +44,7 @@ class _PixivImageShieldedState extends State<PixivImageShielded> {
       builder: (_) {
         if (userSetting.hIsNotAllow) {
           if (widget.tags.any((tag) => tag.name.startsWith('R-18'))) {
-            return Container(
-              color: Colors.white,
-              child: Image.asset('assets/images/h.jpg'),
-            );
+            return hIsNotAllowedImage;
           }
         }
         if (_pixivImage == null) {
