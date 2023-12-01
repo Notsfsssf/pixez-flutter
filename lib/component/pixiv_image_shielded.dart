@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -34,26 +36,28 @@ class _PixivImageShieldedState extends State<PixivImageShielded> {
   late PixivImage? _pixivImage = null;
   @override
   Widget build(BuildContext context) {
-    if (userSetting.hIsNotAllow) {
-      if (widget.tags.any((tag) => tag.name.startsWith('R-18'))) {
-        return Container(
-          color: Colors.white,
-          child: Image.asset('assets/images/h.jpg'),
+    return Observer(builder: (_) {
+      if (userSetting.hIsNotAllow) {
+        if (widget.tags.any((tag) => tag.name.startsWith('R-18'))) {
+          return Container(
+            color: Colors.white,
+            child: Image.asset('assets/images/h.jpg'),
+          );
+        }
+      }
+      if (_pixivImage == null) {
+        _pixivImage = PixivImage(
+          widget.url,
+          placeWidget: widget.placeWidget,
+          fade: widget.fade,
+          fit: widget.fit,
+          enableMemoryCache: widget.enableMemoryCache,
+          height: widget.height,
+          width: widget.width,
+          host: widget.host,
         );
       }
-    }
-    if (_pixivImage == null) {
-      _pixivImage = PixivImage(
-        widget.url,
-        placeWidget: widget.placeWidget,
-        fade: widget.fade,
-        fit: widget.fit,
-        enableMemoryCache: widget.enableMemoryCache,
-        height: widget.height,
-        width: widget.width,
-        host: widget.host,
-      );
-    }
-    return _pixivImage ?? Container();
+      return _pixivImage ?? Container();
+    });
   }
 }
