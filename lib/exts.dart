@@ -113,6 +113,15 @@ extension NovelExts on Novel {
 }
 
 extension IllustExts on Illusts {
+  bool hIsNotAllow() {
+    if (userSetting.hIsNotAllow) {
+      if (tags.any((tag) => tag.name.startsWith('R-18'))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool hateByUser({bool ai = false, bool includeR18Setting = false}) {
     if (ai) {
       return false;
