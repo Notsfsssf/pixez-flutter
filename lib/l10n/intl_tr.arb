@@ -120,7 +120,7 @@
   "private": "Gizli",
   "public": "Herkese açık",
   "pull_up_to_load_more": "Daha fazlasını yüklemek için aşağı kaydırın",
-  "quality_setting": "Tercihler",
+  "quality_setting": "Ayarlar",
   "quick_view": "Favoriler",
   "quietly_follow": "Gizlice takip et",
   "rank": "Sıralama",
@@ -282,11 +282,11 @@
   "photo_picker_subtitle": "yeni görsel seçicisini kullan",
   "swipe_to_switch_artworks": "Görseller arası geçiş yapmak için kaydır",
   "view_the_latest": "En sonuncuyu görüntüle",
-  "automatically_download_when_bookmarking": "Automatically download when bookmarking",
-  "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
-  "footer_loading": "Loading...",
-  "successed": "Successed",
-  "failed": "Failed",
-  "reply": "Reply",
-  "reply_to": "Reply to"
+  "automatically_download_when_bookmarking": "Yer işaretlerine ekleyince otomatik olarak indir",
+  "automatically_bookmark_when_downloading": "İndirince otomatik olarak yer işaretlerine ekle",
+  "footer_loading": "Yükleniyor...",
+  "successed": "Başarılı",
+  "failed": "Başarısız",
+  "reply": "Yanıtla",
+  "reply_to": "Yanıtla"
 }
