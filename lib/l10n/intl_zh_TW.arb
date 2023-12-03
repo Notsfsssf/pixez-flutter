@@ -282,11 +282,11 @@
   "photo_picker_subtitle": "使用新版圖片選擇器",
   "swipe_to_switch_artworks": "橫向滑動切換作品",
   "view_the_latest": "觀看最新一話",
-  "automatically_download_when_bookmarking": "Automatically download when bookmarking",
-  "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
-  "footer_loading": "Loading...",
-  "successed": "Successed",
-  "failed": "Failed",
-  "reply": "Reply",
-  "reply_to": "Reply to"
+  "automatically_download_when_bookmarking": "收藏時自動下載",
+  "automatically_bookmark_when_downloading": "下載時自動收藏",
+  "footer_loading": "加載中...",
+  "successed": "加載成功",
+  "failed": "加載失敗",
+  "reply": "回覆",
+  "reply_to": "回覆給"
 }
