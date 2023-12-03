@@ -23,6 +23,7 @@ class RiverPage extends HookConsumerWidget {
     final scrollController = useScrollController();
     useEffect(() {
       ref.read(illustsProvider.notifier).fetch(offset: 0);
+      return null;
     }, []);
     // ref.read(illustsProvider.notifier).fetch();
 
@@ -50,18 +51,6 @@ class RiverPage extends HookConsumerWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTopIndicator() {
-    return Container(
-      height: 60.0,
-      child: Center(
-        child: Text(
-          "Top",
-          style: TextStyle(color: Colors.grey),
-        ),
       ),
     );
   }

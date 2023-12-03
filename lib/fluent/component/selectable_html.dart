@@ -20,7 +20,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/i18n.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';

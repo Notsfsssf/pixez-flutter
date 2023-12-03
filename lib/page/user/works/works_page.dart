@@ -145,6 +145,7 @@ class _WorksPageState extends State<WorksPage> {
                               NestedScrollView.sliverOverlapAbsorberHandleFor(
                                   context),
                         ),
+                        const HeaderLocator.sliver(),
                         SliverPersistentHeader(
                             delegate: SliverChipDelegate(Container(
                               child: Center(
@@ -152,7 +153,6 @@ class _WorksPageState extends State<WorksPage> {
                               ),
                             )),
                             pinned: true),
-                        const HeaderLocator.sliver(),
                         if (_store.refreshing && _store.iStores.isEmpty)
                           SliverToBoxAdapter(
                             child: Container(

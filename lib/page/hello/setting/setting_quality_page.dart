@@ -316,7 +316,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     data: Theme.of(context).copyWith(
                         tabBarTheme: TabBarTheme(labelColor: Colors.black)),
                     child: TabBar(
-                      labelColor: Theme.of(context).textTheme.headline6!.color,
+                      labelColor: Theme.of(context).textTheme.titleLarge!.color,
                       indicatorSize: TabBarIndicatorSize.label,
                       dividerColor: Colors.transparent,
                       tabs: tablist,
