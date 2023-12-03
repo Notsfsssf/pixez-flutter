@@ -618,7 +618,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 builder: (_) {
                   return SwitchListTile(
                     value: userSetting.saveAfterStar,
-                    title: Text('收藏并自动下载'),
+                    title: Text(I18n.of(context)
+                        .automatically_download_when_bookmarking),
                     onChanged: (value) async {
                       userSetting.setSaveAfterStar(value);
                     },
@@ -634,7 +635,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 builder: (_) {
                   return SwitchListTile(
                     value: userSetting.starAfterSave,
-                    title: Text("下载后自动收藏"),
+                    title: Text(I18n.of(context)
+                        .automatically_bookmark_when_downloading),
                     onChanged: (value) async {
                       userSetting.setStarAfterSave(value);
                     },
