@@ -832,15 +832,15 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               children: [
                 TextSpan(
                   text: " ",
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
                 TextSpan(
                     text: "${f.translatedName ?? "~"}",
-                    style: Theme.of(context).textTheme.bodySmall)
+                    style: Theme.of(context).textTheme.titleSmall)
               ],
               style: Theme.of(context)
                   .textTheme
-                  .bodySmall!
+                  .titleSmall!
                   .copyWith(color: Theme.of(context).colorScheme.secondary))),
     );
   }
