@@ -459,8 +459,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               padding: const EdgeInsets.all(8.0),
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 2,
-                runSpacing: 0,
+                spacing: 12,
+                runSpacing: 6,
                 children: [
                   if (data.illustAIType == 2)
                     Text("${I18n.of(context).ai_generated}",
@@ -825,23 +825,27 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           );
         }));
       },
-      child: RichText(
-          textAlign: TextAlign.start,
-          text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? "~"}",
-                    style: Theme.of(context).textTheme.titleSmall)
-              ],
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall!
-                  .copyWith(color: Theme.of(context).colorScheme.secondary))),
+      child: Card(
+        elevation: 0,
+        child: Container(
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          child: RichText(
+              textAlign: TextAlign.start,
+              text: TextSpan(
+                  text: "#${f.name}",
+                  children: [
+                    TextSpan(
+                      text: " ",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    TextSpan(
+                        text: "${f.translatedName ?? "~"}",
+                        style: Theme.of(context).textTheme.titleSmall)
+                  ],
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.secondary))),
+        ),
+      ),
     );
   }
 
