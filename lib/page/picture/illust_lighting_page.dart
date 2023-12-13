@@ -408,10 +408,20 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             child: _buildNameAvatar(context, data),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+            child: Container(
+              margin: EdgeInsets.all(8.0),
               child: Column(
-                children: <Widget>[
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SelectionArea(
+                    child: Text(
+                      data.title,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -450,13 +460,15 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       colorText("${data.totalBookmarks}", context)
                     ],
                   ),
+                  Text(data.createDate.toShortTime(),
+                      style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 12,
@@ -472,9 +484,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ),
           ),
           SliverToBoxAdapter(
-            child: Card(
+            child: Container(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
                 child: SelectionArea(
                   focusNode: _focusNode,
                   onSelectionChanged: (value) {
@@ -498,7 +511,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   child: Text(
                     I18n.of(context).view_comment,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge!,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -825,26 +838,34 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           );
         }));
       },
-      child: Card(
-        elevation: 0,
-        child: Container(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
-          child: RichText(
-              textAlign: TextAlign.start,
-              text: TextSpan(
-                  text: "#${f.name}",
-                  children: [
-                    TextSpan(
-                      text: " ",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    TextSpan(
-                        text: "${f.translatedName ?? "~"}",
-                        style: Theme.of(context).textTheme.titleSmall)
-                  ],
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: Theme.of(context).colorScheme.secondary))),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
+        child: RichText(
+            textAlign: TextAlign.start,
+            text: TextSpan(
+                text: "#${f.name}",
+                children: [
+                  TextSpan(
+                    text: " ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(fontSize: 12),
+                  ),
+                  TextSpan(
+                      text: "${f.translatedName ?? "~"}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(fontSize: 12))
+                ],
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 12))),
       ),
     );
   }
@@ -866,14 +887,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   userStore!.follow();
                 },
                 child: Container(
-                  height: 70,
-                  width: 70,
+                  height: 32,
+                  width: 32,
                   child: Stack(
                     children: <Widget>[
                       Center(
                         child: SizedBox(
-                          height: 70,
-                          width: 70,
+                          height: 32,
+                          width: 32,
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -891,6 +912,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           child: PainterAvatar(
                             url: illust.user.profileImageUrls.medium,
                             id: illust.user.id,
+                            size: Size(32, 32),
                             onTap: () async {
                               await Leader.push(
                                   context,
@@ -917,12 +939,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SelectionArea(
-                    child: Text(
-                      illust.title,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
                   Container(
                     height: 4.0,
                   ),
@@ -936,10 +952,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                 Theme.of(context).textTheme.bodySmall!.color),
                       ),
                     ),
-                  ),
-                  Text(
-                    illust.createDate.toShortTime(),
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

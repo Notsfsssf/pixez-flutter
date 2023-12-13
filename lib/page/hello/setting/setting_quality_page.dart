@@ -100,6 +100,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   )),
             ),
             ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: Text(I18n.of(context).share_info_format),
+              trailing: const Icon(Icons.arrow_right),
+              onTap: () => Leader.push(context, CopyTextPage()),
+            ),
+            _buildLanguageSelect(),
+            Divider(),
+            ListTile(
               leading: const Icon(Icons.photo),
               title: Text(I18n.of(context).large_preview_zoom_quality),
               trailing: SettingSelectMenu(
@@ -135,30 +143,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   userSetting.setMangaQuality(index);
                 },
               ),
-            ),
-            ListTile(
-              leading: Icon(Icons.translate),
-              title: Text("Language"),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SettingSelectMenu(
-                    index: userSetting.languageNum,
-                    items: [
-                      ...Languages.map(
-                        (e) => e.language,
-                      ).toList()
-                    ],
-                    onChange: (index) async {
-                      await userSetting.setLanguageNum(index);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildLanguageTranlators(),
             ),
             ListTile(
               leading: const Icon(Icons.home),
@@ -266,6 +250,28 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 },
               ),
             ),
+            if (_widgetTypeIndex != -1)
+              ListTile(
+                leading: const Icon(Icons.widgets),
+                title: Text("App widget type"),
+                trailing: SettingSelectMenu(
+                  index: userSetting.zoomQuality,
+                  items: [
+                    I18n.of(context).recommend,
+                    I18n.of(context).rank,
+                    I18n.of(context).news,
+                  ],
+                  onChange: (index) async {
+                    try {
+                      final type = _typeList[index];
+                      await _pref?.setString("widget_illust_type", type);
+                      await glanceIllustPersistProvider.open();
+                      await glanceIllustPersistProvider.deleteAll();
+                    } catch (e) {}
+                  },
+                ),
+              ),
+            Divider(),
             SwitchListTile(
                 value: userSetting.isBangs,
                 title: Text(I18n.of(context).special_shaped_screen),
@@ -297,6 +303,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 onChanged: (value) async {
                   userSetting.setSwipeChangeArtwork(value);
                 }),
+            if (Platform.isIOS)
+              SwitchListTile(
+                  value: userSetting.nsfwMask,
+                  title: Text("最近任务遮罩"),
+                  onChanged: (value) async {
+                    userSetting.changeNsfwMask(value);
+                  }),
+            Divider(),
             SwitchListTile(
                 value: userSetting.followAfterStar,
                 title: Text(I18n.of(context).follow_after_star),
@@ -309,13 +323,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 onChanged: (value) async {
                   userSetting.setDefaultPrivateLike(value);
                 }),
-            if (Platform.isIOS)
-              SwitchListTile(
-                  value: userSetting.nsfwMask,
-                  title: Text("最近任务遮罩"),
-                  onChanged: (value) async {
-                    userSetting.changeNsfwMask(value);
-                  }),
             SwitchListTile(
               value: userSetting.saveAfterStar,
               title: Text(
@@ -332,36 +339,50 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 userSetting.setStarAfterSave(value);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.info_outline),
-              title: Text(I18n.of(context).share_info_format),
-              trailing: const Icon(Icons.arrow_right),
-              onTap: () => Leader.push(context, CopyTextPage()),
-            ),
-            if (_widgetTypeIndex != -1)
-              ListTile(
-                leading: const Icon(Icons.photo_size_select_actual_rounded),
-                title: Text("App widget type"),
-                trailing: SettingSelectMenu(
-                  index: userSetting.zoomQuality,
-                  items: [
-                    I18n.of(context).recommend,
-                    I18n.of(context).rank,
-                    I18n.of(context).news,
-                  ],
-                  onChange: (index) async {
-                    try {
-                      final type = _typeList[index];
-                      await _pref?.setString("widget_illust_type", type);
-                      await glanceIllustPersistProvider.open();
-                      await glanceIllustPersistProvider.deleteAll();
-                    } catch (e) {}
-                  },
-                ),
-              ),
+            Divider(),
           ]),
         );
       }),
+    );
+  }
+
+  Widget _buildLanguageSelect() {
+    return Container(
+      child: Column(
+        children: [
+          ListTile(
+            leading: Icon(Icons.translate),
+            title: Text("Language"),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SettingSelectMenu(
+                  index: userSetting.languageNum,
+                  items: [
+                    ...Languages.map(
+                      (e) => e.language,
+                    ).toList()
+                  ],
+                  onChange: (index) async {
+                    await userSetting.setLanguageNum(index);
+                  },
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(Languages.map(
+                    (e) => e.language,
+                  ).toList()[userSetting.languageNum]),
+                  _buildLanguageTranlators(),
+                ]),
+          ),
+        ],
+      ),
     );
   }
 
@@ -425,9 +446,10 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
   @override
   void didUpdateWidget(covariant SettingSelectMenu oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.index != widget.index) {
+    if (oldWidget.index != widget.index || oldWidget.items != widget.items) {
       setState(() {
         _index = widget.index;
+        _items = widget.items;
       });
     }
   }
@@ -441,9 +463,13 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
       color: Theme.of(context).colorScheme.secondaryContainer,
       child: InkWell(
           onTap: () {
+            final renderBox = context.findRenderObject() as RenderBox;
+            var local = renderBox.localToGlobal(Offset.zero);
+            var size = MediaQuery.of(context).size;
             showMenu(
                 context: context,
-                position: RelativeRect.fill,
+                position: RelativeRect.fromLTRB(local.dx - 20, local.dy,
+                    local.dx + size.width - 20, size.height + local.dy),
                 items: <PopupMenuEntry>[
                   for (int i = 0; i < _items.length; i++)
                     if (!_items.contains(i))
@@ -461,18 +487,25 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 8.0,
-                ),
-                Text(
-                  "${_items[_index]}",
-                ),
-                Icon(Icons.arrow_drop_down)
-              ],
+            child: Container(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 8.0,
+                      ),
+                      Text(
+                        "${_items[_index]}",
+                      )
+                    ],
+                  ),
+                  Icon(Icons.arrow_drop_down)
+                ],
+              ),
+              width: 90,
             ),
           )),
     );
