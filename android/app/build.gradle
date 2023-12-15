@@ -127,7 +127,7 @@ flutter {
 
 dependencies {
     implementation("androidx.core:core-remoteviews:1.0.0-beta03")
-    implementation("androidx.annotation:annotation:1.5.0")
+    implementation("androidx.annotation:annotation:1.6.0")
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(":weiss")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
