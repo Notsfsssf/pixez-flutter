@@ -21,7 +21,7 @@
 
 # 预览
 
-|![Preview](./.github/preview/2.jpg) | ![Preview](./.github/preview/1.jpg) | 
+|![Preview](./.github/preview/home.png) | ![Preview](./.github/preview/rankings.png) | ![Preview](./.github/preview/favorites.png) | ![Preview](./.github/preview/search.png) | 
 |:-------------------:|:------------------------:|
 
 # 关于项目 / About Repository
