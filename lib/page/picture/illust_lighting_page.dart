@@ -409,7 +409,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.all(8.0),
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -440,35 +440,57 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       colorText("${data.width}x${data.height}", context)
                     ],
                   ),
+                  Container(
+                    height: 4,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      SelectionContainer.disabled(
-                          child: Text(I18n.of(context).total_view)),
-                      Container(
-                        width: 10.0,
+                      Icon(
+                        Icons.remove_red_eye,
+                        color: Theme.of(context).textTheme.bodySmall!.color,
+                        size: 16,
                       ),
-                      colorText(data.totalView.toString(), context),
-                      Container(
-                        width: 20.0,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: Text(data.totalView.toString(),
+                            style: Theme.of(context).textTheme.bodySmall),
                       ),
-                      SelectionContainer.disabled(
-                          child: Text(I18n.of(context).total_bookmark)),
                       Container(
-                        width: 10.0,
+                        width: 4.0,
                       ),
-                      colorText("${data.totalBookmarks}", context)
+                      Icon(
+                        Icons.favorite,
+                        color: Theme.of(context).textTheme.bodySmall!.color,
+                        size: 16.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: Text("${data.totalBookmarks}",
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ),
+                      Container(
+                        width: 4.0,
+                      ),
+                      Icon(
+                        Icons.timelapse_rounded,
+                        color: Theme.of(context).textTheme.bodySmall!.color,
+                        size: 16.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: Text(data.createDate.toShortTime(),
+                            style: Theme.of(context).textTheme.bodySmall),
+                      )
                     ],
                   ),
-                  Text(data.createDate.toShortTime(),
-                      style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 12,
@@ -505,7 +527,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 0.0),
               child: SelectionContainer.disabled(
                 child: TextButton(
                   child: Text(
@@ -912,7 +934,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           child: PainterAvatar(
                             url: illust.user.profileImageUrls.medium,
                             id: illust.user.id,
-                            size: Size(32, 32),
+                            size: Size(28, 28),
                             onTap: () async {
                               await Leader.push(
                                   context,

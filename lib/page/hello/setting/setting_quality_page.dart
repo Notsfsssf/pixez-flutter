@@ -108,7 +108,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             _buildLanguageSelect(),
             Divider(),
             ListTile(
-              leading: const Icon(Icons.photo),
+              leading: const Icon(Icons.zoom_out_map),
               title: Text(I18n.of(context).large_preview_zoom_quality),
               trailing: SettingSelectMenu(
                 index: userSetting.zoomQuality,
@@ -130,7 +130,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.photo),
+              leading: const Icon(Icons.photo_album),
               title: Text(I18n.of(context).manga_detail_page_quality),
               trailing: SettingSelectMenu(
                 index: userSetting.mangaQuality,
@@ -505,7 +505,7 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
                   Icon(Icons.arrow_drop_down)
                 ],
               ),
-              width: 90,
+              constraints: BoxConstraints(minWidth: 90),
             ),
           )),
     );
