@@ -530,10 +530,23 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               padding: const EdgeInsets.only(left: 0.0),
               child: SelectionContainer.disabled(
                 child: TextButton(
-                  child: Text(
-                    I18n.of(context).view_comment,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(
+                          Icons.comment,
+                          size: 16,
+                        ),
+                      ),
+                      Text(
+                        I18n.of(context).view_comment,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(

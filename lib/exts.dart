@@ -42,7 +42,7 @@ extension TimeExts on String {
   String toShortTime() {
     try {
       var formatter = new DateFormat('yyyy-MM-dd HH:mm');
-      return formatter.format(DateTime.parse(this));
+      return formatter.format(DateTime.parse(this).toLocal());
     } catch (e) {
       return this;
     }
