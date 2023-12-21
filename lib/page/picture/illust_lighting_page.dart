@@ -912,87 +912,102 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
       });
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-              child: GestureDetector(
-                onLongPress: () {
-                  userStore!.follow();
-                },
-                child: Container(
-                  height: 32,
-                  width: 32,
-                  child: Stack(
-                    children: <Widget>[
-                      Center(
-                        child: SizedBox(
-                          height: 32,
-                          width: 32,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: userStore!.isFollow
-                                  ? Colors.yellow
-                                  : Theme.of(context).colorScheme.secondary,
+      return InkWell(
+        onTap: () async {
+          await Leader.push(
+              context,
+              UsersPage(
+                id: illust.user.id,
+                userStore: userStore,
+                heroTag: this.hashCode.toString(),
+              ));
+          _illustStore.illusts!.user.isFollowed = userStore!.isFollow;
+        },
+        onLongPress: () {
+          userStore!.follow();
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+                child: GestureDetector(
+                  onLongPress: () {
+                    userStore!.follow();
+                  },
+                  child: Container(
+                    height: 32,
+                    width: 32,
+                    child: Stack(
+                      children: <Widget>[
+                        Center(
+                          child: SizedBox(
+                            height: 32,
+                            width: 32,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: userStore!.isFollow
+                                    ? Colors.yellow
+                                    : Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Center(
-                        child: Hero(
-                          tag: illust.user.profileImageUrls.medium +
-                              this.hashCode.toString(),
-                          child: PainterAvatar(
-                            url: illust.user.profileImageUrls.medium,
-                            id: illust.user.id,
-                            size: Size(28, 28),
-                            onTap: () async {
-                              await Leader.push(
-                                  context,
-                                  UsersPage(
-                                    id: illust.user.id,
-                                    userStore: userStore,
-                                    heroTag: this.hashCode.toString(),
-                                  ));
-                              _illustStore.illusts!.user.isFollowed =
-                                  userStore!.isFollow;
-                            },
+                        Center(
+                          child: Hero(
+                            tag: illust.user.profileImageUrls.medium +
+                                this.hashCode.toString(),
+                            child: PainterAvatar(
+                              url: illust.user.profileImageUrls.medium,
+                              id: illust.user.id,
+                              size: Size(28, 28),
+                              onTap: () async {
+                                await Leader.push(
+                                    context,
+                                    UsersPage(
+                                      id: illust.user.id,
+                                      userStore: userStore,
+                                      heroTag: this.hashCode.toString(),
+                                    ));
+                                _illustStore.illusts!.user.isFollowed =
+                                    userStore!.isFollow;
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              padding: EdgeInsets.all(8.0)),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    height: 4.0,
-                  ),
-                  Hero(
-                    tag: illust.user.name + this.hashCode.toString(),
-                    child: SelectionArea(
-                      child: Text(
-                        illust.user.name,
-                        style: TextStyle(
-                            color:
-                                Theme.of(context).textTheme.bodySmall!.color),
-                      ),
+                      ],
                     ),
                   ),
-                ],
+                ),
+                padding: EdgeInsets.all(8.0)),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      height: 4.0,
+                    ),
+                    Hero(
+                      tag: illust.user.name + this.hashCode.toString(),
+                      child: SelectionArea(
+                        child: Text(
+                          illust.user.name,
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodySmall!.color),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     });
   }
