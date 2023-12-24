@@ -73,6 +73,7 @@ abstract class _UserSetting with Store {
   static const String USE_DYNAMIC_COLOR_KEY = "use_dynamic_color";
   static const String SEED_COLOR_KEY = "seed_color";
   static const String SWIPE_CHANGE_ARTWORK_KEY = "swipe_change_artwork";
+  static const String USE_SAUNCE_NAO_WEBVIEW = "use_sauce_nao_webview";
 
   @observable
   int crossAdapterWidth = 100;
@@ -163,6 +164,8 @@ abstract class _UserSetting with Store {
   int themeInitState = 0;
   @observable
   bool swipeChangeArtwork = false;
+  @observable
+  bool useSaunceNaoWebview = false;
 
   @observable
   String? format = "";
@@ -325,6 +328,12 @@ abstract class _UserSetting with Store {
   }
 
   @action
+  setUseSaunceNaoWebview(bool v) async {
+    await prefs.setBool(USE_SAUNCE_NAO_WEBVIEW, v);
+    useSaunceNaoWebview = v;
+  }
+
+  @action
   askInit() async {
     prefs = await SharedPreferences.getInstance();
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
@@ -399,6 +408,7 @@ abstract class _UserSetting with Store {
     longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
     imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 0;
     swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
+    useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
     if (Platform.isAndroid) {
       try {
         var modeList = await FlutterDisplayMode.supported;

@@ -129,8 +129,11 @@ class _SearchPageState extends State<SearchPage>
                 SliverToBoxAdapter(
                   child: SearchBar(
                     onSaucenao: () {
-                      // TODO
-                      _sauceStore.findImage(context: context);
+                      if (userSetting.useSaunceNaoWebview) {
+                        Leader.push(context, SauncenaoWebview());
+                      } else {
+                        _sauceStore.findImage(context: context);
+                      }
                     },
                   ),
                 )

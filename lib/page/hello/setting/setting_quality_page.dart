@@ -303,6 +303,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 onChanged: (value) async {
                   userSetting.setSwipeChangeArtwork(value);
                 }),
+            SwitchListTile(
+                value: userSetting.useSaunceNaoWebview,
+                title: Text("Use Saucenao webview"),
+                onChanged: (value) async {
+                  userSetting.setUseSaunceNaoWebview(value);
+                }),
             if (Platform.isIOS)
               SwitchListTile(
                   value: userSetting.nsfwMask,
