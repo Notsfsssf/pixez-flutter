@@ -26,12 +26,14 @@ import 'package:html/parser.dart' show parse;
 import 'package:image_picker/image_picker.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:image/image.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:pixez/page/webview/saucenao_webview_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -113,7 +115,6 @@ abstract class SauceStoreBase with Store {
     }
     notStart = false;
     results.clear();
-    MultipartFile? multipartFile;
     final picker = ImagePicker();
     final ImagePickerPlatform imagePickerImplementation =
         ImagePickerPlatform.instance;
@@ -150,7 +151,7 @@ abstract class SauceStoreBase with Store {
     }
     var formData = FormData();
     formData.files.addAll([
-      MapEntry("file", multipartFile ?? await MultipartFile.fromFile(path)),
+      MapEntry("file", await MultipartFile.fromFile(path)),
     ]);
     try {
       BotToast.showText(text: "uploading");

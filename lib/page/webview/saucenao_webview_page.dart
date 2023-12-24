@@ -1,24 +1,25 @@
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 
 class SauncenaoWebview extends StatefulWidget {
-  const SauncenaoWebview({super.key});
+  final String? path;
+  const SauncenaoWebview({this.path});
 
   @override
   State<SauncenaoWebview> createState() => _SauncenaoWebviewState();
 }
 
 class _SauncenaoWebviewState extends State<SauncenaoWebview> {
-  final _url = "";
+  final _url = "https://saucenao.com/";
   var progressValue = 0.0;
   late InAppWebViewController _webViewController;
+  String? _path;
   @override
   void initState() {
+    _path = widget.path;
     super.initState();
   }
 

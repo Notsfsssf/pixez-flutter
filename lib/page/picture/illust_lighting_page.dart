@@ -988,9 +988,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      height: 4.0,
-                    ),
                     Hero(
                       tag: illust.user.name + this.hashCode.toString(),
                       child: SelectionArea(
