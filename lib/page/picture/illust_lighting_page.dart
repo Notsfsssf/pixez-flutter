@@ -251,7 +251,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 visible: _illustStore.errorMessage == null,
                 child: FloatingActionButton(
                   heroTag: widget.id,
-                  onPressed: () {
+                  onPressed: () async {
                     if (userSetting.saveAfterStar &&
                         (_illustStore.state == 0)) {
                       saveStore.saveImage(_illustStore.illusts!);
@@ -260,6 +260,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         restrict: userSetting.defaultPrivateLike
                             ? "private"
                             : "public");
+                    if (userSetting.followAfterStar) {
+                      bool success = await _illustStore.followAfterStar();
+                      if (success) {
+                        BotToast.showText(
+                            text:
+                                "${_illustStore.illusts!.user.name} ${I18n.of(context).followed}");
+                      }
+                    }
                   },
                   child: Observer(builder: (_) {
                     return StarIcon(
