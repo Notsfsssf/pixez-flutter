@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -34,6 +35,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _loadSource = userSetting.zoomQuality == 1;
     _illusts = widget.illusts;
     _index = widget.index;
@@ -59,6 +61,8 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
@@ -86,10 +90,10 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
         );
       } else {
         return Scaffold(
-          backgroundColor: Colors.black,
           extendBody: true,
           bottomNavigationBar: _buildBottom(context),
           extendBodyBehindAppBar: true,
+          backgroundColor: Colors.black,
           body: Container(
               child: PhotoViewGallery.builder(
             scrollPhysics: const BouncingScrollPhysics(),
