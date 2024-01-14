@@ -505,9 +505,36 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 runSpacing: 6,
                 children: [
                   if (data.illustAIType == 2)
-                    Text("${I18n.of(context).ai_generated}",
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Theme.of(context).colorScheme.secondary)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
+                      ),
+                      child: RichText(
+                          textAlign: TextAlign.start,
+                          text: TextSpan(
+                              text: "${I18n.of(context).ai_generated}",
+                              children: [
+                                TextSpan(
+                                  text: " ",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall!
+                                      .copyWith(fontSize: 12),
+                                ),
+                              ],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontSize: 12))),
+                    ),
                   for (var f in data.tags) buildRow(context, f)
                 ],
               ),
