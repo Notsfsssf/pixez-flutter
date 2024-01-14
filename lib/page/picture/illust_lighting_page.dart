@@ -509,7 +509,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        color: Colors.black,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(8)),
                       ),
@@ -530,10 +530,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                   .textTheme
                                   .titleSmall!
                                   .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      fontSize: 12))),
+                                      color: Colors.white, fontSize: 12))),
                     ),
                   for (var f in data.tags) buildRow(context, f)
                 ],
