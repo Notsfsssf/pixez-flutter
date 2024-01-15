@@ -1,30 +1,29 @@
 name: Build IOS
-run-name: Build IOS
 on:
   workflow_dispatch: {}
 jobs:
   Build_IOS:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup Flutter
-    - uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
-    - run: flutter --version
-    - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
-    - run: flutter pub get
-    - run: flutter packages pub run build_runner build --delete-conflicting-outputs
-    - run: flutter build ios --release --no-codesign
-    - name: Create Payload directory and move Runner.app
-      run: |
-        mkdir -p build/ios/iphoneos/Payload
-        mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
-    - name: Change directory and zip Payload to create pixez-ios.ipa
-      run: |
-        cd build/ios/iphoneos/
-        zip -r pixez-ios.ipa Payload
-    - uses: actions/upload-artifact@v3
-      with:
-        name: pixez-ios.ipa
-        path: build/ios/iphoneos/pixez-ios.ipa
+      - uses: actions/checkout@v3
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter --version
+      - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
+      - run: flutter pub get
+      - run: flutter packages pub run build_runner build --delete-conflicting-outputs
+      - run: flutter build ios --release --no-codesign
+      - name: Create Payload directory and move Runner.app
+        run: |
+          mkdir -p build/ios/iphoneos/Payload
+          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
+      - name: Change directory and zip Payload to create pixez-ios.ipa
+        run: |
+          cd build/ios/iphoneos/
+          zip -r pixez-ios.ipa Payload
+      - uses: actions/upload-artifact@v3
+        with:
+          name: pixez-ios.ipa
+          path: build/ios/iphoneos/pixez-ios.ipa
