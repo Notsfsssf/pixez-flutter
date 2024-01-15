@@ -79,6 +79,7 @@ abstract class _IllustStoreBase with Store {
     if (illusts != null) historyStore.insert(illusts!);
   }
 
+  @action
   Future<bool> followAfterStar() async {
     try {
       if (!illusts!.user.isFollowed!) {
