@@ -35,7 +35,6 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _loadSource = userSetting.zoomQuality == 1;
     _illusts = widget.illusts;
     _index = widget.index;
@@ -57,13 +56,6 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
       setState(() {
         shareShow = fileInfo != null;
       });
-  }
-
-  @override
-  void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
-    super.dispose();
   }
 
   @override
