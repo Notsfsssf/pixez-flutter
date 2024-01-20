@@ -381,7 +381,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     return SelectionArea(
       child: Text(
         text,
-        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary, fontSize: 12),
       ),
     );
   }
@@ -417,14 +418,17 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SelectionArea(
                     child: Text(
                       data.title,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontSize: 18),
                     ),
                   ),
                   SizedBox(
@@ -433,17 +437,29 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Container(child: Text(I18n.of(context).illust_id)),
                       Container(
-                        width: 10.0,
+                          child: Text(
+                        I18n.of(context).illust_id,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.onSurface),
+                      )),
+                      Container(
+                        width: 4.0,
                       ),
                       colorText(data.id.toString(), context),
                       Container(
-                        width: 20.0,
-                      ),
-                      Container(child: Text(I18n.of(context).pixel)),
-                      Container(
                         width: 10.0,
+                      ),
+                      Container(
+                          child: Text(
+                        I18n.of(context).pixel,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.onSurface),
+                      )),
+                      Container(
+                        width: 4.0,
                       ),
                       colorText("${data.width}x${data.height}", context)
                     ],
@@ -457,12 +473,16 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       Icon(
                         Icons.remove_red_eye,
                         color: Theme.of(context).textTheme.bodySmall!.color,
-                        size: 16,
+                        size: 12,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 2.0),
-                        child: Text(data.totalView.toString(),
-                            style: Theme.of(context).textTheme.bodySmall),
+                        child: Text(
+                          data.totalView.toString(),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.onSurface),
+                        ),
                       ),
                       Container(
                         width: 4.0,
@@ -470,12 +490,15 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       Icon(
                         Icons.favorite,
                         color: Theme.of(context).textTheme.bodySmall!.color,
-                        size: 16.0,
+                        size: 12.0,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 2.0),
                         child: Text("${data.totalBookmarks}",
-                            style: Theme.of(context).textTheme.bodySmall),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color:
+                                    Theme.of(context).colorScheme.onSurface)),
                       ),
                       Container(
                         width: 4.0,
@@ -483,7 +506,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       Icon(
                         Icons.timelapse_rounded,
                         color: Theme.of(context).textTheme.bodySmall!.color,
-                        size: 16.0,
+                        size: 12.0,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 2.0),
@@ -498,10 +521,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
+                spacing: 6,
                 runSpacing: 6,
                 children: [
                   if (data.illustAIType == 2)
@@ -541,7 +564,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             child: Container(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                 child: SelectionArea(
                   focusNode: _focusNode,
                   onSelectionChanged: (value) {
@@ -906,10 +929,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         }));
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderRadius: const BorderRadius.all(Radius.circular(67)),
         ),
         child: RichText(
             textAlign: TextAlign.start,
@@ -1012,10 +1035,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     ),
                   ),
                 ),
-                padding: EdgeInsets.all(8.0)),
+                padding: EdgeInsets.only(left: 16.0)),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1026,6 +1049,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         child: Text(
                           illust.user.name,
                           style: TextStyle(
+                              fontSize: 14,
                               color:
                                   Theme.of(context).textTheme.bodySmall!.color),
                         ),
