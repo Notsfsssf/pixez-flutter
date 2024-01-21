@@ -948,10 +948,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         }));
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: const BorderRadius.all(Radius.circular(67)),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         child: RichText(
             textAlign: TextAlign.start,
