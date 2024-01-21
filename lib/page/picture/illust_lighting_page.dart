@@ -431,7 +431,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(I18n.of(context).about_picture),
             ),
           ),
@@ -503,26 +503,26 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   Widget _buildCommentTextArea(BuildContext context, Illusts data) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-      child: Card(
-        child: SelectionContainer.disabled(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  I18n.of(context).view_comment,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontSize: 14),
-                ),
-              ),
-            ],
-          ),
+      padding:
+          const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+      child: SelectionContainer.disabled(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.comment,
+                size: 16, color: Theme.of(context).colorScheme.primary),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              I18n.of(context).view_comment,
+              textAlign: TextAlign.center,
+              style:
+                  Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 14),
+            ),
+          ],
         ),
       ),
     );
@@ -532,21 +532,16 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-            child: SelectionArea(
-              focusNode: _focusNode,
-              onSelectionChanged: (value) {
-                _selectedText = value?.plainText ?? "";
-              },
-              contextMenuBuilder: (context, selectableRegionState) {
-                return _buildSelectionMenu(selectableRegionState, context);
-              },
-              child: SelectableHtml(
-                data: data.caption.isEmpty ? "~" : data.caption,
-              ),
-            ),
+        child: SelectionArea(
+          focusNode: _focusNode,
+          onSelectionChanged: (value) {
+            _selectedText = value?.plainText ?? "";
+          },
+          contextMenuBuilder: (context, selectableRegionState) {
+            return _buildSelectionMenu(selectableRegionState, context);
+          },
+          child: SelectableHtml(
+            data: data.caption.isEmpty ? "~" : data.caption,
           ),
         ),
       ),
