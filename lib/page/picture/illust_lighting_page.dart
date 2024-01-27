@@ -504,25 +504,35 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   Widget _buildCommentTextArea(BuildContext context, Illusts data) {
     return Padding(
       padding:
-          const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+          const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
       child: SelectionContainer.disabled(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.comment,
-                size: 16, color: Theme.of(context).colorScheme.primary),
-            SizedBox(
-              width: 4,
+        child: GestureDetector(
+          onTap: () {
+            Leader.push(context, CommentPage(id: widget.id));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.comment,
+                    size: 16, color: Theme.of(context).colorScheme.primary),
+                SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  I18n.of(context).view_comment,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(fontSize: 14),
+                ),
+              ],
             ),
-            Text(
-              I18n.of(context).view_comment,
-              textAlign: TextAlign.center,
-              style:
-                  Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 14),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -616,7 +626,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             children: <Widget>[
               Icon(
                 Icons.remove_red_eye,
-                color: Theme.of(context).textTheme.bodySmall!.color,
+                color: Theme.of(context).colorScheme.onSurface,
                 size: 12,
               ),
               Padding(
@@ -633,7 +643,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               ),
               Icon(
                 Icons.favorite,
-                color: Theme.of(context).textTheme.bodySmall!.color,
+                color: Theme.of(context).colorScheme.onSurface,
                 size: 12.0,
               ),
               Padding(
@@ -648,13 +658,15 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               ),
               Icon(
                 Icons.timelapse_rounded,
-                color: Theme.of(context).textTheme.bodySmall!.color,
+                color: Theme.of(context).colorScheme.onSurface,
                 size: 12.0,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 2.0),
                 child: Text(data.createDate.toShortTime(),
-                    style: Theme.of(context).textTheme.bodySmall),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurface)),
               )
             ],
           ),
