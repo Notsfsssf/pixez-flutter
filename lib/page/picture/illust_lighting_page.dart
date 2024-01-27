@@ -541,17 +541,22 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   Container _buildCaptionArea(Illusts data) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-        child: SelectionArea(
-          focusNode: _focusNode,
-          onSelectionChanged: (value) {
-            _selectedText = value?.plainText ?? "";
-          },
-          contextMenuBuilder: (context, selectableRegionState) {
-            return _buildSelectionMenu(selectableRegionState, context);
-          },
-          child: SelectableHtml(
-            data: data.caption.isEmpty ? "~" : data.caption,
+        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 14),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SelectionArea(
+              focusNode: _focusNode,
+              onSelectionChanged: (value) {
+                _selectedText = value?.plainText ?? "";
+              },
+              contextMenuBuilder: (context, selectableRegionState) {
+                return _buildSelectionMenu(selectableRegionState, context);
+              },
+              child: SelectableHtml(
+                data: data.caption.isEmpty ? "~" : data.caption,
+              ),
+            ),
           ),
         ),
       ),
