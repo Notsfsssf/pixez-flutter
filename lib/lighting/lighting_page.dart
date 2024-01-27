@@ -199,7 +199,7 @@ class _LightingListState extends State<LightingList> {
               );
   }
 
-  Container _buildErrorContent(context) {
+  Widget _buildErrorContent(context) {
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,

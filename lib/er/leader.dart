@@ -55,17 +55,17 @@ class Leader {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  static Future<void> pushWithUri(BuildContext context, Uri link) async {
+  static Future<bool> pushWithUri(BuildContext context, Uri link) async {
     if (Constants.isFluent) {
       FluentLeader.pushWithUri(context, link);
-      return;
+      return false;
     }
     // https://www.pixiv.net/novel/series/$id
     if (link.path.contains("novel") && link.path.contains("series")) {
       final id = int.tryParse(link.pathSegments.last);
       if (id != null) {
         Leader.push(context, NovelSeriesPage(id));
-        return;
+        return true;
       }
     }
     if (link.host == "script" && link.scheme == "pixez") {
@@ -77,7 +77,7 @@ class Leader {
               : null,
         );
       }));
-      return;
+      return true;
     }
     if (link.host == "i.pximg.net") {
       final id = int.tryParse(
@@ -86,7 +86,7 @@ class Leader {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return IllustLightingPage(id: id);
         }));
-        return;
+        return true;
       }
     }
     if (link.host == "pixiv.me") {
@@ -97,15 +97,14 @@ class Leader {
         if (response.isRedirect == true) {
           Uri source = response.realUri;
           LPrinter.d("here we go pixiv me:" + source.toString());
-          pushWithUri(context, source);
-          return;
+          return await pushWithUri(context, source);
         }
       } catch (e) {
         try {
           launch(link.toString());
         } catch (e) {}
       }
-      return;
+      return true;
     }
     if (link.host.contains("pixivision.net")) {
       Leader.push(
@@ -113,7 +112,7 @@ class Leader {
           SoupPage(
               url: link.toString().replaceAll("pixez://", "https://"),
               spotlight: null));
-      return;
+      return true;
     }
     if (link.scheme == "pixiv") {
       if (link.host.contains("account")) {
@@ -151,16 +150,17 @@ class Leader {
       } else if (link.host.contains("illusts") ||
           link.host.contains("user") ||
           link.host.contains("novel")) {
-        _parseUriContent(context, link);
+        return _parseUriContent(context, link);
       }
     } else if (link.scheme.contains("http")) {
-      _parseUriContent(context, link);
+      return _parseUriContent(context, link);
     } else if (link.scheme == "pixez") {
-      _parseUriContent(context, link);
+      return _parseUriContent(context, link);
     }
+    return false;
   }
 
-  static void _parseUriContent(BuildContext context, Uri link) {
+  static bool _parseUriContent(BuildContext context, Uri link) {
     if (link.host.contains('illusts')) {
       var idSource = link.pathSegments.last;
       try {
@@ -172,7 +172,7 @@ class Leader {
           );
         }));
       } catch (e) {}
-      return;
+      return true;
     } else if (link.host.contains('user')) {
       var idSource = link.pathSegments.last;
       try {
@@ -184,7 +184,7 @@ class Leader {
           );
         }));
       } catch (e) {}
-      return;
+      return true;
     } else if (link.host.contains("novel")) {
       try {
         int id = int.parse(link.pathSegments.last);
@@ -192,7 +192,7 @@ class Leader {
             .push(MaterialPageRoute(builder: (context) {
           return NovelViewerPage(id: id);
         }));
-        return;
+        return true;
       } catch (e) {
         LPrinter.d(e);
       }
@@ -207,7 +207,7 @@ class Leader {
                 .push(MaterialPageRoute(builder: (context) {
               return IllustLightingPage(id: id);
             }));
-            return;
+            return true;
           } catch (e) {
             LPrinter.d(e);
           }
@@ -223,6 +223,7 @@ class Leader {
                 builder: (context) => UsersPage(
                       id: id,
                     )));
+            return true;
           } catch (e) {
             print(e);
           }
@@ -232,7 +233,7 @@ class Leader {
         try {
           var id = link.queryParameters['illust_id'];
           Leader.push(context, IllustLightingPage(id: int.parse(id!)));
-          return;
+          return true;
         } catch (e) {}
       }
       if (link.queryParameters['id'] != null) {
@@ -253,7 +254,7 @@ class Leader {
                 novelStore: null,
               );
             }));
-          return;
+          return true;
         } catch (e) {}
       }
       if (link.pathSegments.length >= 2) {
@@ -262,7 +263,7 @@ class Leader {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
             Leader.push(context, IllustLightingPage(id: id));
-            return;
+            return true;
           } catch (e) {}
         } else if (i == "u") {
           try {
@@ -273,7 +274,7 @@ class Leader {
                 id: id,
               );
             }));
-            return;
+            return true;
           } catch (e) {}
         } else if (i == "tags") {
           try {
@@ -284,10 +285,12 @@ class Leader {
                 word: tag,
               );
             }));
+            return true;
           } catch (e) {}
         }
       }
     }
+    return false;
   }
 
   static Future<dynamic> pushWithScaffold(context, Widget widget,
