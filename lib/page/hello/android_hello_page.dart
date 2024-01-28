@@ -61,11 +61,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (didPop) async {
         userSetting.setAnimContainer(!userSetting.animContainer);
         if (!userSetting.isReturnAgainToExit) {
-          return true;
+          return;
         }
         if (_preTime == null ||
             DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
@@ -74,9 +74,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             duration: Duration(seconds: 1),
             content: Text(I18n.of(context).return_again_to_exit),
           ));
-          return false;
         }
-        return true;
       },
       child: Observer(builder: (context) {
         if (accountStore.now != null &&
@@ -253,7 +251,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late int index;
   late PageController _pageController;
   late StreamSubscription _intentDataStreamSubscription;
-  late StreamSubscription _textStreamSubscription;
   bool hasNewVersion = false;
 
   @override
@@ -278,32 +275,33 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
-    _textStreamSubscription =
-        ReceiveSharingIntent.getTextStream().listen((value) {
-      _showChromeLink(value);
-    });
-    ReceiveSharingIntent.getInitialText().then((value) {
-      if (value != null) {
-        _showChromeLink(value);
-      }
-    });
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
         .listen((List<SharedMediaFile> value) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return SauceNaoPage(
-          path: value.first.path,
-        );
-      }));
+      for (var i in value) {
+        if (i.type == SharedMediaType.text) {
+          _showChromeLink(i.path);
+          continue;
+        }
+        Leader.push(
+            context,
+            SauceNaoPage(
+              path: i.path,
+            ));
+      }
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      if (value.isNotEmpty) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return SauceNaoPage(
-            path: value.first.path,
-          );
-        }));
+      for (var i in value) {
+        if (i.type == SharedMediaType.text) {
+          _showChromeLink(i.path);
+          continue;
+        }
+        Leader.push(
+            context,
+            SauceNaoPage(
+              path: i.path,
+            ));
       }
     });
     initPlatform();
@@ -431,7 +429,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   @override
   void dispose() {
     _intentDataStreamSubscription.cancel();
-    _textStreamSubscription.cancel();
     _pageController.dispose();
     _sub.cancel();
     super.dispose();

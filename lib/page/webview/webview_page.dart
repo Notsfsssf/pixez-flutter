@@ -65,14 +65,10 @@ class _WebViewPageState extends State<WebViewPage> {
             ),
             Expanded(
               child: InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),
-                  initialOptions: InAppWebViewGroupOptions(
-                      crossPlatform: InAppWebViewOptions(
-                        useShouldOverrideUrlLoading: true,
-                      ),
-                      android: AndroidInAppWebViewOptions(
-                        useHybridComposition: true,
-                      )),
+                  initialUrlRequest: URLRequest(url: WebUri(widget.url)),
+                  initialSettings: InAppWebViewSettings(
+                      useShouldOverrideUrlLoading: true,
+                      useHybridComposition: true),
                   onWebViewCreated: (InAppWebViewController controller) {
                     _webViewController = controller;
                   },

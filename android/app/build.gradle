@@ -71,7 +71,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -80,7 +80,7 @@ android {
     defaultConfig {
         applicationId packageName
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 10009370
         versionName "0.9.37 Ma"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
@@ -126,17 +126,17 @@ flutter {
 }
 
 dependencies {
-    implementation("androidx.core:core-remoteviews:1.0.0-beta03")
-    implementation("androidx.annotation:annotation:1.5.0")
+    implementation("androidx.core:core-remoteviews:1.0.0")
+    implementation("androidx.annotation:annotation:1.7.1")
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation project(":weiss")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("com.google.android.material:material:1.8.0-rc01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("io.coil-kt:coil:2.1.0")
     implementation("androidx.webkit:webkit:1.4.0")
-    implementation("androidx.browser:browser:1.4.0")
+    implementation("androidx.browser:browser:1.7.0")
     implementation("com.waynejo:androidndkgif:0.3.3")
-    implementation("androidx.preference:preference-ktx:1.2.0")
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("com.google.android.play:core:1.10.3")
     implementation("androidx.documentfile:documentfile:1.0.1")
 }

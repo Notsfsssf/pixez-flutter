@@ -18,14 +18,9 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
       ),
       body: InAppWebView(
         initialUrlRequest:
-            URLRequest(url: Uri.parse("https://www.pixiv.net/leave_pixiv.php")),
-        initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              useShouldOverrideUrlLoading: true,
-            ),
-            android: AndroidInAppWebViewOptions(
-              useHybridComposition: true,
-            )),
+            URLRequest(url: WebUri("https://www.pixiv.net/leave_pixiv.php")),
+        initialSettings: InAppWebViewSettings(
+            useShouldOverrideUrlLoading: true, useHybridComposition: true),
       ),
     );
   }

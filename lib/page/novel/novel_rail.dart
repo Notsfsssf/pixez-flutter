@@ -59,11 +59,12 @@ class _NovelRailState extends State<NovelRail> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
         userSetting.setAnimContainer(!userSetting.animContainer);
         if (!userSetting.isReturnAgainToExit) {
-          return true;
+          return;
         }
         if (_preTime == null ||
             DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
@@ -72,9 +73,8 @@ class _NovelRailState extends State<NovelRail> {
             duration: Duration(seconds: 1),
             content: Text(I18n.of(context).return_again_to_exit),
           ));
-          return false;
+          return;
         }
-        return true;
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton(

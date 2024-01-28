@@ -54,14 +54,10 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
             ),
             Expanded(
               child: InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse(_url)),
-                  initialOptions: InAppWebViewGroupOptions(
-                      crossPlatform: InAppWebViewOptions(
-                        useShouldOverrideUrlLoading: true,
-                      ),
-                      android: AndroidInAppWebViewOptions(
-                        useHybridComposition: true,
-                      )),
+                  initialUrlRequest: URLRequest(url: WebUri(_url)),
+                  initialSettings: InAppWebViewSettings(
+                      useShouldOverrideUrlLoading: true,
+                      useHybridComposition: true),
                   onWebViewCreated: (InAppWebViewController controller) {
                     _webViewController = controller;
                     // _webViewController.postUrl(url: url, postData: postData)
