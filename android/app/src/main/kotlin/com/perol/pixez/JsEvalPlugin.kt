@@ -1,18 +1,20 @@
 package com.perol.pixez
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.webkit.WebView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 
 @SuppressLint("SetJavaScriptEnabled")
-class JsEvalPlugin(val activity: FragmentActivity) {
+class JsEvalPlugin(val activity: Activity) {
     val webview by lazy {
         WebView(activity).also {
             it.settings.javaScriptEnabled = true
@@ -32,7 +34,7 @@ class JsEvalPlugin(val activity: FragmentActivity) {
                     val func = call.argument<String>("func")!!
                     val part = call.argument<Int>("part")!!
                     val mime = call.argument<String>("mime")!!
-                    activity.lifecycleScope.launch {
+                    MainScope().launch {
                         val name = eval(json, func, part, mime).lastOrNull()
                         result.success(name)
                     }

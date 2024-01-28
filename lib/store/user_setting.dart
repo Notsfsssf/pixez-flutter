@@ -49,7 +49,7 @@ abstract class _UserSetting with Store {
   static const String THEME_MODE_KEY = "theme_mode";
   static const String SAVE_MODE_KEY = "save_mode";
   static const String NOVEL_FONT_SIZE_KEY = "novel_font_size";
-  static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "is_return_again_to_exit";
+  static const String IS_RETURN_AGAIN_TO_EXIT_KEY = "return_again_to_exit";
   static const String IS_CLEAR_OLD_FORMAT_FILE_KEY = "is_clear_old_format_file";
   static const String IS_FOLLOW_AFTER_STAR = "is_follow_after_star";
   static const String IS_OVER_SANITY_LEVEL_FOLDER =
@@ -91,7 +91,7 @@ abstract class _UserSetting with Store {
   @observable
   bool isClearOldFormatFile = false;
   @observable
-  bool isReturnAgainToExit = true;
+  bool isReturnAgainToExit = false;
   @observable
   bool? isHelplessWay = false;
   @observable
@@ -384,7 +384,7 @@ abstract class _UserSetting with Store {
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
     isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY);
     maxRunningTask = prefs.getInt(MAX_RUNNING_TASK_KEY) ?? 2;
-    isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? true;
+    isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? false;
     isClearOldFormatFile = prefs.getBool(IS_CLEAR_OLD_FORMAT_FILE_KEY) ?? false;
     overSanityLevelFolder = prefs.getBool(IS_OVER_SANITY_LEVEL_FOLDER) ?? false;
     followAfterStar = prefs.getBool(IS_FOLLOW_AFTER_STAR) ?? false;

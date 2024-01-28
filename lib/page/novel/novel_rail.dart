@@ -61,21 +61,25 @@ class _NovelRailState extends State<NovelRail> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvoked: (didPop) async {
-        if (didPop) return;
         userSetting.setAnimContainer(!userSetting.animContainer);
+        if (didPop) return;
         if (!userSetting.isReturnAgainToExit) {
           return;
         }
         if (_preTime == null ||
             DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
-          _preTime = DateTime.now();
+          setState(() {
+            _preTime = DateTime.now();
+          });
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: Duration(seconds: 1),
             content: Text(I18n.of(context).return_again_to_exit),
           ));
-          return;
         }
       },
+      canPop: !userSetting.isReturnAgainToExit ||
+          _preTime != null &&
+              DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
