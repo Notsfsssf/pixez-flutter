@@ -39,6 +39,7 @@ import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AndroidHelloPage extends StatefulWidget {
@@ -282,11 +283,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           _showChromeLink(i.path);
           continue;
         }
-        Leader.push(
-            context,
-            SauceNaoPage(
-              path: i.path,
-            ));
+        if (i.type == SharedMediaType.image) {
+          Leader.push(
+              context,
+              SauceNaoPage(
+                path: i.path,
+              ));
+        }
       }
     }, onError: (err) {
       print("getIntentDataStream error: $err");
@@ -297,11 +300,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           _showChromeLink(i.path);
           continue;
         }
-        Leader.push(
-            context,
-            SauceNaoPage(
-              path: i.path,
-            ));
+        if (i.type == SharedMediaType.image) {
+          Leader.push(
+              context,
+              SauceNaoPage(
+                path: i.path,
+              ));
+        }
       }
     });
     initPlatform();
