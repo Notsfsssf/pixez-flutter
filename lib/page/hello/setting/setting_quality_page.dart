@@ -241,12 +241,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               leading: const Icon(Icons.task),
               title: Text(I18n.of(context).max_download_task_running_count),
               trailing: SettingSelectMenu(
-                index: userSetting.zoomQuality,
+                index: userSetting.maxRunningTask - 1,
                 items: [
-                  ...List<String>.generate(9, (i) => "${i + 2}").toList()
+                  ...List<String>.generate(10, (i) => "${i + 1}").toList()
                 ],
                 onChange: (index) {
-                  userSetting.setMaxRunningTask(index);
+                  userSetting.setMaxRunningTask(index + 1);
                 },
               ),
             ),
@@ -303,12 +303,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 onChanged: (value) async {
                   userSetting.setSwipeChangeArtwork(value);
                 }),
-            SwitchListTile(
-                value: userSetting.useSaunceNaoWebview,
-                title: Text("Use Saucenao webview"),
-                onChanged: (value) async {
-                  userSetting.setUseSaunceNaoWebview(value);
-                }),
+            if (!Platform.isIOS)
+              SwitchListTile(
+                  value: userSetting.useSaunceNaoWebview,
+                  title: Text("Use Saucenao webview"),
+                  onChanged: (value) async {
+                    userSetting.setUseSaunceNaoWebview(value);
+                  }),
             if (Platform.isIOS)
               SwitchListTile(
                   value: userSetting.nsfwMask,

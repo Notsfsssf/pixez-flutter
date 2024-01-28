@@ -5,7 +5,7 @@
 //  Created by Perol Notsf on 2022/9/4.
 //
 
-import FMDB
+import sqflite
 import Foundation
 
 struct AppWidgetIllust {
@@ -47,14 +47,14 @@ enum AppWidgetDBManager {
         }
     }
 
-    static func groupDB() -> FMDatabase? {
+    static func groupDB() -> SqfliteDarwinDatabase? {
         let fileManager = FileManager.default
         let dummyDatabaseName = "glanceillustpersist.db"
         if let directory = fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.pixez") {
             let newDirectory = directory.appendingPathComponent("DB")
             try? fileManager.createDirectory(at: newDirectory, withIntermediateDirectories: false, attributes: nil)
             let url = newDirectory.appendingPathComponent(dummyDatabaseName)
-            return FMDatabase(path: url.path)
+            return SqfliteDarwinDatabase(path: url.path)
         }
         return nil
     }

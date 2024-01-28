@@ -431,7 +431,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
               child: Text(I18n.of(context).about_picture),
             ),
           ),
@@ -504,24 +505,28 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   Widget _buildCommentTextArea(BuildContext context, Illusts data) {
     return Padding(
       padding:
-          const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
-      child: Container(
-        height: 52,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onInverseSurface,
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: Text(I18n.of(context).view_comment),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.arrow_right_sharp),
-          )
-        ]),
+          const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+      child: InkWell(
+        onTap: () {
+          Leader.push(context, CommentPage(id: data.id));
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.comment,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              Text(
+                I18n.of(context).view_comment,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ]),
       ),
     );
   }
@@ -894,7 +899,18 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: Text(f.name),
+            title: RichText(
+              text: TextSpan(children: [
+                TextSpan(
+                    text: "${f.name}",
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
+                if (f.translatedName != null)
+                  TextSpan(
+                      text: "\n${"${f.translatedName}"}",
+                      style: Theme.of(context).textTheme.bodyLarge!)
+              ]),
+            ),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
@@ -976,12 +992,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                             .titleSmall!
                             .copyWith(fontSize: 12),
                       ),
-                      TextSpan(
-                          text: "${f.translatedName ?? "~"}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(fontSize: 12))
+                      if (f.translatedName != null)
+                        TextSpan(
+                            text: "${f.translatedName}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(fontSize: 12))
                     ],
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.primary,
