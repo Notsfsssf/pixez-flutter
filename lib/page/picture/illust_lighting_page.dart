@@ -505,46 +505,39 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     return Padding(
       padding:
           const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
-      child: SelectionContainer.disabled(
-        child: GestureDetector(
-          onTap: () {
-            Leader.push(context, CommentPage(id: widget.id));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.comment,
-                    size: 16, color: Theme.of(context).colorScheme.primary),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  I18n.of(context).view_comment,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontSize: 14),
-                ),
-              ],
-            ),
-          ),
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onInverseSurface,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(I18n.of(context).view_comment),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Icon(Icons.arrow_right_sharp),
+          )
+        ]),
       ),
     );
   }
 
   Container _buildCaptionArea(Illusts data) {
     return Container(
+      margin: EdgeInsets.only(top: 4),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 14),
-        child: Card(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onInverseSurface,
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
             child: SelectionArea(
               focusNode: _focusNode,
               onSelectionChanged: (value) {
@@ -960,33 +953,41 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         }));
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        height: 25,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: const BorderRadius.all(Radius.circular(12.5)),
         ),
-        child: RichText(
-            textAlign: TextAlign.start,
-            text: TextSpan(
-                text: "#${f.name}",
-                children: [
-                  TextSpan(
-                    text: " ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall!
-                        .copyWith(fontSize: 12),
-                  ),
-                  TextSpan(
-                      text: "${f.translatedName ?? "~"}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(fontSize: 12))
-                ],
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 12))),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RichText(
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                text: TextSpan(
+                    text: "#${f.name}",
+                    children: [
+                      TextSpan(
+                        text: " ",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(fontSize: 12),
+                      ),
+                      TextSpan(
+                          text: "${f.translatedName ?? "~"}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(fontSize: 12))
+                    ],
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 12))),
+          ],
+        ),
       ),
     );
   }
