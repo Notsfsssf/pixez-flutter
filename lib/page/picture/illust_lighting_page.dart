@@ -45,6 +45,7 @@ import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
+import 'package:pixez/page/picture/user_follow_button.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
@@ -1107,6 +1108,12 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   ],
                 ),
               ),
+            ),
+            UserFollowButton(
+              followed: illust.user.isFollowed ?? false,
+              onPressed: () {
+                userStore?.follow();
+              },
             ),
           ],
         ),
