@@ -3,7 +3,7 @@ on:
   workflow_dispatch: {}
 jobs:
   Build_IOS:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v3
       - name: Setup Flutter
@@ -11,9 +11,6 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter --version
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
       - run: flutter pub get
       - run: flutter packages pub run build_runner build --delete-conflicting-outputs
       - run: flutter build ios --release --no-codesign
