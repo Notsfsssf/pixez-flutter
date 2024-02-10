@@ -257,16 +257,19 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-            child: SelectionArea(
-              focusNode: _focusNode,
-              onSelectionChanged: (value) {
-                _selectedText = value?.plainText ?? "";
-              },
-              contextMenuBuilder: (context, selectableRegionState) {
-                return _buildSelectionMenu(selectableRegionState, context);
-              },
-              child: SelectableHtml(
-                data: data.caption.isEmpty ? "~" : data.caption,
+            child: Container(
+              width: double.infinity,
+              child: SelectionArea(
+                focusNode: _focusNode,
+                onSelectionChanged: (value) {
+                  _selectedText = value?.plainText ?? "";
+                },
+                contextMenuBuilder: (context, selectableRegionState) {
+                  return _buildSelectionMenu(selectableRegionState, context);
+                },
+                child: SelectableHtml(
+                  data: data.caption.isEmpty ? "~" : data.caption,
+                ),
               ),
             ),
           ),
