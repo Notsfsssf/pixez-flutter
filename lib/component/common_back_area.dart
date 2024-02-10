@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
 
 class CommonBackArea extends StatefulWidget {

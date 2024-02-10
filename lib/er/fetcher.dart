@@ -255,10 +255,10 @@ entryPoint(SendPort sendPort) {
   bool inBypass = userSetting.disableBypassSni;
   if (!userSetting.disableBypassSni) {
     isolateDio.httpClientAdapter = IOHttpClientAdapter()
-      ..onHttpClientCreate = (client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return client;
+      ..createHttpClient = () {
+        final httpclient = HttpClient();
+        httpclient.badCertificateCallback = (cert, host, port) => true;
+        return httpclient;
       };
   }
   ReceivePort receivePort = ReceivePort();

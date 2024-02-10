@@ -448,7 +448,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     if (prefs.getBool('guide_enable') == null) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => GuidePage()),
-        (route) => route == null,
+        (route) => false,
       );
       return;
     }
@@ -458,10 +458,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
 // 用来实现退出全屏功能的FAB
 class AnimatedToggleFullscreenFAB extends StatefulWidget {
-  late bool isFullscreen;
-  late Function toggleFullscreen;
+  final bool isFullscreen;
+  final Function toggleFullscreen;
 
-  AnimatedToggleFullscreenFAB({
+  const AnimatedToggleFullscreenFAB({
     Key? key,
     required this.isFullscreen,
     required this.toggleFullscreen,

@@ -37,6 +37,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/follow/follow_list.dart';
+import 'package:pixez/page/picture/user_follow_button.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
@@ -646,6 +647,20 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     );
   }
 
+  _preFollowCheck(BuildContext context) async {
+    if (accountStore.now != null) {
+      if (int.parse(accountStore.now!.userId) != widget.id) {
+        return true;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Who is the most beautiful person in the world?')));
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   Container _buildAvatarFollow(BuildContext context) {
     return Container(
       child: Observer(
@@ -699,60 +714,12 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                     )
                   : Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
-                      child: userStore.isFollow
-                          ? MaterialButton(
-                              textColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 0),
-                              color: Theme.of(context).colorScheme.secondary,
-                              onPressed: () {
-                                if (accountStore.now != null) {
-                                  if (int.parse(accountStore.now!.userId) !=
-                                      widget.id) {
-                                    userStore.follow(needPrivate: false);
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Who is the most beautiful person in the world?')));
-                                  }
-                                }
-                              },
-                              child: Text(I18n.of(context).followed),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                            )
-                          : OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ),
-                                  side: BorderSide(),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20.0, vertical: 0)),
-                              onPressed: () {
-                                if (accountStore.now != null) {
-                                  if (int.parse(accountStore.now!.userId) !=
-                                      widget.id) {
-                                    userStore.follow(needPrivate: false);
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Who is the most beautiful person in the world?')));
-                                  }
-                                }
-                              },
-                              child: Text(
-                                I18n.of(context).follow,
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .color),
-                              ),
-                            ),
+                      child: UserFollowButton(
+                        followed: userStore.isFollow,
+                        onPressed: () async {
+                          await userStore.follow(needPrivate: false);
+                        },
+                      ),
                     ),
             )
           ],

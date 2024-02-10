@@ -1018,16 +1018,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
       });
-      return InkWell(
+      return GestureDetector(
         onTap: () async {
-          await Leader.push(
-              context,
-              UsersPage(
-                id: illust.user.id,
-                userStore: userStore,
-                heroTag: this.hashCode.toString(),
-              ));
-          _illustStore.illusts!.user.isFollowed = userStore!.isFollow;
+          await _push2UserPage(context, illust);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1079,7 +1072,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               ),
             ),
             UserFollowButton(
-              followed: illust.user.isFollowed ?? false,
+              followed: userStore?.isFollow ?? illust.user.isFollowed ?? false,
               onPressed: () async {
                 await userStore?.follow();
                 if (userStore?.isFollow != null) {
@@ -1094,6 +1087,17 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         ),
       );
     });
+  }
+
+  Future<void> _push2UserPage(BuildContext context, Illusts illust) async {
+    await Leader.push(
+        context,
+        UsersPage(
+          id: illust.user.id,
+          userStore: userStore,
+          heroTag: this.hashCode.toString(),
+        ));
+    _illustStore.illusts!.user.isFollowed = userStore!.isFollow;
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
