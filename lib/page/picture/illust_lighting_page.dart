@@ -40,6 +40,7 @@ import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
+import 'package:pixez/page/picture/illust_detail_content.dart';
 import 'package:pixez/page/picture/illust_row_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
@@ -166,9 +167,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   void _loadAbout() {
     if (mounted &&
         _scrollController.hasClients &&
-        _scrollController.offset + 220 >=
-            _scrollController.position.maxScrollExtent &&
-        _aboutStore.illusts.isEmpty) _aboutStore.fetch();
+        _aboutStore.illusts.isEmpty && !_aboutStore.fetching) {
+      _aboutStore.fetch();
+    }
   }
 
   @override
@@ -401,6 +402,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
         ),
       );
+    if (userStore == null) userStore = UserStore(data.user.id, user: data.user);
     return EasyRefresh(
       controller: _refreshController,
       header: PixezDefault.header(context),
@@ -416,26 +418,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 child: Container(height: MediaQuery.of(context).padding.top)),
           ..._buildPhotoList(data),
           SliverToBoxAdapter(
-            child: _buildInfoArea(data, context),
-          ),
-          SliverToBoxAdapter(
-            child: _buildNameAvatar(context, data),
-          ),
-          SliverToBoxAdapter(
-            child: _buildTagArea(data, context),
-          ),
-          if (!data.caption.isEmpty)
-            SliverToBoxAdapter(
-              child: _buildCaptionArea(data),
-            ),
-          SliverToBoxAdapter(
-            child: _buildCommentTextArea(context, data),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
-              child: Text(I18n.of(context).about_picture),
+            child: IllustDetailContent(
+              illusts: data,
+              userStore: userStore,
+              illustStore: _illustStore,
+              loadAbout: () {
+                _loadAbout();
+              },
             ),
           ),
           SliverGrid(
@@ -499,218 +488,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               }, childCount: _aboutStore.illusts.length),
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3))
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCommentTextArea(BuildContext context, Illusts data) {
-    return Padding(
-      padding:
-          const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-      child: InkWell(
-        onTap: () {
-          Leader.push(context, CommentPage(id: data.id));
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.comment,
-                size: 16,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              SizedBox(
-                width: 4,
-              ),
-              Text(
-                I18n.of(context).view_comment,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ]),
-      ),
-    );
-  }
-
-  Container _buildCaptionArea(Illusts data) {
-    return Container(
-      margin: EdgeInsets.only(top: 4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 14),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onInverseSurface,
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-            child: SelectionArea(
-              focusNode: _focusNode,
-              onSelectionChanged: (value) {
-                _selectedText = value?.plainText ?? "";
-              },
-              contextMenuBuilder: (context, selectableRegionState) {
-                return _buildSelectionMenu(selectableRegionState, context);
-              },
-              child: SelectableHtml(
-                data: data.caption.isEmpty ? "~" : data.caption,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Padding _buildTagArea(Illusts data, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 6,
-        runSpacing: 6,
-        children: [
-          if (data.illustAIType == 2)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-              ),
-              child: RichText(
-                  textAlign: TextAlign.start,
-                  text: TextSpan(
-                      text: "${I18n.of(context).ai_generated}",
-                      children: [
-                        TextSpan(
-                          text: " ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(fontSize: 12),
-                        ),
-                      ],
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(color: Colors.white, fontSize: 12))),
-            ),
-          for (var f in data.tags) buildRow(context, f)
-        ],
-      ),
-    );
-  }
-
-  Container _buildInfoArea(Illusts data, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 8.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: SelectionArea(
-              child: Text(
-                data.title,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontSize: 18),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Icon(
-                Icons.remove_red_eye,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 12,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text(
-                  data.totalView.toString(),
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurface),
-                ),
-              ),
-              Container(
-                width: 4.0,
-              ),
-              Icon(
-                Icons.favorite,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 12.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text("${data.totalBookmarks}",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface)),
-              ),
-              Container(
-                width: 4.0,
-              ),
-              Icon(
-                Icons.timelapse_rounded,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 12.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text(data.createDate.toShortTime(),
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface)),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                  child: Text(
-                I18n.of(context).illust_id,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface),
-              )),
-              Container(
-                width: 4.0,
-              ),
-              colorText(data.id.toString(), context),
-              Container(
-                width: 10.0,
-              ),
-              Container(
-                  child: Text(
-                I18n.of(context).pixel,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface),
-              )),
-              Container(
-                width: 4.0,
-              ),
-              colorText("${data.width}x${data.height}", context)
-            ],
-          ),
-          SizedBox(
-            height: 8,
-          ),
         ],
       ),
     );
@@ -1018,7 +795,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
       });
-      return GestureDetector(
+      return InkWell(
         onTap: () async {
           await _push2UserPage(context, illust);
         },
