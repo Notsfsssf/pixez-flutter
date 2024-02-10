@@ -49,7 +49,7 @@ abstract class _UserStoreBase with Store {
         await client.postUnFollowUser(id);
         userDetail?.user.isFollowed = false;
         isFollow = false;
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         if (e.response != null &&
             e.response!.statusCode == HttpStatus.badRequest) {}
       }
@@ -69,7 +69,7 @@ abstract class _UserStoreBase with Store {
         await client.postFollowUser(id, 'public');
         userDetail?.user.isFollowed = true;
         isFollow = true;
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         if (e.response != null &&
             e.response!.statusCode == HttpStatus.badRequest) {}
       }

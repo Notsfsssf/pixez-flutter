@@ -264,6 +264,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     if (userSetting.followAfterStar) {
                       bool success = await _illustStore.followAfterStar();
                       if (success) {
+                        userStore?.isFollow = true;
                         BotToast.showText(
                             text:
                                 "${_illustStore.illusts!.user.name} ${I18n.of(context).followed}");
@@ -1028,61 +1029,29 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               ));
           _illustStore.illusts!.user.isFollowed = userStore!.isFollow;
         },
-        onLongPress: () {
-          userStore!.follow();
-        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
-                child: GestureDetector(
-                  onLongPress: () {
-                    userStore!.follow();
-                  },
-                  child: Container(
-                    height: 32,
-                    width: 32,
-                    child: Stack(
-                      children: <Widget>[
-                        Center(
-                          child: SizedBox(
-                            height: 32,
-                            width: 32,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: userStore!.isFollow
-                                    ? Colors.yellow
-                                    : Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Hero(
-                            tag: illust.user.profileImageUrls.medium +
-                                this.hashCode.toString(),
-                            child: PainterAvatar(
-                              url: illust.user.profileImageUrls.medium,
-                              id: illust.user.id,
-                              size: Size(28, 28),
-                              onTap: () async {
-                                await Leader.push(
-                                    context,
-                                    UsersPage(
-                                      id: illust.user.id,
-                                      userStore: userStore,
-                                      heroTag: this.hashCode.toString(),
-                                    ));
-                                _illustStore.illusts!.user.isFollowed =
-                                    userStore!.isFollow;
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                child: Hero(
+                  tag: illust.user.profileImageUrls.medium +
+                      this.hashCode.toString(),
+                  child: PainterAvatar(
+                    url: illust.user.profileImageUrls.medium,
+                    id: illust.user.id,
+                    size: Size(32, 32),
+                    onTap: () async {
+                      await Leader.push(
+                          context,
+                          UsersPage(
+                            id: illust.user.id,
+                            userStore: userStore,
+                            heroTag: this.hashCode.toString(),
+                          ));
+                      _illustStore.illusts!.user.isFollowed =
+                          userStore!.isFollow;
+                    },
                   ),
                 ),
                 padding: EdgeInsets.only(left: 16.0)),
@@ -1111,10 +1080,16 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ),
             UserFollowButton(
               followed: illust.user.isFollowed ?? false,
-              onPressed: () {
-                userStore?.follow();
+              onPressed: () async {
+                await userStore?.follow();
+                if (userStore?.isFollow != null) {
+                  _illustStore.illusts?.user.isFollowed = userStore?.isFollow;
+                }
               },
             ),
+            SizedBox(
+              width: 12,
+            )
           ],
         ),
       );
