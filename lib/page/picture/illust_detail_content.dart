@@ -512,12 +512,19 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                     Hero(
                       tag: illust.user.name + this.hashCode.toString(),
                       child: SelectionArea(
-                        child: Text(
-                          illust.user.name,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color:
-                                  Theme.of(context).textTheme.bodySmall!.color),
+                        child: GestureDetector(
+                          onTap: () {
+                            _push2UserPage(context, illust);
+                          },
+                          child: Text(
+                            illust.user.name,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .color),
+                          ),
                         ),
                       ),
                     ),
