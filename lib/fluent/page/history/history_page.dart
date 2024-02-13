@@ -198,7 +198,6 @@ class _HistoryItem extends StatelessWidget {
                 );
               },
             );
-            Navigator.of(context).pop();
           },
         )
       ],

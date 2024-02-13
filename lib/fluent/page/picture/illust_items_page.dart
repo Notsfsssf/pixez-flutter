@@ -173,7 +173,6 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                     text: Text(I18n.of(context).favorited_tag),
                     onPressed: () async {
                       await showBookMarkTag();
-                      Navigator.of(context).pop();
                     },
                   ),
                 ],
@@ -498,7 +497,6 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
             text: Text(I18n.of(context).follow),
             onPressed: () async {
               await userStore!.follow();
-              Navigator.of(context).pop();
             },
           ),
         ],
@@ -586,14 +584,11 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                   child: Text(I18n.of(context).save),
                   onPressed: () {
                     saveStore.saveChoiceImage(illust, indexs);
-                    Navigator.of(context).pop();
                   },
                 ),
                 Button(
                   child: Text(I18n.of(context).cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () {},
                 )
               ],
             );
@@ -803,14 +798,12 @@ class IllustItem extends StatelessWidget {
             ),
             onPressed: () async {
               await onMultiSavePressed();
-              Navigator.of(context).pop();
             },
           ),
         MenuFlyoutItem(
           leading: Icon(FluentIcons.save),
           onPressed: () async {
             await saveStore.saveImage(data, index: index);
-            Navigator.of(context).pop();
           },
           text: Text(I18n.of(context).save),
         ),
@@ -824,7 +817,6 @@ class IllustItem extends StatelessWidget {
                 text:
                     'title:${data.title}\npainter:${data.user.name}\nillust id:${widget.id}'));
             BotToast.showText(text: I18n.of(context).copied_to_clipboard);
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
@@ -834,7 +826,6 @@ class IllustItem extends StatelessWidget {
           ),
           onPressed: () async {
             await Share.share("https://www.pixiv.net/artworks/${widget.id}");
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
@@ -846,7 +837,6 @@ class IllustItem extends StatelessWidget {
             await Clipboard.setData(ClipboardData(
                 text: "https://www.pixiv.net/artworks/${widget.id}"));
             BotToast.showText(text: I18n.of(context).copied_to_clipboard);
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
@@ -855,7 +845,6 @@ class IllustItem extends StatelessWidget {
           onPressed: () async {
             await muteStore.insertBanIllusts(BanIllustIdPersist(
                 illustId: widget.id.toString(), name: data.title));
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
@@ -885,7 +874,6 @@ class IllustItem extends StatelessWidget {
                 );
               },
             );
-            Navigator.of(context).pop();
           },
         )
       ],
@@ -930,7 +918,6 @@ class MoreItem extends StatelessWidget {
           text: Text(I18n.of(context).save),
           onPressed: () async {
             await saveStore.saveImage(_aboutStore.illusts[index]);
-            Navigator.of(context).pop();
           },
         )
       ],

@@ -449,14 +449,12 @@ class _CommentPageState extends State<CommentPage> {
                       MenuFlyoutItem(
                         text: Text(I18n.of(context).ban),
                         onPressed: () async {
-                          Navigator.of(context).pop();
                           await muteStore.insertComment(comment);
                         },
                       ),
                       MenuFlyoutItem(
                         text: Text(I18n.of(context).report),
                         onPressed: () {
-                          Navigator.of(context).pop();
                           Reporter.show(
                             context,
                             () async => await muteStore.insertComment(comment),

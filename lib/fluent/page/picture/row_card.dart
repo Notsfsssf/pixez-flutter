@@ -47,14 +47,12 @@ class RowCard extends StatelessWidget {
               name: f.name,
               translateName: f.translatedName ?? "",
             ));
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).bookmark),
           onPressed: () async {
             await bookTagStore.bookTag(f.name);
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
@@ -65,7 +63,6 @@ class RowCard extends StatelessWidget {
                 builder: (context, VoidCallback) => InfoBar(
                       title: Text(I18n.of(context).copied_to_clipboard),
                     ));
-            Navigator.of(context).pop();
           },
         ),
       ],

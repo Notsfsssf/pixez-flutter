@@ -125,7 +125,6 @@ class _NewIllustPageState extends State<NewIllustPage> {
                   MenuFlyoutItem(
                     text: Text(I18n.of(context).all),
                     onPressed: () {
-                      Navigator.of(context).pop();
                       setState(() {
                         futureGet = ApiForceSource(
                           futureGet: (e) => apiClient.getFollowIllusts(
@@ -140,7 +139,6 @@ class _NewIllustPageState extends State<NewIllustPage> {
                   MenuFlyoutItem(
                     text: Text(I18n.of(context).public),
                     onPressed: () {
-                      Navigator.of(context).pop();
                       setState(() {
                         futureGet = ApiForceSource(
                           futureGet: (e) => apiClient.getFollowIllusts(
@@ -155,7 +153,6 @@ class _NewIllustPageState extends State<NewIllustPage> {
                   MenuFlyoutItem(
                     text: Text(I18n.of(context).private),
                     onPressed: () {
-                      Navigator.of(context).pop();
                       setState(() {
                         futureGet = ApiForceSource(
                           futureGet: (e) => apiClient.getFollowIllusts(

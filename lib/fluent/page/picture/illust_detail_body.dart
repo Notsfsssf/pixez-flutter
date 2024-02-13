@@ -121,7 +121,6 @@ class IllustDetailBody extends StatelessWidget {
           text: Text(I18n.of(context).follow),
           onPressed: () async {
             await _store.followUser();
-            Navigator.of(context).pop();
           },
         )
       ],
