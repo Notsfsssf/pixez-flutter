@@ -88,14 +88,12 @@ class _IllustCardState extends State<IllustCard> {
           text: Text('Like'),
           onPressed: () async {
             await _onStar();
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).save),
           onPressed: () async {
             await _onSave();
-            Navigator.of(context).pop();
           },
         ),
         MenuFlyoutItem(
@@ -111,7 +109,6 @@ class _IllustCardState extends State<IllustCard> {
               List<String>? tags = result['tags'];
               store.star(restrict: restrict, tags: tags, force: true);
             }
-            Navigator.of(context).pop();
           },
         ),
       ],

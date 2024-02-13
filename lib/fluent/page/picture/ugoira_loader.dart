@@ -94,14 +94,12 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   } on PlatformException {
                     isEncoding = false;
                   }
-                  Navigator.of(context).pop();
                 },
               ),
               MenuFlyoutItem(
                 text: Text(I18n.of(context).export),
                 onPressed: () async {
                   await _store.export();
-                  Navigator.of(context).pop();
                 },
               ),
             ],

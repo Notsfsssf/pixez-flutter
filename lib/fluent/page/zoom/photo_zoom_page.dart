@@ -192,7 +192,6 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                               index: _index);
                         else
                           await saveStore.saveImage(widget.illusts);
-                        Navigator.of(context).pop();
                       },
                     )
                   ],

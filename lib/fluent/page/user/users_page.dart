@@ -530,7 +530,6 @@ class _UsersPageState extends State<UsersPage>
         MenuFlyoutItem(
           text: Text(I18n.of(context).show),
           onPressed: () async {
-            Navigator.of(context).pop();
             await Leader.push(
                 context,
                 ZoomPage(
@@ -545,7 +544,6 @@ class _UsersPageState extends State<UsersPage>
           onPressed: () async {
             await _saveUserBg(
                 userStore.userDetail!.profile.background_image_url!);
-            Navigator.of(context).pop();
           },
         ),
       ],
