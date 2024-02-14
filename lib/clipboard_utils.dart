@@ -5,6 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 
@@ -13,11 +14,15 @@ class ClipboardUtils {
   static bool get supported => _clipboard != null;
 
   static String? getImageUrl(Illusts illusts, int index) {
-    // TODO: 使用图片质量设置
+    final loadSource = userSetting.zoomQuality == 1;
     if (illusts.pageCount == 1) {
-      return illusts.metaSinglePage?.originalImageUrl;
+      return loadSource
+          ? illusts.metaSinglePage?.originalImageUrl
+          : illusts.imageUrls.large;
     } else {
-      return illusts.metaPages[index].imageUrls?.original;
+      return loadSource
+          ? illusts.metaPages[index].imageUrls?.original
+          : illusts.metaPages[index].imageUrls?.large;
     }
   }
 
