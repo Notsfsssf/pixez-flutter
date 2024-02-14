@@ -19,6 +19,7 @@ import 'dart:ffi';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/clipboard_utils.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
@@ -88,6 +89,19 @@ class _IllustCardState extends State<IllustCard> {
           text: Text('Like'),
           onPressed: () async {
             await _onStar();
+          },
+        ),
+        if (ClipboardUtils.supported)
+          MenuFlyoutItem(
+            text: Text(I18n.of(context).copy),
+            onPressed: () async {
+              final url = ClipboardUtils.getImageUrl(store.illusts!, 0);
+              if (url == null) return;
+
+              ClipboardUtils.showToast(
+                context,
+                ClipboardUtils.copyImage(url),
+              );
           },
         ),
         MenuFlyoutItem(
