@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/component/search_box.dart';
@@ -192,16 +193,28 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      child: NavigationView(
-        appBar: _buildAppBar(context),
-        pane: _buildPane(context),
-        paneBodyBuilder: (item, widget) => _nav,
+    return RawKeyboardListener(
+      focusNode: FocusNode(),
+      autofocus: true,
+      child: Listener(
+        child: NavigationView(
+          appBar: _buildAppBar(context),
+          pane: _buildPane(context),
+          paneBodyBuilder: (item, widget) => _nav,
+        ),
+        onPointerDown: (event) {
+          if (event.buttons == kBackMouseButton &&
+              event.kind == PointerDeviceKind.mouse) {
+            _navobs.navigator?.maybePop(null);
+          }
+        },
       ),
-      onPointerDown: (event) {
-        if (event.buttons == kBackMouseButton &&
-            event.kind == PointerDeviceKind.mouse) {
-          _navobs.navigator?.maybePop(null);
+      onKey: (value) {
+        if (value is RawKeyUpEvent) {
+          if (value.isAltPressed &&
+              value.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            _navobs.navigator?.maybePop(null);
+          }
         }
       },
     );
