@@ -64,6 +64,7 @@ dependencies:
   hooks_riverpod: ^2.4.8
   sqflite: ^2.3.2
   dynamic_color: ^1.6.8
+  super_clipboard: ^0.8.5
   # Design Style
   fluent_ui: ^4.8.0
   # Desktop Support

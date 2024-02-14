@@ -853,6 +853,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  irondash_engine_context:
+    dependency: transitive
+    description:
+      name: irondash_engine_context
+      sha256: "4f5e2629296430cce08cdff42e47cef07b8f74a64fdbdfb0525d147bc1a969a2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.2"
+  irondash_message_channel:
+    dependency: transitive
+    description:
+      name: irondash_message_channel
+      sha256: dd581214215dca054bd9873209d690ec3609288c28774cb509dbd86b21180cf8
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   js:
     dependency: transitive
     description:
@@ -1157,6 +1173,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.14.0"
+  pixel_snap:
+    dependency: transitive
+    description:
+      name: pixel_snap
+      sha256: d31591a4f4aa8ed5dc6fc00b8d027338a5614dfbf5ca658b69d1faa7aba80af7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4"
   platform:
     dependency: transitive
     description:
@@ -1466,6 +1490,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  super_clipboard:
+    dependency: "direct main"
+    description:
+      name: super_clipboard
+      sha256: "15d25eb88df8e904e0c2ef77378c6010cc57bbfc0b6f91f2416d08fad5fcca92"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.5"
+  super_native_extensions:
+    dependency: transitive
+    description:
+      name: super_native_extensions
+      sha256: f96db6b137a0b135e43034289bb55ca6447b65225076036e81f97ebb6381ffeb
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.5"
   synchronized:
     dependency: transitive
     description:

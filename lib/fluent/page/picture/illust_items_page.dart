@@ -4,6 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show SelectionArea;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/clipboard_utils.dart';
 import 'package:pixez/fluent/component/ban_page.dart';
 import 'package:pixez/fluent/component/context_menu.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
@@ -807,6 +808,22 @@ class IllustItem extends StatelessWidget {
           },
           text: Text(I18n.of(context).save),
         ),
+        if (ClipboardUtils.supported)
+          MenuFlyoutItem(
+            text: Text(I18n.of(context).copy),
+            leading: Icon(
+              FluentIcons.copy,
+            ),
+            onPressed: () async {
+              final url = ClipboardUtils.getImageUrl(data, index);
+              if (url == null) return;
+
+              ClipboardUtils.showToast(
+                context,
+                ClipboardUtils.copyImage(url),
+              );
+            },
+          ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).copymessage),
           leading: Icon(
