@@ -85,18 +85,33 @@ class _IllustCardState extends State<IllustCard> {
       child: _build(context),
       items: [
         MenuFlyoutItem(
-          text: Text('Like'),
+          leading: Observer(builder: (context) {
+            switch (store.state) {
+              case 0:
+                return Icon(FluentIcons.heart);
+              case 1:
+                return Icon(FluentIcons.heart_fill);
+              default:
+                return Icon(
+                  FluentIcons.heart_fill,
+                  color: Colors.red,
+                );
+            }
+          }),
+          text: Text(I18n.of(context).bookmark),
           onPressed: () async {
             await _onStar();
           },
         ),
         MenuFlyoutItem(
+          leading: Icon(FluentIcons.save),
           text: Text(I18n.of(context).save),
           onPressed: () async {
             await _onSave();
           },
         ),
         MenuFlyoutItem(
+          leading: Icon(FluentIcons.favorite_list),
           text: Text(I18n.of(context).favorited_tag),
           onPressed: () async {
             final result = await showDialog<dynamic>(
