@@ -24,9 +24,9 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - permission_handler_apple (9.1.1):
+  - permission_handler_apple (9.3.0):
     - Flutter
-  - receive_sharing_intent (1.6.4):
+  - receive_sharing_intent (1.6.7):
     - Flutter
   - share_plus (0.0.1):
     - Flutter
@@ -114,13 +114,13 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
-  in_app_purchase_storekit: 9e9931234f0adcf71ae323f8c83785b96030edf1
+  in_app_purchase_storekit: 0e4b3c2e43ba1e1281f4f46dd71b0593ce529892
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
-  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
-  receive_sharing_intent: 3181dc0ee10abab0a240e3f4e52f74d805516ee2
+  permission_handler_apple: 036b856153a2b1f61f21030ff725f3e6fece2b78
+  receive_sharing_intent: 9ca20ae908f83c36ddaaaa8c9bd30ce4700495e8
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
@@ -131,4 +131,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d148eb6b994d478e68f092ae02408ed7cb9c4577
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.15.0

@@ -288,5 +288,6 @@
   "successed": "Başarılı",
   "failed": "Başarısız",
   "reply": "Yanıtla",
-  "reply_to": "Yanıtla"
+  "reply_to": "Yanıtla",
+  "show_feed_ai_badge": "Show feed AI badge"
 }

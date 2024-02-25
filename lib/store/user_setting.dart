@@ -74,6 +74,7 @@ abstract class _UserSetting with Store {
   static const String SEED_COLOR_KEY = "seed_color";
   static const String SWIPE_CHANGE_ARTWORK_KEY = "swipe_change_artwork";
   static const String USE_SAUNCE_NAO_WEBVIEW = "use_sauce_nao_webview";
+  static const String FEED_AI_BADGE_KEY = "feed_ai_badge";
 
   @observable
   int crossAdapterWidth = 100;
@@ -166,10 +167,17 @@ abstract class _UserSetting with Store {
   bool swipeChangeArtwork = false;
   @observable
   bool useSaunceNaoWebview = false;
-
   @observable
   String? format = "";
+  @observable
+  bool feedAIBadge = false;
   static const String intialFormat = "{illust_id}_p{part}";
+
+  @action
+  setFeedAIBadge(bool value) async {
+    await prefs.setBool(FEED_AI_BADGE_KEY, value);
+    feedAIBadge = value;
+  }
 
   @action
   setCrossAdapt(bool value) async {
@@ -368,6 +376,7 @@ abstract class _UserSetting with Store {
     hCrossCount = prefs.getInt(H_CROSS_COUNT_KEY) ?? 4;
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
+    feedAIBadge = prefs.getBool(FEED_AI_BADGE_KEY) ?? true;
     padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
     themeInitState = 1;
   }

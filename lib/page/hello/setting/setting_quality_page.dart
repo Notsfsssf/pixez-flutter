@@ -317,6 +317,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   onChanged: (value) async {
                     userSetting.changeNsfwMask(value);
                   }),
+            SwitchListTile(
+                value: userSetting.feedAIBadge,
+                title: Text(I18n.of(context).show_feed_ai_badge),
+                onChanged: (value) async {
+                  userSetting.setFeedAIBadge(value);
+                }),
             Divider(),
             SwitchListTile(
                 value: userSetting.followAfterStar,

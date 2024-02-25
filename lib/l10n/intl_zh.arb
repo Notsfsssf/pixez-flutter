@@ -288,5 +288,6 @@
   "successed": "加载成功",
   "failed": "加载失败",
   "reply": "回复",
-  "reply_to": "回复给"
+  "reply_to": "回复给",
+  "show_feed_ai_badge": "显示列表中的AI生成标记"
 }

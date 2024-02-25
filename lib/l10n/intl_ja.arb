@@ -288,5 +288,6 @@
   "successed": "Successed",
   "failed": "Failed",
   "reply": "Reply",
-  "reply_to": "Reply to"
+  "reply_to": "Reply to",
+  "show_feed_ai_badge": "Show feed AI badge"
 }

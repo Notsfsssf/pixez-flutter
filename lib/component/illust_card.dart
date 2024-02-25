@@ -190,13 +190,36 @@ class _IllustCardState extends State<IllustCard> {
                     children: [
                       Positioned.fill(child: _buildPic(tag, tooLong)),
                       Positioned(
-                          top: 5.0, right: 5.0, child: _buildVisibility()),
+                          top: 5.0,
+                          right: 5.0,
+                          child: Row(
+                            children: [
+                              if (userSetting.feedAIBadge) _buildAIBadge(),
+                              _buildVisibility()
+                            ],
+                          )),
                     ],
                   )),
               _buildBottom(context),
             ],
           ),
         ));
+  }
+
+  Widget _buildAIBadge() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+        child: Text(
+          "AI",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
   }
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {

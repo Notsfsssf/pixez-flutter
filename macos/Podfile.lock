@@ -116,7 +116,7 @@ SPEC CHECKSUMS:
   file_selector_macos: 468fb6b81fac7c0e88d71317f3eec34c3b008ff9
   flutter_inappwebview_macos: 9600c9df9fdb346aaa8933812009f8d94304203d
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  in_app_purchase_storekit: 9e9931234f0adcf71ae323f8c83785b96030edf1
+  in_app_purchase_storekit: 0e4b3c2e43ba1e1281f4f46dd71b0593ce529892
   just_audio: 9b67ca7b97c61cfc9784ea23cd8cc55eb226d489
   macos_window_utils: 933f91f64805e2eb91a5bd057cf97cd097276663
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
