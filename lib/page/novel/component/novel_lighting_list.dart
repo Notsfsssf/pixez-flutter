@@ -78,7 +78,8 @@ class _NovelLightingListState extends State<NovelLightingList> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(':(', style: Theme.of(context).textTheme.headlineMedium),
+              child:
+                  Text(':(', style: Theme.of(context).textTheme.headlineMedium),
             ),
             TextButton(
                 onPressed: () {

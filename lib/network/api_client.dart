@@ -148,6 +148,11 @@ class ApiClient {
         queryParameters: notNullMap({"novel_id": novel_id}));
   }
 
+  Future<Response> webviewNovel(int novel_id) async {
+    return httpClient.get("/webview/v2/novel",
+        queryParameters: notNullMap({"id": novel_id}));
+  }
+
   Future<Response> getNovelDetail(int id) async {
     return httpClient.get("/v2/novel/detail",
         queryParameters: notNullMap({"novel_id": id}));

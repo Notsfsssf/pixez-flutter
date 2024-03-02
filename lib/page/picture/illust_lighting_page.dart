@@ -164,7 +164,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   void _loadAbout() {
     if (mounted &&
         _scrollController.hasClients &&
-        _aboutStore.illusts.isEmpty && !_aboutStore.fetching) {
+        _aboutStore.illusts.isEmpty &&
+        !_aboutStore.fetching) {
       _aboutStore.fetch();
     }
   }
@@ -344,37 +345,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         supportTranslate = results;
       });
     }
-  }
-
-  AdaptiveTextSelectionToolbar _buildSelectionMenu(
-      SelectableRegionState editableTextState, BuildContext context) {
-    final List<ContextMenuButtonItem> buttonItems =
-        editableTextState.contextMenuButtonItems;
-    if (supportTranslate) {
-      buttonItems.insert(
-        buttonItems.length,
-        ContextMenuButtonItem(
-          label: I18n.of(context).translate,
-          onPressed: () async {
-            final selectionText = _selectedText;
-            if (Platform.isIOS) {
-              final box = context.findRenderObject() as RenderBox?;
-              final pos = box != null
-                  ? box.localToGlobal(Offset.zero) & box.size
-                  : null;
-              Share.share(selectionText, sharePositionOrigin: pos);
-              return;
-            }
-            await SupportorPlugin.start(selectionText);
-            ContextMenuController.removeAny();
-          },
-        ),
-      );
-    }
-    return AdaptiveTextSelectionToolbar.buttonItems(
-      anchors: editableTextState.contextMenuAnchors,
-      buttonItems: buttonItems,
-    );
   }
 
   Widget colorText(String text, BuildContext context) {

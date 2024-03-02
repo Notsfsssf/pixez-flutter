@@ -9,9 +9,11 @@ class ResolvePack {
 
 class SupportorPlugin {
   static const platform = const MethodChannel('com.perol.dev/supporter');
+  static var supportTranslate = false;
 
   static Future<bool> processText() async {
     bool result = await platform.invokeMethod("process_text");
+    supportTranslate = result;
     return result;
   }
 

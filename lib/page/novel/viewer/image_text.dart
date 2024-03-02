@@ -18,18 +18,36 @@ import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 //这一堆都是专门给小说特殊约定写的
+//🎵 EGOIST - Lovely Icecream Princess Sweetie
+//[uploadedimage:123456]
+class UploadedImageSpan extends WidgetSpan {
+  final String imageUrl;
+
+  UploadedImageSpan(this.imageUrl)
+      : super(child: Builder(builder: (context) {
+          return Container(
+              child: PixivImage(
+            imageUrl,
+          ));
+        }));
+}
+
 //[pixivimage:12551-1]
 class PixivImageSpan extends WidgetSpan {
   final int id;
   final int targetIndex;
   final String actualText;
+  final NovelIllusts? illusts;
 
   static Future<Illusts?> _getData(int id) async {
     try {
@@ -42,26 +60,34 @@ class PixivImageSpan extends WidgetSpan {
     return null;
   }
 
-  PixivImageSpan(this.id, this.targetIndex, this.actualText)
-      : super(
-            child: Container(
-          child: FutureBuilder(
-              future: _getData(id),
-              builder:
-                  (BuildContext context, AsyncSnapshot<Illusts?> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.data != null)
-                  return Padding(
+  PixivImageSpan(this.id, this.targetIndex, this.actualText, this.illusts)
+      : super(child: Builder(builder: (context) {
+          return Container(
+            child: (illusts != null)
+                ? Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: targetIndex != 0
-                        ? PixivImage(snapshot
-                            .data!.metaPages[targetIndex].imageUrls!.medium)
-                        : PixivImage(snapshot.data!.imageUrls.medium),
-                  );
+                    child: PixivImage(illusts.illust.images.medium ??
+                        illusts.illust.images.original ??
+                        illusts.illust.images.small!),
+                  )
+                : FutureBuilder(
+                    future: _getData(id),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<Illusts?> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.data != null)
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: targetIndex != 0
+                              ? PixivImage(snapshot.data!.metaPages[targetIndex]
+                                  .imageUrls!.medium)
+                              : PixivImage(snapshot.data!.imageUrls.medium),
+                        );
 
-                return Container();
-              }),
-        ));
+                      return Container();
+                    }),
+          );
+        }));
 }
 
 // (newpage)
@@ -71,9 +97,10 @@ class PixivImageSpan extends WidgetSpan {
 // [[jumpuri:标题 ＞ 链接目标的URL]]
 // [[rb:汉宇＞假名]]
 class NovelSpansGenerator {
-
-   //🎵 Low Roar - "I'll Keep Coming"
-  List<InlineSpan> buildSpans(BuildContext context, String source) {
+  
+  List<InlineSpan> buildSpans(
+      BuildContext context, NovelWebResponse webResponse) {
+    final source = webResponse.text;
     try {
       String nowStr = '';
       bool spanCollectStart = false;
@@ -96,7 +123,7 @@ class NovelSpansGenerator {
             if (nowStr.endsWith("]")) {
               spanCollectStart = false;
               nowStr += posStr;
-              result.add(_parseText(context, nowStr));
+              result.add(_parseText(context, nowStr, webResponse));
               nowStr = '';
             } else {
               nowStr += posStr;
@@ -104,7 +131,7 @@ class NovelSpansGenerator {
           } else {
             spanCollectStart = false;
             nowStr += posStr;
-            result.add(_parseText(context, nowStr));
+            result.add(_parseText(context, nowStr, webResponse));
             nowStr = '';
           }
         } else if (spanCollectStart) {
@@ -126,7 +153,8 @@ class NovelSpansGenerator {
 
   RegExp linkRegex = RegExp(r'https?://\S+');
 
-  InlineSpan _parseText(BuildContext context, String spanStr) {
+  InlineSpan _parseText(
+      BuildContext context, String spanStr, NovelWebResponse webResponse) {
     if (spanStr.startsWith('[newpage]')) {
       return WidgetSpan(
           child: Container(
@@ -147,7 +175,27 @@ class NovelSpansGenerator {
         trueId = int.tryParse(now.split('-').first)!;
         targetIndex = int.tryParse(now.split('-').last)!;
       }
-      return PixivImageSpan(trueId, targetIndex, key);
+      final illust = webResponse.illusts?[now];
+      return TextSpan(
+          children: [PixivImageSpan(trueId, targetIndex, key, illust)],
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              Leader.push(context, IllustLightingPage(id: trueId));
+            });
+    } else if (spanStr.startsWith("[uploadedimage:")) {
+      final String key = spanStr.toString();
+      final flag = '[uploadedimage:';
+      LPrinter.d(key);
+      String now = key.substring(flag.length, key.indexOf("]"));
+      final image = webResponse.images?[now];
+      final url = image?.urls.the128X128 ??
+          image?.urls.the1200X1200 ??
+          image?.urls.original;
+      if (url != null) {
+        return UploadedImageSpan(url);
+      } else {
+        return TextSpan(text: now);
+      }
     } else if (spanStr.startsWith('[[jumpuri:')) {
       final String key = spanStr.toString();
       final flag = '[[jumpuri:';

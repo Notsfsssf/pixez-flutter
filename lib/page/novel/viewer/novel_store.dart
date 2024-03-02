@@ -14,6 +14,9 @@
  *
  */
 
+import 'dart:convert';
+
+import 'package:html/parser.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -21,6 +24,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/models/novel_viewer_persist.dart';
+import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/network/api_client.dart';
 
 part 'novel_store.g.dart';
@@ -35,7 +39,7 @@ abstract class _NovelStoreBase with Store {
   @observable
   Novel? novel;
   @observable
-  NovelTextResponse? novelTextResponse;
+  NovelWebResponse? novelTextResponse;
   @observable
   String? errorMessage;
   @observable
@@ -69,8 +73,9 @@ abstract class _NovelStoreBase with Store {
     errorMessage = null;
     try {
       bookedOffset = 0.0;
-      final response = await apiClient.getNovelText(id);
-      novelTextResponse = NovelTextResponse.fromJson(response.data);
+      final response = await apiClient.webviewNovel(id);
+      String json = _parseHtml(response.data)!;
+      novelTextResponse = NovelWebResponse.fromJson(jsonDecode(json));
       if (novel == null) {
         Response response = await apiClient.getNovelDetail(id);
         novel = Novel.fromJson(response.data['novel']);
@@ -81,6 +86,27 @@ abstract class _NovelStoreBase with Store {
       print(e);
       errorMessage = e.toString();
     }
+  }
+
+  String? _parseHtml(String html) {
+    var document = parse(html);
+    final scriptElement = document.querySelector('script')!;
+    String scriptContent = scriptElement.innerHtml;
+
+    final novelStart = 'novel: ';
+    final startIndex = scriptContent.indexOf(novelStart) + novelStart.length;
+    final stack = <int>[];
+    for (var i = startIndex; i < scriptContent.length; i++) {
+      if (scriptContent[i] == '{') {
+        stack.add(i);
+      } else if (scriptContent[i] == '}') {
+        stack.removeLast();
+        if (stack.isEmpty) {
+          return scriptContent.substring(startIndex, i + 1);
+        }
+      }
+    }
+    return null;
   }
 
   @action

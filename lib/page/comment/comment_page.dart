@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,8 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/report/report_items_page.dart';
+import 'package:pixez/supportor_plugin.dart';
+import 'package:share_plus/share_plus.dart';
 
 enum CommentArtWorkType { ILLUST, NOVEL }
 
@@ -73,6 +77,7 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   void initState() {
+    supportTranslate = SupportorPlugin.supportTranslate;
     _focusNode = FocusNode();
     parentCommentId = widget.isReplay ? widget.pId : null;
     parentCommentName = widget.isReplay ? widget.name : null;
@@ -83,6 +88,7 @@ class _CommentPageState extends State<CommentPage> {
         widget.isReplay, widget.type)
       ..fetch();
     super.initState();
+    supportTranslateCheck();
   }
 
   @override
@@ -268,16 +274,8 @@ class _CommentPageState extends State<CommentPage> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 4.0),
-                                                child: SelectionArea(
-                                                  focusNode: _focusNode,
-                                                  selectionControls:
-                                                      TextSelectionFix
-                                                          .buildControls(
-                                                              context),
-                                                  child: CommentEmojiText(
-                                                    text: comment.comment ?? "",
-                                                  ),
-                                                ),
+                                                child: _buildCommentContent(
+                                                    context, comment),
                                               ),
                                             if (comment.stamp != null)
                                               Padding(
@@ -462,6 +460,22 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
+  SelectionArea _buildCommentContent(BuildContext context, Comment comment) {
+    return SelectionArea(
+      focusNode: _focusNode,
+      contextMenuBuilder: (context, selectableRegionState) {
+        return _buildSelectionMenu(
+            selectableRegionState, context, supportTranslate);
+      },
+      onSelectionChanged: (value) {
+        _selectedText = value?.plainText ?? "";
+      },
+      child: CommentEmojiText(
+        text: comment.comment ?? "",
+      ),
+    );
+  }
+
   Widget _buildTrailingRow(Comment comment, BuildContext context) {
     return Row(
       children: [
@@ -521,5 +535,51 @@ class _CommentPageState extends State<CommentPage> {
           )
       ],
     );
+  }
+
+  bool supportTranslate = false;
+  String _selectedText = "";
+
+  AdaptiveTextSelectionToolbar _buildSelectionMenu(
+      SelectableRegionState editableTextState,
+      BuildContext context,
+      bool supportTranslate) {
+    final List<ContextMenuButtonItem> buttonItems =
+        editableTextState.contextMenuButtonItems;
+    if (supportTranslate) {
+      buttonItems.insert(
+        buttonItems.length,
+        ContextMenuButtonItem(
+          label: I18n.of(context).translate,
+          onPressed: () async {
+            final selectionText = _selectedText;
+            if (Platform.isIOS) {
+              final box = context.findRenderObject() as RenderBox?;
+              final pos = box != null
+                  ? box.localToGlobal(Offset.zero) & box.size
+                  : null;
+              Share.share(selectionText, sharePositionOrigin: pos);
+              return;
+            }
+            await SupportorPlugin.start(selectionText);
+            ContextMenuController.removeAny();
+          },
+        ),
+      );
+    }
+    return AdaptiveTextSelectionToolbar.buttonItems(
+      anchors: editableTextState.contextMenuAnchors,
+      buttonItems: buttonItems,
+    );
+  }
+
+  Future<void> supportTranslateCheck() async {
+    if (!Platform.isAndroid) return;
+    bool results = await SupportorPlugin.processText();
+    if (mounted) {
+      setState(() {
+        supportTranslate = results;
+      });
+    }
   }
 }
