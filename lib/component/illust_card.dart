@@ -194,7 +194,9 @@ class _IllustCardState extends State<IllustCard> {
                           right: 5.0,
                           child: Row(
                             children: [
-                              if (userSetting.feedAIBadge) _buildAIBadge(),
+                              if (userSetting.feedAIBadge &&
+                                  store.illusts!.illustAIType == 2)
+                                _buildAIBadge(),
                               _buildVisibility()
                             ],
                           )),
