@@ -206,124 +206,18 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               ),
               extendBodyBehindAppBar: true,
               body: Scrollbar(
-                child: ListView(
+                child: SingleChildScrollView(
                   padding: EdgeInsets.all(0.0),
                   controller: _controller,
-                  children: <Widget>[
-                    Container(
-                      height: MediaQuery.of(context).padding.top + 100,
-                    ),
-                    Center(
-                        child: Container(
-                            height: 160,
-                            child: PixivImage(
-                                _novelStore.novel!.imageUrls.medium))),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
-                      child: Text(
-                        "${_novelStore.novel!.title}",
-                        style: Theme.of(context).textTheme.titleMedium,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).padding.top,
                       ),
-                    ),
-                    if (_novelStore.novel?.series.id != null)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, top: 0.0, bottom: 0.0),
-                        child: InkWell(
-                          onTap: () {
-                            Leader.push(context,
-                                NovelSeriesPage(_novelStore.novel!.series.id!));
-                          },
-                          child: Text(
-                            "Series:${_novelStore.novel!.series.title}",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        ),
-                      ),
-                    //MARK DETAIL NUM,
-                    _buildNumItem(_novelStore.novel!),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        "${_novelStore.novel!.createDate}",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 2,
-                          runSpacing: 0,
-                          children: [
-                            if (_novelStore.novel!.NovelAIType == 2)
-                              Text("${I18n.of(context).ai_generated}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary)),
-                            for (var f in _novelStore.novel!.tags)
-                              buildRow(context, f)
-                          ],
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SelectionArea(
-                            onSelectionChanged: (value) {
-                              _selectedText = value?.plainText ?? "";
-                            },
-                            contextMenuBuilder: (context, editableTextState) {
-                              return _buildSelectionMenu(
-                                  editableTextState, context);
-                            },
-                            child: SelectableHtml(
-                                data: _novelStore.novel?.caption ?? ""),
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0)),
-                      ),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Leader.push(
-                              context,
-                              CommentPage(
-                                id: _novelStore.id,
-                                type: CommentArtWorkType.NOVEL,
-                              ));
-                        },
-                        child: Text(I18n.of(context).view_comment)),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SelectionArea(
-                        onSelectionChanged: (value) {
-                          _selectedText = value?.plainText ?? "";
-                        },
-                        contextMenuBuilder: (context, editableTextState) {
-                          return _buildSelectionMenu(
-                              editableTextState, context);
-                        },
-                        child: Text.rich(
-                            TextSpan(text: '', style: _textStyle, children: [
-                          for (var span in _novelSpansGenerator.buildSpans(
-                              context, _novelStore.novelTextResponse!))
-                            span
-                        ])),
-                      ),
-                    ),
-                    Container(
-                      height: 10 + MediaQuery.of(context).padding.bottom,
-                    ),
-                  ],
+                      _buildHeader(context),
+                      _buildContentText(context)
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -341,6 +235,123 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           ),
         );
       },
+    );
+  }
+
+  Padding _buildContentText(BuildContext context) {
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SelectionArea(
+          onSelectionChanged: (value) {
+            _selectedText = value?.plainText ?? "";
+          },
+          contextMenuBuilder: (context, editableTextState) {
+            return _buildSelectionMenu(editableTextState, context);
+          },
+          child: Text.rich(
+            TextSpan(text: '', style: _textStyle, children: [
+              for (var span in _novelSpansGenerator.buildSpans(
+                  context, _novelStore.novelTextResponse!))
+                span
+            ]),
+            textHeightBehavior:
+                TextHeightBehavior(applyHeightToLastDescent: true),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: 100,
+        ),
+        Center(
+            child: Container(
+                height: 160,
+                child: PixivImage(_novelStore.novel!.imageUrls.medium))),
+        Padding(
+          padding: const EdgeInsets.only(
+              left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
+          child: Text(
+            "${_novelStore.novel!.title}",
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        if (_novelStore.novel?.series.id != null)
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 16.0, right: 16.0, top: 0.0, bottom: 0.0),
+            child: InkWell(
+              onTap: () {
+                Leader.push(
+                    context, NovelSeriesPage(_novelStore.novel!.series.id!));
+              },
+              child: Text(
+                "Series:${_novelStore.novel!.series.title}",
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+          ),
+        //MARK DETAIL NUM,
+        _buildNumItem(_novelStore.novel!),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            "${_novelStore.novel!.createDate}",
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        ),
+        Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 2,
+              runSpacing: 0,
+              children: [
+                if (_novelStore.novel!.NovelAIType == 2)
+                  Text("${I18n.of(context).ai_generated}",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).colorScheme.secondary)),
+                for (var f in _novelStore.novel!.tags) buildRow(context, f)
+              ],
+            )),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SelectionArea(
+                onSelectionChanged: (value) {
+                  _selectedText = value?.plainText ?? "";
+                },
+                contextMenuBuilder: (context, editableTextState) {
+                  return _buildSelectionMenu(editableTextState, context);
+                },
+                child: SelectableHtml(data: _novelStore.novel?.caption ?? ""),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)),
+          ),
+        ),
+        TextButton(
+            onPressed: () {
+              Leader.push(
+                  context,
+                  CommentPage(
+                    id: _novelStore.id,
+                    type: CommentArtWorkType.NOVEL,
+                  ));
+            },
+            child: Text(I18n.of(context).view_comment)),
+      ],
     );
   }
 
