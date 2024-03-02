@@ -46,7 +46,7 @@
   "donation": "Bir kahve satın alın",
   "dont_have_account": "Henüz bir hesabınız yok mu?",
   "download_address": "İndirme bağlantısı",
-  "encode": "Encoding",
+  "encode": "Encode et",
   "encode_message": "Bu işlem biraz zaman alabilir ve başarısız olabilir",
   "enqueued": "Sıraya alındı",
   "exact_match_for_tag": "Tam eşleşen etiketler",
@@ -128,7 +128,7 @@
   "rate_title": "PixEz'in harika olduğunu düşünüyorsanız, lütfen bize 5 yıldız puan verin!",
   "recommand_tag": "Önerilen etiketler",
   "recommend": "Önerilenler",
-  "recommend_for_you": "Size Özel",
+  "recommend_for_you": "Sizin için",
   "refresh": "Yenile",
   "reply": "Yanıtla",
   "repo_address": "GitHub",
@@ -168,7 +168,7 @@
   "support": "Destek",
   "support_message": "Geri bildirimlere ve katkı sağlayanlara açığız :)",
   "tag": "Etiket",
-  "task_progress": "İndirmeler",
+  "task_progress": "İndirilenler",
   "terms": "Kullanım şartları",
   "thanks": "Teşekkürler",
   "theme": "Tema",
@@ -289,5 +289,5 @@
   "failed": "Başarısız",
   "reply": "Yanıtla",
   "reply_to": "Yanıtla",
-  "show_feed_ai_badge": "Show feed AI badge"
+  "show_feed_ai_badge": "Akışta AI etiketini göster"
 }
