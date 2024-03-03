@@ -289,5 +289,6 @@
   "failed": "Failed",
   "reply": "Reply",
   "reply_to": "Reply to",
-  "show_feed_ai_badge": "Show feed AI badge"
+  "show_feed_ai_badge": "Show feed AI badge",
+  "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page"
 }

@@ -75,7 +75,11 @@ abstract class _UserSetting with Store {
   static const String SWIPE_CHANGE_ARTWORK_KEY = "swipe_change_artwork";
   static const String USE_SAUNCE_NAO_WEBVIEW = "use_sauce_nao_webview";
   static const String FEED_AI_BADGE_KEY = "feed_ai_badge";
+  static const String ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY =
+      "illust_detail_save_skip_long_press";
 
+  @observable
+  bool illustDetailSaveSkipLongPress = false;
   @observable
   int crossAdapterWidth = 100;
   @observable
@@ -342,6 +346,12 @@ abstract class _UserSetting with Store {
   }
 
   @action
+  setIllustDetailSaveSkipLongPress(bool v) async {
+    await prefs.setBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY, v);
+    illustDetailSaveSkipLongPress = v;
+  }
+
+  @action
   askInit() async {
     prefs = await SharedPreferences.getInstance();
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
@@ -418,6 +428,8 @@ abstract class _UserSetting with Store {
     imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 0;
     swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
     useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
+    illustDetailSaveSkipLongPress =
+        prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
     if (Platform.isAndroid) {
       try {
         var modeList = await FlutterDisplayMode.supported;

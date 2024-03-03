@@ -289,5 +289,6 @@
   "failed": "加載失敗",
   "reply": "回覆",
   "reply_to": "回覆給",
-  "show_feed_ai_badge": "显示列表中的AI生成标记"
+  "show_feed_ai_badge": "显示列表中的AI生成标记",
+  "illust_detail_save_skip_confirm": "插畫作品頁保存時跳過確認"
 }

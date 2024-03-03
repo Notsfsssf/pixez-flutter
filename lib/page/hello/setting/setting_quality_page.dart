@@ -318,6 +318,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     userSetting.changeNsfwMask(value);
                   }),
             SwitchListTile(
+                value: userSetting.illustDetailSaveSkipLongPress,
+                title: Text(I18n.of(context).illust_detail_save_skip_confirm),
+                onChanged: (value) async {
+                  userSetting.setIllustDetailSaveSkipLongPress(value);
+                }),
+            SwitchListTile(
                 value: userSetting.feedAIBadge,
                 title: Text(I18n.of(context).show_feed_ai_badge),
                 onChanged: (value) async {

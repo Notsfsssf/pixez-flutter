@@ -289,5 +289,6 @@
   "failed": "Başarısız",
   "reply": "Yanıtla",
   "reply_to": "Yanıtla",
-  "show_feed_ai_badge": "Akışta AI etiketini göster"
+  "show_feed_ai_badge": "Akışta AI etiketini göster",
+  "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page" 
 }
