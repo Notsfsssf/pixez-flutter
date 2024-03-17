@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -167,6 +168,22 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                     }),
+                if (ClipboardPlugin.supported)
+                  IconButton(
+                    icon: Icon(
+                      Icons.copy,
+                      color: Colors.white,
+                    ),
+                    onPressed: () async {
+                      final url = ClipboardPlugin.getImageUrl(_illusts, _index);
+                      if (url == null) return;
+
+                      ClipboardPlugin.showToast(
+                        context,
+                        ClipboardPlugin.copyImageFromUrl(url),
+                      );
+                    },
+                  ),
                 GestureDetector(
                     child: IconButton(
                         icon: Icon(
