@@ -19,6 +19,7 @@ import 'dart:ffi';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
@@ -103,6 +104,20 @@ class _IllustCardState extends State<IllustCard> {
             await _onStar();
           },
         ),
+        if (ClipboardPlugin.supported)
+          MenuFlyoutItem(
+            leading: Icon(FluentIcons.copy),
+            text: Text(I18n.of(context).copy),
+            onPressed: () async {
+              final url = ClipboardPlugin.getImageUrl(store.illusts!, 0);
+              if (url == null) return;
+
+              ClipboardPlugin.showToast(
+                context,
+                ClipboardPlugin.copyImageFromUrl(url),
+              );
+            },
+          ),
         MenuFlyoutItem(
           leading: Icon(FluentIcons.save),
           text: Text(I18n.of(context).save),

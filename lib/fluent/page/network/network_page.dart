@@ -16,7 +16,6 @@ class NetworkPage extends StatefulWidget {
 
 class _NetworkPageState extends State<NetworkPage> {
   late TextEditingController _textEditingController;
-  bool _isCustom = false;
 
   @override
   void initState() {
@@ -117,14 +116,12 @@ class _NetworkPageState extends State<NetworkPage> {
                           },
                         ),
                         ComboBox(
-                          value: _isCustom
-                              ? 2
-                              : userSetting.pictureSource == ImageHost
-                                  ? 0
-                                  : userSetting.pictureSource == ImageCatHost
-                                      ? 1
-                                      : 2,
-                          onChanged: (i) => _isCustom = i == 2,
+                          value: switch (userSetting.pictureSource) {
+                            ImageHost => 0,
+                            ImageCatHost => 1,
+                            _ => 2,
+                          },
+                          onChanged: (value) {},
                           items: [
                             ComboBoxItem(
                               child: Text(I18n.of(context).default_title),
@@ -134,9 +131,6 @@ class _NetworkPageState extends State<NetworkPage> {
                                 splashStore.setHost(ImageHost);
                                 splashStore.helloWord = "= w =";
                                 splashStore.maybeFetch();
-                                setState(() {
-                                  _isCustom = false;
-                                });
                               },
                             ),
                             ComboBoxItem(
@@ -145,28 +139,26 @@ class _NetworkPageState extends State<NetworkPage> {
                               onTap: () {
                                 userSetting.setPictureSource(ImageCatHost);
                                 splashStore.setHost(ImageCatHost);
-                                setState(() {
-                                  _isCustom = false;
-                                });
                               },
                             ),
                             ComboBoxItem(
                               child: Text('Custom Host'),
                               value: 2,
-                              onTap: () {
-                                setState(() {
-                                  _isCustom = true;
-                                });
-                              },
+                              onTap: () {},
                             ),
                           ],
                         ),
-                        if (_isCustom)
+                        if (switch (userSetting.pictureSource) {
+                          ImageHost => false,
+                          ImageCatHost => false,
+                          _ => true,
+                        })
                           InfoLabel(
                             label: 'Custom Host',
                             child: TextBox(
                               maxLines: 1,
                               placeholder: 'Host',
+                              controller: _textEditingController,
                               suffix: IconButton(
                                 onPressed: () async {
                                   if (_textEditingController.text.isEmpty)
@@ -190,7 +182,6 @@ class _NetworkPageState extends State<NetworkPage> {
                                 },
                                 icon: Icon(
                                   FluentIcons.check_mark,
-                                  color: Colors.black,
                                 ),
                               ),
                             ),

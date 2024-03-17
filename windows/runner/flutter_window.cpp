@@ -20,6 +20,7 @@
 #include "Paths.h"
 #include "Saver.h"
 #include "Info.h"
+#include "Clipboard.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
@@ -51,6 +52,7 @@ bool FlutterWindow::OnCreate()
   Paths::Initialize(flutter_controller_->engine());
   Saver::Initialize(flutter_controller_->engine());
   Info::Initialize(flutter_controller_->engine());
+  Clipboard::Initialize(flutter_controller_->engine());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]()
                                                       { this->Show(); });
