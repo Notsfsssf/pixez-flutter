@@ -15,6 +15,7 @@ add_executable(${BINARY_NAME} WIN32
   "Paths.cpp"
   "Saver.cpp"
   "Info.cpp"
+  "Clipboard.cpp"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
   "Runner.rc"
   "runner.exe.manifest"

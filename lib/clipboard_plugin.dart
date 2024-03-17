@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -10,6 +11,7 @@ import 'package:pixez/models/illust.dart';
 
 class ClipboardPlugin {
   static final supported = Platform.isWindows;
+  static const _platform = const MethodChannel('com.perol.dev/clipboard');
 
   static String? getImageUrl(Illusts illusts, int index) {
     final loadSource = userSetting.zoomQuality == 1;
@@ -34,7 +36,7 @@ class ClipboardPlugin {
   /// 从图片链接中加载图片并复制到剪贴板
   static Future<void> copyImageFromUrl(String url) async {
     final imageFile = await _getImagePathFromUrl(url);
-    //  TODO: 将图片复制到剪贴板
+    await _platform.invokeMethod("copyImageFromPath", {"path": imageFile.path});
   }
 
   /// 下载或从缓存中加载图片
