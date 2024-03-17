@@ -22,15 +22,10 @@
       "flutterMode": "profile"
     },
     {
-      "name": "Debug (Windows)",
+      "name": "(Windows) 附加",
       "type": "cppvsdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/windows/runner/Debug/pixez.exe",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${fileDirname}",
-      "environment": [],
-      "console": "internalConsole"
+      "request": "attach",
+      "processId": "${command:pickProcess}"
     }
   ]
 }
