@@ -3,7 +3,7 @@
   "about_picture": "Связанные иллюстрации",
   "account_change": "Сменить аккаунт",
   "account_message": "Информация об аккаунте",
-  "ai_generated": "AI-generated",
+  "ai_generated": "Сгенерировано-ИИ",
   "all": "Все",
   "already_in_query": "Уже в очереди",
   "already_saved": "Уже сохранено",
@@ -19,7 +19,7 @@
   "cancel": "Отменить",
   "canceled": "Отменено",
   "check_for_updates": "Проверить обновления",
-  "choice_you_like": "Видимые теги",
+  "choice_you_like": "Отображаемые теги",
   "choose_directory": "Выбрать папку",
   "clear": "Очистить",
   "clear_all_cache": "Очистить весь кэш",
@@ -81,15 +81,15 @@
   "manga": "Манга",
   "medium": "Среднее",
   "mode_list": "За_день Мужское Женское Оригинальное Новое За_неделю За_месяц AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
-  "novel_mode_list":"За_день Мужское Женское За_неделю AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
+  "novel_mode_list":"За_день Мужское Женское За_неделю AI R18-ИИ R18 R18_За_неделю R18-G",
   "more": "Ещё",
   "more_then_starnum_bookmark": "Более чем {starNum} в избранном",
   "@more_then_starnum_bookmark": {
-    "description": "A message with a single parameter",
+    "description": "A message with a parameter",
     "placeholders": {
       "starNum": {
         "type": "String",
-        "example": "Bob"
+        "example": "Олег"
       }
     }
   },
@@ -155,7 +155,7 @@
     "placeholders": {
       "name": {
           "type": "String",
-          "example": "Bob"
+          "example": "Олег"
       }
     }
   },
@@ -195,7 +195,7 @@
     "placeholders": {
       "length": {
         "type": "String",
-        "example": "Bob"
+        "example": "Олег"
       }
     }
   },
@@ -223,7 +223,7 @@
     "placeholders": {
       "part": {
           "type": "String",
-          "example": "Bob"
+          "example": "Олег"
       }
     }
   },
@@ -248,47 +248,47 @@
   "temporarily_visible": "Временно показано",
   "unclassified":"Неклассифицированный",
   "max_download_task_running_count": "Максимальное количество запущенных задач",
-  "export": "Export",
-  "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
-  "recent_screen_mask" : "Recent screen mask",
-  "open_by_default":"Open by default",
-  "open_by_default_subtitle":"Allow web links to open this app",
-  "text":"text",
-  "search_word_hint": "Search title or name like",
-  "save_effect": "Save effect",
-  "layout_mode": "Layout mode",
-  "share_info_format": "Share info format",
-  "account_deletion": "account_deletion",
-  "account_deletion_subtitle": "This will log you out of your account and go to the webpage to delete your account",
-  "private_like_by_default": "Private like by default",
-  "partially_hidden": "partially hidden",
-  "show": "show",
-  "ai_work_display_settings" : "AI generated works display settings",
-  "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible",
-  "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
-  "long_press_save_confirm": "long press to save confirm",
-  "dynamic_color": "Dynamic color",
-  "seed_color": "Seed color",
-  "app_data": "App data",
-  "export_title": "Export",
-  "import_title": "Import",
-  "export_bookmark_tag": "Export bookmark tags",
-  "export_tag_history": "Export tag history",
-  "export_illust_history": "Export browsing history",
-  "import_bookmark_tag": "Import bookmark tags",
-  "import_tag_history": "Import tag history",
-  "import_illust_history": "Import browsing history",
-  "photo_picker": "Photo picker",
-  "photo_picker_subtitle": "use new system-level image selector",
-  "swipe_to_switch_artworks": "Swipe to switch artworks",
-  "view_the_latest": "View the latest",
-  "automatically_download_when_bookmarking": "Automatically download when bookmarking",
-  "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
-  "footer_loading": "Loading...",
-  "successed": "Successed",
-  "failed": "Failed",
-  "reply": "Reply",
-  "reply_to": "Reply to",
-  "show_feed_ai_badge": "Show feed AI badge",
-  "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page" 
+  "export": "Экспорт",
+  "error_400_hint": "Если ошибка [400], возможно, вам нужно будет заново войти в систему, что может быть вызвано сменой пароля или обновлением API",
+  "recent_screen_mask": "Недавние экраны маскировки",
+  "open_by_default": "Открыть по умолчанию",
+  "open_by_default_subtitle": "Разрешить веб-ссылкам открывать это приложение",
+  "text": "текст",
+  "search_word_hint": "Поиск по названию или имени, например",
+  "save_effect": "Сохранить эффект",
+  "layout_mode": "Режим макета",
+  "share_info_format": "Формат обмена информацией",
+  "account_deletion": "удаление_аккаунта",
+  "account_deletion_subtitle": "Это выведет вас из аккаунта и перенаправит на веб-страницу для удаления аккаунта",
+  "private_like_by_default": "Приватные лайки по умолчанию",
+  "partially_hidden": "частично скрытый",
+  "show": "показать",
+  "ai_work_display_settings": "Настройки отображения работ, созданных ИИ",
+  "make_works_with_ai_generated_flags_invisible": "Сделать работы с флагами, созданными ИИ, невидимыми",
+  "script_page_hint": "Эта функция предназначена для обработки имени файла при сохранении иллюстраций с помощью настройки js-скрипта. Если вы не знаете принципа, пожалуйста, не пробуйте это бездумно. Вы можете восстановить настройки по умолчанию, нажав на крестик в правом верхнем углу",
+  "long_press_save_confirm": "долгое нажатие для подтверждения сохранения",
+  "dynamic_color": "Динамический цвет",
+  "seed_color": "Цвет сида",
+  "app_data": "Данные приложения",
+  "export_title": "Экспорт",
+  "import_title": "Импорт",
+  "export_bookmark_tag": "Экспортировать теги закладок",
+  "export_tag_history": "Экспортировать историю тегов",
+  "export_illust_history": "Экспортировать историю просмотров",
+  "import_bookmark_tag": "Импортировать теги закладок",
+  "import_tag_history": "Импортировать историю тегов",
+  "import_illust_history": "Импортировать историю просмотров",
+  "photo_picker": "Выбор фото",
+  "photo_picker_subtitle": "использовать новый селектор изображений уровня системы",
+  "swipe_to_switch_artworks": "Свайп для смены работ",
+  "view_the_latest": "Посмотреть последние",
+  "automatically_download_when_bookmarking": "Автоматически загружать при добавлении в закладки",
+  "automatically_bookmark_when_downloading": "Автоматически добавлять в закладки при загрузке",
+  "footer_loading": "Загрузка...",
+  "successed": "Успешно",
+  "failed": "Неудачно",
+  "reply": "Ответить",
+  "reply_to": "Ответить на",
+  "show_feed_ai_badge": "Показать значок ленты ИИ",
+  "illust_detail_save_skip_confirm": "Пропустить подтверждение при сохранении на странице деталей"
 }
