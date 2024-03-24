@@ -445,6 +445,9 @@ abstract class _UserSetting with Store {
     }
     format = prefs.getString(SAVE_FORMAT_KEY);
     if (format == null || format!.isEmpty) format = intialFormat;
+    if (Platform.isAndroid || Platform.isIOS) {
+      await configSecureWindow(secureWindow);
+    }
   }
 
   int toRealLanguageNum(int num) {
