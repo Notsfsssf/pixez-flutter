@@ -81,7 +81,7 @@
   "manga": "Манга",
   "medium": "Среднее",
   "mode_list": "За_день Мужское Женское Оригинальное Новое За_неделю За_месяц AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
-  "novel_mode_list":"За_день Мужское Женское За_неделю AI R18-ИИ R18 R18_За_неделю R18-G",
+  "novel_mode_list":"За_день Мужское Женское За_неделю AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
   "more": "Ещё",
   "more_then_starnum_bookmark": "Более чем {starNum} в избранном",
   "@more_then_starnum_bookmark": {
