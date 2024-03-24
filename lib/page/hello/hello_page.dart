@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -30,6 +31,7 @@ import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HelloPage extends StatefulWidget {
@@ -62,6 +64,9 @@ class _HelloPageState extends State<HelloPage> {
     });
     initLinksStream();
     initPlatformState();
+    if (Platform.isAndroid || Platform.isIOS) {
+      configSecureWindow(userSetting.secureWindow);
+    }
   }
 
   Future<void> initPlatformState() async {

@@ -25,6 +25,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/languages.dart';
+import 'package:pixez/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_setting.g.dart';
@@ -77,6 +78,7 @@ abstract class _UserSetting with Store {
   static const String FEED_AI_BADGE_KEY = "feed_ai_badge";
   static const String ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY =
       "illust_detail_save_skip_long_press";
+  static const String SECURE_WINDOW_KEY = "secure_window";
 
   @observable
   bool illustDetailSaveSkipLongPress = false;
@@ -131,6 +133,8 @@ abstract class _UserSetting with Store {
   bool overSanityLevelFolder = false;
   @observable
   bool hIsNotAllow = false;
+  @observable
+  bool secureWindow = false;
   @observable
   bool followAfterStar = false;
   @observable
@@ -398,6 +402,7 @@ abstract class _UserSetting with Store {
     singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
     displayMode = prefs.getInt('display_mode');
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
+    secureWindow = prefs.getBool(SECURE_WINDOW_KEY) ?? false;
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
     mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
@@ -504,6 +509,13 @@ abstract class _UserSetting with Store {
   setHIsNotAllow(bool value) async {
     await prefs.setBool('h_is_not_allow', value);
     hIsNotAllow = value;
+  }
+
+  @action
+  setSecureWindow(bool value) async {
+    await prefs.setBool(SECURE_WINDOW_KEY, value);
+    secureWindow = value;
+    await configSecureWindow(value);
   }
 
   @action
