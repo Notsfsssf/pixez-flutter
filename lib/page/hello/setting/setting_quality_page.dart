@@ -291,6 +291,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   if (!value) BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
                   userSetting.setHIsNotAllow(value);
                 }),
+            if (Platform.isAndroid || Platform.isIOS) SwitchListTile(
+                value: userSetting.secureWindow,
+                title: Text(I18n.of(context).secure_window),
+                onChanged: (value) async {
+                  userSetting.setSecureWindow(value);
+                }),
             SwitchListTile(
                 value: userSetting.isReturnAgainToExit,
                 title: Text(I18n.of(context).return_again_to_exit),
