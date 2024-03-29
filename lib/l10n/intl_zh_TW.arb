@@ -101,7 +101,7 @@
   "new_version_update_information": "新版本更新內容",
   "nickname": "暱稱",
   "nickname_can_be_change_anytime": "暱稱可隨時變更",
-  "no_h": "H是不行的！",
+  "no_h": "H圖打咩！",
   "no_more_data": "沒有更多資料了",
   "not_bookmarked": "未收藏",
   "ok": "確定",
@@ -178,7 +178,7 @@
   "total_follow_users": "關註者數",
   "total_mypixiv_users": "好P友",
   "total_view": "總檢視量",
-  "twitter_account": "Twitter 帳戶",
+  "twitter_account": "X(Twitter) 帳戶",
   "un_follow": "未關註",
   "undefined": "未知",
   "unsaved": "未儲存",
@@ -289,6 +289,6 @@
   "failed": "加載失敗",
   "reply": "回覆",
   "reply_to": "回覆給",
-  "show_feed_ai_badge": "显示列表中的AI生成标记",
+  "show_feed_ai_badge": "顯示列表中的AI生成標記",
   "illust_detail_save_skip_confirm": "插畫作品頁保存時跳過確認"
 }
