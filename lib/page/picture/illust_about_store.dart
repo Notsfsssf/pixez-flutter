@@ -31,7 +31,7 @@ abstract class _IllustAboutStoreBase with Store {
   bool fetching = false;
   EasyRefreshController? refreshController;
 
-  _IllustAboutStoreBase(this.id, {this.refreshController});
+  _IllustAboutStoreBase(this.id);
 
   @observable
   String? errorMessage;

@@ -51,7 +51,7 @@ abstract class _SoupStoreBase with Store {
       } else {
         _fetchCNTW(url);
       }
-    } on DioException catch (e) {
+    } on DioException {
       BotToast.showText(text: "404 NOT FOUND");
     } catch (e) {}
   }

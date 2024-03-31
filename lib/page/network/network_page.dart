@@ -42,7 +42,7 @@ class _NetworkPageState extends State<NetworkPage> {
             AppBar(
               backgroundColor: Colors.transparent,
               iconTheme: IconThemeData(
-                  color: Theme.of(context).textTheme.bodyText1!.color),
+                  color: Theme.of(context).textTheme.bodyLarge!.color),
               automaticallyImplyLeading: _automaticallyImplyLeading,
               elevation: 0.0,
             ),
@@ -50,7 +50,7 @@ class _NetworkPageState extends State<NetworkPage> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 I18n.of(context).network,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -118,7 +118,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           I18n.of(context).image_site,
                           style: TextStyle(
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color),
+                                  Theme.of(context).textTheme.bodyLarge!.color),
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.refresh_outlined),
@@ -152,7 +152,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           ImageCatHost,
                           style: TextStyle(
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color),
+                                  Theme.of(context).textTheme.bodyLarge!.color),
                         ),
                         selected: userSetting.pictureSource == ImageCatHost,
                         selectedTileColor:

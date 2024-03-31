@@ -16,7 +16,6 @@
 
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' show SelectionArea;
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/about/last_release.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -38,7 +38,7 @@ abstract class _UserStoreBase with Store {
   @observable
   int value = 0;
 
-  _UserStoreBase(this.id, {this.userDetail, this.user}) {
+  _UserStoreBase(this.id) {
     this.isFollow = user?.isFollowed ?? false;
   }
 
@@ -60,7 +60,7 @@ abstract class _UserStoreBase with Store {
         await client.postFollowUser(id, 'private');
         userDetail?.user.isFollowed = true;
         isFollow = true;
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         if (e.response != null &&
             e.response!.statusCode == HttpStatus.badRequest) {}
       }
@@ -88,7 +88,7 @@ abstract class _UserStoreBase with Store {
       this.userDetail = userDetail;
       this.user = userDetail.user;
       this.isFollow = this.userDetail!.user.isFollowed ?? false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null && e.response!.statusCode == HttpStatus.notFound) {
         errorMessage = '404';
       } else {

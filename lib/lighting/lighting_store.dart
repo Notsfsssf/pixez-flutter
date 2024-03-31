@@ -65,8 +65,8 @@ abstract class _LightingStoreBase with Store {
   late LightSource source;
   String? nextUrl;
   EasyRefreshController? easyRefreshController;
-  final Function? onChange;
-  final String? portal;
+  Function? onChange;
+  String? portal;
   @observable
   ObservableList<IllustStore> iStores = ObservableList();
   @observable
@@ -88,7 +88,7 @@ abstract class _LightingStoreBase with Store {
   @observable
   String? errorMessage;
 
-  _LightingStoreBase(this.source, {this.onChange, this.portal});
+  _LightingStoreBase(this.source);
 
   bool okForUser(Illusts illust) {
     // if (userSetting.hIsNotAllow)

@@ -144,8 +144,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     _scrollController = ScrollController();
     _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
-    _aboutStore =
-        IllustAboutStore(widget.id, refreshController: _refreshController);
+    _aboutStore = IllustAboutStore(widget.id);
     super.initState();
     supportTranslateCheck();
   }
@@ -369,7 +368,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
         ),
       );
-    if (userStore == null) userStore = UserStore(data.user.id, user: data.user);
+    if (userStore == null) userStore = UserStore(data.user.id);
     return EasyRefresh(
       controller: _refreshController,
       header: PixezDefault.header(context),
@@ -756,8 +755,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
-    if (userStore == null)
-      userStore = UserStore(illust.user.id, user: illust.user);
+    if (userStore == null) userStore = UserStore(illust.user.id);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
