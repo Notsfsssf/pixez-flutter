@@ -290,5 +290,6 @@
   "reply": "Ответить",
   "reply_to": "Ответить на",
   "show_feed_ai_badge": "Показать значок ленты ИИ",
-  "illust_detail_save_skip_confirm": "Пропустить подтверждение при сохранении на странице деталей"
+  "illust_detail_save_skip_confirm": "Пропустить подтверждение при сохранении на странице деталей",
+  "secure_window": "Secure window"
 }

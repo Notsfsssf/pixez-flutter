@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:privacy_screen/privacy_screen.dart';
 
 /// 当使用鼠标滚轮滚动时 距离底边还有多少距离时开始加载下一页
 const double kLazyLoadSize = 300;
@@ -11,7 +10,7 @@ const double kLazyLoadSize = 300;
 ///
 /// 因为鼠标滚轮不能滚出视图，无法触发EazyRefresh，所以需要使用这个方法来
 /// 为桌面平台提供更好的体验
-/// 
+///
 /// 这个方法返回一个用于注销监听器的方法
 void Function()? initializeScrollController(
   ScrollController controller,
@@ -28,24 +27,4 @@ void Function()? initializeScrollController(
 
   controller.addListener(listener);
   return () => controller.removeListener(listener);
-}
-
-Future<void> configSecureWindow(bool enabled) async {
-  try {
-    if (enabled) {
-      await PrivacyScreen.instance.enable(
-        iosOptions: const PrivacyIosOptions(
-          enablePrivacy: true,
-          lockTrigger: IosLockTrigger.didEnterBackground,
-        ),
-        androidOptions: const PrivacyAndroidOptions(
-          enableSecure: true,
-        )
-    );
-    } else {
-      await PrivacyScreen.instance.disable();
-    }
-  } catch (e) {
-    print(e);
-  }
 }

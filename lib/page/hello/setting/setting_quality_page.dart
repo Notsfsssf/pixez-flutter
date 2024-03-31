@@ -291,12 +291,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   if (!value) BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
                   userSetting.setHIsNotAllow(value);
                 }),
-            if (Platform.isAndroid || Platform.isIOS) SwitchListTile(
-                value: userSetting.secureWindow,
-                title: Text(I18n.of(context).secure_window),
-                onChanged: (value) async {
-                  userSetting.setSecureWindow(value);
-                }),
             SwitchListTile(
                 value: userSetting.isReturnAgainToExit,
                 title: Text(I18n.of(context).return_again_to_exit),
@@ -316,10 +310,12 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   onChanged: (value) async {
                     userSetting.setUseSaunceNaoWebview(value);
                   }),
-            if (Platform.isIOS)
+            if (Platform.isAndroid || Platform.isIOS)
               SwitchListTile(
                   value: userSetting.nsfwMask,
-                  title: Text("最近任务遮罩"),
+                  title: Text(Platform.isIOS
+                      ? I18n.of(context).recent_screen_mask
+                      : I18n.of(context).secure_window),
                   onChanged: (value) async {
                     userSetting.changeNsfwMask(value);
                   }),

@@ -1,4 +1,4 @@
-package com.perol.pixez
+package com.perol.pixez.plugin
 
 import android.content.BroadcastReceiver
 import android.content.Context

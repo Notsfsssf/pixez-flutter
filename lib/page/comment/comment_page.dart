@@ -31,7 +31,6 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
