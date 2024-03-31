@@ -845,6 +845,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
+    if (userSetting.illustDetailSaveSkipLongPress) {
+      saveStore.saveImage(illust, index: index);
+      if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+        _illustStore.star(
+            restrict: userSetting.defaultPrivateLike ? "private" : "public");
+      }
+      return;
+    }
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -1041,6 +1049,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  SizedBox(
+                    height: 8,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
