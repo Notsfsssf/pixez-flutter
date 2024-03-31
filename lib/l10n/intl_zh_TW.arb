@@ -291,5 +291,7 @@
   "reply_to": "回覆給",
   "show_feed_ai_badge": "显示列表中的AI生成标记",
   "illust_detail_save_skip_confirm": "插畫作品頁保存時跳過確認",
-  "secure_window": "禁用熒幕抓取"
+  "secure_window": "禁用熒幕抓取",
+  "open_saucenao_using_webview": "用webview打開Saucenao",
+  "appwidget_recommend_type": "小組件推薦類型"
 }

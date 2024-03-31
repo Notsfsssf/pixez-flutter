@@ -253,7 +253,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             if (_widgetTypeIndex != -1)
               ListTile(
                 leading: const Icon(Icons.widgets),
-                title: Text("App widget type"),
+                title: Text(I18n.of(context).appwidget_recommend_type),
                 trailing: SettingSelectMenu(
                   index: userSetting.zoomQuality,
                   items: [
@@ -303,13 +303,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 onChanged: (value) async {
                   userSetting.setSwipeChangeArtwork(value);
                 }),
-            if (!Platform.isIOS)
-              SwitchListTile(
-                  value: userSetting.useSaunceNaoWebview,
-                  title: Text("Use Saucenao webview"),
-                  onChanged: (value) async {
-                    userSetting.setUseSaunceNaoWebview(value);
-                  }),
             if (Platform.isAndroid || Platform.isIOS)
               SwitchListTile(
                   value: userSetting.nsfwMask,
@@ -318,6 +311,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       : I18n.of(context).secure_window),
                   onChanged: (value) async {
                     userSetting.changeNsfwMask(value);
+                  }),
+            if (!Platform.isIOS)
+              SwitchListTile(
+                  value: userSetting.useSaunceNaoWebview,
+                  title: Text(I18n.of(context).open_saucenao_using_webview),
+                  onChanged: (value) async {
+                    userSetting.setUseSaunceNaoWebview(value);
                   }),
             SwitchListTile(
                 value: userSetting.illustDetailSaveSkipLongPress,
