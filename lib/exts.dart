@@ -123,9 +123,6 @@ extension IllustExts on Illusts {
   }
 
   bool hateByUser({bool ai = false, bool includeR18Setting = false}) {
-    if (ai) {
-      return false;
-    }
     if (includeR18Setting) {
       if (userSetting.hIsNotAllow) {
         for (int i = 0; i < tags.length; i++) {
@@ -133,7 +130,7 @@ extension IllustExts on Illusts {
         }
       }
     }
-    if (muteStore.banAIIllust && illustAIType == 2) {
+    if (muteStore.banAIIllust && illustAIType == 2 && !ai) {
       return true;
     }
     for (var t in muteStore.banTags) {

@@ -75,7 +75,13 @@ class _ResultIllustListState extends State<ResultIllustList> {
     50000,
   ];
 
-  final sort = ["date_desc", "date_asc", "popular_desc"];
+  final sort = [
+    "date_desc",
+    "date_asc",
+    "popular_desc",
+    "popular_male_desc",
+    "popular_female_desc"
+  ];
   static List<String> search_target = [
     "partial_match_for_tags",
     "exact_match_for_tags",
@@ -247,6 +253,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               0: Text(I18n.of(context).date_desc),
                               1: Text(I18n.of(context).date_asc),
                               2: Text(I18n.of(context).popular_desc),
+                              3: Text(I18n.of(context).popular_male_desc),
+                              4: Text(I18n.of(context).popular_female_desc),
                             },
                             onValueChanged: (int? index) {
                               if (accountStore.now != null && index == 2) {

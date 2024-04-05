@@ -293,5 +293,7 @@
   "illust_detail_save_skip_confirm": "插画作品页保存时跳过确认",
   "secure_window": "禁用屏幕抓取",
   "open_saucenao_using_webview": "用webview打开Saucenao",
-  "appwidget_recommend_type": "小组件推荐类型"
+  "appwidget_recommend_type": "小组件推荐类型",
+  "popular_male_desc": "受男性喜爱",
+  "popular_female_desc": "受女性喜爱"
 }
