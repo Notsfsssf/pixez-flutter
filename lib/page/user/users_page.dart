@@ -435,6 +435,18 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                           builder: (context) {
                             return AlertDialog(
                               title: Text(I18n.of(context).save),
+                              content: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: CachedNetworkImage(
+                                  imageUrl: userStore.userDetail!.profile
+                                      .background_image_url!,
+                                  fit: BoxFit.cover,
+                                  cacheManager: pixivCacheManager,
+                                  httpHeaders: Hoster.header(
+                                      url: userStore.userDetail!.profile
+                                          .background_image_url),
+                                ),
+                              ),
                               actions: [
                                 TextButton(
                                     onPressed: () async {
@@ -691,6 +703,18 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                         builder: (context) {
                           return AlertDialog(
                             title: Text(I18n.of(context).save_painter_avatar),
+                            content: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    userStore.user!.profileImageUrls.medium,
+                                fit: BoxFit.cover,
+                                cacheManager: pixivCacheManager,
+                                httpHeaders: Hoster.header(
+                                    url: userStore
+                                        .user!.profileImageUrls.medium),
+                              ),
+                            ),
                             actions: [
                               TextButton(
                                   onPressed: () async {
