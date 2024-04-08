@@ -247,7 +247,12 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           pinned: true,
           elevation: 0.0,
           forceElevated: innerBoxIsScrolled ?? false,
-          expandedHeight: 280,
+          expandedHeight:
+              userStore.userDetail?.profile.background_image_url != null
+                  ? MediaQuery.of(context).size.width / 2 +
+                      205 -
+                      MediaQuery.of(context).padding.top
+                  : 300,
           leading: CommonBackArea(),
           actions: <Widget>[
             Builder(builder: (context) {
@@ -418,7 +423,9 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
   Widget _buildBackground(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).padding.top + 160,
+        height: userStore.userDetail?.profile.background_image_url != null
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).padding.top + 160,
         child: userStore.userDetail != null
             ? userStore.userDetail!.profile.background_image_url != null
                 ? InkWell(
@@ -760,10 +767,10 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni) {
         dio.httpClientAdapter = IOHttpClientAdapter()
-          ..onHttpClientCreate = (client) {
-            client.badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;
-            return client;
+          ..createHttpClient = () {
+            return HttpClient()
+              ..badCertificateCallback =
+                  (X509Certificate cert, String host, int port) => true;
           };
       }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
