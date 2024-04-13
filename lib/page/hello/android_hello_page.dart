@@ -38,6 +38,7 @@ import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
+import 'package:pixez/page/webview/saucenao_webview_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -288,11 +289,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           continue;
         }
         if (i.type == SharedMediaType.image) {
-          Leader.push(
-              context,
-              SauceNaoPage(
-                path: i.path,
-              ));
+          if (userSetting.useSaunceNaoWebview) {
+            Leader.push(context, SauncenaoWebview(path: i.path));
+          } else {
+            Leader.push(
+                context,
+                SauceNaoPage(
+                  path: i.path,
+                ));
+          }
         }
       }
     }, onError: (err) {
@@ -305,11 +310,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           continue;
         }
         if (i.type == SharedMediaType.image) {
-          Leader.push(
-              context,
-              SauceNaoPage(
-                path: i.path,
-              ));
+          if (userSetting.useSaunceNaoWebview) {
+            Leader.push(context, SauncenaoWebview(path: i.path));
+          } else {
+            Leader.push(
+                context,
+                SauceNaoPage(
+                  path: i.path,
+                ));
+          }
         }
       }
     });
