@@ -138,8 +138,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
     // }
   }
 
-  int? bookmark_num_min = null;
-
   _changeQueryParams() {
     if (_starValue == 0)
       futureGet = ApiForceSource(
@@ -148,7 +146,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
               sort: selectSort,
               start_date: _dateTimeRange?.start,
               end_date: _dateTimeRange?.end,
-              bookmark_num: bookmark_num_min));
+              bookmark_num: null));
     else
       futureGet = ApiForceSource(
           futureGet: (bool e) => apiClient.getSearchIllust(
@@ -157,7 +155,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
               sort: selectSort,
               start_date: _dateTimeRange?.start,
               end_date: _dateTimeRange?.end,
-              bookmark_num: bookmark_num_min));
+              bookmark_num: null));
   }
 
   void _buildShowBottomSheet(BuildContext context) {

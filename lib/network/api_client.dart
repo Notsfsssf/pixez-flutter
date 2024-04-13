@@ -398,17 +398,21 @@ class ApiClient {
       String? search_target,
       DateTime? start_date,
       DateTime? end_date,
-      int? bookmark_num}) async {
+      List<int>? bookmark_num,
+      int? search_ai_type}) async {
+    final bookmark_num_min = bookmark_num?.elementAtOrNull(0);
+    final bookmark_num_max = bookmark_num?.elementAtOrNull(1);
     return httpClient.get("/v1/search/illust",
         queryParameters: notNullMap({
           "filter": Platform.isAndroid ? "for_android" : "for_ios",
           "merge_plain_keyword_results": true,
           "sort": sort,
-          // "search_ai_type": 0,
+          "search_ai_type": search_ai_type,
           "search_target": search_target,
           "start_date": getFormatDate(start_date),
           "end_date": getFormatDate(end_date),
-          "bookmark_num": bookmark_num,
+          "bookmark_num_min": bookmark_num_min,
+          "bookmark_num_max": bookmark_num_max,
           "word": word
         }));
   }
