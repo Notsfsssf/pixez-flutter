@@ -14,12 +14,15 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/recom/spotlight_store.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -51,8 +54,7 @@ class SpotLightPage extends StatelessWidget {
             refreshOnStart: true,
             controller: _refreshController,
             child: WaterfallFlow.builder(
-              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
+              gridDelegate: _buildGridDelegate(context),
               controller: _controller,
               itemBuilder: (BuildContext context, int index) {
                 return SpotlightCard(
@@ -62,5 +64,32 @@ class SpotLightPage extends StatelessWidget {
             )),
       );
     });
+  }
+
+  SliverWaterfallFlowDelegate _buildGridDelegate(BuildContext context) {
+    var count = 2;
+    if (userSetting.crossAdapt) {
+      count = _buildSliderValue(context);
+    } else {
+      count = (MediaQuery.of(context).orientation == Orientation.portrait)
+          ? userSetting.crossCount
+          : userSetting.hCrossCount;
+    }
+    return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+      crossAxisCount: count,
+    );
+  }
+
+  int _buildSliderValue(BuildContext context) {
+    final currentValue =
+        (MediaQuery.of(context).orientation == Orientation.portrait
+                ? userSetting.crossAdapterWidth
+                : userSetting.hCrossAdapterWidth)
+            .toDouble();
+    var nowAdaptWidth = max(currentValue, 50.0);
+    nowAdaptWidth = min(nowAdaptWidth, 2160.0);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final result = max(screenWidth / nowAdaptWidth, 1.0).toInt();
+    return result;
   }
 }
