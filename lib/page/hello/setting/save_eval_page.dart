@@ -120,7 +120,7 @@ function eval(illust, index, mime) {
             ),
             ListTile(
               title: Text("Example output file name:"),
-              subtitle: Text(_fileName ?? "undifined"),
+              subtitle: Text(_fileName ?? "undefined"),
             ),
             Container(
               height: 200,
