@@ -318,8 +318,12 @@ class _ResultIllustListState extends State<ResultIllustList> {
                         ),
                       ),
                       SwitchListTile(
-                        value: true,
-                        onChanged: (v) {},
+                        value: searchAIType != 1,
+                        onChanged: (v) {
+                          setS(() {
+                            searchAIType = !v ? 1 : 0;
+                          });
+                        },
                         title: Text(I18n.of(context).ai_generated),
                       ),
                       Container(
