@@ -23,23 +23,23 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.3.4
+  dio: ^5.4.3
   crypto: ^3.0.2
-  path_provider: ^2.1.2
+  path_provider: ^2.1.3
   shared_preferences: ^2.2.1
-  share_plus: ^7.1.0
-  permission_handler: ^11.0.0
+  share_plus: ^8.0.3
+  permission_handler: ^11.3.1
   archive: ^3.4.10
-  url_launcher: ^6.2.4
+  url_launcher: ^6.2.6
   bot_toast: ^4.1.3
-  package_info_plus: ^5.0.1
+  package_info_plus: ^7.0.0
   mobx: ^2.1.4
   flutter_mobx: ^2.0.6+5
   in_app_purchase: ^3.1.7
   flutter_widget_from_html: ^0.14.11
-  device_info_plus: ^9.1.1
+  device_info_plus: ^10.1.0
   flutter_displaymode: ^0.6.0
-  receive_sharing_intent: ^1.6.4
+  receive_sharing_intent: ^1.7.0
   cached_network_image: ^3.3.1
   flutter_cache_manager: ^3.3.1
   flutter_colorpicker: ^1.0.3
@@ -49,23 +49,23 @@ dependencies:
   json_annotation: ^4.8.0
   flutter_staggered_animations: ^1.1.1
   badges: ^3.1.2
-  image_picker: ^1.0.7
+  image_picker: ^1.0.8
   intl: ^0.18.1
   quiver: ^3.2.1
   flutter_inappwebview: ^6.0.0
   auto_animated: ^3.1.0
-  http: ^0.13.4
-  dio_cache_interceptor: ^3.4.4
+  http: ^1.2.1
+  dio_cache_interceptor: ^3.5.0
   photo_view: ^0.14.0
-  http_interceptor: 2.0.0-beta.2
+  http_interceptor: ^2.0.0-beta.8
   image: ^4.1.4
   easy_refresh: ^3.3.4
   flutter_hooks: ^0.20.3
   hooks_riverpod: ^2.4.8
-  sqflite: ^2.3.2
-  dynamic_color: ^1.6.8
+  sqflite: ^2.3.3
+  dynamic_color: ^1.7.0
   # Design Style
-  fluent_ui: ^4.8.0
+  fluent_ui: ^4.8.7
   # Desktop Support
   flutter_acrylic: ^1.1.3
   window_manager: ^0.3.7
@@ -73,19 +73,21 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
+  build_runner: ^2.4.9
   mobx_codegen: ^2.1.1
   json_serializable: ^6.6.1
   analyzer: ^6.4.1
-  sqflite_common_ffi: ^2.2.5
-  msix: ^3.16.0
+  sqflite_common_ffi: ^2.3.3
+  msix: ^3.16.7
+
+dependency_overrides:
+  chewie: ^1.8.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

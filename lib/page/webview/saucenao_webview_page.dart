@@ -25,6 +25,7 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
   var progressValue = 0.0;
   late InAppWebViewController _webViewController;
   String? _path;
+  String? compressedPath;
   @override
   void initState() {
     _path = widget.path;
@@ -100,14 +101,19 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
                                     return httpclient;
                                   };
                               }
-                              final tmpPath =
-                                  "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
-                              await File(tmpPath).writeAsBytes(compressImage(
-                                  await File(_path!).readAsBytes()));
+                              if (compressedPath == null) {
+                                final tmpPath =
+                                    "${(await getTemporaryDirectory()).path}/${DateTime.now().millisecondsSinceEpoch}.jpg";
+                                await File(tmpPath).writeAsBytes(compressImage(
+                                    await File(_path!).readAsBytes()));
+                                compressedPath = tmpPath;
+                              }
                               var formData = FormData();
                               formData.files.addAll([
-                                MapEntry("file",
-                                    await MultipartFile.fromFile(tmpPath)),
+                                MapEntry(
+                                    "file",
+                                    await MultipartFile.fromFile(
+                                        compressedPath!)),
                               ]);
 
                               Response response =

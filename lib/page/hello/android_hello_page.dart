@@ -281,7 +281,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
-    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+    _intentDataStreamSubscription = ReceiveSharingIntent.instance.getMediaStream()
         .listen((List<SharedMediaFile> value) {
       for (var i in value) {
         if (i.type == SharedMediaType.text) {
@@ -303,7 +303,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
-    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+    ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
       for (var i in value) {
         if (i.type == SharedMediaType.text) {
           _showChromeLink(i.path);

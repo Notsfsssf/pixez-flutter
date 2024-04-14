@@ -76,7 +76,7 @@ class _HelloPageState extends State<HelloPage> {
     try {
       Uri? initialLink = await DeepLinkPlugin.getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub =  DeepLinkPlugin.uriLinkStream
+      _sub = DeepLinkPlugin.uriLinkStream
           .listen((Uri? link) => Leader.pushWithUri(context, link!));
     } catch (e) {
       print(e);

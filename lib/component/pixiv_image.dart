@@ -53,6 +53,16 @@ class PixivHostInterceptor implements InterceptorContract {
     }
     return response;
   }
+
+  @override
+  Future<bool> shouldInterceptRequest() async {
+    return true;
+  }
+
+  @override
+  Future<bool> shouldInterceptResponse() async {
+    return true;
+  }
 }
 
 class PixivCacheManager extends CacheManager with ImageCacheManager {

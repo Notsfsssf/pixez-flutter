@@ -334,7 +334,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   bool supportTranslate = false;
-  String _selectedText = "";
 
   Future<void> supportTranslateCheck() async {
     if (!Platform.isAndroid) return;
