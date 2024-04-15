@@ -83,7 +83,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
         scrollController.hasClients &&
         scrollController.offset + 180 >=
             scrollController.position.maxScrollExtent &&
-        aboutStore.illusts.isEmpty) aboutStore.fetch();
+        aboutStore.illusts.isEmpty) aboutStore.next();
   }
 
   @override

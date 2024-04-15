@@ -165,7 +165,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         _scrollController.hasClients &&
         _aboutStore.illusts.isEmpty &&
         !_aboutStore.fetching) {
-      _aboutStore.fetch();
+      _aboutStore.next();
     }
   }
 

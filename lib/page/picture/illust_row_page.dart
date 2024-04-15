@@ -99,7 +99,7 @@ class _IllustRowPageState extends State<IllustRowPage>
     if (mounted &&
         _scrollController.hasClients &&
         _aboutStore.illusts.isEmpty &&
-        !_aboutStore.fetching) _aboutStore.fetch();
+        !_aboutStore.fetching) _aboutStore.next();
   }
 
   @override
