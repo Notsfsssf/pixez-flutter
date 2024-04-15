@@ -267,7 +267,7 @@ class _IllustRowPageState extends State<IllustRowPage>
     final screenHeight = MediaQuery.of(context).size.height;
     final height = (radio * expectWidth);
     final centerType = height <= screenHeight;
-    if (userStore == null) userStore = UserStore(data.user.id);
+    if (userStore == null) userStore = UserStore(data.user.id, null, data.user);
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -629,7 +629,7 @@ class _IllustRowPageState extends State<IllustRowPage>
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
-      userStore = UserStore(illust.user.id);
+      userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();

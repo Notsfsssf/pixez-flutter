@@ -82,7 +82,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     _bookmarkStore = LightingStore(ApiForceSource(
         futureGet: (e) =>
             apiClient.getBookmarksIllust(widget.id, restrict, null)));
-    userStore = widget.userStore ?? UserStore(widget.id);
+    userStore = widget.userStore ?? UserStore(widget.id, null, null);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     _scrollController.addListener(() {

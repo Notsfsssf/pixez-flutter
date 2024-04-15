@@ -43,7 +43,7 @@ class PainterCard extends StatelessWidget {
           }
           return UsersPage(
             id: user.user.id,
-            userStore: UserStore(user.user.id),
+            userStore: UserStore(user.user.id, null, user.user),
           );
         }));
       },
@@ -141,7 +141,7 @@ class PainterCard extends StatelessWidget {
                   }
                   return UsersPage(
                     id: user.user.id,
-                    userStore: UserStore(user.user.id),
+                    userStore: UserStore(user.user.id, null, user.user),
                     heroTag: this.hashCode.toString(),
                   );
                 }));

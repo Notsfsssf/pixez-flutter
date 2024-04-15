@@ -23,7 +23,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.4.3
+  dio: ^5.4.3+1
   crypto: ^3.0.2
   path_provider: ^2.1.3
   shared_preferences: ^2.2.1
@@ -33,8 +33,8 @@ dependencies:
   url_launcher: ^6.2.6
   bot_toast: ^4.1.3
   package_info_plus: ^7.0.0
-  mobx: ^2.1.4
-  flutter_mobx: ^2.0.6+5
+  mobx: ^2.3.3+2
+  flutter_mobx: ^2.2.1+1
   in_app_purchase: ^3.1.7
   flutter_widget_from_html: ^0.14.11
   device_info_plus: ^10.1.0
@@ -60,8 +60,8 @@ dependencies:
   http_interceptor: ^2.0.0-beta.8
   image: ^4.1.4
   easy_refresh: ^3.3.4
-  flutter_hooks: ^0.20.3
-  hooks_riverpod: ^2.4.8
+  flutter_hooks: ^0.20.5
+  hooks_riverpod: ^2.5.1
   sqflite: ^2.3.3
   dynamic_color: ^1.7.0
   # Design Style
@@ -74,7 +74,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.9
-  mobx_codegen: ^2.1.1
+  mobx_codegen: ^2.6.1
   json_serializable: ^6.6.1
   analyzer: ^6.4.1
   sqflite_common_ffi: ^2.3.3

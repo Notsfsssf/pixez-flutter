@@ -470,7 +470,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
-      userStore = UserStore(illust.user.id);
+      userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       return InkWell(
         onTap: () async {

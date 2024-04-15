@@ -401,7 +401,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
 
   Widget buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
-      userStore = UserStore(illust.user.id);
+      userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();

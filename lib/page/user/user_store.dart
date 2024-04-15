@@ -38,7 +38,7 @@ abstract class _UserStoreBase with Store {
   @observable
   int value = 0;
 
-  _UserStoreBase(this.id) {
+  _UserStoreBase(this.id, this.userDetail, this.user) {
     this.isFollow = user?.isFollowed ?? false;
   }
 

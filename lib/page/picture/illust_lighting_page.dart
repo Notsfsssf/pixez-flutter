@@ -367,7 +367,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
         ),
       );
-    if (userStore == null) userStore = UserStore(data.user.id);
+    if (userStore == null) userStore = UserStore(data.user.id, null, data.user);
     return EasyRefresh(
       controller: _refreshController,
       header: PixezDefault.header(context),
@@ -754,7 +754,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
-    if (userStore == null) userStore = UserStore(illust.user.id);
+    if (userStore == null)
+      userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
