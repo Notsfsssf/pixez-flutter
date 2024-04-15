@@ -1,10 +1,8 @@
-package com.perol.pixez
+package com.perol.pixez.plugin
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.webkit.WebView
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.MainScope

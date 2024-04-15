@@ -61,7 +61,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
         () => apiClient.getUserBookmarkNovel(widget.id, "public"),
         EasyRefreshController(
             controlFinishLoad: true, controlFinishRefresh: true));
-    userStore = widget.userStore ?? UserStore(widget.id);
+    userStore = widget.userStore ?? UserStore(widget.id, null, null);
     userStore.firstFetch();
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
@@ -284,11 +284,10 @@ class _NovelUsersPageState extends State<NovelUsersPage>
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni) {
         dio.httpClientAdapter = IOHttpClientAdapter()
-          ..onHttpClientCreate = (client) {
-            client.badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;
-            return client;
-          };
+        ..createHttpClient = () {
+          return HttpClient()
+            ..badCertificateCallback =
+                (X509Certificate cert, String host, int port) => true;};
       }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);

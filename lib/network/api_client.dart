@@ -392,22 +392,27 @@ class ApiClient {
       return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
-  //  @GET("/v1/search/illust?filter=for_android&merge_plain_keyword_results=true")
-  // fun getSearchIllust(@Query("word") paramString1: String, @Query("sort") paramString2: String, @Query("search_target") paramString3: String?, @Query("bookmark_num") paramInteger: Int?, @Query("duration") paramString4: String?, @Header("Authorization") paramString5: String): Observable<SearchIllustResponse>
+  //:)
   Future<Response> getSearchIllust(String word,
       {String? sort,
       String? search_target,
       DateTime? start_date,
       DateTime? end_date,
-      int? bookmark_num}) async {
-    return httpClient.get(
-        "/v1/search/illust?filter=for_android&merge_plain_keyword_results=true",
+      List<int>? bookmark_num,
+      int? search_ai_type}) async {
+    final bookmark_num_min = bookmark_num?.elementAtOrNull(0);
+    final bookmark_num_max = bookmark_num?.elementAtOrNull(1);
+    return httpClient.get("/v1/search/illust",
         queryParameters: notNullMap({
+          "filter": Platform.isAndroid ? "for_android" : "for_ios",
+          "merge_plain_keyword_results": true,
           "sort": sort,
+          "search_ai_type": search_ai_type,
           "search_target": search_target,
           "start_date": getFormatDate(start_date),
           "end_date": getFormatDate(end_date),
-          "bookmark_num": bookmark_num,
+          "bookmark_num_min": bookmark_num_min,
+          "bookmark_num_max": bookmark_num_max,
           "word": word
         }));
   }

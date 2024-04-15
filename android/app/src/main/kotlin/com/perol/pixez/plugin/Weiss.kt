@@ -1,21 +1,10 @@
-package com.perol.pixez
+package com.perol.pixez.plugin
 
-import android.content.Context
-import android.content.Intent
 import androidx.webkit.ProxyConfig
 import androidx.webkit.ProxyController
 import androidx.webkit.WebViewFeature
-import io.flutter.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.ServerSocket
-import java.net.Socket
-import java.util.*
-import javax.net.ssl.SSLSocketFactory
-import kotlin.collections.HashMap
-import kotlin.concurrent.thread
 
 object Weiss {
     private const val WEISS_CHANNEL = "com.perol.dev/weiss"
@@ -58,7 +47,7 @@ object Weiss {
 
     fun proxy() {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
-            val proxyUrl = "127.0.0.1:${port}"
+            val proxyUrl = "127.0.0.1:$port"
             val proxyConfig: ProxyConfig = ProxyConfig.Builder()
                     .addProxyRule(proxyUrl)
                     .addDirect()

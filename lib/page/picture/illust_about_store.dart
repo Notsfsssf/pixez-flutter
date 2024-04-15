@@ -16,6 +16,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
@@ -31,7 +32,7 @@ abstract class _IllustAboutStoreBase with Store {
   bool fetching = false;
   EasyRefreshController? refreshController;
 
-  _IllustAboutStoreBase(this.id, {this.refreshController});
+  _IllustAboutStoreBase(this.id, this.refreshController);
 
   @observable
   String? errorMessage;
@@ -41,46 +42,33 @@ abstract class _IllustAboutStoreBase with Store {
   ObservableList<Illusts> illusts = ObservableList();
 
   @action
-  Future<bool> fetch() async {
-    if (fetching) return false;
-    fetching = true;
-    errorMessage = null;
-    try {
-      Response response = await apiClient.getIllustRelated(id);
-      Recommend recommend = Recommend.fromJson(response.data);
-      _nextUrl = recommend.nextUrl;
-      illusts.clear();
-      illusts
-          .addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
-      return true;
-    } catch (e) {
-      errorMessage = e.toString();
-      return false;
-    } finally {
-      fetching = false;
-    }
-  }
-
-  @action
   Future<bool> next() async {
-    if (fetching) return false;
-    fetching = true;
+    if (fetching) {
+      return false;
+    }
     try {
+      fetching = true;
       Response response = _nextUrl == null || _nextUrl!.isEmpty
           ? await apiClient.getIllustRelated(id)
           : await apiClient.getNext(_nextUrl!);
       Recommend recommend = Recommend.fromJson(response.data);
       _nextUrl = recommend.nextUrl;
-      illusts
-          .addAll(recommend.illusts.takeWhile((value) => !value.hateByUser()));
+      final resultIllusts = recommend.illusts;
+      if (resultIllusts.isEmpty) {
+        refreshController?.finishLoad(IndicatorResult.noMore);
+        return true;
+      }
+      illusts.addAll(resultIllusts.takeWhile((value) => !value.hateByUser()));
       if (_nextUrl == null || _nextUrl!.isEmpty || recommend.illusts.isEmpty) {
         refreshController?.finishLoad(IndicatorResult.noMore);
       } else {
         refreshController?.finishLoad(IndicatorResult.success);
       }
+      debugPrint('nextUrl: $_nextUrl');
       return true;
     } catch (e) {
       refreshController?.finishLoad(IndicatorResult.fail);
+      debugPrint('failed to load next: $e');
       return false;
     } finally {
       fetching = false;

@@ -1,7 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' show SelectionArea;
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
@@ -62,8 +61,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
 
     illustStore = widget.store ?? IllustStore(widget.id, null);
     illustStore.fetch();
-    aboutStore =
-        IllustAboutStore(widget.id, refreshController: refreshController);
+    aboutStore = IllustAboutStore(widget.id, refreshController);
 
     initializeScrollController(scrollController, aboutStore.next);
     super.initState();
@@ -75,7 +73,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     if (oldWidget.store != widget.store) {
       illustStore = widget.store ?? IllustStore(widget.id, null);
       illustStore.fetch();
-      aboutStore = IllustAboutStore(widget.id);
+      aboutStore = IllustAboutStore(widget.id, refreshController);
       LPrinter.d("state change");
     }
   }
@@ -85,7 +83,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
         scrollController.hasClients &&
         scrollController.offset + 180 >=
             scrollController.position.maxScrollExtent &&
-        aboutStore.illusts.isEmpty) aboutStore.fetch();
+        aboutStore.illusts.isEmpty) aboutStore.next();
   }
 
   @override
@@ -402,7 +400,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
 
   Widget buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
-      userStore = UserStore(illust.user.id, user: illust.user);
+      userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
@@ -823,7 +821,7 @@ class IllustItem extends StatelessWidget {
                 ClipboardPlugin.copyImageFromUrl(url),
               );
             },
-        ),
+          ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).copymessage),
           leading: Icon(

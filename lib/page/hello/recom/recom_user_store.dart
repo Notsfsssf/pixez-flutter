@@ -26,7 +26,7 @@ abstract class _RecomUserStoreBase with Store {
   ObservableList<UserPreviews> users = ObservableList();
   EasyRefreshController? controller;
 
-  _RecomUserStoreBase({this.controller});
+  _RecomUserStoreBase(this.controller);
 
   @action
   fetch() async {

@@ -100,7 +100,7 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
           children: [
             ListTile(
               title: Text("File Name:"),
-              subtitle: Text(_fileName ?? "undifined"),
+              subtitle: Text(_fileName ?? "undefined"),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),

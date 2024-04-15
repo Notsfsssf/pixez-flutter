@@ -65,7 +65,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     _scrollController = ScrollController();
     _easyRefreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
-    _recomUserStore = RecomUserStore();
+    _recomUserStore = RecomUserStore(_easyRefreshController);
     spotlightStore = SpotlightStore(null);
     _lightingStore = LightingStore(
       ApiForceSource(

@@ -60,7 +60,7 @@ class PainterCard extends StatelessWidget {
         } else {
           widget = UsersPage(
             id: user.user.id,
-            userStore: UserStore(user.user.id, user: user.user),
+            userStore: UserStore(user.user.id, null, user.user),
           );
         }
         Leader.push(context, widget,
@@ -91,7 +91,7 @@ class PainterCard extends StatelessWidget {
                 } else {
                   widget = UsersPage(
                     id: user.user.id,
-                    userStore: UserStore(user.user.id, user: user.user),
+                    userStore: UserStore(user.user.id, null, user.user),
                     heroTag: this.hashCode.toString(),
                   );
                 }

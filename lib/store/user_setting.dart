@@ -25,6 +25,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/about/languages.dart';
+import 'package:pixez/secure_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_setting.g.dart';
@@ -432,6 +433,7 @@ abstract class _UserSetting with Store {
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
     if (Platform.isAndroid) {
       try {
+        await SecurePlugin.configSecureWindow(nsfwMask);
         var modeList = await FlutterDisplayMode.supported;
         if (displayMode != null && modeList.length > displayMode!) {
           await FlutterDisplayMode.setPreferredMode(modeList[displayMode!]);
@@ -554,6 +556,7 @@ abstract class _UserSetting with Store {
   Future<void> changeNsfwMask(bool value) async {
     await prefs.setBool(NSFW_MASK_KEY, value);
     nsfwMask = value;
+    await SecurePlugin.configSecureWindow(value);
   }
 
   @action

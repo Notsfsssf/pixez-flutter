@@ -148,6 +148,7 @@ class _BookTagPageState extends State<BookTagPage>
             },
             confirmDismiss: (direction) async {
               await _deleteConfirm(_items[index]);
+              return null;
             },
             background: Container(
               color: Colors.red,

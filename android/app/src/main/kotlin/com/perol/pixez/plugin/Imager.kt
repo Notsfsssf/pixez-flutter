@@ -14,7 +14,7 @@
  *
  */
 
-package com.perol.pixez
+package com.perol.pixez.plugin
 
 import android.content.ContentValues
 import android.content.Context
@@ -24,7 +24,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import java.io.File
-import java.io.OutputStream
 
 fun Context.save(byteArray: ByteArray, name: String): String? {
     if (true || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {

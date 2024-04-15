@@ -10,7 +10,7 @@ const double kLazyLoadSize = 300;
 ///
 /// 因为鼠标滚轮不能滚出视图，无法触发EazyRefresh，所以需要使用这个方法来
 /// 为桌面平台提供更好的体验
-/// 
+///
 /// 这个方法返回一个用于注销监听器的方法
 void Function()? initializeScrollController(
   ScrollController controller,

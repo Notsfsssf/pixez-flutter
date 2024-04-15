@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -76,7 +77,7 @@ class _HelloPageState extends State<HelloPage> {
     try {
       Uri? initialLink = await DeepLinkPlugin.getInitialUri();
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub =  DeepLinkPlugin.uriLinkStream
+      _sub = DeepLinkPlugin.uriLinkStream
           .listen((Uri? link) => Leader.pushWithUri(context, link!));
     } catch (e) {
       print(e);
@@ -119,6 +120,7 @@ class _HelloPageState extends State<HelloPage> {
             ),
           ],
         ),
+        extendBody: true,
         bottomNavigationBar: wide ? null : _buildNavigationBar(context),
       );
     });
@@ -187,33 +189,41 @@ class _HelloPageState extends State<HelloPage> {
     ];
   }
 
-  NavigationBar _buildNavigationBar(BuildContext context) {
-    return NavigationBar(
-      destinations: [
-        NavigationDestination(
-            icon: Icon(Icons.home), label: I18n.of(context).home),
-        NavigationDestination(
-            icon: Icon(
-              Icons.leaderboard,
-            ),
-            label: I18n.of(context).rank),
-        NavigationDestination(
-            icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
-        NavigationDestination(
-            icon: Icon(Icons.search), label: I18n.of(context).search),
-        NavigationDestination(
-            icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
-      ],
-      selectedIndex: index,
-      onDestinationSelected: (value) {
-        if (this.index == index) {
-          topStore.setTop("${index + 1}00");
-        }
-        setState(() {
-          this.index = value;
-        });
-        if (_pageController.hasClients) _pageController.jumpToPage(index);
-      },
+  Widget _buildNavigationBar(BuildContext context) {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: NavigationBar(
+          height: 68,
+          backgroundColor:
+              Theme.of(context).colorScheme.surface.withOpacity(0.9),
+          destinations: [
+            NavigationDestination(
+                icon: Icon(Icons.home), label: I18n.of(context).home),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.leaderboard,
+                ),
+                label: I18n.of(context).rank),
+            NavigationDestination(
+                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+            NavigationDestination(
+                icon: Icon(Icons.search), label: I18n.of(context).search),
+            NavigationDestination(
+                icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+          ],
+          selectedIndex: index,
+          onDestinationSelected: (value) {
+            if (this.index == index) {
+              topStore.setTop("${index + 1}00");
+            }
+            setState(() {
+              this.index = value;
+            });
+            if (_pageController.hasClients) _pageController.jumpToPage(index);
+          },
+        ),
+      ),
     );
   }
 

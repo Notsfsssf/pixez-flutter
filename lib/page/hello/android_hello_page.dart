@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -38,6 +39,7 @@ import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
+import 'package:pixez/page/webview/saucenao_webview_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -144,33 +146,41 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     );
   }
 
-  NavigationBar _buildNavigationBar(BuildContext context) {
-    return NavigationBar(
-      destinations: [
-        NavigationDestination(
-            icon: Icon(Icons.home), label: I18n.of(context).home),
-        NavigationDestination(
-            icon: Icon(
-              Icons.leaderboard,
-            ),
-            label: I18n.of(context).rank),
-        NavigationDestination(
-            icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
-        NavigationDestination(
-            icon: Icon(Icons.search), label: I18n.of(context).search),
-        NavigationDestination(
-            icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
-      ],
-      selectedIndex: index,
-      onDestinationSelected: (index) {
-        if (this.index == index) {
-          topStore.setTop("${index + 1}00");
-        }
-        setState(() {
-          this.index = index;
-        });
-        if (_pageController.hasClients) _pageController.jumpToPage(index);
-      },
+  Widget _buildNavigationBar(BuildContext context) {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: NavigationBar(
+          height: 68,
+          backgroundColor:
+              Theme.of(context).colorScheme.surface.withOpacity(0.9),
+          destinations: [
+            NavigationDestination(
+                icon: Icon(Icons.home), label: I18n.of(context).home),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.leaderboard,
+                ),
+                label: I18n.of(context).rank),
+            NavigationDestination(
+                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+            NavigationDestination(
+                icon: Icon(Icons.search), label: I18n.of(context).search),
+            NavigationDestination(
+                icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+          ],
+          selectedIndex: index,
+          onDestinationSelected: (index) {
+            if (this.index == index) {
+              topStore.setTop("${index + 1}00");
+            }
+            setState(() {
+              this.index = index;
+            });
+            if (_pageController.hasClients) _pageController.jumpToPage(index);
+          },
+        ),
+      ),
     );
   }
 
@@ -280,7 +290,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
-    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+    _intentDataStreamSubscription = ReceiveSharingIntent.instance
+        .getMediaStream()
         .listen((List<SharedMediaFile> value) {
       for (var i in value) {
         if (i.type == SharedMediaType.text) {
@@ -288,28 +299,38 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           continue;
         }
         if (i.type == SharedMediaType.image) {
-          Leader.push(
-              context,
-              SauceNaoPage(
-                path: i.path,
-              ));
+          if (userSetting.useSaunceNaoWebview) {
+            Leader.push(context, SauncenaoWebview(path: i.path));
+          } else {
+            Leader.push(
+                context,
+                SauceNaoPage(
+                  path: i.path,
+                ));
+          }
         }
       }
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
-    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+    ReceiveSharingIntent.instance
+        .getInitialMedia()
+        .then((List<SharedMediaFile> value) {
       for (var i in value) {
         if (i.type == SharedMediaType.text) {
           _showChromeLink(i.path);
           continue;
         }
         if (i.type == SharedMediaType.image) {
-          Leader.push(
-              context,
-              SauceNaoPage(
-                path: i.path,
-              ));
+          if (userSetting.useSaunceNaoWebview) {
+            Leader.push(context, SauncenaoWebview(path: i.path));
+          } else {
+            Leader.push(
+                context,
+                SauceNaoPage(
+                  path: i.path,
+                ));
+          }
         }
       }
     });

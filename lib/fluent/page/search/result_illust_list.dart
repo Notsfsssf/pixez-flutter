@@ -73,7 +73,13 @@ class _ResultIllustListState extends State<ResultIllustList> {
     50000,
   ];
 
-  final sort = ["date_desc", "date_asc", "popular_desc"];
+  final sort = [
+    "date_desc",
+    "date_asc",
+    "popular_desc",
+    "popular_male_desc",
+    "popular_female_desc"
+  ];
   static List<String> search_target = [
     "partial_match_for_tags",
     "exact_match_for_tags",
@@ -139,7 +145,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
               search_target: searchTarget,
               sort: selectSort,
               start_date: _dateTimeRange?.start,
-              end_date: _dateTimeRange?.end));
+              end_date: _dateTimeRange?.end,
+              bookmark_num: null));
     else
       futureGet = ApiForceSource(
           futureGet: (bool e) => apiClient.getSearchIllust(
@@ -147,7 +154,8 @@ class _ResultIllustListState extends State<ResultIllustList> {
               search_target: searchTarget,
               sort: selectSort,
               start_date: _dateTimeRange?.start,
-              end_date: _dateTimeRange?.end));
+              end_date: _dateTimeRange?.end,
+              bookmark_num: null));
   }
 
   void _buildShowBottomSheet(BuildContext context) {
@@ -211,6 +219,14 @@ class _ResultIllustListState extends State<ResultIllustList> {
                             ComboBoxItem(
                               child: Text(I18n.of(context).popular_desc),
                               value: 2,
+                            ),
+                            ComboBoxItem(
+                              child: Text(I18n.of(context).popular_male_desc),
+                              value: 3,
+                            ),
+                            ComboBoxItem(
+                              child: Text(I18n.of(context).popular_female_desc),
+                              value: 4,
                             ),
                           ],
                           onChanged: (int? index) {

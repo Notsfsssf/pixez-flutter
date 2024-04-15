@@ -22,7 +22,6 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
-import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/models/novel_viewer_persist.dart';
 import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/network/api_client.dart';

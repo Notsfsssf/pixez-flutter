@@ -1,4 +1,4 @@
-package com.perol.pixez
+package com.perol.pixez.plugin
 
 import android.app.Activity
 import android.content.Intent

@@ -144,8 +144,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     _scrollController = ScrollController();
     _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
-    _aboutStore =
-        IllustAboutStore(widget.id, refreshController: _refreshController);
+    _aboutStore = IllustAboutStore(widget.id, _refreshController);
     super.initState();
     supportTranslateCheck();
   }
@@ -156,7 +155,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     if (oldWidget.store != widget.store) {
       _illustStore = widget.store ?? IllustStore(widget.id, null);
       _illustStore.fetch();
-      _aboutStore = IllustAboutStore(widget.id);
+      _aboutStore = IllustAboutStore(widget.id, _refreshController);
       LPrinter.d("state change");
     }
   }
@@ -166,7 +165,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         _scrollController.hasClients &&
         _aboutStore.illusts.isEmpty &&
         !_aboutStore.fetching) {
-      _aboutStore.fetch();
+      _aboutStore.next();
     }
   }
 
@@ -335,7 +334,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   bool supportTranslate = false;
-  String _selectedText = "";
 
   Future<void> supportTranslateCheck() async {
     if (!Platform.isAndroid) return;
@@ -369,7 +367,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
         ),
       );
-    if (userStore == null) userStore = UserStore(data.user.id, user: data.user);
+    if (userStore == null) userStore = UserStore(data.user.id, null, data.user);
     return EasyRefresh(
       controller: _refreshController,
       header: PixezDefault.header(context),
@@ -757,7 +755,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
-      userStore = UserStore(illust.user.id, user: illust.user);
+      userStore = UserStore(illust.user.id, null, illust.user);
     return Observer(builder: (_) {
       Future.delayed(Duration(seconds: 2), () {
         _loadAbout();
@@ -845,6 +843,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
+    if (userSetting.illustDetailSaveSkipLongPress) {
+      saveStore.saveImage(illust, index: index);
+      if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+        _illustStore.star(
+            restrict: userSetting.defaultPrivateLike ? "private" : "public");
+      }
+      return;
+    }
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -1041,6 +1047,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  SizedBox(
+                    height: 8,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,

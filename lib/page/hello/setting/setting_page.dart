@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -331,19 +330,6 @@ class _SettingPageState extends State<SettingPage> {
     }
   }
 
-  _showMessage(BuildContext context) async {
-    final link =
-        "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
-    try {
-      final dio = Dio(BaseOptions(baseUrl: link));
-      Response response = await dio.get("");
-      final data = response.data as Map;
-      print("${data['doh']}");
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Future _showLogoutDialog(BuildContext context) async {
     final result = await showDialog(
         context: context,
@@ -376,42 +362,6 @@ class _SettingPageState extends State<SettingPage> {
         {}
         break;
     }
-  }
-
-  _showCacheBottomSheet(BuildContext context) async {
-    final result = await showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16.0),
-                topRight: Radius.circular(16.0))),
-        builder: (context) {
-          return SafeArea(
-              child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(I18n.of(context).clear_all_cache),
-              ),
-              Slider(
-                value: 1,
-                onChanged: (v) {},
-              ),
-              ListTile(
-                title: Text(I18n.of(context).ok),
-                onTap: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-              ListTile(
-                title: Text(I18n.of(context).cancel),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ));
-        });
   }
 
   Future _showClearCacheDialog(BuildContext context) async {

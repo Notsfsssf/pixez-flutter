@@ -124,23 +124,7 @@ abstract class SauceStoreBase with Store {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
       Uint8List originImageBytes = await pickedFile.readAsBytes();
-      var originImage = decodeImage(originImageBytes);
-      var originWidth = originImage!.width;
-      var originHeight = originImage.height;
-      int newWidth, newHeight;
-      if (originWidth < 720 || originHeight < 720) {
-        newWidth = originWidth;
-        newHeight = originHeight;
-      } else if (originWidth > originHeight) {
-        newHeight = 720;
-        newWidth = originWidth * newHeight ~/ originHeight;
-      } else {
-        newWidth = 720;
-        newHeight = originHeight * newWidth ~/ originWidth;
-      }
-      var newImage =
-          copyResize(originImage, width: newWidth, height: newHeight);
-      var newImageBytes = encodeJpg(newImage, quality: 75);
+      var newImageBytes = compressImage(originImageBytes);
       LPrinter.d(
           "Uncompressed image size: ${originImageBytes.length}, compressed image size: ${newImageBytes.length}");
       path =
@@ -185,5 +169,24 @@ abstract class SauceStoreBase with Store {
     } catch (e) {
       BotToast.showText(text: "error${e}");
     }
+  }
+
+  Uint8List compressImage(Uint8List originImageBytes) {
+    var originImage = decodeImage(originImageBytes);
+    var originWidth = originImage!.width;
+    var originHeight = originImage.height;
+    int newWidth, newHeight;
+    if (originWidth < 720 || originHeight < 720) {
+      newWidth = originWidth;
+      newHeight = originHeight;
+    } else if (originWidth > originHeight) {
+      newHeight = 720;
+      newWidth = originWidth * newHeight ~/ originHeight;
+    } else {
+      newWidth = 720;
+      newHeight = originHeight * newWidth ~/ originWidth;
+    }
+    var newImage = copyResize(originImage, width: newWidth, height: newHeight);
+    return encodeJpg(newImage, quality: 75);
   }
 }

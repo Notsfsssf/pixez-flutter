@@ -75,7 +75,30 @@ class _ResultIllustListState extends State<ResultIllustList> {
     50000,
   ];
 
-  final sort = ["date_desc", "date_asc", "popular_desc"];
+  List<List<int>> premiumStarNum = [
+    [],
+    [10000],
+    [50000, 99999],
+    [10000, 49999],
+    [5000, 9999],
+    [1000, 4999],
+    [500, 999],
+    [300, 499],
+    [100, 299],
+    [50, 99],
+    [30, 49],
+    [10, 29],
+  ];
+
+  List<int> _bookmarkNumList = [];
+
+  final sort = [
+    "date_desc",
+    "date_asc",
+    "popular_desc",
+    "popular_male_desc",
+    "popular_female_desc"
+  ];
   static List<String> search_target = [
     "partial_match_for_tags",
     "exact_match_for_tags",
@@ -84,6 +107,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
   String searchTarget = search_target[0];
   String selectSort = "date_desc";
   int selectStarNum = 0;
+  int searchAIType = 0;
   // double starValue = 0.0;
 
   @override
@@ -92,17 +116,15 @@ class _ResultIllustListState extends State<ResultIllustList> {
       child: Column(
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SearchSuggestionPage(
-                            preword: widget.word,
-                          )));
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 2 / 3,
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SearchSuggestionPage(
+                              preword: widget.word,
+                            )));
+                  },
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
@@ -117,21 +139,39 @@ class _ResultIllustListState extends State<ResultIllustList> {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.date_range),
-                        onPressed: () {
-                          _buildShowDateRange(context);
-                        }),
-                    _buildStar(),
-                    IconButton(
-                        icon: Icon(Icons.filter_alt_outlined),
-                        onPressed: () {
-                          _buildShowBottomSheet(context);
-                          // _showMaterialBottom();
-                        }),
-                  ],
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0),
+                  child: Row(
+                    children: [
+                      InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(Icons.date_range),
+                          ),
+                          onTap: () {
+                            _buildShowDateRange(context);
+                          }),
+                      if (accountStore.now?.isPremium == 1)
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: _buildPremiumStar(),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: _buildStar(),
+                      ),
+                      InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(Icons.filter_alt_outlined),
+                          ),
+                          onTap: () {
+                            _buildShowBottomSheet(context);
+                            // _showMaterialBottom();
+                          }),
+                    ],
+                  ),
                 ),
               )
             ],
@@ -169,7 +209,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
               search_target: searchTarget,
               sort: selectSort,
               start_date: _dateTimeRange?.start,
-              end_date: _dateTimeRange?.end));
+              end_date: _dateTimeRange?.end,
+              bookmark_num: _bookmarkNumList,
+              search_ai_type: searchAIType));
     else
       futureGet = ApiForceSource(
           futureGet: (bool e) => apiClient.getSearchIllust(
@@ -177,7 +219,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
               search_target: searchTarget,
               sort: selectSort,
               start_date: _dateTimeRange?.start,
-              end_date: _dateTimeRange?.end));
+              end_date: _dateTimeRange?.end,
+              bookmark_num: _bookmarkNumList,
+              search_ai_type: searchAIType));
   }
 
   void _buildShowBottomSheet(BuildContext context) {
@@ -247,6 +291,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
                               0: Text(I18n.of(context).date_desc),
                               1: Text(I18n.of(context).date_asc),
                               2: Text(I18n.of(context).popular_desc),
+                              if (accountStore.now != null &&
+                                  accountStore.now!.isPremium == 1) ...{
+                                3: Text(I18n.of(context).popular_male_desc),
+                                4: Text(I18n.of(context).popular_female_desc),
+                              }
                             },
                             onValueChanged: (int? index) {
                               if (accountStore.now != null && index == 2) {
@@ -268,6 +317,15 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           ),
                         ),
                       ),
+                      SwitchListTile(
+                        value: searchAIType != 1,
+                        onChanged: (v) {
+                          setS(() {
+                            searchAIType = !v ? 1 : 0;
+                          });
+                        },
+                        title: Text(I18n.of(context).ai_generated),
+                      ),
                       Container(
                         height: 16,
                       )
@@ -279,6 +337,51 @@ class _ResultIllustListState extends State<ResultIllustList> {
   }
 
   int _starValue = 0;
+
+  Widget _buildPremiumStar() {
+    return PopupMenuButton<List<int>>(
+      initialValue: _bookmarkNumList,
+      child: Icon(
+        Icons.format_list_numbered,
+      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      itemBuilder: (context) {
+        return premiumStarNum.map((List<int> value) {
+          if (value.isEmpty) {
+            return PopupMenuItem(
+              value: value,
+              child: Text("Default"),
+              onTap: () {
+                setState(() {
+                  _bookmarkNumList = value;
+                  _changeQueryParams();
+                });
+              },
+            );
+          } else {
+            final minStr = value.elementAtOrNull(1) == null
+                ? ">${value.elementAtOrNull(0) ?? ''}"
+                : "${value.elementAtOrNull(0) ?? ''}";
+            final maxStr = value.elementAtOrNull(1) == null
+                ? ""
+                : "〜${value.elementAtOrNull(1)}";
+
+            return PopupMenuItem(
+              value: value,
+              child: Text("${minStr}${maxStr}"),
+              onTap: () {
+                setState(() {
+                  _bookmarkNumList = value;
+                  _changeQueryParams();
+                });
+              },
+            );
+          }
+        }).toList();
+      },
+    );
+  }
 
   Widget _buildStar() {
     return PopupMenuButton(

@@ -29,7 +29,7 @@ class PixEz : FlutterApplication(), ImageLoaderFactory {
             return
         }
         super.onCreate()
-        CrashHandler.instance?.init(applicationContext)
+        CrashHandler.instance.init(applicationContext)
     }
 
     override fun newImageLoader(): ImageLoader {

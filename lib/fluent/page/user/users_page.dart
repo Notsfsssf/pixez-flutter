@@ -67,7 +67,7 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   void initState() {
-    userStore = widget.userStore ?? UserStore(widget.id);
+    userStore = widget.userStore ?? UserStore(widget.id, null, null);
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.hasClients) {

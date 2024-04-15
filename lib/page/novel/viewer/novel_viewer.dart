@@ -32,7 +32,6 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/novel_recom_response.dart';
-import 'package:pixez/models/novel_text_response.dart';
 import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
@@ -41,7 +40,6 @@ import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
-import 'package:pixez/page/novel/viewer/novel_web_viewer.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as Path;
@@ -616,13 +614,13 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         title: Text("no more"),
       );
     return ListTile(
-      title: Text(series.title!, maxLines: 2, overflow: TextOverflow.ellipsis),
+      title: Text(series.title, maxLines: 2, overflow: TextOverflow.ellipsis),
       onTap: () {
         Navigator.of(context, rootNavigator: true)
             .pushReplacement(MaterialPageRoute(
                 builder: (BuildContext context) => NovelViewerPage(
-                      id: series.id!,
-                      novelStore: NovelStore(series.id!, null),
+                      id: series.id,
+                      novelStore: NovelStore(series.id, null),
                     )));
       },
     );
