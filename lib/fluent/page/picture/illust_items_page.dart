@@ -61,8 +61,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
 
     illustStore = widget.store ?? IllustStore(widget.id, null);
     illustStore.fetch();
-    aboutStore =
-        IllustAboutStore(widget.id);
+    aboutStore = IllustAboutStore(widget.id, refreshController);
 
     initializeScrollController(scrollController, aboutStore.next);
     super.initState();
@@ -74,7 +73,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     if (oldWidget.store != widget.store) {
       illustStore = widget.store ?? IllustStore(widget.id, null);
       illustStore.fetch();
-      aboutStore = IllustAboutStore(widget.id);
+      aboutStore = IllustAboutStore(widget.id, refreshController);
       LPrinter.d("state change");
     }
   }
@@ -822,7 +821,7 @@ class IllustItem extends StatelessWidget {
                 ClipboardPlugin.copyImageFromUrl(url),
               );
             },
-        ),
+          ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).copymessage),
           leading: Icon(

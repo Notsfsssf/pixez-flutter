@@ -54,7 +54,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     ApiForceSource(
         futureGet: (e) => apiClient.getRecommend(), glanceKey: "recom"),
   );
-  final RecomUserStore _recomUserStore = RecomUserStore();
+  final RecomUserStore _recomUserStore = RecomUserStore(null);
   late StreamSubscription<String> subscription;
   final EasyRefreshController _easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);

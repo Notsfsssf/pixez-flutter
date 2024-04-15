@@ -80,7 +80,7 @@ class _IllustRowPageState extends State<IllustRowPage>
     _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
     _aboutStore =
-        IllustAboutStore(widget.id);
+        IllustAboutStore(widget.id, _refreshController);
     super.initState();
   }
 
@@ -90,7 +90,7 @@ class _IllustRowPageState extends State<IllustRowPage>
     if (oldWidget.store != widget.store) {
       _illustStore = widget.store ?? IllustStore(widget.id, null);
       _illustStore.fetch();
-      _aboutStore = IllustAboutStore(widget.id);
+      _aboutStore = IllustAboutStore(widget.id, _refreshController);
       LPrinter.d("state change");
     }
   }

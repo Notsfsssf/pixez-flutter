@@ -39,7 +39,7 @@ class _RecomUserPageState extends State<RecomUserPage> {
     _refreshController = EasyRefreshController(
         controlFinishLoad: true, controlFinishRefresh: true);
     _recomUserStore =
-        widget.recomUserStore ?? RecomUserStore();
+        widget.recomUserStore ?? RecomUserStore(_refreshController);
     if (widget.recomUserStore != null) {
       _recomUserStore.controller = _refreshController;
     }

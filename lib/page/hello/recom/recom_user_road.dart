@@ -17,7 +17,7 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
 
   @override
   void initState() {
-    _recomUserStore = widget.recomUserStore ?? RecomUserStore()
+    _recomUserStore = widget.recomUserStore ?? RecomUserStore(null)
       ..fetch();
     super.initState();
   }
@@ -71,8 +71,7 @@ class _RecomUserRoadState extends State<RecomUserRoad> {
         height: 40,
         width: 40,
         child: CircleAvatar(
-          backgroundImage: PixivProvider.url(
-              data.user.profileImageUrls.medium,
+          backgroundImage: PixivProvider.url(data.user.profileImageUrls.medium,
               preUrl: data.user.profileImageUrls.medium),
           radius: 100.0,
         ),
