@@ -111,19 +111,25 @@ install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
 
-# Sqlite
-include(FetchContent)
-
-FetchContent_Declare(sqlite3
-  URL "https://www.sqlite.org/2023/sqlite-dll-win64-x64-3420000.zip" 
-  URL_HASH SHA3_256=2425efa95556793a20761dfdab0d3b56a52e61716e8bb65e6a0a3590d41c97c0
-  DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-find_file(SQLITE3 sqlite3)
-if(NOT SQLITE3)
-  message("sqlite3.dll not found, trying to download or use cached version.")
-  FetchContent_MakeAvailable(sqlite3)
-  set(SQLITE3 ${sqlite3_SOURCE_DIR}/sqlite3.dll)
-endif()
-
-install(FILES "${SQLITE3}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}" COMPONENT Runtime)
+# Sqlite3.dll
+message("checking sqlite3.dll")
+find_file(Sqlite sqlite3.dll PATHS "${INSTALL_BUNDLE_LIB_DIR}")
+if(NOT Sqlite)
+  message("sqlite3.dll not found, trying to find zip file in ${PROJECT_BUILD_DIR}")
+  find_file(SqliteZip sqlite3.zip PATHS "${PROJECT_BUILD_DIR}")
+  if(NOT SqliteZip)
+    message("sqlite3.zip not found, downloading")
+    file(DOWNLOAD "https://www.sqlite.org/2023/sqlite-dll-win64-x64-3420000.zip" "${PROJECT_BUILD_DIR}/sqlite3.zip")
+  endif()
+  message("checking sqlite3.zip hash")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E sha256sum "${PROJECT_BUILD_DIR}/sqlite3.zip" OUTPUT_VARIABLE SqliteZipContentHash)
+  string(REGEX MATCH "^[^ ]+" SqliteZipContentHash "${SqliteZipContentHash}")
+  if(NOT "${SqliteZipContentHash}" STREQUAL "30309a71e5c87037def10230773036969cf67d11fd568e4fa7ad1302a60219a2")
+    message(FATAL_ERROR "sqlite3.zip hash mismatch ${SqliteZipContentHash}")
+  endif()
+  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf sqlite3.zip sqlite3.dll WORKING_DIRECTORY ${PROJECT_BUILD_DIR})
+  install(FILES "${PROJECT_BUILD_DIR}/sqlite3.dll" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}" COMPONENT Runtime)
+  message("sqlite3.dll installed")
+else ()
+  message("sqlite3.dll already installed")
+endif ()
