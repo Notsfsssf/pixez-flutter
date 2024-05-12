@@ -629,7 +629,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       height: 60,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-        child: SelectionContainer.disabled(
+        child: SelectionArea(
           child: SingleChildScrollView(
             child: Text(
               userStore.userDetail == null
