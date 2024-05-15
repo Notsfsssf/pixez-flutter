@@ -290,7 +290,7 @@
   "reply": "回覆",
   "reply_to": "回覆給",
   "show_feed_ai_badge": "顯示列表中的AI生成標記",
-  "illust_detail_save_skip_confirm": "插畫作品頁保存時跳過確認"
+  "illust_detail_save_skip_confirm": "插畫作品頁保存時跳過確認",
   "secure_window": "禁用螢幕擷取",
   "open_saucenao_using_webview": "用Webview打開Saucenao",
   "appwidget_recommend_type": "小組件推薦類型"
