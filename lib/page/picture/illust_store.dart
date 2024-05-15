@@ -52,14 +52,14 @@ abstract class _IllustStoreBase with Store {
   @action
   fetch() async {
     errorMessage = null;
-    if (illusts == null) {
+    if (illusts == null || illusts?.caption == null || illusts?.caption.isEmpty  == true) {
       try {
         Response response = await client.getIllustDetail(id);
         final result = Illusts.fromJson(response.data['illust']);
         illusts = result;
         isBookmark = illusts!.isBookmarked;
         state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         if (e.response != null) {
           if (e.response!.statusCode == HttpStatus.notFound) {
             errorMessage = '404 Not Found';
