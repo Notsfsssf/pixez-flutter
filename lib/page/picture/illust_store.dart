@@ -36,13 +36,14 @@ abstract class _IllustStoreBase with Store {
   bool isBookmark = false;
   @observable
   String? errorMessage;
-
   @observable
   int state = 0;
+  @observable
+  bool captionFetchError = false;
+  @observable
+  bool captionFetching = false;
 
-  void dispose() {
-
-  }
+  void dispose() {}
 
   _IllustStoreBase(this.id, this.illusts) {
     isBookmark = illusts?.isBookmarked ?? false;
@@ -52,27 +53,39 @@ abstract class _IllustStoreBase with Store {
   @action
   fetch() async {
     errorMessage = null;
-    if (illusts == null || illusts?.caption == null || illusts?.caption.isEmpty  == true) {
+    if (illusts == null ||
+        illusts?.caption == null ||
+        illusts?.caption.isEmpty == true) {
+      final captionEmtpyCase = illusts != null && illusts!.caption.isEmpty;
+      if (captionEmtpyCase) {
+        captionFetching = true;
+      }
       try {
         Response response = await client.getIllustDetail(id);
         final result = Illusts.fromJson(response.data['illust']);
         illusts = result;
         isBookmark = illusts!.isBookmarked;
         state = illusts?.isBookmarked ?? isBookmark ? 2 : 0;
+        captionFetching = false;
       } on DioException catch (e) {
-        if (e.response != null) {
-          if (e.response!.statusCode == HttpStatus.notFound) {
-            errorMessage = '404 Not Found';
-            return;
-          }
-          try {
-            errorMessage =
-                ErrorMessage.fromJson(e.response!.data).error.message;
-          } catch (e) {
+        captionFetching = false;
+        if (captionEmtpyCase) {
+          captionFetchError = true;
+        } else {
+          if (e.response != null) {
+            if (e.response!.statusCode == HttpStatus.notFound) {
+              errorMessage = '404 Not Found';
+              return;
+            }
+            try {
+              errorMessage =
+                  ErrorMessage.fromJson(e.response!.data).error.message;
+            } catch (e) {
+              errorMessage = e.toString();
+            }
+          } else {
             errorMessage = e.toString();
           }
-        } else {
-          errorMessage = e.toString();
         }
       }
     }

@@ -42,12 +42,14 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
 
   late UserStore? userStore;
   late FocusNode _focusNode;
+  late IllustStore? _illustStore;
   String _selectedText = "";
 
   @override
   void initState() {
     _focusNode = FocusNode();
     _illusts = widget.illusts;
+    _illustStore = widget.illustStore;
     userStore = widget.userStore;
     super.initState();
     supportTranslateCheck();
@@ -70,7 +72,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
           _buildInfoArea(context, _illusts),
           _buildNameAvatar(context, _illusts),
           _buildTagArea(context, _illusts),
-          if (_illusts.caption.isNotEmpty) _buildCaptionArea(_illusts),
+          _buildCaptionArea(_illusts),
           _buildCommentTextArea(context, _illusts),
           Padding(
             padding:
@@ -245,7 +247,34 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
     );
   }
 
-  Container _buildCaptionArea(Illusts data) {
+  Widget _buildCaptionArea(Illusts data) {
+    if (data.caption.isEmpty == true &&
+        _illustStore?.captionFetchError == true) {
+      return Container(
+        margin: EdgeInsets.only(top: 4),
+        child: Container(
+          child: Center(
+            child: InkWell(
+                onTap: () {
+                  _illustStore?.fetch();
+                },
+                child: Text("Caption fetch error,click to retry")),
+          ),
+        ),
+      );
+    }
+    if (data.caption.isEmpty && _illustStore?.captionFetching == true) {
+      return Container(
+          child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: CircularProgressIndicator(),
+        ),
+      ));
+    }
+    if (data.caption.isEmpty) {
+      return Container(height: 1);
+    }
     return Container(
       margin: EdgeInsets.only(top: 4),
       child: Padding(
