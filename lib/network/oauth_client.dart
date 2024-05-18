@@ -76,12 +76,11 @@ class OAuthClient {
         "Host": BASE_OAUTH_URL_HOST
       }
       ..options.contentType = Headers.formUrlEncodedContentType;
-    httpClient.httpClientAdapter = IOHttpClientAdapter()
-      ..onHttpClientCreate = (client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return client;
-      };
+    httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+        HttpClient httpClient = HttpClient();
+        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return httpClient;
+      });
     if (kDebugMode)
       httpClient.interceptors
           .add(LogInterceptor(responseBody: true, requestBody: true));

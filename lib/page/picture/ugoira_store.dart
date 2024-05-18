@@ -137,12 +137,11 @@ abstract class _UgoiraStoreBase with Store {
             headers: Hoster.header(
                 url: ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium)));
         if (!userSetting.disableBypassSni) {
-          dio.httpClientAdapter = IOHttpClientAdapter()
-            ..onHttpClientCreate = (client) {
-              client.badCertificateCallback =
-                  (X509Certificate cert, String host, int port) => true;
-              return client;
-            };
+         dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+        HttpClient httpClient = HttpClient();
+        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return httpClient;
+      });
         }
         dio.download(zipUrl, fullPath,
             onReceiveProgress: (int count, int total) {

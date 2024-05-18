@@ -95,11 +95,10 @@ class AccountClient {
       }
       ..options.connectTimeout = Duration(seconds: 5)
       ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
-    httpClient.httpClientAdapter = IOHttpClientAdapter()
-      ..onHttpClientCreate = (client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return client;
-      };
+    httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+        HttpClient httpClient = HttpClient();
+        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return httpClient;
+      });
   }
 }

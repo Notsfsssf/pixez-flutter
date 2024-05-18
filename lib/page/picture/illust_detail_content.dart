@@ -61,6 +61,16 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
     _focusNode.dispose();
     super.dispose();
   }
+  
+  @override
+  void didUpdateWidget(covariant IllustDetailContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.illusts.caption.isNotEmpty && widget.illusts.caption != oldWidget.illusts.caption) {
+      setState(() {
+        
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +268,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                 onTap: () {
                   _illustStore?.fetch();
                 },
-                child: Text("Caption fetch error,click to retry")),
+                child: Icon(Icons.refresh)),
           ),
         ),
       );

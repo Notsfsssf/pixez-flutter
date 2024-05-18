@@ -27,12 +27,11 @@ class OnezeroClient {
   OnezeroClient() {
     this.httpClient = Dio(BaseOptions(
         baseUrl: URL_DNS_RESOLVER, connectTimeout: Duration(seconds: 10)));
-    httpClient.httpClientAdapter = IOHttpClientAdapter()
-      ..onHttpClientCreate = (client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return client;
-      };
+      httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+        HttpClient httpClient = HttpClient();
+        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return httpClient;
+      });
   }
 
   //     @GET("dns-query")

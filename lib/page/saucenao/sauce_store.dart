@@ -140,12 +140,12 @@ abstract class SauceStoreBase with Store {
       if (userSetting.disableBypassSni) {
         dio.options.baseUrl = "https://$host";
       } else {
-        dio.httpClientAdapter = IOHttpClientAdapter()
-          ..onHttpClientCreate = (client) {
-            client.badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;
-            return client;
-          };
+        dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+          HttpClient httpClient = HttpClient();
+          httpClient.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return httpClient;
+        });
       }
       Response response = await dio.post('/search.php', data: formData);
       BotToast.showText(text: "parsing");
