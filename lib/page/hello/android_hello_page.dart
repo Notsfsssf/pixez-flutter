@@ -54,11 +54,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late List<Widget> _pageList;
   DateTime? _preTime;
   double? bottomNavigatorHeight = null;
-
-  ValueNotifier<bool> isFullscreen = ValueNotifier(false);
+  bool _isFullscreen = false;
 
   void toggleFullscreen() {
-    isFullscreen.value = !isFullscreen.value;
+    setState(() {
+      _isFullscreen = _isFullscreen;
+    });
   }
 
   @override
@@ -85,27 +86,27 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     return LayoutBuilder(builder: (context, constraints) {
       final wide = constraints.maxWidth > constraints.maxHeight;
       return PopScope(
-        onPopInvoked: (didPop) async {
-          userSetting.setAnimContainer(!userSetting.animContainer);
-          if (didPop) return;
-          if (!userSetting.isReturnAgainToExit) {
-            return;
-          }
-          if (_preTime == null ||
-              DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
-            setState(() {
-              _preTime = DateTime.now();
-            });
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 1),
-              content: Text(I18n.of(context).return_again_to_exit),
-            ));
-          }
-        },
-        canPop: !userSetting.isReturnAgainToExit ||
-            _preTime != null &&
-                DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
-        child: Scaffold(
+          onPopInvoked: (didPop) async {
+            userSetting.setAnimContainer(!userSetting.animContainer);
+            if (didPop) return;
+            if (!userSetting.isReturnAgainToExit) {
+              return;
+            }
+            if (_preTime == null ||
+                DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
+              setState(() {
+                _preTime = DateTime.now();
+              });
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                duration: Duration(seconds: 1),
+                content: Text(I18n.of(context).return_again_to_exit),
+              ));
+            }
+          },
+          canPop: !userSetting.isReturnAgainToExit ||
+              _preTime != null &&
+                  DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
+          child: Scaffold(
             body: Row(children: [
               if (wide) ..._buildRail(context),
               Expanded(child: _buildPageView(context))
@@ -113,17 +114,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             extendBody: true,
             bottomNavigationBar: wide
                 ? null
-                : ValueListenableBuilder<bool>(
-                    valueListenable: isFullscreen,
-                    builder: (BuildContext context, bool isFullscreen,
-                            Widget? child) =>
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 400),
-                          transform: Matrix4.translationValues(
-                              0, isFullscreen ? bottomNavigatorHeight! : 0, 0),
-                          child: _buildNavigationBar(context),
-                        ))),
-      );
+                : AnimatedContainer(
+                    duration: const Duration(milliseconds: 400),
+                    transform: Matrix4.translationValues(
+                        0, _isFullscreen ? bottomNavigatorHeight! : 0, 0),
+                    child: _buildNavigationBar(context),
+                  ),
+          ));
     });
   }
 
@@ -134,13 +131,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         Positioned(
           bottom: MediaQuery.of(context).padding.bottom + 16,
           right: 16,
-          child: ValueListenableBuilder(
-            valueListenable: isFullscreen,
-            builder: (context, value, child) {
-              return AnimatedToggleFullscreenFAB(
-                  isFullscreen: value, toggleFullscreen: toggleFullscreen);
-            },
-          ),
+          child: AnimatedToggleFullscreenFAB(
+              isFullscreen: _isFullscreen, toggleFullscreen: toggleFullscreen),
         )
       ],
     );
@@ -275,7 +267,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     _pageList = [
       RecomSpolightPage(),
       RankPage(
-        isFullscreen: isFullscreen,
+        isFullscreen: _isFullscreen,
         toggleFullscreen: toggleFullscreen,
       ),
       NewPage(),

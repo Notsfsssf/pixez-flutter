@@ -93,7 +93,7 @@ class _HelloPageState extends State<HelloPage> {
     }),
     Observer(builder: (context) {
       if (accountStore.now != null)
-        return RankPage();
+        return RankPage(isFullscreen: false,toggleFullscreen: () {},);
       else
         return Column(children: [
           AppBar(

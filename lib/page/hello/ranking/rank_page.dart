@@ -24,16 +24,13 @@ import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
 
 class RankPage extends StatefulWidget {
-  late ValueNotifier<bool> isFullscreen;
-  late Function? toggleFullscreen;
+  final bool isFullscreen;
+  final Function? toggleFullscreen;
   RankPage({
     Key? key,
-    ValueNotifier<bool>? isFullscreen,
-    this.toggleFullscreen,
-  }) : super(key: key) {
-    this.isFullscreen =
-        isFullscreen == null ? ValueNotifier(false) : isFullscreen;
-  }
+    required this.isFullscreen,
+    required this.toggleFullscreen,
+  });
 
   @override
   _RankPageState createState() => _RankPageState();
@@ -60,6 +57,7 @@ class _RankPageState extends State<RankPage>
   late DateTime nowDate;
   late StreamSubscription<String> subscription;
   String? dateTime;
+  bool _fullScreen = false;
 
   @override
   void dispose() {
@@ -69,6 +67,7 @@ class _RankPageState extends State<RankPage>
 
   @override
   void initState() {
+    _fullScreen = widget.isFullscreen;
     nowDate = DateTime.now();
     rankStore = RankStore()..init();
     int i = 0;
@@ -115,57 +114,52 @@ class _RankPageState extends State<RankPage>
           length: rankStore.modeList.length,
           child: Column(
             children: <Widget>[
-              ValueListenableBuilder<bool>(
-                  valueListenable: widget.isFullscreen,
-                  builder: (BuildContext context, bool? isFullscreen,
-                          Widget? child) =>
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        height: isFullscreen == false
-                            ? (kToolbarHeight +
-                                MediaQuery.of(context).padding.top)
-                            : 0,
-                        child: AppBar(
-                          title: TabBar(
-                            onTap: (i) => setState(() {
-                              this.index = i;
-                            }),
-                            tabAlignment: TabAlignment.start,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            isScrollable: true,
-                            tabs: <Widget>[
-                              for (var i in titles)
-                                Tab(
-                                  text: i,
-                                ),
-                            ],
-                          ),
-                          actions: <Widget>[
-                            if (widget.toggleFullscreen != null)
-                              IconButton(
-                                icon: Icon(Icons.fullscreen),
-                                onPressed: () {
-                                  toggleFullscreen();
-                                },
-                              ),
-                            Visibility(
-                              visible: index < rankStore.modeList.length,
-                              child: IconButton(
-                                icon: Icon(Icons.date_range),
-                                onPressed: () async {
-                                  await _showTimePicker(context);
-                                },
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.undo),
-                              onPressed: () {
-                                rankStore.reset();
-                              },
-                            )
-                          ],
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
+                height: _fullScreen == false
+                    ? (kToolbarHeight + MediaQuery.of(context).padding.top)
+                    : 0,
+                child: AppBar(
+                  title: TabBar(
+                    onTap: (i) => setState(() {
+                      this.index = i;
+                    }),
+                    tabAlignment: TabAlignment.start,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    isScrollable: true,
+                    tabs: <Widget>[
+                      for (var i in titles)
+                        Tab(
+                          text: i,
                         ),
-                      )),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    if (widget.toggleFullscreen != null)
+                      IconButton(
+                        icon: Icon(Icons.fullscreen),
+                        onPressed: () {
+                          toggleFullscreen();
+                        },
+                      ),
+                    Visibility(
+                      visible: index < rankStore.modeList.length,
+                      child: IconButton(
+                        icon: Icon(Icons.date_range),
+                        onPressed: () async {
+                          await _showTimePicker(context);
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.undo),
+                      onPressed: () {
+                        rankStore.reset();
+                      },
+                    )
+                  ],
+                ),
+              ),
               Expanded(
                 child: TabBarView(children: [
                   for (var element in rankStore.modeList)

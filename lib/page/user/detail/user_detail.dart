@@ -28,8 +28,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class UserDetailPage extends StatefulWidget {
   final UserDetail? userDetail;
-  bool isNewNested;
-  bool? isNovel;
+  final bool isNewNested;
+  final bool? isNovel;
 
   UserDetailPage(
       {Key? key,
@@ -44,9 +44,11 @@ class UserDetailPage extends StatefulWidget {
 
 class _UserDetailPageState extends State<UserDetailPage> {
   bool _isNovel = false;
+  bool _isNewNested = false;
 
   @override
   void initState() {
+    _isNewNested = widget.isNewNested;
     _isNovel = widget.isNovel ?? false;
     super.initState();
   }
@@ -56,7 +58,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
     var detail = widget.userDetail;
     var profile = widget.userDetail?.profile;
     var public = widget.userDetail?.profile_publicity;
-    if (widget.isNewNested)
+    if (_isNewNested)
       return SafeArea(
         top: false,
         bottom: false,
@@ -78,7 +80,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
     return CustomScrollView(
       key: PageStorageKey<String>("user_detail"),
       slivers: [
-        if (widget.isNewNested)
+        if (_isNewNested)
           SliverOverlapInjector(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
           ),
