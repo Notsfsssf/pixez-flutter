@@ -61,13 +61,14 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
     _focusNode.dispose();
     super.dispose();
   }
-  
+
   @override
   void didUpdateWidget(covariant IllustDetailContent oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.illusts.caption.isNotEmpty && widget.illusts.caption != oldWidget.illusts.caption) {
+    if (oldWidget.illusts.caption.isNotEmpty &&
+        widget.illusts.caption != oldWidget.illusts.caption) {
       setState(() {
-        
+        _illusts = widget.illusts;
       });
     }
   }
