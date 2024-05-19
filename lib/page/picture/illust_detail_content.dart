@@ -65,7 +65,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
   @override
   void didUpdateWidget(covariant IllustDetailContent oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.illusts.caption.isNotEmpty &&
+    if (widget.illusts.caption.isNotEmpty &&
         widget.illusts.caption != oldWidget.illusts.caption) {
       setState(() {
         _illusts = widget.illusts;
@@ -259,8 +259,10 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
   }
 
   Widget _buildCaptionArea(Illusts data) {
-    if (data.caption.isEmpty == true &&
-        _illustStore?.captionFetchError == true) {
+    final caption = data.caption.isEmpty
+        ? _illustStore?.illusts?.caption ?? ""
+        : data.caption;
+    if (caption.isEmpty && _illustStore?.captionFetchError == true) {
       return Container(
         margin: EdgeInsets.only(top: 4),
         child: Container(
@@ -274,7 +276,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
         ),
       );
     }
-    if (data.caption.isEmpty && _illustStore?.captionFetching == true) {
+    if (caption.isEmpty && _illustStore?.captionFetching == true) {
       return Container(
           child: Center(
         child: Padding(
@@ -283,7 +285,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
         ),
       ));
     }
-    if (data.caption.isEmpty) {
+    if (caption.isEmpty) {
       return Container(height: 1);
     }
     return Container(
@@ -308,7 +310,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                   return _buildSelectionMenu(selectableRegionState, context);
                 },
                 child: SelectableHtml(
-                  data: data.caption.isEmpty ? "~" : data.caption,
+                  data: caption.isEmpty ? "~" : caption,
                 ),
               ),
             ),
