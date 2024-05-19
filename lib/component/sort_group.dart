@@ -37,7 +37,7 @@ class _SortGroupState extends State<SortGroup> {
         style: TextStyle(color: bgColor),
       ),
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
+          backgroundColor: WidgetStateProperty.all<Color>(
               index == widget.children.indexOf(i)
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).cardColor)),

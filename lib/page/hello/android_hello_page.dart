@@ -54,12 +54,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   late List<Widget> _pageList;
   DateTime? _preTime;
   double? bottomNavigatorHeight = null;
-  bool _isFullscreen = false;
 
   void toggleFullscreen() {
-    setState(() {
-      _isFullscreen = _isFullscreen;
-    });
+    fullScreenStore.toggle();
   }
 
   @override
@@ -117,7 +114,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 : AnimatedContainer(
                     duration: const Duration(milliseconds: 400),
                     transform: Matrix4.translationValues(
-                        0, _isFullscreen ? bottomNavigatorHeight! : 0, 0),
+                        0,
+                        fullScreenStore.fullscreen ? bottomNavigatorHeight! : 0,
+                        0),
                     child: _buildNavigationBar(context),
                   ),
           ));
@@ -132,7 +131,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           bottom: MediaQuery.of(context).padding.bottom + 16,
           right: 16,
           child: AnimatedToggleFullscreenFAB(
-              isFullscreen: _isFullscreen, toggleFullscreen: toggleFullscreen),
+              isFullscreen: fullScreenStore.fullscreen,
+              toggleFullscreen: toggleFullscreen),
         )
       ],
     );
@@ -266,10 +266,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     Constants.type = 0;
     _pageList = [
       RecomSpolightPage(),
-      RankPage(
-        isFullscreen: _isFullscreen,
-        toggleFullscreen: toggleFullscreen,
-      ),
+      RankPage(),
       NewPage(),
       SearchPage(),
       SettingPage()

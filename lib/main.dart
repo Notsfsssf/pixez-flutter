@@ -35,6 +35,7 @@ import 'package:pixez/page/splash/splash_store.dart';
 import 'package:pixez/single_instance_plugin.dart';
 import 'package:pixez/store/account_store.dart';
 import 'package:pixez/store/book_tag_store.dart';
+import 'package:pixez/store/fullscreen_store.dart';
 import 'package:pixez/store/mute_store.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
@@ -53,9 +54,10 @@ final HistoryStore historyStore = HistoryStore();
 final NovelHistoryStore novelHistoryStore = NovelHistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
-OnezeroClient onezeroClient = OnezeroClient();
+final OnezeroClient onezeroClient = OnezeroClient();
 final SplashStore splashStore = SplashStore(onezeroClient);
 final Fetcher fetcher = new Fetcher();
+final FullScreenStore fullScreenStore = FullScreenStore();
 
 main(List<String> args) async {
   if (Platform.isWindows || Platform.isLinux) {

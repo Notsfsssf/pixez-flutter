@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,13 +25,7 @@ import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
 
 class RankPage extends StatefulWidget {
-  final bool isFullscreen;
-  final Function? toggleFullscreen;
-  RankPage({
-    Key? key,
-    required this.isFullscreen,
-    required this.toggleFullscreen,
-  });
+  RankPage({Key? key});
 
   @override
   _RankPageState createState() => _RankPageState();
@@ -57,7 +52,6 @@ class _RankPageState extends State<RankPage>
   late DateTime nowDate;
   late StreamSubscription<String> subscription;
   String? dateTime;
-  bool _fullScreen = false;
 
   @override
   void dispose() {
@@ -67,7 +61,6 @@ class _RankPageState extends State<RankPage>
 
   @override
   void initState() {
-    _fullScreen = widget.isFullscreen;
     nowDate = DateTime.now();
     rankStore = RankStore()..init();
     int i = 0;
@@ -91,10 +84,6 @@ class _RankPageState extends State<RankPage>
   int index = 0;
   int tapCount = 0;
 
-  toggleFullscreen() {
-    if (widget.toggleFullscreen != null) widget.toggleFullscreen!();
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -115,8 +104,8 @@ class _RankPageState extends State<RankPage>
           child: Column(
             children: <Widget>[
               AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                height: _fullScreen == false
+                duration: Duration(milliseconds: 400),
+                height: !fullScreenStore.fullscreen
                     ? (kToolbarHeight + MediaQuery.of(context).padding.top)
                     : 0,
                 child: AppBar(
@@ -135,11 +124,11 @@ class _RankPageState extends State<RankPage>
                     ],
                   ),
                   actions: <Widget>[
-                    if (widget.toggleFullscreen != null)
+                    if (Platform.isAndroid)
                       IconButton(
                         icon: Icon(Icons.fullscreen),
                         onPressed: () {
-                          toggleFullscreen();
+                          fullScreenStore.toggle();
                         },
                       ),
                     Visibility(

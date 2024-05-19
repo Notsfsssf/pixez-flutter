@@ -42,6 +42,8 @@ class _HelloPageState extends State<HelloPage> {
   late StreamSubscription _sub;
   late int index;
   late PageController _pageController;
+  double? bottomNavigatorHeight = null;
+  late List<Widget> _lists;
 
   @override
   void dispose() {
@@ -52,6 +54,28 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   void initState() {
+    _lists = <Widget>[
+      Observer(builder: (context) {
+        if (accountStore.now != null)
+          return RecomSpolightPage();
+        else
+          return PreviewPage();
+      }),
+      Observer(builder: (context) {
+        if (accountStore.now != null)
+          return RankPage();
+        else
+          return Column(children: [
+            AppBar(
+              title: Text('rank(day)'),
+            ),
+            Expanded(child: PreviewPage())
+          ]);
+      }),
+      NewPage(),
+      SearchPage(),
+      SettingPage()
+    ];
     Constants.type = 0;
     fetcher.context = context;
     index = userSetting.welcomePageNum;
@@ -84,31 +108,11 @@ class _HelloPageState extends State<HelloPage> {
     }
   }
 
-  List<Widget> _lists = <Widget>[
-    Observer(builder: (context) {
-      if (accountStore.now != null)
-        return RecomSpolightPage();
-      else
-        return PreviewPage();
-    }),
-    Observer(builder: (context) {
-      if (accountStore.now != null)
-        return RankPage(isFullscreen: false,toggleFullscreen: () {},);
-      else
-        return Column(children: [
-          AppBar(
-            title: Text('rank(day)'),
-          ),
-          Expanded(child: PreviewPage())
-        ]);
-    }),
-    NewPage(),
-    SearchPage(),
-    SettingPage()
-  ];
-
   @override
   Widget build(BuildContext context) {
+    if (bottomNavigatorHeight == null) {
+      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
+    }
     return LayoutBuilder(builder: (context, constraints) {
       final wide = constraints.maxWidth > constraints.maxHeight;
       return Scaffold(
@@ -121,7 +125,18 @@ class _HelloPageState extends State<HelloPage> {
           ],
         ),
         extendBody: true,
-        bottomNavigationBar: wide ? null : _buildNavigationBar(context),
+        bottomNavigationBar: wide
+            ? null
+            : Observer(builder: (context) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  transform: Matrix4.translationValues(
+                      0,
+                      fullScreenStore.fullscreen ? bottomNavigatorHeight! : 0,
+                      0),
+                  child: _buildNavigationBar(context),
+                );
+              }),
       );
     });
   }
