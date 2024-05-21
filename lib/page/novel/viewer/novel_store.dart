@@ -91,19 +91,11 @@ abstract class _NovelStoreBase with Store {
     var document = parse(html);
     final scriptElement = document.querySelector('script')!;
     String scriptContent = scriptElement.innerHtml;
-
-    final novelStart = 'novel: ';
-    final startIndex = scriptContent.indexOf(novelStart) + novelStart.length;
-    final stack = <int>[];
-    for (var i = startIndex; i < scriptContent.length; i++) {
-      if (scriptContent[i] == '{') {
-        stack.add(i);
-      } else if (scriptContent[i] == '}') {
-        stack.removeLast();
-        if (stack.isEmpty) {
-          return scriptContent.substring(startIndex, i + 1);
-        }
-      }
+    final novelRegex = RegExp(r'novel: ({.*?}),\n\s*isOwnWork');
+    final match = novelRegex.firstMatch(scriptContent);
+    if (match != null) {
+      final novelJsonString = match.group(1);
+      return novelJsonString;
     }
     return null;
   }

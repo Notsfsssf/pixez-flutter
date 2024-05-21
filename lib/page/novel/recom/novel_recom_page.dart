@@ -32,7 +32,8 @@ class NovelRecomPage extends StatefulWidget {
   _NovelRecomPageState createState() => _NovelRecomPageState();
 }
 
-class _NovelRecomPageState extends State<NovelRecomPage> {
+class _NovelRecomPageState extends State<NovelRecomPage>
+    with AutomaticKeepAliveClientMixin {
   late NovelLightingStore _store;
   late EasyRefreshController _easyRefreshController;
 
@@ -74,6 +75,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return EasyRefresh.builder(
       header: PixezDefault.header(context),
       onRefresh: () => _store.fetch(),
@@ -207,4 +209,7 @@ class _NovelRecomPageState extends State<NovelRecomPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

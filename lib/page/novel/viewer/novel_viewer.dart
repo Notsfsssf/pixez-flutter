@@ -122,10 +122,14 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(':(',
-                        style: Theme.of(context).textTheme.headlineMedium),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(':(',
+                            style: Theme.of(context).textTheme.headlineMedium),
+                      ),
+                    ),
                   ),
                   TextButton(
                       onPressed: () {

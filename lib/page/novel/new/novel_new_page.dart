@@ -30,7 +30,7 @@ class NovelNewPage extends StatefulWidget {
 }
 
 class _NovelNewPageState extends State<NovelNewPage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late TabController _tabController;
 
   @override
@@ -47,6 +47,7 @@ class _NovelNewPageState extends State<NovelNewPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       child: Column(
         children: [
@@ -108,4 +109,7 @@ class _NovelNewPageState extends State<NovelNewPage>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
