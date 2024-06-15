@@ -16,6 +16,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/rendering.dart';
 import 'package:html/parser.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
@@ -25,6 +26,7 @@ import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_viewer_persist.dart';
 import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/novel/viewer/image_text.dart';
 
 part 'novel_store.g.dart';
 
@@ -34,6 +36,8 @@ abstract class _NovelStoreBase with Store {
   final int id;
 
   _NovelStoreBase(this.id, this.novel);
+
+  NovelSpansGenerator _novelSpansGenerator = NovelSpansGenerator();
 
   @observable
   Novel? novel;
@@ -46,6 +50,11 @@ abstract class _NovelStoreBase with Store {
 
   @observable
   double bookedOffset = 0.0;
+  @computed
+  List<InlineSpan> get spans =>
+      saveStore.ctx != null && novelTextResponse != null
+          ? _novelSpansGenerator.buildSpans(saveStore.ctx!, novelTextResponse!)
+          : [];
 
   NovelViewerPersistProvider _novelViewerPersistProvider =
       NovelViewerPersistProvider();
