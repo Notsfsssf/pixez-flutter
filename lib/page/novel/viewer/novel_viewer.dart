@@ -38,7 +38,6 @@ import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
 import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
-import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
@@ -80,7 +79,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       LPrinter.d("jump to ${_novelStore.bookedOffset}");
       _controller?.jumpTo(_novelStore.bookedOffset);
     });
-    _novelStore.fetch();
+    _novelStore.fetch(context);
     super.initState();
     initMethod();
   }
@@ -131,7 +130,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   ),
                   TextButton(
                       onPressed: () {
-                        _novelStore.fetch();
+                        _novelStore.fetch(context);
                       },
                       child: Text(I18n.of(context).retry)),
                   Padding(
@@ -206,14 +205,21 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               ),
               extendBodyBehindAppBar: true,
               body: Scrollbar(
+                thumbVisibility: true,
                 interactive: true,
-                child: ListView(
+                controller: _controller,
+                child: ListView.builder(
                   padding: EdgeInsets.all(0),
-                  controller: _controller,
-                  children: [
-                    _buildHeader(context),
-                    for (var span in _novelStore.spans)
-                      Padding(
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return _buildHeader(context);
+                    } else if (index == _novelStore.spans.length + 1) {
+                      return Container(
+                        height: 10 + MediaQuery.of(context).padding.bottom,
+                      );
+                    } else {
+                      final span = _novelStore.spans[index - 1];
+                      return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: SelectionArea(
                           onSelectionChanged: (value) {
@@ -225,15 +231,15 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                           },
                           child: Text.rich(
                             span,
+                            style: _textStyle,
                             textHeightBehavior: TextHeightBehavior(
                                 applyHeightToLastDescent: true),
                           ),
                         ),
-                      ),
-                    Container(
-                      height: 10 + MediaQuery.of(context).padding.bottom,
-                    )
-                  ],
+                      );
+                    }
+                  },
+                  itemCount: _novelStore.spans.length + 2,
                 ),
               ),
             ),

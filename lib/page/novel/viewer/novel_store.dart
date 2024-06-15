@@ -16,6 +16,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:html/parser.dart';
 import 'package:dio/dio.dart';
@@ -27,6 +28,7 @@ import 'package:pixez/models/novel_viewer_persist.dart';
 import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
+import 'package:flutter/widgets.dart';
 
 part 'novel_store.g.dart';
 
@@ -36,8 +38,6 @@ abstract class _NovelStoreBase with Store {
   final int id;
 
   _NovelStoreBase(this.id, this.novel);
-
-  NovelSpansGenerator _novelSpansGenerator = NovelSpansGenerator();
 
   @observable
   Novel? novel;
@@ -50,11 +50,8 @@ abstract class _NovelStoreBase with Store {
 
   @observable
   double bookedOffset = 0.0;
-  @computed
-  List<InlineSpan> get spans =>
-      saveStore.ctx != null && novelTextResponse != null
-          ? _novelSpansGenerator.buildSpans(saveStore.ctx!, novelTextResponse!)
-          : [];
+  @observable
+  List<InlineSpan> spans = [];
 
   NovelViewerPersistProvider _novelViewerPersistProvider =
       NovelViewerPersistProvider();
@@ -77,13 +74,15 @@ abstract class _NovelStoreBase with Store {
   }
 
   @action
-  fetch() async {
+  fetch(BuildContext context) async {
     errorMessage = null;
     try {
       bookedOffset = 0.0;
       final response = await apiClient.webviewNovel(id);
       String json = _parseHtml(response.data)!;
       novelTextResponse = NovelWebResponse.fromJson(jsonDecode(json));
+      spans =
+          await compute(buildSpans, ComputeSpan(context, novelTextResponse!));
       if (novel == null) {
         Response response = await apiClient.getNovelDetail(id);
         novel = Novel.fromJson(response.data['novel']);
@@ -121,4 +120,18 @@ abstract class _NovelStoreBase with Store {
       }
     } catch (e) {}
   }
+}
+
+class ComputeSpan {
+  final BuildContext context;
+  final NovelWebResponse webResponse;
+
+  ComputeSpan(this.context, this.webResponse);
+}
+
+List<InlineSpan> buildSpans(ComputeSpan computeSpan) {
+  NovelSpansGenerator novelSpansGenerator = NovelSpansGenerator();
+  final context = computeSpan.context;
+  final webResponse = computeSpan.webResponse;
+  return novelSpansGenerator.buildSpans(context, webResponse);
 }
