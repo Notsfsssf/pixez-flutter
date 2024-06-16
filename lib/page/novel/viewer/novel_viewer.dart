@@ -38,6 +38,7 @@ import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/search/novel_result_page.dart';
 import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
+import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
@@ -59,9 +60,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   late NovelStore _novelStore;
   ReactionDisposer? _offsetDisposer;
   double _localOffset = 0.0;
-
   bool supportTranslate = false;
   String _selectedText = "";
+  NovelSpansGenerator novelSpansGenerator = NovelSpansGenerator();
+
   Future<void> initMethod() async {
     if (!Platform.isAndroid) return;
     bool results = await SupportorPlugin.processText();
@@ -79,7 +81,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       LPrinter.d("jump to ${_novelStore.bookedOffset}");
       _controller?.jumpTo(_novelStore.bookedOffset);
     });
-    _novelStore.fetch(context);
+    _novelStore.fetch();
     super.initState();
     initMethod();
   }
@@ -130,7 +132,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   ),
                   TextButton(
                       onPressed: () {
-                        _novelStore.fetch(context);
+                        _novelStore.fetch();
                       },
                       child: Text(I18n.of(context).retry)),
                   Padding(
@@ -205,10 +207,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               ),
               extendBodyBehindAppBar: true,
               body: Scrollbar(
-                thumbVisibility: true,
-                interactive: true,
                 controller: _controller,
                 child: ListView.builder(
+                  controller: _controller,
                   padding: EdgeInsets.all(0),
                   itemBuilder: (context, index) {
                     if (index == 0) {
@@ -230,7 +231,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                                 editableTextState, context);
                           },
                           child: Text.rich(
-                            span,
+                            novelSpansGenerator.novelSpansDatatoInlineSpan(
+                                context, span),
                             style: _textStyle,
                             textHeightBehavior: TextHeightBehavior(
                                 applyHeightToLastDescent: true),
@@ -257,32 +259,6 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           ),
         );
       },
-    );
-  }
-
-  Padding _buildContentText(BuildContext context) {
-    return Padding(
-      padding:
-          EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SelectionArea(
-          onSelectionChanged: (value) {
-            _selectedText = value?.plainText ?? "";
-          },
-          contextMenuBuilder: (context, editableTextState) {
-            return _buildSelectionMenu(editableTextState, context);
-          },
-          child: Text.rich(
-            TextSpan(text: '', style: _textStyle, children: [
-              WidgetSpan(child: _buildHeader(context)),
-              for (var span in _novelStore.spans) span
-            ]),
-            textHeightBehavior:
-                TextHeightBehavior(applyHeightToLastDescent: true),
-          ),
-        ),
-      ),
     );
   }
 

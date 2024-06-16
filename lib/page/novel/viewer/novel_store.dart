@@ -51,7 +51,7 @@ abstract class _NovelStoreBase with Store {
   @observable
   double bookedOffset = 0.0;
   @observable
-  List<InlineSpan> spans = [];
+  List<NovelSpansData> spans = [];
 
   NovelViewerPersistProvider _novelViewerPersistProvider =
       NovelViewerPersistProvider();
@@ -74,15 +74,14 @@ abstract class _NovelStoreBase with Store {
   }
 
   @action
-  fetch(BuildContext context) async {
+  Future<void> fetch() async {
     errorMessage = null;
     try {
       bookedOffset = 0.0;
       final response = await apiClient.webviewNovel(id);
       String json = _parseHtml(response.data)!;
       novelTextResponse = NovelWebResponse.fromJson(jsonDecode(json));
-      spans =
-          await compute(buildSpans, ComputeSpan(context, novelTextResponse!));
+      spans = await compute(buildSpans, novelTextResponse!);
       if (novel == null) {
         Response response = await apiClient.getNovelDetail(id);
         novel = Novel.fromJson(response.data['novel']);
@@ -129,9 +128,9 @@ class ComputeSpan {
   ComputeSpan(this.context, this.webResponse);
 }
 
-List<InlineSpan> buildSpans(ComputeSpan computeSpan) {
-  NovelSpansGenerator novelSpansGenerator = NovelSpansGenerator();
-  final context = computeSpan.context;
-  final webResponse = computeSpan.webResponse;
-  return novelSpansGenerator.buildSpans(context, webResponse);
+Future<List<NovelSpansData>> buildSpans(NovelWebResponse webResponse) {
+  return Future.delayed(Duration(milliseconds: 100), () {
+    NovelSpansGenerator novelSpansGenerator = NovelSpansGenerator();
+    return novelSpansGenerator.buildSpans(webResponse);
+  });
 }
