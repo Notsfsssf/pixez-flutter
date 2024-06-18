@@ -209,40 +209,20 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               body: Scrollbar(
                 controller: _controller,
                 child: ListView.builder(
-                  controller: _controller,
-                  padding: EdgeInsets.all(0),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return _buildHeader(context);
-                    } else if (index == _novelStore.spans.length + 1) {
-                      return Container(
-                        height: 10 + MediaQuery.of(context).padding.bottom,
-                      );
-                    } else {
-                      final span = _novelStore.spans[index - 1];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: SelectionArea(
-                          onSelectionChanged: (value) {
-                            _selectedText = value?.plainText ?? "";
-                          },
-                          contextMenuBuilder: (context, editableTextState) {
-                            return _buildSelectionMenu(
-                                editableTextState, context);
-                          },
-                          child: Text.rich(
-                            novelSpansGenerator.novelSpansDatatoInlineSpan(
-                                context, span),
-                            style: _textStyle,
-                            textHeightBehavior: TextHeightBehavior(
-                                applyHeightToLastDescent: true),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  itemCount: _novelStore.spans.length + 2,
-                ),
+                    padding: EdgeInsets.all(0),
+                    controller: _controller,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return _buildHeader(context);
+                      } else if (index == _novelStore.spans.length + 1) {
+                        return Container(
+                            height: 10 + MediaQuery.of(context).padding.bottom);
+                      } else {
+                        return _buildSpanText(
+                            context, index - 1, _novelStore.spans);
+                      }
+                    },
+                    itemCount: 2 + _novelStore.spans.length),
               ),
             ),
           );
@@ -260,6 +240,27 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
         );
       },
     );
+  }
+
+  Widget _buildSpanText(
+      BuildContext context, int index, List<NovelSpansData> spanDatas) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: SelectionArea(
+          onSelectionChanged: (value) {
+            _selectedText = value?.plainText ?? "";
+          },
+          contextMenuBuilder: (context, editableTextState) {
+            return _buildSelectionMenu(editableTextState, context);
+          },
+          child: Text.rich(
+            novelSpansGenerator.novelSpansDatatoInlineSpan(
+                context, spanDatas[index]),
+            style: _textStyle,
+            textHeightBehavior:
+                TextHeightBehavior(applyHeightToLastDescent: true),
+          ),
+        ));
   }
 
   Widget _buildHeader(BuildContext context) {
