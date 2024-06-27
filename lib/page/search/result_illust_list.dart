@@ -168,7 +168,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
                           ),
                           onTap: () {
                             _buildShowBottomSheet(context);
-                            // _showMaterialBottom();
                           }),
                     ],
                   ),

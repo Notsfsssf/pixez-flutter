@@ -206,24 +206,21 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 ],
               ),
               extendBodyBehindAppBar: true,
-              body: Scrollbar(
-                controller: _controller,
-                child: ListView.builder(
-                    padding: EdgeInsets.all(0),
-                    controller: _controller,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _buildHeader(context);
-                      } else if (index == _novelStore.spans.length + 1) {
-                        return Container(
-                            height: 10 + MediaQuery.of(context).padding.bottom);
-                      } else {
-                        return _buildSpanText(
-                            context, index - 1, _novelStore.spans);
-                      }
-                    },
-                    itemCount: 2 + _novelStore.spans.length),
-              ),
+              body: ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  controller: _controller,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return _buildHeader(context);
+                    } else if (index == _novelStore.spans.length + 1) {
+                      return Container(
+                          height: 10 + MediaQuery.of(context).padding.bottom);
+                    } else {
+                      return _buildSpanText(
+                          context, index - 1, _novelStore.spans);
+                    }
+                  },
+                  itemCount: 2 + _novelStore.spans.length),
             ),
           );
         }

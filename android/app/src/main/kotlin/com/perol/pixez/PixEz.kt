@@ -18,16 +18,11 @@ package com.perol.pixez
 
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import io.flutter.app.FlutterApplication
 
 
 class PixEz : FlutterApplication(), ImageLoaderFactory {
     override fun onCreate() {
-        if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
-            // Skip app initialization.
-            return
-        }
         super.onCreate()
         CrashHandler.instance.init(applicationContext)
     }
