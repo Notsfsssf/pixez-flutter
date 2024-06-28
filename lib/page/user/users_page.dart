@@ -538,10 +538,11 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       },
       itemBuilder: (context) {
         return [
-          PopupMenuItem<int>(
-            value: 0,
-            child: Text(I18n.of(context).quietly_follow),
-          ),
+          if (!userStore.isFollow)
+            PopupMenuItem<int>(
+              value: 0,
+              child: Text(I18n.of(context).quietly_follow),
+            ),
           PopupMenuItem<int>(
             value: 1,
             child: Text(I18n.of(context).block_user),
