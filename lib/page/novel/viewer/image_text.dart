@@ -195,7 +195,6 @@ class NovelSpansGenerator {
         if (link != null) {
           final uri = Uri.tryParse(link);
           if (uri != null && uri.host.contains("pixiv.net")) {
-            final str = now.split(">").firstOrNull ?? "";
             return NovelSpansData(NovelSpansType.jumpUri, link);
           }
         }

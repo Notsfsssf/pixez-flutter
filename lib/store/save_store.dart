@@ -139,9 +139,7 @@ abstract class _SaveStoreBase with Store {
                                     stream.entity as QueueRetryEntity;
                                 final id = entity.taskPersist.id;
                                 if (id != null) {
-                                  await fetcher
-                                      .taskPersistProvider
-                                      .remove(id);
+                                  await fetcher.taskPersistProvider.remove(id);
                                   _joinQueue(entity.url, entity.illusts,
                                       entity.fileName);
                                 }

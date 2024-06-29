@@ -160,15 +160,4 @@ abstract class _MuteStoreBase with Store {
     final exportJson = jsonEncode(entity);
     LPrinter.d("exportJson:$exportJson");
   }
-
-  import() async {
-    final importStr = "";
-    await banUserIdProvider.open();
-    await banIllustIdProvider.open();
-    await banTagProvider.open();
-    final importBean = jsonDecode(importStr);
-    final importMap = importBean as Map<String, dynamic>;
-    final illustId = importMap['banillustid'];
-    //TODO
-  }
 }
