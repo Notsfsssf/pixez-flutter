@@ -152,7 +152,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
         }
       }
 
-      if (userStore.errorMessage != null && userStore.user != null) {
+      if (userStore.errorMessage != null && userStore.user == null) {
         if (userStore.errorMessage!.contains("404"))
           return Scaffold(
             appBar: AppBar(),
