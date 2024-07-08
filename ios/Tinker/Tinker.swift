@@ -1,30 +1,30 @@
 //
-//  SsssGridMan.swift
-//  SsssGridMan
+//  Tinker.swift
+//  Tinker
 //
-//  Created by Perol Notsf on 2022/9/4.
+//  Created by Perol Notsf on 2024/7/8.
 //
 
-import FMDB
-import Intents
 import SwiftUI
 import WidgetKit
 
-struct SimpleError: Error {
-    let message: String
-}
-
-struct Provider: IntentTimelineProvider {
+struct Provider: TimelineProvider {
+    var placeHolderEntry: SimpleEntry {
+            get {
+                return SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "No content available", userName: ":(", time: 0, type: "empty")
+            }
+        }
+    
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "", userName: nil, time: 0, type: "")
+        placeHolderEntry
     }
 
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "", userName: nil, time: 0, type: "")
+    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let entry = placeHolderEntry
         completion(entry)
     }
 
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let imageRequestGroup = DispatchGroup()
         var entries: [SimpleEntry] = []
         DispatchQueue.global(qos: .background).async {
@@ -58,15 +58,15 @@ struct Provider: IntentTimelineProvider {
                         try data.write(to: pictureURL)
                     }
                     guard let data = try? Data(contentsOf: pictureURL),
-                          let uiImage = UIImage(data: data)?.cropImage()
+                          let uiImage = UIImage(data: data)
                     else {
                         throw SimpleError(message: "data null")
                     }
-                    entries.append(first.toSimple(uiImage: uiImage, configuration: configuration))
+                    entries.append(first.toSimple(uiImage: uiImage))
                     imageRequestGroup.leave()
                 }
             } catch {
-                entries.append(SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "No content available", userName: ":(", time: 0, type: "empty"))
+                entries.append(placeHolderEntry)
                 print("Error:\(error)")
                 imageRequestGroup.leave()
             }
@@ -78,10 +78,14 @@ struct Provider: IntentTimelineProvider {
     }
 }
 
-extension UIImage {
-    func cropImage() -> UIImage? {
-        return self
+extension AppWidgetIllust {
+    func toSimple(uiImage: UIImage) -> SimpleEntry {
+        SimpleEntry(date: .now, uiImage: uiImage, id: id, illustId: illustId, userId: userId, pictureUrl: pictureUrl, title: title, userName: userName, time: time, type: type)
     }
+}
+
+struct SimpleError: Error {
+    let message: String
 }
 
 struct SimpleEntry: TimelineEntry {
@@ -97,16 +101,14 @@ struct SimpleEntry: TimelineEntry {
     let type: String
 }
 
-extension AppWidgetIllust {
-    func toSimple(uiImage: UIImage, configuration: ConfigurationIntent) -> SimpleEntry {
-        SimpleEntry(date: .now, uiImage: uiImage, id: id, illustId: illustId, userId: userId, pictureUrl: pictureUrl, title: title, userName: userName, time: time, type: type)
-    }
-}
-
-struct SsssGridManEntryView: View {
+struct TinkerEntryView: View {
     var entry: Provider.Entry
 
     var body: some View {
+        buildContent()
+    }
+    
+    @ViewBuilder func buildContent() -> some View {
         GeometryReader { red in
             ZStack {
                 if entry.type != "empty", let uiImage = entry.uiImage {
@@ -142,23 +144,29 @@ struct SsssGridManEntryView: View {
     }
 }
 
-@main
-struct SsssGridMan: Widget {
-    let kind: String = "SsssGridMan"
+struct Tinker: Widget {
+    let kind: String = "Tinker"
 
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            SsssGridManEntryView(entry: entry)
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+            if #available(iOS 17.0, *) {
+                TinkerEntryView(entry: entry)
+                    .containerBackground(.fill.tertiary, for: .widget)
+            } else {
+                TinkerEntryView(entry: entry)
+                    .padding()
+                    .background()
+            }
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
     }
 }
 
-struct SsssGridMan_Previews: PreviewProvider {
+struct Tinker_Previews: PreviewProvider {
     static var previews: some View {
         let entry = SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "Title", userName: "User", time: 0, type: "")
-        SsssGridManEntryView(entry: entry)
+        TinkerEntryView(entry: entry)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

@@ -11,6 +11,11 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 5.0)
+  - FMDB (2.7.12):
+    - FMDB/standard (= 2.7.12)
+  - FMDB/Core (2.7.12)
+  - FMDB/standard (2.7.12):
+    - FMDB/Core
   - image_picker_ios (0.0.1):
     - Flutter
   - in_app_purchase_storekit (0.0.1):
@@ -51,6 +56,7 @@ DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
+  - FMDB (= 2.7.12)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
@@ -68,6 +74,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FMDB
     - OrderedSet
 
 EXTERNAL SOURCES:
@@ -113,6 +120,7 @@ SPEC CHECKSUMS:
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
+  FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
   in_app_purchase_storekit: 0e4b3c2e43ba1e1281f4f46dd71b0593ce529892
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
@@ -129,6 +137,6 @@ SPEC CHECKSUMS:
   wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
   webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
 
-PODFILE CHECKSUM: d148eb6b994d478e68f092ae02408ed7cb9c4577
+PODFILE CHECKSUM: 3d4560dfd92eabd6be8bf4fff6ae87fa5f5b1faa
 
 COCOAPODS: 1.15.2

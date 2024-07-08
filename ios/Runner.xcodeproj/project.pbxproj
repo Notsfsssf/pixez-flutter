@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		4F9E83EA3732672F6515B5C3 /* Pods_TinkerExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FD82A89B2305708F75B42B /* Pods_TinkerExtension.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */; };
 		7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6A8A2427870CFF0048656E /* Weiss.xcframework */; };
@@ -19,9 +20,25 @@
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
 		CF725E382ACE7C7600615536 /* DeepLinkPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
-		CFB8EE9D28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */; };
+		CFFFA8252C3B75EC00800F00 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
+		CFFFA8262C3B75EC00800F00 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B596A260F680500098D5C /* SwiftUI.framework */; };
+		CFFFA8292C3B75EC00800F00 /* TinkerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFFA8282C3B75EC00800F00 /* TinkerBundle.swift */; };
+		CFFFA82B2C3B75EC00800F00 /* Tinker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFFA82A2C3B75EC00800F00 /* Tinker.swift */; };
+		CFFFA82D2C3B75ED00800F00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFFFA82C2C3B75ED00800F00 /* Assets.xcassets */; };
+		CFFFA8312C3B75ED00800F00 /* TinkerExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CFFFA8242C3B75EC00800F00 /* TinkerExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CFFFA8372C3B76A600800F00 /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */; };
 		D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29C34664529F630B1285C5 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CFFFA82F2C3B75ED00800F00 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CFFFA8232C3B75EC00800F00;
+			remoteInfo = TinkerExtension;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
@@ -34,16 +51,30 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFFFA8322C3B75ED00800F00 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CFFFA8312C3B75ED00800F00 /* TinkerExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		04FD82A89B2305708F75B42B /* Pods_TinkerExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TinkerExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		38124249E5183C66C43E2B7D /* Pods-SsssGridManExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SsssGridManExtension.release.xcconfig"; path = "Target Support Files/Pods-SsssGridManExtension/Pods-SsssGridManExtension.release.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3E4DDACA2D1EFD551F6D02ED /* Pods-SsssGridManExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SsssGridManExtension.debug.xcconfig"; path = "Target Support Files/Pods-SsssGridManExtension/Pods-SsssGridManExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		4B29C34664529F630B1285C5 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D22A9484C65E52D52DF1E7B /* Pods-TinkerExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkerExtension.release.xcconfig"; path = "Target Support Files/Pods-TinkerExtension/Pods-TinkerExtension.release.xcconfig"; sourceTree = "<group>"; };
 		60F7AF1CBA6DF2AC70C736EC /* Pods-Runner-SsssGridManExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.debug.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		64DFEF6ABC17BA5CB4AD299E /* Pods-TinkerExtension.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkerExtension.profile.xcconfig"; path = "Target Support Files/Pods-TinkerExtension/Pods-TinkerExtension.profile.xcconfig"; sourceTree = "<group>"; };
 		72107C32486D58305CA4E067 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,15 +114,17 @@
 		CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
 		CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkPlugin.swift; sourceTree = "<group>"; };
 		CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
-		CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SsssGridMan.swift; sourceTree = "<group>"; };
-		CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SsssGridMan.intentdefinition; sourceTree = "<group>"; };
-		CFB8EE9928C49E8900B8D74E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CFB8EE9B28C49E8900B8D74E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CFB8EEA528C49FA500B8D74E /* SsssGridManExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SsssGridManExtension.entitlements; sourceTree = "<group>"; };
 		CFB8EEA628C4B32900B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFB8EEAA28C4B34400B8D74E /* sqflite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = sqflite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFB8EEAE28C4B50800B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFB8EEB228C4B86B00B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFFFA8242C3B75EC00800F00 /* TinkerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TinkerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFFFA8282C3B75EC00800F00 /* TinkerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinkerBundle.swift; sourceTree = "<group>"; };
+		CFFFA82A2C3B75EC00800F00 /* Tinker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tinker.swift; sourceTree = "<group>"; };
+		CFFFA82C2C3B75ED00800F00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CFFFA82E2C3B75ED00800F00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CFFFA8382C3B80B100800F00 /* TinkerExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TinkerExtension.entitlements; sourceTree = "<group>"; };
+		F01FF2AECF40C47766CDFE26 /* Pods-TinkerExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkerExtension.debug.xcconfig"; path = "Target Support Files/Pods-TinkerExtension/Pods-TinkerExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +134,16 @@
 			files = (
 				D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */,
 				7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFFFA8212C3B75EC00800F00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFFFA8262C3B75EC00800F00 /* SwiftUI.framework in Frameworks */,
+				CFFFA8252C3B75EC00800F00 /* WidgetKit.framework in Frameworks */,
+				4F9E83EA3732672F6515B5C3 /* Pods_TinkerExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +162,9 @@
 				3E4DDACA2D1EFD551F6D02ED /* Pods-SsssGridManExtension.debug.xcconfig */,
 				38124249E5183C66C43E2B7D /* Pods-SsssGridManExtension.release.xcconfig */,
 				9F2719FA904FF0441CF55D77 /* Pods-SsssGridManExtension.profile.xcconfig */,
+				F01FF2AECF40C47766CDFE26 /* Pods-TinkerExtension.debug.xcconfig */,
+				5D22A9484C65E52D52DF1E7B /* Pods-TinkerExtension.release.xcconfig */,
+				64DFEF6ABC17BA5CB4AD299E /* Pods-TinkerExtension.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -134,6 +180,7 @@
 				7C8B5968260F680500098D5C /* WidgetKit.framework */,
 				7C8B596A260F680500098D5C /* SwiftUI.framework */,
 				B21E80AFA3AD042A95F94C9F /* Pods_SsssGridManExtension.framework */,
+				04FD82A89B2305708F75B42B /* Pods_TinkerExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -152,11 +199,11 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				CFB8EEA528C49FA500B8D74E /* SsssGridManExtension.entitlements */,
+				CFFFA8382C3B80B100800F00 /* TinkerExtension.entitlements */,
 				7C6A8A2427870CFF0048656E /* Weiss.xcframework */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
-				CFB8EE9528C49E8900B8D74E /* SsssGridMan */,
+				CFFFA8272C3B75EC00800F00 /* Tinker */,
 				97C146EF1CF9000F007C117D /* Products */,
 				0490929A04F6A838565A4B4B /* Pods */,
 				66193F2780F8195CEF68B3C0 /* Frameworks */,
@@ -167,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				CFFFA8242C3B75EC00800F00 /* TinkerExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,16 +240,16 @@
 			path = Runner;
 			sourceTree = "<group>";
 		};
-		CFB8EE9528C49E8900B8D74E /* SsssGridMan */ = {
+		CFFFA8272C3B75EC00800F00 /* Tinker */ = {
 			isa = PBXGroup;
 			children = (
-				CFB8EE9628C49E8900B8D74E /* SsssGridMan.swift */,
-				CFB8EE9828C49E8900B8D74E /* SsssGridMan.intentdefinition */,
-				CFB8EE9928C49E8900B8D74E /* Assets.xcassets */,
-				CFB8EE9B28C49E8900B8D74E /* Info.plist */,
 				CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */,
+				CFFFA8282C3B75EC00800F00 /* TinkerBundle.swift */,
+				CFFFA82A2C3B75EC00800F00 /* Tinker.swift */,
+				CFFFA82C2C3B75ED00800F00 /* Assets.xcassets */,
+				CFFFA82E2C3B75ED00800F00 /* Info.plist */,
 			);
-			path = SsssGridMan;
+			path = Tinker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,8 +263,9 @@
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
-				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				CFFFA8322C3B75ED00800F00 /* Embed Foundation Extensions */,
+				97C146EC1CF9000F007C117D /* Resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				5AD1FD42E9F53D5652535AF0 /* [CP] Embed Pods Frameworks */,
 				AB5C75790897385F90072901 /* [CP] Copy Pods Resources */,
@@ -224,11 +273,30 @@
 			buildRules = (
 			);
 			dependencies = (
+				CFFFA8302C3B75ED00800F00 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CFFFA8232C3B75EC00800F00 /* TinkerExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFFFA8362C3B75ED00800F00 /* Build configuration list for PBXNativeTarget "TinkerExtension" */;
+			buildPhases = (
+				89079C421C3B33DEABBB8E65 /* [CP] Check Pods Manifest.lock */,
+				CFFFA8202C3B75EC00800F00 /* Sources */,
+				CFFFA8212C3B75EC00800F00 /* Frameworks */,
+				CFFFA8222C3B75EC00800F00 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TinkerExtension;
+			productName = TinkerExtension;
+			productReference = CFFFA8242C3B75EC00800F00 /* TinkerExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -236,13 +304,16 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
+					};
+					CFFFA8232C3B75EC00800F00 = {
+						CreatedOnToolsVersion = 15.4;
 					};
 				};
 			};
@@ -266,6 +337,7 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				CFFFA8232C3B75EC00800F00 /* TinkerExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -279,6 +351,14 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFFFA8222C3B75EC00800F00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFFFA82D2C3B75ED00800F00 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +396,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		89079C421C3B33DEABBB8E65 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TinkerExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
@@ -385,12 +487,29 @@
 				7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */,
 				7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */,
 				A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */,
-				CFB8EE9D28C49E8900B8D74E /* SsssGridMan.intentdefinition in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFFFA8202C3B75EC00800F00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFFFA82B2C3B75EC00800F00 /* Tinker.swift in Sources */,
+				CFFFA8372C3B76A600800F00 /* AppWidgetDBManager.swift in Sources */,
+				CFFFA8292C3B75EC00800F00 /* TinkerBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CFFFA8302C3B75ED00800F00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CFFFA8232C3B75EC00800F00 /* TinkerExtension */;
+			targetProxy = CFFFA82F2C3B75ED00800F00 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -479,6 +598,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -620,6 +740,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -653,6 +774,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -681,6 +803,132 @@
 			};
 			name = Release;
 		};
+		CFFFA8332C3B75ED00800F00 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F01FF2AECF40C47766CDFE26 /* Pods-TinkerExtension.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = TinkerExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tinker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Tinker;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.Tinker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CFFFA8342C3B75ED00800F00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5D22A9484C65E52D52DF1E7B /* Pods-TinkerExtension.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = TinkerExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tinker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Tinker;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.Tinker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CFFFA8352C3B75ED00800F00 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 64DFEF6ABC17BA5CB4AD299E /* Pods-TinkerExtension.profile.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = TinkerExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tinker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Tinker;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.Tinker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -700,6 +948,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFFFA8362C3B75ED00800F00 /* Build configuration list for PBXNativeTarget "TinkerExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFFFA8332C3B75ED00800F00 /* Debug */,
+				CFFFA8342C3B75ED00800F00 /* Release */,
+				CFFFA8352C3B75ED00800F00 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
