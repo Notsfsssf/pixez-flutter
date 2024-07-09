@@ -13,7 +13,6 @@
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */; };
 		7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6A8A2427870CFF0048656E /* Weiss.xcframework */; };
-		7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -85,7 +84,6 @@
 		7C8B5968260F680500098D5C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		7C8B596A260F680500098D5C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		7CC54C3726103351009033DF /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
-		7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetkitPlugin.swift; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,7 +230,6 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				A70B475625D4D94200AE0717 /* CodeGen.swift */,
-				7CD2072C2610741D00677759 /* WidgetkitPlugin.swift */,
 				CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */,
 				7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */,
 				CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */,
@@ -484,7 +481,6 @@
 				CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				CF725E382ACE7C7600615536 /* DeepLinkPlugin.swift in Sources */,
-				7CD2072D2610741D00677759 /* WidgetkitPlugin.swift in Sources */,
 				7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */,
 				A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,

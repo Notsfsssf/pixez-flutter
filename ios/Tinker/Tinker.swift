@@ -10,11 +10,9 @@ import WidgetKit
 
 struct Provider: TimelineProvider {
     var placeHolderEntry: SimpleEntry {
-            get {
-                return SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "No content available", userName: ":(", time: 0, type: "empty")
-            }
-        }
-    
+        return SimpleEntry(date: .now, uiImage: nil, id: 1, illustId: 1, userId: 1, pictureUrl: "https://pixiv.net//", title: "No content available", userName: ":(", time: 0, type: "empty")
+    }
+
     func placeholder(in context: Context) -> SimpleEntry {
         placeHolderEntry
     }
@@ -107,7 +105,7 @@ struct TinkerEntryView: View {
     var body: some View {
         buildContent()
     }
-    
+
     @ViewBuilder func buildContent() -> some View {
         GeometryReader { red in
             ZStack {
@@ -150,8 +148,37 @@ struct Tinker: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
-                TinkerEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                ZStack {
+                    Color.clear
+                    VStack {
+                        Spacer()
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("\(entry.title ?? "")")
+                                    .font(.title3)
+                                    .foregroundColor(.white)
+                                    .lineLimit(1)
+                                    .shadow(radius: 5, x: 0, y: 5)
+                                Text("@\(entry.userName ?? "")")
+                                    .font(.caption2)
+                                    .foregroundColor(.white)
+                                    .lineLimit(1)
+                                    .shadow(radius: 5, x: 0, y: 5)
+                            }
+                            Spacer()
+                        }
+                    }
+                }
+                .widgetURL(URL(string: entry.type == "empty" ? "pixez://pixiv.net" : "pixez://pixiv.net/artworks/\(entry.illustId)"))
+                .containerBackground(for: .widget) {
+                    ZStack {
+                        if let image = entry.uiImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                        }
+                    }
+                }
             } else {
                 TinkerEntryView(entry: entry)
                     .padding()
