@@ -32,10 +32,11 @@ struct Provider: TimelineProvider {
                     guard let first = illusts.randomElement() else {
                         throw SimpleError(message: "No data")
                     }
-                    let pictureURL = folder.appendingPathComponent("\(first.id).\(first.pictureUrl.split(separator: ".").last ?? "png")")
+                    let sourceUrl = first.largeUrl ?? first.pictureUrl
+                    let pictureURL = folder.appendingPathComponent("\(first.id).\(sourceUrl.split(separator: ".").last ?? "png")")
                     if FileManager.default.fileExists(atPath: pictureURL.path) {
                     } else {
-                        guard let fileURL = URL(string: first.pictureUrl) else {
+                        guard let fileURL = URL(string: sourceUrl) else {
                             throw SimpleError(message: "picture url")
                         }
                         var request = URLRequest(url: fileURL)

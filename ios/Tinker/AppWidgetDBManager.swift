@@ -9,10 +9,12 @@ import FMDB
 import Foundation
 
 struct AppWidgetIllust {
-    let id:Int
+    let id: Int
     let illustId: Int
     let userId: Int
     let pictureUrl: String
+    let largeUrl: String?
+    let originalUrl: String?
     let title: String?
     let userName: String?
     let time: Int
@@ -25,11 +27,14 @@ enum AppWidgetDBManager {
     static let cillust_id = "illust_id"
     static let cuser_id = "user_id"
     static let cpicture_url = "picture_url"
+    static let coriginal_url = "original_url"
+    static let clarge_url = "large_url"
     static let ctitle = "title"
     static let cuser_name = "user_name"
     static let ctime = "time"
     static let ctype = "type"
-    static func fetch()->[AppWidgetIllust] {
+    
+    static func fetch() -> [AppWidgetIllust] {
         guard let db = groupDB() else {
             return []
         }
@@ -46,7 +51,9 @@ enum AppWidgetDBManager {
                 let userName = qSet.string(forColumn: cuser_name)
                 let time = qSet.int(forColumn: ctime)
                 let type = qSet.string(forColumn: ctype)
-                let illust = AppWidgetIllust(id:Int(exactly: id)!,illustId: Int(illustId), userId: Int(userId), pictureUrl: pictureId!, title: title!, userName: userName!, time: Int(exactly: time)!, type: type!)
+                let largeUrl = qSet.string(forColumn: clarge_url)
+                let originalUrl = qSet.string(forColumn: coriginal_url)
+                let illust = AppWidgetIllust(id: Int(exactly: id)!, illustId: Int(illustId), userId: Int(userId), pictureUrl: pictureId!, largeUrl: largeUrl, originalUrl: originalUrl, title: title!, userName: userName!, time: Int(exactly: time)!, type: type!)
                 illusts.append(illust)
                 print("db === \(illust)")
             }
@@ -71,7 +78,9 @@ enum AppWidgetDBManager {
                 let userName = qSet.string(forColumn: cuser_name)
                 let time = qSet.int(forColumn: ctime)
                 let type = qSet.string(forColumn: ctype)
-                let illust = AppWidgetIllust(id:Int(cid)!,illustId: Int(illustId), userId: Int(userId), pictureUrl: pictureId!, title: title!, userName: userName!, time: Int(exactly: time)!, type: type!)
+                let largeUrl = qSet.string(forColumn: clarge_url)
+                let originalUrl = qSet.string(forColumn: coriginal_url)
+                let illust = AppWidgetIllust(id: Int(cid)!, illustId: Int(illustId), userId: Int(userId), pictureUrl: pictureId!, largeUrl: largeUrl, originalUrl: originalUrl, title: title!, userName: userName!, time: Int(exactly: time)!, type: type!)
                 illusts.append(illust)
                 print("db === \(illust)")
             }
@@ -90,7 +99,7 @@ enum AppWidgetDBManager {
         }
         return nil
     }
-    
+
     static func illustFolder() -> URL? {
         let fileManager = FileManager.default
         if let directory = fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.pixez") {

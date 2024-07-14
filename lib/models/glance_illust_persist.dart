@@ -40,6 +40,9 @@ extension GlanceIllustExt on Illusts {
         illustId: id,
         userId: user.id,
         pictureUrl: imageUrls.medium,
+        originalUrl: metaSinglePage?.originalImageUrl ??
+            metaPages.firstOrNull?.imageUrls?.original,
+        largeUrl: imageUrls.large,
         title: title,
         userName: user.name,
         time: time,
@@ -56,6 +59,10 @@ class GlanceIllustPersist {
   int userId;
   @JsonKey(name: 'picture_url')
   String pictureUrl;
+  @JsonKey(name: 'original_url')
+  String? originalUrl;
+  @JsonKey(name: 'large_url')
+  String? largeUrl;
   @JsonKey(name: 'user_name')
   String? userName;
   @JsonKey(name: "title")
@@ -69,6 +76,8 @@ class GlanceIllustPersist {
       required this.illustId,
       required this.userId,
       required this.pictureUrl,
+      required this.originalUrl,
+      required this.largeUrl,
       required this.time,
       required this.title,
       required this.userName,
@@ -85,6 +94,8 @@ final String cid = "id";
 final String cillust_id = "illust_id";
 final String cuser_id = "user_id";
 final String cpicture_url = "picture_url";
+final String clarge_url = "large_url";
+final String coriginal_url = "original_url";
 final String ctitle = "title";
 final String cuser_name = "user_name";
 final String ctime = "time";
@@ -102,6 +113,8 @@ create table $tableIllustPersist (
   $cpicture_url text not null,
   $ctype text not null,
   $ctitle text,
+  $clarge_url text,
+  $coriginal_url text,
   $cuser_name text,
     $ctime integer not null
   )
@@ -130,13 +143,29 @@ create table $tableIllustPersist (
     String path = join(databasesPath, 'glanceillustpersist.db');
     db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (Database db, int version) async {
         var batch = db.batch();
         _createTableV2(batch);
         await batch.commit();
       },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        var batch = db.batch();
+        if (oldVersion < 2) {
+          _updateTableV1ToV2(batch);
+        }
+        await batch.commit();
+      },
     );
+  }
+
+  void _updateTableV1ToV2(Batch batch) {
+    batch.execute('''
+        ALTER TABLE $tableIllustPersist ADD $coriginal_url TEXT;
+            ''');
+    batch.execute('''
+        ALTER TABLE $tableIllustPersist ADD $clarge_url TEXT;
+    ''');
   }
 
   Future<GlanceIllustPersist> insert(GlanceIllustPersist todo) async {
