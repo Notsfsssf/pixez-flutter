@@ -5,6 +5,7 @@
 //  Created by Perol Notsf on 2024/7/8.
 //
 
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -143,6 +144,16 @@ struct TinkerEntryView: View {
     }
 }
 
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+struct SuperCharge: AppIntent {
+    static var title: LocalizedStringResource = "Refresh recommend illust"
+    static var description = IntentDescription("Refresh recommend illust")
+
+    func perform() async throws -> some IntentResult {
+        return .result()
+    }
+}
+
 struct Tinker: Widget {
     let kind: String = "Tinker"
 
@@ -168,6 +179,20 @@ struct Tinker: Widget {
                             }
                             Spacer()
                         }
+                    }
+                    VStack {
+                        HStack(alignment: .top) {
+                            Spacer()
+                            Button(intent: SuperCharge()) {
+                                Image(systemName: "arrow.clockwise")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 4)
+                        }
+                        Spacer()
                     }
                 }
                 .widgetURL(URL(string: entry.type == "empty" ? "pixez://pixiv.net" : "pixez://pixiv.net/artworks/\(entry.illustId)"))
