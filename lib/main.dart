@@ -50,7 +50,6 @@ final SaveStore saveStore = SaveStore();
 final MuteStore muteStore = MuteStore();
 final AccountStore accountStore = AccountStore();
 final TagHistoryStore tagHistoryStore = TagHistoryStore();
-final HistoryStore historyStore = HistoryStore();
 final NovelHistoryStore novelHistoryStore = NovelHistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();

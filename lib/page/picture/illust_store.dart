@@ -22,6 +22,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/error_message.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/history/history_store.dart';
 
 part 'illust_store.g.dart';
 
@@ -89,7 +90,11 @@ abstract class _IllustStoreBase with Store {
         }
       }
     }
-    if (illusts != null) historyStore.insert(illusts!);
+    if (illusts != null) {
+      try {
+        History.insertIllust(illusts!);
+      } catch (e) {}
+    }
   }
 
   @action

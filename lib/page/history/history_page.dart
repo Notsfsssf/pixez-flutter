@@ -17,23 +17,28 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
+import 'package:pixez/models/illust_persist.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+final historyPageProvider = FutureProvider.autoDispose((ref) async {
+  await ref.read(historyProvider.notifier).fetch();
+  final data = ref.watch(historyProvider);
+  return data;
+});
+
+class HistoryPage extends StatefulHookConsumerWidget {
+  const HistoryPage({super.key});
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  final HistoryStore _store = historyStore..fetch();
+class _HistoryPageState extends ConsumerState<HistoryPage> {
   late TextEditingController _textEditingController;
 
   Widget buildAppBarUI(context) => Container(
@@ -46,62 +51,63 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       );
 
-  Widget buildBody() => Observer(builder: (context) {
-        var reIllust = _store.data.reversed.toList();
-        if (reIllust.isNotEmpty) {
-          return LayoutBuilder(builder: (context, snapshot) {
-            final rowCount = max(2, (snapshot.maxWidth / 200).floor());
-            return GridView.builder(
-                itemCount: reIllust.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: rowCount),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return IllustLightingPage(
-                              id: reIllust[index].illustId,
-                              store:
-                                  IllustStore(reIllust[index].illustId, null));
-                        }));
-                      },
-                      onLongPress: () async {
-                        final result = await showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text("${I18n.of(context).delete}?"),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(I18n.of(context).cancel),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text(I18n.of(context).ok),
-                                    onPressed: () {
-                                      Navigator.of(context).pop("OK");
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
-                        if (result == "OK") {
-                          _store.delete(reIllust[index].illustId);
-                        }
-                      },
-                      child: Card(
-                          margin: EdgeInsets.all(8),
-                          child: PixivImage(reIllust[index].pictureUrl)));
-                });
-          });
-        }
-        return Center(
-          child: Container(),
-        );
+  Widget buildBody(List<IllustPersist> data) {
+    var reIllust = data.reversed.toList();
+    if (reIllust.isNotEmpty) {
+      return LayoutBuilder(builder: (context, snapshot) {
+        final rowCount = max(2, (snapshot.maxWidth / 200).floor());
+        return GridView.builder(
+            itemCount: reIllust.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: rowCount),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return IllustLightingPage(
+                          id: reIllust[index].illustId,
+                          store: IllustStore(reIllust[index].illustId, null));
+                    }));
+                  },
+                  onLongPress: () async {
+                    final result = await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("${I18n.of(context).delete}?"),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(I18n.of(context).cancel),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text(I18n.of(context).ok),
+                                onPressed: () {
+                                  Navigator.of(context).pop("OK");
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                    if (result == "OK") {
+                      ref
+                          .read(historyProvider.notifier)
+                          .delete(reIllust[index].illustId);
+                    }
+                  },
+                  child: Card(
+                      margin: EdgeInsets.all(8),
+                      child: PixivImage(reIllust[index].pictureUrl)));
+            });
       });
+    }
+    return Center(
+      child: Container(),
+    );
+  }
 
   @override
   void initState() {
@@ -117,15 +123,16 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final dataFuture = ref.watch(historyPageProvider);
     return Scaffold(
       appBar: AppBar(
         title: TextField(
             controller: _textEditingController,
             onChanged: (word) {
               if (word.trim().isNotEmpty) {
-                _store.search(word.trim());
+                ref.read(historyProvider.notifier).search(word.trim());
               } else {
-                _store.fetch();
+                ref.read(historyProvider.notifier).fetch();
               }
             },
             decoration: InputDecoration(
@@ -147,7 +154,17 @@ class _HistoryPageState extends State<HistoryPage> {
           _cleanAll(context);
         },
       ),
-      body: buildBody(),
+      body: dataFuture.when(data: (data) {
+        return buildBody(data.data);
+      }, loading: () {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }, error: (error, stack) {
+        return Center(
+          child: Text(error.toString()),
+        );
+      }),
     );
   }
 
@@ -174,7 +191,7 @@ class _HistoryPageState extends State<HistoryPage> {
           );
         });
     if (result == "OK") {
-      _store.deleteAll();
+      ref.read(historyProvider.notifier).deleteAll();
     }
   }
 }

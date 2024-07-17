@@ -15,7 +15,7 @@
  */
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/fluent/component/context_menu.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
@@ -27,33 +27,34 @@ import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class HistoryPage extends StatefulHookConsumerWidget {
+  const HistoryPage({super.key});
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  final HistoryStore _store = historyStore..fetch();
+class _HistoryPageState extends ConsumerState<HistoryPage> {
   late TextEditingController _textEditingController;
 
-  Widget buildBody() => Observer(
+  Widget buildBody(List<IllustPersist> data) => Builder(
         builder: (context) {
           final count =
               (MediaQuery.of(context).orientation == Orientation.portrait)
                   ? userSetting.crossCount
                   : userSetting.hCrossCount;
 
-          final reIllust = _store.data.reversed.toList();
+          final reIllust = data.reversed.toList();
           if (reIllust.isEmpty) return Container();
 
           return GridView.builder(
             itemCount: reIllust.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: count),
-            itemBuilder: (context, index) =>
-                _HistoryItem(reIllust, index, _store),
+            itemBuilder: (context, index) => _HistoryItem(
+              reIllust: reIllust,
+              index: index,
+            ),
           );
         },
       );
@@ -72,6 +73,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final data = ref.watch(historyProvider.select((state) => state.data));
     return ScaffoldPage(
       header: PageHeader(
         title: Text(I18n.of(context).history),
@@ -79,9 +81,9 @@ class _HistoryPageState extends State<HistoryPage> {
           controller: _textEditingController,
           onChanged: (word) {
             if (word.trim().isNotEmpty) {
-              _store.search(word.trim());
+              ref.read(historyProvider.notifier).search(word.trim());
             } else {
-              _store.fetch();
+              ref.read(historyProvider.notifier).fetch();
             }
           },
           placeholder: I18n.of(context).search_word_hint,
@@ -116,7 +118,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ),
       ),
-      content: buildBody(),
+      content: buildBody(data),
     );
   }
 
@@ -143,19 +145,19 @@ class _HistoryPageState extends State<HistoryPage> {
           );
         });
     if (result == "OK") {
-      _store.deleteAll();
+      ref.read(historyProvider.notifier).deleteAll();
     }
   }
 }
 
-class _HistoryItem extends StatelessWidget {
+class _HistoryItem extends HookConsumerWidget {
   final List<IllustPersist> reIllust;
   final int index;
-  final HistoryStore _store;
 
-  _HistoryItem(this.reIllust, this.index, this._store);
+  const _HistoryItem({required this.reIllust, required this.index});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ContextMenu(
       child: PixEzButton(
         child: PixivImage(reIllust[index].pictureUrl),
@@ -190,7 +192,9 @@ class _HistoryItem extends StatelessWidget {
                     HyperlinkButton(
                       child: Text(I18n.of(context).ok),
                       onPressed: () {
-                        _store.delete(reIllust[index].illustId);
+                        ref
+                            .read(historyProvider.notifier)
+                            .delete(reIllust[index].illustId);
                         Navigator.of(context).pop();
                       },
                     ),

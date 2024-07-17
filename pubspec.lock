@@ -637,14 +637,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.7.0"
-  freezed_annotation:
-    dependency: transitive
+  freezed:
+    dependency: "direct dev"
     description:
-      name: freezed_annotation
-      sha256: f9f6597ac43cc262fa7d7f2e65259a6060c23a560525d1f2631be374540f2a9b
+      name: freezed
+      sha256: a434911f643466d78462625df76fd9eb13e57348ff43fe1f77bbe909522c67a1
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.5.2"
+  freezed_annotation:
+    dependency: "direct main"
+    description:
+      name: freezed_annotation
+      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
   frontend_server_client:
     dependency: transitive
     description:
