@@ -29,6 +29,7 @@
 .pub/
 /build/
 **/*.g.dart
+**/*.freezed.dart
 /lib/generated/
 
 # Android related

@@ -17,6 +17,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -31,15 +32,8 @@ final historyPageProvider = FutureProvider.autoDispose((ref) async {
   return data;
 });
 
-class HistoryPage extends StatefulHookConsumerWidget {
+class HistoryPage extends HookConsumerWidget {
   const HistoryPage({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HistoryPageState();
-}
-
-class _HistoryPageState extends ConsumerState<HistoryPage> {
-  late TextEditingController _textEditingController;
 
   Widget buildAppBarUI(context) => Container(
         child: Padding(
@@ -51,8 +45,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
         ),
       );
 
-  Widget buildBody(List<IllustPersist> data) {
-    var reIllust = data.reversed.toList();
+  Widget buildBody(List<IllustPersist> data, WidgetRef ref) {
+    final reIllust = data.reversed.toList();
     if (reIllust.isNotEmpty) {
       return LayoutBuilder(builder: (context, snapshot) {
         final rowCount = max(2, (snapshot.maxWidth / 200).floor());
@@ -110,20 +104,9 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
   }
 
   @override
-  void initState() {
-    _textEditingController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dataFuture = ref.watch(historyPageProvider);
+    final _textEditingController = useTextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -151,11 +134,11 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.delete),
         onPressed: () {
-          _cleanAll(context);
+          _cleanAll(context, ref);
         },
       ),
       body: dataFuture.when(data: (data) {
-        return buildBody(data.data);
+        return buildBody(data.data, ref);
       }, loading: () {
         return Center(
           child: CircularProgressIndicator(),
@@ -168,7 +151,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     );
   }
 
-  Future<void> _cleanAll(BuildContext context) async {
+  Future<void> _cleanAll(BuildContext context, WidgetRef ref) async {
     final result = await showDialog(
         context: context,
         builder: (context) {

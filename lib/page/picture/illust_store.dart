@@ -18,7 +18,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/error_message.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
