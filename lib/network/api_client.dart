@@ -72,7 +72,8 @@ class ApiClient {
         ..interceptors.add(RefreshTokenInterceptor());
       httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
         HttpClient httpClient = HttpClient();
-        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        httpClient.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
         return httpClient;
       });
       return;
@@ -96,11 +97,12 @@ class ApiClient {
     if (kDebugMode)
       httpClient.interceptors
           .add(LogInterceptor(responseBody: true, requestBody: true));
-      httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-        HttpClient httpClient = HttpClient();
-        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return httpClient;
-      });
+    httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+      HttpClient httpClient = HttpClient();
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return httpClient;
+    });
     if (userSetting.disableBypassSni) {
       httpClient.options.baseUrl = "https://${BASE_API_URL_HOST}";
     }
@@ -156,8 +158,6 @@ class ApiClient {
         queryParameters: notNullMap({"novel_id": id}));
   }
 
-  //   @GET("/v2/illust/follow")
-  // fun getFollowIllusts(@Header("Authorization") paramString1: String, @Query("restrict") paramString2: String): Observable<IllustNext>
   Future<Response> getNovelFollow(String restrict) {
     return httpClient.get(
       "/v1/novel/follow",
@@ -625,5 +625,17 @@ class ApiClient {
     return httpClient.get('/v2/novel/series', queryParameters: {
       'series_id': id,
     });
+  }
+
+  Future<Response> watchListNovelAdd(String seriesId) async {
+    return httpClient.post('/v1/watchlist/novel/add',
+        data: notNullMap({"series_id": seriesId}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<Response> watchListNovelDelete(String seriesId) async {
+    return httpClient.post('/v1/watchlist/novel/delete',
+        data: notNullMap({"series_id": seriesId}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
   }
 }
