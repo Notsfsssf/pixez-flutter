@@ -28,7 +28,6 @@ import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/fluent/fluentui.dart';
 import 'package:pixez/network/onezero_client.dart';
-import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/novel/history/novel_history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
 import 'package:pixez/page/splash/splash_store.dart';

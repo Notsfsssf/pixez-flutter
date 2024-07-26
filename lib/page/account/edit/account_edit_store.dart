@@ -21,7 +21,7 @@ abstract class _AccountEditStoreBase with Store {
       print(response.data);
       return true;
     } catch (e) {
-      if (e is DioError) {
+      if (e is DioException) {
         try {
           var a = e.response!.data['body']['validation_errors'].toString();
           errorString = a;

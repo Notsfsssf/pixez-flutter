@@ -14,7 +14,6 @@
  *
  */
 
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';

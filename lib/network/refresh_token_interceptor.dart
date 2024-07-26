@@ -69,7 +69,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   bool isRefreshing = false;
 
   @override
-  void onError(DioError err, handler) async {
+  void onError(DioException err, handler) async {
     if (err.response != null && err.response!.statusCode == 400) {
       DateTime dateTime = DateTime.now();
       if ((dateTime.millisecondsSinceEpoch - lastRefreshTime) > 200000) {
