@@ -154,27 +154,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         if (userSetting.useDynamicColor &&
             lightDynamic != null &&
             darkDynamic != null) {
-          lightColorScheme = SeedColorScheme.fromSeeds(
-            brightness: Brightness.light,
-            primaryKey: lightDynamic.harmonized().primary,
-            variant: FlexSchemeVariant.fidelity,
-          );
-          darkColorScheme = SeedColorScheme.fromSeeds(
-            brightness: Brightness.light,
-            primaryKey: darkDynamic.harmonized().primary,
-            variant: FlexSchemeVariant.fidelity,
-          );
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
         } else {
           Color primary = userSetting.seedColor;
-          lightColorScheme = SeedColorScheme.fromSeeds(
-            brightness: Brightness.light,
-            primaryKey: primary,
-            variant: FlexSchemeVariant.fidelity,
+          lightColorScheme = ColorScheme.fromSeed(
+            seedColor: primary,
           );
-          darkColorScheme = SeedColorScheme.fromSeeds(
+          darkColorScheme = ColorScheme.fromSeed(
+            seedColor: primary,
             brightness: Brightness.dark,
-            primaryKey: primary,
-            variant: FlexSchemeVariant.fidelity,
           );
         }
         if (userSetting.themeInitState != 1) {
