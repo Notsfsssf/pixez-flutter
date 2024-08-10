@@ -286,8 +286,6 @@
   "automatically_bookmark_when_downloading": "下载时自动收藏",
   "footer_loading": "加载中...",
   "successed": "加载成功",
-  "failed": "加载失败",
-  "reply": "回复",
   "reply_to": "回复给",
   "show_feed_ai_badge": "显示列表中的AI生成标记",
   "illust_detail_save_skip_confirm": "插画作品页保存时跳过确认",
@@ -295,5 +293,6 @@
   "open_saucenao_using_webview": "用webview打开Saucenao",
   "appwidget_recommend_type": "小组件推荐类型",
   "popular_male_desc": "受男性喜爱",
-  "popular_female_desc": "受女性喜爱"
+  "popular_female_desc": "受女性喜爱",
+  "feed_preview_quality": "列表预览画质"
 }

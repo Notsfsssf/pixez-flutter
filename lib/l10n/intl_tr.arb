@@ -286,12 +286,11 @@
   "automatically_bookmark_when_downloading": "İndirince otomatik olarak yer işaretlerine ekle",
   "footer_loading": "Yükleniyor...",
   "successed": "Başarılı",
-  "failed": "Başarısız",
-  "reply": "Yanıtla",
   "reply_to": "Yanıtla",
   "show_feed_ai_badge": "Akışta AI etiketini göster",
   "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page",
   "secure_window": "Secure window",
   "open_saucenao_using_webview": "Open SauceNao using webview",
-  "appwidget_recommend_type": "Appwidget recommend type" 
+  "appwidget_recommend_type": "Appwidget recommend type",
+  "feed_preview_quality": "Feed preview quality" 
 }

@@ -62,7 +62,11 @@ dependencies:
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.5.1
   sqflite: ^2.3.3+1
-  dynamic_color: ^1.7.0
+  dynamic_color:
+    git:
+      url: https://github.com/hasali19/material-foundation-flutter-packages.git
+      path: packages/dynamic_color
+      ref: main
   # Design Style
   fluent_ui: ^4.8.7
   # Desktop Support
@@ -71,6 +75,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.4
+  flex_seed_scheme: ^3.1.2
 
 dev_dependencies:
   flutter_test:

@@ -65,7 +65,8 @@ class _InitPageState extends State<InitPage> {
                         duration: Duration(milliseconds: 300),
                         opacity: userSetting.languageNum == index ? 1 : 0.3,
                         child: ListTile(
-                          title: Text(title),
+                          title: Text(title,
+                              style: Theme.of(context).textTheme.titleSmall),
                           onTap: () async {
                             await userSetting.setLanguageNum(index);
                             setState(() {});

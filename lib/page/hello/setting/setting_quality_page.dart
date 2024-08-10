@@ -108,13 +108,17 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             _buildLanguageSelect(),
             Divider(),
             ListTile(
-              leading: const Icon(Icons.zoom_out_map),
-              title: Text(I18n.of(context).large_preview_zoom_quality),
+              leading: const Icon(Icons.feed),
+              title: Text(I18n.of(context).feed_preview_quality),
               trailing: SettingSelectMenu(
-                index: userSetting.zoomQuality,
-                items: [I18n.of(context).large, I18n.of(context).source],
+                index: userSetting.feedPreviewQuality,
+                items: [
+                  I18n.of(context).medium,
+                  I18n.of(context).large,
+                  I18n.of(context).source
+                ],
                 onChange: (index) {
-                  userSetting.change(index);
+                  userSetting.changeFeedPreviewQuality(index);
                 },
               ),
             ),
@@ -141,6 +145,17 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 ],
                 onChange: (index) {
                   userSetting.setMangaQuality(index);
+                },
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.zoom_out_map),
+              title: Text(I18n.of(context).large_preview_zoom_quality),
+              trailing: SettingSelectMenu(
+                index: userSetting.zoomQuality,
+                items: [I18n.of(context).large, I18n.of(context).source],
+                onChange: (index) {
+                  userSetting.change(index);
                 },
               ),
             ),

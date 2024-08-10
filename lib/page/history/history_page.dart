@@ -26,12 +26,6 @@ import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
-final historyPageProvider = FutureProvider.autoDispose((ref) async {
-  await ref.read(historyProvider.notifier).fetch();
-  final data = ref.watch(historyProvider);
-  return data;
-});
-
 class HistoryPage extends HookConsumerWidget {
   const HistoryPage({super.key});
 
@@ -105,8 +99,14 @@ class HistoryPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataFuture = ref.watch(historyPageProvider);
+    final dataFuture = ref.watch(historyProvider);
     final _textEditingController = useTextEditingController();
+    useEffect(() {
+      Future.delayed(Duration.zero, () async {
+        await ref.read(historyProvider.notifier).fetch();
+      });
+      return null;
+    }, []);
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -127,6 +127,7 @@ class HistoryPage extends HookConsumerWidget {
             icon: Icon(Icons.close),
             onPressed: () {
               _textEditingController.clear();
+              ref.read(historyProvider.notifier).fetch();
             },
           )
         ],
@@ -137,17 +138,7 @@ class HistoryPage extends HookConsumerWidget {
           _cleanAll(context, ref);
         },
       ),
-      body: dataFuture.when(data: (data) {
-        return buildBody(data.data, ref);
-      }, loading: () {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }, error: (error, stack) {
-        return Center(
-          child: Text(error.toString()),
-        );
-      }),
+      body: buildBody(dataFuture.data, ref),
     );
   }
 

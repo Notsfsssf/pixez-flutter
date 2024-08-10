@@ -14,6 +14,7 @@
  *
  */
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pixez/main.dart';
 
 part 'illust.g.dart';
 
@@ -135,6 +136,15 @@ class ImageUrls {
       _$ImageUrlsFromJson(json);
 
   Map<String, dynamic> toJson() => _$ImageUrlsToJson(this);
+}
+
+extension IllustExtension on Illusts {
+  String get feedPreviewUrl => (userSetting.feedPreviewQuality == 0)
+      ? imageUrls.medium
+      : (userSetting.feedPreviewQuality == 1)
+          ? this.imageUrls.large
+          : this.metaSinglePage?.originalImageUrl ??
+              this.metaPages[0].imageUrls!.original;
 }
 
 @JsonSerializable()

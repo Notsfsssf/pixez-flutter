@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -153,16 +154,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         if (userSetting.useDynamicColor &&
             lightDynamic != null &&
             darkDynamic != null) {
-          lightColorScheme = lightDynamic.harmonized();
-          darkColorScheme = darkDynamic.harmonized();
+          lightColorScheme = SeedColorScheme.fromSeeds(
+            brightness: Brightness.light,
+            primaryKey: lightDynamic.harmonized().primary,
+            variant: FlexSchemeVariant.fidelity,
+          );
+          darkColorScheme = SeedColorScheme.fromSeeds(
+            brightness: Brightness.light,
+            primaryKey: darkDynamic.harmonized().primary,
+            variant: FlexSchemeVariant.fidelity,
+          );
         } else {
           Color primary = userSetting.seedColor;
-          lightColorScheme = ColorScheme.fromSeed(
-            seedColor: primary,
+          lightColorScheme = SeedColorScheme.fromSeeds(
+            brightness: Brightness.light,
+            primaryKey: primary,
+            variant: FlexSchemeVariant.fidelity,
           );
-          darkColorScheme = ColorScheme.fromSeed(
-            seedColor: primary,
+          darkColorScheme = SeedColorScheme.fromSeeds(
             brightness: Brightness.dark,
+            primaryKey: primary,
+            variant: FlexSchemeVariant.fidelity,
           );
         }
         if (userSetting.themeInitState != 1) {
@@ -190,8 +202,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
           themeMode: userSetting.themeMode,
           theme: ThemeData.light().copyWith(
-              colorScheme: lightColorScheme,
-              scaffoldBackgroundColor: lightColorScheme.surface),
+            primaryColor: lightColorScheme.primary,
+            colorScheme: lightColorScheme,
+            scaffoldBackgroundColor: lightColorScheme.surface,
+            cardColor: lightColorScheme.surfaceContainer,
+            chipTheme: ChipThemeData(
+              backgroundColor: lightColorScheme.surface,
+            ),
+          ),
           darkTheme: ThemeData.dark().copyWith(
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,

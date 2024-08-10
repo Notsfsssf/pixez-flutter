@@ -94,6 +94,7 @@ private fun updateWidget(
         val request = ImageRequest.Builder(context)
             .data(trueUrl)
             .transformations(RoundedCornersTransformation(radius))
+            .size(540, 540)
             .setHeader("referer", "https://app-api.pixiv.net/")
             .setHeader("User-Agent", "PixivIOSApp/5.8.0")
             .setHeader("host", Uri.parse(trueUrl).host!!)

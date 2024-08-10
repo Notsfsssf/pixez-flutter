@@ -356,29 +356,33 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
   Widget _buildCommentTextArea(BuildContext context, Illusts data) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0),
         child: InkWell(
           onTap: () {
             Leader.push(context, CommentPage(id: data.id));
           },
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.comment,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  I18n.of(context).view_comment,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ]),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.comment,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      I18n.of(context).view_comment,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ]),
+            ),
+          ),
         ),
       ),
     );
@@ -462,7 +466,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
         height: 25,
         padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: const BorderRadius.all(Radius.circular(12.5)),
         ),
         child: Column(

@@ -147,11 +147,13 @@ class _WorksPageState extends State<WorksPage> {
                         ),
                         const HeaderLocator.sliver(),
                         SliverPersistentHeader(
-                            delegate: SliverChipDelegate(Container(
-                              child: Center(
-                                child: _buildSortChip(),
-                              ),
-                            )),
+                            delegate: SliverChipDelegate(
+                                Container(
+                                  child: Center(
+                                    child: _buildSortChip(),
+                                  ),
+                                ),
+                                height: 52),
                             pinned: true),
                         if (_store.refreshing && _store.iStores.isEmpty)
                           SliverToBoxAdapter(

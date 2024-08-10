@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class SortGroup extends StatefulWidget {
   final List<String> children;
@@ -21,9 +22,29 @@ class _SortGroupState extends State<SortGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      children: [for (var i in widget.children) _buildChip(i, context)],
+    return SegmentedButton(
+      style: ButtonStyle(backgroundColor:
+          WidgetStateProperty.resolveWith((Set<WidgetState> states) {
+        if (states.contains(WidgetState.disabled)) {
+          return null;
+        }
+        if (states.contains(WidgetState.selected)) {
+          return Theme.of(context).colorScheme.secondaryContainer;
+        }
+        return Theme.of(context).colorScheme.surface;
+      })),
+      segments: [
+        for (var (index, i) in widget.children.indexed)
+          ButtonSegment(value: index, label: Text(i)),
+      ],
+      selected: {index},
+      onSelectionChanged: (p0) {
+        widget.onChange(p0.first);
+        if (mounted)
+          setState(() {
+            this.index = p0.first;
+          });
+      },
     );
   }
 

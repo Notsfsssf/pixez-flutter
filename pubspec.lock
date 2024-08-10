@@ -372,10 +372,11 @@ packages:
   dynamic_color:
     dependency: "direct main"
     description:
-      name: dynamic_color
-      sha256: eae98052fa6e2826bdac3dd2e921c6ce2903be15c6b7f8b6d8a5d49b5086298d
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/dynamic_color"
+      ref: main
+      resolved-ref: "293eabfca19f13375829afad8886b3f371fb1933"
+      url: "https://github.com/hasali19/material-foundation-flutter-packages.git"
+    source: git
     version: "1.7.0"
   easy_refresh:
     dependency: "direct main"
@@ -457,6 +458,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  flex_seed_scheme:
+    dependency: "direct main"
+    description:
+      name: flex_seed_scheme
+      sha256: cc08c81879ecfd2ab840664ce4770980da0b8a319e35f51bcf763849b7f7596b
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   fluent_ui:
     dependency: "direct main"
     description:
@@ -1908,4 +1917,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.4.0 <4.0.0"
-  flutter: ">=3.19.0"
+  flutter: ">=3.22.0"

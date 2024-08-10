@@ -286,12 +286,11 @@
   "automatically_bookmark_when_downloading": "下載時自動收藏",
   "footer_loading": "加載中...",
   "successed": "加載成功",
-  "failed": "加載失敗",
-  "reply": "回覆",
   "reply_to": "回覆給",
   "show_feed_ai_badge": "顯示列表中的AI生成標記",
   "illust_detail_save_skip_confirm": "插畫作品頁保存時跳過確認",
   "secure_window": "禁用螢幕擷取",
   "open_saucenao_using_webview": "用Webview打開Saucenao",
-  "appwidget_recommend_type": "小組件推薦類型"
+  "appwidget_recommend_type": "小組件推薦類型",
+  "feed_preview_quality": "列表预览画质"
 }

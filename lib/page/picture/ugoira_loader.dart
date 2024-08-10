@@ -166,15 +166,14 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Material(
+                child: GestureDetector(
+                  onTap: () {
+                    _store.downloadAndUnzip();
+                  },
                   child: Container(
                     height: 72.0,
                     width: 72.0,
-                    child: IconButton(
-                        icon: Icon(Icons.play_arrow),
-                        onPressed: () {
-                          _store.downloadAndUnzip();
-                        }),
+                    child: Icon(Icons.play_arrow),
                   ),
                 ),
               )

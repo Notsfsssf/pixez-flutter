@@ -35,6 +35,7 @@ class UserSetting = _UserSetting with _$UserSetting;
 abstract class _UserSetting with Store {
   late SharedPreferences prefs;
   static const String ZOOM_QUALITY_KEY = "zoom_quality";
+  static const String FEED_PREVIEW_QUALITY = "feed_preview_quality";
   static const String SINGLE_FOLDER_KEY = "single_folder";
   static const String SAVE_FORMAT_KEY = "save_format";
   static const String LANGUAGE_NUM_KEY = "language_num";
@@ -110,6 +111,8 @@ abstract class _UserSetting with Store {
   bool isBangs = false;
   @observable
   int zoomQuality = 0;
+  @observable
+  int feedPreviewQuality = 0;
   @observable
   int pictureQuality = 0;
   @observable
@@ -396,6 +399,7 @@ abstract class _UserSetting with Store {
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     zoomQuality = prefs.getInt(ZOOM_QUALITY_KEY) ?? 0;
+    feedPreviewQuality = prefs.getInt(FEED_PREVIEW_QUALITY) ?? 0;
     singleFolder = prefs.getBool(SINGLE_FOLDER_KEY) ?? false;
     displayMode = prefs.getInt('display_mode');
     hIsNotAllow = prefs.getBool('h_is_not_allow') ?? false;
@@ -550,6 +554,12 @@ abstract class _UserSetting with Store {
   Future<void> change(int value) async {
     await prefs.setInt(ZOOM_QUALITY_KEY, value);
     zoomQuality = value;
+  }
+
+  @action
+  Future<void> changeFeedPreviewQuality(int value) async {
+    await prefs.setInt(FEED_PREVIEW_QUALITY, value);
+    feedPreviewQuality = value;
   }
 
   @action

@@ -361,7 +361,6 @@ class _CommentPageState extends State<CommentPage> {
                 child: Column(
                   children: [
                     Container(
-                      color: Theme.of(context).dialogBackgroundColor,
                       child: Row(
                         children: <Widget>[
                           IconButton(

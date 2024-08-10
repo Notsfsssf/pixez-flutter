@@ -286,12 +286,11 @@
   "automatically_bookmark_when_downloading": "Автоматически добавлять в закладки при загрузке",
   "footer_loading": "Загрузка...",
   "successed": "Успешно",
-  "failed": "Неудачно",
-  "reply": "Ответить",
   "reply_to": "Ответить на",
   "show_feed_ai_badge": "Показать значок ленты ИИ",
   "illust_detail_save_skip_confirm": "Пропустить подтверждение при сохранении на странице деталей",
   "secure_window": "Защищённое окно",
   "open_saucenao_using_webview": "Открыть SauceNao через webview",
-  "appwidget_recommend_type": "Рекомендуемый тип Appwidget"
+  "appwidget_recommend_type": "Рекомендуемый тип Appwidget",
+  "feed_preview_quality": "Feed preview quality"
 }

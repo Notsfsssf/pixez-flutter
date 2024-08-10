@@ -110,6 +110,7 @@ private fun updateWidget(
             .setHeader("referer", "https://app-api.pixiv.net/")
             .setHeader("User-Agent", "PixivIOSApp/5.8.0")
             .setHeader("host", Uri.parse(trueUrl).host!!)
+            .size(540, 540)
             .listener(onError = { i, j ->
                 io.flutter.Log.e("Card app widget", "url error: ${trueUrl}", j.throwable)
             })

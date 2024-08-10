@@ -26,6 +26,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
@@ -165,8 +166,8 @@ class _IllustCardState extends State<IllustCard> {
           )
         : NullHero(
             tag: tag,
-            child: PixivImage(store.illusts!.imageUrls.medium,
-                fit: BoxFit.fitWidth),
+            child:
+                PixivImage(store.illusts!.feedPreviewUrl, fit: BoxFit.fitWidth),
           );
   }
 

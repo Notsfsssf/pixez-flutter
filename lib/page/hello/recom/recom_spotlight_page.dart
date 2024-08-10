@@ -102,7 +102,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               elevation: 0.0,
               titleSpacing: 0.0,
               automaticallyImplyLeading: false,
-              backgroundColor: Theme.of(context).canvasColor,
+              // backgroundColor: Theme.of(context).canvasColor,
               title: Text(""),
             )
           ],
