@@ -81,8 +81,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 10009450
-        versionName "0.9.45 hon"
+        versionCode 10009453
+        versionName "0.9.45 kon"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {
@@ -129,7 +129,7 @@ dependencies {
     implementation("androidx.core:core-remoteviews:1.1.0")
     implementation("androidx.annotation:annotation:1.7.1")
     implementation fileTree(dir: "libs", include: ["*.aar"])
-    implementation project(":weiss")
+//    implementation project(":weiss")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("io.coil-kt:coil:2.6.0")

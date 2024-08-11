@@ -32,28 +32,28 @@ object Weiss {
     }
 
     fun start(json: String) {
-        try {
-            weiss.Weiss.start(port, json)
-        } catch (e: Throwable) {
-        }
+//        try {
+//            weiss.Weiss.start(port, json)
+//        } catch (e: Throwable) {
+//        }
     }
 
     fun stop() {
-        try {
-            weiss.Weiss.close()
-        } catch (e: Throwable) {
-        }
+//        try {
+//            weiss.Weiss.close()
+//        } catch (e: Throwable) {
+//        }
     }
 
     fun proxy() {
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
-            val proxyUrl = "127.0.0.1:$port"
-            val proxyConfig: ProxyConfig = ProxyConfig.Builder()
-                    .addProxyRule(proxyUrl)
-                    .addDirect()
-                    .build()
-            ProxyController.getInstance().setProxyOverride(proxyConfig, { command -> command?.run() }, { android.util.Log.w("d", "WebView proxy") })
-        } else {
-        }
+//        if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
+//            val proxyUrl = "127.0.0.1:$port"
+//            val proxyConfig: ProxyConfig = ProxyConfig.Builder()
+//                    .addProxyRule(proxyUrl)
+//                    .addDirect()
+//                    .build()
+//            ProxyController.getInstance().setProxyOverride(proxyConfig, { command -> command?.run() }, { android.util.Log.w("d", "WebView proxy") })
+//        } else {
+//        }
     }
 }

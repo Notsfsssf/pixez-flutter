@@ -12,7 +12,6 @@
 		4F9E83EA3732672F6515B5C3 /* Pods_TinkerExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FD82A89B2305708F75B42B /* Pods_TinkerExtension.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */; };
-		7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6A8A2427870CFF0048656E /* Weiss.xcframework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -80,7 +79,6 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7B6D6D9EB122407894F34F16 /* Pods-Runner-SsssGridManExtension.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-SsssGridManExtension.profile.xcconfig"; path = "Target Support Files/Pods-Runner-SsssGridManExtension/Pods-Runner-SsssGridManExtension.profile.xcconfig"; sourceTree = "<group>"; };
 		7C2A716C2765CF9A00B6BA48 /* DocumentPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPlugin.swift; sourceTree = "<group>"; };
-		7C6A8A2427870CFF0048656E /* Weiss.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Weiss.xcframework; sourceTree = "<group>"; };
 		7C8B5968260F680500098D5C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		7C8B596A260F680500098D5C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		7CC54C3726103351009033DF /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
@@ -131,7 +129,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */,
-				7C6A8A2527870CFF0048656E /* Weiss.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,7 +195,6 @@
 			isa = PBXGroup;
 			children = (
 				CFFFA8382C3B80B100800F00 /* TinkerExtension.entitlements */,
-				7C6A8A2427870CFF0048656E /* Weiss.xcframework */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				CFFFA8272C3B75EC00800F00 /* Tinker */,
