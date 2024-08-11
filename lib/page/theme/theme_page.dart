@@ -87,7 +87,7 @@ class _ColorPickPageState extends State<ColorPickPage> {
               onPressed: () async {
                 final TextEditingController textEditingController =
                     TextEditingController(
-                        text: pickerColor.value
+                        text: pickerColor
                             .toString()
                             .toLowerCase()
                             .replaceAll('color(0xff', '')
