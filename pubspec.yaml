@@ -35,7 +35,7 @@ dependencies:
   package_info_plus: ^8.0.0
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
-  in_app_purchase: ^3.1.7
+  in_app_purchase: ^3.2.0
   flutter_widget_from_html: ^0.15.0
   device_info_plus: ^10.1.0
   flutter_displaymode: ^0.6.0
@@ -75,7 +75,6 @@ dependencies:
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.4
-  flex_seed_scheme: ^3.1.2
 
 dev_dependencies:
   flutter_test:

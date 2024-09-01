@@ -151,11 +151,10 @@ abstract class _MuteStoreBase with Store {
     final banIllust = await banIllustIdProvider.getAllAccount();
     final banUser = await banUserIdProvider.getAllAccount();
     final banTag = await banTagProvider.getAllAccount();
-    banTags.map((e) => e.toJson()).toList();
     var entity = {
-      "banillustid": banillusts,
-      "banuserid": banUserIds,
-      "bantag": banTags
+      "banillustid": banIllust,
+      "banuserid": banUser,
+      "bantag": banTag
     };
     final exportJson = jsonEncode(entity);
     LPrinter.d("exportJson:$exportJson");

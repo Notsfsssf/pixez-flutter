@@ -19,7 +19,9 @@ mixin _$HistoryState {
   List<IllustPersist> get data => throw _privateConstructorUsedError;
   String get word => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HistoryState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $HistoryStateCopyWith<HistoryState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -43,6 +45,8 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of HistoryState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -81,6 +85,8 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
       _$HistoryStateImpl _value, $Res Function(_$HistoryStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of HistoryState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -136,7 +142,9 @@ class _$HistoryStateImpl implements _HistoryState {
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_data), word);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of HistoryState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$HistoryStateImplCopyWith<_$HistoryStateImpl> get copyWith =>
@@ -152,8 +160,11 @@ abstract class _HistoryState implements HistoryState {
   List<IllustPersist> get data;
   @override
   String get word;
+
+  /// Create a copy of HistoryState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$HistoryStateImplCopyWith<_$HistoryStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
