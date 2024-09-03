@@ -20,11 +20,11 @@ Dapat mengakses Pixiv secara langsung dari Tiongkok Daratan.
 
 # Tentang repositori ini
 
-Seperti yang Anda lihat, Flutter adalah sebuah framework yang membantu pengembang untuk mendesain UI dengan cepat.
+Seperti yang kamu lihat, Flutter adalah sebuah framework yang membantu pengembang untuk mendesain UI dengan cepat.
 
 Fitur Hot Reload-nya dapat mempersingkat waktu debug secara signifikan, membuat prosesnya menjadi WYSIWYG(Apa yang Kau Lihat Itulah yang Kau Dapatkan).
 
-Dengan menggunakan PlatformChannel, Anda dapat membuat fungsi khusus untuk platform yang berbeda.
+Dengan menggunakan PlatformChannel, Kamu dapat membuat fungsi khusus untuk platform yang berbeda.
 
 Aplikasi ini menggunakan `mobx`, `flutter_bloc` (akan ditinggalkan), `provider` untuk mengelola status, dan `custompainter` untuk memainkan ugoira.
 
