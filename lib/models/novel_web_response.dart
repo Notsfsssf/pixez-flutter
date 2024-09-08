@@ -20,7 +20,7 @@ class NovelWebResponse {
   List<dynamic>? glossaryItems;
   List<dynamic>? replaceableItemIds;
   Map<String, NovelImage>? images;
-  Map<String, NovelIllusts>? illusts;
+  Map<String, NovelIllusts?>? illusts;
   int? aiType;
   bool? isOriginal;
   NovelWebResponse({
@@ -64,7 +64,10 @@ class NovelWebResponse {
         illusts: (json['illusts'] is Map<String, dynamic>)
             ? (json['illusts'] as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(
-                    k, NovelIllusts.fromJson(e as Map<String, dynamic>)),
+                    k,
+                    (e == null || (e as Map?)?['illust'] == null)
+                        ? null
+                        : NovelIllusts.fromJson(e as Map<String, dynamic>)),
               )
             : null,
         images: (json['images'] is Map<String, dynamic>)
