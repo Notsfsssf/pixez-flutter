@@ -6,7 +6,10 @@ class PixezDefault {
   static Header header(BuildContext context,
       {IndicatorPosition position = IndicatorPosition.above,
       bool safeArea = true}) {
-    return MaterialHeader(position: position, safeArea: safeArea);
+    return MaterialHeader(
+        position: position,
+        safeArea: safeArea,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor);
   }
 
   static Footer footer(BuildContext context,

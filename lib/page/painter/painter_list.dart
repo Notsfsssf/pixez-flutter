@@ -21,6 +21,7 @@ import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/page/painter/painter_list_store.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class PainterList extends StatefulWidget {
   final FutureGet futureGet;
@@ -78,31 +79,31 @@ class _PainterListState extends State<PainterList> {
         onLoad: () => _painterListStore.next(),
         onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty
-            ? ListView.builder(
-                controller: _scrollController,
-                padding: EdgeInsets.all(0),
-                itemBuilder: (context, index) {
-                  if (index == 0 && widget.header != null) {
-                    return widget.header!;
-                  }
-
-                  if (widget.header != null) return _itemBuilder(index - 1);
-                  return _itemBuilder(index);
-                },
-                itemCount: widget.header == null
-                    ? _painterListStore.users.length
-                    : _painterListStore.users.length + 1,
+            ? CustomScrollView(
+                slivers: [
+                  if (widget.header != null)
+                    SliverToBoxAdapter(
+                      child: widget.header!,
+                    ),
+                  _buildList(),
+                ],
               )
             : Container(),
       );
     });
   }
 
-  Widget _itemBuilder(int index) {
-    final user = _painterListStore.users[index];
-    return PainterCard(
-      user: user,
-      isNovel: widget.isNovel,
+  Widget _buildList() {
+    return SliverWaterfallFlow(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final data = _painterListStore.users[index];
+        return PainterCard(
+          user: data,
+          isNovel: widget.isNovel,
+        );
+      }, childCount: _painterListStore.users.length),
+      gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 600),
     );
   }
 }

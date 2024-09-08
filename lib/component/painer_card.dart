@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -50,13 +52,8 @@ class PainterCard extends StatelessWidget {
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: Container(
-          height: (MediaQuery.of(context).size.width - 4) / 3 + 80,
-          child: CustomScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            slivers: [
-              _buildPreviewSlivers(context),
-              SliverToBoxAdapter(child: buildPadding(context))
-            ],
+          child: Column(
+            children: [_buildPreviewSlivers(context), buildPadding(context)],
           ),
         ),
       ),
@@ -64,59 +61,59 @@ class PainterCard extends StatelessWidget {
   }
 
   _buildPreviewSlivers(BuildContext context) {
-    final needBlankSliver =
-        (isNovel && user.novels.isEmpty) || (!isNovel && user.illusts.isEmpty);
-    if (needBlankSliver)
-      return SliverToBoxAdapter(
-        child: Container(
-          height: (MediaQuery.of(context).size.width) / 3,
-        ),
-      );
     return (isNovel)
-        ? SliverGrid(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              if (index >= user.novels.length) return Container();
-              final novel = user.novels[index];
-              return Stack(
-                children: [
-                  PixivImage(
-                    novel.imageUrls.squareMedium,
-                    fit: BoxFit.cover,
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        novel.title,
-                        style: Theme.of(context).textTheme.titleSmall,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  )
-                ],
-              );
-            }, childCount: user.illusts.length))
-        : SliverGrid(
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              if (index >= user.illusts.length) return Container();
-              var currentIllust = user.illusts[index];
-              if (currentIllust.hIsNotAllow()) {
-                return Container(
-                  color: Colors.white,
-                  child: Image.asset('assets/images/h.jpg'),
-                );
-              }
-              return PixivImage(
-                currentIllust.imageUrls.squareMedium,
-                fit: BoxFit.cover,
-              );
-            }, childCount: user.illusts.length));
+        ? Row(
+            children: [
+              for (var i = 0; i < 3; i++)
+                Expanded(
+                  child: i < user.novels.length
+                      ? AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Stack(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 1.0,
+                                child: PixivImage(
+                                  user.novels[i].imageUrls.squareMedium,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    user.novels[i].title,
+                                    style:
+                                        Theme.of(context).textTheme.titleSmall,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      : Container(),
+                )
+            ],
+          )
+        : Row(
+            children: [
+              for (var i = 0; i < 3; i++)
+                Expanded(
+                  child: i < user.illusts.length
+                      ? AspectRatio(
+                          aspectRatio: 1.0,
+                          child: PixivImage(
+                            user.illusts[i].imageUrls.squareMedium,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Container(),
+                )
+            ],
+          );
   }
 
   Widget buildPadding(BuildContext context) {
@@ -150,7 +147,7 @@ class PainterCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(user.user.name),
+            child: Center(child: Text(user.user.name)),
           ),
         ],
       ),

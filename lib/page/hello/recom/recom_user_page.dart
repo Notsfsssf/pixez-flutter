@@ -13,13 +13,16 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class RecomUserPage extends StatefulWidget {
   final RecomUserStore? recomUserStore;
@@ -65,16 +68,35 @@ class _RecomUserPageState extends State<RecomUserPage> {
           onRefresh: () => _recomUserStore.fetch(),
           onLoad: () => _recomUserStore.next(),
           refreshOnStart: widget.recomUserStore == null,
-          child: ListView.builder(
-              itemCount: _recomUserStore.users.length,
-              itemBuilder: (context, index) {
-                final data = _recomUserStore.users[index];
-                return PainterCard(
-                  user: data,
-                );
-              }),
+          child: _buildList(),
         ),
       );
     });
+  }
+
+  int _buildSliderValue(BuildContext context, Orientation orientation) {
+    final currentValue = (orientation == Orientation.portrait
+            ? userSetting.crossAdapterWidth
+            : userSetting.hCrossAdapterWidth)
+        .toDouble();
+    var nowAdaptWidth = max(currentValue, 50.0);
+    nowAdaptWidth = min(nowAdaptWidth, 2160);
+    return max((MediaQuery.of(context).size.width / nowAdaptWidth), 1.0)
+        .toInt();
+  }
+
+  Widget _buildList() {
+    return WaterfallFlow.builder(
+      gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 600,
+      ),
+      itemCount: _recomUserStore.users.length,
+      itemBuilder: (context, index) {
+        final data = _recomUserStore.users[index];
+        return PainterCard(
+          user: data,
+        );
+      },
+    );
   }
 }
