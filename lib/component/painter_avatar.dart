@@ -14,8 +14,10 @@
  *
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/page/user/users_page.dart';
 
 class PainterAvatar extends StatefulWidget {
@@ -50,28 +52,33 @@ class _PainterAvatarState extends State<PainterAvatar> {
             widget.onTap!();
         },
         child: widget.size == null
-            ? SizedBox(
-                height: 60,
-                width: 60,
-                child: CircleAvatar(
-                  backgroundImage:
-                      PixivProvider.url(widget.url, preUrl: widget.url),
-                  radius: 100.0,
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
+            ? CachedNetworkImage(
+                imageUrl: widget.url,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.fitHeight),
+                  ),
                 ),
+                httpHeaders: Hoster.header(url: widget.url),
               )
-            : Container(
-                height: widget.size!.height,
-                width: widget.size!.width,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: PixivProvider.url(
-                        widget.url,
-                        preUrl: widget.url,
-                      ),
-                      fit: BoxFit.cover),
+            : CachedNetworkImage(
+                imageUrl: widget.url,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: widget.size!.width,
+                  height: widget.size!.height,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.contain),
+                  ),
                 ),
+                width: widget.size!.width,
+                height: widget.size!.height,
+                httpHeaders: Hoster.header(url: widget.url),
               ));
   }
 }

@@ -292,5 +292,6 @@
   "secure_window": "Jendela aman",
   "open_saucenao_using_webview": "Buka SauceNao menggunakan WebView",
   "appwidget_recommend_type": "Jenis rekomendasi Appwidget",
-  "feed_preview_quality": "Feed preview quality"
+  "feed_preview_quality": "Feed preview quality",
+  "clean_history": "Clean history?"
 }

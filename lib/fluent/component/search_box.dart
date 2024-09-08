@@ -421,7 +421,7 @@ class _SearchBoxState extends State<StatefulWidget> {
           context: context,
           builder: (context) {
             return ContentDialog(
-              title: Text("Clean history?"),
+              title: Text(I18n.of(context).clean_history),
               actions: [
                 Button(
                   onPressed: Navigator.of(context).pop,

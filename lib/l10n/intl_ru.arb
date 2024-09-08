@@ -292,5 +292,6 @@
   "secure_window": "Защищённое окно",
   "open_saucenao_using_webview": "Открыть SauceNao через webview",
   "appwidget_recommend_type": "Рекомендуемый тип Appwidget",
-  "feed_preview_quality": "Feed preview quality"
+  "feed_preview_quality": "Feed preview quality",
+  "clean_history": "Clean history?"
 }

@@ -294,5 +294,6 @@
   "appwidget_recommend_type": "小组件推荐类型",
   "popular_male_desc": "受男性喜爱",
   "popular_female_desc": "受女性喜爱",
-  "feed_preview_quality": "列表预览画质"
+  "feed_preview_quality": "列表预览画质",
+  "clean_history": "清除历史记录?"
 }

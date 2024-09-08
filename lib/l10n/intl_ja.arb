@@ -292,5 +292,6 @@
   "secure_window": "セキュアなウインドウ",
   "open_saucenao_using_webview": "WebView を使用して SauceNao を開く",
   "appwidget_recommend_type": "アプリウィジェットで表示する種類",
-  "feed_preview_quality": "Feed preview quality"
+  "feed_preview_quality": "Feed preview quality",
+  "clean_history": "Clean history?"
 }

@@ -292,5 +292,6 @@
   "secure_window": "Secure window",
   "open_saucenao_using_webview": "Open SauceNao using webview",
   "appwidget_recommend_type": "Appwidget recommend type",
-  "feed_preview_quality": "Feed preview quality"  
+  "feed_preview_quality": "Feed preview quality",
+  "clean_history": "Clean history?"  
 }

@@ -270,7 +270,7 @@ class _SearchPageState extends State<SearchPage>
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Clean history?"),
+                            title: Text(I18n.of(context).clean_history),
                             actions: [
                               TextButton(
                                   onPressed: () {

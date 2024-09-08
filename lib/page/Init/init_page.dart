@@ -40,6 +40,7 @@ class _InitPageState extends State<InitPage> {
               backgroundColor: Colors.transparent,
               automaticallyImplyLeading: false,
               elevation: 0.0,
+              surfaceTintColor: Colors.transparent,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
