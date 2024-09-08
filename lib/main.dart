@@ -194,6 +194,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             colorScheme: lightColorScheme,
             scaffoldBackgroundColor: lightColorScheme.surface,
             cardColor: lightColorScheme.surfaceContainer,
+            dialogBackgroundColor: lightColorScheme.surfaceContainer,
             chipTheme: ChipThemeData(
               backgroundColor: lightColorScheme.surface,
             ),
