@@ -60,7 +60,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.fitHeight),
+                        image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
                 httpHeaders: Hoster.header(url: widget.url),
@@ -89,7 +89,7 @@ class _PainterAvatarState extends State<PainterAvatar> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.contain),
+                        image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
                 width: widget.size!.width,
