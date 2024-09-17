@@ -14,12 +14,9 @@
  *
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/exts.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/user/user_store.dart';

@@ -36,7 +36,7 @@ dependencies:
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
   in_app_purchase: ^3.2.0
-  flutter_widget_from_html: ^0.15.0
+  flutter_widget_from_html: ^0.15.2
   device_info_plus: ^10.1.0
   flutter_displaymode: ^0.6.0
   receive_sharing_intent: ^1.8.0
@@ -91,8 +91,12 @@ dev_dependencies:
   freezed: ^2.5.2
   webview_flutter_android: 3.16.1
 
-# dependency_overrides:
-#   chewie: ^1.8.1
+dependency_overrides:
+  flutter_inappwebview_ios:
+    git:
+      url: https://github.com/andychucs/flutter_inappwebview.git
+      ref: master
+      path: flutter_inappwebview_ios
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
