@@ -41,7 +41,7 @@ class PixivHostInterceptor implements InterceptorContract {
       return request;
     }
     Uri uri = request.url.toTureUri();
-    if (uri.host != ImageHost && uri.host != 's.pximg.net') {
+    if (uri.host != ImageHost && uri.host != ImageSHost) {
       request.headers["Host"] = uri.host;
     }
     return request.copyWith(url: uri, headers: request.headers);

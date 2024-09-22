@@ -44,6 +44,7 @@ import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
 import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/theme/theme_page.dart';
+import 'package:badges/badges.dart' as badges;
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -105,12 +106,6 @@ class _SettingPageState extends State<SettingPage> {
                   forceMaterialTransparency: true,
                   backgroundColor: Colors.transparent,
                   actions: [
-                    if (kDebugMode)
-                      IconButton(
-                          icon: Icon(Icons.code),
-                          onPressed: () {
-                            _showSavedLogDialog(context);
-                          }),
                     IconButton(
                       icon: Icon(
                         Icons.palette,
@@ -251,13 +246,6 @@ class _SettingPageState extends State<SettingPage> {
                           .pushReplacement(MaterialPageRoute(
                               builder: (context) => NovelRail())),
                     ),
-                    if (kDebugMode)
-                      ListTile(
-                        title: Text("网络诊断"),
-                        onTap: () {
-                          Leader.push(context, NetworkSettingPage());
-                        },
-                      ),
                     ListTile(
                       leading: Icon(Icons.message),
                       title: Text(I18n.of(context).about),
@@ -290,6 +278,17 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
     );
+  }
+
+  _showBoardDialog(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Board"),
+            content: Text("fawefawefaewfawfew"),
+          );
+        });
   }
 
   Future _showSavedLogDialog(BuildContext context) async {
