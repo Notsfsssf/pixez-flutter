@@ -61,6 +61,7 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     super.initState();
     initMethod();
+    fetchBoard();
   }
 
   bool hasNewVersion = false;
@@ -259,11 +260,16 @@ class _SettingPageState extends State<SettingPage> {
                         visible: hasNewVersion,
                       ),
                     ),
-                    ListTile(
-                      leading: Icon(Icons.article),
-                      title: Text(I18n.of(context).bulletin_board),
-                      onTap: () => Leader.push(context, BoardPage()),
-                    ),
+                    if (_needBoardSection)
+                      ListTile(
+                        leading: Icon(Icons.article),
+                        title: Text(I18n.of(context).bulletin_board),
+                        onTap: () => Leader.push(
+                            context,
+                            BoardPage(
+                              boardList: _boardList,
+                            )),
+                      ),
                     Observer(builder: (context) {
                       if (accountStore.now != null)
                         return ListTile(
@@ -408,10 +414,18 @@ class _SettingPageState extends State<SettingPage> {
 
   fetchBoard() async {
     try {
+      if (BoardInfo.boardDataLoaded) {
+        setState(() {
+          _boardList = BoardInfo.boardList;
+          _needBoardSection = _boardList.isNotEmpty;
+        });
+        return;
+      }
       final list = await BoardInfo.load();
       setState(() {
-        _needBoardSection = _boardList.isNotEmpty;
+        BoardInfo.boardDataLoaded = true;
         _boardList = list;
+        _needBoardSection = _boardList.isNotEmpty;
       });
     } catch (e) {}
   }

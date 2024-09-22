@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/board_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BoardPage extends StatefulWidget {
-  const BoardPage({super.key});
+  final List<BoardInfo> boardList;
+  const BoardPage({super.key, required this.boardList});
 
   @override
   State<BoardPage> createState() => _BoardPageState();
 }
 
 class _BoardPageState extends State<BoardPage> {
-  bool _needBoardSection = false;
-  List<BoardInfo> _boardList = [];
+  late List<BoardInfo> _boardList = widget.boardList;
 
   @override
   void initState() {
@@ -21,9 +23,11 @@ class _BoardPageState extends State<BoardPage> {
 
   fetchBoard() async {
     try {
+      if (_boardList.isNotEmpty) {
+        return;
+      }
       final list = await BoardInfo.load();
       setState(() {
-        _needBoardSection = _boardList.isNotEmpty;
         _boardList = list;
       });
     } catch (e) {}
@@ -43,10 +47,27 @@ class _BoardPageState extends State<BoardPage> {
         child: ListView(
           children: [
             for (final board in _boardList)
-              Column(
-                children: [
-                  Text(board.title),
-                ],
+              Container(
+                margin: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(height: 1),
+                    Text(
+                      board.title,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    SizedBox(
+                      height: 1,
+                    ),
+                    HtmlWidget(
+                      board.content,
+                      onTapUrl: (url) {
+                        return launchUrl(Uri.parse(url));
+                      },
+                    ),
+                  ],
+                ),
               )
           ],
         ),
