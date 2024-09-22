@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -28,10 +29,12 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/board_info.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/account/edit/account_edit_page.dart';
 import 'package:pixez/page/account/select/account_select_page.dart';
+import 'package:pixez/page/board/board_page.dart';
 import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/recom/recom_manga_page.dart';
 import 'package:pixez/page/hello/setting/data_export_page.dart';
@@ -236,12 +239,12 @@ class _SettingPageState extends State<SettingPage> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.library_books),
-                      title: Text('Manga'),
+                      title: Text(I18n.of(context).manga),
                       onTap: () => Leader.push(context, RecomMangaPage()),
                     ),
                     ListTile(
                       leading: Icon(Icons.book),
-                      title: Text('Novel'),
+                      title: Text(I18n.of(context).novel),
                       onTap: () => Navigator.of(context, rootNavigator: true)
                           .pushReplacement(MaterialPageRoute(
                               builder: (context) => NovelRail())),
@@ -255,6 +258,11 @@ class _SettingPageState extends State<SettingPage> {
                         child: NewVersionChip(),
                         visible: hasNewVersion,
                       ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.article),
+                      title: Text(I18n.of(context).bulletin_board),
+                      onTap: () => Leader.push(context, BoardPage()),
                     ),
                     Observer(builder: (context) {
                       if (accountStore.now != null)
@@ -278,17 +286,6 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
     );
-  }
-
-  _showBoardDialog(BuildContext context) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Board"),
-            content: Text("fawefawefaewfawfew"),
-          );
-        });
   }
 
   Future _showSavedLogDialog(BuildContext context) async {
@@ -404,5 +401,18 @@ class _SettingPageState extends State<SettingPage> {
     await glanceIllustPersistProvider.open();
     await glanceIllustPersistProvider.deleteAll();
     await glanceIllustPersistProvider.close();
+  }
+
+  bool _needBoardSection = false;
+  List<BoardInfo> _boardList = [];
+
+  fetchBoard() async {
+    try {
+      final list = await BoardInfo.load();
+      setState(() {
+        _needBoardSection = _boardList.isNotEmpty;
+        _boardList = list;
+      });
+    } catch (e) {}
   }
 }

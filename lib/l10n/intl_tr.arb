@@ -293,5 +293,7 @@
   "open_saucenao_using_webview": "Open SauceNao using webview",
   "appwidget_recommend_type": "Appwidget recommend type",
   "feed_preview_quality": "Feed preview quality",
-  "clean_history": "Clean history?" 
+  "clean_history": "Clean history?",
+  "novel": "Novel",
+  "bulletin_board": "Bulletin board" 
 }

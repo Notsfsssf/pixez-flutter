@@ -293,5 +293,7 @@
   "open_saucenao_using_webview": "用Webview打開Saucenao",
   "appwidget_recommend_type": "小組件推薦類型",
   "feed_preview_quality": "列表预览画质",
-  "clean_history": "清除歷史記錄?"
+  "clean_history": "清除歷史記錄?",
+  "novel": "小说",
+  "bulletin_board": "告示板"
 }
