@@ -18,33 +18,50 @@ import 'package:flutter/material.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/user_preview.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
+import 'package:pixez/page/picture/user_follow_button.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 
-class PainterCard extends StatelessWidget {
+class PainterCard extends StatefulWidget {
   final UserPreviews user;
   final bool isNovel;
-
   const PainterCard({Key? key, required this.user, this.isNovel = false})
       : super(key: key);
 
   @override
+  State<PainterCard> createState() => _PainterCardState();
+}
+
+class _PainterCardState extends State<PainterCard> {
+  late bool isNovel = widget.isNovel;
+  late UserPreviews _user = widget.user;
+
+  @override
+  void didUpdateWidget(covariant PainterCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    isNovel = widget.isNovel;
+    _user.user.isFollowed = widget.user.user.isFollowed;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(context, rootNavigator: true)
+      onTap: () async {
+        final result = await Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           if (isNovel) {
             return NovelUsersPage(
-              id: user.user.id,
+              id: _user.user.id,
             );
           }
           return UsersPage(
-            id: user.user.id,
-            userStore: UserStore(user.user.id, null, user.user),
+            id: _user.user.id,
+            userStore: UserStore(_user.user.id, null, _user.user),
           );
         }));
+        setState(() {});
       },
       child: Card(
         clipBehavior: Clip.antiAlias,
@@ -63,7 +80,7 @@ class PainterCard extends StatelessWidget {
             children: [
               for (var i = 0; i < 3; i++)
                 Expanded(
-                  child: i < user.novels.length
+                  child: i < _user.novels.length
                       ? AspectRatio(
                           aspectRatio: 1.0,
                           child: Stack(
@@ -71,7 +88,7 @@ class PainterCard extends StatelessWidget {
                               AspectRatio(
                                 aspectRatio: 1.0,
                                 child: PixivImage(
-                                  user.novels[i].imageUrls.squareMedium,
+                                  _user.novels[i].imageUrls.squareMedium,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -80,7 +97,7 @@ class PainterCard extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    user.novels[i].title,
+                                    _user.novels[i].title,
                                     style:
                                         Theme.of(context).textTheme.titleSmall,
                                     maxLines: 3,
@@ -99,11 +116,11 @@ class PainterCard extends StatelessWidget {
             children: [
               for (var i = 0; i < 3; i++)
                 Expanded(
-                  child: i < user.illusts.length
+                  child: i < _user.illusts.length
                       ? AspectRatio(
                           aspectRatio: 1.0,
                           child: PixivImage(
-                            user.illusts[i].imageUrls.squareMedium,
+                            _user.illusts[i].imageUrls.squareMedium,
                             fit: BoxFit.cover,
                           ),
                         )
@@ -121,21 +138,21 @@ class PainterCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Hero(
-            tag: user.user.profileImageUrls.medium + this.hashCode.toString(),
+            tag: _user.user.profileImageUrls.medium + this.hashCode.toString(),
             child: PainterAvatar(
-              url: user.user.profileImageUrls.medium,
-              id: user.user.id,
+              url: _user.user.profileImageUrls.medium,
+              id: _user.user.id,
               onTap: () {
                 Navigator.of(context, rootNavigator: true)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
                   if (isNovel) {
                     return NovelUsersPage(
-                      id: user.user.id,
+                      id: _user.user.id,
                     );
                   }
                   return UsersPage(
-                    id: user.user.id,
-                    userStore: UserStore(user.user.id, null, user.user),
+                    id: _user.user.id,
+                    userStore: UserStore(_user.user.id, null, _user.user),
                     heroTag: this.hashCode.toString(),
                   );
                 }));
@@ -144,8 +161,33 @@ class PainterCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Center(child: Text(user.user.name)),
+            child: Center(child: Text(_user.user.name)),
           ),
+          Spacer(),
+          if (_user.user.isFollowed != null)
+            UserFollowButton(
+              followed: _user.user.isFollowed!,
+              onPressed: () async {
+                try {
+                  if (_user.user.isFollowed!) {
+                    await apiClient.postUnFollowUser(_user.user.id);
+                    if (mounted) {
+                      setState(() {
+                        _user.user.isFollowed = false;
+                      });
+                    }
+                  } else {
+                    final res =
+                        await apiClient.postFollowUser(_user.user.id, 'public');
+                    if (mounted) {
+                      setState(() {
+                        _user.user.isFollowed = true;
+                      });
+                    }
+                  }
+                } catch (e) {}
+              },
+            )
         ],
       ),
     );

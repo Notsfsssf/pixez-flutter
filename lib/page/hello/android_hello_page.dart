@@ -111,14 +111,18 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             extendBody: true,
             bottomNavigationBar: wide
                 ? null
-                : AnimatedContainer(
-                    duration: const Duration(milliseconds: 400),
-                    transform: Matrix4.translationValues(
-                        0,
-                        fullScreenStore.fullscreen ? bottomNavigatorHeight! : 0,
-                        0),
-                    child: _buildNavigationBar(context),
-                  ),
+                : Observer(builder: (context) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 400),
+                      transform: Matrix4.translationValues(
+                          0,
+                          fullScreenStore.fullscreen
+                              ? bottomNavigatorHeight!
+                              : 0,
+                          0),
+                      child: _buildNavigationBar(context),
+                    );
+                  }),
           ));
     });
   }
@@ -130,9 +134,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         Positioned(
           bottom: MediaQuery.of(context).padding.bottom + 16,
           right: 16,
-          child: AnimatedToggleFullscreenFAB(
-              isFullscreen: fullScreenStore.fullscreen,
-              toggleFullscreen: toggleFullscreen),
+          child: Observer(builder: (context) {
+            return AnimatedToggleFullscreenFAB(
+                isFullscreen: fullScreenStore.fullscreen,
+                toggleFullscreen: toggleFullscreen);
+          }),
         )
       ],
     );
@@ -499,12 +505,19 @@ class _AnimatedToggleFullscreenFABState
   );
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.isFullscreen) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
+  void didUpdateWidget(covariant AnimatedToggleFullscreenFAB oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isFullscreen != widget.isFullscreen) {
+      if (widget.isFullscreen) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Visibility(
       visible: widget.isFullscreen,
       child: SlideTransition(
