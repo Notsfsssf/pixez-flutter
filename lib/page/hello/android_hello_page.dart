@@ -234,6 +234,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             bottom: 0.0,
             child: Padding(
               padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).padding.left,
                   bottom: MediaQuery.of(context).padding.bottom + 4.0),
               child: Container(
                 decoration: BoxDecoration(

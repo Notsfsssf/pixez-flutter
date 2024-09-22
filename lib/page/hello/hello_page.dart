@@ -177,6 +177,7 @@ class _HelloPageState extends State<HelloPage> {
             bottom: 0.0,
             child: Padding(
               padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).padding.left,
                   bottom: MediaQuery.of(context).padding.bottom + 4.0),
               child: Container(
                 decoration: BoxDecoration(
