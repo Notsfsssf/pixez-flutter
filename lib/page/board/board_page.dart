@@ -26,10 +26,20 @@ class _BoardPageState extends State<BoardPage> {
       if (_boardList.isNotEmpty) {
         return;
       }
+      if (BoardInfo.boardDataLoaded) {
+        setState(() {
+          _boardList = BoardInfo.boardList;
+        });
+        return;
+      }
       final list = await BoardInfo.load();
-      setState(() {
-        _boardList = list;
-      });
+      BoardInfo.boardList = list;
+      BoardInfo.boardDataLoaded = true;
+      if (mounted) {
+        setState(() {
+          _boardList = list;
+        });
+      }
     } catch (e) {}
   }
 

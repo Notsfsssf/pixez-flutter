@@ -81,8 +81,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 10009476
-        versionName "0.9.48 X"
+        versionCode 10009480
+        versionName "0.9.48 color"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {
