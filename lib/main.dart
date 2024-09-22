@@ -190,15 +190,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
           themeMode: userSetting.themeMode,
           theme: ThemeData.light().copyWith(
-            primaryColor: lightColorScheme.primary,
-            colorScheme: lightColorScheme,
-            scaffoldBackgroundColor: lightColorScheme.surface,
-            cardColor: lightColorScheme.surfaceContainer,
-            dialogBackgroundColor: lightColorScheme.surfaceContainer,
-            chipTheme: ChipThemeData(
-              backgroundColor: lightColorScheme.surface,
-            ),
-          ),
+              primaryColor: lightColorScheme.primary,
+              colorScheme: lightColorScheme,
+              scaffoldBackgroundColor: lightColorScheme.surface,
+              cardColor: lightColorScheme.surfaceContainer,
+              dialogBackgroundColor: lightColorScheme.surfaceContainer,
+              chipTheme: ChipThemeData(
+                backgroundColor: lightColorScheme.surface,
+              ),
+              canvasColor: lightColorScheme.surfaceContainer),
           darkTheme: ThemeData.dark().copyWith(
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,
