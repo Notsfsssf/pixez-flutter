@@ -181,11 +181,8 @@ class _NetworkPageState extends State<NetworkPage> {
                                   if (_textEditingController.text.isEmpty)
                                     return;
                                   if (_textEditingController.text
-                                          .contains("/") ||
-                                      _textEditingController.text
-                                          .trim()
-                                          .contains(" ")) {
-                                    //TODO
+                                      .trim()
+                                      .contains(" ")) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text("illegal"),

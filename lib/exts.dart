@@ -25,6 +25,11 @@ extension HostExts on Uri {
     } else {
       if (userSetting.pictureSource != ImageHost) {
         try {
+          if (userSetting.pictureSource!.contains('/')) {
+            final preHost = this.host;
+            return Uri.parse(
+                '${this.toString().replaceAll(preHost, userSetting.pictureSource!)}');
+          }
           return this.replace(host: userSetting.pictureSource);
         } catch (e) {}
       }
@@ -64,6 +69,11 @@ extension TimeExts on String {
     } else {
       if (userSetting.pictureSource != ImageHost) {
         try {
+          if (userSetting.pictureSource!.contains('/')) {
+            Uri preUri = Uri.parse(this);
+            final preHost = preUri.host;
+            return this.replaceAll(preHost, userSetting.pictureSource!);
+          }
           return Uri.parse(this)
               .replace(host: userSetting.pictureSource)
               .toString();

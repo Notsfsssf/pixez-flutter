@@ -164,10 +164,8 @@ class _NetworkPageState extends State<NetworkPage> {
                                   if (_textEditingController.text.isEmpty)
                                     return;
                                   if (_textEditingController.text
-                                          .contains("/") ||
-                                      _textEditingController.text
-                                          .trim()
-                                          .contains(" ")) {
+                                      .trim()
+                                      .contains(" ")) {
                                     displayInfoBar(context,
                                         builder: (context, VoidCallback) =>
                                             InfoBar(
