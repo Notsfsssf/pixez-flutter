@@ -36,7 +36,7 @@ class SauceState with _$SauceState {
 class Sauce extends _$Sauce {
   static String host = "saucenao.com";
   Dio dio = Dio(BaseOptions(
-      baseUrl: "https://45.32.0.237", headers: {HttpHeaders.hostHeader: host}));
+      baseUrl: "https://saucenao.com", headers: {HttpHeaders.hostHeader: host}));
   List<int> results = [];
   late StreamController _streamController;
   late ObservableStream observableStream;

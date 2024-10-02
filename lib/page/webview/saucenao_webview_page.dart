@@ -88,7 +88,7 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
                             if (request.url.path == "/search.php") {
                               String host = "saucenao.com";
                               Dio dio = Dio(BaseOptions(
-                                  baseUrl: "https://45.32.0.237",
+                                  baseUrl: "https://saucenao.com",
                                   headers: {HttpHeaders.hostHeader: host}));
                               if (userSetting.disableBypassSni) {
                                 dio.options.baseUrl = "https://$host";

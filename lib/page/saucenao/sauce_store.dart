@@ -42,7 +42,7 @@ class SauceStore = SauceStoreBase with _$SauceStore;
 abstract class SauceStoreBase with Store {
   static String host = "saucenao.com";
   Dio dio = Dio(BaseOptions(
-      baseUrl: "https://45.32.0.237", headers: {HttpHeaders.hostHeader: host}));
+      baseUrl: "https://saucenao.com", headers: {HttpHeaders.hostHeader: host}));
   ObservableList<int> results = ObservableList();
   late StreamController _streamController;
   late ObservableStream observableStream;
