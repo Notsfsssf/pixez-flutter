@@ -203,7 +203,7 @@
     "what_is_saf": "Kenapa?",
     "not_the_correct_link": "Tautan Pixiv tidak valid >_<",
     "start": "Mulai",
-    "clear_search_tag_history": "Clear search history",
+    "clear_search_tag_history": "Hapus riwayat pencarian",
     "link": "Tautan",
     "step": "Langkah",
     "special_shaped_screen": "Layar berlekuk",
@@ -292,9 +292,9 @@
     "secure_window": "Jendela aman",
     "open_saucenao_using_webview": "Buka SauceNao menggunakan WebView",
     "appwidget_recommend_type": "Jenis rekomendasi Appwidget",
-    "feed_preview_quality": "Feed preview quality",
-    "clean_history": "Clean history?",
+    "feed_preview_quality": "Kualitas pratinjau feed",
+    "clean_history": "Hapus Riwayat?",
     "novel": "Novel",
-    "bulletin_board": "Bulletin board"
+    "bulletin_board": "Papan buletin"
   }
   
