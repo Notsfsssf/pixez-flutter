@@ -83,7 +83,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   subtitle: Text(I18n.of(context).export_illust_history),
                   onTap: () async {
                     try {
-                      await ref.read(historyProvider.notifier).exportData();
+                      // await ref.read(historyProvider.notifier).exportData();
                     } catch (e) {
                       print(e);
                     }
@@ -96,7 +96,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   subtitle: Text(I18n.of(context).import_illust_history),
                   onTap: () async {
                     try {
-                      await ref.read(historyProvider.notifier).importData();
+                      // await ref.read(historyProvider.notifier).importData();
                     } catch (e) {
                       print(e);
                       BotToast.showText(text: e.toString());

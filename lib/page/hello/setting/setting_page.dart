@@ -107,7 +107,7 @@ class _SettingPageState extends State<SettingPage> {
                 AppBar(
                   elevation: 0.0,
                   automaticallyImplyLeading: false,
-                  forceMaterialTransparency: true,
+                  // forceMaterialTransparency: true,
                   backgroundColor: Colors.transparent,
                   actions: [
                     IconButton(

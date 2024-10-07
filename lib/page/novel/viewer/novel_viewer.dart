@@ -661,7 +661,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       final uri = await SAFPlugin.createFile(
           "${_novelStore.novel!.title.trim().toLegal()}.txt",
           "application/txt");
-      await SAFPlugin.writeUri(uri!, utf8.encode(data));
+      await SAFPlugin.writeUri(uri!, Uint8List.fromList(utf8.encode(data)));
       BotToast.showText(text: "export success");
     } else if (Platform.isIOS) {
       final path = await getApplicationDocumentsDirectory();

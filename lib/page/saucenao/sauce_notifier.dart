@@ -22,18 +22,18 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
-part 'sauce_notifier.freezed.dart';
-part 'sauce_notifier.g.dart';
+// part 'sauce_notifier.freezed.dart';
+// part 'sauce_notifier.g.dart';
 
-@freezed
-class SauceState with _$SauceState {
-  const factory SauceState({
-    required bool notStart,
-  }) = _SauceState;
-}
+// @freezed
+// class SauceState with _$SauceState {
+//   const factory SauceState({
+//     required bool notStart,
+//   }) = _SauceState;
+// }
 
 @riverpod
-class Sauce extends _$Sauce {
+class Sauce {
   static String host = "saucenao.com";
   Dio dio = Dio(BaseOptions(
       baseUrl: "https://saucenao.com", headers: {HttpHeaders.hostHeader: host}));
@@ -51,10 +51,9 @@ class Sauce extends _$Sauce {
     await _streamController.close();
   }
 
-  @override
-  SauceState build() {
-    return SauceState(notStart: true);
-  }
+  // SauceState build() {
+  //   return SauceState(notStart: true);
+  // }
 
   Future findImage(
       {BuildContext? context, String? path, bool retry = false}) async {
@@ -108,7 +107,7 @@ class Sauce extends _$Sauce {
         await pre.setBool("photo_picker_type_selected", true);
       }
     }
-    state = state.copyWith(notStart: false);
+    // state = state.copyWith(notStart: false);
     results.clear();
     final picker = ImagePicker();
     final ImagePickerPlatform imagePickerImplementation =

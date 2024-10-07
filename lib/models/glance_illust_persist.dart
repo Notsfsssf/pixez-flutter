@@ -39,7 +39,7 @@ extension GlanceIllustExt on Illusts {
         userId: user.id,
         pictureUrl: imageUrls.medium,
         originalUrl: metaSinglePage?.originalImageUrl ??
-            metaPages.firstOrNull?.imageUrls?.original,
+            metaPages.first?.imageUrls?.original,
         largeUrl: imageUrls.large,
         title: title,
         userName: user.name,

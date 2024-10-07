@@ -20,7 +20,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/saucenao/sauce_store.dart';
+// import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/soup/soup_page.dart';
@@ -38,7 +38,7 @@ class SearchSuggestionPage extends StatefulWidget {
 class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   late TextEditingController _filter;
   late SuggestionStore _suggestionStore;
-  late SauceStore _sauceStore;
+  // late SauceStore _sauceStore;
   FocusNode focusNode = FocusNode();
   final tagGroup = [];
   bool idV = false;
@@ -47,19 +47,19 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   void initState() {
     idV = widget.preword != null && int.tryParse(widget.preword!) != null;
     _suggestionStore = SuggestionStore();
-    _sauceStore = SauceStore();
-    _sauceStore.observableStream.listen((event) {
-      if (event != null && _sauceStore.results.isNotEmpty) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => PageView(
-                  children: _sauceStore.results
-                      .map((element) => IllustLightingPage(id: element))
-                      .toList(),
-                )));
-      } else {
-        BotToast.showText(text: "0 result");
-      }
-    });
+    // _sauceStore = SauceStore();
+    // _sauceStore.observableStream.listen((event) {
+    //   if (event != null && _sauceStore.results.isNotEmpty) {
+    //     Navigator.of(context).push(MaterialPageRoute(
+    //         builder: (context) => PageView(
+    //               children: _sauceStore.results
+    //                   .map((element) => IllustLightingPage(id: element))
+    //                   .toList(),
+    //             )));
+    //   } else {
+    //     BotToast.showText(text: "0 result");
+    //   }
+    // });
     var query = widget.preword ?? '';
     _filter = TextEditingController(text: query);
     var tags = query
@@ -73,7 +73,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   @override
   void dispose() {
     _filter.dispose();
-    _sauceStore.dispose();
+    // _sauceStore.dispose();
     super.dispose();
   }
 
@@ -84,7 +84,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         appBar: _buildAppBar(context),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            _sauceStore.findImage(context: context);
+            // _sauceStore.findImage(context: context);
           },
           child: Icon(Icons.add_photo_alternate),
         ),

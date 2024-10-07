@@ -7,7 +7,7 @@ import 'package:pixez/models/illust_persist.dart';
 import 'package:pixez/saf_plugin.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'history_store.g.dart';
+// part 'history_store.g.dart';
 part 'history_store.freezed.dart';
 
 @freezed
@@ -19,23 +19,23 @@ class HistoryState with _$HistoryState {
 }
 
 @riverpod
-class History extends _$History {
+class History {
   final illustPersistProvider = IllustPersistProvider();
-  @override
+  // @override
   HistoryState build() {
     return HistoryState(data: [], word: "");
   }
 
   Future<void> fetch() async {
     await illustPersistProvider.open();
-    final result = await illustPersistProvider.getAllAccount();
-    state = state.copyWith(data: result);
+    // final result = await illustPersistProvider.getAllAccount();
+    // state = state.copyWith(data: result);
   }
 
   Future<void> search(String word) async {
     await illustPersistProvider.open();
-    final result = await illustPersistProvider.getLikeIllusts(word);
-    state = state.copyWith(data: result);
+    // final result = await illustPersistProvider.getLikeIllusts(word);
+    // state = state.copyWith(data: result);
   }
 
   Future<void> insert(Illusts illust) async {

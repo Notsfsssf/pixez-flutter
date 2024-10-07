@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:fluent_ui/fluent_ui.dart' as fluentui;
+// import 'package:fluent_ui/fluent_ui.dart' as fluentui;
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart';
-import 'package:pixez/fluent/component/pixiv_image.dart' as fluentui;
+// import 'package:pixez/fluent/component/pixiv_image.dart' as fluentui;
 import 'package:pixez/component/pixiv_image.dart' as material;
 import 'package:pixez/constants.dart';
 import 'package:pixez/main.dart';
@@ -16,27 +16,27 @@ import 'package:pixez/network/api_client.dart';
 final bool _safeMode = Platform.isIOS || Constants.isGooglePlay;
 
 get _showBottomSheet {
-  if (Constants.isFluent)
-    return ({
-      required BuildContext context,
-      required WidgetBuilder builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior,
-      BoxConstraints? constraints,
-      bool? enableDrag,
-      AnimationController? transitionAnimationController,
-    }) =>
-        fluentui.showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => Padding(
-            padding: EdgeInsets.all(128),
-            child: builder(context),
-          ),
-        );
-  else
+  // if (Constants.isFluent)
+  //   return ({
+  //     required BuildContext context,
+  //     required WidgetBuilder builder,
+  //     Color? backgroundColor,
+  //     double? elevation,
+  //     ShapeBorder? shape,
+  //     Clip? clipBehavior,
+  //     BoxConstraints? constraints,
+  //     bool? enableDrag,
+  //     AnimationController? transitionAnimationController,
+  //   }) =>
+  //       fluentui.showDialog(
+  //         context: context,
+  //         barrierDismissible: true,
+  //         builder: (context) => Padding(
+  //           padding: EdgeInsets.all(128),
+  //           child: builder(context),
+  //         ),
+  //       );
+  // else
     return material.showBottomSheet;
 }
 
@@ -70,7 +70,7 @@ List<Contributor> contributors = [
         builder: (context) {
           return SafeArea(
             child: Constants.isFluent
-                ? fluentui.PixivImage(url)
+                ? material.PixivImage(url)
                 : material.PixivImage(url),
           );
         },
@@ -115,7 +115,7 @@ List<Contributor> contributors = [
           final url = recommend.illusts[Random().nextInt(10)].imageUrls.medium;
           return SafeArea(
             child: Constants.isFluent
-                ? fluentui.PixivImage(url)
+                ? material.PixivImage(url)
                 : material.PixivImage(url),
           );
         },

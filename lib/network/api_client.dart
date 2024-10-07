@@ -398,8 +398,8 @@ class ApiClient {
       DateTime? end_date,
       List<int>? bookmark_num,
       int? search_ai_type}) async {
-    final bookmark_num_min = bookmark_num?.elementAtOrNull(0);
-    final bookmark_num_max = bookmark_num?.elementAtOrNull(1);
+    final bookmark_num_min = bookmark_num?.elementAt(0);
+    final bookmark_num_max = bookmark_num?.elementAt(1);
     return httpClient.get("/v1/search/illust",
         queryParameters: notNullMap({
           "filter": Platform.isAndroid ? "for_android" : "for_ios",
