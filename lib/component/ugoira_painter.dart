@@ -38,10 +38,10 @@ class UgoiraWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _UgoiraWidgetState createState() => _UgoiraWidgetState();
+  _UgoiraMaterialState createState() => _UgoiraMaterialState();
 }
 
-class _UgoiraWidgetState extends State<UgoiraWidget> with RouteAware {
+class _UgoiraMaterialState extends State<UgoiraWidget> with RouteAware {
   Map<File, ui.Image> _map = Map();
 
   Future<ui.Image> _loadImage(File file) async {

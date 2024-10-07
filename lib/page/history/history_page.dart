@@ -81,9 +81,9 @@ class HistoryPage extends HookConsumerWidget {
                           );
                         });
                     if (result == "OK") {
-                      ref
-                          .read(historyProvider.notifier)
-                          .delete(reIllust[index].illustId);
+                      // ref
+                      //     .read(historyProvider.notifier)
+                      //     .delete(reIllust[index].illustId);
                     }
                   },
                   child: Card(
@@ -99,47 +99,48 @@ class HistoryPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataFuture = ref.watch(historyProvider);
-    final _textEditingController = useTextEditingController();
-    useEffect(() {
-      Future.delayed(Duration.zero, () async {
-        await ref.read(historyProvider.notifier).fetch();
-      });
-      return null;
-    }, []);
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-            controller: _textEditingController,
-            onChanged: (word) {
-              if (word.trim().isNotEmpty) {
-                ref.read(historyProvider.notifier).search(word.trim());
-              } else {
-                ref.read(historyProvider.notifier).fetch();
-              }
-            },
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: I18n.of(context).search_word_hint,
-            )),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              _textEditingController.clear();
-              ref.read(historyProvider.notifier).fetch();
-            },
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.delete),
-        onPressed: () {
-          _cleanAll(context, ref);
-        },
-      ),
-      body: buildBody(dataFuture.data, ref),
-    );
+    // final dataFuture = ref.watch(historyProvider);
+    // final _textEditingController = useTextEditingController();
+    // useEffect(() {
+    //   Future.delayed(Duration.zero, () async {
+    //     await ref.read(historyProvider.notifier).fetch();
+    //   });
+    //   return null;
+    // }, []);
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: TextField(
+    //         controller: _textEditingController,
+    //         onChanged: (word) {
+    //           if (word.trim().isNotEmpty) {
+    //             ref.read(historyProvider.notifier).search(word.trim());
+    //           } else {
+    //             ref.read(historyProvider.notifier).fetch();
+    //           }
+    //         },
+    //         decoration: InputDecoration(
+    //           border: InputBorder.none,
+    //           hintText: I18n.of(context).search_word_hint,
+    //         )),
+    //     actions: <Widget>[
+    //       IconButton(
+    //         icon: Icon(Icons.close),
+    //         onPressed: () {
+    //           _textEditingController.clear();
+    //           ref.read(historyProvider.notifier).fetch();
+    //         },
+    //       )
+    //     ],
+    //   ),
+    //   floatingActionButton: FloatingActionButton(
+    //     child: Icon(Icons.delete),
+    //     onPressed: () {
+    //       _cleanAll(context, ref);
+    //     },
+    //   ),
+    //   body: buildBody(dataFuture.data, ref),
+    // );
+    return Scaffold();
   }
 
   Future<void> _cleanAll(BuildContext context, WidgetRef ref) async {
@@ -165,7 +166,7 @@ class HistoryPage extends HookConsumerWidget {
           );
         });
     if (result == "OK") {
-      ref.read(historyProvider.notifier).deleteAll();
+      // ref.read(historyProvider.notifier).deleteAll();
     }
   }
 }

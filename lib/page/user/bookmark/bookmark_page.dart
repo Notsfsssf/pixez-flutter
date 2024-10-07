@@ -135,7 +135,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           if (kDebugMode)
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: IconButton.filled(
+              child: IconButton(
                 onPressed: () {
                   Leader.push(context, RiverPage());
                 },

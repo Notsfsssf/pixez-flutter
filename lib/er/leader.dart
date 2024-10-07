@@ -39,7 +39,7 @@ import 'package:url_launcher/url_launcher.dart';
 class Leader {
   static Future<void> pushUntilHome(BuildContext context) async {
     if (Constants.isFluent) {
-      FluentLeader.pushUntilHome(context);
+      // FluentLeader.pushUntilHome(context);
       return;
     }
     Navigator.of(context).pushAndRemoveUntil(
@@ -57,7 +57,7 @@ class Leader {
 
   static Future<bool> pushWithUri(BuildContext context, Uri link) async {
     if (Constants.isFluent) {
-      FluentLeader.pushWithUri(context, link);
+      // FluentLeader.pushWithUri(context, link);
       return false;
     }
     // https://www.pixiv.net/novel/series/$id
@@ -296,8 +296,8 @@ class Leader {
   static Future<dynamic> pushWithScaffold(context, Widget widget,
       {Widget? icon, Widget? title}) {
     if (Constants.isFluent) {
-      return FluentLeader.pushWithScaffold(context, widget,
-          icon: icon, title: title);
+      // return FluentLeader.pushWithScaffold(context, widget,
+      //     icon: icon, title: title);
     }
     return Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Scaffold(
@@ -313,8 +313,8 @@ class Leader {
     bool forceSkipWrap = false,
   }) {
     if (Constants.isFluent) {
-      return FluentLeader.push(context, widget,
-          icon: icon, title: title, forceSkipWrap: forceSkipWrap);
+      // return FluentLeader.push(context, widget,
+      //     icon: icon, title: title, forceSkipWrap: forceSkipWrap);
     }
     return Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Scaffold(

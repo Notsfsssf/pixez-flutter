@@ -189,8 +189,8 @@ class NovelSpansGenerator {
       LPrinter.d(key);
       String now = key.substring(flag.length, key.indexOf("]"));
       Iterable<RegExpMatch> matches = linkRegex.allMatches(now);
-      final matchLink = matches.firstOrNull;
-      if (matchLink != null) {
+      if (matches != null && matches.isNotEmpty) {
+        final matchLink = matches.first;
         final link = matchLink.group(0);
         if (link != null) {
           final uri = Uri.tryParse(link);

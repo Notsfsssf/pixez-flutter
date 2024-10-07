@@ -61,13 +61,13 @@ class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
             detail.nextUrl);
         state = result;
         refreshController.finishLoad(
-            IndicatorResult.success, detail.nextUrl == null);
+            IndicatorResult.success);
       } catch (e) {
         print(e);
         refreshController.finishLoad(IndicatorResult.fail);
       }
     } else {
-      refreshController.finishLoad(IndicatorResult.success, true);
+      refreshController.finishLoad(IndicatorResult.success);
     }
   }
 

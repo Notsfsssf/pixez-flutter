@@ -1,18 +1,3 @@
-/*
-* Copyright (c) 2023 Hunan OpenValley Digital Industry Development Co., Ltd.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 {
   "name": "entry",
   "version": "1.0.0",
@@ -21,6 +6,16 @@
   "author": "",
   "license": "",
   "dependencies": {
-  },
+    "flutter_inappwebview_ohos": "file:../har/flutter_inappwebview_ohos.har",
+    "file_selector_ohos": "file:../har/file_selector_ohos.har",
+    "image_picker_ohos": "file:../har/image_picker_ohos.har",
+    "path_provider_ohos": "file:../har/path_provider_ohos.har",
+    "shared_preferences_ohos": "file:../har/shared_preferences_ohos.har",
+    "url_launcher_ohos": "file:../har/url_launcher_ohos.har",
+    "permission_handler_ohos": "file:../har/permission_handler_ohos.har",
+    "connectivity_plus": "file:../har/connectivity_plus.har",
+    "device_info_plus": "file:../har/device_info_plus.har",
+    "package_info_plus": "file:../har/package_info_plus.har",
+    "share_plus": "file:../har/share_plus.har"
+  }
 }
-

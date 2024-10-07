@@ -359,12 +359,12 @@ class _ResultIllustListState extends State<ResultIllustList> {
               },
             );
           } else {
-            final minStr = value.elementAtOrNull(1) == null
-                ? ">${value.elementAtOrNull(0) ?? ''}"
-                : "${value.elementAtOrNull(0) ?? ''}";
-            final maxStr = value.elementAtOrNull(1) == null
+            final minStr = value.elementAt(1) == null
+                ? ">${value.elementAt(0) ?? ''}"
+                : "${value.elementAt(0) ?? ''}";
+            final maxStr = value.elementAt(1) == null
                 ? ""
-                : "〜${value.elementAtOrNull(1)}";
+                : "〜${value.elementAt(1)}";
 
             return PopupMenuItem(
               value: value,

@@ -41,7 +41,7 @@ class _DirectoryPageState extends State<DirectoryPage> {
     directoryStore = DirectoryStore();
     super.initState();
     _initMethod();
-    final dispose = reaction((_) => directoryStore.checkSuccess, (value) {
+    final dispose = reaction((_) => directoryStore.checkSuccess, (bool value) {
       if (value) Navigator.of(context).pop(directoryStore.path);
     });
     dispose();

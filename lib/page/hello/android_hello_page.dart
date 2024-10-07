@@ -36,7 +36,7 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/login/login_page.dart';
-import 'package:pixez/page/saucenao/saucenao_page.dart';
+// import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/webview/saucenao_webview_page.dart';
@@ -82,12 +82,16 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
     return LayoutBuilder(builder: (context, constraints) {
       final wide = constraints.maxWidth > constraints.maxHeight;
-      return PopScope(
-          onPopInvoked: (didPop) async {
+      return WillPopScope(
+          onWillPop: () async {
             userSetting.setAnimContainer(!userSetting.animContainer);
-            if (didPop) return;
+            if ( !userSetting.isReturnAgainToExit ||
+              _preTime != null &&
+                  DateTime.now().difference(_preTime!) <= Duration(seconds: 2)) {
+                    return true;
+                  }
             if (!userSetting.isReturnAgainToExit) {
-              return;
+              return true;
             }
             if (_preTime == null ||
                 DateTime.now().difference(_preTime!) > Duration(seconds: 2)) {
@@ -99,10 +103,8 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 content: Text(I18n.of(context).return_again_to_exit),
               ));
             }
+            return false;
           },
-          canPop: !userSetting.isReturnAgainToExit ||
-              _preTime != null &&
-                  DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
           child: Scaffold(
             body: Row(children: [
               if (wide) ..._buildRail(context),
@@ -286,50 +288,50 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       saveStore.listenBehavior(stream);
     });
     initPlatformState();
-    _intentDataStreamSubscription = ReceiveSharingIntent.instance
-        .getMediaStream()
-        .listen((List<SharedMediaFile> value) {
-      for (var i in value) {
-        if (i.type == SharedMediaType.text) {
-          _showChromeLink(i.path);
-          continue;
-        }
-        if (i.type == SharedMediaType.image) {
-          if (userSetting.useSaunceNaoWebview) {
-            Leader.push(context, SauncenaoWebview(path: i.path));
-          } else {
-            Leader.push(
-                context,
-                SauceNaoPage(
-                  path: i.path,
-                ));
-          }
-        }
-      }
-    }, onError: (err) {
-      print("getIntentDataStream error: $err");
-    });
-    ReceiveSharingIntent.instance
-        .getInitialMedia()
-        .then((List<SharedMediaFile> value) {
-      for (var i in value) {
-        if (i.type == SharedMediaType.text) {
-          _showChromeLink(i.path);
-          continue;
-        }
-        if (i.type == SharedMediaType.image) {
-          if (userSetting.useSaunceNaoWebview) {
-            Leader.push(context, SauncenaoWebview(path: i.path));
-          } else {
-            Leader.push(
-                context,
-                SauceNaoPage(
-                  path: i.path,
-                ));
-          }
-        }
-      }
-    });
+    // _intentDataStreamSubscription = ReceiveSharingIntent.instance
+    //     .getMediaStream()
+    //     .listen((List<SharedMediaFile> value) {
+    //   for (var i in value) {
+    //     if (i.type == SharedMediaType.text) {
+    //       _showChromeLink(i.path);
+    //       continue;
+    //     }
+    //     if (i.type == SharedMediaType.image) {
+    //       if (userSetting.useSaunceNaoWebview) {
+    //         Leader.push(context, SauncenaoWebview(path: i.path));
+    //       } else {
+    //         Leader.push(
+    //             context,
+    //             SauceNaoPage(
+    //               path: i.path,
+    //             ));
+    //       }
+    //     }
+    //   }
+    // }, onError: (err) {
+    //   print("getIntentDataStream error: $err");
+    // });
+    // ReceiveSharingIntent.instance
+    //     .getInitialMedia()
+    //     .then((List<SharedMediaFile> value) {
+    //   for (var i in value) {
+    //     if (i.type == SharedMediaType.text) {
+    //       _showChromeLink(i.path);
+    //       continue;
+    //     }
+    //     if (i.type == SharedMediaType.image) {
+    //       if (userSetting.useSaunceNaoWebview) {
+    //         Leader.push(context, SauncenaoWebview(path: i.path));
+    //       } else {
+    //         Leader.push(
+    //             context,
+    //             SauceNaoPage(
+    //               path: i.path,
+    //             ));
+    //       }
+    //     }
+    //   }
+    // });
     initPlatform();
   }
 

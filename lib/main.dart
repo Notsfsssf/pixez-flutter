@@ -26,7 +26,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/fluent/fluentui.dart';
+// import 'package:pixez/fluent/fluentui.dart';
 import 'package:pixez/network/onezero_client.dart';
 import 'package:pixez/page/novel/history/novel_history_store.dart';
 import 'package:pixez/page/splash/splash_page.dart';
@@ -67,7 +67,7 @@ main(List<String> args) async {
     SingleInstancePlugin.initialize();
   }
 
-  await initFluent(args);
+  // await initFluent(args);
 
   runApp(ProviderScope(
     child: MyApp(arguments: args),
@@ -133,16 +133,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Constants.isFluent
-        ? buildFluentUI(context)
+        ? _buildMaterial(context)
         : _buildMaterial(context);
   }
 
   Widget _buildMaterial(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
       statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
     ));
     final botToastBuilder = BotToastInit();
     return DynamicColorBuilder(
@@ -176,9 +176,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           home: Builder(builder: (context) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.transparent,
-                  systemNavigationBarDividerColor: Colors.transparent,
-                  statusBarColor: Colors.transparent,
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.dark,
+                      systemNavigationBarColor: Colors.transparent,
                 ),
                 child: SplashPage());
           }),
@@ -193,12 +193,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               primaryColor: lightColorScheme.primary,
               colorScheme: lightColorScheme,
               scaffoldBackgroundColor: lightColorScheme.surface,
-              cardColor: lightColorScheme.surfaceContainer,
-              dialogBackgroundColor: lightColorScheme.surfaceContainer,
+              // cardColor: lightColorScheme.surfaceContainer,
+              // dialogBackgroundColor: lightColorScheme.surfaceContainer,
               chipTheme: ChipThemeData(
                 backgroundColor: lightColorScheme.surface,
               ),
-              canvasColor: lightColorScheme.surfaceContainer),
+              // canvasColor: lightColorScheme.surfaceContainer
+              ),
           darkTheme: ThemeData.dark().copyWith(
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,

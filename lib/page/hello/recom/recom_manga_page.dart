@@ -62,7 +62,7 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
                         child: InkWell(
                             onTap: () {
                               Leader.push(
-                                  context, IllustLightingPage(id: illust.id));
+                                  context, IllustLightingPage(id: illust!.id));
                             },
                             child: PixivImage(illust!.imageUrls.medium)),
                       );
