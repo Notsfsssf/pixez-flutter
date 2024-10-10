@@ -43,12 +43,14 @@ class FixedPixEzPageHistoryItem extends PixEzPageHistoryItem {
 }
 
 class FloatPixEzPageHistoryItem extends PixEzPageHistoryItem {
-  final Widget? icon;
-  final Widget? title;
+  final Widget icon;
+  final Widget title;
+  final Widget Function(BuildContext context) page;
 
   FloatPixEzPageHistoryItem({
     required this.icon,
     required this.title,
+    required this.page,
   });
 }
 
@@ -97,33 +99,50 @@ class _PixEzNavigatorObserver extends NavigatorObserver {
     required Widget title,
     required Widget page,
   }) async {
-    _histories.add(FloatPixEzPageHistoryItem(
+    final item = FloatPixEzPageHistoryItem(
       icon: icon,
       title: title,
-    ));
+      page: (context) => page,
+    );
+    _histories.add(item);
     refresh();
     // HACK: 这里可能需要改掉
     await Future.delayed(Duration(milliseconds: 50));
     assert(navigator != null);
     return await navigator!.push(FluentPageRoute<T>(
-      builder: (context) => page,
+      builder: item.page,
     ));
   }
 
   void pushIndex(int index) {
     if (skipIndexes.contains(index)) return;
+    if (current != null && index > floatIndex) index--;
+
     _histories.add(FixedPixEzPageHistoryItem(
       index: index,
     ));
     refresh();
   }
 
-  void pop() {
+  Future<void> pop() async {
     assert(canGoBack);
 
-    if (_histories.last is FloatPixEzPageHistoryItem) navigator?.pop();
+    final isFloated = _histories.last is FloatPixEzPageHistoryItem;
+    if (isFloated) navigator?.pop();
     if (_histories.isNotEmpty) _histories.removeLast();
 
     refresh();
+
+    final canPop = navigator?.canPop() ?? true;
+    if (!(isFloated && canPop) &&
+        _histories.last is FloatPixEzPageHistoryItem) {
+      final item = _histories.last as FloatPixEzPageHistoryItem;
+      // HACK: 这里可能需要改掉
+      await Future.delayed(Duration(milliseconds: 50));
+      assert(navigator != null);
+      await navigator!.push(FluentPageRoute(
+        builder: item.page,
+      ));
+    }
   }
 }

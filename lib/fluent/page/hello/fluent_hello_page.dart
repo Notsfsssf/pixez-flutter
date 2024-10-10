@@ -115,6 +115,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   }
 
   NavigationPane _buildPane(BuildContext context) {
+    final dynamicItem = PixEzPageHistoryManager.current;
     return NavigationPane(
       // displayMode: PaneDisplayMode.top,
       // 太丑了 不加了
@@ -204,13 +205,11 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
             ),
           ],
         ),
-        if (PixEzPageHistoryManager.current != null) ...[
+        if (dynamicItem != null) ...[
           PaneItemSeparator(),
           PaneItem(
-            icon: PixEzPageHistoryManager.current?.icon ??
-                const Icon(FluentIcons.unknown),
-            title: PixEzPageHistoryManager.current?.title ??
-                Text(I18n.of(context).undefined),
+            icon: dynamicItem.icon,
+            title: dynamicItem.title,
             body: Navigator(
               observers: [PixEzPageHistoryManager.observer],
               onGenerateRoute: (settings) {
