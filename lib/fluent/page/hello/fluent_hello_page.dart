@@ -6,7 +6,7 @@ import 'package:pixez/fluent/component/pixez_global_shortkey_listener.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
-import 'package:pixez/fluent/component/search_box.dart';
+import 'package:pixez/fluent/component/search_box/pixez_search_box.dart';
 import 'package:pixez/fluent/navigation/pixez_page_history_manager.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -139,7 +139,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
       //     ),
       //   ],
       // ),
-      autoSuggestBox: SearchBox(),
+      autoSuggestBox: PixEzSearchBox(),
       selected: PixEzPageHistoryManager.currentIndex,
       onChanged: PixEzPageHistoryManager.pushIndex,
       items: [
