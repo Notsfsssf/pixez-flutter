@@ -31,6 +31,7 @@ class FluentHelloPage extends StatefulWidget {
 class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   late StreamSubscription _sub;
   late PageController _pageController;
+  PaneItemExpanderKey _expandedKey = PaneItemExpanderKey();
 
   final BookmarkPageMethodRelay relay = BookmarkPageMethodRelay();
 
@@ -41,6 +42,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
     PixEzPageHistoryManager.init(
       initIndex: userSetting.welcomePageNum,
       floatIndex: 6,
+      skipIndexes: [2],
       refresh: () => setState(() {}),
     );
 
@@ -164,9 +166,11 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
           }),
         ),
         PaneItemExpander(
+          key: _expandedKey,
           icon: const Icon(FluentIcons.bookmarks),
           title: Text(I18n.of(context).quick_view),
           body: const Text(''),
+          onTap: () => _expandedKey.currentState?.toggleOpen(),
           items: [
             PaneItem(
               icon: const Icon(FluentIcons.news),

@@ -20,12 +20,14 @@ class PixEzPageHistoryManager extends NavigatorObserver {
 
   static void init({
     required int initIndex,
+    required List<int> skipIndexes,
     required int floatIndex,
     required Function() refresh,
   }) =>
       observer = _PixEzNavigatorObserver(
         initIndex: initIndex,
         floatIndex: floatIndex,
+        skipIndexes: skipIndexes,
         refresh: refresh,
       );
 }
@@ -52,6 +54,7 @@ class FloatPixEzPageHistoryItem extends PixEzPageHistoryItem {
 
 class _PixEzNavigatorObserver extends NavigatorObserver {
   final int floatIndex;
+  final List<int> skipIndexes;
   final Function() refresh;
   final List<PixEzPageHistoryItem> _histories =
       List<PixEzPageHistoryItem>.empty(growable: true);
@@ -59,6 +62,7 @@ class _PixEzNavigatorObserver extends NavigatorObserver {
   _PixEzNavigatorObserver({
     required int initIndex,
     required this.floatIndex,
+    required this.skipIndexes,
     required this.refresh,
   }) {
     _histories.add(FixedPixEzPageHistoryItem(
@@ -107,6 +111,7 @@ class _PixEzNavigatorObserver extends NavigatorObserver {
   }
 
   void pushIndex(int index) {
+    if (skipIndexes.contains(index)) return;
     _histories.add(FixedPixEzPageHistoryItem(
       index: index,
     ));
