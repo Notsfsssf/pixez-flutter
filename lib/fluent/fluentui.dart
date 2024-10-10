@@ -80,11 +80,6 @@ Widget buildFluentUI(BuildContext context) {
 
       debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
       Window.setEffect(effect: _effect, dark: isDark);
-      final navigationPaneTheme = _effect != WindowEffect.disabled
-          ? NavigationPaneThemeData(
-              backgroundColor: Colors.transparent,
-            )
-          : null;
       final focusTheme = FocusThemeData(
         glowFactor: is10footScreen(context) ? 2.0 : 0.0,
       );
@@ -129,7 +124,12 @@ Widget buildFluentUI(BuildContext context) {
           scaffoldBackgroundColor: lightColorScheme.surface,
           cardColor: lightColorScheme.surfaceContainer,
           focusTheme: focusTheme,
-          navigationPaneTheme: navigationPaneTheme,
+          navigationPaneTheme: _effect != WindowEffect.disabled
+              ? NavigationPaneThemeData(
+                  highlightColor: lightColorScheme.primary,
+                  backgroundColor: Colors.transparent,
+                )
+              : null,
         ),
         darkTheme: FluentThemeData.dark().copyWith(
           visualDensity: VisualDensity.standard,
@@ -137,7 +137,12 @@ Widget buildFluentUI(BuildContext context) {
           scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
           cardColor: darkColorScheme.surfaceContainer,
           focusTheme: focusTheme,
-          navigationPaneTheme: navigationPaneTheme,
+          navigationPaneTheme: _effect != WindowEffect.disabled
+              ? NavigationPaneThemeData(
+                  highlightColor: darkColorScheme.primary,
+                  backgroundColor: Colors.transparent,
+                )
+              : null,
         ),
         localizationsDelegates: [
           _FluentLocalizationsDelegate(),
