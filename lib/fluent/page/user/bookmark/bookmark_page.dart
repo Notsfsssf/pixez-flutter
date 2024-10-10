@@ -48,7 +48,8 @@ class BookmarkPageMethodRelay {
   late Function sort;
 }
 
-class _BookmarkPageState extends State<BookmarkPage> {
+class _BookmarkPageState extends State<BookmarkPage>
+    with AutomaticKeepAliveClientMixin {
   late LightSource futureGet;
   String restrict = 'public';
   late ScrollController _scrollController;
@@ -79,6 +80,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (accountStore.now != null) {
       if (int.parse(accountStore.now!.userId) == widget.id) {
         return Stack(
@@ -175,4 +177,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       });
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
