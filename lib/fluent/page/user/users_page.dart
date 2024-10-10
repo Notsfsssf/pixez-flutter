@@ -59,7 +59,7 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late UserStore userStore;
   late ScrollController _scrollController;
   bool backToTopVisible = false;
@@ -101,6 +101,7 @@ class _UsersPageState extends State<UsersPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(builder: (_) {
       if (muteStore.banUserIds.isNotEmpty) {
         if (muteStore.banUserIds
@@ -598,4 +599,7 @@ class _UsersPageState extends State<UsersPage>
           );
         },
       );
+
+  @override
+  bool get wantKeepAlive => true;
 }

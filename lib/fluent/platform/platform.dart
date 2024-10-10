@@ -4,7 +4,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:pixez/fluent/platform/windows/windows.dart' as windows;
 
-
 /// 这个函数是获取数据库位置的，当返回有值的时候将数据库存到这个地方
 Future<String?> getDBPath() async {
   switch (Platform.operatingSystem) {

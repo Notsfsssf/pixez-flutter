@@ -17,21 +17,23 @@ import 'package:pixez/page/saucenao/sauce_store.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
 
-class SearchBox extends StatefulWidget {
+part 'item.dart';
+
+class PixEzSearchBox extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SearchBoxState();
+  State<StatefulWidget> createState() => _PixEzSearchBoxState();
 }
 
-class _SearchBoxState extends State<StatefulWidget> {
-  final GlobalKey<AutoSuggestBoxState<_SuggestItem>> _key =
-      GlobalKey<AutoSuggestBoxState<_SuggestItem>>();
+class _PixEzSearchBoxState extends State<StatefulWidget> {
+  final GlobalKey<AutoSuggestBoxState<_PixEzSearchBoxItem>> _key =
+      GlobalKey<AutoSuggestBoxState<_PixEzSearchBoxItem>>();
   final TextEditingController _controller = TextEditingController();
   final SuggestionStore _suggestionStore = SuggestionStore();
   final SauceStore _sauceStore = SauceStore();
   final TrendTagsStore _trendTagsStore = TrendTagsStore();
   final List<String> tagGroup = [];
   final FocusNode _focusNode = FocusNode();
-  List<AutoSuggestBoxItem<_SuggestItem>> _items = [];
+  List<AutoSuggestBoxItem<_PixEzSearchBoxItem>> _items = [];
   bool _isLoading = false;
 
   @override
@@ -74,17 +76,20 @@ class _SearchBoxState extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AutoSuggestBox<_SuggestItem>(
+    return AutoSuggestBox<_PixEzSearchBoxItem>(
       key: _key,
       items: _items,
       controller: _controller,
       focusNode: _focusNode,
       onChanged: _onAutoSuggestBoxChanged,
       onSelected: _onAutoSuggestBoxSelected,
-      placeholder: I18n.of(context).search,
-      leadingIcon: IconButton(
-        icon: const Icon(FluentIcons.image_search),
-        onPressed: _sauceStore.findImage,
+      placeholder: I18n.of(context).search_word_hint,
+      leadingIcon: Tooltip(
+        message: '以图搜源',
+        child: IconButton(
+          icon: const Icon(FluentIcons.image_search),
+          onPressed: _sauceStore.findImage,
+        ),
       ),
       trailingIcon: Row(
         mainAxisSize: MainAxisSize.min,
@@ -138,8 +143,10 @@ class _SearchBoxState extends State<StatefulWidget> {
 
       if (!mounted) return;
       _items.addAll([
-        _getCleanHistoryItem(),
-        ...tagHistoryStore.tags.map(_getItemByTagsPersist),
+        _PixEzSearchItem.cleanHistoryItem(context),
+        ...tagHistoryStore.tags.map(
+          (i) => _PixEzSearchItem.tagsPersist(context, i, _updateSuggestList),
+        ),
       ]);
       return _notifyFinished();
     } else if (text.startsWith('#')) {
@@ -152,7 +159,11 @@ class _SearchBoxState extends State<StatefulWidget> {
 
       await _trendTagsStore.fetch();
 
-      _items.addAll(_trendTagsStore.trendTags.map(_getItemByTrendTags));
+      _items.addAll(
+        _trendTagsStore.trendTags.map(
+          (i) => _PixEzSearchItem.trendTags(context, i),
+        ),
+      );
       _notifyFinished();
     } else {
       // 都不是则尝试搜索
@@ -160,9 +171,9 @@ class _SearchBoxState extends State<StatefulWidget> {
       final id = int.tryParse(text);
       if (id != null) {
         _items.addAll([
-          _getItemByIllustId(id),
-          _getItemByPainterId(id),
-          _getItemByPixivisionId(id),
+          _PixEzSearchItem.illustId(context, id),
+          _PixEzSearchItem.painterId(context, id),
+          _PixEzSearchItem.pixivisionId(context, id),
         ]);
         _notifyFinished();
       }
@@ -175,7 +186,13 @@ class _SearchBoxState extends State<StatefulWidget> {
         await _suggestionStore.fetch(text);
         final autoWords = _suggestionStore.autoWords;
         if (autoWords != null)
-          _items.addAll(autoWords.tags.map(_getItemByTags).toList());
+          _items.addAll(
+            autoWords.tags
+                .map(
+                  (i) => _PixEzSearchItem.tags(context, i),
+                )
+                .toList(),
+          );
 
         _notifyFinished();
       });
@@ -192,179 +209,13 @@ class _SearchBoxState extends State<StatefulWidget> {
     _updateSuggestList();
   }
 
-  AutoSuggestBoxItem<_SuggestItem> _buildItem({
-    required String title,
-    required _SuggestItem value,
-    String? subtitle = null,
-    Widget? leading = null,
-    Widget? trailing = null,
-    void Function()? onSelected,
-    bool reverse = false,
-  }) {
-    return AutoSuggestBoxItem<_SuggestItem>(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (leading != null)
-            Padding(
-              padding: EdgeInsets.only(right: 4.0),
-              child: leading,
-            ),
-          Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  subtitle != null && subtitle.isNotEmpty && reverse
-                      ? subtitle
-                      : title,
-                  style: reverse
-                      ? null
-                      : FluentTheme.of(context).typography.body?.copyWith(
-                            color: FluentTheme.of(context).accentColor,
-                          ),
-                ),
-                if (subtitle != null && subtitle.isNotEmpty)
-                  Padding(
-                    padding: EdgeInsets.only(left: 4.0),
-                    child: Text(
-                      reverse ? title : subtitle,
-                      style: reverse
-                          ? FluentTheme.of(context).typography.body?.copyWith(
-                                color: FluentTheme.of(context).accentColor,
-                              )
-                          : null,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (trailing != null)
-            Padding(
-              padding: EdgeInsets.only(left: 4.0),
-              child: trailing,
-            ),
-        ],
-      ),
-      label: "$title $subtitle",
-      value: value,
-      onSelected: onSelected,
-    );
-  }
-
-  Widget _buildTagImage(TrendTags tags) {
-    return PixEzButton(
-      noPadding: true,
-      child: PixivImage(
-        tags.illust.imageUrls.squareMedium,
-        fit: BoxFit.cover,
-        height: 26,
-      ),
-      onPressed: () {
-        Leader.push(
-          context,
-          IllustLightingPage(id: tags.illust.id),
-          icon: Icon(FluentIcons.picture),
-          title: Text(
-            I18n.of(context).illust_id + ': ${tags.illust.id}',
-          ),
-        );
-      },
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getCleanHistoryItem() {
-    return _buildItem(
-      leading: Icon(FluentIcons.delete),
-      title: I18n.of(context).clear_search_tag_history,
-      value: _SuggestItem(type: _SuggestItemType.cleanHistory),
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getItemByTagsPersist(TagsPersist tags) {
-    return _buildItem(
-      title: tags.name,
-      subtitle: tags.translatedName,
-      value: _SuggestItem(
-        type: _SuggestItemType.history,
-        word: tags.name,
-        translated: tags.translatedName,
-      ),
-      trailing: PixEzButton(
-        child: Icon(FluentIcons.chrome_close),
-        onPressed: () {
-          if (tags.id != null) tagHistoryStore.delete(tags.id!);
-          _updateSuggestList();
-        },
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getItemByTrendTags(TrendTags tags) {
-    return _buildItem(
-      title: "#${tags.tag}",
-      subtitle: tags.translatedName != null ? "#${tags.translatedName}" : null,
-      leading: _buildTagImage(tags),
-      value: _SuggestItem(
-        word: tags.tag,
-        translated: tags.translatedName,
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getItemByTags(Tags tags) {
-    return _buildItem(
-      title: tags.name,
-      subtitle: tags.translated_name,
-      value: _SuggestItem(
-        word: tags.name,
-        translated: tags.translated_name,
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getItemByIllustId(int id) {
-    return _buildItem(
-      reverse: true,
-      title: id.toString(),
-      subtitle: I18n.of(context).illust_id,
-      value: _SuggestItem(
-        type: _SuggestItemType.illustId,
-        id: id,
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getItemByPainterId(int id) {
-    return _buildItem(
-      reverse: true,
-      title: id.toString(),
-      subtitle: I18n.of(context).painter_id,
-      value: _SuggestItem(
-        type: _SuggestItemType.painterId,
-        id: id,
-      ),
-    );
-  }
-
-  AutoSuggestBoxItem<_SuggestItem> _getItemByPixivisionId(int id) {
-    return _buildItem(
-      reverse: true,
-      title: id.toString(),
-      subtitle: 'Pixivision Id',
-      value: _SuggestItem(
-        type: _SuggestItemType.pixivisionId,
-        id: id,
-      ),
-    );
-  }
-
-  void _onAutoSuggestBoxSelected(AutoSuggestBoxItem<_SuggestItem> value) {
+  void _onAutoSuggestBoxSelected(
+      AutoSuggestBoxItem<_PixEzSearchBoxItem> value) {
     final item = value.value;
     if (item == null) return;
     switch (item.type) {
-      case _SuggestItemType.normal:
-      case _SuggestItemType.tag:
+      case _PixEzSearchBoxItemType.normal:
+      case _PixEzSearchBoxItemType.tag:
         if (tagGroup.length > 1) {
           tagGroup.last = item.word!;
           final text = tagGroup.join(" ");
@@ -379,10 +230,10 @@ class _SearchBoxState extends State<StatefulWidget> {
     }
     FocusScope.of(context).unfocus();
     switch (item.type) {
-      case _SuggestItemType.normal:
-      case _SuggestItemType.history:
-      case _SuggestItemType.tag:
-        final prefix = item.type == _SuggestItemType.tag ? '#' : '';
+      case _PixEzSearchBoxItemType.normal:
+      case _PixEzSearchBoxItemType.history:
+      case _PixEzSearchBoxItemType.tag:
+        final prefix = item.type == _PixEzSearchBoxItemType.tag ? '#' : '';
         Leader.push(
           context,
           ResultPage(
@@ -392,21 +243,21 @@ class _SearchBoxState extends State<StatefulWidget> {
           icon: Icon(FluentIcons.search),
           title: Text('${I18n.of(context).search}: ${prefix}${item.word}'),
         );
-      case _SuggestItemType.illustId:
+      case _PixEzSearchBoxItemType.illustId:
         Leader.push(
           context,
           IllustLightingPage(id: item.id!),
           icon: const Icon(FluentIcons.image_pixel),
           title: Text('${I18n.of(context).illust_id}: ${item.id}'),
         );
-      case _SuggestItemType.painterId:
+      case _PixEzSearchBoxItemType.painterId:
         Leader.push(
           context,
           UsersPage(id: item.id!),
           icon: const Icon(FluentIcons.image_pixel),
           title: Text('${I18n.of(context).painter_id}: ${item.id}'),
         );
-      case _SuggestItemType.pixivisionId:
+      case _PixEzSearchBoxItemType.pixivisionId:
         Leader.push(
           context,
           SoupPage(
@@ -416,7 +267,7 @@ class _SearchBoxState extends State<StatefulWidget> {
           icon: const Icon(FluentIcons.image_pixel),
           title: Text('Pixivision Id: ${item.id}'),
         );
-      case _SuggestItemType.cleanHistory:
+      case _PixEzSearchBoxItemType.cleanHistory:
         showDialog(
           context: context,
           builder: (context) {
@@ -443,28 +294,4 @@ class _SearchBoxState extends State<StatefulWidget> {
       default:
     }
   }
-}
-
-enum _SuggestItemType {
-  normal,
-  history,
-  tag,
-  illustId,
-  painterId,
-  pixivisionId,
-  cleanHistory,
-}
-
-class _SuggestItem {
-  final _SuggestItemType type;
-  final String? word;
-  final String? translated;
-  final int? id;
-
-  const _SuggestItem({
-    this.type = _SuggestItemType.normal,
-    this.word = null,
-    this.translated = null,
-    this.id = null,
-  });
 }

@@ -200,17 +200,17 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         ListTile(
           title: Text(I18n.of(context).welcome_page),
           trailing: Observer(builder: (_) {
-            final tablist = [
-              I18n.of(context).home,
-              I18n.of(context).rank,
-              I18n.of(context).quick_view,
-              I18n.of(context).setting,
-            ];
+            final tablist = {
+              0: I18n.of(context).home,
+              1: I18n.of(context).rank,
+              3: I18n.of(context).news,
+              4: I18n.of(context).bookmark,
+              5: I18n.of(context).followed,
+              6: I18n.of(context).setting,
+            };
             return ComboBox<int>(
               value: userSetting.welcomePageNum,
-              items: tablist
-                  .asMap()
-                  .entries
+              items: tablist.entries
                   .map((i) => ComboBoxItem(
                         child: Text(i.value),
                         value: i.key,
