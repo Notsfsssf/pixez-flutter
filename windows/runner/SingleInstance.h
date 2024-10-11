@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+
 #include <flutter/flutter_engine.h>
 #include <flutter/standard_method_codec.h>
 #include <flutter/event_channel.h>

@@ -5,6 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/fluent/navigation/pixez_page_history_manager.dart';
 import 'package:pixez/fluent/page/hello/fluent_hello_page.dart';
 import 'package:pixez/fluent/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
@@ -144,9 +145,12 @@ class FluentLeader {
     } else if (link.host.contains("novel")) {
       try {
         int id = int.parse(link.pathSegments.last);
-        Navigator.of(context).push(PixEzPageRoute(builder: (context) {
-          return NovelViewerPage(id: id);
-        }));
+        FluentLeader.push(
+          context,
+          NovelViewerPage(id: id),
+          title: Text(I18n.of(context).novel + ': ${id}'),
+          icon: Icon(FluentIcons.book_answers),
+        );
         return;
       } catch (e) {
         LPrinter.d(e);
@@ -210,12 +214,15 @@ class FluentLeader {
               icon: Icon(FluentIcons.account_browser),
             );
           else
-            Navigator.of(context).push(PixEzPageRoute(builder: (context) {
-              return NovelViewerPage(
+            FluentLeader.push(
+              context,
+              NovelViewerPage(
                 id: int.parse(id!),
                 novelStore: null,
-              );
-            }));
+              ),
+              title: Text(I18n.of(context).novel + ': ${id}'),
+              icon: Icon(FluentIcons.book_answers),
+            );
           return;
         } catch (e) {}
       }
@@ -284,21 +291,16 @@ class FluentLeader {
                 padding: EdgeInsets.all(0.0),
               );
 
-    var state = context.findAncestorStateOfType<FluentHelloPageState>();
-    if (state == null) state = FluentHelloPageState.state;
-    assert(state != null);
     if (icon == null || title == null) {
       debugPrint('icon: $icon');
       debugPrint('title: $title');
       debugPrintStack();
     }
-    return state!.push(
-      context,
-      PixEzPageRoute(
-        builder: (_) => _final,
-        icon: icon ?? const Icon(FluentIcons.unknown),
-        title: title ?? Text(I18n.of(context).undefined),
-      ),
+
+    return PixEzPageHistoryManager.pushRoute(
+      page: _final,
+      icon: icon ?? const Icon(FluentIcons.unknown),
+      title: title ?? Text(I18n.of(context).undefined),
     );
   }
 }

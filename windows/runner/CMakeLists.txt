@@ -25,7 +25,7 @@ add_executable(${BINARY_NAME} WIN32
 # that need different build settings.
 apply_standard_settings(${BINARY_NAME})
 target_compile_features(${BINARY_NAME} PUBLIC cxx_std_20)
-target_compile_options(${BINARY_NAME} PRIVATE /await:strict)
+target_compile_options(${BINARY_NAME} PRIVATE /await)
 
 # Add preprocessor definitions for the build version.
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION=\"${FLUTTER_VERSION}\"")

@@ -67,14 +67,14 @@ dependencies:
       url: https://github.com/hasali19/material-foundation-flutter-packages.git
       path: packages/dynamic_color
       ref: main
-  # Design Style
-  fluent_ui: ^4.8.7
-  # Desktop Support
-  flutter_acrylic: ^1.1.3
-  window_manager: ^0.3.7
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.4
+  # Design Style
+  fluent_ui: ^4.9.1
+  # Desktop Support
+  flutter_acrylic: ^1.1.4
+  window_manager: ^0.4.2
 
 dev_dependencies:
   flutter_test:
