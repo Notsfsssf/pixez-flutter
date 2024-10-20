@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -90,7 +91,11 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
+    final brightness =
+        SchedulerBinding.instance.platformDispatcher.platformBrightness;
     return Scaffold(
+      backgroundColor:
+          brightness == Brightness.dark ? Colors.black : Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
