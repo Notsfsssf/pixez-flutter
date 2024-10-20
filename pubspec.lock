@@ -520,18 +520,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_inappwebview
-      sha256: "3e9a443a18ecef966fb930c3a76ca5ab6a7aafc0c7b5e14a4a850cf107b09959"
+      sha256: "80092d13d3e29b6227e25b67973c67c7210bd5e35c4b747ca908e31eb71a46d5"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.5"
   flutter_inappwebview_android:
     dependency: transitive
     description:
       name: flutter_inappwebview_android
-      sha256: d247f6ed417f1f8c364612fa05a2ecba7f775c8d0c044c1d3b9ee33a6515c421
+      sha256: "62557c15a5c2db5d195cb3892aab74fcaec266d7b86d59a6f0027abd672cddba"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.13"
+    version: "1.1.3"
   flutter_inappwebview_internal_annotations:
     dependency: transitive
     description:
@@ -543,36 +543,43 @@ packages:
   flutter_inappwebview_ios:
     dependency: "direct overridden"
     description:
-      path: flutter_inappwebview_ios
-      ref: master
-      resolved-ref: "27fd339172572fe1b16cdcdae235b2a88f432e3c"
-      url: "https://github.com/andychucs/flutter_inappwebview.git"
-    source: git
-    version: "1.0.14"
+      name: flutter_inappwebview_ios
+      sha256: "9b2a9ded585581898692a21e0c501dccab7c6d48b936b9fc1bbdd6d9fe9df3e6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0+1"
   flutter_inappwebview_macos:
     dependency: transitive
     description:
       name: flutter_inappwebview_macos
-      sha256: b55b9e506c549ce88e26580351d2c71d54f4825901666bd6cfa4be9415bb2636
+      sha256: c1fbb86af1a3738e3541364d7d1866315ffb0468a1a77e34198c9be571287da1
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.11"
+    version: "1.1.2"
   flutter_inappwebview_platform_interface:
     dependency: transitive
     description:
       name: flutter_inappwebview_platform_interface
-      sha256: "545fd4c25a07d2775f7d5af05a979b2cac4fbf79393b0a7f5d33ba39ba4f6187"
+      sha256: cf5323e194096b6ede7a1ca808c3e0a078e4b33cc3f6338977d75b4024ba2500
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.10"
+    version: "1.3.0+1"
   flutter_inappwebview_web:
     dependency: transitive
     description:
       name: flutter_inappwebview_web
-      sha256: d8c680abfb6fec71609a700199635d38a744df0febd5544c5a020bd73de8ee07
+      sha256: "55f89c83b0a0d3b7893306b3bb545ba4770a4df018204917148ebb42dc14a598"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "1.1.2"
+  flutter_inappwebview_windows:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview_windows
+      sha256: "8b4d3a46078a2cdc636c4a3d10d10f2a16882f6be607962dbfff8874d1642055"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -1931,4 +1938,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.5.0 <4.0.0"
-  flutter: ">=3.22.0"
+  flutter: ">=3.24.0"
