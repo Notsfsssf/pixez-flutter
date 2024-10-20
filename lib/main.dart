@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -165,9 +166,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             brightness: Brightness.dark,
           );
         }
+        final brightness =
+            SchedulerBinding.instance.platformDispatcher.platformBrightness;
         if (userSetting.themeInitState != 1) {
-          return Container(
-            child: Center(child: CircularProgressIndicator()),
+          return MaterialApp(
+            home: Container(
+              color:
+                  brightness == Brightness.dark ? Colors.black : Colors.white,
+              child: Center(child: CircularProgressIndicator()),
+            ),
           );
         }
         return MaterialApp(
