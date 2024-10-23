@@ -292,8 +292,8 @@
   "secure_window": "Jendela aman",
   "open_saucenao_using_webview": "Buka SauceNao menggunakan WebView",
   "appwidget_recommend_type": "Jenis rekomendasi Appwidget",
-  "feed_preview_quality": "Feed preview quality",
-  "clean_history": "Clean history?",
+  "feed_preview_quality": "Kualitas pratinjau feed",
+  "clean_history": "Hapus histori?",
   "novel": "Novel",
-  "bulletin_board": "Bulletin board"
+  "bulletin_board": "Papan buletin"
 }
