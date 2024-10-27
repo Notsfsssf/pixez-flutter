@@ -14,7 +14,7 @@
   "ban": "ミュート",
   "birthday": "誕生日",
   "block_user": "このユーザーをミュート",
-  "bookmark": "コレクション",
+  "bookmark": "ブックマーク",
   "bookmarked": "ブックマーク済",
   "cancel": "キャンセル",
   "canceled": "キャンセル済",
@@ -94,14 +94,14 @@
     }
   },
   "muti_choice_save": "イラストを選択して保存",
-  "my": "私の",
+  "my": "自分",
   "need_to_restart_app": "アプリの再起動が必要です",
   "news": "タイムライン",
   "new_password": "新しいパスワード",
   "new_version_update_information": "アップデート履歴",
   "nickname": "ニックネーム",
   "nickname_can_be_change_anytime": "ニックネームはいつでも変更できます",
-  "no_h": "えっちなのはいけないと思います！",
+  "no_h": "エッチなことはダメ！",
   "no_more_data": "これ以上の投稿はありません",
   "not_bookmarked": "ブックマークしていません",
   "ok": "はい",
@@ -160,7 +160,7 @@
     }
   },
   "shielding_settings": "ミュート設定",
-  "skimige_message": "素晴らしい README を書いてくれました！",
+  "skimige_message": "そのクソマニュアルを読んでください！",
   "skin": "テーマ",
   "skip": "スキップ",
   "source": "原寸大",
@@ -292,8 +292,8 @@
   "secure_window": "セキュアなウインドウ",
   "open_saucenao_using_webview": "WebView を使用して SauceNao を開く",
   "appwidget_recommend_type": "アプリウィジェットで表示する種類",
-  "feed_preview_quality": "Feed preview quality",
-  "clean_history": "Clean history?",
-  "novel": "Novel",
-  "bulletin_board": "Bulletin board"
+  "feed_preview_quality": "フィードのプレビュー品質",
+  "clean_history": "履歴をクリアしますか？",
+  "novel": "小説",
+  "bulletin_board": "掲示板"
 }
