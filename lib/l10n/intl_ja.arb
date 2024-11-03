@@ -295,5 +295,7 @@
   "feed_preview_quality": "フィードのプレビュー品質",
   "clean_history": "履歴をクリアしますか？",
   "novel": "小説",
-  "bulletin_board": "掲示板"
+  "bulletin_board": "掲示板",
+  "hide": "Hide",
+  "reveal": "Reveal"
 }

@@ -138,7 +138,7 @@ create table $tableAccount (
         .delete(tableAccount, where: '$columnId = ?', whereArgs: [id]);
   }
 
-    Future<int> deleteByUserId(String userId) async {
+  Future<int> deleteByUserId(String userId) async {
     return await db
         .delete(tableAccount, where: '$columnUserId = ?', whereArgs: [userId]);
   }
@@ -200,6 +200,17 @@ class AccountPersist {
       _$AccountPersistFromJson(json);
 
   Map<String, dynamic> toJson() => _$AccountPersistToJson(this);
+}
+
+extension AccountPersistEx on AccountPersist {
+  String hiddenEmail() {
+    final splits = mailAddress.split('@');
+    var preText = '';
+    for (var i = 0; i < splits[0].length; i++) {
+      preText += '*';
+    }
+    return '${preText}@${splits[1]}';
+  }
 }
 
 @JsonSerializable()

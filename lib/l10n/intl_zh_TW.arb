@@ -295,5 +295,7 @@
   "feed_preview_quality": "動態清單預覽圖像品質",
   "clean_history": "是否清除歷史記錄?",
   "novel": "小說",
-  "bulletin_board": "佈告欄"
+  "bulletin_board": "佈告欄",
+  "hide": "隐藏",
+  "reveal": "揭露"
 }

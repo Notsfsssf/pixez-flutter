@@ -295,5 +295,7 @@
   "feed_preview_quality": "Feed preview quality",
   "clean_history": "Clean history?",
   "novel": "Novel",
-  "bulletin_board": "Bulletin board"  
+  "bulletin_board": "Bulletin board",
+  "hide": "Hide",
+  "reveal": "Reveal"  
 }

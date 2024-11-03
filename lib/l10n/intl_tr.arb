@@ -295,5 +295,7 @@
   "feed_preview_quality": "Akış önizleme kalitesi",
   "clean_history": "Geçmiş temizlensin mi?",
   "novel": "Novel",
-  "bulletin_board": "Duyuru panosu" 
+  "bulletin_board": "Duyuru panosu",
+  "hide": "Hide",
+  "reveal": "Reveal" 
 }

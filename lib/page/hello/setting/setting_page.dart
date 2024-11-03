@@ -29,6 +29,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/account.dart';
 import 'package:pixez/models/board_info.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/about/about_page.dart';
@@ -65,6 +66,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   bool hasNewVersion = false;
+  bool hideEmail = true;
 
   initMethod() async {
     if (Constants.isGooglePlay || Platform.isIOS) return;
@@ -160,11 +162,43 @@ class _SettingPageState extends State<SettingPage> {
                                                   .textTheme
                                                   .titleMedium),
                                         ),
-                                        Text(
-                                          accountStore.now!.mailAddress,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              hideEmail
+                                                  ? accountStore.now!
+                                                      .hiddenEmail()
+                                                  : accountStore
+                                                      .now!.mailAddress,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
+                                            ),
+                                            SizedBox(
+                                              width: 6,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  hideEmail = !hideEmail;
+                                                });
+                                              },
+                                              child: Text(
+                                                  hideEmail
+                                                      ? I18n.of(context).reveal
+                                                      : I18n.of(context).hide,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary)),
+                                            )
+                                          ],
                                         )
                                       ],
                                     ),

@@ -295,6 +295,8 @@
     "feed_preview_quality": "Kualitas pratinjau feed",
     "clean_history": "Hapus Riwayat?",
     "novel": "Novel",
-    "bulletin_board": "Papan buletin"
+    "bulletin_board": "Papan buletin",
+    "hide": "Hide",
+    "reveal": "Reveal"
   }
   
