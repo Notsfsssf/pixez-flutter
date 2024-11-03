@@ -3,5 +3,10 @@
         "title": "公告板",
         "content": "这是一个公告板,用来发布一些重要的更新信息",
         "startDate": "1726982019000"
+    },
+    {
+        "title": "Discord",
+        "content": "加入<a href='https://discord.gg/sBDYw5Sq'>Discord</a>",
+        "startDate": "1730623304801"
     }
 ]
