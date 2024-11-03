@@ -162,44 +162,47 @@ class _SettingPageState extends State<SettingPage> {
                                                   .textTheme
                                                   .titleMedium),
                                         ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              hideEmail
-                                                  ? accountStore.now!
-                                                      .hiddenEmail()
-                                                  : accountStore
-                                                      .now!.mailAddress,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
-                                            ),
-                                            SizedBox(
-                                              width: 6,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  hideEmail = !hideEmail;
-                                                });
-                                              },
-                                              child: Text(
-                                                  hideEmail
-                                                      ? I18n.of(context).reveal
-                                                      : I18n.of(context).hide,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .primary)),
-                                            )
-                                          ],
-                                        )
+                                        if (accountStore
+                                            .now!.mailAddress.isNotEmpty)
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                hideEmail
+                                                    ? accountStore.now!
+                                                        .hiddenEmail()
+                                                    : accountStore
+                                                        .now!.mailAddress,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                              SizedBox(
+                                                width: 6,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    hideEmail = !hideEmail;
+                                                  });
+                                                },
+                                                child: Text(
+                                                    hideEmail
+                                                        ? I18n.of(context)
+                                                            .reveal
+                                                        : I18n.of(context).hide,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary)),
+                                              )
+                                            ],
+                                          )
                                       ],
                                     ),
                                   )

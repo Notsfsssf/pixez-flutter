@@ -59,7 +59,8 @@ class _PainterListState extends State<PainterList> {
       _painterListStore.source = widget.futureGet;
       _easyRefreshController.resetFooter();
       _painterListStore.fetch();
-      if (_painterListStore.users.isNotEmpty) _scrollController.jumpTo(0.0);
+      if (_painterListStore.users.isNotEmpty && _scrollController.hasClients)
+        _scrollController.jumpTo(0.0);
     }
   }
 
@@ -80,6 +81,7 @@ class _PainterListState extends State<PainterList> {
         onRefresh: () => _painterListStore.fetch(),
         child: _painterListStore.users.isNotEmpty
             ? CustomScrollView(
+                controller: _scrollController,
                 slivers: [
                   if (widget.header != null)
                     SliverToBoxAdapter(

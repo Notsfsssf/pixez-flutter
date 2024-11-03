@@ -42,7 +42,7 @@ class _PainterCardState extends State<PainterCard> {
   void didUpdateWidget(covariant PainterCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     isNovel = widget.isNovel;
-    _user.user.isFollowed = widget.user.user.isFollowed;
+    _user = widget.user;
   }
 
   @override
