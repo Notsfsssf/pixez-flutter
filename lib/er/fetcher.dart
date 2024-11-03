@@ -281,18 +281,28 @@ entryPoint(SendPort sendPort) {
             var savePath = taskBean.savePath! +
                 Platform.pathSeparator +
                 taskBean.fileName!;
-            String trueUrl = taskBean.byPass == true
-                ? taskBean.url!
-                : (Uri.parse(taskBean.url!).replace(
-                        host: inSource == ImageHost || inSource == ImageSHost
-                            ? inHost
-                            : inSource))
-                    .toString();
+            String trueUrl = '';
+            final isContainPathSource = inSource.contains('/');
+            if (isContainPathSource) {
+              trueUrl = 'https://${inHost}${Uri.parse(taskBean.url!).path}';
+            } else {
+              trueUrl = taskBean.byPass == true
+                  ? taskBean.url!
+                  : (Uri.parse(taskBean.url!).replace(
+                          host: inSource == ImageHost || inSource == ImageSHost
+                              ? inHost
+                              : inSource))
+                      .toString();
+            }
             LPrinter.d(
                 "append ======= host:${inHost} source:${inSource} bypass:${inBypass} ${trueUrl}");
-            isolateDio.options.headers['Host'] = taskBean.source == ImageHost
-                ? Uri.parse(taskBean.url!).host
-                : taskBean.source;
+            if (!isContainPathSource) {
+              isolateDio.options.headers['Host'] = taskBean.source == ImageHost
+                  ? Uri.parse(taskBean.url!).host
+                  : taskBean.source;
+            } else {
+              isolateDio.options.headers['Host'] = inHost.split('/').first;
+            }
             isolateDio.download(trueUrl, savePath,
                 onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(
@@ -303,8 +313,6 @@ entryPoint(SendPort sendPort) {
               sendPort.send(
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
             }).catchError((e) {
-              LPrinter.d("fetcher=======");
-              LPrinter.d(e);
               try {
                 splashStore.maybeFetch();
                 sendPort.send(
