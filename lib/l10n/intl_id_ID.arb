@@ -297,5 +297,7 @@
   "novel": "Novel",
   "bulletin_board": "Papan buletin",
   "hide": "Sembunyikan",
-  "reveal": "Perlihatkan"
+  "reveal": "Perlihatkan",
+  "illust_page": "Illust page",
+  "novel_page": "Novel page"
 }

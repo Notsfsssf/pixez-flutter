@@ -288,5 +288,7 @@
   "novel": "Novel",
   "bulletin_board": "Bulletin board",
   "hide": "Hide",
-  "reveal": "Reveal"
+  "reveal": "Reveal",
+  "illust_page": "Illust page",
+  "novel_page": "Novel page"
 }

@@ -420,7 +420,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
           ),
           PopupMenuItem<int>(
             value: 4,
-            child: Text('illust page'),
+            child: Text(I18n.of(context).illust_page),
           ),
         ];
       },

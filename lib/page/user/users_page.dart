@@ -565,7 +565,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           ),
           PopupMenuItem<int>(
             value: 4,
-            child: Text('Novel page'),
+            child: Text(I18n.of(context).novel_page),
           ),
         ];
       },
