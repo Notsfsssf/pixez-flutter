@@ -532,6 +532,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   Future _showMessage(BuildContext context) {
     return showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
         builder: (context) {

@@ -37,6 +37,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/follow/follow_list.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/picture/user_follow_button.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
@@ -533,6 +534,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                       widget.id.toString(), userStore.userDetail!.user.name));
               break;
             }
+          case 4:
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (BuildContext context) {
+              return NovelUsersPage(
+                id: widget.id,
+              );
+            }));
           default:
         }
       },
@@ -554,6 +562,10 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           PopupMenuItem<int>(
             value: 3,
             child: Text(I18n.of(context).report),
+          ),
+          PopupMenuItem<int>(
+            value: 4,
+            child: Text('Novel page'),
           ),
         ];
       },

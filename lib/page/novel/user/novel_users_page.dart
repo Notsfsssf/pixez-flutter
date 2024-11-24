@@ -284,10 +284,11 @@ class _NovelUsersPageState extends State<NovelUsersPage>
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni) {
         dio.httpClientAdapter = IOHttpClientAdapter()
-        ..createHttpClient = () {
-          return HttpClient()
-            ..badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;};
+          ..createHttpClient = () {
+            return HttpClient()
+              ..badCertificateCallback =
+                  (X509Certificate cert, String host, int port) => true;
+          };
       }
       await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
       File file = File(tempFile);
@@ -389,6 +390,13 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                       widget.id.toString(), userStore.userDetail!.user.name));
               break;
             }
+          case 4:
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (BuildContext context) {
+              return UsersPage(
+                id: widget.id,
+              );
+            }));
           default:
         }
       },
@@ -409,6 +417,10 @@ class _NovelUsersPageState extends State<NovelUsersPage>
           PopupMenuItem<int>(
             value: 3,
             child: Text(I18n.of(context).report),
+          ),
+          PopupMenuItem<int>(
+            value: 4,
+            child: Text('illust page'),
           ),
         ];
       },
