@@ -62,6 +62,17 @@ create table $tableBanIllustId (
     return todo;
   }
 
+  Future<List<BanIllustIdPersist>> insertAll(
+      List<BanIllustIdPersist> todos) async {
+    await db.transaction((txn) async {
+      for (var todo in todos) {
+        todo.id = await txn.insert(tableBanIllustId, todo.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+    });
+    return todos;
+  }
+
   Future<BanIllustIdPersist?> getAccount(int id) async {
     List<Map<String, dynamic>> maps = await db.query(tableBanIllustId,
         columns: [columnId, columnIllustId],

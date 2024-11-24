@@ -15,6 +15,7 @@
  */
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -23,6 +24,7 @@ import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
 import 'package:pixez/models/comment_response.dart';
+import 'package:pixez/saf_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'mute_store.g.dart';
@@ -157,6 +159,42 @@ abstract class _MuteStoreBase with Store {
       "bantag": banTag
     };
     final exportJson = jsonEncode(entity);
+    final uri = await SAFPlugin.createFile(
+        "pixez_mute_${DateTime.now().toIso8601String()}.json",
+        "application/json");
     LPrinter.d("exportJson:$exportJson");
+    if (uri != null) {
+      await SAFPlugin.writeUri(
+          uri, Uint8List.fromList(utf8.encode(exportJson)));
+    }
+  }
+
+  importFile() async {
+    final uri = await SAFPlugin.openFile();
+    if (uri != null) {
+      final data = utf8.decode(uri);
+      final entity = jsonDecode(data);
+      final banIllust = entity["banillustid"];
+      final banUser = entity["banuserid"];
+      final banTag = entity["bantag"];
+      await banIllustIdProvider.open();
+      await banUserIdProvider.open();
+      await banTagProvider.open();
+      if (banIllust is List) {
+        await banIllustIdProvider.insertAll(
+            banIllust.map((e) => BanIllustIdPersist.fromJson(e)).toList());
+      }
+      if (banUser is List) {
+        await banUserIdProvider.insertAll(
+            banUser.map((e) => BanUserIdPersist.fromJson(e)).toList());
+      }
+      if (banTag is List) {
+        await banTagProvider
+            .insertAll(banTag.map((e) => BanTagPersist.fromJson(e)).toList());
+      }
+      await fetchBanIllusts();
+      await fetchBanUserIds();
+      await fetchBanTags();
+    }
   }
 }

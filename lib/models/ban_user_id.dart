@@ -106,4 +106,15 @@ create table $tableBanUserId (
   }
 
   Future close() async => db.close();
+
+  Future<List<BanUserIdPersist>> insertAll(
+      List<BanUserIdPersist> list) async {
+    await db.transaction((txn) async {
+      for (var todo in list) {
+        todo.id = await txn.insert(tableBanUserId, todo.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+    });
+    return list;
+  }
 }
