@@ -82,7 +82,7 @@ class AccountClient {
   AccountClient() {
     String time = getIsoDate();
     this.httpClient = Dio()
-      ..options.baseUrl = "https://210.140.131.219"
+      ..options.baseUrl = "https://210.140.139.155"
       ..options.headers = {
         "X-Client-Time": time,
         "X-Client-Hash": getHash(time + hashSalt),

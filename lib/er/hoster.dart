@@ -12,8 +12,8 @@ import 'package:path/path.dart' as Path;
 class Hoster {
   static Map<String, dynamic> _map = Map();
   static Map<String, dynamic> _constMap = {
-    "app-api.pixiv.net": "210.140.131.199",
-    "oauth.secure.pixiv.net": "210.140.131.219",
+    "app-api.pixiv.net": "210.140.139.155",
+    "oauth.secure.pixiv.net": "210.140.139.155",
     "i.pximg.net": "210.140.92.149",
     "s.pximg.net": "210.140.92.143",
     "doh": "doh.dns.sb",
