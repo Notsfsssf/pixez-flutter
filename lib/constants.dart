@@ -17,7 +17,7 @@
 import 'dart:io';
 
 class Constants {
-  static String tagName = "0.9.52";
+  static String tagName = "0.9.53";
   static const isGooglePlay =
       bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);
   static int type = 0;
