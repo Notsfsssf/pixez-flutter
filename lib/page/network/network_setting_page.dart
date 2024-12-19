@@ -44,6 +44,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
         apiStatus = 1;
       });
     } catch (e) {
+      print(e);
       setState(() {
         apiStatus = 2;
       });

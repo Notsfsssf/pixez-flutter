@@ -21,21 +21,24 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
+import 'package:rhttp/rhttp.dart' as r;
 
 final ApiClient apiClient = ApiClient();
 
 class ApiClient {
   late Dio httpClient;
+
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
   static String BASE_API_URL_HOST = 'app-api.pixiv.net';
@@ -64,58 +67,52 @@ class ApiClient {
     allowPostMethod: false,
   );
 
-  ApiClient({bool isBookmark = false}) {
-    String time = getIsoDate();
-    if (isBookmark) {
-      httpClient = Dio(apiClient.httpClient.options)
-        ..interceptors.add(RefreshTokenInterceptor());
-      httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-        HttpClient httpClient = HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return httpClient;
-      });
-      return;
+  Future<Dio> createDioClient() async {
+    final compatibleClient = await r.RhttpCompatibleClient.create(
+        settings: userSetting.disableBypassSni
+            ? null
+            : r.ClientSettings(
+                tlsSettings: r.TlsSettings(
+                    verifyCertificates: false, sni: false),
+                dnsSettings: r.DnsSettings.dynamic(
+                  resolver: (host) async {
+                    final ip = Hoster.api();
+                    return [ip];
+                  },
+                ),
+              ));
+    httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
+    if (Platform.isAndroid) {
+      try {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        var headers = httpClient.options.headers;
+        headers['User-Agent'] =
+            "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
+        headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
+      } catch (e) {}
     }
-
-    httpClient = Dio()
-      ..options.baseUrl = "https://210.140.139.155"
-      ..options.headers = {
-        "X-Client-Time": time,
-        "X-Client-Hash": getHash(time + hashSalt),
-        "User-Agent": "PixivAndroidApp/5.0.155 (Android 10.0; Pixel C)",
-        HttpHeaders.acceptLanguageHeader: Accept_Language,
-        "App-OS": "Android",
-        "App-OS-Version": "Android 10.0",
-        "App-Version": "5.0.166",
-        "Host": BASE_API_URL_HOST
-      }
-      ..interceptors.add(DioCacheInterceptor(options: options))
-      ..interceptors.add(RefreshTokenInterceptor());
-    if (kDebugMode) {
-      httpClient.interceptors
-          .add(LogInterceptor(responseBody: true, requestBody: true));
-    }
-    httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-      HttpClient httpClient = HttpClient();
-      httpClient.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-      return httpClient;
-    });
-    if (userSetting.disableBypassSni) {
-      httpClient.options.baseUrl = "https://${BASE_API_URL_HOST}";
-    }
-    initA(time);
+    return httpClient;
   }
 
-  initA(time) async {
-    if (Platform.isAndroid) {
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      var headers = httpClient.options.headers;
-      headers['User-Agent'] =
-          "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
-      headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
+  ApiClient({bool isBookmark = false}) {
+    String time = getIsoDate();
+    httpClient =
+        Dio(BaseOptions(baseUrl: 'https://${BASE_API_URL_HOST}', headers: {
+      "X-Client-Time": time,
+      "X-Client-Hash": getHash(time + hashSalt),
+      "User-Agent": "PixivAndroidApp/5.0.155 (Android 10.0; Pixel C)",
+      HttpHeaders.acceptLanguageHeader: Accept_Language,
+      "App-OS": "Android",
+      "App-OS-Version": "Android 10.0",
+      "App-Version": "5.0.166",
+      HttpHeaders.hostHeader: BASE_API_URL_HOST
+    }))
+          ..interceptors.add(DioCacheInterceptor(options: options))
+          ..interceptors.add(RefreshTokenInterceptor());
+    if (kDebugMode) {
+      httpClient.interceptors.add(LogInterceptor(
+          responseBody: true, responseHeader: true, requestBody: true));
     }
   }
 

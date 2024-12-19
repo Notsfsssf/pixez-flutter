@@ -60,7 +60,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   }
 
   initCache() async {
-    var fileInfo = await pixivCacheManager.getFileFromCache(nowUrl);
+    var fileInfo = await pixivCacheManager!.getFileFromCache(nowUrl);
     if (mounted)
       setState(() {
         shareShow = fileInfo != null;
@@ -119,7 +119,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 _index = index;
                 shareShow = false;
               });
-              var file = await pixivCacheManager.getFileFromCache(nowUrl);
+              var file = await pixivCacheManager!.getFileFromCache(nowUrl);
               if (file != null && mounted)
                 setState(() {
                   shareShow = true;
@@ -261,7 +261,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                         ),
                         onPressed: () async {
                           var file =
-                              await pixivCacheManager.getFileFromCache(nowUrl);
+                              await pixivCacheManager!.getFileFromCache(nowUrl);
                           if (file != null) {
                             String targetPath = join(
                                 (await getTemporaryDirectory()).path,

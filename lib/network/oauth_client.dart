@@ -20,19 +20,23 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
+import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/crypto_plugin.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/main.dart';
+import 'package:rhttp/rhttp.dart' as r;
 
 final OAuthClient oAuthClient = OAuthClient();
 
 class OAuthClient {
   final String hashSalt =
       "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
+
   late Dio httpClient;
+
   static const BASE_OAUTH_URL_HOST = "oauth.secure.pixiv.net";
 
   final String CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
@@ -49,45 +53,52 @@ class OAuthClient {
 
   static final String AUTHORIZATION = "Authorization";
 
-  initA(time) async {
+  Future<Dio> createDioClient() async {
+    final compatibleClient = await r.RhttpCompatibleClient.create(
+        settings: userSetting.disableBypassSni
+            ? null
+            : r.ClientSettings(
+                tlsSettings: r.TlsSettings(
+                    verifyCertificates: false, sni: false),
+                dnsSettings: r.DnsSettings.dynamic(
+                  resolver: (host) async {
+                    final ip = Hoster.oauth();
+                    return [ip];
+                  },
+                ),
+              ));
+    httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
     if (Platform.isAndroid) {
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      var headers = this.httpClient.options.headers;
-      headers['User-Agent'] =
-          "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
-      headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
+      try {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        var headers = httpClient.options.headers;
+        headers['User-Agent'] =
+            "PixivAndroidApp/5.0.166 (Android ${androidInfo.version.release}; ${androidInfo.model})";
+        headers['App-OS-Version'] = "Android ${androidInfo.version.release}";
+      } catch (e) {}
     }
+    return httpClient;
   }
 
   OAuthClient() {
     String time = getIsoDate();
-    this.httpClient = Dio()
-      // 🎵Liella!-ノンフィクション!!🎵
-      ..options.baseUrl = "https://210.140.139.155"
-      ..options.headers = {
-        "X-Client-Time": time,
-        "X-Client-Hash": getHash(time + hashSalt),
-        "User-Agent": "PixivAndroidApp/5.0.155 (Android 6.0; Pixel C)",
-        HttpHeaders.acceptLanguageHeader: "zh-CN",
-        "App-OS": "Android",
-        "App-OS-Version": "Android 6.0",
-        "App-Version": "5.0.166",
-        "Host": BASE_OAUTH_URL_HOST
-      }
-      ..options.contentType = Headers.formUrlEncodedContentType;
-    httpClient.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-        HttpClient httpClient = HttpClient();
-        httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return httpClient;
-      });
-    if (kDebugMode)
-      httpClient.interceptors
-          .add(LogInterceptor(responseBody: true, requestBody: true));
-    if (userSetting.disableBypassSni) {
-      httpClient.options.baseUrl = "https://${BASE_OAUTH_URL_HOST}";
+    httpClient = Dio(BaseOptions(
+        baseUrl: 'https://${BASE_OAUTH_URL_HOST}',
+        headers: {
+          "X-Client-Time": time,
+          "X-Client-Hash": getHash(time + hashSalt),
+          "User-Agent": "PixivAndroidApp/5.0.155 (Android 6.0; Pixel C)",
+          HttpHeaders.acceptLanguageHeader: "zh-CN",
+          "App-OS": "Android",
+          "App-OS-Version": "Android 6.0",
+          "App-Version": "5.0.166",
+        },
+        contentType: Headers.formUrlEncodedContentType));
+    if (kDebugMode) {
+      httpClient.interceptors.add(LogInterceptor(
+          responseBody: true, responseHeader: true, requestBody: true));
     }
-    initA(time);
   }
 
   static String getHash(String string) {
@@ -148,8 +159,4 @@ class OAuthClient {
       "include_policy": true
     });
   }
-
-//  @FormUrlEncoded
-//  @POST("/api/provisional-accounts/create")
-//  fun createProvisionalAccount(@Field("user_name") paramString1: String, @Field("ref") paramString2: String, @Header("Authorization") paramString3: String): Observable<PixivAccountsResponse>
 }

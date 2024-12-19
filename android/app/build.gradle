@@ -72,6 +72,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdk 34
+    ndkVersion "27.2.12479018"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -81,8 +82,8 @@ android {
         applicationId packageName
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 10009530
-        versionName "0.9.53 Space"
+        versionCode 10009540
+        versionName "0.9.54 rhttp"
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64' }
     }
     compileOptions {

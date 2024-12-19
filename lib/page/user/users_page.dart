@@ -774,7 +774,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
 
   _saveUserBg(String url) async {
     try {
-      final result = await pixivCacheManager.downloadFile(url, authHeaders: {
+      final result = await pixivCacheManager!.downloadFile(url, authHeaders: {
         'referer': 'https://app-api.pixiv.net/',
       });
       final bytes = await result.file.readAsBytes();

@@ -16,6 +16,8 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A70B475725D4D94200AE0717 /* CodeGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70B475625D4D94200AE0717 /* CodeGen.swift */; };
+		CF18B5662D0EDB1A0096872D /* FMDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF18B5652D0EDB1A0096872D /* FMDB */; };
+		CF18B5682D0EDB4D0096872D /* FMDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF18B5672D0EDB4D0096872D /* FMDB */; };
 		CF725E382ACE7C7600615536 /* DeepLinkPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
 		CFFFA8252C3B75EC00800F00 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
@@ -39,16 +41,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CFFFA8322C3B75ED00800F00 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -107,6 +99,7 @@
 		CF0E66D727BAA7B000DF1121 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CF0E66D827BAA7F200DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		CF0E66D927BAA7F300DF1121 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CF18B5612D0ED9470096872D /* sqflite_darwin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = sqflite_darwin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF24B04C28CB42C600AE445E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
 		CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkPlugin.swift; sourceTree = "<group>"; };
 		CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWidgetDBManager.swift; sourceTree = "<group>"; };
@@ -129,6 +122,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */,
+				CF18B5662D0EDB1A0096872D /* FMDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFFFA8262C3B75EC00800F00 /* SwiftUI.framework in Frameworks */,
+				CF18B5682D0EDB4D0096872D /* FMDB in Frameworks */,
 				CFFFA8252C3B75EC00800F00 /* WidgetKit.framework in Frameworks */,
 				4F9E83EA3732672F6515B5C3 /* Pods_TinkerExtension.framework in Frameworks */,
 			);
@@ -167,6 +162,7 @@
 		66193F2780F8195CEF68B3C0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CF18B5612D0ED9470096872D /* sqflite_darwin.framework */,
 				CFB8EEB228C4B86B00B8D74E /* FMDB.framework */,
 				CFB8EEAE28C4B50800B8D74E /* FMDB.framework */,
 				CFB8EEAA28C4B34400B8D74E /* sqflite.framework */,
@@ -256,7 +252,6 @@
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				CFFFA8322C3B75ED00800F00 /* Embed Foundation Extensions */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
@@ -325,6 +320,9 @@
 				ru,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				CF18B5642D0EDB1A0096872D /* XCRemoteSwiftPackageReference "fmdb" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -810,7 +808,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = TinkerExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -825,7 +823,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.Tinker;
@@ -854,7 +852,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = TinkerExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -869,7 +867,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.Tinker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -895,7 +893,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = TinkerExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = L9F8ZWCR8Z;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -910,7 +908,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.perol.pixez.Tinker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -955,6 +953,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CF18B5642D0EDB1A0096872D /* XCRemoteSwiftPackageReference "fmdb" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ccgus/fmdb";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.12;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CF18B5652D0EDB1A0096872D /* FMDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF18B5642D0EDB1A0096872D /* XCRemoteSwiftPackageReference "fmdb" */;
+			productName = FMDB;
+		};
+		CF18B5672D0EDB4D0096872D /* FMDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF18B5642D0EDB1A0096872D /* XCRemoteSwiftPackageReference "fmdb" */;
+			productName = FMDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

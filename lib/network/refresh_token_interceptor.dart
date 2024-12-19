@@ -47,7 +47,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
         return handler.reject(DioException(requestOptions: options));
       }
     }
-    return handler.next(options); 
+    return handler.next(options);
   }
 
   int bti(bool bool) {
@@ -79,6 +79,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
           if (errorMessage.error.message!.contains("OAuth") &&
               accountStore.now != null) {
             final client = OAuthClient();
+            await client.createDioClient();
             AccountPersist accountPersist = accountStore.now!;
             Response response1 = await client.postRefreshAuthToken(
                 refreshToken: accountPersist.refreshToken,

@@ -1,7 +1,7 @@
 import Cocoa
 import FlutterMacOS
 
-@NSApplicationMain
+@main
 class AppDelegate: FlutterAppDelegate {
     var eventSink: FlutterEventSink?
     override func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

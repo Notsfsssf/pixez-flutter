@@ -440,13 +440,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   _showPermissionDenied() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool("permission_denied") == true) return;
+    if (prefs.getBool("storage_permission_denied") == true) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text("storage permission denied"),
       action: SnackBarAction(
         label: "Don't show again",
         onPressed: () {
-          prefs.setBool("storaget_denied_confirm", true);
+          prefs.setBool("storage_permission_denied", true);
         },
       ),
     ));

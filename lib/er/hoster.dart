@@ -1,72 +1,108 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
-import 'package:path/path.dart' as Path;
+import 'package:pixez/models/onezero_response.dart';
+import 'package:rhttp/rhttp.dart' as r;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Hoster {
   static Map<String, dynamic> _map = Map();
   static Map<String, dynamic> _constMap = {
     "app-api.pixiv.net": "210.140.139.155",
     "oauth.secure.pixiv.net": "210.140.139.155",
-    "i.pximg.net": "210.140.92.149",
-    "s.pximg.net": "210.140.92.143",
+    "i.pximg.net": "210.140.139.133",
+    "s.pximg.net": "210.140.139.133",
     "doh": "doh.dns.sb",
   };
+  static Map<String, dynamic> hardMap() {
+    return _map.isEmpty ? _constMap : _map;
+  }
 
-  static init() async {
+  static final List<String> QUERY_HOST = [
+    ImageHost,
+    ImageSHost,
+    'app-api.pixiv.net',
+    'oauth.secure.pixiv.net',
+  ];
+
+  static Dio httpClient = Dio(
+    BaseOptions(
+      baseUrl: 'https://1.1.1.1',
+    ),
+  );
+  static r.RhttpCompatibleClient? compatibleClient;
+
+  static Future<Dio> createDioClient() async {
+    if (compatibleClient == null) {
+      return httpClient;
+    }
+    compatibleClient ??= await r.RhttpCompatibleClient.create(
+        settings: userSetting.disableBypassSni
+            ? null
+            : r.ClientSettings(
+                tlsSettings:
+                    r.TlsSettings(verifyCertificates: false, sni: false),
+              ));
+    httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient!);
+    return httpClient;
+  }
+
+  static Future<void> dnsQueryAll() async {
+    for (var key in [ImageHost, ImageSHost]) {
+      await dnsQuery(key);
+    }
+  }
+
+  static Future<void> dnsQueryFetcher() async {
+    for (var key in [ImageHost, ImageSHost]) {
+      await dnsQuery(key);
+    }
+  }
+
+  static SharedPreferences? prefs;
+
+  static Future<void> initMap() async {
     try {
-      final cacheDir = await getApplicationSupportDirectory();
-      String fileName = Path.join(cacheDir.path, 'host.json');
-      final jsonFile = File(fileName);
-      if (!jsonFile.existsSync()) {
-        jsonFile.createSync();
-        String data = await rootBundle.loadString('assets/json/host.json');
-        jsonFile.writeAsStringSync(data, flush: true);
-      } else {}
-      String data = jsonFile.readAsStringSync();
-      if (data.isEmpty) {
-        jsonFile.deleteSync();
-        init();
-        return;
+      prefs ??= await SharedPreferences.getInstance();
+      for (var key in QUERY_HOST) {
+        final value = prefs?.getString('h_hoster_$key');
+        if (value != null) {
+          _map[key] = value;
+        }
       }
-      final jsonData = json.decode(data);
-      _map.addAll(jsonData);
-      LPrinter.d(_map);
     } catch (e) {
       LPrinter.d(e);
     }
   }
 
-  static final String _hostJsonUrl =
-      "https://cdn.jsdelivr.net/gh/Notsfsssf/pixez-flutter@master/assets/json/host.json";
-
-  static Map<String, dynamic> hardMap() {
-    return _map.isEmpty ? _constMap : _map;
-  }
-
-  static syncRemote() async {
+  static Future<void> dnsQuery(String name) async {
     try {
-      LPrinter.d("sync remote =========");
-      final dio = Dio(BaseOptions(baseUrl: _hostJsonUrl));
-      Response response = await dio.get("");
-      String data = json.encode(response.data!);
-      final cacheDir = await getApplicationSupportDirectory();
-      String fileName = Path.join(cacheDir.path, 'host.json');
-      final jsonFile = File(fileName);
-      if (jsonFile.existsSync()) {
-        jsonFile.deleteSync();
+      await createDioClient();
+      Response response = await httpClient.get('/dns-query',
+          options: Options(
+            headers: {
+              'accept': 'application/dns-json',
+            },
+          ),
+          queryParameters: {'name': name});
+      OnezeroResponse model =
+          OnezeroResponse.fromJson(jsonDecode(response.data));
+      final answer = model.answer.toList();
+      answer.sort((l, r) => r.ttl.compareTo(l.ttl));
+      final host = answer.first.data;
+      if (host.contains('.')) {
+        final num = host.split('.');
+        bool allNum = num.every((element) => int.tryParse(element) != null);
+        if (allNum) {
+          _map[name] = host;
+          prefs ??= await SharedPreferences.getInstance();
+          prefs?.setString('h_hoster_$name', host);
+        }
       }
-      jsonFile.createSync();
-      jsonFile.writeAsStringSync(data, flush: true);
-      _map.clear();
-      _map.addAll(response.data);
-      LPrinter.d(_map);
+      LPrinter.d(host);
     } catch (e) {
       LPrinter.d(e);
     }
@@ -115,21 +151,7 @@ class Hoster {
     Map<String, String> map = {
       "referer": "https://app-api.pixiv.net/",
       "User-Agent": "PixivIOSApp/5.8.0",
-      "Host": "i.pximg.net"
     };
-    if (url != null) {
-      String host = Uri.parse(url).host;
-      if (host == ImageHost) {
-        if (userSetting.disableBypassSni) return map;
-        map['Host'] = userSetting.pictureSource!;
-      } else {
-        if (userSetting.pictureSource == ImageHost) {
-          map['Host'] = host;
-        } else {
-          map['Host'] = userSetting.pictureSource!;
-        }
-      }
-    }
     return map;
   }
 }

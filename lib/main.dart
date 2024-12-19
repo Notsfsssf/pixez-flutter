@@ -41,6 +41,7 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
+import 'package:rhttp/rhttp.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -53,12 +54,12 @@ final TagHistoryStore tagHistoryStore = TagHistoryStore();
 final NovelHistoryStore novelHistoryStore = NovelHistoryStore();
 final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
-final OnezeroClient onezeroClient = OnezeroClient();
-final SplashStore splashStore = SplashStore(onezeroClient);
+final SplashStore splashStore = SplashStore();
 final Fetcher fetcher = new Fetcher();
 final FullScreenStore fullScreenStore = FullScreenStore();
 
 main(List<String> args) async {
+  await Rhttp.init();
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
@@ -112,8 +113,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         setState(() {});
       }
     });
-    Hoster.init();
-    Hoster.syncRemote();
     userSetting.askInit();
     userSetting.init();
     accountStore.fetch();

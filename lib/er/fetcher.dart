@@ -19,10 +19,10 @@ import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/i18n.dart';
@@ -31,6 +31,8 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
+import 'package:rhttp/rhttp.dart' as r;
+import 'package:rhttp/rhttp.dart';
 
 class PixivClientAdapter implements HttpClientAdapter {
   final HttpClientAdapter _adapter = HttpClientAdapter();
@@ -242,25 +244,33 @@ class Fetcher {
 
 class Seed {}
 
-Dio isolateDio = Dio(BaseOptions(headers: {
-  "referer": "https://app-api.pixiv.net/",
-  "User-Agent": "PixivIOSApp/5.8.0",
-  "Host": "i.pximg.net"
-}));
-// 新Isolate入口函数
-entryPoint(SendPort sendPort) {
+r.RhttpClient? isolateDio;
+
+entryPoint(SendPort sendPort) async {
   LPrinter.d("entryPoint =======");
-  String inHost = splashStore.host;
   String inSource = userSetting.pictureSource!;
-  bool inBypass = userSetting.disableBypassSni;
-  if (!userSetting.disableBypassSni) {
-    isolateDio.httpClientAdapter = IOHttpClientAdapter()
-      ..createHttpClient = () {
-        final httpclient = HttpClient();
-        httpclient.badCertificateCallback = (cert, host, port) => true;
-        return httpclient;
-      };
-  }
+  await Rhttp.init();
+  await Hoster.initMap();
+  Hoster.dnsQueryFetcher();
+  isolateDio = await r.RhttpClient.create(
+      settings: userSetting.disableBypassSni
+          ? null
+          : r.ClientSettings(
+              tlsSettings: r.TlsSettings(
+                verifyCertificates: false,
+                sni: false,
+              ),
+              dnsSettings: r.DnsSettings.dynamic(resolver: (host) async {
+                if (host == 'i.pximg.net') {
+                  return [Hoster.iPximgNet()];
+                }
+                if (host == 's.pximg.net') {
+                  return [Hoster.sPximgNet()];
+                }
+                return await InternetAddress.lookup(host)
+                    .then((value) => value.map((e) => e.address).toList());
+              }),
+            ));
   ReceivePort receivePort = ReceivePort();
   sendPort.send(
       IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort));
@@ -273,46 +283,37 @@ entryPoint(SendPort sendPort) {
           break;
         case IsoTaskState.APPEND:
           try {
-            inHost = taskBean.host!;
             inSource = taskBean.source!;
-            inBypass = taskBean.byPass!;
-            LPrinter.d(
-                "append ======= host:${inHost} source:${inSource} bypass:${inBypass}");
             var savePath = taskBean.savePath! +
                 Platform.pathSeparator +
                 taskBean.fileName!;
-            String trueUrl = '';
-            final isContainPathSource = inSource.contains('/');
-            if (isContainPathSource) {
-              trueUrl = 'https://${inHost}${Uri.parse(taskBean.url!).path}';
+            String trueUrl = taskBean.url!;
+            String originHost = Uri.parse(taskBean.url!).host;
+            if (taskBean.byPass == true) {
             } else {
-              trueUrl = taskBean.byPass == true
-                  ? taskBean.url!
-                  : (Uri.parse(taskBean.url!).replace(
-                          host: inSource == ImageHost || inSource == ImageSHost
-                              ? inHost
-                              : inSource))
-                      .toString();
+              if (originHost == ImageHost) {
+                trueUrl = 'https://${inSource}${Uri.parse(taskBean.url!).path}';
+              } else {
+                // ?
+                trueUrl = taskBean.url!;
+              }
             }
-            LPrinter.d(
-                "append ======= host:${inHost} source:${inSource} bypass:${inBypass} ${trueUrl}");
-            if (!isContainPathSource) {
-              isolateDio.options.headers['Host'] = taskBean.source == ImageHost
-                  ? Uri.parse(taskBean.url!).host
-                  : taskBean.source;
-            } else {
-              isolateDio.options.headers['Host'] = inHost.split('/').first;
-            }
-            isolateDio.download(trueUrl, savePath,
-                onReceiveProgress: (min, total) {
+            isolateDio!.getBytes(trueUrl,
+                headers: r.HttpHeaders.rawMap({
+                  "referer": "https://app-api.pixiv.net/",
+                  "User-Agent": "PixivIOSApp/5.8.0",
+                }), onReceiveProgress: (min, total) {
               sendPort.send(IsoContactBean(
                   state: IsoTaskState.PROGRESS,
                   data: IsoProgressBean(
                       min: min, total: total, url: taskBean.url!)));
             }).then((value) {
+              File file = File(savePath);
+              file.writeAsBytesSync(value.body);
               sendPort.send(
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
             }).catchError((e) {
+              LPrinter.d(e);
               try {
                 splashStore.maybeFetch();
                 sendPort.send(

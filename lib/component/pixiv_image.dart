@@ -17,13 +17,14 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http/io_client.dart';
-import 'package:http_interceptor/http_interceptor.dart';
+import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
+
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
+import 'package:rhttp/rhttp.dart' as r;
 
 const ImageHost = "i.pximg.net";
 const ImageCatHost = "i.pixiv.re";
@@ -33,62 +34,8 @@ const ImageSHost = "s.pximg.net";
 // 实现CacheManager和混入ImageCacheManager缺一不可
 // 如果你恰好看到这个实现方法实例，且对你有些帮助或者启发：
 // 听一首Mili-Salt, Pepper, Birds, And the Thought Police吧 🎵
-class PixivHostInterceptor implements InterceptorContract {
-  @override
-  Future<BaseRequest> interceptRequest({required BaseRequest request}) async {
-    if (request.url.host == "s.pximg.net") {
-      request.headers["Host"] = request.url.host;
-      return request;
-    }
-    Uri uri = request.url.toTureUri();
-    if (userSetting.pictureSource != ImageHost) {
-      if (uri.host != ImageHost && uri.host != ImageSHost) {
-        request.headers["Host"] = uri.host;
-      }
-    }
-    return request.copyWith(url: uri, headers: request.headers);
-  }
 
-  @override
-  Future<BaseResponse> interceptResponse(
-      {required BaseResponse response}) async {
-    if (response.statusCode != 200) {
-      splashStore.maybeFetch();
-    }
-    return response;
-  }
-
-  @override
-  Future<bool> shouldInterceptRequest() async {
-    return true;
-  }
-
-  @override
-  Future<bool> shouldInterceptResponse() async {
-    return true;
-  }
-}
-
-class PixivCacheManager extends CacheManager with ImageCacheManager {
-  static const key = 'PixezCachedImageData';
-
-  PixivCacheManager()
-      : super(Config(
-          key,
-          repo: JsonCacheInfoRepository(databaseName: key),
-          fileService: HttpFileService(
-              httpClient: InterceptedClient.build(
-                  interceptors: [
-                PixivHostInterceptor(),
-              ],
-                  client: IOClient(HttpClient()
-                    ..badCertificateCallback =
-                        (X509Certificate cert, String host, int port) =>
-                            true))),
-        ));
-}
-
-PixivCacheManager pixivCacheManager = PixivCacheManager();
+DioCacheManager? pixivCacheManager = DioCacheManager.instance;
 
 class PixivImage extends StatefulWidget {
   final String url;
@@ -111,6 +58,31 @@ class PixivImage extends StatefulWidget {
 
   @override
   _PixivImageState createState() => _PixivImageState();
+
+  static Future<void> generatePixivCache() async {
+    final dio = Dio();
+    final client = await r.RhttpCompatibleClient.createSync(
+        settings: (userSetting.disableBypassSni)
+            ? null
+            : r.ClientSettings(
+                tlsSettings:
+                    r.TlsSettings(verifyCertificates: false, sni: false),
+                dnsSettings: r.DnsSettings.dynamic(
+                  resolver: (host) async {
+                    if (host == 'i.pximg.net') {
+                      return [Hoster.iPximgNet()];
+                    }
+                    if (host == 's.pximg.net') {
+                      return [Hoster.sPximgNet()];
+                    }
+                    return await InternetAddress.lookup(host)
+                        .then((value) => value.map((e) => e.address).toList());
+                  },
+                )));
+    dio.interceptors.add(LogInterceptor(responseBody: false));
+    dio.httpClientAdapter = ConversionLayerAdapter(client);
+    DioCacheManager.initialize(dio);
+  }
 }
 
 class _PixivImageState extends State<PixivImage> {
