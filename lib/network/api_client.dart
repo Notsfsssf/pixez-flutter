@@ -72,8 +72,8 @@ class ApiClient {
         settings: userSetting.disableBypassSni
             ? null
             : r.ClientSettings(
-                tlsSettings: r.TlsSettings(
-                    verifyCertificates: false, sni: false),
+                tlsSettings:
+                    r.TlsSettings(verifyCertificates: false, sni: false),
                 dnsSettings: r.DnsSettings.dynamic(
                   resolver: (host) async {
                     final ip = Hoster.api();
@@ -93,6 +93,28 @@ class ApiClient {
       } catch (e) {}
     }
     return httpClient;
+  }
+
+  static Future<ConversionLayerAdapter> createCompatibleClient() async {
+    final compatibleClient = await r.RhttpCompatibleClient.create(
+        settings: userSetting.disableBypassSni
+            ? null
+            : r.ClientSettings(
+                tlsSettings:
+                    r.TlsSettings(verifyCertificates: false, sni: false),
+                dnsSettings: r.DnsSettings.dynamic(
+                  resolver: (host) async {
+                    if (host == 'i.pximg.net') {
+                      return [Hoster.iPximgNet()];
+                    }
+                    if (host == 's.pximg.net') {
+                      return [Hoster.sPximgNet()];
+                    }
+                    return await InternetAddress.lookup(host)
+                        .then((value) => value.map((e) => e.address).toList());
+                  },
+                )));
+    return ConversionLayerAdapter(compatibleClient);
   }
 
   ApiClient({bool isBookmark = false}) {

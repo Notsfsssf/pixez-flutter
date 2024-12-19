@@ -63,31 +63,31 @@ extension TimeExts on String {
         .replaceAll("</p>", "");
   }
 
-  String toTrueUrl() {
-    if (userSetting.disableBypassSni || this.contains("novel")) {
-      return this;
-    } else {
-      if (userSetting.pictureSource != ImageHost) {
-        try {
-          if (userSetting.pictureSource!.contains('/')) {
-            Uri preUri = Uri.parse(this);
-            final preHost = preUri.host;
-            return this.replaceAll(preHost, userSetting.pictureSource!);
-          }
-          return Uri.parse(this)
-              .replace(host: userSetting.pictureSource)
-              .toString();
-        } catch (e) {}
-      }
-      if (this.contains(ImageHost)) {
-        return this.replaceFirst(ImageHost, splashStore.host);
-      }
-      if (this.contains(ImageSHost)) {
-        return this.replaceFirst(ImageSHost, splashStore.host);
-      }
-    }
-    return this;
-  }
+  // String toTrueUrl() {
+  //   if (userSetting.disableBypassSni || this.contains("novel")) {
+  //     return this;
+  //   } else {
+  //     if (userSetting.pictureSource != ImageHost) {
+  //       try {
+  //         if (userSetting.pictureSource!.contains('/')) {
+  //           Uri preUri = Uri.parse(this);
+  //           final preHost = preUri.host;
+  //           return this.replaceAll(preHost, userSetting.pictureSource!);
+  //         }
+  //         return Uri.parse(this)
+  //             .replace(host: userSetting.pictureSource)
+  //             .toString();
+  //       } catch (e) {}
+  //     }
+  //     if (this.contains(ImageHost)) {
+  //       return this.replaceFirst(ImageHost, splashStore.host);
+  //     }
+  //     if (this.contains(ImageSHost)) {
+  //       return this.replaceFirst(ImageSHost, splashStore.host);
+  //     }
+  //   }
+  //   return this;
+  // }
 
   String toLegal() {
     return this

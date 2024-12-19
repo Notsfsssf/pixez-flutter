@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/api_client.dart';
 
 class SauncenaoWebview extends StatefulWidget {
   final String? path;
@@ -93,13 +94,8 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
                               if (userSetting.disableBypassSni) {
                                 dio.options.baseUrl = "https://$host";
                               } else {
-                                dio.httpClientAdapter = IOHttpClientAdapter()
-                                  ..createHttpClient = () {
-                                    final httpclient = HttpClient();
-                                    httpclient.badCertificateCallback =
-                                        (cert, host, port) => true;
-                                    return httpclient;
-                                  };
+                                dio.httpClientAdapter =
+                                    await ApiClient.createCompatibleClient();
                               }
                               if (compressedPath == null) {
                                 final tmpPath =

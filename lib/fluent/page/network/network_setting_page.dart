@@ -57,13 +57,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
           "https://i.pximg.net/c/360x360_70/img-master/img/2016/04/29/03/33/27/56585648_p0_square1200.jpg";
       var dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       String trueUrl = url.replaceFirst(ImageHost, host);
-      dio.httpClientAdapter = IOHttpClientAdapter()
-        ..createHttpClient = () {
-          return HttpClient()
-            ..idleTimeout = Duration(seconds: 3)
-            ..badCertificateCallback =
-                (X509Certificate cert, String host, int port) => true;
-        };
+      dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       await dio
           .download(trueUrl, (await getTemporaryDirectory()).path + "/s.png",
               onReceiveProgress: (min, max) {

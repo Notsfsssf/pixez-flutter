@@ -803,14 +803,9 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni) {
-        dio.httpClientAdapter = IOHttpClientAdapter()
-          ..createHttpClient = () {
-            return HttpClient()
-              ..badCertificateCallback =
-                  (X509Certificate cert, String host, int port) => true;
-          };
+        dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       }
-      await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
+      await dio.download(url, tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file.existsSync()) {
         await saveStore.saveToGallery(

@@ -43,6 +43,7 @@ import 'package:pixez/fluent/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/fluent/page/user/detail/user_detail.dart';
 import 'package:pixez/fluent/page/user/works/works_page.dart';
 import 'package:pixez/fluent/page/zoom/zoom_page.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -462,15 +463,9 @@ class _UsersPageState extends State<UsersPage>
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       if (!userSetting.disableBypassSni) {
-        dio.httpClientAdapter = IOHttpClientAdapter()
-          ..createHttpClient = () {
-            return HttpClient()
-              ..idleTimeout = Duration(seconds: 3)
-              ..badCertificateCallback =
-                  (X509Certificate cert, String host, int port) => true;
-          };
+        dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       }
-      await dio.download(url.toTrueUrl(), tempFile, deleteOnError: true);
+      await dio.download(url, tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file.existsSync()) {
         await saveStore.saveToGallery(

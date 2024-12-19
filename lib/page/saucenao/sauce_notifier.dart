@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,7 +37,8 @@ class SauceState with _$SauceState {
 class Sauce extends _$Sauce {
   static String host = "saucenao.com";
   Dio dio = Dio(BaseOptions(
-      baseUrl: "https://saucenao.com", headers: {HttpHeaders.hostHeader: host}));
+      baseUrl: "https://saucenao.com",
+      headers: {HttpHeaders.hostHeader: host}));
   List<int> results = [];
   late StreamController _streamController;
   late ObservableStream observableStream;
@@ -137,12 +139,7 @@ class Sauce extends _$Sauce {
       if (userSetting.disableBypassSni) {
         dio.options.baseUrl = "https://$host";
       } else {
-        dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-          HttpClient httpClient = HttpClient();
-          httpClient.badCertificateCallback =
-              (X509Certificate cert, String host, int port) => true;
-          return httpClient;
-        });
+        dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       }
       Response response = await dio.post('/search.php', data: formData);
       BotToast.showText(text: "parsing");
