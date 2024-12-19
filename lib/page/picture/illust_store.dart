@@ -115,8 +115,7 @@ abstract class _IllustStoreBase with Store {
     state = 1;
     if (force || !illusts!.isBookmarked) {
       try {
-        await ApiClient(isBookmark: true)
-            .postLikeIllust(illusts!.id, restrict, tags);
+        await apiClient.postLikeIllust(illusts!.id, restrict, tags);
         illusts!.isBookmarked = true;
         isBookmark = true;
         state = 2;
@@ -124,7 +123,7 @@ abstract class _IllustStoreBase with Store {
       } catch (e) {}
     } else {
       try {
-        await ApiClient(isBookmark: true).postUnLikeIllust(illusts!.id);
+        await apiClient.postUnLikeIllust(illusts!.id);
         illusts!.isBookmarked = false;
         isBookmark = false;
         state = 0;
