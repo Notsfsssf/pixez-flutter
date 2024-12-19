@@ -1,7 +1,7 @@
 {
   "app-api.pixiv.net": "210.140.139.155",
   "oauth.secure.pixiv.net": "210.140.139.155",
-  "i.pximg.net": "210.140.92.144",
-  "s.pximg.net": "210.140.92.143",
+  "i.pximg.net": "210.140.139.133",
+  "s.pximg.net": "210.140.139.133",
   "doh": "doh.dns.sb"
 }
