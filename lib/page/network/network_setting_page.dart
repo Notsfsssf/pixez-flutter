@@ -24,7 +24,7 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
   @override
   void initState() {
     super.initState();
-    host = "210.140.92.140";
+    host = "210.140.139.137";
     editingController = new TextEditingController();
     editingController.addListener(() {
       host = editingController.text.toString();
