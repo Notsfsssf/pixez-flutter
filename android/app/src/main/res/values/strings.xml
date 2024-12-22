@@ -15,11 +15,11 @@
   -->
 
 <resources>
-    <string name="title_save_path">save path</string>
-    <string name="choose_a_suitable_image_storage_directory">选择合适的图片保存目录授权</string>
-    <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">未正确取得授权，可能会导致部分功能失效或闪退</string>
-    <string name="encode_success">encode success</string>
-    <string name="do_not_choice_download_folder_message">The authorized directory contains the download directory, which may cause storage errors, please re-select the storage directory authorization</string>
-    <string name="appwidget_card_desc">Illust full widget</string>
-    <string name="appwidget_illust_desc">Illust card with title</string>
+    <string name="title_save_path">Save path</string>
+    <string name="choose_a_suitable_image_storage_directory">Select the appropriate image download directory</string>
+    <string name="failure_to_obtain_authorization_may_cause_some_functions_to_fail_or_crash">Failed to get authorization. Some functions may fail or the application may crash!</string>
+    <string name="encode_success">Encoded successfully</string>
+    <string name="do_not_choice_download_folder_message">Selected directory includes the download directory, which may lead to storage errors. Please re-select the directory!</string>
+    <string name="appwidget_card_desc">Full illust</string>
+    <string name="appwidget_illust_desc">Illust with title</string>
 </resources>
