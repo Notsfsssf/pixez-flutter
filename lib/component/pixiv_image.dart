@@ -79,7 +79,6 @@ class PixivImage extends StatefulWidget {
                         .then((value) => value.map((e) => e.address).toList());
                   },
                 )));
-    dio.interceptors.add(LogInterceptor(responseBody: false));
     dio.httpClientAdapter = ConversionLayerAdapter(client);
     DioCacheManager.initialize(dio);
   }

@@ -147,11 +147,12 @@ abstract class SauceStoreBase with Store {
                     verifyCertificates: false,
                     sni: false,
                   ),
-                  dnsSettings: DnsSettings.dynamic(
-                    resolver: (host) async {
-                      return ['107.191.40.131'];
-                    },
-                  )),
+                  // dnsSettings: DnsSettings.dynamic(
+                  //   resolver: (host) async {
+                  //     return ['104.26.14.28'];
+                  //   },
+                  // )
+                  ),
         );
         dio.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
       }
