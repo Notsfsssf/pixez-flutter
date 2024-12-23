@@ -103,7 +103,7 @@ class Fetcher {
 
   Fetcher() {}
 
-  start() async {
+  start(String pictureSource) async {
     if (receivePort.isBroadcast) return;
     await taskPersistProvider.open();
     await taskPersistProvider.getAllAccount();
@@ -158,7 +158,8 @@ class Fetcher {
         }
       } catch (e) {}
     });
-    isolate = await Isolate.spawn(entryPoint, receivePort.sendPort,
+    isolate = await Isolate.spawn(
+        entryPoint, SendMessage(receivePort.sendPort, pictureSource),
         debugName: 'childIsolate');
   }
 
@@ -242,18 +243,27 @@ class Fetcher {
   }
 }
 
+class SendMessage {
+  final SendPort sendPort;
+  final String pictureSource;
+
+  SendMessage(this.sendPort, this.pictureSource);
+}
+
 class Seed {}
 
 r.RhttpClient? isolateDio;
 
-entryPoint(SendPort sendPort) async {
-  LPrinter.d("entryPoint =======");
-  String inSource = userSetting.pictureSource!;
+entryPoint(SendMessage message) async {
+  String pictureSource = message.pictureSource;
+  SendPort sendPort = message.sendPort;
+  LPrinter.d("entryPoint ====== $pictureSource");
+  String inSource = pictureSource;
   await Rhttp.init();
   await Hoster.initMap();
   Hoster.dnsQueryFetcher();
   isolateDio = await r.RhttpClient.create(
-      settings: userSetting.disableBypassSni
+      settings: userSetting.disableBypassSni || pictureSource != ImageHost
           ? null
           : r.ClientSettings(
               tlsSettings: r.TlsSettings(

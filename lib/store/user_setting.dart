@@ -397,8 +397,12 @@ abstract class _UserSetting with Store {
     welcomePageNum = prefs.getInt('welcome_page_num') ?? 0;
     feedAIBadge = prefs.getBool(FEED_AI_BADGE_KEY) ?? true;
     padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
+    pictureSource = disableBypassSni
+        ? ImageHost
+        : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
     await Hoster.initMap();
     themeInitState = 1;
+    fetcher.start(pictureSource!);
   }
 
   @action
@@ -425,9 +429,7 @@ abstract class _UserSetting with Store {
     novelTextStyle = novelTextStyle.copyWith(fontSize: novelFontsize);
     saveMode = prefs.getInt(SAVE_MODE_KEY) ??
         (isHelplessWay == null ? 0 : (isHelplessWay! ? 2 : 1));
-    pictureSource = disableBypassSni
-        ? ImageHost
-        : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
+
     splashStore.setHost(pictureSource!);
     saveEffect = prefs.getInt(SAVE_EFFECT_KEY) ?? 0;
     saveEffectEnable = prefs.getBool(SAVE_EFFECT_ENABLE_KEY) ?? false;
