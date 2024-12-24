@@ -291,7 +291,6 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
             );
           },
         );
-      default:
     }
   }
 }
