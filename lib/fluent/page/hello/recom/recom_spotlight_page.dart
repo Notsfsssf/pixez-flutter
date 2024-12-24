@@ -244,9 +244,9 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                           child: ButtonTheme(
                             data: ButtonThemeData(
                               iconButtonStyle: ButtonStyle(
-                                padding: ButtonState.all(EdgeInsets.zero),
+                                padding: WidgetStateProperty.all(EdgeInsets.zero),
                                 backgroundColor:
-                                    ButtonState.all(Colors.transparent),
+                                    WidgetStateProperty.all(Colors.transparent),
                               ),
                             ),
                             child: PixEzButton(
@@ -320,8 +320,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withOpacity(0.0),
-                            Colors.black.withOpacity(opacity),
+                            Colors.black.withValues(alpha: 255 * 0.0),
+                            Colors.black.withValues(alpha: 255 * opacity),
                           ],
                         ),
                       ),
