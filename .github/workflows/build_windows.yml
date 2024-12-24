@@ -76,7 +76,7 @@ jobs:
       - name: 生成 MSIX 安装器
         id: installer
         if: steps.msix.conclusion == 'success'
-        uses: frg2089/MsixInstaller@master
+        uses: frg2089/MsixInstaller@v1
         with:
           msix: build/windows/x64/runner/Release/pixez.msix
 
@@ -97,11 +97,11 @@ jobs:
           Write-Output '|:-|:-:|' >> $env:GITHUB_STEP_SUMMARY
           Write-Output "|[binary](${{ steps.binary-artifact.outputs.artifact-url }})|${{ steps.binary-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY
 
-          if (![string]::IsNullOrWhiteSpace($env:CERTIFICATE_PATH)) {
+          if ('${{ steps.msix-artifact.conclusion }}' -eq 'success') {
             Write-Output "|[msix](${{ steps.msix-artifact.outputs.artifact-url }})|${{ steps.msix-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
           }
 
-          if (![string]::IsNullOrWhiteSpace($env:CERTIFICATE_PATH)) {
+          if ('${{ steps.installer-artifact.conclusion }}' -eq 'success') {
             Write-Output "|[installer](${{ steps.installer-artifact.outputs.artifact-url }})|${{ steps.installer-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
           }
 
