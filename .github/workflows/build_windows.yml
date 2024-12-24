@@ -52,6 +52,7 @@ jobs:
           Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_ENV"
 
       - name: 构建 MSIX
+        id: msix
         shell: pwsh
         if: env.CERTIFICATE_PATH != ''
         env:
@@ -65,11 +66,27 @@ jobs:
 
       - name: 上传 MSIX
         id: msix-artifact
-        if: env.CERTIFICATE_PATH != ''
+        if: steps.msix.conclusion == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: msix
           path: build/windows/x64/runner/Release/pixez.msix
+          compression-level: 9
+
+      - name: 生成 MSIX 安装器
+        id: installer
+        if: steps.msix.conclusion == 'success'
+        uses: frg2089/MsixInstaller@master
+        with:
+          msix: build/windows/x64/runner/Release/pixez.msix
+
+      - name: 上传 MSIX 安装器
+        id: installer-artifact
+        if: steps.installer.conclusion == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: ${{ steps.installer.outputs.path }}
           compression-level: 9
 
       - name: 生成校验和
@@ -82,6 +99,10 @@ jobs:
 
           if (![string]::IsNullOrWhiteSpace($env:CERTIFICATE_PATH)) {
             Write-Output "|[msix](${{ steps.msix-artifact.outputs.artifact-url }})|${{ steps.msix-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
+          }
+
+          if (![string]::IsNullOrWhiteSpace($env:CERTIFICATE_PATH)) {
+            Write-Output "|[installer](${{ steps.installer-artifact.outputs.artifact-url }})|${{ steps.installer-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
           }
 
           Write-Output '' >> $env:GITHUB_STEP_SUMMARY
