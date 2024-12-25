@@ -1,0 +1,110 @@
+name: Build Windows
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v4
+
+      - name: 初始化 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+          architecture: x64
+
+      - name: 初始化 Rust 工具链
+        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+
+      - name: 还原依赖
+        run: flutter pub get
+
+      - name: 生成代码
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 构建项目
+        run: flutter build windows
+
+      - name: 上传产物
+        id: binary-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary
+          path: build/windows/x64/runner/Release/**/*
+          compression-level: 9
+
+      - name: 还原证书
+        shell: pwsh
+        if: env.CERTIFICATE != ''
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+        run: |-
+          $base64File = New-TemporaryFile
+          $certFile = (New-TemporaryFile).FullName + '.pfx'
+          Out-File -InputObject $env:CERTIFICATE -LiteralPath $base64File
+          openssl enc -base64 -d -in $base64File.FullName -out $certFile
+          Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_ENV"
+
+      - name: 构建 MSIX
+        id: msix
+        shell: pwsh
+        if: env.CERTIFICATE_PATH != ''
+        env:
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |-
+          dart run msix:create `
+            --certificate-path $env:CERTIFICATE_PATH `
+            --certificate-password $env:CERTIFICATE_PASSWORD `
+            --build-windows false `
+            --publisher (Get-PfxCertificate $env:CERTIFICATE_PATH -Password ($env:CERTIFICATE_PASSWORD | ConvertTo-SecureString -AsPlainText)).Subject
+
+      - name: 上传 MSIX
+        id: msix-artifact
+        if: steps.msix.conclusion == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: msix
+          path: build/windows/x64/runner/Release/pixez.msix
+          compression-level: 9
+
+      - name: 生成 MSIX 安装器
+        id: installer
+        if: steps.msix.conclusion == 'success'
+        uses: frg2089/MsixInstaller@v1
+        with:
+          msix: build/windows/x64/runner/Release/pixez.msix
+
+      - name: 上传 MSIX 安装器
+        id: installer-artifact
+        if: steps.installer.conclusion == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: ${{ steps.installer.outputs.path }}
+          compression-level: 9
+
+      - name: 生成校验和
+        shell: pwsh
+        run: |-
+          Write-Output '### Build Success :rocket:' >> $env:GITHUB_STEP_SUMMARY
+          Write-Output '|File|SHA256|' >> $env:GITHUB_STEP_SUMMARY
+          Write-Output '|:-|:-:|' >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "|[binary](${{ steps.binary-artifact.outputs.artifact-url }})|${{ steps.binary-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY
+
+          if ('${{ steps.msix-artifact.conclusion }}' -eq 'success') {
+            Write-Output "|[msix](${{ steps.msix-artifact.outputs.artifact-url }})|${{ steps.msix-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
+          }
+
+          if ('${{ steps.installer-artifact.conclusion }}' -eq 'success') {
+            Write-Output "|[installer](${{ steps.installer-artifact.outputs.artifact-url }})|${{ steps.installer-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
+          }
+
+          Write-Output '' >> $env:GITHUB_STEP_SUMMARY
+          Write-Output '### MSIX 安装教程' >> $env:GITHUB_STEP_SUMMARY
+          Write-Output '![image](https://github.com/Notsfsssf/pixez-flutter/assets/42184238/f1956682-f527-487d-997b-523319cd78d3)' >> $env:GITHUB_STEP_SUMMARY

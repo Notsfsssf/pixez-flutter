@@ -157,13 +157,13 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                   ),
                   data: ButtonThemeData(
                     iconButtonStyle: ButtonStyle(
-                      backgroundColor: ButtonState.all(
+                      backgroundColor: WidgetStateProperty.all(
                         FluentTheme.of(context).inactiveBackgroundColor,
                       ),
-                      shadowColor: ButtonState.all(
+                      shadowColor: WidgetStateProperty.all(
                         FluentTheme.of(context).shadowColor,
                       ),
-                      shape: ButtonState.all(CircleBorder()),
+                      shape: WidgetStateProperty.all(CircleBorder()),
                     ),
                   ),
                 ),
