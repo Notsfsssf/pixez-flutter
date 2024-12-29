@@ -42,10 +42,10 @@ packages:
     dependency: "direct main"
     description:
       name: archive
-      sha256: "08064924cbf0ab88280a0c3f60db9dd24fec693927e725ecb176f16c629d1cb8"
+      sha256: "6199c74e3db4fbfbd04f66d739e72fe11c8a8957d5f219f1f4482dbde6420b5a"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   args:
     dependency: transitive
     description:
@@ -70,14 +70,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.23"
-  auto_animated:
-    dependency: "direct main"
-    description:
-      name: auto_animated
-      sha256: f62311033d043d2709c25444551debdfd08649138c2923b0298d776792291149
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
   badges:
     dependency: "direct main"
     description:
@@ -641,14 +633,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
-  flutter_staggered_animations:
-    dependency: "direct main"
-    description:
-      name: flutter_staggered_animations
-      sha256: "81d3c816c9bb0dca9e8a5d5454610e21ffb068aedb2bde49d2f8d04f75538351"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   flutter_svg:
     dependency: transitive
     description:
@@ -847,10 +831,10 @@ packages:
     dependency: "direct main"
     description:
       name: image
-      sha256: "20842a5ad1555be624c314b0c0cc0566e8ece412f61e859a42efeb6d4101a26c"
+      sha256: "8346ad4b5173924b5ddddab782fc7d8a6300178c8b1dc427775405a01701c4a6"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.0"
+    version: "4.5.2"
   image_picker:
     dependency: "direct main"
     description:
@@ -1382,10 +1366,11 @@ packages:
   rhttp:
     dependency: "direct main"
     description:
-      name: rhttp
-      sha256: "8212cbc816cc3e761eecb8d4dbbaa1eca95de715428320a198a4e7a89acdcd2e"
-      url: "https://pub.dev"
-    source: hosted
+      path: rhttp
+      ref: main
+      resolved-ref: bee3f5998b4a01647168392513cac15f22bb1395
+      url: "https://github.com/Tienisto/rhttp.git"
+    source: git
     version: "0.9.8"
   riverpod:
     dependency: transitive
@@ -1503,10 +1488,10 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: "95f9997ca1fb9799d494d0cb2a780fd7be075818d59f00c43832ed112b158a82"
+      sha256: "3c7e73920c694a436afaf65ab60ce3453d91f84208d761fbd83fc21182134d93"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "2.3.4"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -1888,14 +1873,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3"
-  visibility_detector:
-    dependency: transitive
-    description:
-      name: visibility_detector
-      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:

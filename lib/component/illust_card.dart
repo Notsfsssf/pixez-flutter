@@ -33,6 +33,8 @@ import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// h_long.jpg
+
 class IllustCard extends StatefulWidget {
   final IllustStore store;
   final List<IllustStore>? iStores;
@@ -77,7 +79,7 @@ class _IllustCardState extends State<IllustCard> {
   Widget build(BuildContext context) {
     if (userSetting.hIsNotAllow)
       for (int i = 0; i < store.illusts!.tags.length; i++) {
-        if (store.illusts!.tags[i].name.startsWith('R-18'))
+        if (store.illusts!.tags[i].name.startsWith('R-18')) {
           return InkWell(
             onTap: () => _buildTap(context),
             onLongPress: () => _onLongPressSave(),
@@ -87,9 +89,10 @@ class _IllustCardState extends State<IllustCard> {
               clipBehavior: Clip.antiAlias,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: Image.asset('assets/images/h.jpg'),
+              child: Image.asset('assets/images/h_long.jpg'),
             ),
           );
+        }
       }
     return buildInkWell(context);
   }

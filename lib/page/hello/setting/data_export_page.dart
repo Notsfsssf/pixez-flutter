@@ -18,6 +18,11 @@ class DataExportPage extends StatefulWidget {
 
 class _DataExportPageState extends State<DataExportPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -83,6 +88,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   subtitle: Text(I18n.of(context).export_illust_history),
                   onTap: () async {
                     try {
+                      await ref.read(historyProvider.notifier).fetch();
                       await ref.read(historyProvider.notifier).exportData();
                     } catch (e) {
                       print(e);
@@ -96,6 +102,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   subtitle: Text(I18n.of(context).import_illust_history),
                   onTap: () async {
                     try {
+                      await ref.read(historyProvider.notifier).fetch();
                       await ref.read(historyProvider.notifier).importData();
                     } catch (e) {
                       print(e);

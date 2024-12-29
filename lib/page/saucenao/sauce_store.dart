@@ -138,24 +138,23 @@ abstract class SauceStoreBase with Store {
     try {
       BotToast.showText(text: "uploading");
 
-      if (!userSetting.disableBypassSni) {
-        final compatibleClient = await RhttpCompatibleClient.create(
-          settings: userSetting.disableBypassSni
-              ? null
-              : ClientSettings(
-                  tlsSettings: TlsSettings(
-                    verifyCertificates: false,
-                    sni: false,
-                  ),
-                  // dnsSettings: DnsSettings.dynamic(
-                  //   resolver: (host) async {
-                  //     return ['104.26.14.28'];
-                  //   },
-                  // )
-                  ),
-        );
-        dio.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
-      }
+      // if (!userSetting.disableBypassSni) {
+      //   final compatibleClient = await RhttpCompatibleClient.create(
+      //     settings: userSetting.disableBypassSni
+      //         ? null
+      //         : ClientSettings(
+      //             tlsSettings: TlsSettings(
+      //               verifyCertificates: false,
+      //               sni: false,
+      //             ),
+      //             dnsSettings: DnsSettings.dynamic(
+      //               resolver: (host) async {
+      //                 return ['104.26.14.28'];
+      //               },
+      //             )),
+      //   );
+      //   dio.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
+      // }
       Response response = await dio.post('/search.php', data: formData);
       BotToast.showText(text: "parsing");
       var document = parse(response.data);

@@ -26,11 +26,11 @@ dependencies:
   dio: ^5.7.0
   crypto: ^3.0.2
   path_provider: ^2.1.3
-  shared_preferences: ^2.3.3
+  shared_preferences: ^2.3.4
   share_plus: ^10.1.3
   permission_handler: ^11.3.1
-  archive: ^4.0.1
-  url_launcher: ^6.3.0
+  archive: ^4.0.2
+  url_launcher: ^6.3.1
   bot_toast: ^4.1.3
   package_info_plus: ^8.1.2
   mobx: ^2.3.3+2
@@ -39,23 +39,21 @@ dependencies:
   flutter_widget_from_html: ^0.15.2
   device_info_plus: ^11.2.0
   flutter_displaymode: ^0.6.0
-  receive_sharing_intent: ^1.8.0
+  receive_sharing_intent: ^1.8.1
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.4.1
   waterfall_flow: ^3.1.0
   animations: ^2.0.11
   font_awesome_flutter: ^10.6.0
   json_annotation: ^4.9.0
-  flutter_staggered_animations: ^1.1.1
   badges: ^3.1.2
   image_picker: ^1.1.2
   intl: ^0.19.0
   quiver: ^3.2.2
   flutter_inappwebview: ^6.1.5
-  auto_animated: ^3.2.0
   dio_cache_interceptor: ^3.5.1
   photo_view: ^0.15.0
-  image: ^4.2.0
+  image: ^4.5.2
   easy_refresh: ^3.4.0
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.5.1
@@ -73,7 +71,11 @@ dependencies:
   # Desktop Support
   flutter_acrylic: ^1.1.4
   window_manager: ^0.4.2
-  rhttp: ^0.9.8
+  rhttp:
+    git:
+      url: https://github.com/Tienisto/rhttp.git
+      path: rhttp
+      ref: main
   dio_compatibility_layer: ^0.1.0
   flutter_cache_manager_dio: ^4.0.0
 
