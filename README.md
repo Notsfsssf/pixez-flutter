@@ -65,6 +65,6 @@
 
 也可以在 Telegram 群交流反馈：[@PixEzViewer](https://t.me/PixEzChannel)
 
-Discord: [@PixEz](https://discord.gg/sBDYw5Sq)
+Discord: [@PixEz](https://discord.gg/Em9AeJbg)
 
 也可以进企鹅群交流经验或者反馈：815791942（闲聊为主）
