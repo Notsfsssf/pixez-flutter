@@ -15,7 +15,7 @@ Dapat mengakses Pixiv secara langsung dari Tiongkok Daratan.
 
 # Preview
 
-|<picture><source srcset="./.github/preview/2.avif" type="image/avif"/><img src="./.github/preview/2.jpg"/></picture> | <picture><source srcset="./.github/preview/1.avif" type="image/avif"/><img src="./.github/preview/1.jpg"/></picture> | 
+|<picture><source srcset="../.github/preview/2.avif" type="image/avif"/><img src="../.github/preview/2.jpg"/></picture> | <picture><source srcset="../.github/preview/1.avif" type="image/avif"/><img src="../.github/preview/1.jpg"/></picture> | 
 |:-------------------:|:------------------------:|
 
 # Tentang repositori ini
