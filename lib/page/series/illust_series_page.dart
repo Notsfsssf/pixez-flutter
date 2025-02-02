@@ -12,8 +12,6 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
-import 'package:pixez/models/illust_series_detail.dart';
-import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/series/illust_series_notifier.dart';
