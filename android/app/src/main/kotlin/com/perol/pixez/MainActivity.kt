@@ -59,14 +59,14 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
     private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
-    var saveMode = 0
+    private var saveMode = 0
     private val OPEN_DOCUMENT_TREE_CODE = 190
     private val PICK_IMAGE_FILE = 2
-    var pendingResult: MethodChannel.Result? = null
-    var pendingPickResult: MethodChannel.Result? = null
-    var helplessPath: String? = null
+    private var pendingResult: MethodChannel.Result? = null
+    private var pendingPickResult: MethodChannel.Result? = null
+    private var helplessPath: String? = null
     private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -387,7 +387,6 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun encodeGif(name: String, path: String, delay: Int, delayArray: List<Int>) {
-
         val file = File(path)
         file.let {
             val tempFile = File(
@@ -474,7 +473,7 @@ class MainActivity : FlutterActivity() {
                 contentResolver.openOutputStream(uri!!, "w")?.use { outputStream ->
                     outputStream.write(tempFile.inputStream().readBytes())
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 tempFile.delete()
                 it.deleteRecursively()
@@ -588,26 +587,18 @@ class MainActivity : FlutterActivity() {
         if (fileName.contains("/")) {
             val names = fileName.split("/")
             if (names.size >= 2) {
-                val fName = names.last()
-                val folderName = names.first()
-                if (clearOld && fName.contains("_p0"))
-                    treeDocument.findFile(fName.replace("_p0", ""))
-                var folderDocument = treeDocument.findFile(folderName)
-                if (folderDocument == null) {
-                    val tempFolderDocument = treeDocument.createDirectory(folderName)
-                    folderDocument = treeDocument.findFile(folderName)
-                    if (tempFolderDocument != null && folderDocument != null) {
-                        if (tempFolderDocument.uri != folderDocument.uri) {
-                            // 文件夹已经被创建过
-                            tempFolderDocument.delete()
-                        }
+                try {
+                    var folderDocument: DocumentFile? = treeDocument
+                    val fName = names.last()
+                    val list = names.subList(0, names.size - 1)
+                    for (name in list) {
+                        folderDocument = folderDocument!!.findFile(name)
+                            ?: folderDocument.createDirectory(name)!!
                     }
+                    return folderDocument?.createFile(mimeType, fName)?.uri
+                } catch (e: Throwable) {
+                    return null
                 }
-                val file = folderDocument?.findFile(fName)
-                if (file != null && file.exists()) {
-                    file.delete()
-                }
-                return folderDocument?.createFile(mimeType, fName)?.uri
             }
         }
         if (clearOld && fileName.contains("_p0"))

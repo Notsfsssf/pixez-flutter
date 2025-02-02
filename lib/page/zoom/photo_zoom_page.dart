@@ -155,7 +155,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 },
                 icon: Icon(
                   Icons.fullscreen_exit,
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white.withValues(alpha: 0.5),
                 ))
           ],
         ),

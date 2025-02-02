@@ -301,5 +301,11 @@
   "hide": "Hide",
   "reveal": "Reveal",
   "illust_page": "Illust page",
-  "novel_page": "Novel page"
+  "novel_page": "Novel page",
+  "export_mute_data": "Export mute data",
+  "import_mute_data": "Import mute data",
+  "watchlist_added": "Watchlist added",
+  "add_to_watchlist": "Add to watchlist",
+  "watchlist": "Watchlist",
+  "view_latest": "View latest"
 }

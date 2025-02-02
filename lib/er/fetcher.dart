@@ -319,6 +319,10 @@ entryPoint(SendMessage message) async {
                       min: min, total: total, url: taskBean.url!)));
             }).then((value) {
               File file = File(savePath);
+              // create dir
+              if (!file.parent.existsSync()) {
+                file.parent.createSync(recursive: true);
+              }
               file.writeAsBytesSync(value.body);
               sendPort.send(
                   IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));

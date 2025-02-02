@@ -299,5 +299,11 @@
   "hide": "隐藏",
   "reveal": "揭露",
   "illust_page": "插畫頁面",
-  "novel_page": "小說頁面"
+  "novel_page": "小說頁面",
+  "export_mute_data": "導出屏蔽數據",
+  "import_mute_data": "導入屏蔽數據",
+  "watchlist_added": "已添加到追更列表",
+  "add_to_watchlist": "添加到追更列表",
+  "watchlist": "追更列表",
+  "view_latest": "查看最新"
 }

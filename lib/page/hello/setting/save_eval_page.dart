@@ -51,6 +51,7 @@ class _SaveEvalPageState extends State<SaveEvalPage> {
       xRestrict: 0,
       metaPages: [],
       totalView: 100000,
+      totalComments: 1,
       totalBookmarks: 1000,
       isBookmarked: false,
       visible: true,

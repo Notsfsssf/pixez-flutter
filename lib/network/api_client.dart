@@ -586,4 +586,37 @@ class ApiClient {
         data: notNullMap({"series_id": seriesId}),
         options: Options(contentType: Headers.formUrlEncodedContentType));
   }
+
+  // /v1/watchlist/manga
+  Future<Response> watchListManga() async {
+    return httpClient.get('/v1/watchlist/manga');
+  }
+
+  // /v1/illust/series?filter=for_ios&illust_series_id=
+  Future<Response> illustSeries(int illustSeriesId) async {
+    return httpClient.get('/v1/illust/series', queryParameters: {
+      'illust_series_id': illustSeriesId,
+    });
+  }
+
+  // watchlist/manga/add
+  Future<Response> watchListMangaAdd(int seriesId) async {
+    return httpClient.post('/v1/watchlist/manga/add',
+        data: notNullMap({"series_id": seriesId}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  // watchlist/manga/delete
+  Future<Response> watchListMangaDelete(int seriesId) async {
+    return httpClient.post('/v1/watchlist/manga/delete',
+        data: notNullMap({"series_id": seriesId}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  // v1/illust-series/illust
+  Future<Response> illustSeriesIllust(int illustId) async {
+    return httpClient.get('/v1/illust-series/illust', queryParameters: {
+      'illust_id': illustId,
+    });
+  }
 }

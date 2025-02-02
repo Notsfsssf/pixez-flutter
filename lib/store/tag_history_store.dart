@@ -15,13 +15,16 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/saf_plugin.dart';
+import 'package:share_plus/share_plus.dart';
 
 part 'tag_history_store.g.dart';
 
@@ -83,14 +86,28 @@ abstract class _TagHistoryStoreBase with Store {
     await fetch();
   }
 
-  Future<void> exportData() async {
-    await tagsPersistProvider.open();
-    final uriStr =
-        await SAFPlugin.createFile("tag_history.json", "application/json");
-    if (uriStr == null) return;
-    await tagsPersistProvider.open();
-    final exportData = ExportData(tagHisotry: await tagsPersistProvider.getAllAccount());
-    await SAFPlugin.writeUri(
-        uriStr, Uint8List.fromList(utf8.encode(jsonEncode(exportData))));
+  Future<void> exportData(BuildContext context) async {
+    if (Platform.isIOS) {
+      await tagsPersistProvider.open();
+      final exportData =
+          ExportData(tagHisotry: await tagsPersistProvider.getAllAccount());
+      final uint8List = Uint8List.fromList(utf8.encode(jsonEncode(exportData)));
+      final box = context.findRenderObject() as RenderBox?;
+      Rect? rect;
+      if (box != null) {
+        rect = box.localToGlobal(Offset.zero) & box.size;
+      }
+      Share.shareXFiles([XFile.fromData(uint8List)], sharePositionOrigin: rect);
+    } else if (Platform.isAndroid) {
+      await tagsPersistProvider.open();
+      final uriStr =
+          await SAFPlugin.createFile("tag_history.json", "application/json");
+      if (uriStr == null) return;
+      await tagsPersistProvider.open();
+      final exportData =
+          ExportData(tagHisotry: await tagsPersistProvider.getAllAccount());
+      await SAFPlugin.writeUri(
+          uriStr, Uint8List.fromList(utf8.encode(jsonEncode(exportData))));
+    }
   }
 }

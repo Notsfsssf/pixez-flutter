@@ -51,6 +51,40 @@ class MetaPagesImageUrls {
   Map<String, dynamic> toJson() => _$MetaPagesImageUrlsToJson(this);
 }
 
+extension IllustsExtension on Illusts {
+  String get illustDetailUrl => switch (userSetting.pictureQuality) {
+        0 => imageUrls.medium,
+        1 => imageUrls.large,
+        2 => metaPages.firstOrNull?.imageUrls?.original ??
+            metaSinglePage!.originalImageUrl!,
+        _ => imageUrls.medium,
+      };
+
+  String get managaDetailUrl => switch (userSetting.mangaQuality) {
+        0 => imageUrls.medium,
+        1 => imageUrls.large,
+        2 => metaPages.firstOrNull?.imageUrls?.original ??
+            metaSinglePage!.originalImageUrl!,
+        _ => imageUrls.medium,
+      };
+
+  String illustDetailImageUrl(int index) =>
+      switch (userSetting.pictureQuality) {
+        0 => metaPages[index].imageUrls!.medium,
+        1 => metaPages[index].imageUrls!.large,
+        2 => metaPages[index].imageUrls!.original,
+        _ => metaPages[index].imageUrls!.medium,
+      };
+
+  String managaDetailImageUrl(int index) =>
+      switch (userSetting.mangaQuality) {
+        0 => metaPages[index].imageUrls!.medium,
+        1 => metaPages[index].imageUrls!.large,
+        2 => metaPages[index].imageUrls!.original,
+        _ => metaPages[index].imageUrls!.medium,
+      };
+}
+
 @JsonSerializable()
 class Illusts {
   int id;
@@ -73,7 +107,6 @@ class Illusts {
   int sanityLevel;
   @JsonKey(name: 'x_restrict')
   int xRestrict;
-  Object? series;
   @JsonKey(name: 'meta_single_page')
   MetaSinglePage? metaSinglePage;
   @JsonKey(name: 'meta_pages')
@@ -89,6 +122,11 @@ class Illusts {
   bool isMuted;
   @JsonKey(name: 'illust_ai_type')
   int illustAIType;
+  IllustSeries? series;
+  @JsonKey(name: 'illust_book_style')
+  int? illustBookStyle;
+  @JsonKey(name: 'total_comments')
+  int? totalComments;
 
   Illusts(
       {required this.id,
@@ -108,18 +146,33 @@ class Illusts {
       required this.xRestrict,
       this.series,
       this.metaSinglePage,
+      this.illustBookStyle,
       required this.metaPages,
       required this.totalView,
       required this.totalBookmarks,
       required this.isBookmarked,
       required this.visible,
       required this.isMuted,
-      required this.illustAIType});
+      required this.illustAIType,
+      required this.totalComments});
 
   factory Illusts.fromJson(Map<String, dynamic> json) =>
       _$IllustsFromJson(json);
 
   Map<String, dynamic> toJson() => _$IllustsToJson(this);
+}
+
+@JsonSerializable()
+class IllustSeries {
+  int id;
+  String? title;
+
+  IllustSeries({required this.id, required this.title});
+
+  factory IllustSeries.fromJson(Map<String, dynamic> json) =>
+      _$IllustSeriesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$IllustSeriesToJson(this);
 }
 
 @JsonSerializable()
@@ -208,3 +261,4 @@ class MetaSinglePage {
 
   Map<String, dynamic> toJson() => _$MetaSinglePageToJson(this);
 }
+// {"illust":{"id":125547965,"title":"X'max Present 下篇","type":"manga","image_urls":{"square_medium":"https://i.pximg.net/c/360x360_70/img-master/img/2024/12/26/01/27/47/125547965_p0_square1200.jpg","medium":"https://i.pximg.net/c/540x540_70/img-master/img/2024/12/26/01/27/47/125547965_p0_master1200.jpg","large":"https://i.pximg.net/c/600x1200_90/img-master/img/2024/12/26/01/27/47/125547965_p0_master1200.jpg"},"caption":"テメェ...アロナ！！💢","restrict":0,"user":{"id":4004637,"name":"幻羽","account":"9365710x","profile_image_urls":{"medium":"https://i.pximg.net/user-profile/img/2023/09/15/12/22/50/24938498_0b12205fb7799c6445233c446333cd43_170.jpg"},"is_followed":false},"tags":[{"name":"R-18","translated_name":null},{"name":"漫画","translated_name":"manga"},{"name":"ブルーアーカイブ","translated_name":"碧蓝档案"},{"name":"ブルアカ","translated_name":null},{"name":"BlueArchive","translated_name":null},{"name":"アロナ(ブルーアーカイブ)","translated_name":"Alona (Blue Archive)"},{"name":"プラナ(ブルーアーカイブ)","translated_name":"Plana (Blue Archive)"}],"tools":[],"create_date":"2024-12-26T01:27:47+09:00","page_count":2,"width":3031,"height":4238,"sanity_level":6,"x_restrict":1,"series":{"id":266067,"title":"X'max Present"},"meta_single_page":{},"meta_pages":[{"image_urls":{"square_medium":"https://i.pximg.net/c/360x360_70/img-master/img/2024/12/26/01/27/47/125547965_p0_square1200.jpg","medium":"https://i.pximg.net/c/540x540_70/img-master/img/2024/12/26/01/27/47/125547965_p0_master1200.jpg","large":"https://i.pximg.net/c/600x1200_90/img-master/img/2024/12/26/01/27/47/125547965_p0_master1200.jpg","original":"https://i.pximg.net/img-original/img/2024/12/26/01/27/47/125547965_p0.jpg"}},{"image_urls":{"square_medium":"https://i.pximg.net/c/360x360_70/img-master/img/2024/12/26/01/27/47/125547965_p1_square1200.jpg","medium":"https://i.pximg.net/c/540x540_70/img-master/img/2024/12/26/01/27/47/125547965_p1_master1200.jpg","large":"https://i.pximg.net/c/600x1200_90/img-master/img/2024/12/26/01/27/47/125547965_p1_master1200.jpg","original":"https://i.pximg.net/img-original/img/2024/12/26/01/27/47/125547965_p1.jpg"}}],"total_view":12394,"total_bookmarks":1298,"is_bookmarked":true,"visible":true,"is_muted":false,"total_comments":11,"illust_ai_type":1,"illust_book_style":0,"restriction_attributes":["restricted_mode"],"comment_access_control":0}}

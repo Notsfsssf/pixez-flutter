@@ -30,7 +30,7 @@ class _SearchBarState extends State<SearchBar> {
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          color: Colors.grey.withOpacity(0.4)),
+          color: Colors.grey.withValues(alpha: 0.4)),
       child: Container(
         height: 48,
         child: Row(

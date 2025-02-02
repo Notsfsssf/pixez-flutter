@@ -16,6 +16,7 @@
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -213,7 +214,14 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           onPressed: () {
             _filter.clear();
           },
-        )
+        ),
+        IconButton(
+          icon: Icon(Icons.content_copy,
+              color: Theme.of(context).textTheme.bodyLarge!.color),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: _filter.text));
+          },
+        ),
       ],
     );
   }

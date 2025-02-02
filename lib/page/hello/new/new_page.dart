@@ -25,6 +25,7 @@ import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/hello/new/illust/new_illust_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/user/bookmark/bookmark_page.dart';
+import 'package:pixez/page/watchlist/watchlist.dart';
 
 class NewPage extends StatefulWidget {
   final String newRestrict, bookRestrict, painterRestrict;
@@ -91,6 +92,9 @@ class _NewPageState extends State<NewPage>
                       text: I18n.of(context).bookmark,
                     ),
                     Tab(
+                      text: I18n.of(context).watchlist,
+                    ),
+                    Tab(
                       text: I18n.of(context).followed,
                     ),
                   ]),
@@ -120,6 +124,7 @@ class _NewPageState extends State<NewPage>
                     isNested: false,
                     id: int.parse(accountStore.now!.userId),
                   ),
+                  WatchlistPage(),
                   FollowList(
                     id: int.parse(accountStore.now!.userId),
                   ),

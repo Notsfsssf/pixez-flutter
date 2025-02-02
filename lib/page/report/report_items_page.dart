@@ -43,7 +43,7 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
                 final title = items[index];
                 return Container(
                   color: index == _selectItem
-                      ? Theme.of(context).primaryColor.withOpacity(0.5)
+                      ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
                       : Colors.transparent,
                   child: ListTile(
                     title: Text(title),

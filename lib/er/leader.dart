@@ -32,6 +32,7 @@ import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/series/illust_series_page.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -65,6 +66,14 @@ class Leader {
       final id = int.tryParse(link.pathSegments.last);
       if (id != null) {
         Leader.push(context, NovelSeriesPage(id));
+        return true;
+      }
+    }
+    // https://www.pixiv.net/user/4004637/series/266067
+    if (link.path.contains("series") && link.path.contains("user")) {
+      final id = int.tryParse(link.pathSegments.last);
+      if (id != null) {
+        Leader.push(context, IllustSeriesPage(id: id));
         return true;
       }
     }

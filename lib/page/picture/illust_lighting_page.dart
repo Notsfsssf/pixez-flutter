@@ -477,16 +477,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ? SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                String url = userSetting.pictureQuality == 1
-                    ? data.imageUrls.large
-                    : data.imageUrls.medium;
+                String url = data.illustDetailUrl;
                 if (data.type == "manga") {
-                  if (userSetting.mangaQuality == 0)
-                    url = data.imageUrls.medium;
-                  else if (userSetting.mangaQuality == 1)
-                    url = data.imageUrls.large;
-                  else
-                    url = data.metaSinglePage!.originalImageUrl!;
+                  url = data.managaDetailUrl;
                 }
                 Widget placeWidget = Container(height: height);
                 return InkWell(
@@ -569,13 +562,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   Widget _buildIllustsItem(int index, Illusts illust, double height) {
     if (illust.type == "manga") {
-      String url;
-      if (userSetting.mangaQuality == 0)
-        url = illust.metaPages[index].imageUrls!.medium;
-      else if (userSetting.mangaQuality == 1)
-        url = illust.metaPages[index].imageUrls!.large;
-      else
-        url = illust.metaPages[index].imageUrls!.original;
+      String url = illust.managaDetailImageUrl(index);
       if (index == 0)
         return NullHero(
           child: PixivImage(
@@ -604,10 +591,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       );
     }
     return index == 0
-        ? (userSetting.pictureQuality == 1
+        ? (userSetting.pictureQuality >= 1
             ? NullHero(
                 child: PixivImage(
-                  illust.metaPages[index].imageUrls!.large,
+                  illust.illustDetailImageUrl(index),
                   placeWidget: PixivImage(
                     illust.metaPages[index].imageUrls!.medium,
                     fade: false,
@@ -624,9 +611,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 tag: widget.heroString,
               ))
         : PixivImage(
-            userSetting.pictureQuality == 0
-                ? illust.metaPages[index].imageUrls!.medium
-                : illust.metaPages[index].imageUrls!.large,
+            illust.illustDetailImageUrl(index),
             fade: false,
             placeWidget: Container(
               height: 150,

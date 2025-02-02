@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -30,7 +29,6 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -822,7 +820,8 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               metaPages: [],
               type: '',
               width: 0,
-              series: Object(),
+              series: null,
+              totalComments: 0,
               totalBookmarks: 0,
               visible: false,
               isMuted: false,

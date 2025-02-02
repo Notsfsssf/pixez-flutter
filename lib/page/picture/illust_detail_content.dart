@@ -14,6 +14,7 @@ import 'package:pixez/page/comment/comment_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/user_follow_button.dart';
 import 'package:pixez/page/search/result_page.dart';
+import 'package:pixez/page/series/illust_series_page.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/supportor_plugin.dart';
@@ -116,6 +117,23 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
               ),
             ),
           ),
+          if (data.series != null)
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => IllustSeriesPage(
+                          id: data.series!.id,
+                        )));
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                  margin: EdgeInsets.only(left: 0, bottom: 0),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '${data.series?.title ?? ''}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )),
+            ),
           SizedBox(
             height: 8.0,
           ),

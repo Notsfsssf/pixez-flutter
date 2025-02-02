@@ -139,9 +139,12 @@ class NovelSeriesPage extends HookConsumerWidget {
                           height: 60,
                         ),
                         SelectionArea(
-                          child: Text(
-                            "${data.novelSeriesDetail.title}",
-                            style: Theme.of(context).textTheme.titleMedium,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              "${data.novelSeriesDetail.title}",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ),
                         ),
                         SelectionArea(

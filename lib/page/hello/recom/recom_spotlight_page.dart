@@ -285,8 +285,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    Colors.black.withOpacity(0.0),
-                                    Colors.black.withOpacity(0.5),
+                                    Colors.black.withValues(alpha: 0.0),
+                                    Colors.black.withValues(alpha: 0.5),
                                   ],
                                 )),
                                 child: Padding(

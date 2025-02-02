@@ -151,7 +151,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         child: NavigationBar(
           height: 68,
           backgroundColor:
-              Theme.of(context).colorScheme.surface.withOpacity(0.9),
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
           destinations: [
             NavigationDestination(
                 icon: Icon(Icons.home), label: I18n.of(context).home),

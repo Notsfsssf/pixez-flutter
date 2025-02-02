@@ -127,7 +127,11 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               title: Text(I18n.of(context).illustration_detail_page_quality),
               trailing: SettingSelectMenu(
                 index: userSetting.pictureQuality,
-                items: [I18n.of(context).medium, I18n.of(context).large],
+                items: [
+                  I18n.of(context).medium,
+                  I18n.of(context).large,
+                  I18n.of(context).source
+                ],
                 onChange: (index) {
                   userSetting.setPictureQuality(index);
                 },
