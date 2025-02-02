@@ -68,6 +68,7 @@
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
+            android:colorMode="wideColorGamut"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
 
