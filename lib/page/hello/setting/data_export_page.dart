@@ -60,17 +60,19 @@ class _DataExportPageState extends State<DataExportPage> {
                 },
               ),
               Divider(),
-              ListTile(
-                title: Text(I18n.of(context).export_title),
-                subtitle: Text(I18n.of(context).export_bookmark_tag),
-                onTap: () async {
-                  try {
-                    await bookTagStore.exportData();
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-              ),
+              Builder(builder: (context) {
+                return ListTile(
+                  title: Text(I18n.of(context).export_title),
+                  subtitle: Text(I18n.of(context).export_bookmark_tag),
+                  onTap: () async {
+                    try {
+                      await bookTagStore.exportData(context);
+                    } catch (e) {
+                      print(e);
+                    }
+                  },
+                );
+              }),
               ListTile(
                 title: Text(I18n.of(context).import_title),
                 subtitle: Text(I18n.of(context).import_bookmark_tag),
@@ -91,7 +93,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   onTap: () async {
                     try {
                       await ref.read(historyProvider.notifier).fetch();
-                      await ref.read(historyProvider.notifier).exportData();
+                      await ref.read(historyProvider.notifier).exportData(context);
                     } catch (e) {
                       print(e);
                     }
@@ -120,7 +122,7 @@ class _DataExportPageState extends State<DataExportPage> {
                   subtitle: Text(I18n.of(context).export_mute_data),
                   onTap: () async {
                     try {
-                      await muteStore.export();
+                      await muteStore.export(context);
                     } catch (e) {
                       print(e);
                     }

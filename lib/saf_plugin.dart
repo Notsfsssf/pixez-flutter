@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 
 class SAFPlugin {
@@ -17,6 +20,15 @@ class SAFPlugin {
   }
 
   static Future<Uint8List?> openFile() async {
+    if (Platform.isIOS) {
+      try {
+        FilePickerResult? result = await FilePicker.platform.pickFiles();
+        if (result != null) {
+          return File(result.files.single.path!).readAsBytes();
+        }
+      } catch (e) {}
+      return null;
+    }
     return platform
         .invokeMethod<Uint8List>("openFile", {'type': "application/json"});
   }

@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
 import 'package:pixez/saf_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,12 +68,16 @@ abstract class _BookTagStoreBase with Store {
     await init();
   }
 
-  Future<void> exportData() async {
-    final uriStr =
-        await SAFPlugin.createFile("${EXPORT_TYPE}.json", "application/json");
-    if (uriStr == null) return;
+  Future<void> exportData(BuildContext context) async {
     final exportData = ExportData(bookTags: bookTagList.toList());
-    await SAFPlugin.writeUri(
-        uriStr, Uint8List.fromList(utf8.encode(jsonEncode(exportData))));
+    final uint8List = utf8.encode(jsonEncode(exportData));
+    if (Platform.isIOS) {
+      await Sharer.exportUint8List(context, uint8List, '${EXPORT_TYPE}.json');
+    } else {
+      final uriStr =
+          await SAFPlugin.createFile("${EXPORT_TYPE}.json", "application/json");
+      if (uriStr == null) return;
+      await SAFPlugin.writeUri(uriStr, uint8List);
+    }
   }
 }
