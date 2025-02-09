@@ -106,9 +106,6 @@
 
 另外，**请不要删除这个文件夹**（主动删除或使用空文件夹清理等功能误删）——删除之后，应用本身没有再次创建文件夹的权限，会导致之后保存图片失败。解决方法也很简单，重新建立文件夹即可。
 
-|![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/1.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/2.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/3.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/4.jpg) | ![Preview](https://cdn.jsdelivr.net/gh/Romani-Archman/mycdn@1.3/img/5.jpg) |
-|:---:|:---:|:---:|:---:|:---:|
-
 #### 传统模式
 
 我们同样推荐选择保存在 `Pictures/PixEz` （完整路径可能是 `/storage/emulated/0/Pictures/PixEz`）下。
