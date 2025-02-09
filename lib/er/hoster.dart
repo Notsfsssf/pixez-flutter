@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
 import 'package:rhttp/rhttp.dart' as r;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Hoster {
   static Map<String, dynamic> _map = Map();
@@ -62,13 +62,10 @@ class Hoster {
     }
   }
 
-  static SharedPreferences? prefs;
-
   static Future<void> initMap() async {
     try {
-      prefs ??= await SharedPreferences.getInstance();
       for (var key in QUERY_HOST) {
-        final value = prefs?.getString('h_hoster_$key');
+        final value = Prefer.getString('h_hoster_$key');
         if (value != null) {
           _map[key] = value;
         }
@@ -98,8 +95,7 @@ class Hoster {
         bool allNum = num.every((element) => int.tryParse(element) != null);
         if (allNum) {
           _map[name] = host;
-          prefs ??= await SharedPreferences.getInstance();
-          prefs?.setString('h_hoster_$name', host);
+          Prefer.setString('h_hoster_$name', host);
         }
       }
       LPrinter.d(host);

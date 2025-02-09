@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pixez/er/prefer.dart';
 
 part 'directory_store.g.dart';
 
@@ -33,7 +33,6 @@ abstract class _DirectoryStoreBase with Store {
 
   @observable
   ObservableList<FileSystemEntity> list = ObservableList();
-  late SharedPreferences _preferences;
 
   @action
   Future<void> enterFolder(Directory fileSystemEntity) async {
@@ -61,7 +60,7 @@ abstract class _DirectoryStoreBase with Store {
     if (!path!.contains("/storage/emulated/0")) {
       return;
     }
-    await _preferences.setString("store_path", path!);
+    await Prefer.setString("store_path", path!);
     checkSuccess = true;
   }
 
@@ -91,10 +90,9 @@ abstract class _DirectoryStoreBase with Store {
 
   @action
   Future<void> init(String? initPath) async {
-    _preferences = await SharedPreferences.getInstance();
     try {
       path = initPath ??
-          _preferences.getString("store_path") ??
+          Prefer.getString("store_path") ??
           (await getExternalStorageDirectory())!.path; //绝了
       final directory = Directory(path!);
       if (!directory.existsSync()) {

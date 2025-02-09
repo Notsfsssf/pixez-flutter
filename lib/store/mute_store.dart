@@ -21,6 +21,7 @@ import 'dart:typed_data';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/ban_comment_persist.dart';
 import 'package:pixez/models/ban_illust_id.dart';
@@ -51,15 +52,13 @@ abstract class _MuteStoreBase with Store {
 
   @action
   Future<void> changeBanAI(bool value) async {
-    var instance = await SharedPreferences.getInstance();
-    await instance.setBool("ban_ai_illust", value);
+    await Prefer.setBool("ban_ai_illust", value);
     banAIIllust = value;
   }
 
   @action
   Future<void> fetchBanAI() async {
-    var instance = await SharedPreferences.getInstance();
-    final result = instance.getBool("ban_ai_illust") ?? false;
+    final result = Prefer.getBool("ban_ai_illust") ?? false;
     banAIIllust = result;
   }
 

@@ -305,5 +305,22 @@
   "watchlist_added": "Watchlist ditambahkan",
   "add_to_watchlist": "Tambahkan ke watchlist",
   "watchlist": "Watchlist",
-  "view_latest": "Lihat yang terbaru"
+  "view_latest": "Lihat yang terbaru",
+  "storage_permission_denied": "Storage permission denied",
+  "dont_show_again": "Don't show again",
+  "custom_host": "Custom Host",
+  "network_tip": "If you cannot load images, you can try switching image sources, you can return to this page by going to the settings page",
+  "account": "Account",
+  "save_wait_time_warning": "It may cause a long waiting time for saving.",
+  "uploading": "Uploading",
+  "parsing": "parsing",
+  "no_more": "No more",
+  "delete_tag": "Delete this tag?",
+  "no_result": "0 result",
+  "pre":"Pre",
+  "next":"Next",
+  "submit": "Submit",
+  "thanks_for_your_feedback": "Thanks for your feedback",
+  "input": "Input",
+  "remember_current_selections": "Remember current selections"
 }

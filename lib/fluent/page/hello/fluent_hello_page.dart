@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/fluent/component/pixez_global_shortkey_listener.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
@@ -20,7 +21,6 @@ import 'package:pixez/fluent/page/login/login_page.dart';
 import 'package:pixez/fluent/page/preview/preview_page.dart';
 import 'package:pixez/fluent/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/fluent/page/user/users_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
 class FluentHelloPage extends StatefulWidget {
@@ -63,8 +63,7 @@ class FluentHelloPageState extends State<FluentHelloPage> with WindowListener {
   }
 
   Future<void> initPlatformState() async {
-    var prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('language_num') == null) {
+    if (Prefer.getInt('language_num') == null) {
       Navigator.of(context)
           .pushReplacement(FluentPageRoute(builder: (context) => GuidePage()));
     }

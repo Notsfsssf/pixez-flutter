@@ -54,10 +54,10 @@ class _NetworkPageState extends State<NetworkPage> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                "tip:如果不能载图，可以尝试切换图床，你可以在设置页重新回到这里",
+                I18n.of(context).network_tip,
                 style: TextStyle(
                   fontSize: 12.0,
                   color: Colors.grey,
@@ -200,7 +200,7 @@ class _NetworkPageState extends State<NetworkPage> {
                                   color: Colors.black,
                                 ),
                               ),
-                              labelText: 'Custom Host',
+                              labelText: I18n.of(context).custom_host,
                             ),
                           ),
                         ),

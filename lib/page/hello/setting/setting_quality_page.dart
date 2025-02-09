@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
@@ -40,7 +41,6 @@ class SettingQualityPage extends StatefulWidget {
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
   final _typeList = ["follow_illust", "recom", "rank"];
-  SharedPreferences? _pref;
   int _widgetTypeIndex = -1;
   GlanceIllustPersistProvider glanceIllustPersistProvider =
       GlanceIllustPersistProvider();
@@ -52,8 +52,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   }
 
   _initData() async {
-    _pref = await SharedPreferences.getInstance();
-    final type = await _pref?.getString("widget_illust_type") ?? "recom";
+    final type = await Prefer.getString("widget_illust_type") ?? "recom";
     int index = _typeList.indexOf(type);
     if (index != -1) {
       setState(() {
@@ -283,7 +282,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   onChange: (index) async {
                     try {
                       final type = _typeList[index];
-                      await _pref?.setString("widget_illust_type", type);
+                      await Prefer.setString("widget_illust_type", type);
                       await glanceIllustPersistProvider.open();
                       await glanceIllustPersistProvider.deleteAll();
                     } catch (e) {}

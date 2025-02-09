@@ -119,7 +119,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (context) {
         return ContentDialog(
           title: Text(I18n.of(context).delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).delete_tag),
           actions: [
             Button(
               child: Text(I18n.of(context).cancel),
@@ -153,7 +153,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (context) {
         return ContentDialog(
           title: Text(I18n.of(context).delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).delete_tag),
           actions: [
             Button(
               child: Text(I18n.of(context).cancel),
@@ -187,7 +187,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (context) {
         return ContentDialog(
           title: Text(I18n.of(context).delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).delete_tag),
           actions: [
             Button(
               child: Text(I18n.of(context).cancel),

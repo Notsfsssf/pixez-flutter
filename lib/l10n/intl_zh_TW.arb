@@ -305,5 +305,22 @@
   "watchlist_added": "已添加到追更列表",
   "add_to_watchlist": "添加到追更列表",
   "watchlist": "追更列表",
-  "view_latest": "查看最新"
+  "view_latest": "查看最新",
+  "storage_permission_denied": "未取得存储权限",
+  "dont_show_again": "不再显示",
+  "custom_host": "自定义图床",
+  "network_tip": "tip:如果不能载图，可以尝试切换图床，你可以在设置页重新回到这里",
+  "account": "账号",
+  "save_wait_time_warning": "可能会造成保存等待时间过长",
+  "uploading": "上传中",
+  "parsing": "解析中",
+  "no_more": "没有更多了",
+  "delete_tag": "删除标签？",
+  "no_result": "0 结果",
+  "pre":"上一页",
+  "next":"下一页",
+  "submit": "提交",
+  "thanks_for_your_feedback": "感谢反馈",
+  "input": "输入",
+  "remember_current_selections": "记住当前选择"
 }

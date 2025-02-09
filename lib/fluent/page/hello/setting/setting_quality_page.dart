@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -28,7 +29,6 @@ import 'package:pixez/fluent/page/hello/setting/copy_text_page.dart';
 import 'package:pixez/fluent/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/fluent/page/network/network_page.dart';
 import 'package:pixez/fluent/page/platform/platform_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingQualityPage extends StatefulWidget {
@@ -41,7 +41,6 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   late Widget _languageTranlator;
 
   final _typeList = ["rank", "follow_illust", "recom"];
-  SharedPreferences? _pref;
   int _widgetTypeIndex = -1;
 
   @override
@@ -52,8 +51,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   }
 
   _initData() async {
-    _pref = await SharedPreferences.getInstance();
-    final type = await _pref?.getString("widget_illust_type") ?? "recom";
+    final type = await Prefer.getString("widget_illust_type") ?? "recom";
     int index = _typeList.indexOf(type);
     if (index == -1) {
       setState(() {
@@ -428,7 +426,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         .toList(),
                     onChanged: (index) async {
                       final type = _typeList[index!];
-                      await _pref?.setString("widget_illust_type", type);
+                      await Prefer.setString("widget_illust_type", type);
                     },
                   );
                 })

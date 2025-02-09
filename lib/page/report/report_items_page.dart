@@ -70,9 +70,9 @@ class _ReportItemsPageState extends State<ReportItemsPage> {
                   await widget.onSubmit();
                   BotToast.closeAllLoading();
                   Navigator.of(context).pop();
-                  BotToast.showText(text: "Thanks for your feedback");
+                  BotToast.showText(text: I18n.ofContext().thanks_for_your_feedback);
                 },
-                child: Text("Submit"),
+                child: Text(I18n.ofContext().submit),
               ),
             ),
           )

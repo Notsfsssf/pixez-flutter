@@ -19,9 +19,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/document_plugin.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'directory_page.dart';
@@ -256,7 +256,6 @@ Future _helplessfun(BuildContext context, {bool isFirst = false}) async {
             initPath: initPath,
           )));
   if (path != null) {
-    final _preferences = await SharedPreferences.getInstance();
-    await _preferences.setString('store_path', path);
+    await Prefer.setString('store_path', path);
   }
 }

@@ -22,6 +22,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/guide_page.dart';
@@ -90,8 +91,7 @@ class _HelloPageState extends State<HelloPage> {
   }
 
   Future<void> initPlatformState() async {
-    var prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('language_num') == null) {
+    if (Prefer.getInt('language_num') == null) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => GuidePage()));
     }

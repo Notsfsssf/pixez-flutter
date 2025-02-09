@@ -41,6 +41,7 @@ import com.perol.pixez.plugin.JsEvalPlugin
 import com.perol.pixez.plugin.OpenSettinger
 import com.perol.pixez.plugin.Safer
 import com.perol.pixez.plugin.SecurePlugin
+import com.perol.pixez.plugin.SupporterPlugin
 import com.perol.pixez.plugin.Weiss
 import com.perol.pixez.plugin.exist
 import com.perol.pixez.plugin.save
@@ -58,7 +59,6 @@ import java.util.*
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
-    private val SUPPORTER_CHANNEL = "com.perol.dev/supporter"
     private var saveMode = 0
     private val OPEN_DOCUMENT_TREE_CODE = 190
     private val PICK_IMAGE_FILE = 2
@@ -68,13 +68,13 @@ class MainActivity : FlutterActivity() {
     private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
     private lateinit var sharedPreferences: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
-        }
-        super.onCreate(savedInstanceState)
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
+//        }
+//        super.onCreate(savedInstanceState)
+//    }
 
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
 
@@ -91,66 +91,7 @@ class MainActivity : FlutterActivity() {
         Safer.bindChannel(this, flutterEngine)
         JsEvalPlugin(this).bindChannel(flutterEngine)
         SecurePlugin(this).bindChannel(flutterEngine)
-        MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            SUPPORTER_CHANNEL
-        ).setMethodCallHandler { call, result ->
-            if (call.method == "exit") {
-                finishAndRemoveTask()
-            }
-            if (call.method == "process_text") {
-                try {
-                    val queryIntentActivities =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            packageManager.queryIntentActivities(
-                                Intent().apply {
-                                    type = "text/plain"
-                                    action = Intent.ACTION_PROCESS_TEXT
-                                },
-                                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
-                            )
-                        } else {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                packageManager.queryIntentActivities(
-                                    Intent(Intent.ACTION_PROCESS_TEXT).apply {
-                                        type = "text/plain"
-                                    },
-                                    0
-                                )
-                            } else {
-                                packageManager.queryIntentActivities(
-                                    Intent(Intent.ACTION_SEND).apply {
-                                        type = "text/plain"
-                                    },
-                                    0
-                                )
-                            }
-                        }
-                    result.success(queryIntentActivities.isNotEmpty())
-                } catch (ignore: Throwable) {
-
-                }
-                result.success(false)
-            }
-            if (call.method == "process") {
-                val text = call.argument<String>("text")
-                val intent = Intent()
-                    .setType("text/plain")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    intent.action = Intent.ACTION_PROCESS_TEXT
-                    intent.putExtra(Intent.EXTRA_PROCESS_TEXT, text)
-                } else {
-                    intent.action = Intent.ACTION_SEND
-                    intent.putExtra(Intent.EXTRA_TEXT, text)
-                }
-                result.success(0)
-                try {
-                    startActivity(intent)
-
-                } catch (_: Throwable) {
-                }
-            }
-        }
+        SupporterPlugin().bindChannel(this, flutterEngine)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/Init/init_page.dart';
@@ -77,8 +78,7 @@ class _GuidePageState extends State<GuidePage> {
                     onPressed: () async {
                       int nextValue = index + 1;
                       if (nextValue == 1) {
-                        var prefs = await SharedPreferences.getInstance();
-                        await prefs.setInt(
+                        await Prefer.setInt(
                             'language_num', userSetting.languageNum);
                         //有可能用户啥都没选
                         final languageList =
@@ -93,8 +93,7 @@ class _GuidePageState extends State<GuidePage> {
                           isNext = true;
                         });
                       } else if (nextValue == 2) {
-                        var prefs = await SharedPreferences.getInstance();
-                        await prefs.setBool('guide_enable', false);
+                        await Prefer.setBool('guide_enable', false);
                         Leader.pushUntilHome(context);
                       }
                     },

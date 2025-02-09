@@ -23,6 +23,7 @@ import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -32,7 +33,6 @@ import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/series/illust_series_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class IllustCard extends StatefulWidget {
   final IllustStore store;
@@ -272,10 +272,9 @@ class _IllustCardState extends State<IllustCard> {
 
   _buildLongPressToSaveHint() async {
     if (Platform.isIOS) {
-      final pref = await SharedPreferences.getInstance();
-      final firstLongPress = await pref.getBool("first_long_press") ?? true;
+      final firstLongPress = await Prefer.getBool("first_long_press") ?? true;
       if (firstLongPress) {
-        await pref.setBool("first_long_press", false);
+        await Prefer.setBool("first_long_press", false);
         await showDialog(
             context: context,
             builder: (context) {

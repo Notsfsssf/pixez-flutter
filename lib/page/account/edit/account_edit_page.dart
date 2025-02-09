@@ -128,8 +128,8 @@ class _AccountEditPageState extends State<AccountEditPage> {
                 controller: _accountController,
                 enabled: false,
                 decoration: InputDecoration(
-                  hintText: 'Account',
-                  labelText: 'Account',
+                  hintText: I18n.of(context).account,
+                  labelText: I18n.of(context).account,
                 ),
               ),
               TextFormField(

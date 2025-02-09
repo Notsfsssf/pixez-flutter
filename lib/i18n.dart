@@ -7,4 +7,10 @@ class I18n {
   static AppLocalizations of(BuildContext context) {
     return AppLocalizations.of(context)!;
   }
+
+  static AppLocalizations ofContext() {
+    return AppLocalizations.of(context!)!;
+  }
+
+  static BuildContext? context;
 }

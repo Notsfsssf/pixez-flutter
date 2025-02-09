@@ -18,6 +18,7 @@ class PixezDefault {
         position: position,
         processingText: I18n.of(context).footer_loading,
         failedText: I18n.of(context).failed,
+        noMoreText: I18n.of(context).no_more,
         showMessage: false,
         processedText: I18n.of(context).successed);
   }

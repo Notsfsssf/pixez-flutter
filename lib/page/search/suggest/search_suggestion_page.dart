@@ -58,7 +58,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                       .toList(),
                 )));
       } else {
-        BotToast.showText(text: "0 result");
+        BotToast.showText(text: I18n.ofContext().no_result);
       }
     });
     var query = widget.preword ?? '';

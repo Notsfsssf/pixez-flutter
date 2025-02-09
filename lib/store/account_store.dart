@@ -15,6 +15,7 @@
  */
 
 import 'package:mobx/mobx.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/models/account.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,8 +36,7 @@ abstract class _AccountStoreBase with Store {
 
   @action
   select(int index) async {
-    var pre = await SharedPreferences.getInstance();
-    await pre.setInt('account_select_num', index);
+    await Prefer.setInt('account_select_num', index);
     now = accounts[index];
     this.index = index;
   }
@@ -70,8 +70,7 @@ abstract class _AccountStoreBase with Store {
       List<AccountPersist> list = await accountProvider.getAllAccount();
       accounts.clear();
       accounts.addAll(list);
-      var pre = await SharedPreferences.getInstance();
-      var i = pre.getInt('account_select_num');
+      var i = Prefer.getInt('account_select_num');
       if (list.isNotEmpty) {
         index = i ?? 0;
         now = list[i ?? 0];

@@ -28,6 +28,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/Init/guide_page.dart';
@@ -419,7 +420,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     }
   }
 
-  initPermission() async {
+  initPermission(BuildContext context) async {
     try {
       if (Platform.isAndroid && userSetting.saveMode != 1) {
         final info = await DeviceInfoPlugin().androidInfo;
@@ -430,7 +431,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         if (!granted.isGranted) {
           var b = await permission.request();
           if (!b.isGranted) {
-            _showPermissionDenied();
+            _showPermissionDenied(context);
             return;
           }
         }
@@ -438,15 +439,14 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     } catch (e) {}
   }
 
-  _showPermissionDenied() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool("storage_permission_denied") == true) return;
+  _showPermissionDenied(BuildContext context) async {
+    if (Prefer.getBool("storage_permission_denied") == true) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("storage permission denied"),
+      content: Text(I18n.of(context).storage_permission_denied),
       action: SnackBarAction(
-        label: "Don't show again",
+        label: I18n.of(context).dont_show_again,
         onPressed: () {
-          prefs.setBool("storage_permission_denied", true);
+          Prefer.setBool("storage_permission_denied", true);
         },
       ),
     ));
@@ -461,15 +461,14 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   initPlatformState() async {
-    var prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('guide_enable') == null) {
+    if (Prefer.getBool('guide_enable') == null) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => GuidePage()),
         (route) => false,
       );
       return;
     }
-    initPermission();
+    initPermission(context);
   }
 }
 

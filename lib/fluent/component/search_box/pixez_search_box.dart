@@ -51,7 +51,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
           title: Text(I18n.of(context).search),
         );
       } else {
-        BotToast.showText(text: "0 result");
+        BotToast.showText(text: I18n.ofContext().no_result);
       }
     });
     _focusNode.addListener(() {

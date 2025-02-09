@@ -568,14 +568,14 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Pre'),
+                  child: Text(I18n.of(context).pre),
                 ),
                 buildListTile(
                     _novelStore.novelTextResponse!.seriesNavigation?.prevNovel),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text('Next'),
+                  child: Text(I18n.of(context).next),
                 ),
                 buildListTile(
                     _novelStore.novelTextResponse!.seriesNavigation?.nextNovel),

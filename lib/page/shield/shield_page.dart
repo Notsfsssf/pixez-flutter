@@ -98,7 +98,7 @@ class _ShieldPageState extends State<ShieldPage> {
                         Text(I18n.of(context).tag),
                         IconButton(
                             onPressed: () {
-                              _showBanTagAddDialog();
+                              _showBanTagAddDialog(context);
                             },
                             icon: Icon(Icons.add))
                       ],
@@ -182,7 +182,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(I18n.of(context).delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).delete_tag),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -209,13 +209,13 @@ class _ShieldPageState extends State<ShieldPage> {
     }
   }
 
-  _showBanTagAddDialog() async {
+  _showBanTagAddDialog(BuildContext context) async {
     final controller = TextEditingController();
     final result = await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Input"),
+            title: Text(I18n.of(context).input),
             content: TextField(
               controller: controller,
               decoration: InputDecoration(
@@ -249,7 +249,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(I18n.of(context).delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).delete_tag),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -282,7 +282,7 @@ class _ShieldPageState extends State<ShieldPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(I18n.of(context).delete),
-          content: Text('Delete this tag?'),
+          content: Text(I18n.of(context).delete_tag),
           actions: <Widget>[
             TextButton(
               onPressed: () {

@@ -63,11 +63,11 @@ class _AccountEditPageState extends State<AccountEditPage> {
             padding: const EdgeInsets.symmetric(horizontal: 4.0)
                 .copyWith(top: 0, bottom: 4.0),
             child: InfoLabel(
-              label: 'Account',
+              label: I18n.of(context).account,
               child: TextBox(
                 controller: _accountController,
                 enabled: false,
-                placeholder: 'Account',
+                placeholder: I18n.of(context).account,
               ),
             ),
           ),
