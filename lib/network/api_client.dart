@@ -619,4 +619,19 @@ class ApiClient {
       'illust_id': illustId,
     });
   }
+
+  // /v1/user/restricted-mode-settings
+  Future<Response> userRestrictedModeSettings(
+      bool isRestrictedModeEnabled) async {
+    return httpClient.post('/v1/user/restricted-mode-settings',
+        data:
+            notNullMap({"is_restricted_mode_enabled": isRestrictedModeEnabled}),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  // /v1/user/restricted-mode-settings
+  Future<bool> userRestrictedModeSettingsGet() async {
+    final res = await httpClient.get('/v1/user/restricted-mode-settings');
+    return res.data['is_restricted_mode_enabled'] as bool;
+  }
 }
