@@ -14,14 +14,17 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/fluent/page/login/token_page.dart';
+import 'package:pixez/fluent/page/webview/webview_page.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/fluent/page/about/about_page.dart';
 import 'package:pixez/fluent/page/hello/setting/setting_quality_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -102,9 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: AutofillGroup(
                       child: Column(
                         children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                          ),
+                          SizedBox(height: 10),
                           FilledButton(
                               child: Text(
                                 I18n.of(context).login,
@@ -113,28 +114,29 @@ class _LoginPageState extends State<LoginPage> {
                                 try {
                                   String url =
                                       await OAuthClient.generateWebviewUrl();
-                                  await launchUrl(Uri.parse(url));
+                                  _launch(url);
                                 } catch (e) {}
                               }),
+                          SizedBox(height: 4),
                           FilledButton(
                             onPressed: () async {
                               try {
                                 String url =
                                     await OAuthClient.generateWebviewUrl(
                                         create: true);
-                                await launchUrl(Uri.parse(url));
+                                _launch(url);
                               } catch (e) {}
                             },
                             child: Text(I18n.of(context).dont_have_account),
                           ),
-                          Button(
-                            onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => TokenPage(),
-                              useRootNavigator: false,
-                            ),
-                            child: Text('Token'),
+                          SizedBox(height: 4),
+                          OutlinedButton(
+                            onPressed: () async {
+                              Leader.push(context, TokenPage());
+                            },
+                            child: Text("Token"),
                           ),
+                          SizedBox(height: 4),
                           HyperlinkButton(
                             child: Text(
                               I18n.of(context).terms,
@@ -143,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                               final url =
                                   'https://www.pixiv.net/terms/?page=term';
                               try {
-                                await launchUrl(Uri.parse(url));
+                                await _launch(url);
                               } catch (e) {}
                             },
                           ),
@@ -158,5 +160,25 @@ class _LoginPageState extends State<LoginPage> {
             )),
       ),
     );
+  }
+
+  _launch(url) async {
+    if (!userSetting.disableBypassSni) {
+      // await WeissServer.listener();
+      // await WeissPlugin.start();
+      // await WeissPlugin.proxy();
+      Leader.push(
+        context,
+        WebViewPage(url: url),
+        icon: Icon(FluentIcons.signin),
+        title: Text(I18n.of(context).login),
+      );
+    } else {
+      try {
+        CustomTabPlugin.launch(url);
+      } catch (e) {
+        BotToast.showText(text: e.toString());
+      }
+    }
   }
 }
