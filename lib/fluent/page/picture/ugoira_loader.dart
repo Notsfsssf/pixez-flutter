@@ -52,11 +52,18 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = constraints.maxWidth;
       return Observer(builder: (_) {
-        double height = widget.illusts.height.toDouble() /
-            widget.illusts.width.toDouble() *
-            width;
+        final illWidth = widget.illusts.width.toDouble();
+        final illHeight = widget.illusts.height.toDouble();
+        // 计算高度
+        var width = constraints.maxWidth;
+        var height = illHeight / illWidth * width;
+        if (height > constraints.maxHeight) {
+          // 高度超过限制 应改为计算宽度
+          height = constraints.maxHeight;
+          width = illWidth / illHeight * height;
+        }
+
         if (_store.status == UgoiraStatus.play) {
           return ContextMenu(
             child: UgoiraWidget(
