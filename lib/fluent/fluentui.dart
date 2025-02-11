@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -8,18 +10,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/fluent/page/splash/splash_page.dart';
-import 'package:pixez/fluent/platform/platform.dart';
 import 'package:pixez/main.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:pixez/win32_plugin.dart';
 import 'package:window_manager/window_manager.dart';
 
-late WindowEffect _effect;
+WindowEffect? _effect = null;
 
 initFluent(List<String> args) async {
   if (!Constants.isFluent) return;
-
-  final dbPath = await getDBPath();
-  if (dbPath != null) databaseFactory.setDatabasesPath(dbPath);
 
   // Must add this line.
   await windowManager.ensureInitialized();
@@ -38,6 +36,26 @@ initFluent(List<String> args) async {
       await windowManager.focus();
     },
   );
+}
+
+Future<WindowEffect> getEffect() async {
+  switch (Platform.operatingSystem) {
+    case "windows":
+      if (await Win32.isBuildOrGreater(22523)) {
+        return WindowEffect.tabbed;
+      } else if (await Win32.isBuildOrGreater(22000)) {
+        return WindowEffect.mica;
+        // 亚克力效果由于存在一些问题所以先不启用
+        // } else if (windows.isBuildOrGreater(17134)) {
+        //   effect = WindowEffect.acrylic;
+      }
+      return WindowEffect.disabled;
+    case "linux":
+    case "macos":
+    default:
+      debugPrint('Not Impliment');
+      return WindowEffect.disabled;
+  }
 }
 
 Widget buildFluentUI(BuildContext context) {
@@ -78,8 +96,10 @@ Widget buildFluentUI(BuildContext context) {
         ThemeMode.light => false,
       };
 
-      debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
-      Window.setEffect(effect: _effect, dark: isDark);
+      if (_effect != null) {
+        debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
+        Window.setEffect(effect: _effect!, dark: isDark);
+      }
       final focusTheme = FocusThemeData(
         glowFactor: is10footScreen(context) ? 2.0 : 0.0,
       );

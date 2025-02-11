@@ -11,6 +11,21 @@ jobs:
     steps:
       - name: 签出仓库
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 初始化 GitVersion
+        uses: gittools/actions/gitversion/setup@v3.1.1
+        with:
+          versionSpec: '6.0.x'
+
+      - name: 计算版本 Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v3.1.1
+        with:
+          overrideConfig: |
+            assembly-versioning-scheme=MajorMinorPatchTag
+            assembly-file-versioning-format="{Major}.{Minor}.{Patch}.{BuildMetaData ?? 0}"
 
       - name: 初始化 Flutter 环境
         uses: subosito/flutter-action@v2
@@ -29,7 +44,11 @@ jobs:
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: 构建项目
-        run: flutter build windows
+        shell: pwsh
+        run: |-
+          flutter build windows `
+            --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} `
+            --build-number=${{ steps.gitversion.outputs.buildMetaData }}
 
       - name: 上传产物
         id: binary-artifact
@@ -62,6 +81,7 @@ jobs:
             --certificate-path $env:CERTIFICATE_PATH `
             --certificate-password $env:CERTIFICATE_PASSWORD `
             --build-windows false `
+            --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
             --publisher (Get-PfxCertificate $env:CERTIFICATE_PATH -Password ($env:CERTIFICATE_PASSWORD | ConvertTo-SecureString -AsPlainText)).Subject
 
       - name: 上传 MSIX

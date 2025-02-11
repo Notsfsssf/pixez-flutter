@@ -2,11 +2,10 @@
 
 #include <Windows.h>
 
-#include <flutter/flutter_engine.h>
+#include <flutter/binary_messenger.h>
 #include <flutter/standard_method_codec.h>
-#include <flutter/method_channel.h>
 
-class Info
+class Win32
 {
 private:
   static std::string name;
@@ -14,5 +13,5 @@ private:
   static bool IsBuildOrGreater(DWORD build);
 
 public:
-  static void Initialize(flutter::FlutterEngine *engine);
+  static void Initialize(flutter::BinaryMessenger *messenger, const flutter::StandardMethodCodec *codec);
 };

@@ -17,10 +17,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "Paths.h"
-#include "Saver.h"
-#include "Info.h"
-#include "Clipboard.h"
+#include "plugins/clipboard_plugin.h"
+#include "plugins/document_plugin.h"
+#include "plugins/paths_plugin.h"
+#include "plugins/single_instance_plugin.h"
+#include "plugins/weiss_plugin.h"
+#include "plugins/win32_plugin.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
@@ -48,11 +50,14 @@ bool FlutterWindow::OnCreate()
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
-  SingleInstance::Initialize(flutter_controller_->engine());
-  Paths::Initialize(flutter_controller_->engine());
-  Saver::Initialize(flutter_controller_->engine());
-  Info::Initialize(flutter_controller_->engine());
-  Clipboard::Initialize(flutter_controller_->engine());
+  const auto &codec = flutter::StandardMethodCodec::GetInstance();
+  auto messenger = flutter_controller_->engine()->messenger();
+  Clipboard::Initialize(messenger, &codec);
+  Document::Initialize(messenger, &codec, GetHandle());
+  Paths::Initialize(messenger, &codec);
+  SingleInstance::Initialize(messenger, &codec);
+  Weiss::Initialize(messenger, &codec);
+  Win32::Initialize(messenger, &codec);
 
   flutter_controller_->engine()->SetNextFrameCallback([&]()
                                                       { this->Show(); });

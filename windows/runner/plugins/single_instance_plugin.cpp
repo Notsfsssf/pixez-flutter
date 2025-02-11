@@ -1,25 +1,27 @@
+#include "single_instance_plugin.h"
+
+#include <thread>
 #include <winrt/base.h>
 
-#include "utils.h"
-#include "SingleInstance.h"
+#include "../utils.h"
+
+using namespace std;
+using namespace flutter;
+using namespace winrt;
 
 LPCTSTR SingleInstance::name = TEXT("pixez");
 LPCTSTR SingleInstance::pipePrefix = TEXT("\\\\.\\pipe\\");
 
-void SingleInstance::Initialize(flutter::FlutterEngine *engine)
+void SingleInstance::Initialize(BinaryMessenger *messenger, const StandardMethodCodec *codec)
 {
-  std::string channelName = "pixez/single_instance";
-  const auto &codec = flutter::StandardMethodCodec::GetInstance();
+  string channelName = "pixez/single_instance";
 
-  flutter::EventChannel<flutter::EncodableValue> channel(
-      engine->messenger(),
-      channelName,
-      &codec);
+  EventChannel<EncodableValue> channel(messenger, channelName, codec);
 
   OutputDebugString(TEXT("Initialize SingleInstance\n"));
 
   channel.SetStreamHandler(
-      std::make_unique<flutter::StreamHandlerFunctions<flutter::EncodableValue>>(
+      make_unique<StreamHandlerFunctions<EncodableValue>>(
           &SingleInstance::onListen,
           &SingleInstance::onCancel));
 }
@@ -31,10 +33,10 @@ HANDLE SingleInstance::SetMutex()
   if (WaitForSingleObject(hMutex, 0) == WAIT_OBJECT_0)
     return hMutex;
 
-  std::vector<std::string> command_line_arguments =
+  vector<string> command_line_arguments =
       GetCommandLineArguments();
 
-  auto pipeName = (winrt::to_hstring(pipePrefix) + winrt::to_hstring(name)).c_str();
+  auto pipeName = (to_hstring(pipePrefix) + to_hstring(name)).c_str();
 
   // 判断是否有可以利用的命名管道
   if (!WaitNamedPipeW(pipeName, NMPWAIT_USE_DEFAULT_WAIT))
@@ -49,12 +51,12 @@ HANDLE SingleInstance::SetMutex()
       0,
       NULL);
 
-  std::stringstream ss;
+  stringstream ss;
 
   for (size_t i = 0; i < command_line_arguments.size(); i++)
   {
     ss << command_line_arguments.at(i);
-    ss.seekp(-1, std::ios::cur);
+    ss.seekp(-1, ios::cur);
     ss << "\n";
   }
 
@@ -68,28 +70,28 @@ HANDLE SingleInstance::SetMutex()
   return INVALID_HANDLE_VALUE;
 }
 
-std::unique_ptr<flutter::StreamHandlerError<flutter::EncodableValue>>
+unique_ptr<StreamHandlerError<EncodableValue>>
 SingleInstance::onListen(
-    const flutter::EncodableValue *arguments,
-    std::unique_ptr<flutter::EventSink<flutter::EncodableValue>> &&events)
+    const EncodableValue *arguments,
+    unique_ptr<EventSink<EncodableValue>> &&events)
 {
-  std::thread t{sentEvent, std::move(events)};
+  thread t{sentEvent, move(events)};
   t.detach();
 
   return nullptr;
 }
 
-std::unique_ptr<flutter::StreamHandlerError<flutter::EncodableValue>>
+unique_ptr<StreamHandlerError<EncodableValue>>
 SingleInstance::onCancel(
-    const flutter::EncodableValue *arguments)
+    const EncodableValue *arguments)
 {
   return nullptr;
 }
 
 void SingleInstance::sentEvent(
-    std::unique_ptr<flutter::EventSink<flutter::EncodableValue>> &&event)
+    unique_ptr<EventSink<EncodableValue>> &&event)
 {
-  auto pipeName = (winrt::to_hstring(pipePrefix) + winrt::to_hstring(name)).c_str();
+  auto pipeName = (to_hstring(pipePrefix) + to_hstring(name)).c_str();
 
   OutputDebugString(TEXT("SingleInstance CreateNamedPipe\n"));
   auto hPipe = CreateNamedPipeW(
@@ -116,12 +118,12 @@ void SingleInstance::sentEvent(
       continue;
     }
 
-    std::string str{reinterpret_cast<char *>(buffer), resultSize};
+    string str{reinterpret_cast<char *>(buffer), resultSize};
 
     OutputDebugStringA((str + "\n").c_str());
 
     event.get()
-        ->Success(flutter::EncodableValue(str));
+        ->Success(EncodableValue(str));
 
     DisconnectNamedPipe(hPipe);
   }

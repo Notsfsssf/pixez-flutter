@@ -11,11 +11,13 @@ add_executable(${BINARY_NAME} WIN32
   "main.cpp"
   "utils.cpp"
   "win32_window.cpp"
-  "SingleInstance.cpp"
-  "Paths.cpp"
-  "Saver.cpp"
-  "Info.cpp"
-  "Clipboard.cpp"
+  "settings.cpp"
+  "plugins/clipboard_plugin.cpp"
+  "plugins/document_plugin.cpp"
+  "plugins/paths_plugin.cpp"
+  "plugins/single_instance_plugin.cpp"
+  "plugins/weiss_plugin.cpp"
+  "plugins/win32_plugin.cpp"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
   "Runner.rc"
   "runner.exe.manifest"
@@ -26,6 +28,7 @@ add_executable(${BINARY_NAME} WIN32
 apply_standard_settings(${BINARY_NAME})
 target_compile_features(${BINARY_NAME} PUBLIC cxx_std_20)
 target_compile_options(${BINARY_NAME} PRIVATE /await)
+target_compile_options(${BINARY_NAME} PRIVATE /utf-8)
 
 # Add preprocessor definitions for the build version.
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION=\"${FLUTTER_VERSION}\"")
