@@ -81,7 +81,7 @@ jobs:
             --certificate-path $env:CERTIFICATE_PATH `
             --certificate-password $env:CERTIFICATE_PASSWORD `
             --build-windows false `
-            --version '${{ steps.gitversion.outputs.assemblySemFileVer }}' `
+            --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
             --publisher (Get-PfxCertificate $env:CERTIFICATE_PATH -Password ($env:CERTIFICATE_PASSWORD | ConvertTo-SecureString -AsPlainText)).Subject
 
       - name: 上传 MSIX
