@@ -1,4 +1,4 @@
-part of 'windows.dart';
+import 'package:flutter/services.dart';
 
 class Win32 {
   static MethodChannel channel = MethodChannel("com.perol.dev/win32");
