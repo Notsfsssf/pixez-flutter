@@ -13,7 +13,7 @@ import 'package:pixez/main.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 
-late WindowEffect _effect;
+WindowEffect? _effect = null;
 
 initFluent(List<String> args) async {
   if (!Constants.isFluent) return;
@@ -78,8 +78,10 @@ Widget buildFluentUI(BuildContext context) {
         ThemeMode.light => false,
       };
 
+if (_effect != null) {
       debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
-      Window.setEffect(effect: _effect, dark: isDark);
+      Window.setEffect(effect: _effect!, dark: isDark);
+}
       final focusTheme = FocusThemeData(
         glowFactor: is10footScreen(context) ? 2.0 : 0.0,
       );
