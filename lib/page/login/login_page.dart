@@ -28,7 +28,7 @@ import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/login/token_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/weiss_plugin.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                               final url =
                                   'https://www.pixiv.net/terms/?page=term';
                               try {
-                                await launch(url);
+                                await launchUrlString(url);
                               } catch (e) {}
                             },
                           ),

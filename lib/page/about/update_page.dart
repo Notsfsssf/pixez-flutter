@@ -18,7 +18,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/about/last_release.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class UpdatePage extends StatefulWidget {
   @override
@@ -84,7 +84,7 @@ class _UpdatePageState extends State<UpdatePage> {
                       lastRelease!.assets.first.browserDownloadUrl),
                   onTap: () {
                     try {
-                      launch(lastRelease!.assets.first.browserDownloadUrl);
+                      launchUrlString(lastRelease!.assets.first.browserDownloadUrl);
                     } catch (e) {}
                   },
                 ),
