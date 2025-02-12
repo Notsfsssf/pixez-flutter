@@ -123,8 +123,8 @@ class _BlockPickerState extends State<BlockPicker> {
       (Color color) => widget.itemBuilder(
         color,
         (_currentColor != null && (widget.useInShowDialog ? true : widget.pickerColor != null))
-            ? (_currentColor?.value == color.value) &&
-                (widget.useInShowDialog ? true : widget.pickerColor?.value == color.value)
+            ? (_currentColor == color) &&
+                (widget.useInShowDialog ? true : widget.pickerColor == color)
             : false,
         () => changeColor(color),
       ),
