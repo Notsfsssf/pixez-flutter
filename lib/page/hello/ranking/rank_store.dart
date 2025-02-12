@@ -16,7 +16,6 @@
 
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/prefer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'rank_store.g.dart';
 
