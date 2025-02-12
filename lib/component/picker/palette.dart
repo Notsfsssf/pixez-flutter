@@ -1314,8 +1314,6 @@ class ColorPickerArea extends StatelessWidget {
                   return CustomPaint(painter: RGBWithBlueColorPainter(hsvColor.toColor()));
                 case PaletteType.hueWheel:
                   return CustomPaint(painter: HUEColorWheelPainter(hsvColor));
-                default:
-                  return const CustomPaint();
               }
             },
           ),

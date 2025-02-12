@@ -177,7 +177,6 @@ abstract class _SaveStoreBase with Store {
                   ),
                 ));
         break;
-      default:
     }
   }
 

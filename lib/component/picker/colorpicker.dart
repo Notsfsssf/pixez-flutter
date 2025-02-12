@@ -269,8 +269,6 @@ class _ColorPickerState extends State<ColorPicker> {
         return colorPickerSlider(TrackType.green);
       case PaletteType.rgbWithRed:
         return colorPickerSlider(TrackType.red);
-      default:
-        return const SizedBox();
     }
   }
 
