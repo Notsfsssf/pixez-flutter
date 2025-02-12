@@ -162,7 +162,7 @@ class HSVWithValueColorPainter extends CustomPainter {
     canvas.drawRect(rect, Paint()..shader = gradientV.createShader(rect));
     canvas.drawRect(
       rect,
-      Paint()..color = Colors.black.withOpacity(1 - hsvColor.value),
+      Paint()..color = Colors.black.withValues(alpha: 1 - hsvColor.value),
     );
 
     canvas.drawCircle(
@@ -306,11 +306,15 @@ class HSLWithLightnessColorPainter extends CustomPainter {
     canvas.drawRect(rect, Paint()..shader = gradientV.createShader(rect));
     canvas.drawRect(
       rect,
-      Paint()..color = Colors.black.withOpacity((1 - hslColor.lightness * 2).clamp(0, 1)),
+      Paint()
+..color = Colors.black
+            .withValues(alpha: (1 - hslColor.lightness * 2).clamp(0, 1)),
     );
     canvas.drawRect(
       rect,
-      Paint()..color = Colors.white.withOpacity(((hslColor.lightness - 0.5) * 2).clamp(0, 1)),
+      Paint()
+..color = Colors.white
+            .withValues(alpha: ((hslColor.lightness - 0.5) * 2).clamp(0, 1)),
     );
 
     canvas.drawCircle(
@@ -339,16 +343,16 @@ class RGBWithRedColorPainter extends CustomPainter {
     final Rect rect = Offset.zero & size;
     final Gradient gradientH = LinearGradient(
       colors: [
-        Color.fromRGBO(color.red, 255, 0, 1.0),
-        Color.fromRGBO(color.red, 255, 255, 1.0),
+        Color.fromRGBO(color.getRedInt(), 255, 0, 1.0),
+        Color.fromRGBO(color.getRedInt(), 255, 255, 1.0),
       ],
     );
     final Gradient gradientV = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color.fromRGBO(color.red, 255, 255, 1.0),
-        Color.fromRGBO(color.red, 0, 255, 1.0),
+        Color.fromRGBO(color.getRedInt(), 255, 255, 1.0),
+        Color.fromRGBO(color.getRedInt(), 0, 255, 1.0),
       ],
     );
     canvas.drawRect(rect, Paint()..shader = gradientH.createShader(rect));
@@ -360,7 +364,8 @@ class RGBWithRedColorPainter extends CustomPainter {
     );
 
     canvas.drawCircle(
-      Offset(size.width * color.blue / 255, size.height * (1 - color.green / 255)),
+      Offset(size.width * color.getBlueInt() / 255,
+size.height * (1 - color.getGreenInt() / 255)),
       size.height * 0.04,
       Paint()
         ..color = pointerColor ?? (useWhiteForeground(color) ? Colors.white : Colors.black)
@@ -385,16 +390,16 @@ class RGBWithGreenColorPainter extends CustomPainter {
     final Rect rect = Offset.zero & size;
     final Gradient gradientH = LinearGradient(
       colors: [
-        Color.fromRGBO(255, color.green, 0, 1.0),
-        Color.fromRGBO(255, color.green, 255, 1.0),
+        Color.fromRGBO(255, color.getGreenInt(), 0, 1.0),
+        Color.fromRGBO(255, color.getGreenInt(), 255, 1.0),
       ],
     );
     final Gradient gradientV = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color.fromRGBO(255, color.green, 255, 1.0),
-        Color.fromRGBO(0, color.green, 255, 1.0),
+        Color.fromRGBO(255, color.getGreenInt(), 255, 1.0),
+        Color.fromRGBO(0, color.getGreenInt(), 255, 1.0),
       ],
     );
     canvas.drawRect(rect, Paint()..shader = gradientH.createShader(rect));
@@ -406,7 +411,7 @@ class RGBWithGreenColorPainter extends CustomPainter {
     );
 
     canvas.drawCircle(
-      Offset(size.width * color.blue / 255, size.height * (1 - color.red / 255)),
+      Offset(size.width * color.b, size.height * (1 - color.r)),
       size.height * 0.04,
       Paint()
         ..color = pointerColor ?? (useWhiteForeground(color) ? Colors.white : Colors.black)
@@ -431,16 +436,16 @@ class RGBWithBlueColorPainter extends CustomPainter {
     final Rect rect = Offset.zero & size;
     final Gradient gradientH = LinearGradient(
       colors: [
-        Color.fromRGBO(0, 255, color.blue, 1.0),
-        Color.fromRGBO(255, 255, color.blue, 1.0),
+        Color.fromRGBO(0, 255, color.getBlueInt(), 1.0),
+        Color.fromRGBO(255, 255, color.getBlueInt(), 1.0),
       ],
     );
     final Gradient gradientV = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color.fromRGBO(255, 255, color.blue, 1.0),
-        Color.fromRGBO(255, 0, color.blue, 1.0),
+        Color.fromRGBO(255, 255, color.getBlueInt(), 1.0),
+        Color.fromRGBO(255, 0, color.getBlueInt(), 1.0),
       ],
     );
     canvas.drawRect(rect, Paint()..shader = gradientH.createShader(rect));
@@ -452,7 +457,7 @@ class RGBWithBlueColorPainter extends CustomPainter {
     );
 
     canvas.drawCircle(
-      Offset(size.width * color.red / 255, size.height * (1 - color.green / 255)),
+      Offset(size.width * color.r, size.height * (1 - color.g)),
       size.height * 0.04,
       Paint()
         ..color = pointerColor ?? (useWhiteForeground(color) ? Colors.white : Colors.black)
@@ -494,9 +499,7 @@ class HUEColorWheelPainter extends CustomPainter {
         Color(0x00FFFFFF),
       ],
     );
-    canvas.drawCircle(center, radio, Paint()..shader = gradientS.createShader(rect));
-    canvas.drawCircle(center, radio, Paint()..shader = gradientR.createShader(rect));
-    canvas.drawCircle(center, radio, Paint()..color = Colors.black.withOpacity(1 - hsvColor.value));
+    canvas.drawCircle(center, radio, Paint()..color = Colors.black.withValues(alpha: 1 - hsvColor.value));
 
     canvas.drawCircle(
       Offset(
@@ -678,32 +681,32 @@ class TrackPainter extends CustomPainter {
         break;
       case TrackType.red:
         final List<Color> colors = [
-          hsvColor.toColor().withRed(0).withOpacity(1.0),
-          hsvColor.toColor().withRed(255).withOpacity(1.0),
+          hsvColor.toColor().withRed(0).withValues(alpha: 1.0),
+          hsvColor.toColor().withRed(255).withValues(alpha: 1.0),
         ];
         Gradient gradient = LinearGradient(colors: colors);
         canvas.drawRect(rect, Paint()..shader = gradient.createShader(rect));
         break;
       case TrackType.green:
         final List<Color> colors = [
-          hsvColor.toColor().withGreen(0).withOpacity(1.0),
-          hsvColor.toColor().withGreen(255).withOpacity(1.0),
+          hsvColor.toColor().withGreen(0).withValues(alpha: 1.0),
+          hsvColor.toColor().withGreen(255).withValues(alpha: 1.0),
         ];
         Gradient gradient = LinearGradient(colors: colors);
         canvas.drawRect(rect, Paint()..shader = gradient.createShader(rect));
         break;
       case TrackType.blue:
         final List<Color> colors = [
-          hsvColor.toColor().withBlue(0).withOpacity(1.0),
-          hsvColor.toColor().withBlue(255).withOpacity(1.0),
+          hsvColor.toColor().withBlue(0).withValues(alpha: 1.0),
+          hsvColor.toColor().withBlue(255).withValues(alpha: 1.0),
         ];
         Gradient gradient = LinearGradient(colors: colors);
         canvas.drawRect(rect, Paint()..shader = gradient.createShader(rect));
         break;
       case TrackType.alpha:
         final List<Color> colors = [
-          hsvColor.toColor().withOpacity(0.0),
-          hsvColor.toColor().withOpacity(1.0),
+          hsvColor.toColor().withValues(alpha: 0.0),
+          hsvColor.toColor().withValues(alpha: 1.0),
         ];
         Gradient gradient = LinearGradient(colors: colors);
         canvas.drawRect(rect, Paint()..shader = gradient.createShader(rect));
@@ -848,18 +851,18 @@ class _ColorPickerLabelState extends State<ColorPickerLabel> {
     if (colorLabelType == ColorLabelType.hex) {
       final Color color = hsvColor.toColor();
       return [
-        color.red.toRadixString(16).toUpperCase().padLeft(2, '0'),
-        color.green.toRadixString(16).toUpperCase().padLeft(2, '0'),
-        color.blue.toRadixString(16).toUpperCase().padLeft(2, '0'),
-        color.alpha.toRadixString(16).toUpperCase().padLeft(2, '0'),
+        color.getRedInt().toRadixString(16).toUpperCase().padLeft(2, '0'),
+        color.getGreenInt().toRadixString(16).toUpperCase().padLeft(2, '0'),
+        color.getBlueInt().toRadixString(16).toUpperCase().padLeft(2, '0'),
+        color.getAlphaInt().toRadixString(16).toUpperCase().padLeft(2, '0'),
       ];
     } else if (colorLabelType == ColorLabelType.rgb) {
       final Color color = hsvColor.toColor();
       return [
-        color.red.toString(),
-        color.green.toString(),
-        color.blue.toString(),
-        '${(color.opacity * 100).round()}%',
+        color.getRedInt().toString(),
+        color.getGreenInt().toString(),
+        color.getBlueInt().toString(),
+        '${(color.a * 100).round()}%',
       ];
     } else if (colorLabelType == ColorLabelType.hsv) {
       return [
@@ -970,12 +973,20 @@ class _ColorPickerInputState extends State<ColorPickerInput> {
 
   @override
   Widget build(BuildContext context) {
-    if (inputColor != widget.color.value) {
-      textEditingController.text = '#' +
-          widget.color.red.toRadixString(16).toUpperCase().padLeft(2, '0') +
-          widget.color.green.toRadixString(16).toUpperCase().padLeft(2, '0') +
-          widget.color.blue.toRadixString(16).toUpperCase().padLeft(2, '0') +
-          (widget.enableAlpha ? widget.color.alpha.toRadixString(16).toUpperCase().padLeft(2, '0') : '');
+    if (inputColor != widget.color.toInt()) {
+      // toHexString(enableAlpha: true) 是 #AARRGGBB 此处需要 #RRGGBBAA
+      textEditingController.text = widget.color.toHexString(
+            includeHashSign: true,
+            enableAlpha: false,
+            toUpperCase: true,
+          ) +
+          (widget.enableAlpha
+              ? widget.color
+                  .getAlphaInt()
+                  .toRadixString(16)
+                  .toUpperCase()
+                  .padLeft(2, '0')
+              : '');
     }
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
@@ -1004,7 +1015,7 @@ class _ColorPickerInputState extends State<ColorPickerInput> {
               final Color? color = colorFromHex(input);
               if (color != null) {
                 widget.onColorChanged(color);
-                inputColor = color.value;
+                inputColor = color.toInt();
               }
             },
           ),
@@ -1094,20 +1105,20 @@ class ColorPickerSlider extends StatelessWidget {
           thumbColor = HSLColor.fromAHSL(1.0, hsvColor.hue, 1.0, hsvToHsl(hsvColor).lightness).toColor();
           break;
         case TrackType.red:
-          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().red / 0xff;
-          thumbColor = hsvColor.toColor().withOpacity(1.0);
+          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().r;
+          thumbColor = hsvColor.toColor().withAlpha(255);
           break;
         case TrackType.green:
-          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().green / 0xff;
-          thumbColor = hsvColor.toColor().withOpacity(1.0);
+          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().g;
+          thumbColor = hsvColor.toColor().withAlpha(255);
           break;
         case TrackType.blue:
-          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().blue / 0xff;
-          thumbColor = hsvColor.toColor().withOpacity(1.0);
+          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().b;
+          thumbColor = hsvColor.toColor().withAlpha(255);
           break;
         case TrackType.alpha:
-          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().opacity;
-          thumbColor = hsvColor.toColor().withOpacity(hsvColor.alpha);
+          thumbOffset += (box.maxWidth - 30.0) * hsvColor.toColor().a;
+          thumbColor = hsvColor.toColor().withValues(alpha: hsvColor.alpha);
           break;
       }
 

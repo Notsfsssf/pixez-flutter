@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:pixez/component/picker/utils.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/supportor_plugin.dart';
@@ -49,7 +50,10 @@ class _SelectableHtmlState extends State<SelectableHtml> {
           if (e.attributes.containsKey('href')) {
             final color = Theme.of(context).colorScheme.primary;
             return {
-              'color': '#${color.value.toRadixString(16).substring(2, 8)}'
+              'color': color.toHexString(
+                includeHashSign: true,
+                enableAlpha: false,
+              ),
             };
           }
           return null;

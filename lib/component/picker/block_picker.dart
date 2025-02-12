@@ -61,7 +61,7 @@ Widget _defaultItemBuilder(Color color, bool isCurrentColor, void Function() cha
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       color: color,
-      boxShadow: [BoxShadow(color: color.withOpacity(0.8), offset: const Offset(1, 2), blurRadius: 5)],
+      boxShadow: [BoxShadow(color: color.withAlpha(204), offset: const Offset(1, 2), blurRadius: 5)],
     ),
     child: Material(
       color: Colors.transparent,
