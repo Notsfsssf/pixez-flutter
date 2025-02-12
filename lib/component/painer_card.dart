@@ -49,7 +49,7 @@ class _PainterCardState extends State<PainterCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final result = await Navigator.of(context, rootNavigator: true)
+        await Navigator.of(context, rootNavigator: true)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           if (isNovel) {
             return NovelUsersPage(
@@ -177,8 +177,7 @@ class _PainterCardState extends State<PainterCard> {
                       });
                     }
                   } else {
-                    final res =
-                        await apiClient.postFollowUser(_user.user.id, 'public');
+                    await apiClient.postFollowUser(_user.user.id, 'public');
                     if (mounted) {
                       setState(() {
                         _user.user.isFollowed = true;
