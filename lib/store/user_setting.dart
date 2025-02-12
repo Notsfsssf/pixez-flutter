@@ -262,14 +262,6 @@ abstract class _UserSetting with Store {
     fileNameEval = value;
   }
 
-  Color _stringToColor(String colorString) {
-    String valueString =
-        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
-    int value = int.parse(valueString, radix: 16);
-    Color otherColor = new Color(value);
-    return otherColor;
-  }
-
   @observable
   Color seedColor = Colors.blue[400]!;
 

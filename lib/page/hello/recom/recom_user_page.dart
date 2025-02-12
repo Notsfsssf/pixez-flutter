@@ -74,17 +74,6 @@ class _RecomUserPageState extends State<RecomUserPage> {
     });
   }
 
-  int _buildSliderValue(BuildContext context, Orientation orientation) {
-    final currentValue = (orientation == Orientation.portrait
-            ? userSetting.crossAdapterWidth
-            : userSetting.hCrossAdapterWidth)
-        .toDouble();
-    var nowAdaptWidth = max(currentValue, 50.0);
-    nowAdaptWidth = min(nowAdaptWidth, 2160);
-    return max((MediaQuery.of(context).size.width / nowAdaptWidth), 1.0)
-        .toInt();
-  }
-
   Widget _buildList() {
     return WaterfallFlow.builder(
       gridDelegate: SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
