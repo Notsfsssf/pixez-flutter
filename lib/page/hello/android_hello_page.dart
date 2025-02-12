@@ -83,7 +83,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     return LayoutBuilder(builder: (context, constraints) {
       final wide = constraints.maxWidth > constraints.maxHeight;
       return PopScope(
-          onPopInvoked: (didPop) async {
+          onPopInvokedWithResult: (didPop, result) async {
             userSetting.setAnimContainer(!userSetting.animContainer);
             if (didPop) return;
             if (!userSetting.isReturnAgainToExit) {
