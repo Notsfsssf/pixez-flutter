@@ -17,7 +17,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/models/account.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'account_store.g.dart';
 

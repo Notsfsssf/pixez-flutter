@@ -7,8 +7,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:image/image.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/lprinter.dart';
@@ -17,11 +20,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:html/parser.dart' show parse;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:image_picker_android/image_picker_android.dart';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 part 'sauce_notifier.freezed.dart';
 part 'sauce_notifier.g.dart';
@@ -81,8 +80,9 @@ class Sauce extends _$Sauce {
                           title: InkWell(
                             child: Text(I18n.of(context).photo_picker),
                             onTap: () {
-                              launch(
-                                  "https://developer.android.com/training/data-storage/shared/photopicker");
+                              launchUrlString(
+                                "https://developer.android.com/training/data-storage/shared/photopicker",
+                              );
                             },
                           ),
                           subtitle:

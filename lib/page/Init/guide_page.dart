@@ -9,7 +9,6 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/Init/init_page.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/network/network_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class GuidePage extends StatefulWidget {
   @override

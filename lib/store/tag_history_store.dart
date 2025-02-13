@@ -16,18 +16,15 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/saf_plugin.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:path/path.dart' as p;
+
 part 'tag_history_store.g.dart';
 
 class TagHistoryStore = _TagHistoryStoreBase with _$TagHistoryStore;

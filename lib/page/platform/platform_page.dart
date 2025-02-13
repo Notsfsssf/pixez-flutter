@@ -19,8 +19,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/document_plugin.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -28,7 +28,7 @@ import 'package:pixez/open_setting_plugin.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -253,7 +253,7 @@ class _PlatformPageState extends State<PlatformPage> {
                     title: InkWell(
                       child: Text(I18n.of(context).photo_picker),
                       onTap: () {
-                        launch(
+                        launchUrlString(
                             "https://developer.android.com/training/data-storage/shared/photopicker");
                       },
                     ),

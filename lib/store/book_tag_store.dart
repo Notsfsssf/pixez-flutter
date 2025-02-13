@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
@@ -8,7 +7,6 @@ import 'package:pixez/er/prefer.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
 import 'package:pixez/saf_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'book_tag_store.g.dart';
 

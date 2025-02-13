@@ -177,7 +177,6 @@ abstract class _SaveStoreBase with Store {
                   ),
                 ));
         break;
-      default:
     }
   }
 
@@ -363,7 +362,7 @@ abstract class _SaveStoreBase with Store {
       //IOS APP STORE REVIEW
       final status = await DocumentPlugin.permissionStatus() ?? false;
       if (!status) {
-        final auth = await DocumentPlugin.requestPermission();
+        await DocumentPlugin.requestPermission();
       }
     }
     String memType;

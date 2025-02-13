@@ -17,9 +17,9 @@ bool useWhiteForeground(Color backgroundColor, {double bias = 0.0}) {
   // return 1.05 / (color.computeLuminance() + 0.05) > 4.5;
 
   // New:
-  int v = sqrt(pow(backgroundColor.red, 2) * 0.299 +
-          pow(backgroundColor.green, 2) * 0.587 +
-          pow(backgroundColor.blue, 2) * 0.114)
+  int v = sqrt(pow(backgroundColor.getRedInt(), 2) * 0.299 +
+          pow(backgroundColor.getGreenInt(), 2) * 0.587 +
+          pow(backgroundColor.getBlueInt(), 2) * 0.114)
       .round();
   return v < 130 + bias ? true : false;
 }
@@ -55,7 +55,9 @@ HSVColor hslToHsv(HSLColor color) {
   double s = 0.0;
   double v = 0.0;
 
-  v = color.lightness + color.saturation * (color.lightness < 0.5 ? color.lightness : 1 - color.lightness);
+  v = color.lightness +
+      color.saturation *
+          (color.lightness < 0.5 ? color.lightness : 1 - color.lightness);
   if (v != 0) s = 2 - 2 * color.lightness / v;
 
   return HSVColor.fromAHSV(
@@ -92,7 +94,8 @@ const String kValidHexPattern = r'^#?[0-9a-fA-F]{1,8}';
 /// if (hexCompleteValidator.hasMatch(hex)) print('$hex is valid HEX color');
 /// ```
 /// Reference: https://en.wikipedia.org/wiki/Web_colors#Hex_triplet
-const String kCompleteValidHexPattern = r'^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$';
+const String kCompleteValidHexPattern =
+    r'^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$';
 
 /// Try to convert text input or any [String] to valid [Color].
 /// The [String] must be provided in one of those formats:
@@ -189,10 +192,10 @@ String colorToHex(
   bool toUpperCase = true,
 }) {
   final String hex = (includeHashSign ? '#' : '') +
-      (enableAlpha ? _padRadix(color.alpha) : '') +
-      _padRadix(color.red) +
-      _padRadix(color.green) +
-      _padRadix(color.blue);
+      (enableAlpha ? _padRadix(color.getAlphaInt()) : '') +
+      _padRadix(color.getRedInt()) +
+      _padRadix(color.getGreenInt()) +
+      _padRadix(color.getBlueInt());
   return toUpperCase ? hex.toUpperCase() : hex;
 }
 
@@ -210,6 +213,30 @@ extension ColorExtension1 on String {
 
 // Extension from Color
 extension ColorExtension2 on Color {
-  String toHexString({bool includeHashSign = false, bool enableAlpha = true, bool toUpperCase = true}) =>
-      colorToHex(this, includeHashSign: false, enableAlpha: true, toUpperCase: true);
+  /// AARRGGBB
+  String toHexString(
+          {bool includeHashSign = false,
+          bool enableAlpha = true,
+          bool toUpperCase = true}) =>
+      colorToHex(
+        this,
+        includeHashSign: includeHashSign,
+        enableAlpha: enableAlpha,
+        toUpperCase: toUpperCase,
+      );
+
+  int toInt() =>
+      getAlphaInt() << 24 |
+      getRedInt() << 16 |
+      getGreenInt() << 8 |
+      getBlueInt() << 0;
+
+  int getAlphaInt() => _floatToInt8(a);
+  int getRedInt() => _floatToInt8(r);
+  int getGreenInt() => _floatToInt8(g);
+  int getBlueInt() => _floatToInt8(b);
+
+  static int _floatToInt8(double x) {
+    return (x * 255.0).round() & 0xff;
+  }
 }

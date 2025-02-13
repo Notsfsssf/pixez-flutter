@@ -35,7 +35,7 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/series/illust_series_page.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/user/users_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class Leader {
   static Future<void> pushUntilHome(BuildContext context) async {
@@ -110,7 +110,7 @@ class Leader {
         }
       } catch (e) {
         try {
-          launch(link.toString());
+          launchUrlString(link.toString());
         } catch (e) {}
       }
       return true;

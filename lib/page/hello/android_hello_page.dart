@@ -42,7 +42,6 @@ import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/webview/saucenao_webview_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AndroidHelloPage extends StatefulWidget {
   const AndroidHelloPage({Key? key}) : super(key: key);
@@ -84,7 +83,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     return LayoutBuilder(builder: (context, constraints) {
       final wide = constraints.maxWidth > constraints.maxHeight;
       return PopScope(
-          onPopInvoked: (didPop) async {
+          onPopInvokedWithResult: (didPop, result) async {
             userSetting.setAnimContainer(!userSetting.animContainer);
             if (didPop) return;
             if (!userSetting.isReturnAgainToExit) {
