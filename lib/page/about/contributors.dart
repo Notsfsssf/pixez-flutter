@@ -102,7 +102,7 @@ List<Contributor> contributors = [
             context: context,
             builder: (context) {
               return SafeArea(
-                child: Image.asset('assets/images/h.jpg'),
+                child: Image.asset(Constants.no_h),
               );
             });
         return;

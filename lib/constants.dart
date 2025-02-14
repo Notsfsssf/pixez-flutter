@@ -17,6 +17,7 @@
 import 'dart:io';
 
 class Constants {
+  static const String no_h = 'assets/images/h_long.jpg';
   static String tagName = "0.9.61";
   static const isGooglePlay =
       bool.fromEnvironment("IS_GOOGLEPLAY", defaultValue: false);

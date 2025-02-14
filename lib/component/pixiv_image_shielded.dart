@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 
 final hIsNotAllowedImage = Container(
   color: Colors.white,
-  child: Image.asset('assets/images/h.jpg'),
+  child: Image.asset(Constants.no_h),
 );
 
 class PixivImageShielded extends StatefulWidget {

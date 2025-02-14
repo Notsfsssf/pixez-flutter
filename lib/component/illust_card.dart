@@ -22,6 +22,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
@@ -88,7 +89,7 @@ class _IllustCardState extends State<IllustCard> {
               clipBehavior: Clip.antiAlias,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: Image.asset('assets/images/h_long.jpg'),
+              child: Image.asset(Constants.no_h),
             ),
           );
         }
