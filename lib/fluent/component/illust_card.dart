@@ -22,6 +22,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
@@ -152,7 +153,7 @@ class _IllustCardState extends State<IllustCard> {
       if (iR18 != null && iR18 != -1) {
         return PixEzButton(
           onPressed: () => _buildTap(context),
-          child: Image.asset('assets/images/h.jpg'),
+          child: Image.asset(Constants.no_h),
         );
       }
     }
