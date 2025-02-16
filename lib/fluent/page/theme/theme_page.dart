@@ -84,7 +84,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
       builder: (context) => ContentDialog(
         title: Text(I18n.of(context).skin),
         constraints: BoxConstraints(
-          maxHeight: userSetting.useDynamicColor ? 300 : 350,
+          maxHeight: userSetting.useDynamicColor ? 350 : 400,
           maxWidth: 400,
         ),
         content: Column(
@@ -115,6 +115,19 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
               trailing: ToggleSwitch(
                 checked: userSetting.isAMOLED,
                 onChanged: (v) => userSetting.setIsAMOLED(v),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                "Pixiv UWP Style",
+                style: TextStyle(
+                  color: FluentTheme.of(context).accentColor,
+                  fontSize: 16,
+                ),
+              ),
+              trailing: ToggleSwitch(
+                checked: userSetting.isTopMode,
+                onChanged: (v) => userSetting.setIsTopMode(v),
               ),
             ),
             ListTile(

@@ -54,11 +54,11 @@ class FluentHelloPageState extends State<FluentHelloPage> {
   @override
   Widget build(BuildContext context) {
     final initIndex = userSetting.welcomePageNum;
-    // Pixiv UWP 样式
-    bool isTop = false;
     return Observer(
       builder: (context) {
         bool isLogin = accountStore.now != null;
+        // Pixiv UWP 样式
+        bool isTop = userSetting.isTopMode;
         return NavigationFramework(
           key: _frameworkKey,
           initIndex: initIndex,
