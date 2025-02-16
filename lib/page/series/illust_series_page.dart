@@ -119,7 +119,7 @@ class _IllustSeriesPageState extends ConsumerState<IllustSeriesPage> {
                                   child: coverImageUrl == null
                                       ? Container()
                                       : PixivImage(
-                                          coverImageUrl ?? "",
+                                          coverImageUrl,
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                         ),
@@ -230,7 +230,7 @@ class _IllustSeriesPageState extends ConsumerState<IllustSeriesPage> {
                                     alignment: Alignment.center,
                                     margin:
                                         EdgeInsets.only(left: 16, right: 16),
-                                    child: Text(caption ?? "",
+                                    child: Text(caption,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyLarge),
@@ -324,7 +324,7 @@ class _State extends ConsumerState<IllustSeriesItem> {
                 NullHero(
                   tag: "illust_series_${illust.id}",
                   child: PixivImage(
-                    illust.imageUrls.large ?? "",
+                    illust.imageUrls.large,
                     fit: BoxFit.fitWidth,
                     width: double.infinity,
                   ),

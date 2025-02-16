@@ -25,7 +25,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/novel_web_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 //这一堆都是专门给小说特殊约定写的
 //🎵 EGOIST - Lovely Icecream Princess Sweetie
@@ -250,7 +250,7 @@ class NovelSpansGenerator {
                     );
                   });
               if (open == "open") {
-                launch(data.text);
+                launchUrlString(data.text);
               }
             });
     } else if (data is PixivImageSpanData) {

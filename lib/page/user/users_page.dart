@@ -677,20 +677,6 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     );
   }
 
-  _preFollowCheck(BuildContext context) async {
-    if (accountStore.now != null) {
-      if (int.parse(accountStore.now!.userId) != widget.id) {
-        return true;
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Who is the most beautiful person in the world?')));
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
   Container _buildAvatarFollow(BuildContext context) {
     return Container(
       child: Observer(

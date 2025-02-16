@@ -46,29 +46,4 @@ class _SortGroupState extends State<SortGroup> {
       },
     );
   }
-
-  Widget _buildChip(String i, BuildContext context) {
-    final bgColor = index == widget.children.indexOf(i)
-        ? Colors.white
-        : Theme.of(context).textTheme.bodyLarge!.color;
-    return ElevatedButton(
-      child: Text(
-        i,
-        style: TextStyle(color: bgColor),
-      ),
-      style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all<Color>(
-              index == widget.children.indexOf(i)
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).cardColor)),
-      onPressed: () {
-        int ii = widget.children.indexOf(i);
-        widget.onChange(ii);
-        if (mounted)
-          setState(() {
-            this.index = ii;
-          });
-      },
-    );
-  }
 }

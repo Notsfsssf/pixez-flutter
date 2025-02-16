@@ -20,6 +20,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/component/picker/utils.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/prefer.dart';
@@ -262,14 +263,6 @@ abstract class _UserSetting with Store {
     fileNameEval = value;
   }
 
-  Color _stringToColor(String colorString) {
-    String valueString =
-        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
-    int value = int.parse(valueString, radix: 16);
-    Color otherColor = new Color(value);
-    return otherColor;
-  }
-
   @observable
   Color seedColor = Colors.blue[400]!;
 
@@ -481,7 +474,7 @@ abstract class _UserSetting with Store {
 
   @action
   setThemeData(Color data) async {
-    await prefs.setInt(SEED_COLOR_KEY, data.value);
+    await prefs.setInt(SEED_COLOR_KEY, data.toInt());
     seedColor = data;
   }
 

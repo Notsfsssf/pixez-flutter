@@ -16,7 +16,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mobx/mobx.dart';
@@ -29,7 +28,6 @@ import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/saf_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'mute_store.g.dart';
 

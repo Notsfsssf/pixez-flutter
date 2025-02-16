@@ -11,7 +11,6 @@ import 'package:pixez/models/watchlist_manga_model.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/series/illust_series_page.dart';
 import 'package:pixez/page/watchlist/watchlist_notifier.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 
 class WatchlistPage extends StatefulHookConsumerWidget {
   const WatchlistPage({super.key});

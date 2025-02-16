@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -10,8 +9,8 @@ import 'package:pixez/models/illust_persist.dart';
 import 'package:pixez/saf_plugin.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'history_store.g.dart';
 part 'history_store.freezed.dart';
+part 'history_store.g.dart';
 
 @freezed
 class HistoryState with _$HistoryState {
