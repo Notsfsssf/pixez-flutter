@@ -39,6 +39,10 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       return ContentDialog(
+        constraints: BoxConstraints(
+          maxHeight: 159.0 + accountStore.accounts.length * 80.0,
+          maxWidth: 368.0,
+        ),
         content: ListView.builder(
           itemBuilder: (context, index) {
             AccountPersist accountPersist = accountStore.accounts[index];
@@ -67,23 +71,20 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
           },
           itemCount: accountStore.accounts.length,
         ),
-        title: PageHeader(
-          title: Text(I18n.of(context).account_change),
-          commandBar: CommandBar(
-              mainAxisAlignment: MainAxisAlignment.end,
-              primaryItems: [
-                CommandBarButton(
-                  icon: Icon(FluentIcons.add),
-                  onPressed: () => Leader.push(
-                    context,
-                    LoginPage(),
-                    icon: Icon(FluentIcons.add),
-                    title: Text(I18n.of(context).login),
-                  ),
-                )
-              ]),
-        ),
+        title: Text(I18n.of(context).account_change),
         actions: [
+          Button(
+            child: Text('添加新账户'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Leader.push(
+                context,
+                LoginPage(),
+                icon: Icon(FluentIcons.add),
+                title: Text(I18n.of(context).login),
+              );
+            },
+          ),
           FilledButton(
             child: Text(I18n.of(context).ok),
             onPressed: () => Navigator.of(context).pop(),

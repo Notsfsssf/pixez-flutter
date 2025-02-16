@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
@@ -21,7 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class FluentLeader {
   static Future<void> pushUntilHome(BuildContext context) async {
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       FluentPageRoute(
         builder: (context) => const FluentHelloPage(),
       ),
@@ -100,7 +99,7 @@ class FluentLeader {
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
           BotToast.showText(text: "Login Success");
-          if (Platform.isIOS) pushUntilHome(context);
+          pushUntilHome(context);
         } catch (e) {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());
