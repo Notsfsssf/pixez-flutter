@@ -142,7 +142,6 @@ msix_config:
   display_name: Pixez
   publisher_display_name: Perol_Notsfsssf
   identity_name: com.perol.pixez
-  msix_version: 0.0.0.1
   logo_path: .\windows\runner\resources\ic_launcher-msstore.png
   trim_logo: false
   capabilities: internetClient, picturesLibrary
@@ -150,8 +149,6 @@ msix_config:
   protocol_activation: pixiv, pixez
   app_uri_handler_hosts: i.pximg.net, pixiv.me, pixivision.net
   execution_alias: pixez
-  store: false
-  publisher: CN=舰队的偶像-岛风酱!, C=CN
-  sign_msix: true
-  certificate_path: .\cert.pfx
   install_certificate: false
+  store: false
+  publisher: CN=Notsfsssf, C=CN
