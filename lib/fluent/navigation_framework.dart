@@ -24,17 +24,17 @@ class NavigationFramework extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => NavigationFrameworkState();
+  State<StatefulWidget> createState() => _NavigationFrameworkState();
 }
 
-class NavigationFrameworkState extends State<NavigationFramework> {
-  late PixEzNavigator navigator;
+class _NavigationFrameworkState extends State<NavigationFramework> {
+  late PixEzNavigator _navigator;
 
   @override
   void initState() {
     super.initState();
     final (temporaryIndex, skipIndexes) = _calcTemporaryIndex();
-    navigator = PixEzNavigator(
+    _navigator = PixEzNavigator(
       initIndex: widget.initIndex,
       temporaryIndex: temporaryIndex,
       skipIndexes: skipIndexes,
@@ -45,14 +45,14 @@ class NavigationFrameworkState extends State<NavigationFramework> {
   @override
   Widget build(BuildContext context) {
     final items = [...widget.items];
-    final temporaryItem = navigator.currentTemporary;
+    final temporaryItem = _navigator.currentTemporary;
     if (temporaryItem != null) {
       items.add(PaneItemSeparator());
       items.add(PaneItem(
         icon: temporaryItem.icon,
         title: temporaryItem.title,
         body: Navigator(
-          observers: [navigator],
+          observers: [_navigator],
           onGenerateRoute: (settings) {
             return FluentPageRoute(
               builder: (context) => const SizedBox.shrink(),
@@ -76,7 +76,7 @@ class NavigationFrameworkState extends State<NavigationFramework> {
                   child: PaneItem(
                     icon: const Icon(FluentIcons.back, size: 14.0),
                     body: const SizedBox.shrink(),
-                    enabled: navigator.canGoBack,
+                    enabled: _navigator.canGoBack,
                   ).build(
                     context,
                     false,
@@ -84,7 +84,7 @@ class NavigationFrameworkState extends State<NavigationFramework> {
                     displayMode: PaneDisplayMode.compact,
                   ),
                 ),
-                if (navigator.canForward)
+                if (_navigator.canForward)
                   Tooltip(
                     message: '前进',
                     child: PaneItem(
@@ -103,7 +103,7 @@ class NavigationFrameworkState extends State<NavigationFramework> {
               child: Align(
                 // 垂直居中文字
                 alignment: AlignmentDirectional.centerStart,
-                child: navigator.currentTemporary?.title ?? widget.defaultTitle,
+                child: _navigator.currentTemporary?.title ?? widget.defaultTitle,
               ),
             ),
             actions: SizedBox(
@@ -118,11 +118,11 @@ class NavigationFrameworkState extends State<NavigationFramework> {
           pane: NavigationPane(
             displayMode: widget.displayMode,
             header: widget.header,
-            selected: navigator.currentIndex,
+            selected: _navigator.currentIndex,
             autoSuggestBox: widget.autoSuggestBox,
             items: items,
             footerItems: widget.footerItems,
-            onChanged: navigator.pushIndex,
+            onChanged: _navigator.pushIndex,
           ),
         ),
         onPointerDown: _onPointerDown,
@@ -158,8 +158,8 @@ class NavigationFrameworkState extends State<NavigationFramework> {
 
   void _onGoBackPress() => _onGoBack();
 
-  void _onGoBack() => navigator.pop();
-  void _onForward() => navigator.forward();
+  void _onGoBack() => _navigator.pop();
+  void _onForward() => _navigator.forward();
 
   (int temporaryIndex, List<int> skipIndexes) _calcTemporaryIndex() {
     var temporaryIndex = 0;
@@ -181,6 +181,8 @@ class NavigationFrameworkState extends State<NavigationFramework> {
 }
 
 class PixEzNavigator extends NavigatorObserver {
+  static late PixEzNavigator instance;
+
   final int temporaryIndex;
   final List<int> skipIndexes;
   final List<_PixEzNavigatableItem> _histories = [];
@@ -193,6 +195,7 @@ class PixEzNavigator extends NavigatorObserver {
     required this.skipIndexes,
     required this.onUpdate,
   }) {
+    instance = this;
     _histories.add(_PixEzNavigatableItem.index(initIndex));
   }
 

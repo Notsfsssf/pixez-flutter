@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
@@ -23,14 +24,12 @@ import 'package:pixez/models/account.dart';
 
 class FluentHelloPage extends StatefulWidget {
   @override
-  FluentHelloPageState createState() => FluentHelloPageState();
+  State<FluentHelloPage> createState() => _FluentHelloPageState();
 
   const FluentHelloPage({super.key});
 }
 
-class FluentHelloPageState extends State<FluentHelloPage> {
-  final GlobalKey<NavigationFrameworkState> _frameworkKey =
-      GlobalKey<NavigationFrameworkState>();
+class _FluentHelloPageState extends State<FluentHelloPage> {
   final PaneItemExpanderKey _expandedKey = PaneItemExpanderKey();
   final BookmarkPageMethodRelay relay = BookmarkPageMethodRelay();
   bool hideEmail = true;
@@ -60,7 +59,6 @@ class FluentHelloPageState extends State<FluentHelloPage> {
         // Pixiv UWP 样式
         bool isTop = userSetting.isTopMode;
         return NavigationFramework(
-          key: _frameworkKey,
           initIndex: initIndex,
           defaultTitle: const Text('PixEz'),
           displayMode: isTop ? PaneDisplayMode.top : PaneDisplayMode.auto,
@@ -180,15 +178,17 @@ class FluentHelloPageState extends State<FluentHelloPage> {
   Widget _buildHeader(bool isLogin) {
     final onPressed = isLogin
         ? () {
-            _frameworkKey.currentState?.navigator.pushRoute(
-              page: UsersPage(id: int.parse(accountStore.now!.userId)),
+            Leader.push(
+              context,
+              UsersPage(id: int.parse(accountStore.now!.userId)),
               title: Text(I18n.of(context).my),
               icon: Icon(FluentIcons.account_browser),
             );
           }
         : () {
-            _frameworkKey.currentState?.navigator.pushRoute(
-              page: LoginPage(),
+            Leader.push(
+              context,
+              LoginPage(),
               icon: Icon(FluentIcons.signin),
               title: Text(I18n.of(context).login),
             );

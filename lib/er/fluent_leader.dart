@@ -294,10 +294,7 @@ class FluentLeader {
                 padding: EdgeInsets.all(0.0),
               );
 
-    final state =
-        context.findRootAncestorStateOfType<NavigationFrameworkState>();
-    assert(state != null);
-    return state!.navigator.pushRoute(
+    return PixEzNavigator.instance.pushRoute(
       page: _final,
       icon: icon ?? const Icon(FluentIcons.unknown),
       title: title ?? Text(I18n.of(context).undefined),
