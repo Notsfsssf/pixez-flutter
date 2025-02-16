@@ -15,7 +15,6 @@
  */
 
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'result_illust_store.g.dart';
 

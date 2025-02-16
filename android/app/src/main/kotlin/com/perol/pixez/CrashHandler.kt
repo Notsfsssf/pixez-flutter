@@ -60,7 +60,7 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
                 )
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
-            } else if (ex.message!!.toLowerCase(Locale.ROOT).contains("document")) {
+            } else if (ex.message!!.lowercase().contains("document")) {
                 val toast = Toast.makeText(
                     mContext, """
      SAF进行文件读写操作时出现异常，这似乎是由于未正确配置授权目录引起的，请前往应用内设置页，更改保存目录为Picture目录下的任意文件夹,不要选择Donwload下载目录，或清除数据后重新选择目录

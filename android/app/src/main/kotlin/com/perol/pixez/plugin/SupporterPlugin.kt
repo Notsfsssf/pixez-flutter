@@ -15,58 +15,62 @@ class SupporterPlugin {
             SUPPORTER_CHANNEL
         ).setMethodCallHandler { call, result ->
             activity.apply {
-                if (call.method == "exit") {
-                    finishAndRemoveTask()
-                }
-                if (call.method == "process_text") {
-                    try {
-                        val queryIntentActivities =
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                packageManager.queryIntentActivities(
-                                    Intent().apply {
-                                        type = "text/plain"
-                                        action = Intent.ACTION_PROCESS_TEXT
-                                    },
-                                    PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
-                                )
-                            } else {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                when (call.method) {
+                    "exit" -> {
+                        result.success(true)
+                        finishAndRemoveTask()
+                    }
+
+                    "process_text" -> {
+                        try {
+                            val queryIntentActivities =
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                     packageManager.queryIntentActivities(
-                                        Intent(Intent.ACTION_PROCESS_TEXT).apply {
+                                        Intent().apply {
                                             type = "text/plain"
+                                            action = Intent.ACTION_PROCESS_TEXT
                                         },
-                                        0
+                                        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
                                     )
                                 } else {
-                                    packageManager.queryIntentActivities(
-                                        Intent(Intent.ACTION_SEND).apply {
-                                            type = "text/plain"
-                                        },
-                                        0
-                                    )
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        packageManager.queryIntentActivities(
+                                            Intent(Intent.ACTION_PROCESS_TEXT).apply {
+                                                type = "text/plain"
+                                            },
+                                            0
+                                        )
+                                    } else {
+                                        packageManager.queryIntentActivities(
+                                            Intent(Intent.ACTION_SEND).apply {
+                                                type = "text/plain"
+                                            },
+                                            0
+                                        )
+                                    }
                                 }
-                            }
-                        result.success(queryIntentActivities.isNotEmpty())
-                    } catch (ignore: Throwable) {
+                            result.success(queryIntentActivities.isNotEmpty())
+                        } catch (ignore: Throwable) {
+                            result.success(false)
+                        }
+                    }
 
-                    }
-                    result.success(false)
-                }
-                if (call.method == "process") {
-                    val text = call.argument<String>("text")
-                    val intent = Intent()
-                        .setType("text/plain")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        intent.action = Intent.ACTION_PROCESS_TEXT
-                        intent.putExtra(Intent.EXTRA_PROCESS_TEXT, text)
-                    } else {
-                        intent.action = Intent.ACTION_SEND
-                        intent.putExtra(Intent.EXTRA_TEXT, text)
-                    }
-                    result.success(0)
-                    try {
-                        startActivity(intent)
-                    } catch (_: Throwable) {
+                    "process" -> {
+                        val text = call.argument<String>("text")
+                        val intent = Intent()
+                            .setType("text/plain")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            intent.action = Intent.ACTION_PROCESS_TEXT
+                            intent.putExtra(Intent.EXTRA_PROCESS_TEXT, text)
+                        } else {
+                            intent.action = Intent.ACTION_SEND
+                            intent.putExtra(Intent.EXTRA_TEXT, text)
+                        }
+                        result.success(0)
+                        try {
+                            startActivity(intent)
+                        } catch (_: Throwable) {
+                        }
                     }
                 }
             }

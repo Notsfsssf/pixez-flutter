@@ -82,3 +82,6 @@ msic
 
 # Ignore Certificate
 *.pfx
+
+# FVM Version Cache
+.fvm/

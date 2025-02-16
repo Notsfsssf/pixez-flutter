@@ -23,8 +23,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.7.0
-  crypto: ^3.0.2
+  dio: ^5.8.0+1
+  crypto: ^3.0.6
   path_provider: ^2.1.5
   shared_preferences: ^2.5.1
   share_plus: ^10.1.4
@@ -35,11 +35,14 @@ dependencies:
   package_info_plus: ^8.2.1
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
-  in_app_purchase: ^3.2.0
-  flutter_widget_from_html: ^0.15.2
+  in_app_purchase: ^3.2.1
+  flutter_widget_from_html: ^0.15.3
   device_info_plus: ^11.3.0
   flutter_displaymode: ^0.6.0
-  receive_sharing_intent: ^1.8.1
+  receive_sharing_intent:
+    git:
+      url: https://github.com/KasemJaffer/receive_sharing_intent
+      ref: master
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.4.1
   waterfall_flow: ^3.1.1
@@ -57,7 +60,7 @@ dependencies:
   easy_refresh: ^3.4.0
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.5.1
-  sqflite: ^2.4.1
+  sqflite: ^2.4.2
   dynamic_color:
     git:
       url: https://github.com/hasali19/material-foundation-flutter-packages.git
@@ -78,7 +81,7 @@ dependencies:
       ref: main
   dio_compatibility_layer: ^0.1.0
   flutter_cache_manager_dio: ^4.0.0
-  file_picker: ^8.3.2
+  file_picker: ^9.0.0
 
 dev_dependencies:
   flutter_test:
@@ -87,7 +90,7 @@ dev_dependencies:
   mobx_codegen: ^2.6.1
   json_serializable: ^6.8.0
   analyzer: ^6.4.1
-  sqflite_common_ffi: ^2.3.3
+  sqflite_common_ffi: ^2.3.5
   msix: ^3.16.7
   riverpod_generator: ^2.4.0
   custom_lint: ^0.6.4

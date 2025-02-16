@@ -68,13 +68,13 @@ class MainActivity : FlutterActivity() {
     private val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
     private lateinit var sharedPreferences: SharedPreferences
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
-//        }
-//        super.onCreate(savedInstanceState)
-//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
 

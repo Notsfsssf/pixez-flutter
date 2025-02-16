@@ -1,3 +1,5 @@
+synthetic-package: false
 arb-dir: lib/l10n
 template-arb-file: intl_en_US.arb
 output-localization-file: app_localizations.dart
+output-dir: lib/src/generated/i18n

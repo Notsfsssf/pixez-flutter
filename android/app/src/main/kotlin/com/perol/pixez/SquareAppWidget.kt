@@ -21,17 +21,32 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.transform.RoundedCornersTransformation
+import androidx.core.content.FileProvider
+import coil3.DrawableImage
+import coil3.Image
+import coil3.asDrawable
+import coil3.imageLoader
+import coil3.network.NetworkHeaders
+import coil3.network.httpHeaders
+import coil3.request.ImageRequest
+import coil3.request.transformations
+import coil3.toBitmap
+import coil3.transform.RoundedCornersTransformation
 import com.perol.pixez.glance.GlanceDBManager
 import com.perol.pixez.glance.GlanceIllust
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 /**
  * Implementation of App Widget functionality.
@@ -107,51 +122,68 @@ private fun updateWidget(
         val request = ImageRequest.Builder(context)
             .data(trueUrl)
             .transformations(RoundedCornersTransformation(radius))
-            .setHeader("referer", "https://app-api.pixiv.net/")
-            .setHeader("User-Agent", "PixivIOSApp/5.8.0")
-            .setHeader("host", Uri.parse(trueUrl).host!!)
-            .size(540, 540)
+            .httpHeaders(
+                NetworkHeaders.Builder()
+                    .set("referer", "https://app-api.pixiv.net/")
+                    .set("User-Agent", "PixivIOSApp/5.8.0")
+                    .set("host", Uri.parse(trueUrl).host!!)
+                    .build()
+            )
             .listener(onError = { i, j ->
                 io.flutter.Log.e("Card app widget", "url error: ${trueUrl}", j.throwable)
             })
-            .target(object : coil.target.Target {
-                override fun onStart(placeholder: Drawable?) {
-                    io.flutter.Log.d("Card app widget", "url: ${trueUrl}")
-                }
-
-                override fun onSuccess(result: Drawable) {
-                    io.flutter.Log.d("Card app widget", "url success: ${trueUrl}")
-                    views.setImageViewBitmap(
-                        R.id.appwidget_image,
-                        (result as? BitmapDrawable)?.bitmap
-                    )
-                    val intent = Intent(context, MainActivity::class.java).apply {
-                        putExtra("iid", iId)
+            .size(540, 540)
+            .target(object : coil3.target.Target {
+                override fun onSuccess(result: Image) {
+                    super.onSuccess(result)
+                    MainScope().launch {
+                        val bitmap = withContext(Dispatchers.IO) {
+                            runCatching {
+                                val bitmap = result.toBitmap()
+                                return@runCatching bitmap
+                            }.getOrNull()
+                        }
+                        if (bitmap != null) {
+                            try {
+                                views.setImageViewBitmap(
+                                    R.id.appwidget_image,
+                                    bitmap
+                                )
+                                val intent = Intent(context, MainActivity::class.java).apply {
+                                    putExtra("iid", iId)
+                                }
+                                val pendingIntent =
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        PendingIntent.getActivity(
+                                            context,
+                                            url.hashCode(),
+                                            intent,
+                                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                                        )
+                                    } else {
+                                        PendingIntent.getActivity(
+                                            context,
+                                            url.hashCode(),
+                                            intent,
+                                            PendingIntent.FLAG_UPDATE_CURRENT
+                                        )
+                                    }
+                                views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
+                                views.setViewVisibility(
+                                    R.id.appwidget_warning_container,
+                                    View.GONE
+                                )
+                                manager.updateAppWidget(appWidgetId, views)
+                                io.flutter.Log.d("Card app widget", "url success: ${trueUrl}")
+                            } catch (throwable: Throwable) {
+                                io.flutter.Log.d("Card app widget", throwable.toString())
+                            }
+                        }
                     }
-                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        PendingIntent.getActivity(
-                            context,
-                            url.hashCode(),
-                            intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                        )
-                    } else {
-                        PendingIntent.getActivity(
-                            context,
-                            url.hashCode(),
-                            intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                        )
-                    }
-                    views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent)
-                    views.setViewVisibility(R.id.appwidget_warning_container, View.GONE);
-                    manager.updateAppWidget(appWidgetId, views)
-                }
 
-                override fun onError(error: Drawable?) {
                 }
-            })
-            .build()
+            }).build()
+
         context.imageLoader.enqueue(request)
     } catch (throwable: Throwable) {
         io.flutter.Log.d("Card app widget", throwable.toString())
