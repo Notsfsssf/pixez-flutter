@@ -85,3 +85,4 @@ msic
 
 # FVM Version Cache
 .fvm/
+/lib/src/generated/
