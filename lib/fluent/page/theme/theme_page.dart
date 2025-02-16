@@ -13,9 +13,8 @@
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:fluent_ui/fluent_ui.dart' hide ColorPicker;
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/picker/colorpicker.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
@@ -40,91 +39,27 @@ class _ColorPickPageState extends State<ColorPickPage> {
   @override
   Widget build(BuildContext context) {
     return ContentDialog(
-      title: PageHeader(
-        title: Text(I18n.of(context).pick_a_color),
-        commandBar: CommandBar(
-          primaryItems: [
-            CommandBarButton(
-                icon: Icon(FluentIcons.edit),
-                onPressed: () async {
-                  final TextEditingController textEditingController =
-                      TextEditingController(
-                          text: pickerColor.colorValue
-                              .toString()
-                              .toLowerCase()
-                              .replaceAll('color(0xff', '')
-                              .replaceAll(')', ''));
-
-                  String? result = await showDialog<String>(
-                      context: context,
-                      builder: (context) {
-                        return ContentDialog(
-                          title: Text("16 radix RGB"),
-                          content: TextBox(
-                              controller: textEditingController,
-                              maxLength: 6,
-                              prefix: Text("color(0xff"),
-                              suffix: Text(")")),
-                          actions: <Widget>[
-                            Button(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(I18n.of(context).cancel)),
-                            FilledButton(
-                                onPressed: () {
-                                  final result = textEditingController.text
-                                      .trim()
-                                      .toLowerCase();
-                                  if (result.length != 6) {
-                                    return;
-                                  }
-                                  Navigator.of(context)
-                                      .pop("color(0xff${result})");
-                                },
-                                child: Text(I18n.of(context).ok)),
-                          ],
-                        );
-                      });
-                  if (result == null) return;
-                  Color color = _stringToColor(result); //迅速throw出来
-                  setState(() {
-                    pickerColor = color;
-                  });
-                }),
-          ],
-        ),
-      ),
-      content: Container(
-        width: 800,
-        child: ColorPicker(
-          enableAlpha: false,
-          pickerColor: pickerColor,
-          onColorChanged: (Color color) {
-            setState(() {
-              pickerColor = color;
-            });
-          },
-          pickerAreaHeightPercent: 0.8,
-        ),
+      title: Text(I18n.of(context).pick_a_color),
+      content: ColorPicker(
+        isAlphaEnabled: false,
+        isMoreButtonVisible: false,
+        isAlphaSliderVisible: false,
+        isAlphaTextInputVisible: false,
+        isHexInputVisible: true,
+        color: pickerColor,
+        onChanged: (color) {
+          setState(() {
+            pickerColor = color;
+          });
+        },
       ),
       actions: [
         FilledButton(
-          child: Text(I18n.of(context).save),
-          onPressed: () {
-            Navigator.of(context).pop(pickerColor);
-          },
+          child: Text(I18n.of(context).ok),
+          onPressed: () => Navigator.of(context).pop(pickerColor),
         ),
       ],
     );
-  }
-
-  Color _stringToColor(String colorString) {
-    String valueString =
-        colorString.split('(0x')[1].split(')')[0]; // kind of hacky..
-    int value = int.parse(valueString, radix: 16);
-    Color otherColor = new Color(value);
-    return otherColor;
   }
 }
 
@@ -144,105 +79,74 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
     Color(0xFFFB7299).toAccentColor(),
   ];
 
-  Future<void> _pickColorData(int index, Color pickerColor) async {
-    // TODO: 不支持 Color Picker
-    // Color? result = await showDialog(
-    //   context: context,
-    //   builder: (context) => ColorPickPage(initialColor: pickerColor),
-    //   useRootNavigator: false,
-    // );
-    // if (result != null) {
-    //   var data = <String>[
-    //     userSetting.themeData.primaryColor.toString(),
-    //     userSetting.themeData.primaryColor.toString(),
-    //   ];
-    //   data[index] = "(0x${result.value.toRadixString(16)})";
-    //   userSetting.setThemeData(data);
-    // }
-    // todo 修改无效
-    userSetting.setThemeData(pickerColor);
-  }
-
   @override
   void initState() {
     super.initState();
-    // colorList = Colors.accentColors;
-  }
-
-  Widget buildThemeCard(AccentColor color) {
-    return Card(
-      padding: EdgeInsets.zero,
-      child: IconButton(
-        onPressed: () => _pickColorData(0, color.normal),
-        icon: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(color.toString(), style: TextStyle(color: color)),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ColoredBox(
-                  color: color,
-                  child: SizedBox(
-                    height: 30,
-                    child: Center(child: Text("accentColor")),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return ContentDialog(
-        title: Row(children: [
-          Text(I18n.of(context).skin),
-          Spacer(),
-          ComboBox<int>(
-            items: [
-              ComboBoxItem(child: Text(I18n.of(context).system), value: 0),
-              ComboBoxItem(child: Text(I18n.of(context).light), value: 1),
-              ComboBoxItem(child: Text(I18n.of(context).dark), value: 2),
-            ],
-            value: ThemeMode.values.indexOf(userSetting.themeMode),
-            onChanged: (i) => i == null ? null : userSetting.setThemeMode(i),
-          ),
-          SizedBox(width: 8),
-          Observer(
-            builder: (_) => ToggleSwitch(
-              checked: userSetting.isAMOLED,
-              onChanged: (v) => userSetting.setIsAMOLED(v),
-              content: Text(
+    return Observer(
+      builder: (context) => ContentDialog(
+        title: Text(I18n.of(context).skin),
+        constraints: BoxConstraints(
+          maxHeight: userSetting.useDynamicColor ? 300 : 350,
+          maxWidth: 400,
+        ),
+        content: Column(
+          children: [
+            ListTile(
+              title: Text(I18n.of(context).theme),
+              trailing: ComboBox<int>(
+                items: [
+                  ComboBoxItem(child: Text(I18n.of(context).system), value: 0),
+                  ComboBoxItem(child: Text(I18n.of(context).light), value: 1),
+                  ComboBoxItem(child: Text(I18n.of(context).dark), value: 2),
+                ],
+                value: ThemeMode.values.indexOf(userSetting.themeMode),
+                onChanged: (i) {
+                  if (i == null) return;
+                  userSetting.setThemeMode(i);
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(
                 "AMOLED",
                 style: TextStyle(
                   color: FluentTheme.of(context).accentColor,
                   fontSize: 16,
                 ),
               ),
+              trailing: ToggleSwitch(
+                checked: userSetting.isAMOLED,
+                onChanged: (v) => userSetting.setIsAMOLED(v),
+              ),
             ),
-          ),
-        ]),
-        constraints: BoxConstraints(maxHeight: 500, maxWidth: 800),
-        content: SingleChildScrollView(
-          child: GridView(
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 3,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
+            ListTile(
+              // title: Text(I18n.of(context).dynamic_color),
+              title: Text(I18n.of(context).system),
+              trailing: ToggleSwitch(
+                checked: userSetting.useDynamicColor,
+                onChanged: (v) => userSetting.setUseDynamicColor(v),
+              ),
             ),
-            padding: EdgeInsets.all(8),
-            children: colorList.map(buildThemeCard).toList(),
-          ),
+            if (!userSetting.useDynamicColor)
+              ListTile(
+                title: Text(I18n.of(context).seed_color),
+                trailing: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: userSetting.seedColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: _pickColor,
+              ),
+          ],
         ),
         actions: [
           FilledButton(
@@ -250,7 +154,20 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
-      );
-    });
+      ),
+    );
+  }
+
+  _pickColor() async {
+    Color? result = await showDialog(
+      context: context,
+      builder: (context) => ColorPickPage(
+        initialColor: userSetting.seedColor,
+      ),
+    );
+    if (result != null) {
+      await userSetting.setThemeData(result);
+      topStore.setTop("main");
+    }
   }
 }
