@@ -232,26 +232,31 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             left: 0.0,
             right: 0.0,
             bottom: 0.0,
-            child: Padding(
+            child: Container(
               padding: EdgeInsets.only(
                   left: MediaQuery.of(context).padding.left,
                   bottom: MediaQuery.of(context).padding.bottom + 4.0),
               child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 2,
+                alignment: Alignment.center,
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
                   ),
-                ),
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: accountStore.now != null
-                      ? PainterAvatar(
-                          url: accountStore.now!.userImage,
-                          id: int.tryParse(accountStore.now!.userId) ?? 0)
-                      : Container(),
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: accountStore.now != null
+                        ? PainterAvatar(
+                            url: accountStore.now!.userImage,
+                            id: int.tryParse(accountStore.now!.userId) ?? 0)
+                        : Container(),
+                  ),
                 ),
               ),
             ),
