@@ -1,9 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/prefer.dart';
+import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/component/search_box/pixez_search_box.dart';
 import 'package:pixez/fluent/navigation_framework.dart';
 import 'package:pixez/fluent/page/Init/guide_page.dart';
@@ -103,6 +103,35 @@ class FluentHelloPageState extends State<FluentHelloPage> {
                     icon: const Icon(FluentIcons.home),
                     title: Text(I18n.of(context).home),
                     body: PreviewPage(),
+                  ),
+                  PaneItem(
+                    icon: const Icon(CustomIcons.leaderboard),
+                    title: Text(I18n.of(context).rank),
+                    body: RankPage(),
+                  ),
+                  PaneItemExpander(
+                    key: _expandedKey,
+                    icon: const Icon(FluentIcons.bookmarks),
+                    title: Text(I18n.of(context).quick_view),
+                    body: const SizedBox.shrink(),
+                    onTap: () => _expandedKey.currentState?.toggleOpen(),
+                    items: [
+                      PaneItem(
+                        icon: const Icon(FluentIcons.news),
+                        title: Text(I18n.of(context).news),
+                        body: PreviewPage(),
+                      ),
+                      PaneItem(
+                        icon: const Icon(FluentIcons.bookmarks),
+                        title: Text(I18n.of(context).bookmark),
+                        body: PreviewPage(),
+                      ),
+                      PaneItem(
+                        icon: const Icon(FluentIcons.follow_user),
+                        title: Text(I18n.of(context).followed),
+                        body: PreviewPage(),
+                      ),
+                    ],
                   ),
                 ],
           footerItems: [
