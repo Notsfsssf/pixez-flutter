@@ -30,6 +30,7 @@ class ColorPickPage extends StatefulWidget {
 
 class _ColorPickPageState extends State<ColorPickPage> {
   late Color pickerColor;
+
   @override
   void initState() {
     pickerColor = widget.initialColor;
@@ -133,35 +134,14 @@ class ThemePage extends StatefulWidget {
 }
 
 class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
-  final skinList = [
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFF26C6DA).toAccentColor(),
-    ),
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFFEC407A).toAccentColor(),
-    ),
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFF66BB6A).toAccentColor(),
-    ),
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFF8D6E63).toAccentColor(),
-    ),
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFFAB47BC).toAccentColor(),
-    ),
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFF42A5F5).toAccentColor(),
-    ),
-    FluentThemeData(
-      brightness: Brightness.light,
-      accentColor: Color(0xFFFB7299).toAccentColor(),
-    ),
+  List<AccentColor> colorList = [
+    Color(0xFF26C6DA).toAccentColor(),
+    Color(0xFFEC407A).toAccentColor(),
+    Color(0xFF66BB6A).toAccentColor(),
+    Color(0xFF8D6E63).toAccentColor(),
+    Color(0xFFAB47BC).toAccentColor(),
+    Color(0xFF42A5F5).toAccentColor(),
+    Color(0xFFFB7299).toAccentColor(),
   ];
 
   Future<void> _pickColorData(int index, Color pickerColor) async {
@@ -179,115 +159,97 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
     //   data[index] = "(0x${result.value.toRadixString(16)})";
     //   userSetting.setThemeData(data);
     // }
+    // todo 修改无效
+    userSetting.setThemeData(pickerColor);
   }
 
   @override
   void initState() {
     super.initState();
+    // colorList = Colors.accentColors;
+  }
+
+  Widget buildThemeCard(AccentColor color) {
+    return Card(
+      padding: EdgeInsets.zero,
+      child: IconButton(
+        onPressed: () => _pickColorData(0, color.normal),
+        icon: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                color.toString(),
+                style: TextStyle(color: color),
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  height: 30,
+                  color: color,
+                  child: Center(child: Text("accentColor")),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       return ContentDialog(
-        title: Text(I18n.of(context).skin),
-        content: ListView(
-          children: <Widget>[
-            ComboBox<int>(
-              items: [
-                ComboBoxItem(child: Text(I18n.of(context).system), value: 0),
-                ComboBoxItem(child: Text(I18n.of(context).light), value: 1),
-                ComboBoxItem(child: Text(I18n.of(context).dark), value: 2),
-              ],
-              value: ThemeMode.values.indexOf(userSetting.themeMode),
-              onChanged: (i) {
-                if (i == null) return;
-                userSetting.setThemeMode(i);
-              },
+        title: Row(children: [
+          Text(I18n.of(context).skin),
+          Spacer(),
+          ComboBox<int>(
+            items: [
+              ComboBoxItem(child: Text(I18n.of(context).system), value: 0),
+              ComboBoxItem(child: Text(I18n.of(context).light), value: 1),
+              ComboBoxItem(child: Text(I18n.of(context).dark), value: 2),
+            ],
+            value: ThemeMode.values.indexOf(userSetting.themeMode),
+            onChanged: (i) => i == null ? null : userSetting.setThemeMode(i),
+          ),
+          SizedBox(width: 8),
+          Observer(
+            builder: (_) => ToggleSwitch(
+              checked: userSetting.isAMOLED,
+              onChanged: (v) => userSetting.setIsAMOLED(v),
+              content: Text(
+                "AMOLED",
+                style: TextStyle(
+                  color: FluentTheme.of(context).accentColor,
+                  fontSize: 16,
+                ),
+              ),
             ),
-            Observer(builder: (_) {
-              return Card(
-                  child: ToggleSwitch(
-                checked: userSetting.isAMOLED,
-                onChanged: (v) => userSetting.setIsAMOLED(v),
-                content: Text("AMOLED"),
-              ));
-            }),
-            Card(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    FluentTheme.of(context).accentColor.toString(),
-                    style:
-                        TextStyle(color: FluentTheme.of(context).accentColor),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        _pickColorData(0, FluentTheme.of(context).accentColor);
-                      },
-                      icon: Container(
-                        height: 30,
-                        color: FluentTheme.of(context).accentColor,
-                        child: Center(child: Text("accentColor")),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            )),
-            GridView.builder(
-                shrinkWrap: true,
-                itemCount: skinList.length,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  final skin = skinList[index];
-                  return Card(
-                    margin: const EdgeInsets.all(2.0),
-                    padding: EdgeInsets.zero,
-                    child: IconButton(
-                      onPressed: () {
-                        userSetting.setThemeData(skin.accentColor);
-                      },
-                      icon: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              skin.accentColor.toString(),
-                              style: TextStyle(color: skin.accentColor),
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(
-                                height: 30,
-                                color: skin.accentColor,
-                                child: Center(child: Text("accentColor")),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                })
-          ],
+          ),
+        ]),
+        constraints: BoxConstraints(maxHeight: 500, maxWidth: 800),
+        content: SingleChildScrollView(
+          child: GridView(
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 3,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0),
+            padding: EdgeInsets.all(8),
+            children: colorList.map(buildThemeCard).toList(),
+          ),
         ),
         actions: [
           FilledButton(
-            child: Text(I18n.of(context).ok),
-            onPressed: () => Navigator.of(context).pop(),
+            child: Text(I18n.of(context).save),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       );
