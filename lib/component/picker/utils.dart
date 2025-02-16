@@ -220,9 +220,9 @@ extension ColorExtension2 on Color {
           bool toUpperCase = true}) =>
       colorToHex(
         this,
-        includeHashSign: false,
-        enableAlpha: true,
-        toUpperCase: true,
+        includeHashSign: includeHashSign,
+        enableAlpha: enableAlpha,
+        toUpperCase: toUpperCase,
       );
 
   int toInt() =>
