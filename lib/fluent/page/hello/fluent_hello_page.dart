@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/prefer.dart';
+import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/component/search_box/pixez_search_box.dart';
 import 'package:pixez/fluent/navigation_framework.dart';
@@ -18,6 +19,7 @@ import 'package:pixez/fluent/page/user/bookmark/bookmark_page.dart';
 import 'package:pixez/fluent/page/user/users_page.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/account.dart';
 
 class FluentHelloPage extends StatefulWidget {
   @override
@@ -27,8 +29,11 @@ class FluentHelloPage extends StatefulWidget {
 }
 
 class FluentHelloPageState extends State<FluentHelloPage> {
+  final GlobalKey<NavigationFrameworkState> _frameworkKey =
+      GlobalKey<NavigationFrameworkState>();
   final PaneItemExpanderKey _expandedKey = PaneItemExpanderKey();
   final BookmarkPageMethodRelay relay = BookmarkPageMethodRelay();
+  bool hideEmail = true;
 
   @override
   void initState() {
@@ -49,12 +54,17 @@ class FluentHelloPageState extends State<FluentHelloPage> {
   @override
   Widget build(BuildContext context) {
     final initIndex = userSetting.welcomePageNum;
+    // Pixiv UWP 样式
+    bool isTop = false;
     return Observer(
       builder: (context) {
         bool isLogin = accountStore.now != null;
         return NavigationFramework(
+          key: _frameworkKey,
           initIndex: initIndex,
           defaultTitle: const Text('PixEz'),
+          displayMode: isTop ? PaneDisplayMode.top : PaneDisplayMode.auto,
+          header: isTop ? null : _buildHeader(isLogin),
           autoSuggestBox: PixEzSearchBox(),
           items: isLogin
               ? [
@@ -140,28 +150,133 @@ class FluentHelloPageState extends State<FluentHelloPage> {
               title: Text(I18n.of(context).setting),
               body: const SettingPage(),
             ),
-            PaneItem(
-              icon: SizedBox(
-                height: 24,
-                width: 24,
-                child: CircleAvatar(
-                  backgroundImage: PixivProvider.url(
-                    accountStore.now?.userImage ??
-                        'https://s.pximg.net/common/images/no_profile.png',
-                    preUrl: 'https://s.pximg.net/common/images/no_profile.png',
+            if (isTop)
+              PaneItem(
+                icon: SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircleAvatar(
+                    backgroundImage: PixivProvider.url(
+                      accountStore.now?.userImage ??
+                          'https://s.pximg.net/common/images/no_profile.png',
+                      preUrl:
+                          'https://s.pximg.net/common/images/no_profile.png',
+                    ),
+                    radius: 100.0,
+                    backgroundColor: FluentTheme.of(context).accentColor,
                   ),
-                  radius: 100.0,
-                  backgroundColor: FluentTheme.of(context).accentColor,
                 ),
+                title: Text(accountStore.now?.name ?? 'Account'),
+                body: isLogin
+                    ? UsersPage(id: int.parse(accountStore.now!.userId))
+                    : LoginPage(),
               ),
-              title: Text(accountStore.now?.name ?? 'Account'),
-              body: isLogin
-                  ? UsersPage(id: int.parse(accountStore.now!.userId))
-                  : LoginPage(),
-            ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildHeader(bool isLogin) {
+    final onPressed = isLogin
+        ? () {
+            _frameworkKey.currentState?.navigator.pushRoute(
+              page: UsersPage(id: int.parse(accountStore.now!.userId)),
+              title: Text(I18n.of(context).my),
+              icon: Icon(FluentIcons.account_browser),
+            );
+          }
+        : () {
+            _frameworkKey.currentState?.navigator.pushRoute(
+              page: LoginPage(),
+              icon: Icon(FluentIcons.signin),
+              title: Text(I18n.of(context).login),
+            );
+          };
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16.0),
+      child: isLogin
+          ? IconButton(
+              icon: Row(
+                children: [
+                  PainterAvatar(
+                    url: accountStore.now!.userImage,
+                    id: int.parse(accountStore.now!.userId),
+                    size: const Size(64, 64),
+                    onTap: onPressed,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          accountStore.now?.name ?? 'Account',
+                          style: FluentTheme.of(context).typography.title,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              hideEmail
+                                  ? accountStore.now!.hiddenEmail()
+                                  : accountStore.now!.mailAddress,
+                              style: FluentTheme.of(context).typography.caption,
+                            ),
+                            SizedBox(
+                              width: 6,
+                            ),
+                            HyperlinkButton(
+                              onPressed: () =>
+                                  setState(() => hideEmail = !hideEmail),
+                              child: Text(
+                                hideEmail
+                                    ? I18n.of(context).reveal
+                                    : I18n.of(context).hide,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              onPressed: onPressed,
+            )
+          : Tooltip(
+              message: I18n.of(context).login,
+              child: IconButton(
+                icon: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/icon.png',
+                      height: 64,
+                      width: 64,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'PixEz',
+                            style: FluentTheme.of(context).typography.title,
+                          ),
+                          Text(
+                            'Your Favorite Pixiv Client!',
+                            style: FluentTheme.of(context).typography.caption,
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                onPressed: onPressed,
+              )),
     );
   }
 }

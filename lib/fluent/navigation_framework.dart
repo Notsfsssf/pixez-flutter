@@ -9,6 +9,8 @@ class NavigationFramework extends StatefulWidget {
   final List<NavigationPaneItem> items;
   final List<NavigationPaneItem> footerItems;
   final Widget? autoSuggestBox;
+  final Widget? header;
+  final PaneDisplayMode displayMode;
 
   const NavigationFramework({
     super.key,
@@ -16,7 +18,9 @@ class NavigationFramework extends StatefulWidget {
     this.items = const [],
     this.footerItems = const [],
     this.autoSuggestBox,
+    this.header,
     this.initIndex = 0,
+    this.displayMode = PaneDisplayMode.auto,
   });
 
   @override
@@ -112,8 +116,8 @@ class NavigationFrameworkState extends State<NavigationFramework> {
             ),
           ),
           pane: NavigationPane(
-            // Pixiv UWP 样式
-            // displayMode: PaneDisplayMode.top,
+            displayMode: widget.displayMode,
+            header: widget.header,
             selected: navigator.currentIndex,
             autoSuggestBox: widget.autoSuggestBox,
             items: items,
