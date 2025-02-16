@@ -328,44 +328,6 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Future _showSavedLogDialog(BuildContext context) async {
-    var savedLogFile = await LPrinter.savedLogFile();
-    var content = savedLogFile.readAsStringSync();
-    final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Log"),
-            content: Container(
-              child: Text(content),
-              height: 400,
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop("CANCEL");
-                },
-              ),
-              TextButton(
-                child: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-            ],
-          );
-        });
-    switch (result) {
-      case "OK":
-        {}
-        break;
-      case "CANCEL":
-        {}
-        break;
-    }
-  }
-
   Future _showLogoutDialog(BuildContext context) async {
     final result = await showDialog(
         context: context,
@@ -396,41 +358,6 @@ class _SettingPageState extends State<SettingPage> {
         break;
       case "CANCEL":
         {}
-        break;
-    }
-  }
-
-  Future _showClearCacheDialog(BuildContext context) async {
-    final result = await showDialog(
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(I18n.of(context).clear_all_cache),
-            actions: <Widget>[
-              TextButton(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop("CANCEL");
-                },
-              ),
-              TextButton(
-                child: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-            ],
-          );
-        },
-        context: context);
-    switch (result) {
-      case "OK":
-        {
-          try {
-            Directory tempDir = await getTemporaryDirectory();
-            tempDir.deleteSync(recursive: true);
-            cleanGlanceData();
-          } catch (e) {}
-        }
         break;
     }
   }
