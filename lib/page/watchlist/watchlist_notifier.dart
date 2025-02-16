@@ -1,6 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/models/watchlist_manga_model.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
@@ -30,7 +31,6 @@ import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 class AboutPage extends StatefulWidget {
   final bool? newVersion;
