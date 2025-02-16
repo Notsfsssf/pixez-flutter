@@ -179,18 +179,17 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: Text(
-                color.toString(),
-                style: TextStyle(color: color),
-              ),
+              child: Text(color.toString(), style: TextStyle(color: color)),
             ),
             Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Container(
-                  height: 30,
+                ColoredBox(
                   color: color,
-                  child: Center(child: Text("accentColor")),
+                  child: SizedBox(
+                    height: 30,
+                    child: Center(child: Text("accentColor")),
+                  ),
                 ),
               ],
             ),
@@ -236,20 +235,19 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
           child: GridView(
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 3,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0),
+              crossAxisCount: 2,
+              childAspectRatio: 3,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
             padding: EdgeInsets.all(8),
             children: colorList.map(buildThemeCard).toList(),
           ),
         ),
         actions: [
           FilledButton(
-            child: Text(I18n.of(context).save),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            child: Text(I18n.of(context).ok),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ],
       );
