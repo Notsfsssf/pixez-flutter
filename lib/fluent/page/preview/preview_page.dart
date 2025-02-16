@@ -200,7 +200,7 @@ class _PreviewPageState extends State<PreviewPage> {
             ? userSetting.crossAdapterWidth
             : userSetting.hCrossAdapterWidth)
         .toDouble();
-    var nowAdaptWidth = max(currentValue, 50.0);
+    var nowAdaptWidth = max(currentValue, 250.0);
     nowAdaptWidth = min(nowAdaptWidth, 2160);
     return max((MediaQuery.of(context).size.width / nowAdaptWidth), 1.0)
         .toInt();
