@@ -60,7 +60,7 @@ class _NovelRailState extends State<NovelRail> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         userSetting.setAnimContainer(!userSetting.animContainer);
         if (didPop) return;
         if (!userSetting.isReturnAgainToExit) {
