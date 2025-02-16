@@ -24,7 +24,7 @@ import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SoupPage extends StatefulWidget {
   final String url;
@@ -76,7 +76,7 @@ class _SoupPageState extends State<SoupPage> {
                       icon: Icon(Icons.share),
                       onPressed: () async {
                         var url = widget.spotlight!.articleUrl;
-                        await launch(url);
+                        await launchUrlString(url);
                       },
                     )
                   ],

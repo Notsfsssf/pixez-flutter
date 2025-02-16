@@ -29,7 +29,7 @@ import 'package:pixez/page/about/contributors.dart';
 import 'package:pixez/page/about/thanks_list.dart';
 import 'package:pixez/page/about/update_page.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 class AboutPage extends StatefulWidget {
@@ -135,7 +135,7 @@ class _AboutPageState extends State<AboutPage> {
                   return InkWell(
                     onTap: () {
                       if (Platform.isAndroid)
-                        launch(Constants.isGooglePlay
+                        launchUrlString(Constants.isGooglePlay
                             ? "https://music.youtube.com/watch?v=qfDhiBUNzwA&feature=share"
                             : "https://music.apple.com/cn/album/intrauterine-education-single/1515096587");
                     },
@@ -237,7 +237,7 @@ class _AboutPageState extends State<AboutPage> {
               if (Platform.isIOS) {
                 var url = 'https://apps.apple.com/cn/app/pixez/id1494435126';
                 try {
-                  await launch(url);
+                  await launchUrlString(url);
                 } catch (e) {}
               }
             },
@@ -269,7 +269,7 @@ class _AboutPageState extends State<AboutPage> {
                                     I18n.of(context).go_to_project_address),
                                 onTap: () {
                                   try {
-                                    launch(
+                                    launchUrlString(
                                         'https://github.com/Notsfsssf/pixez-flutter');
                                   } catch (e) {}
                                 },
@@ -277,7 +277,7 @@ class _AboutPageState extends State<AboutPage> {
                                     icon: Icon(Icons.link),
                                     onPressed: () {
                                       try {
-                                        launch(
+                                        launchUrlString(
                                             'https://github.com/Notsfsssf/pixez-flutter');
                                       } catch (e) {}
                                     }),

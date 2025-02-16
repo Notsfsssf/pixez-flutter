@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:url_launcher/url_launcher_string.dart';
 
 class CustomTabPlugin {
   static const platform = const MethodChannel('com.perol.dev/custom_tab');
@@ -10,7 +10,7 @@ class CustomTabPlugin {
     if (Platform.isAndroid)
       return await platform.invokeMethod("launch", {'url': url});
     else
-      await url_launcher.launch(url);
+      await launchUrlString(url);
     return null;
   }
 }

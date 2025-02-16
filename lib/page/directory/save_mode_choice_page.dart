@@ -22,7 +22,7 @@ import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'directory_page.dart';
 
@@ -134,9 +134,9 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
                         icon: Icon(Icons.question_answer),
                         onPressed: () {
                           Constants.isGooglePlay || userSetting.disableBypassSni
-                              ? launch(
+                              ? launchUrlString(
                                   "https://developer.android.com/training/data-storage/shared/documents-files")
-                              : launch(
+                              : launchUrlString(
                                   "https://developer.android.google.cn/training/data-storage/shared/documents-files");
                           Navigator.of(context).pop();
                         }),
