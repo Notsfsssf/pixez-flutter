@@ -430,7 +430,7 @@ class _AboutPageState extends State<AboutPage> {
                 margin: EdgeInsets.all(8.0),
                 elevation: 1.0,
                 child: ListTile(
-                  leading: Icon(FontAwesomeIcons.coffee),
+                  leading: Icon(FontAwesomeIcons.mugSaucer),
                   title: Text(i.description),
                   subtitle: Text(i.price),
                   onTap: () {
