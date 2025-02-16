@@ -5,7 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/fluent/navigation/pixez_page_history_manager.dart';
+import 'package:pixez/fluent/navigation_framework.dart';
 import 'package:pixez/fluent/page/hello/fluent_hello_page.dart';
 import 'package:pixez/fluent/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
@@ -23,7 +23,7 @@ class FluentLeader {
   static Future<void> pushUntilHome(BuildContext context) async {
     Navigator.of(context).pushAndRemoveUntil(
       FluentPageRoute(
-        builder: (context) => FluentHelloPage(),
+        builder: (context) => const FluentHelloPage(),
       ),
       // ignore: unnecessary_null_comparison
       (route) => route == null,
@@ -282,6 +282,9 @@ class FluentLeader {
     Widget? title,
     bool forceSkipWrap = false,
   }) {
+    assert(icon != null);
+    assert(title != null);
+
     final _final = forceSkipWrap
         ? widget
         : widget is ScaffoldPage
@@ -291,13 +294,10 @@ class FluentLeader {
                 padding: EdgeInsets.all(0.0),
               );
 
-    if (icon == null || title == null) {
-      debugPrint('icon: $icon');
-      debugPrint('title: $title');
-      debugPrintStack();
-    }
-
-    return PixEzPageHistoryManager.pushRoute(
+    final state =
+        context.findRootAncestorStateOfType<NavigationFrameworkState>();
+    assert(state != null);
+    return state!.navigator.pushRoute(
       page: _final,
       icon: icon ?? const Icon(FluentIcons.unknown),
       title: title ?? Text(I18n.of(context).undefined),
