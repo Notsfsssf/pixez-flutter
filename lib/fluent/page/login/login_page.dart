@@ -132,7 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: 4),
                           OutlinedButton(
                             onPressed: () async {
-                              Leader.push(context, TokenPage());
+                              await showDialog(
+                                context: context,
+                                builder: (context) => TokenPage(),
+                              );
                             },
                             child: Text("Token"),
                           ),

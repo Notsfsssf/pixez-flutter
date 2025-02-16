@@ -38,6 +38,7 @@ import 'package:pixez/fluent/page/network/network_setting_page.dart';
 import 'package:pixez/fluent/page/shield/shield_page.dart';
 import 'package:pixez/fluent/page/task/job_page.dart';
 import 'package:pixez/fluent/page/theme/theme_page.dart';
+import 'package:pixez/models/account.dart';
 import 'package:pixez/page/novel/history/novel_history_page.dart';
 import 'package:pixez/page/novel/novel_rail.dart';
 
@@ -56,6 +57,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   bool hasNewVersion = false;
+  bool hideEmail = true;
 
   initMethod() async {
     if (Updater.result != Result.timeout) {
@@ -127,9 +129,28 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     title: Text(accountStore.now!.name,
                         style: FluentTheme.of(context).typography.title),
-                    subtitle: Text(
-                      accountStore.now!.mailAddress,
-                      style: FluentTheme.of(context).typography.caption,
+                    subtitle: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          hideEmail
+                              ? accountStore.now!.hiddenEmail()
+                              : accountStore.now!.mailAddress,
+                          style: FluentTheme.of(context).typography.caption,
+                        ),
+                        SizedBox(
+                          width: 6,
+                        ),
+                        HyperlinkButton(
+                          onPressed: () =>
+                              setState(() => hideEmail = !hideEmail),
+                          child: Text(
+                            hideEmail
+                                ? I18n.of(context).reveal
+                                : I18n.of(context).hide,
+                          ),
+                        ),
+                      ],
                     ),
                     onPressed: () {
                       showDialog(

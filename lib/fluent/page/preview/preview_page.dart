@@ -20,15 +20,16 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/fluent/component/illust_card.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/page/login/login_page.dart';
-import 'package:pixez/utils.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/utils.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 class GoToLoginPage extends StatelessWidget {
@@ -119,7 +120,8 @@ class PreviewPage extends StatefulWidget {
   _PreviewPageState createState() => _PreviewPageState();
 }
 
-class _PreviewPageState extends State<PreviewPage> {
+class _PreviewPageState extends State<PreviewPage>
+    with AutomaticKeepAliveClientMixin {
   final LightingStore _lightingStore = LightingStore(
     ApiSource(futureGet: () => apiClient.walkthroughIllusts()),
   );
@@ -144,6 +146,7 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final orientation = MediaQuery.of(context).orientation;
     var count = 0;
     if (userSetting.crossAdapt) {
@@ -168,24 +171,10 @@ class _PreviewPageState extends State<PreviewPage> {
               crossAxisCount: count,
             ),
             itemBuilder: (BuildContext context, int index) {
-              return IconButton(
-                onPressed: () {
-                  Leader.push(
-                    context,
-                    GoToLoginPage(
-                      illust: _lightingStore.iStores[index].illusts!,
-                    ),
-                    icon: Icon(FluentIcons.picture),
-                    title: Text(
-                        '${I18n.of(context).illust}: ${_lightingStore.iStores[index].illusts}'),
-                  );
-                },
-                icon: Card(
-                  child: Container(
-                    child: PixivImage(_lightingStore
-                        .iStores[index].illusts!.imageUrls.squareMedium),
-                  ),
-                ),
+              return IllustCard(
+                lightingStore: _lightingStore,
+                store: _lightingStore.iStores[index],
+                iStores: _lightingStore.iStores,
               );
             },
             itemCount: _lightingStore.iStores.length,
@@ -200,9 +189,12 @@ class _PreviewPageState extends State<PreviewPage> {
             ? userSetting.crossAdapterWidth
             : userSetting.hCrossAdapterWidth)
         .toDouble();
-    var nowAdaptWidth = max(currentValue, 50.0);
+    var nowAdaptWidth = max(currentValue, 250.0);
     nowAdaptWidth = min(nowAdaptWidth, 2160);
     return max((MediaQuery.of(context).size.width / nowAdaptWidth), 1.0)
         .toInt();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

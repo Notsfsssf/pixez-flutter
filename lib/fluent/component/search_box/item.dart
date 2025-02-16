@@ -24,7 +24,14 @@ class _PixEzSearchBoxItem {
   });
 }
 
-class _PixEzSearchItem {
+class _PixEzSearchItem extends AutoSuggestBoxItem<_PixEzSearchBoxItem> {
+  _PixEzSearchItem({
+    required super.value,
+    required super.label,
+    super.child,
+    super.onSelected,
+  });
+
   static Widget _buildTagImage(BuildContext context, TrendTags tags) {
     return PixEzButton(
       noPadding: true,
@@ -46,16 +53,19 @@ class _PixEzSearchItem {
     );
   }
 
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> _buildItem({
+  factory _PixEzSearchItem.build({
     required BuildContext context,
     required String title,
     required _PixEzSearchBoxItem value,
+    String? label = null,
     String? subtitle = null,
     Widget? leading = null,
     Widget? trailing = null,
     void Function()? onSelected,
     bool reverse = false,
   }) {
+    label ??= '$title $subtitle';
+
     var text = [
       TextSpan(
         text: title,
@@ -75,7 +85,7 @@ class _PixEzSearchItem {
 
     if (reverse && subtitle != null) text = text.reversed.toList();
 
-    return AutoSuggestBoxItem<_PixEzSearchBoxItem>(
+    return _PixEzSearchItem(
       child: Row(
         children: [
           if (leading != null)
@@ -103,26 +113,26 @@ class _PixEzSearchItem {
             ),
         ],
       ),
-      label: "$title $subtitle",
+      label: label,
       value: value,
       onSelected: onSelected,
     );
   }
 
   /// 清空历史记录
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> cleanHistoryItem(
-      BuildContext context) {
-    return _buildItem(
+  factory _PixEzSearchItem.cleanHistory(BuildContext context) {
+    return _PixEzSearchItem.build(
       context: context,
       leading: Icon(FluentIcons.delete),
       title: I18n.of(context).clear_search_tag_history,
-      value: _PixEzSearchBoxItem(type: _PixEzSearchBoxItemType.cleanHistory),
+      value: _PixEzSearchBoxItem(
+        type: _PixEzSearchBoxItemType.cleanHistory,
+      ),
     );
   }
-
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> tagsPersist(
+  factory _PixEzSearchItem.tagsPersist(
       BuildContext context, TagsPersist tags, void Function() refresh) {
-    final item = _buildItem(
+    return _PixEzSearchItem.build(
       context: context,
       title: tags.name,
       subtitle: tags.translatedName,
@@ -134,20 +144,19 @@ class _PixEzSearchItem {
       trailing: PixEzButton(
         child: Icon(FluentIcons.chrome_close),
         onPressed: () {
-          if (tags.id != null) tagHistoryStore.delete(tags.id!);
+          assert(tags.id != null);
+          tagHistoryStore.delete(tags.id!);
           refresh();
         },
       ),
     );
-    return item;
   }
 
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> trendTags(
-      BuildContext context, TrendTags tags) {
-    return _buildItem(
+  factory _PixEzSearchItem.trendTags(BuildContext context, TrendTags tags) {
+    return _PixEzSearchItem.build(
       context: context,
-      title: "#${tags.tag}",
-      subtitle: tags.translatedName != null ? "#${tags.translatedName}" : null,
+      title: '#${tags.tag}',
+      subtitle: tags.translatedName != null ? '#${tags.translatedName}' : null,
       leading: _buildTagImage(context, tags),
       value: _PixEzSearchBoxItem(
         word: tags.tag,
@@ -156,22 +165,21 @@ class _PixEzSearchItem {
     );
   }
 
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> tags(
-      BuildContext context, Tags tags) {
-    return _buildItem(
+  factory _PixEzSearchItem.tags(BuildContext context, Tags tags, String text) {
+    return _PixEzSearchItem.build(
       context: context,
       title: tags.name,
       subtitle: tags.translated_name,
+      label: text,
       value: _PixEzSearchBoxItem(
         word: tags.name,
         translated: tags.translated_name,
+        type: _PixEzSearchBoxItemType.tag,
       ),
     );
   }
-
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> illustId(
-      BuildContext context, int id) {
-    return _buildItem(
+  factory _PixEzSearchItem.illustId(BuildContext context, int id) {
+    return _PixEzSearchItem.build(
       context: context,
       reverse: true,
       title: id.toString(),
@@ -183,9 +191,8 @@ class _PixEzSearchItem {
     );
   }
 
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> painterId(
-      BuildContext context, int id) {
-    return _buildItem(
+  factory _PixEzSearchItem.painterId(BuildContext context, int id) {
+    return _PixEzSearchItem.build(
       context: context,
       reverse: true,
       title: id.toString(),
@@ -197,9 +204,8 @@ class _PixEzSearchItem {
     );
   }
 
-  static AutoSuggestBoxItem<_PixEzSearchBoxItem> pixivisionId(
-      BuildContext context, int id) {
-    return _buildItem(
+  factory _PixEzSearchItem.pixivisionId(BuildContext context, int id) {
+    return _PixEzSearchItem.build(
       context: context,
       reverse: true,
       title: id.toString(),
