@@ -9,6 +9,7 @@ import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/component/search_box/pixez_search_box.dart';
 import 'package:pixez/fluent/navigation_framework.dart';
 import 'package:pixez/fluent/page/Init/guide_page.dart';
+import 'package:pixez/fluent/page/account/select/account_select_page.dart';
 import 'package:pixez/fluent/page/follow/follow_list.dart';
 import 'package:pixez/fluent/page/hello/new/illust/new_illust_page.dart';
 import 'package:pixez/fluent/page/hello/ranking/rank_page.dart';
@@ -176,24 +177,6 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
   }
 
   Widget _buildHeader(bool isLogin) {
-    final onPressed = isLogin
-        ? () {
-            Leader.push(
-              context,
-              UsersPage(id: int.parse(accountStore.now!.userId)),
-              title: Text(I18n.of(context).my),
-              icon: Icon(FluentIcons.account_browser),
-            );
-          }
-        : () {
-            Leader.push(
-              context,
-              LoginPage(),
-              icon: Icon(FluentIcons.signin),
-              title: Text(I18n.of(context).login),
-            );
-          };
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
       child: isLogin
@@ -204,7 +187,6 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
                     url: accountStore.now!.userImage,
                     id: int.parse(accountStore.now!.userId),
                     size: const Size(64, 64),
-                    onTap: onPressed,
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 8.0),
@@ -244,7 +226,13 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
                   )
                 ],
               ),
-              onPressed: onPressed,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AccountSelectPage(),
+                  useRootNavigator: false,
+                );
+              },
             )
           : Tooltip(
               message: I18n.of(context).login,
@@ -275,7 +263,14 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
                     )
                   ],
                 ),
-                onPressed: onPressed,
+                onPressed: () {
+                  Leader.push(
+                    context,
+                    LoginPage(),
+                    icon: Icon(FluentIcons.signin),
+                    title: Text(I18n.of(context).login),
+                  );
+                },
               )),
     );
   }
