@@ -43,8 +43,7 @@ class _NetworkPageState extends State<NetworkPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                // todo i18n
-                "tip:如果不能载图，可以尝试切换图床，你可以在设置页重新回到这里",
+                I18n.of(context).network_image_load_tips,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
