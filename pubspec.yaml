@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^2.1.5
   shared_preferences: ^2.5.1
   share_plus: ^10.1.4
-  permission_handler: ^11.3.1
+  permission_handler: ^11.4.0
   archive: ^4.0.2
   url_launcher: ^6.3.1
   bot_toast: ^4.1.3
@@ -36,7 +36,7 @@ dependencies:
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
   in_app_purchase: ^3.2.1
-  flutter_widget_from_html: ^0.15.3
+  flutter_widget_from_html: ^0.16.0
   device_info_plus: ^11.3.0
   flutter_displaymode: ^0.6.0
   receive_sharing_intent:
@@ -56,7 +56,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   dio_cache_interceptor: ^3.5.1
   photo_view: ^0.15.0
-  image: ^4.5.2
+  image: ^4.5.3
   easy_refresh: ^3.4.0
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.5.1

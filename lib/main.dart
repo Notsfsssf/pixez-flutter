@@ -206,6 +206,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               primaryColor: lightColorScheme.primary,
               colorScheme: lightColorScheme,
               scaffoldBackgroundColor: lightColorScheme.surface,
+              pageTransitionsTheme: PageTransitionsTheme(
+                builders: <TargetPlatform, PageTransitionsBuilder>{
+                  TargetPlatform.android:
+                      PredictiveBackPageTransitionsBuilder(),
+                },
+              ),
               cardColor: lightColorScheme.surfaceContainer,
               chipTheme: ChipThemeData(
                 backgroundColor: lightColorScheme.surface,
@@ -214,6 +220,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               dialogTheme: DialogThemeData(
                   backgroundColor: lightColorScheme.surfaceContainer)),
           darkTheme: ThemeData.dark().copyWith(
+              pageTransitionsTheme: PageTransitionsTheme(
+                builders: <TargetPlatform, PageTransitionsBuilder>{
+                  TargetPlatform.android:
+                      PredictiveBackPageTransitionsBuilder(),
+                },
+              ),
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,
               tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),

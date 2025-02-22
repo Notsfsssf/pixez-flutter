@@ -19,7 +19,7 @@
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when
              Flutter draws its first frame -->
-       <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowBackground">@drawable/launch_background</item>
         <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <!--        <item name="android:windowTranslucentNavigation">true</item>-->
         <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
