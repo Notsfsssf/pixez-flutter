@@ -324,5 +324,6 @@
   "submit": "提交",
   "thanks_for_your_feedback": "感谢反馈",
   "input": "输入",
-  "remember_current_selections": "记住当前选择"
+  "remember_current_selections": "记住当前选择",
+  "network_image_load_tips": "如果不能载图，可以尝试切换图床，你可以在设置页重新回到这里"
 }

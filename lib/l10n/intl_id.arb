@@ -322,6 +322,7 @@
     "submit": "Submit",
     "thanks_for_your_feedback": "Thanks for your feedback",
     "input": "Input",
-    "remember_current_selections": "Remember current selections"
+    "remember_current_selections": "Remember current selections",
+    "network_image_load_tips": "If images cannot be loaded, try switching the image hosting service. You can return here from the settings page"
   }
   

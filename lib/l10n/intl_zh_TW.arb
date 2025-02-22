@@ -323,4 +323,5 @@
   "thanks_for_your_feedback": "感谢反馈",
   "input": "输入",
   "remember_current_selections": "记住当前选择"
+  "network_image_load_tips": "如果不能載入，可以嘗試切換圖床，你可以在設定頁重新回到這裡"
 }
