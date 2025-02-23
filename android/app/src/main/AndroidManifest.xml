@@ -64,7 +64,6 @@
 
         <activity
             android:name=".MainActivity"
-            android:colorMode="wideColorGamut"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"

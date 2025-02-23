@@ -12,4 +12,13 @@
         <item name="android:windowSplashScreenBackground">#FF000000</item>
         <item name="android:windowSplashscreenContent">@drawable/ic_launcher</item>
     </style>
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <!--        <item name="android:windowBackground">@drawable/normal_background</item>-->
+        <!--        <item name="android:windowBackground">@android:color/background_dark</item>-->
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
 </resources>
