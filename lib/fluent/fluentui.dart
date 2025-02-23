@@ -141,7 +141,8 @@ Widget buildFluentUI(BuildContext context) {
         theme: FluentThemeData.light().copyWith(
           visualDensity: VisualDensity.standard,
           accentColor: lightColorScheme.primary.toAccentColor(),
-          scaffoldBackgroundColor: lightColorScheme.surface,
+          scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.white : null,
+          micaBackgroundColor: Colors.transparent,
           cardColor: lightColorScheme.surfaceContainer,
           focusTheme: focusTheme,
           navigationPaneTheme: _effect != WindowEffect.disabled
@@ -155,6 +156,7 @@ Widget buildFluentUI(BuildContext context) {
           visualDensity: VisualDensity.standard,
           accentColor: darkColorScheme.primary.toAccentColor(),
           scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
+          micaBackgroundColor: Colors.transparent,
           cardColor: darkColorScheme.surfaceContainer,
           focusTheme: focusTheme,
           navigationPaneTheme: _effect != WindowEffect.disabled

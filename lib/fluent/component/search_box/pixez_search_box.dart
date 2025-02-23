@@ -31,10 +31,10 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
   final SuggestionStore _suggestionStore = SuggestionStore();
   final SauceStore _sauceStore = SauceStore();
   final TrendTagsStore _trendTagsStore = TrendTagsStore();
-  final List<String> tagGroup = [];
   final FocusNode _focusNode = FocusNode();
-  List<AutoSuggestBoxItem<_PixEzSearchBoxItem>> _items = [];
+  final List<_PixEzSearchItem> _items = [];
   bool _isLoading = false;
+  _PixEzSearchItem? _cache;
 
   @override
   void initState() {
@@ -56,6 +56,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
     });
     _focusNode.addListener(() {
       if (_focusNode.hasFocus && _key.currentState?.isOverlayVisible == false) {
+        if (_controller.text.isEmpty) _updateSuggestList();
         _key.currentState?.showOverlay();
       } else if (_key.currentState?.isOverlayVisible == true) {
         _key.currentState?.dismissOverlay();
@@ -63,7 +64,6 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
     });
 
     super.initState();
-    _updateSuggestList();
   }
 
   @override
@@ -106,9 +106,9 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
             icon: const Icon(FluentIcons.search),
             onPressed: () => Leader.push(
               context,
-              ResultPage(word: _controller.text),
+              ResultPage(word: _controller.text.trim()),
               icon: const Icon(FluentIcons.search),
-              title: Text('搜索 ${_controller.text}'),
+              title: Text('搜索 ${_controller.text.trim()}'),
             ),
           )
         ],
@@ -117,123 +117,114 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
   }
 
   Timer? _delay;
-  bool _skipClear = false;
   void _notifyFinished() {
     _isLoading = false;
     // HACK: 通知 AutoSuggestBox 使内部的 ListView 更新
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    _controller.notifyListeners();
+    try {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      _controller.notifyListeners();
+    } catch (e) {}
     if (!mounted) return;
     setState(() {});
   }
 
-  Future _updateSuggestList() async {
-    if (!mounted) return;
+  Future<void> _updateSuggestList() async {
     final text = _controller.text;
-    if (!_skipClear || text.isEmpty) _items.clear();
-    _skipClear = false;
     _isLoading = true;
-    setState(() {});
-
+    if (mounted) setState(() {});
     if (text.isEmpty) {
       // 如果搜索框为空则展示历史记录
       await tagHistoryStore.fetch();
+
+      _items.clear();
       // 历史记录为空则不展示
-      if (tagHistoryStore.tags.isEmpty) return _notifyFinished();
+      if (tagHistoryStore.tags.isEmpty) {
+        _notifyFinished();
+        return;
+      }
+      _items.add(_PixEzSearchItem.cleanHistory(context));
+      _items.addAll(tagHistoryStore.tags
+          .map((i) =>
+              _PixEzSearchItem.tagsPersist(context, i, _updateSuggestList))
+          .toList());
 
-      if (!mounted) return;
-      _items.addAll([
-        _PixEzSearchItem.cleanHistoryItem(context),
-        ...tagHistoryStore.tags.map(
-          (i) => _PixEzSearchItem.tagsPersist(context, i, _updateSuggestList),
-        ),
-      ]);
-      return _notifyFinished();
+      _notifyFinished();
     } else if (text.startsWith('#')) {
-      // 如果搜索框以 # 开头则展示标签
-
-      // 标签不能搜索所以跳过下一次的列表清除
-      _skipClear = true;
+      // 如果搜索框以 # 开头则展示趋势标签
       // 如果不是单独的 # 符号 则用户可能想要筛选标签结果
-      if (text != '#') return _notifyFinished();
+      // 此时不对列表做修改
+      if (text != '#') return;
 
-      await _trendTagsStore.fetch();
+      final future = _trendTagsStore.fetch();
+      if (_trendTagsStore.trendTags.isEmpty) await future;
 
-      _items.addAll(
-        _trendTagsStore.trendTags.map(
-          (i) => _PixEzSearchItem.trendTags(context, i),
-        ),
-      );
+      _items.clear();
+      _items.addAll(_trendTagsStore.trendTags
+          .map((i) => _PixEzSearchItem.trendTags(context, i))
+          .toList());
       _notifyFinished();
     } else {
-      // 都不是则尝试搜索
+      _items.clear();
       // 如果输入了数字则展示快速跳转
       final id = int.tryParse(text);
       if (id != null) {
-        _items.addAll([
-          _PixEzSearchItem.illustId(context, id),
-          _PixEzSearchItem.painterId(context, id),
-          _PixEzSearchItem.pixivisionId(context, id),
-        ]);
+        _items.add(_PixEzSearchItem.illustId(context, id));
+        _items.add(_PixEzSearchItem.painterId(context, id));
+        _items.add(_PixEzSearchItem.pixivisionId(context, id));
         _notifyFinished();
       }
 
       // 取消挂起的异步搜索
       _delay?.cancel();
-
       // 创建新的异步搜索
       _delay = Timer(const Duration(seconds: 1), () async {
-        await _suggestionStore.fetch(text);
-        final autoWords = _suggestionStore.autoWords;
-        if (autoWords != null)
-          _items.addAll(
-            autoWords.tags
-                .map(
-                  (i) => _PixEzSearchItem.tags(context, i),
-                )
-                .toList(),
-          );
+        // 按空格分割字符串 并使用最后一个字符串作为关键词搜索匹配的标签
+        // 如果最后一个是空格则不展示内容
+        if (text.endsWith(' ')) return;
+        final arr = text.split(' ');
 
+        await _suggestionStore.fetch(arr.last);
+        final tags = _suggestionStore.autoWords?.tags ?? const [];
+        if (tags.isEmpty) return;
+
+        _items.addAll(
+            tags.map((i) => _PixEzSearchItem.tags(context, i, text)).toList());
         _notifyFinished();
       });
     }
   }
 
   void _onAutoSuggestBoxChanged(String text, TextChangedReason reason) {
-    if (reason == TextChangedReason.suggestionChosen) {
-      _controller.clear();
-      setState(() {});
+    if (reason != TextChangedReason.suggestionChosen) {
+      _updateSuggestList();
       return;
     }
 
-    _updateSuggestList();
+    if (_cache?.value?.type != _PixEzSearchBoxItemType.tag) return;
+    var text = _controller.text;
+    final arr = text.split(' ');
+    text = text.substring(0, text.length - arr.last.length);
+    if (!text.endsWith(' ')) text += ' ';
+    text = text.trimLeft();
+    text += _cache!.value!.word!;
+    text += ' ';
+    _controller
+      ..text = text
+      ..selection = TextSelection.collapsed(
+        offset: text.length,
+      );
   }
 
   void _onAutoSuggestBoxSelected(
       AutoSuggestBoxItem<_PixEzSearchBoxItem> value) {
+    _cache = value as _PixEzSearchItem?;
     final item = value.value;
     if (item == null) return;
-    switch (item.type) {
-      case _PixEzSearchBoxItemType.normal:
-      case _PixEzSearchBoxItemType.tag:
-        if (tagGroup.length > 1) {
-          tagGroup.last = item.word!;
-          final text = tagGroup.join(" ");
-          _controller.text = text;
-          _controller.selection = TextSelection.fromPosition(
-            TextPosition(offset: text.length),
-          );
-          setState(() {});
-          return;
-        }
-      default:
-    }
+    if (item.type == _PixEzSearchBoxItemType.tag) return;
+
     FocusScope.of(context).unfocus();
     switch (item.type) {
-      case _PixEzSearchBoxItemType.normal:
       case _PixEzSearchBoxItemType.history:
-      case _PixEzSearchBoxItemType.tag:
-        final prefix = item.type == _PixEzSearchBoxItemType.tag ? '#' : '';
         Leader.push(
           context,
           ResultPage(
@@ -241,7 +232,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
             translatedName: item.translated ?? '',
           ),
           icon: Icon(FluentIcons.search),
-          title: Text('${I18n.of(context).search}: ${prefix}${item.word}'),
+          title: Text('${I18n.of(context).search}: ${item.word}'),
         );
       case _PixEzSearchBoxItemType.illustId:
         Leader.push(
@@ -291,6 +282,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
             );
           },
         );
+      default:
     }
   }
 }
