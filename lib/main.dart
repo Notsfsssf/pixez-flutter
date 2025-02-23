@@ -123,10 +123,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     userSetting.init();
     accountStore.fetch();
     bookTagStore.init();
-    muteStore.fetchBanAI();
-    muteStore.fetchBanUserIds();
-    muteStore.fetchBanIllusts();
-    muteStore.fetchBanTags();
+    muteStore.init();
 
     super.initState();
     if (Platform.isIOS) WidgetsBinding.instance.addObserver(this);

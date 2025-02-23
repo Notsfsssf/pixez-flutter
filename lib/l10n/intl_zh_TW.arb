@@ -322,5 +322,7 @@
   "submit": "提交",
   "thanks_for_your_feedback": "感谢反馈",
   "input": "输入",
-  "remember_current_selections": "记住当前选择"
+  "remember_current_selections": "记住当前选择",
+  "cancel_follow": "取消关注",
+  "start_follow": "开始关注"
 }

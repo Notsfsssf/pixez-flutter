@@ -28,6 +28,7 @@ import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/follow_detail.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -633,5 +634,20 @@ class ApiClient {
   Future<bool> userRestrictedModeSettingsGet() async {
     final res = await httpClient.get('/v1/user/restricted-mode-settings');
     return res.data['is_restricted_mode_enabled'] as bool;
+  }
+
+  Future<Response> postUserFollowAdd(int userId, String restrict) async {
+    return httpClient.post('/v1/user/follow/add',
+        data: notNullMap({
+          "user_id": userId,
+          "restrict": restrict.isEmpty ? null : restrict
+        }),
+        options: Options(contentType: Headers.formUrlEncodedContentType));
+  }
+
+  Future<FollowDetail> getUserFollowDetail(int userId) async {
+    final res = await httpClient
+        .get('/v1/user/follow/detail', queryParameters: {"user_id": userId});
+    return FollowDetail.fromJson(res.data['follow_detail']);
   }
 }

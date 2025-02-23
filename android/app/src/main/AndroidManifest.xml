@@ -64,12 +64,12 @@
 
         <activity
             android:name=".MainActivity"
+            android:colorMode="wideColorGamut"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
-            android:colorMode="wideColorGamut"
             android:windowSoftInputMode="adjustResize">
 
             <!--
@@ -155,9 +155,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- <meta-data
+        <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="false" /> -->
+            android:value="false" />
     </application>
 
 </manifest>

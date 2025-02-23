@@ -322,6 +322,8 @@
     "submit": "Submit",
     "thanks_for_your_feedback": "Thanks for your feedback",
     "input": "Input",
-    "remember_current_selections": "Remember current selections"
+    "remember_current_selections": "Remember current selections",
+    "cancel_follow": "Cancel follow",
+    "start_follow": "Start follow"
   }
   

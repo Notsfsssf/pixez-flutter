@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/common_back_area.dart';
+import 'package:pixez/component/follow_detail_alert.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -544,11 +545,6 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       },
       itemBuilder: (context) {
         return [
-          if (!userStore.isFollow)
-            PopupMenuItem<int>(
-              value: 0,
-              child: Text(I18n.of(context).quietly_follow),
-            ),
           PopupMenuItem<int>(
             value: 1,
             child: Text(I18n.of(context).block_user),
@@ -743,9 +739,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                   : Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
                       child: UserFollowButton(
+                        id: widget.id,
                         followed: userStore.isFollow,
                         onPressed: () async {
                           await userStore.follow(needPrivate: false);
+                        },
+                        onConfirm: (follow, restrict) {
+                          userStore.followWithRestrict(follow, restrict);
                         },
                       ),
                     ),

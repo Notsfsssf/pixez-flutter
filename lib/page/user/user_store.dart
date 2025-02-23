@@ -43,6 +43,26 @@ abstract class _UserStoreBase with Store {
   }
 
   @action
+  Future<void> followWithRestrict(bool follow, String restrict) async {
+    try {
+      if (!follow) {
+        await client.postUnFollowUser(id);
+        userDetail?.user.isFollowed = false;
+        user?.isFollowed = false;
+        isFollow = false;
+      } else {
+        await client.postUserFollowAdd(id, restrict);
+        userDetail?.user.isFollowed = true;
+        user?.isFollowed = true;
+        isFollow = true;
+      }
+    } on DioException catch (e) {
+      if (e.response != null &&
+          e.response!.statusCode == HttpStatus.badRequest) {}
+    }
+  }
+
+  @action
   Future<void> follow({bool needPrivate = false}) async {
     if (user!.isFollowed!) {
       try {
