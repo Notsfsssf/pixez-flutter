@@ -12,7 +12,7 @@
         <item name="android:windowSplashScreenBackground">#FFFFFFFF</item>
         <item name="android:windowSplashscreenContent">@drawable/ic_launcher</item>
     </style>
-    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!--        <item name="android:windowBackground">@drawable/normal_background</item>-->
         <!--        <item name="android:windowBackground">@android:color/background_dark</item>-->
         <!--        <item name="android:windowTranslucentStatus">true</item>-->
