@@ -13,7 +13,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.9.64+466
+version: 1.9.65+467
 
 environment:
   sdk: ">=3.1.4"
@@ -51,7 +51,7 @@ dependencies:
   json_annotation: ^4.9.0
   badges: ^3.1.2
   image_picker: ^1.1.2
-  intl: ^0.20.2
+  intl: any
   quiver: ^3.2.2
   flutter_inappwebview: ^6.1.5
   dio_cache_interceptor: ^3.5.1
@@ -60,7 +60,7 @@ dependencies:
   easy_refresh: ^3.4.0
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.5.1
-  sqflite: ^2.4.2
+  sqflite: any
   dynamic_color:
     git:
       url: https://github.com/hasali19/material-foundation-flutter-packages.git
@@ -90,7 +90,7 @@ dev_dependencies:
   mobx_codegen: ^2.6.1
   json_serializable: ^6.8.0
   analyzer: ^6.4.1
-  sqflite_common_ffi: ^2.3.5
+  sqflite_common_ffi: any
   msix: ^3.16.7
   riverpod_generator: ^2.4.0
   custom_lint: ^0.6.4
