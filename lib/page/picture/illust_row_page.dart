@@ -255,7 +255,7 @@ class _IllustRowPageState extends State<IllustRowPage>
           ),
         ),
       );
-    var expectWidth = MediaQuery.of(context).size.width * 0.7;
+    var expectWidth = MediaQuery.of(context).size.width * 0.5;
     var leftWidth = MediaQuery.of(context).size.width - expectWidth;
     final atLeastWidth = 320.0;
     if (leftWidth < atLeastWidth) {
@@ -343,6 +343,11 @@ class _IllustRowPageState extends State<IllustRowPage>
             },
             onLongPress: () {
               saveStore.saveImage(_aboutStore.illusts[index]);
+              if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+                _illustStore.star(
+                    restrict:
+                        userSetting.defaultPrivateLike ? "private" : "public");
+              }
             },
             child: PixivImage(
               _aboutStore.illusts[index].imageUrls.squareMedium,
@@ -712,6 +717,14 @@ class _IllustRowPageState extends State<IllustRowPage>
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
+    if (userSetting.illustDetailSaveSkipLongPress) {
+      saveStore.saveImage(illust, index: index);
+      if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+        _illustStore.star(
+            restrict: userSetting.defaultPrivateLike ? "private" : "public");
+      }
+      return;
+    }
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -741,10 +754,24 @@ class _IllustRowPageState extends State<IllustRowPage>
                   onTap: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                   },
                   onLongPress: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                   },
                   title: Text(I18n.of(context).save),
                 ),
