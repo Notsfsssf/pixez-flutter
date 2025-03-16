@@ -19,7 +19,7 @@ class FollowDetailAlert extends StatefulHookConsumerWidget {
 class _State extends ConsumerState<FollowDetailAlert> {
   late final id = widget.id;
   bool _isFollowed = false;
-  String _restrict = '';
+  String _restrict = 'private';
   bool _isLoading = false;
   @override
   void initState() {
@@ -36,7 +36,9 @@ class _State extends ConsumerState<FollowDetailAlert> {
       if (mounted) {
         setState(() {
           _isFollowed = followDetail.isFollowed;
-          _restrict = followDetail.restrict;
+          _restrict = followDetail.restrict.isNotEmpty
+              ? followDetail.restrict
+              : 'private';
           _isLoading = false;
         });
       }
