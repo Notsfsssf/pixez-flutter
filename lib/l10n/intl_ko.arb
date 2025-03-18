@@ -325,5 +325,6 @@
   "remember_current_selections": "Remember current selections",
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
-  "news_follow_title": "팔로우 중"
+  "news_follow_title": "팔로우 중",
+  "user_page_info_title": "유저 정보"
 }

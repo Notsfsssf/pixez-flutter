@@ -316,5 +316,6 @@
   "remember_current_selections": "Remember current selections",
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
-  "news_follow_title": "Siguiente"
+  "news_follow_title": "Siguiente",
+  "user_page_info_title": "Información de usuario"
 }

@@ -327,5 +327,6 @@
   "remember_current_selections": "记住当前选择",
   "cancel_follow": "取消关注",
   "start_follow": "开始关注",
-  "news_follow_title": "已关注"
+  "news_follow_title": "已关注",
+  "user_page_info_title": "详情"
 }

@@ -325,5 +325,6 @@
   "remember_current_selections": "Remember current selections",
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
-  "news_follow_title": "Takip et"
+  "news_follow_title": "Takip et",
+  "user_page_info_title": "Kullanıcı bilgileri"
 }

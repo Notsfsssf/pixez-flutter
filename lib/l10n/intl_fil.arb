@@ -327,5 +327,6 @@
   "remember_current_selections": "Tandaan ang mga kasalukuyang pinili",
   "cancel_follow": "Kanselahin ang pagsundan",
   "start_follow": "Simulan ang pagsundan",
-  "news_follow_title": "Sinusundan"
+  "news_follow_title": "Sinusundan",
+  "user_page_info_title": "Impormasyon ng user"
 }
