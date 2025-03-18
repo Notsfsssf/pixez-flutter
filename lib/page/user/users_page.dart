@@ -743,9 +743,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                   : Padding(
                       padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
                       child: UserFollowButton(
+                        id: widget.id,
                         followed: userStore.isFollow,
                         onPressed: () async {
                           await userStore.follow(needPrivate: false);
+                        },
+                        onConfirm: (follow, restrict) {
+                          userStore.followWithRestrict(follow, restrict);
                         },
                       ),
                     ),

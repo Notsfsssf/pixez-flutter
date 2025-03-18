@@ -48,7 +48,7 @@ class _NewPageState extends State<NewPage>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "300") {
@@ -95,7 +95,7 @@ class _NewPageState extends State<NewPage>
                       text: I18n.of(context).watchlist,
                     ),
                     Tab(
-                      text: I18n.of(context).followed,
+                      text: I18n.of(context).news_follow_title,
                     ),
                   ]),
               actions: <Widget>[

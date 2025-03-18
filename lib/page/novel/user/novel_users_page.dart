@@ -397,10 +397,6 @@ class _NovelUsersPageState extends State<NovelUsersPage>
       itemBuilder: (context) {
         return [
           PopupMenuItem<int>(
-            value: 0,
-            child: Text(I18n.of(context).quietly_follow),
-          ),
-          PopupMenuItem<int>(
             value: 1,
             child: Text(I18n.of(context).block_user),
           ),

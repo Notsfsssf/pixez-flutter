@@ -597,9 +597,17 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
               ),
             ),
             UserFollowButton(
+              id: illust.user.id,
               followed: userStore?.isFollow ?? illust.user.isFollowed ?? false,
               onPressed: () async {
                 await userStore?.follow();
+                if (userStore?.isFollow != null) {
+                  widget.illustStore?.illusts?.user.isFollowed =
+                      userStore?.isFollow;
+                }
+              },
+              onConfirm: (follow, restrict) {
+                userStore?.followWithRestrict(follow, restrict);
                 if (userStore?.isFollow != null) {
                   widget.illustStore?.illusts?.user.isFollowed =
                       userStore?.isFollow;

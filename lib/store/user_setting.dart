@@ -49,6 +49,7 @@ abstract class _UserSetting with Store {
   static const String MANGA_QUALITY_KEY = "manga_quality";
   static const String IS_BANGS_KEY = "is_bangs";
   static const String IS_AMOLED_KEY = "is_amoled";
+  static const String IS_TOPMODE_KEY = "is_top_mode";
   static const String STORE_PATH_KEY = "save_store";
   static const String PICTURE_SOURCE_KEY = "picture_source";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
@@ -83,7 +84,10 @@ abstract class _UserSetting with Store {
   static const String FEED_AI_BADGE_KEY = "feed_ai_badge";
   static const String ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY =
       "illust_detail_save_skip_long_press";
+  static const String DRAG_START_X_KEY = "drag_start_x";
 
+  @observable
+  double dragStartX = 0;
   @observable
   bool illustDetailSaveSkipLongPress = false;
   @observable
@@ -109,6 +113,9 @@ abstract class _UserSetting with Store {
   int saveMode = 0;
   @observable
   bool isAMOLED = false;
+  // fluent ui
+  @observable
+  bool isTopMode = false;
   @observable
   String? storePath = null;
   @observable
@@ -297,6 +304,12 @@ abstract class _UserSetting with Store {
   }
 
   @action
+  setIsTopMode(bool v) async {
+    await prefs.setBool(IS_TOPMODE_KEY, v);
+    isTopMode = v;
+  }
+
+  @action
   setDefaultPrivateLike(bool v) async {
     await prefs.setBool(DEFAULT_PRIVATE_LIKE_KEY, v);
     defaultPrivateLike = v;
@@ -371,6 +384,7 @@ abstract class _UserSetting with Store {
       }
     }
     isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
+    isTopMode = prefs.getBool(IS_TOPMODE_KEY) ?? false;
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     ApiClient.Accept_Language = languageList[languageNum];
@@ -435,6 +449,7 @@ abstract class _UserSetting with Store {
     imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 0;
     swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
     useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
+    dragStartX = prefs.getDouble(DRAG_START_X_KEY) ?? 0;
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
     if (Platform.isAndroid) {
@@ -460,6 +475,12 @@ abstract class _UserSetting with Store {
         return 1;
     }
     return num;
+  }
+
+  @action
+  setDragStartX(double value) async {
+    dragStartX = value;
+    prefs.setDouble(DRAG_START_X_KEY, value);
   }
 
   @action

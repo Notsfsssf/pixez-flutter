@@ -256,44 +256,46 @@ class _ResultIllustListState extends State<ResultIllustList> {
   }
 
   void _buildShowBottomSheet(BuildContext context) {
+    var resultIllustSortWidget = ResultIllustSortWidget(
+        searchAIType: searchAIType,
+        selectSort: selectSort,
+        searchTarget: searchTarget,
+        onPremium: () {
+          setState(() {
+            futureGet = ApiForceSource(
+                futureGet: (bool e) =>
+                    apiClient.getPopularPreview(widget.word));
+          });
+        },
+        onApply: () {
+          setState(() {
+            _changeQueryParams();
+          });
+        },
+        onSateChange: (
+            {required bool recordRememberCurrentSelection,
+            required int searchAIType,
+            required String searchTarget,
+            required String selectSort}) {
+          setState(() {
+            this.searchAIType = searchAIType;
+            this.searchTarget = searchTarget;
+            this.selectSort = selectSort;
+            this.recordRememberCurrentSelection =
+                recordRememberCurrentSelection;
+          });
+          if (recordRememberCurrentSelection) {
+            record();
+          }
+        });
+    // showDialog(context: context, builder: (context) => resultIllustSortWidget);
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(8.0))),
         builder: (context) {
-          return ResultIllustSortWidget(
-              searchAIType: searchAIType,
-              selectSort: selectSort,
-              searchTarget: searchTarget,
-              onPremium: () {
-                setState(() {
-                  futureGet = ApiForceSource(
-                      futureGet: (bool e) =>
-                          apiClient.getPopularPreview(widget.word));
-                });
-              },
-              onApply: () {
-                setState(() {
-                  _changeQueryParams();
-                });
-              },
-              onSateChange: (
-                  {required bool recordRememberCurrentSelection,
-                  required int searchAIType,
-                  required String searchTarget,
-                  required String selectSort}) {
-                setState(() {
-                  this.searchAIType = searchAIType;
-                  this.searchTarget = searchTarget;
-                  this.selectSort = selectSort;
-                  this.recordRememberCurrentSelection =
-                      recordRememberCurrentSelection;
-                });
-                if (recordRememberCurrentSelection) {
-                  record();
-                }
-              });
+          return resultIllustSortWidget;
         });
   }
 
@@ -312,7 +314,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
           if (value.isEmpty) {
             return PopupMenuItem(
               value: value,
-              child: Text("Default"),
+              child: Text(I18n.of(context).default_title),
               onTap: () {
                 setState(() {
                   _bookmarkNumList = value;

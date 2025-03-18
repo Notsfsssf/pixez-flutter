@@ -9,7 +9,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: 'master'
       - run: flutter --version
       - run: flutter pub get
       - run: flutter packages pub run build_runner build --delete-conflicting-outputs

@@ -42,38 +42,31 @@ class _ColorPickPageState extends State<ColorPickPage> {
   final skinList = [
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.cyan[500],
-      indicatorColor: Colors.cyan[500],
+      primaryColor: Colors.cyan[500], tabBarTheme: TabBarThemeData(indicatorColor: Colors.cyan[500]),
     ),
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.pink[500],
-      indicatorColor: Colors.pink[500],
+      primaryColor: Colors.pink[500], tabBarTheme: TabBarThemeData(indicatorColor: Colors.pink[500]),
     ),
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.green[500],
-      indicatorColor: Colors.green[600],
+      primaryColor: Colors.green[500], tabBarTheme: TabBarThemeData(indicatorColor: Colors.green[600]),
     ),
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.brown[500],
-      indicatorColor: Colors.brown[600],
+      primaryColor: Colors.brown[500], tabBarTheme: TabBarThemeData(indicatorColor: Colors.brown[600]),
     ),
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.purple[500],
-      indicatorColor: Colors.purple[600],
+      primaryColor: Colors.purple[500], tabBarTheme: TabBarThemeData(indicatorColor: Colors.purple[600]),
     ),
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.blue[500],
-      indicatorColor: Colors.blue[500],
+      primaryColor: Colors.blue[500], tabBarTheme: TabBarThemeData(indicatorColor: Colors.blue[500]),
     ),
     ThemeData(
       brightness: Brightness.light,
-      primaryColor: Color(0xFFFB7299),
-      indicatorColor: Color(0xFFFB7299),
+      primaryColor: Color(0xFFFB7299), tabBarTheme: TabBarThemeData(indicatorColor: Color(0xFFFB7299)),
     ),
   ];
 

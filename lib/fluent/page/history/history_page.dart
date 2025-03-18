@@ -89,26 +89,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
           placeholder: I18n.of(context).search_word_hint,
           prefix: IconButton(
             icon: Icon(FluentIcons.delete),
-            onPressed: () async {
-              final result = await showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) => ContentDialog(
-                  title: Text('Clear All History?'),
-                  actions: [
-                    Button(
-                      child: Text(I18n.of(context).cancel),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    FilledButton(
-                      child: Text(I18n.of(context).ok),
-                      onPressed: () => Navigator.of(context).pop('ok'),
-                    ),
-                  ],
-                ),
-              );
-              if (result == 'ok') _cleanAll(context);
-            },
+            onPressed: () async => await _cleanAll(context),
           ),
           suffix: IconButton(
             icon: Icon(FluentIcons.clear),
@@ -129,13 +110,13 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
           return ContentDialog(
             title: Text("${I18n.of(context).delete} ${I18n.of(context).all}?"),
             actions: <Widget>[
-              HyperlinkButton(
+              Button(
                 child: Text(I18n.of(context).cancel),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              HyperlinkButton(
+              FilledButton(
                 child: Text(I18n.of(context).ok),
                 onPressed: () {
                   Navigator.of(context).pop("OK");

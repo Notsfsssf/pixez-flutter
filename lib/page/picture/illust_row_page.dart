@@ -71,7 +71,6 @@ class _IllustRowPageState extends State<IllustRowPage>
   late ScrollController _scrollController;
   late EasyRefreshController _refreshController;
   bool tempView = false;
-
   @override
   void initState() {
     _refreshController = EasyRefreshController(
@@ -255,7 +254,8 @@ class _IllustRowPageState extends State<IllustRowPage>
           ),
         ),
       );
-    var expectWidth = MediaQuery.of(context).size.width * 0.7;
+    var expectWidth =
+        MediaQuery.of(context).size.width * 0.7 + userSetting.dragStartX;
     var leftWidth = MediaQuery.of(context).size.width - expectWidth;
     final atLeastWidth = 320.0;
     if (leftWidth < atLeastWidth) {
@@ -267,61 +267,81 @@ class _IllustRowPageState extends State<IllustRowPage>
     final height = (radio * expectWidth);
     final centerType = height <= screenHeight;
     if (userStore == null) userStore = UserStore(data.user.id, null, data.user);
+    final dividerWidth = 28.0;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: Container(
-        child: Stack(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: expectWidth,
-                  child: CustomScrollView(slivers: [
-                    ..._buildPhotoList(data, centerType, height),
-                    SliverToBoxAdapter(
-                        child: Container(
-                      height: MediaQuery.of(context).padding.bottom,
-                    ))
-                  ]),
-                ),
-                Expanded(
-                  child: Container(
-                    color: Theme.of(context).cardColor,
-                    child: EasyRefresh(
-                      controller: _refreshController,
-                      onLoad: () {
-                        _aboutStore.next();
-                      },
-                      child: CustomScrollView(
-                        controller: _scrollController,
-                        slivers: [
-                          SliverToBoxAdapter(
-                              child: Container(
-                                  height: MediaQuery.of(context).padding.top)),
-                          SliverToBoxAdapter(
-                            child: IllustDetailContent(
-                              illusts: data,
-                              userStore: userStore,
-                              illustStore: _illustStore,
-                              loadAbout: () {
-                                _loadAbout();
-                              },
+      child: Observer(builder: (context) {
+        return Container(
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: expectWidth,
+                    child: CustomScrollView(slivers: [
+                      ..._buildPhotoList(data, centerType, height),
+                      SliverToBoxAdapter(
+                          child: Container(
+                        height: MediaQuery.of(context).padding.bottom,
+                      ))
+                    ]),
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: Theme.of(context).cardColor,
+                      child: EasyRefresh(
+                        controller: _refreshController,
+                        onLoad: () {
+                          _aboutStore.next();
+                        },
+                        child: CustomScrollView(
+                          controller: _scrollController,
+                          slivers: [
+                            SliverToBoxAdapter(
+                                child: Container(
+                                    height:
+                                        MediaQuery.of(context).padding.top)),
+                            SliverToBoxAdapter(
+                              child: IllustDetailContent(
+                                illusts: data,
+                                userStore: userStore,
+                                illustStore: _illustStore,
+                                loadAbout: () {
+                                  _loadAbout();
+                                },
+                              ),
                             ),
-                          ),
-                          _buildRecom()
-                        ],
+                            _buildRecom()
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                ],
+              ),
+              Row(children: [
+                Container(
+                  width: expectWidth - (dividerWidth * 0.5),
                 ),
-              ],
-            ),
-          ],
-        ),
-      ),
+                GestureDetector(
+                  onTap: () {},
+                  onHorizontalDragUpdate: (details) {
+                    userSetting.setDragStartX(details.localPosition.dx);
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: Container(
+                    width: dividerWidth,
+                  ),
+                ),
+                Spacer()
+              ])
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -343,6 +363,11 @@ class _IllustRowPageState extends State<IllustRowPage>
             },
             onLongPress: () {
               saveStore.saveImage(_aboutStore.illusts[index]);
+              if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+                _illustStore.star(
+                    restrict:
+                        userSetting.defaultPrivateLike ? "private" : "public");
+              }
             },
             child: PixivImage(
               _aboutStore.illusts[index].imageUrls.squareMedium,
@@ -712,6 +737,14 @@ class _IllustRowPageState extends State<IllustRowPage>
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
+    if (userSetting.illustDetailSaveSkipLongPress) {
+      saveStore.saveImage(illust, index: index);
+      if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+        _illustStore.star(
+            restrict: userSetting.defaultPrivateLike ? "private" : "public");
+      }
+      return;
+    }
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -741,10 +774,24 @@ class _IllustRowPageState extends State<IllustRowPage>
                   onTap: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                   },
                   onLongPress: () async {
                     Navigator.of(context).pop();
                     saveStore.saveImage(illust, index: index);
+                    if (userSetting.starAfterSave &&
+                        (_illustStore.state == 0)) {
+                      _illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public");
+                    }
                   },
                   title: Text(I18n.of(context).save),
                 ),

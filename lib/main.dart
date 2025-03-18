@@ -123,10 +123,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     userSetting.init();
     accountStore.fetch();
     bookTagStore.init();
-    muteStore.fetchBanAI();
-    muteStore.fetchBanUserIds();
-    muteStore.fetchBanIllusts();
-    muteStore.fetchBanTags();
+    muteStore.init();
 
     super.initState();
     if (Platform.isIOS) WidgetsBinding.instance.addObserver(this);
@@ -216,7 +213,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           darkTheme: ThemeData.dark().copyWith(
               scaffoldBackgroundColor:
                   userSetting.isAMOLED ? Colors.black : null,
-              tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
+              // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
+              tabBarTheme: TabBarThemeData(dividerColor: Colors.transparent),
               colorScheme: darkColorScheme),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

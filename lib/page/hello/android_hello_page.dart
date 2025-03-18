@@ -239,8 +239,6 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
               child: Container(
                 alignment: Alignment.center,
                 child: Container(
-                  width: 42,
-                  height: 42,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(

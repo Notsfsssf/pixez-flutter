@@ -18,8 +18,9 @@ abstract class _BookTagStoreBase with Store {
   ObservableList<String> bookTagList = ObservableList();
 
   @action
-  init() async {
+  Future<void> init() async {
     try {
+      await Prefer.init();
       final bookList = Prefer.getStringList(BOOK_TAG_LIST) ?? [];
       bookTagList.clear();
       bookTagList.addAll(bookList);

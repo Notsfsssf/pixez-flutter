@@ -49,6 +49,15 @@ abstract class _MuteStoreBase with Store {
   _MuteStoreBase() {}
 
   @action
+  Future<void> init() async {
+    await Prefer.init();
+    fetchBanAI();
+    fetchBanUserIds();
+    fetchBanIllusts();
+    fetchBanTags();
+  }
+
+  @action
   Future<void> changeBanAI(bool value) async {
     await Prefer.setBool("ban_ai_illust", value);
     banAIIllust = value;

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:pixez/component/follow_detail_alert.dart';
 import 'package:pixez/i18n.dart';
 
 class UserFollowButton extends StatefulWidget {
+  final int id;
   final bool followed;
   final Future<Null> Function() onPressed;
+  final Function(bool follow, String restrict) onConfirm;
   const UserFollowButton(
-      {super.key, required this.followed, required this.onPressed});
+      {super.key,
+      required this.id,
+      required this.followed,
+      required this.onPressed,
+      required this.onConfirm});
 
   @override
   State<UserFollowButton> createState() => _UserFollowButtonState();
@@ -66,6 +73,9 @@ class _UserFollowButtonState extends State<UserFollowButton> {
             });
           });
         },
+        onLongPress: () {
+          _longPressAction();
+        },
         child: Container(
           height: 32,
           child: Center(
@@ -94,6 +104,9 @@ class _UserFollowButtonState extends State<UserFollowButton> {
       onTap: () {
         _onPressed();
       },
+      onLongPress: () {
+        _longPressAction();
+      },
       child: Container(
         height: 32,
         child: Center(
@@ -115,5 +128,18 @@ class _UserFollowButtonState extends State<UserFollowButton> {
         ),
       ),
     );
+  }
+
+  _longPressAction() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return FollowDetailAlert(
+            id: widget.id,
+            onConfirm: (follow, restrict) {
+              widget.onConfirm(follow, restrict);
+            },
+          );
+        });
   }
 }
