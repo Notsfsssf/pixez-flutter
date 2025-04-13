@@ -32,6 +32,17 @@ class BanTagPersist {
   Map<String, dynamic> toJson() => _$BanTagPersistToJson(this);
 }
 
+extension BanTagPersistExtension on BanTagPersist {
+  bool isRegexMatch(String tag) {
+    try {
+      final regex = RegExp(name);
+      return regex.hasMatch(tag);
+    } catch (e) {
+      return false;
+    }
+  }
+}
+
 final String columnId = 'id';
 final String columnTranslateName = 'translate_name';
 final String columnName = 'name';

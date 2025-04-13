@@ -135,8 +135,8 @@ extension IllustExts on Illusts {
   bool hateByUser({bool ai = false, bool includeR18Setting = false}) {
     if (includeR18Setting) {
       if (userSetting.hIsNotAllow) {
-        for (int i = 0; i < tags.length; i++) {
-          if (tags[i].name.startsWith('R-18')) return true;
+        for (final tag in tags) {
+          if (tag.name.startsWith('R-18')) return true;
         }
       }
     }
@@ -146,6 +146,10 @@ extension IllustExts on Illusts {
     for (var t in muteStore.banTags) {
       for (var f in this.tags) {
         if (f.name == t.name) return true;
+        try {
+          final regex = RegExp(t.name);
+          if (regex.hasMatch(f.name)) return true;
+        } catch (e) {}
       }
     }
     for (var j in muteStore.banUserIds) {

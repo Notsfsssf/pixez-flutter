@@ -326,6 +326,7 @@
     "cancel_follow": "Cancel follow",
     "start_follow": "Start follow",
     "news_follow_title": "Mengikuti",
-    "user_page_info_title": "Info pengguna"
+    "user_page_info_title": "Info pengguna",
+    "input_regexp_hint": "Masukkan nama tag atau ekspresi reguler"
   }
   

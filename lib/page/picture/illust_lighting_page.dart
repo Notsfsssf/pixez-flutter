@@ -307,15 +307,18 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               }
               for (var t in muteStore.banTags) {
                 for (var t1 in _illustStore.illusts!.tags) {
-                  if (t.name == t1.name)
-                    return BanPage(
-                      name: "${I18n.of(context).tag}\n${t.name}\n",
-                      onPressed: () {
-                        setState(() {
-                          tempView = true;
-                        });
-                      },
-                    );
+                  try {
+                    if (t.name == t1.name || t.isRegexMatch(t1.name)) {
+                      return BanPage(
+                        name: "${I18n.of(context).tag}\n${t.name}\n",
+                        onPressed: () {
+                          setState(() {
+                            tempView = true;
+                          });
+                        },
+                      );
+                    }
+                  } catch (e) {}
                 }
               }
             }

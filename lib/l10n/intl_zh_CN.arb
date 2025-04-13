@@ -328,5 +328,6 @@
   "cancel_follow": "取消关注",
   "start_follow": "开始关注",
   "news_follow_title": "已关注",
-  "user_page_info_title": "详情"
+  "user_page_info_title": "详情",
+  "input_regexp_hint": "输入标签名或正则表达式"
 }

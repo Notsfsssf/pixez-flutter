@@ -219,7 +219,7 @@ class _ShieldPageState extends State<ShieldPage> {
             content: TextField(
               controller: controller,
               decoration: InputDecoration(
-                  hintText: I18n.of(context).tag,
+                  hintText: I18n.of(context).input_regexp_hint,
                   hintStyle: TextStyle(fontSize: 12)),
             ),
             actions: <Widget>[

@@ -328,5 +328,6 @@
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
   "news_follow_title": "Following",
-  "user_page_info_title": "User info"
+  "user_page_info_title": "User info",
+  "input_regexp_hint": "Enter tag name or regular expression"
 }

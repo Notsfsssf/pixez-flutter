@@ -326,5 +326,6 @@
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
   "news_follow_title": "フォロー中",
-  "user_page_info_title": "ユーザー情報"
+  "user_page_info_title": "ユーザー情報",
+  "input_regexp_hint": "タグ名または正規表現を入力"
 }

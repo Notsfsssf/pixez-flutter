@@ -326,5 +326,6 @@
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
   "news_follow_title": "Takip et",
-  "user_page_info_title": "Kullanıcı bilgileri"
+  "user_page_info_title": "Kullanıcı bilgileri",
+  "input_regexp_hint": "Etiket adı veya düzenli ifade girin"
 }

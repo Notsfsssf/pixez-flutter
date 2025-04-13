@@ -317,5 +317,6 @@
   "cancel_follow": "Cancel follow",
   "start_follow": "Start follow",
   "news_follow_title": "Siguiente",
-  "user_page_info_title": "Información de usuario"
+  "user_page_info_title": "Información de usuario",
+  "input_regexp_hint": "Ingrese el nombre de la etiqueta o expresión regular"
 }

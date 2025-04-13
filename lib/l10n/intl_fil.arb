@@ -328,5 +328,6 @@
   "cancel_follow": "Kanselahin ang pagsundan",
   "start_follow": "Simulan ang pagsundan",
   "news_follow_title": "Sinusundan",
-  "user_page_info_title": "Impormasyon ng user"
+  "user_page_info_title": "Impormasyon ng user",
+  "input_regexp_hint": "Maglagay ng mga keyword o pangalan tulad ng"
 }
