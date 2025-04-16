@@ -63,12 +63,15 @@ jobs:
         if: env.CERTIFICATE != ''
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
         run: |-
-          $base64File = New-TemporaryFile
           $certFile = (New-TemporaryFile).FullName + '.pfx'
-          Out-File -InputObject $env:CERTIFICATE -LiteralPath $base64File
-          openssl enc -base64 -d -in $base64File.FullName -out $certFile
+          [System.IO.File]::WriteAllBytes($certFile, [System.Convert]::FromBase64String($env:CERTIFICATE))
+          $Private:Password = ConvertTo-SecureString -String $env:CERTIFICATE_PASSWORD -AsPlainText
+          $Private:Certificate = Get-PfxCertificate $certFile -Password $Private:Password
+          $Private:Certificate.Subject
           Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_ENV"
+          Write-Output "CERTIFICATE_SUBJECT=$($Private:Certificate.Subject)" >> "$env:GITHUB_ENV"
 
       - name: 构建 MSIX
         id: msix
@@ -82,7 +85,7 @@ jobs:
             --certificate-password $env:CERTIFICATE_PASSWORD `
             --build-windows false `
             --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
-            --publisher (Get-PfxCertificate $env:CERTIFICATE_PATH -Password ($env:CERTIFICATE_PASSWORD | ConvertTo-SecureString -AsPlainText)).Subject
+            --publisher $env:CERTIFICATE_SUBJECT
 
       - name: 上传 MSIX
         id: msix-artifact
@@ -113,6 +116,11 @@ jobs:
         shell: pwsh
         run: |-
           Write-Output '### Build Success :rocket:' >> $env:GITHUB_STEP_SUMMARY
+
+          if ($env:CERTIFICATE_SUBJECT) {
+            Write-Output "Publisher: $env:CERTIFICATE_SUBJECT" >> $env:GITHUB_STEP_SUMMARY  
+          }
+
           Write-Output '|File|SHA256|' >> $env:GITHUB_STEP_SUMMARY
           Write-Output '|:-|:-:|' >> $env:GITHUB_STEP_SUMMARY
           Write-Output "|[binary](${{ steps.binary-artifact.outputs.artifact-url }})|${{ steps.binary-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY
