@@ -10,8 +10,9 @@ Can access pixiv directly from Mainland China.
 
 |OS|Market|GitHub|Cloud Drive|
 |:---:|:---:|:---:|:---:|
-|Android|[Google Play](https://play.google.com/store/apps/details?id=com.perol.play.pixez)|[Release](https://github.com/Notsfsssf/pixez-flutter/releases)|[Lanzou](https://wwa.lanzous.com/b0ded45id)<br />**For Mainland China Users Only**|
-|iOS|[App Store](https://apps.apple.com/cn/app/pixez/id1494435126)|/|/|
+|Android|[Google Play](https://play.google.com/store/apps/details?id=com.perol.play.pixez)|[Release](https://github.com/Notsfsssf/pixez-flutter/releases/latest)|[Lanzou](https://wwa.lanzous.com/b0ded45id)<br />**For Mainland China Users Only**|
+|iOS|[App Store](https://apps.apple.com/app/pixez/id1494435126)|/|/|
+|Windows|/|[Nightly MSIX](https://github.com/Notsfsssf/pixez-flutter/actions/workflows/build_windows.yml)|/|
 
 # Preview
 
