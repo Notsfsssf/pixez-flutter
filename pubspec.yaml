@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^2.1.5
   shared_preferences: ^2.5.1
   share_plus: ^10.1.4
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.0+1
   archive: ^4.0.2
   url_launcher: ^6.3.1
   bot_toast: ^4.1.3
