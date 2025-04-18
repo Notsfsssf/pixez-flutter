@@ -34,8 +34,12 @@ class BanTagPersist {
 
 extension BanTagPersistExtension on BanTagPersist {
   bool isRegexMatch(String tag) {
+    if (!name.startsWith('r\'') || !name.endsWith('\'')) {
+      return false;
+    }
     try {
-      final regex = RegExp(name);
+      final str = name.substring(2, name.length - 1);
+      final regex = RegExp(str);
       return regex.hasMatch(tag);
     } catch (e) {
       return false;

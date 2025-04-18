@@ -216,11 +216,21 @@ class _ShieldPageState extends State<ShieldPage> {
         builder: (context) {
           return AlertDialog(
             title: Text(I18n.of(context).input),
-            content: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                  hintText: I18n.of(context).input_regexp_hint,
-                  hintStyle: TextStyle(fontSize: 12)),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('etc:"r\'pattern\'"'),
+                SizedBox(
+                  height: 2,
+                ),
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                      hintText: I18n.of(context).input_regexp_hint,
+                      hintStyle: TextStyle(fontSize: 12)),
+                ),
+              ],
             ),
             actions: <Widget>[
               TextButton(

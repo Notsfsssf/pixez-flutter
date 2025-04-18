@@ -146,10 +146,13 @@ extension IllustExts on Illusts {
     for (var t in muteStore.banTags) {
       for (var f in this.tags) {
         if (f.name == t.name) return true;
-        try {
-          final regex = RegExp(t.name);
-          if (regex.hasMatch(f.name)) return true;
-        } catch (e) {}
+        // r'pattern'
+        if (t.name.startsWith('r\'') && t.name.endsWith('\'')) {
+          try {
+            final regex = RegExp(t.name.substring(2, t.name.length - 1));
+            if (regex.hasMatch(f.name)) return true;
+          } catch (e) {}
+        }
       }
     }
     for (var j in muteStore.banUserIds) {

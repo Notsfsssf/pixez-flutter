@@ -80,8 +80,8 @@ android {
         applicationId = packageName
         minSdk = 21
         targetSdk = 35
-        versionCode = 10009680
-        versionName = "0.9.68 regex"
+        versionCode = 10009690
+        versionName = "0.9.69 regex"
         ndk {
             abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
         }
