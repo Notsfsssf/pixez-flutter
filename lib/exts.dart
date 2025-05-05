@@ -15,6 +15,7 @@
 import 'package:intl/intl.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 
@@ -108,6 +109,10 @@ extension NovelExts on Novel {
       for (var f in this.tags) {
         if (f.name == t.name) return true;
       }
+      final allText = tags.map((e) => '#${e.name}').join('');
+      if (t.isRegexMatch(allText)) {
+        return true;
+      }
     }
     for (var j in muteStore.banUserIds) {
       if (j.userId == this.user.id.toString()) {
@@ -145,14 +150,13 @@ extension IllustExts on Illusts {
     }
     for (var t in muteStore.banTags) {
       for (var f in this.tags) {
-        if (f.name == t.name) return true;
-        // r'pattern'
-        if (t.name.startsWith('r\'') && t.name.endsWith('\'')) {
-          try {
-            final regex = RegExp(t.name.substring(2, t.name.length - 1));
-            if (regex.hasMatch(f.name)) return true;
-          } catch (e) {}
+        if (t.isRegexMatch(f.name)) {
+          return true;
         }
+      }
+      final allText = tags.map((e) => '#${e.name}').join('');
+      if (t.isRegexMatch(allText)) {
+        return true;
       }
     }
     for (var j in muteStore.banUserIds) {

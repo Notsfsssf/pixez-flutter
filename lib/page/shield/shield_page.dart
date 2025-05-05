@@ -220,7 +220,7 @@ class _ShieldPageState extends State<ShieldPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('etc:"r\'pattern\'"'),
+                Text('regex example:"r\'pattern\'"'),
                 SizedBox(
                   height: 2,
                 ),
