@@ -129,7 +129,7 @@ class _DataExportPageState extends State<DataExportPage> {
           );
         }),
         Divider(),
-        Consumer(builder: (context, ref, wighet) {
+        Consumer(builder: (context, ref, widget) {
           return ListTile(
             title: Text(I18n.of(context).export_title),
             subtitle: Text(I18n.of(context).export_novel_history),
