@@ -275,6 +275,8 @@
   "export_bookmark_tag": "Сохранить метки закладок.",
   "export_tag_history": "Сохранить историю меток.",
   "export_illust_history": "Сохранить историю просмотров.",
+  "export_novel_history": "Экспорт истории романов",
+  "import_novel_history": "Импорт истории романов",
   "import_bookmark_tag": "Перенести метки закладок.",
   "import_tag_history": "Перенести историю меток.",
   "import_illust_history": "Перенести историю просмотров.",
