@@ -168,7 +168,7 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
                 DataCell(Text(I18n.of(context).painter_name)),
               ]),
               DataRow(cells: [
-                DataCell(Text('part')),
+                DataCell(Text('{part}')),
                 DataCell(Text(I18n.of(context).which_part)),
               ]),
             ],

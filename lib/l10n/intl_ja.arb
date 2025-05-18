@@ -275,6 +275,8 @@
   "export_bookmark_tag": "お気に入りタグをエクスポート",
   "export_tag_history": "タグ履歴をエクスポート",
   "export_illust_history": "閲覧履歴をエクスポート",
+  "export_novel_history": "小説の履歴をエクスポート",
+  "import_novel_history": "小説の履歴をインポート",
   "import_bookmark_tag": "お気に入りタグをインポート",
   "import_tag_history": "タグ履歴をインポート",
   "import_illust_history": "閲覧履歴をインポート",

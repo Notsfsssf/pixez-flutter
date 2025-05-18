@@ -275,6 +275,8 @@
   "export_bookmark_tag": "匯出收藏標籤",
   "export_tag_history": "匯出標籤紀錄",
   "export_illust_history": "匯出瀏覽歷史",
+  "export_novel_history": "匯出小說歷史",
+  "import_novel_history": "匯入小說歷史",
   "import_bookmark_tag": "匯入收藏標籤",
   "import_tag_history": "匯入標籤紀錄",
   "import_illust_history": "匯入瀏覽歷史",

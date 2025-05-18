@@ -275,6 +275,8 @@
   "export_bookmark_tag": "Yer işaretleri etiketlerini dışa aktar",
   "export_tag_history": "Etiket geçmişini dışa aktar",
   "export_illust_history": "Göz atma geçmişini dışa aktar",
+  "export_novel_history": "Roman geçmişini dışa aktar",
+  "import_novel_history": "Roman geçmişini içe aktar",
   "import_bookmark_tag": "Yer işaretleri etiketlerini içe aktar",
   "import_tag_history": "Etiket geçmişini içe aktar",
   "import_illust_history": "Göz atma geçmişini içe aktar",

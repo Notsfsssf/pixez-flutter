@@ -8,6 +8,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/history/history_store.dart';
+import 'package:pixez/page/novel/history/novel_history_store.dart';
 
 class DataExportPage extends StatefulWidget {
   const DataExportPage({super.key});
@@ -120,6 +121,36 @@ class _DataExportPageState extends State<DataExportPage> {
               try {
                 await ref.read(historyProvider.notifier).fetch();
                 await ref.read(historyProvider.notifier).importData();
+              } catch (e) {
+                print(e);
+                BotToast.showText(text: e.toString());
+              }
+            },
+          );
+        }),
+        Divider(),
+        Consumer(builder: (context, ref, widget) {
+          return ListTile(
+            title: Text(I18n.of(context).export_title),
+            subtitle: Text(I18n.of(context).export_novel_history),
+            onTap: () async{
+              try{
+                await ref.read(novelHistoryProvider.notifier).fetch();
+                await ref.read(novelHistoryProvider.notifier).exportData(context);
+              } catch (e) {
+                print(e);
+              }
+            },
+          );
+        }),
+        Consumer(builder: (context, ref, widget) {
+          return ListTile(
+            title: Text(I18n.of(context).import_title),
+            subtitle: Text(I18n.of(context).import_novel_history),
+            onTap: () async {
+              try {
+                await ref.read(novelHistoryProvider.notifier).fetch();
+                await ref.read(novelHistoryProvider.notifier).importData();
               } catch (e) {
                 print(e);
                 BotToast.showText(text: e.toString());
