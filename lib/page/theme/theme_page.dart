@@ -203,7 +203,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
     return Observer(builder: (context) {
       return Scaffold(
         appBar: AppBar(
-            title: Text(I18n.of(context).skin),
+            title: Text(I18n.of(context).theme),
             bottom: TabBar(
                 controller: TabController(
                   length: 3,
