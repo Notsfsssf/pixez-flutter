@@ -34,9 +34,16 @@ class WorksPage extends StatefulWidget {
   final int id;
   final String portal;
   final LightingStore store;
+  final String workType;
+  final ValueChanged<String> onWorkTypeChange;
 
   const WorksPage(
-      {Key? key, required this.id, required this.store, required this.portal})
+      {Key? key,
+      required this.id,
+      required this.store,
+      required this.portal,
+      required this.workType,
+      required this.onWorkTypeChange})
       : super(key: key);
 
   @override
@@ -46,6 +53,7 @@ class WorksPage extends StatefulWidget {
 class _WorksPageState extends State<WorksPage> {
   late LightingStore _store;
   late EasyRefreshController _easyRefreshController;
+  late String _workType;
 
   @override
   void initState() {
@@ -55,6 +63,7 @@ class _WorksPageState extends State<WorksPage> {
     _store.easyRefreshController = _easyRefreshController;
     super.initState();
     _store.fetch();
+    _workType = widget.workType;
   }
 
   @override
@@ -63,8 +72,6 @@ class _WorksPageState extends State<WorksPage> {
     _store.dispose();
     super.dispose();
   }
-
-  String now = 'illust';
 
   @override
   Widget build(BuildContext context) {
@@ -222,8 +229,9 @@ class _WorksPageState extends State<WorksPage> {
       onChange: (index) {
         final type = index == 0 ? 'illust' : 'manga';
         setState(() {
-          now = type;
+          _workType = type;
         });
+        widget.onWorkTypeChange(_workType);
         _store.source = ApiForceSource(
             futureGet: (bool e) => apiClient.getUserIllusts(widget.id, type));
         _store.fetch();
@@ -232,6 +240,7 @@ class _WorksPageState extends State<WorksPage> {
         I18n.of(context).illust,
         I18n.of(context).manga,
       ],
+      initIndex: _workType == 'illust' ? 0 : 1,
     );
   }
 }

@@ -72,12 +72,15 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
   late LightingStore _workStore;
   late LightingStore _bookmarkStore;
 
+  String _userWorkType = 'illust';
+
   String restrict = 'public';
 
   @override
   void initState() {
     _workStore = LightingStore(ApiForceSource(
-        futureGet: (bool e) => apiClient.getUserIllusts(widget.id, 'illust')));
+        futureGet: (bool e) =>
+            apiClient.getUserIllusts(widget.id, _userWorkType)));
     _bookmarkStore = LightingStore(ApiForceSource(
         futureGet: (e) =>
             apiClient.getBookmarksIllust(widget.id, restrict, null)));
@@ -217,6 +220,12 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               id: widget.id,
               store: _workStore,
               portal: "Work",
+              workType: _userWorkType,
+              onWorkTypeChange: (String newType) {
+                setState(() {
+                  _userWorkType = newType;
+                });
+              },
             ),
             BookMarkNestedPage(
               id: widget.id,
