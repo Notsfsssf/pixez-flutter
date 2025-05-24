@@ -133,10 +133,10 @@ class _DataExportPageState extends State<DataExportPage> {
           return ListTile(
             title: Text(I18n.of(context).export_title),
             subtitle: Text(I18n.of(context).export_novel_history),
-            onTap: () async{
-              try{
-                await ref.read(novelHistoryProvider.notifier).fetch();
-                await ref.read(novelHistoryProvider.notifier).exportData(context);
+            onTap: () async {
+              try {
+                await novelHistoryStore.fetch();
+                await novelHistoryStore.exportData(context);
               } catch (e) {
                 print(e);
               }
@@ -149,8 +149,8 @@ class _DataExportPageState extends State<DataExportPage> {
             subtitle: Text(I18n.of(context).import_novel_history),
             onTap: () async {
               try {
-                await ref.read(novelHistoryProvider.notifier).fetch();
-                await ref.read(novelHistoryProvider.notifier).importData();
+                await novelHistoryStore.fetch();
+                await novelHistoryStore.importData();
               } catch (e) {
                 print(e);
                 BotToast.showText(text: e.toString());
