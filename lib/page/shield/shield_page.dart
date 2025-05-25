@@ -17,6 +17,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -110,9 +111,18 @@ class _ShieldPageState extends State<ShieldPage> {
                         direction: Axis.horizontal,
                         children: <Widget>[
                           ...muteStore.banTags
-                              .map((f) => ActionChip(
-                                    onPressed: () => deleteTag(context, f),
-                                    label: Text(f.name),
+                              .map((f) => GestureDetector(
+                                    onLongPress: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: f.name));
+                                      BotToast.showText(
+                                          text: I18n.of(context)
+                                              .copied_to_clipboard);
+                                    },
+                                    child: ActionChip(
+                                      onPressed: () => deleteTag(context, f),
+                                      label: Text(f.name),
+                                    ),
                                   ))
                               .toList()
                         ],

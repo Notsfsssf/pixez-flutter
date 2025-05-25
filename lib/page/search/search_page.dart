@@ -232,6 +232,7 @@ class _SearchPageState extends State<SearchPage>
                                       ? Icons.expand_more
                                       : Icons.expand_less),
                                 ),
+                                padding: EdgeInsets.all(0.0),
                                 onPressed: () {
                                   setState(() {
                                     _tagExpand = !_tagExpand;
