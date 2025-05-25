@@ -107,7 +107,9 @@ extension NovelExts on Novel {
   bool hateByUser() {
     for (var t in muteStore.banTags) {
       for (var f in this.tags) {
-        if (f.name == t.name) return true;
+        if (t.isRegexMatch(f.name)) {
+          return true;
+        }
       }
       final allText = tags.map((e) => '#${e.name}').join('');
       if (t.isRegexMatch(allText)) {
