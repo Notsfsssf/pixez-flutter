@@ -34,6 +34,7 @@ import 'package:pixez/page/comment/comment_store.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter/services.dart';
 
 enum CommentArtWorkType { ILLUST, NOVEL }
 
@@ -63,6 +64,7 @@ class _CommentPageState extends State<CommentPage> {
   String? parentCommentName;
   late EasyRefreshController easyRefreshController;
   late CommentStore _store;
+  String _commentText = "";
 
   List<String> banList = [
     "bb8.news",
@@ -399,9 +401,15 @@ class _CommentPageState extends State<CommentPage> {
                                 ),
                                 child: TextField(
                                   controller: _editController,
+                                  maxLength: 10,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _commentText = value;
+                                    });
+                                  },
                                   decoration: InputDecoration(
                                       labelText:
-                                          "${I18n.of(context).reply_to} ${parentCommentName == null ? "illust" : parentCommentName}",
+                                          "${I18n.of(context).reply_to} ${parentCommentName == null ? "illust" : parentCommentName} (${_commentText.length}/140)",
                                       suffixIcon: IconButton(
                                           icon: Icon(
                                             Icons.reply,
