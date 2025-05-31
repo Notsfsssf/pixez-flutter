@@ -91,7 +91,7 @@ dev_dependencies:
   json_serializable: ^6.8.0
   analyzer: ^6.4.1
   sqflite_common_ffi: any
-  msix: ^3.16.7
+  msix: ^3.16.9
   riverpod_generator: ^2.4.0
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
