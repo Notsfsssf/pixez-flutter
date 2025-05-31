@@ -20,8 +20,10 @@ message("Pixez for Windows Desktop Application (WinRT)")
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
 cmake_policy(SET CMP0063 NEW)
-# flutter_inappwebview_windows
-cmake_policy(SET CMP0175 OLD)
+if(POLICY CMP0175)
+  # flutter_inappwebview_windows
+  cmake_policy(SET CMP0175 OLD)
+endif()
 
 # Define build configuration option.
 get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
