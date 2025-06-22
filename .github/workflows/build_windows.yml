@@ -59,6 +59,7 @@ jobs:
           compression-level: 9
 
       - name: 还原证书
+        id: restore-cert
         shell: pwsh
         if: env.CERTIFICATE != ''
         env:
@@ -70,22 +71,22 @@ jobs:
           $Private:Password = ConvertTo-SecureString -String $env:CERTIFICATE_PASSWORD -AsPlainText
           $Private:Certificate = Get-PfxCertificate $certFile -Password $Private:Password
           $Private:Certificate.Subject
-          Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_ENV"
-          Write-Output "CERTIFICATE_SUBJECT=$($Private:Certificate.Subject)" >> "$env:GITHUB_ENV"
+          Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_OUTPUT"
+          Write-Output "CERTIFICATE_SUBJECT=$($Private:Certificate.Subject)" >> "$env:GITHUB_OUTPUT"
 
       - name: 构建 MSIX
         id: msix
         shell: pwsh
-        if: env.CERTIFICATE_PATH != ''
+        if: steps.restore-cert.conclusion == 'success'
         env:
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
         run: |-
           dart run msix:create `
-            --certificate-path $env:CERTIFICATE_PATH `
+            --certificate-path '${{ steps.restore-cert.outputs.CERTIFICATE_PATH }}' `
             --certificate-password $env:CERTIFICATE_PASSWORD `
             --build-windows false `
             --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
-            --publisher $env:CERTIFICATE_SUBJECT
+            --publisher '${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}'
 
       - name: 上传 MSIX
         id: msix-artifact
