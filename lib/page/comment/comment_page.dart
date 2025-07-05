@@ -401,7 +401,7 @@ class _CommentPageState extends State<CommentPage> {
                                 ),
                                 child: TextField(
                                   controller: _editController,
-                                  maxLength: 10,
+                                  maxLength: 140,
                                   onChanged: (value) {
                                     setState(() {
                                       _commentText = value;
