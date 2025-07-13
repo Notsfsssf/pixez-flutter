@@ -57,4 +57,11 @@ abstract class _TagForIllustStoreBase with Store {
       errorMessage = "" + e.toString();
     }
   }
+
+  @action
+  checkAll() {
+    for (var i in checkList) {
+      check(checkList.indexOf(i), !i);
+    }
+  }
 }

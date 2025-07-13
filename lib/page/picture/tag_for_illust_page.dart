@@ -41,12 +41,18 @@ class _TagForIllustPageState extends State<TagForIllustPage> {
                       : I18n.of(context).private) +
                   I18n.of(context).bookmark),
               actions: [
+                IconButton(
+                    icon: Icon(Icons.check_box),
+                    onPressed: () {
+                      _store.checkAll();
+                    }),
                 Switch(
                   onChanged: (bool value) {
                     _store.setRestrict(value);
                   },
                   value: _store.restrict == "public",
                 ),
+                // 确认图标
                 IconButton(
                     icon: Icon(Icons.check),
                     onPressed: () {
