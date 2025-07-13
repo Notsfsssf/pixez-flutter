@@ -130,6 +130,8 @@ extension NovelExts on Novel {
 }
 
 extension IllustExts on Illusts {
+  String get commentCountText =>
+      totalComments == null ? '' : '($totalComments)';
   bool hIsNotAllow() {
     if (userSetting.hIsNotAllow) {
       if (tags.any((tag) => tag.name.startsWith('R-18'))) {

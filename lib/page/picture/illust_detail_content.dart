@@ -395,7 +395,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                       width: 4,
                     ),
                     Text(
-                      I18n.of(context).view_comment,
+                      '${I18n.of(context).view_comment}${data.commentCountText}',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ]),

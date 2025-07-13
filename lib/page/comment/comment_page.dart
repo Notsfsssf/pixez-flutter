@@ -173,7 +173,7 @@ class _CommentPageState extends State<CommentPage> {
     return Container(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).view_comment),
+          title: Text('${I18n.of(context).view_comment}'),
         ),
         body: SafeArea(
           child: Column(
