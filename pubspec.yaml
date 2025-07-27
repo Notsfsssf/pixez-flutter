@@ -74,11 +74,7 @@ dependencies:
   # Desktop Support
   flutter_acrylic: ^1.1.4
   window_manager: ^0.4.3
-  rhttp:
-    git:
-      url: https://github.com/Tienisto/rhttp.git
-      path: rhttp
-      ref: main
+  rhttp: ^0.13.0
   dio_compatibility_layer: ^0.1.0
   flutter_cache_manager_dio: ^4.0.0
   file_picker: ^9.0.0
