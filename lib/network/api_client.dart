@@ -576,6 +576,10 @@ class ApiClient {
     });
   }
 
+  Future<Response> watchListNovel() async {
+    return httpClient.get('/v1/watchlist/novel');
+  }
+
   Future<Response> watchListNovelAdd(String seriesId) async {
     return httpClient.post('/v1/watchlist/novel/add',
         data: notNullMap({"series_id": seriesId}),

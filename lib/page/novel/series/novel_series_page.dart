@@ -71,6 +71,33 @@ class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
     }
   }
 
+  Future<void> addWatchlist() async {
+    try {
+      await apiClient.watchListNovelAdd(state!.novelSeriesDetail.id.toString());
+      final updatedDetail = state!.novelSeriesDetail;
+      updatedDetail.watchlistAdded = true;
+      final result = NovelSeriesState(
+          updatedDetail, state!.novels, state!.novelStores, state!.nextUrl);
+      state = result;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> removeWatchlist() async {
+    try {
+      await apiClient
+          .watchListNovelDelete(state!.novelSeriesDetail.id.toString());
+      final updatedDetail = state!.novelSeriesDetail;
+      updatedDetail.watchlistAdded = false;
+      final result = NovelSeriesState(
+          updatedDetail, state!.novels, state!.novelStores, state!.nextUrl);
+      state = result;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   NovelSeriesState? build() {
     return null;
@@ -156,6 +183,49 @@ class NovelSeriesPage extends HookConsumerWidget {
                             ),
                           ),
                         ),
+                        SizedBox(height: 12),
+                        GestureDetector(
+                          onTap: () {
+                            if (data.novelSeriesDetail.watchlistAdded == true) {
+                              ref
+                                  .read(novelSeriesProvider.notifier)
+                                  .removeWatchlist();
+                            } else {
+                              ref
+                                  .read(novelSeriesProvider.notifier)
+                                  .addWatchlist();
+                            }
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            decoration: data.novelSeriesDetail.watchlistAdded ==
+                                    true
+                                ? BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.black, width: 1),
+                                    borderRadius: BorderRadius.circular(21),
+                                  )
+                                : BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(21)),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            child: Text(
+                                data.novelSeriesDetail.watchlistAdded == true
+                                    ? I18n.of(context).watchlist_added
+                                    : I18n.of(context).add_to_watchlist,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: data.novelSeriesDetail
+                                                    .watchlistAdded ==
+                                                true
+                                            ? Colors.black
+                                            : Colors.white)),
+                          ),
+                        ),
+                        SizedBox(height: 12),
                       ],
                       crossAxisAlignment: CrossAxisAlignment.center,
                     ),

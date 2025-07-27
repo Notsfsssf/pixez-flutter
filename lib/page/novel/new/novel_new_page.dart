@@ -22,6 +22,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/new/novel_new_list.dart';
+import 'package:pixez/page/novel/new/novel_watch_list.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 
 class NovelNewPage extends StatefulWidget {
@@ -63,6 +64,9 @@ class _NovelNewPageState extends State<NovelNewPage>
                   text: I18n.of(context).bookmark,
                 ),
                 Tab(
+                  text: I18n.of(context).watchlist,
+                ),
+                Tab(
                   text: I18n.of(context).follow,
                 )
               ],
@@ -99,6 +103,7 @@ class _NovelNewPageState extends State<NovelNewPage>
             children: [
               NovelNewList(),
               NovelBookmarkPage(),
+              (accountStore.now != null) ? NovelWatchList() : Container(),
               (accountStore.now != null)
                   ? FollowList(
                       id: int.parse(accountStore.now!.userId), isNovel: true)
