@@ -10,6 +10,7 @@ import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_series_detail.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
+import 'package:pixez/page/novel/new/novel_watch_list_notifier.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
@@ -31,7 +32,10 @@ class NovelSeriesState {
 }
 
 class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
-  final EasyRefreshController refreshController = EasyRefreshController();
+  final EasyRefreshController refreshController = EasyRefreshController(
+    controlFinishLoad: true,
+    controlFinishRefresh: true,
+  );
 
   Future<void> fetch(int id) async {
     try {
@@ -190,10 +194,16 @@ class NovelSeriesPage extends HookConsumerWidget {
                               ref
                                   .read(novelSeriesProvider.notifier)
                                   .removeWatchlist();
+                              ref
+                                  .read(novelWatchListStoreProvider.notifier)
+                                  .fetch();
                             } else {
                               ref
                                   .read(novelSeriesProvider.notifier)
                                   .addWatchlist();
+                              ref
+                                  .read(novelWatchListStoreProvider.notifier)
+                                  .fetch();
                             }
                           },
                           behavior: HitTestBehavior.opaque,
