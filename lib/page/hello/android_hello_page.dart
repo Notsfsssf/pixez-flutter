@@ -25,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/component/multi_function_fab.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
 import 'package:pixez/er/leader.dart';
@@ -57,6 +58,11 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   void toggleFullscreen() {
     fullScreenStore.toggle();
+  }
+
+  void _refreshCurrentPage() {
+    // 发送刷新信号"101"，专门用于触发刷新操作
+    topStore.setTop("101");
   }
 
   @override
@@ -128,20 +134,40 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildPageView(BuildContext context) {
-    return Stack(
-      children: [
-        _buildPageContent(context),
-        Positioned(
-          bottom: MediaQuery.of(context).padding.bottom + 16,
-          right: 16,
-          child: Observer(builder: (context) {
-            return AnimatedToggleFullscreenFAB(
-                isFullscreen: fullScreenStore.fullscreen,
-                toggleFullscreen: toggleFullscreen);
-          }),
-        )
-      ],
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final wide = constraints.maxWidth > constraints.maxHeight;
+      return Stack(
+        children: [
+          _buildPageContent(context),
+          Positioned(
+            bottom: wide 
+                ? 16 // 横屏时使用较小的底部边距
+                : MediaQuery.of(context).padding.bottom + 16, // 竖屏时避免被导航栏遮挡
+            right: 16,
+            child: Observer(builder: (context) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // 只在首页显示多功能按钮
+                  if (index == 0)
+                    MultiFunctionFab(
+                      onRefresh: _refreshCurrentPage,
+                    ),
+                  // 当同时显示多功能按钮和全屏按钮时添加间距
+                  if (index == 0 && fullScreenStore.fullscreen)
+                    SizedBox(height: 8),
+                  // 显示全屏切换按钮
+                  AnimatedToggleFullscreenFAB(
+                    isFullscreen: fullScreenStore.fullscreen,
+                    toggleFullscreen: toggleFullscreen,
+                  ),
+                ],
+              );
+            }),
+          )
+        ],
+      );
+    });
   }
 
   Widget _buildNavigationBar(BuildContext context) {

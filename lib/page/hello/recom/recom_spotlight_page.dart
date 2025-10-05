@@ -73,9 +73,35 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
     )..easyRefreshController = _easyRefreshController;
     super.initState();
     subscription = topStore.topStream.listen((event) {
+      // 处理返回顶部信号
       if (event == "100") {
-        _scrollController.position.jumpTo(0);
+        _scrollToTop();
       }
+      // 处理刷新信号
+      else if (event == "101") {
+        _triggerRefreshAnimation();
+      }
+    });
+  }
+
+  /// 滚动到页面顶部
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.position.jumpTo(0);
+    }
+  }
+
+  /// 触发刷新动画和操作
+  void _triggerRefreshAnimation() {
+    // 先滚动到顶部，然后延迟触发刷新动画，确保动画能完整显示
+    _scrollToTop();
+    
+    // 使用addPostFrameCallback确保滚动完成后才触发刷新
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 添加一个小延迟确保滚动完成
+      Future.delayed(Duration(milliseconds: 100), () {
+        _easyRefreshController.callRefresh();
+      });
     });
   }
 
