@@ -204,7 +204,7 @@ class ApiClient {
         options: options
             .copyWith(
                 policy: force ? CachePolicy.refresh : null,
-                maxStale: Nullable(Duration(minutes: 2)))
+                maxStale: Duration(minutes: 2))
             .toOptions());
   }
 
@@ -330,7 +330,7 @@ class ApiClient {
         options: options
             .copyWith(
                 policy: force ? CachePolicy.refresh : null,
-                maxStale: Nullable(Duration(minutes: 2)))
+                maxStale: Duration(minutes: 2))
             .toOptions());
   }
 
@@ -355,7 +355,7 @@ class ApiClient {
       options: options
           .copyWith(
               policy: force ? CachePolicy.refresh : null,
-              maxStale: Nullable(Duration(hours: 1)))
+              maxStale: Duration(hours: 1))
           .toOptions(),
     );
   }
@@ -366,7 +366,7 @@ class ApiClient {
       options: options
           .copyWith(
               policy: force ? CachePolicy.refresh : null,
-              maxStale: Nullable(Duration(hours: 1)))
+              maxStale: Duration(hours: 1))
           .toOptions(),
     );
   }
@@ -435,7 +435,7 @@ class ApiClient {
           options: options
               .copyWith(
                   policy: force ? CachePolicy.refresh : null,
-                  maxStale: Nullable(Duration(days: 1)))
+                  maxStale: Duration(days: 1))
               .toOptions(),
           queryParameters: notNullMap({"illust_id": illust_id}));
 
@@ -466,7 +466,7 @@ class ApiClient {
       options: options
           .copyWith(
               policy: force ? CachePolicy.refresh : null,
-              maxStale: Nullable(Duration(hours: 23)))
+              maxStale: Duration(hours: 23))
           .toOptions(),
     );
   }
@@ -477,7 +477,7 @@ class ApiClient {
         options: options
             .copyWith(
                 policy: force ? CachePolicy.refresh : null,
-                maxStale: Nullable(Duration(minutes: 2)))
+                maxStale: Duration(minutes: 2))
             .toOptions());
   }
 
@@ -487,7 +487,7 @@ class ApiClient {
         options: options
             .copyWith(
                 policy: force ? CachePolicy.refresh : null,
-                maxStale: Nullable(Duration(minutes: 2)))
+                maxStale: Duration(minutes: 2))
             .toOptions());
   }
 

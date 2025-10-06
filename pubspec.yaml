@@ -23,22 +23,22 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.8.0+1
+  dio: ^5.9.0
   crypto: ^3.0.6
   path_provider: ^2.1.5
-  shared_preferences: ^2.5.1
-  share_plus: ^11.0.0
+  shared_preferences: ^2.5.3
+  share_plus: ^12.0.0
   permission_handler: ^12.0.1
   archive: ^4.0.7
   url_launcher: ^6.3.1
   bot_toast: ^4.1.3
-  package_info_plus: ^8.3.0
+  package_info_plus: ^9.0.0
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
-  in_app_purchase: ^3.2.1
-  flutter_widget_from_html: ^0.16.0
-  device_info_plus: ^11.5.0
-  flutter_displaymode: ^0.6.0
+  in_app_purchase: ^3.2.3
+  flutter_widget_from_html: ^0.17.1
+  device_info_plus: ^12.1.0
+  flutter_displaymode: ^0.7.0
   receive_sharing_intent:
     git:
       url: https://github.com/KasemJaffer/receive_sharing_intent
@@ -50,11 +50,11 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   json_annotation: ^4.9.0
   badges: ^3.1.2
-  image_picker: ^1.1.2
+  image_picker: ^1.2.0
   intl: any
   quiver: ^3.2.2
   flutter_inappwebview: ^6.1.5
-  dio_cache_interceptor: ^3.5.1
+  dio_cache_interceptor: ^4.0.4
   photo_view: ^0.15.0
   image: ^4.5.4
   easy_refresh: ^3.4.0
@@ -74,10 +74,14 @@ dependencies:
   # Desktop Support
   flutter_acrylic: ^1.1.4
   window_manager: ^0.4.3
-  rhttp: ^0.13.0
+  rhttp:
+    git:
+      url: https://github.com/Notsfsssf/rhttp
+      path: rhttp
+      ref: main
   dio_compatibility_layer: ^0.1.0
   flutter_cache_manager_dio: ^4.0.0
-  file_picker: ^9.0.0
+  file_picker: ^10.3.3
 
 dev_dependencies:
   flutter_test:

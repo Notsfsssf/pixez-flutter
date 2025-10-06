@@ -63,7 +63,7 @@ val packageName = if (dartEnvironmentVariables["IS_GOOGLEPLAY"] as Boolean) {
 
 android {
     namespace = "com.perol.pixez"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -78,7 +78,7 @@ android {
 
     defaultConfig {
         applicationId = packageName
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = 35
         versionCode = 10009750
         versionName = "0.9.75 ev"
