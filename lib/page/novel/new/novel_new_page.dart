@@ -36,7 +36,7 @@ class _NovelNewPageState extends State<NovelNewPage>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
 
