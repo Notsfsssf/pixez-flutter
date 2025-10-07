@@ -38,3 +38,4 @@ plugins {
 }
 
 include(":app")
+include(":androidndkgif")
