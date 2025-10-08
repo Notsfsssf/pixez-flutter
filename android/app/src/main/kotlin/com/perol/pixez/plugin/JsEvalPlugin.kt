@@ -43,6 +43,7 @@ class JsEvalPlugin(val activity: Activity) {
 
     fun eval(json: String, jsString: String, part: Int, mime: String) = callbackFlow {
         val escapedJson = json.replace("\\", "\\\\").replace("'", "\\'")
+        val mime = mime.replace(".", "")
         webview.evaluateJavascript(
             """
         ${jsString}
