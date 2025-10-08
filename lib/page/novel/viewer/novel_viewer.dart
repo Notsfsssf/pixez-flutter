@@ -371,7 +371,8 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               final pos = box != null
                   ? box.localToGlobal(Offset.zero) & box.size
                   : null;
-              Share.share(selectionText, sharePositionOrigin: pos);
+              SharePlus.instance.share(
+                  ShareParams(text: selectionText, sharePositionOrigin: pos));
               return;
             }
             await SupportorPlugin.start(selectionText);
@@ -604,8 +605,9 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
-                    Share.share(
-                        "https://www.pixiv.net/novel/show.php?id=${widget.id}");
+                    final link =
+                        "https://www.pixiv.net/novel/show.php?id=${widget.id}";
+                    SharePlus.instance.share(ShareParams(text: link));
                   },
                 ),
               ],

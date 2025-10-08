@@ -11,7 +11,6 @@ import 'package:pixez/models/novel_watch_list_model.dart';
 import 'package:pixez/page/novel/new/novel_watch_list_notifier.dart';
 import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
-import 'package:pixez/page/picture/illust_lighting_page.dart';
 
 class NovelWatchList extends StatefulHookConsumerWidget {
   const NovelWatchList({super.key});

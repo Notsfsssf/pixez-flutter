@@ -825,7 +825,8 @@ class IllustItem extends StatelessWidget {
             FluentIcons.share,
           ),
           onPressed: () async {
-            await Share.share("https://www.pixiv.net/artworks/${widget.id}");
+            final link = "https://www.pixiv.net/artworks/${widget.id}";
+            SharePlus.instance.share(ShareParams(text: link));
           },
         ),
         MenuFlyoutItem(

@@ -121,8 +121,9 @@ class _NovelUsersPageState extends State<NovelUsersPage>
                     final pos = box != null
                         ? box.localToGlobal(Offset.zero) & box.size
                         : null;
-                    Share.share('https://www.pixiv.net/users/${widget.id}',
-                        sharePositionOrigin: pos);
+                    final link = "https://www.pixiv.net/users/${widget.id}";
+                    SharePlus.instance.share(
+                        ShareParams(text: link, sharePositionOrigin: pos));
                   });
             }),
             _buildPopMenu(context)

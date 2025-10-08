@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -1107,9 +1106,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                 ? box.localToGlobal(Offset.zero) & box.size
                                 : null;
                             Navigator.of(context).pop();
-                            Share.share(
-                                "https://www.pixiv.net/artworks/${widget.id}",
-                                sharePositionOrigin: pos);
+                            SharePlus.instance.share(ShareParams(
+                                text:
+                                    "https://www.pixiv.net/artworks/${widget.id}",
+                                sharePositionOrigin: pos));
                           },
                         );
                       }),

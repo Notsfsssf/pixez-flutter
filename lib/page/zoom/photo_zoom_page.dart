@@ -277,9 +277,11 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                             file.file.copySync(targetPath);
                             final box =
                                 context.findRenderObject() as RenderBox?;
-                            Share.shareXFiles([XFile(targetPath)],
+                            SharePlus.instance.share(ShareParams(
+                                files: [XFile(targetPath)],
                                 sharePositionOrigin:
-                                    box!.localToGlobal(Offset.zero) & box.size);
+                                    box!.localToGlobal(Offset.zero) &
+                                        box.size));
                           } else {
                             BotToast.showText(text: "can not find image cache");
                           }

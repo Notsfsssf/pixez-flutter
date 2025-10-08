@@ -17,6 +17,7 @@ class Sharer {
     if (box != null) {
       rect = box.localToGlobal(Offset.zero) & box.size;
     }
-    Share.shareXFiles([XFile(file.path)], sharePositionOrigin: rect);
+    SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], sharePositionOrigin: rect));
   }
 }

@@ -78,7 +78,7 @@ class _IllustSeriesPageState extends ConsumerState<IllustSeriesPage> {
                       : null;
                   final link =
                       "https://www.pixiv.net/user/$userId/series/$seriesId";
-                  Share.share(link, sharePositionOrigin: pos);
+                  SharePlus.instance.share(ShareParams(text: link, sharePositionOrigin: pos));
                 }
               },
               icon: Icon(Icons.share),

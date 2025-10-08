@@ -210,8 +210,8 @@ class _UsersPageState extends State<UsersPage>
           footerItems: [
             PaneItemAction(
               icon: Icon(FluentIcons.share),
-              onTap: () =>
-                  Share.share('https://www.pixiv.net/users/${widget.id}'),
+              onTap: () => SharePlus.instance.share(ShareParams(
+                  text: 'https://www.pixiv.net/users/${widget.id}')),
             ),
             PaneItemExpander(
               icon: Container(),
