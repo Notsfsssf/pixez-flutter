@@ -8,7 +8,6 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/history/history_store.dart';
-import 'package:pixez/page/novel/history/novel_history_store.dart';
 
 class DataExportPage extends StatefulWidget {
   const DataExportPage({super.key});
