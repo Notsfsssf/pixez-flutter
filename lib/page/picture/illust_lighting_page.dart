@@ -466,15 +466,99 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     }
                     saveStore.saveImage(_aboutStore.illusts[index]);
                   },
-                  child: PixivImage(
-                    _aboutStore.illusts[index].imageUrls.squareMedium,
-                    enableMemoryCache: false,
+                  child: Stack(
+                    children: [
+                      PixivImage(
+                        _aboutStore.illusts[index].imageUrls.squareMedium,
+                        enableMemoryCache: false,
+                      ),
+                      // 添加标记
+                      Positioned(
+                        top: 5.0,
+                        left: 5.0,
+                        child: _buildR18Badge(_aboutStore.illusts[index]),
+                      ),
+                      Positioned(
+                        top: 5.0,
+                        right: 5.0,
+                        child: Row(
+                          children: [
+                            if (userSetting.feedAIBadge &&
+                                _aboutStore.illusts[index].illustAIType == 2)
+                              _buildAIBadge(),
+                            _buildPageCountBadge(_aboutStore.illusts[index]),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }, childCount: _aboutStore.illusts.length),
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3))
         ],
+      ),
+    );
+  }
+
+  // 构建AI标记
+  Widget _buildAIBadge() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+        child: Text(
+          "AI",
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  // 构建R18/R18G标记
+  Widget _buildR18Badge(Illusts illust) {
+    String text = "";
+    if (illust.xRestrict == 2) {
+      text = "R-18G";
+    } else if (illust.xRestrict == 1) {
+      text = "R-18";
+    }
+
+    if (text.isEmpty) return Container();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  // 构建页数标记
+  Widget _buildPageCountBadge(Illusts illust) {
+    if (illust.pageCount <= 1) return Container();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+        child: Text(
+          illust.pageCount.toString(),
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ),
       ),
     );
   }

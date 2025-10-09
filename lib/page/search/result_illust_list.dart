@@ -87,6 +87,9 @@ class _ResultIllustListState extends State<ResultIllustList> {
   List<int> _bookmarkNumList = [];
   bool recordRememberCurrentSelection = false;
   bool inited = false;
+  // 添加年龄筛选状态：0-不限制，1-全年龄，2-R18
+  int ageFilter = 0;
+  int _starValue = 0;
 
   @override
   void initState() {
@@ -107,6 +110,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
     final searchSortKey = '${prefix}_search_sort';
     final recordRememberCurrentSelectionKey =
         'illust_search_result_record_remember_current_selection';
+    final ageFilterKey = '${prefix}_age_filter';
     recordRememberCurrentSelection =
         Prefer.getBool(recordRememberCurrentSelectionKey) ?? false;
     if (recordRememberCurrentSelection) {
@@ -115,6 +119,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
           searchTarget = Prefer.getString(searchTargetKey) ?? search_target[0];
           selectSort = Prefer.getString(searchSortKey) ?? "date_desc";
           searchAIType = Prefer.getInt(searchAIKey) ?? 0;
+          ageFilter = Prefer.getInt(ageFilterKey) ?? 0;
         });
       }
     }
@@ -129,9 +134,11 @@ class _ResultIllustListState extends State<ResultIllustList> {
     final searchAIKey = '${prefix}_search_ai_type';
     final searchTargetKey = '${prefix}_search_target';
     final searchSortKey = '${prefix}_search_sort';
+    final ageFilterKey = '${prefix}_age_filter';
     await Prefer.setString(searchTargetKey, searchTarget);
     await Prefer.setString(searchSortKey, selectSort);
     await Prefer.setInt(searchAIKey, searchAIType);
+    await Prefer.setInt(ageFilterKey, ageFilter);
   }
 
   @override
@@ -234,9 +241,26 @@ class _ResultIllustListState extends State<ResultIllustList> {
   }
 
   _changeQueryParams() {
+    String searchWord = widget.word;
+    
+    // 根据年龄筛选选项调整搜索关键词
+    if (ageFilter == 1) {
+      // 只屏蔽R-18G图片
+      searchWord += " -R-18G";
+    } else if (ageFilter == 2) {
+      // 只显示全年龄图片
+      searchWord += " -R-18 -R-18G";
+    } else if (ageFilter == 3) {
+      // 只显示R18图片
+      searchWord += " R-18";
+    } else if (ageFilter == 4) {
+      // 只显示R-18G图片
+      searchWord += " R-18G";
+    }
+    
     if (_starValue == 0)
       futureGet = ApiForceSource(
-          futureGet: (bool e) => apiClient.getSearchIllust(widget.word,
+          futureGet: (bool e) => apiClient.getSearchIllust(searchWord,
               search_target: searchTarget,
               sort: selectSort,
               start_date: _dateTimeRange?.start,
@@ -246,7 +270,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
     else
       futureGet = ApiForceSource(
           futureGet: (bool e) => apiClient.getSearchIllust(
-              '${widget.word} ${_starValue}users入り',
+              '$searchWord ${_starValue}users入り',
               search_target: searchTarget,
               sort: selectSort,
               start_date: _dateTimeRange?.start,
@@ -260,6 +284,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
         searchAIType: searchAIType,
         selectSort: selectSort,
         searchTarget: searchTarget,
+        ageFilter: ageFilter,
         onPremium: () {
           setState(() {
             futureGet = ApiForceSource(
@@ -276,11 +301,13 @@ class _ResultIllustListState extends State<ResultIllustList> {
             {required bool recordRememberCurrentSelection,
             required int searchAIType,
             required String searchTarget,
-            required String selectSort}) {
+            required String selectSort,
+            required int ageFilter}) {
           setState(() {
             this.searchAIType = searchAIType;
             this.searchTarget = searchTarget;
             this.selectSort = selectSort;
+            this.ageFilter = ageFilter;
             this.recordRememberCurrentSelection =
                 recordRememberCurrentSelection;
           });
@@ -298,8 +325,6 @@ class _ResultIllustListState extends State<ResultIllustList> {
           return resultIllustSortWidget;
         });
   }
-
-  int _starValue = 0;
 
   Widget _buildPremiumStar() {
     return PopupMenuButton<List<int>>(
@@ -395,7 +420,10 @@ class ResultIllustSortWidget extends StatefulWidget {
       {required String searchTarget,
       required String selectSort,
       required int searchAIType,
+      required int ageFilter,
       required bool recordRememberCurrentSelection}) onSateChange;
+  final int ageFilter;
+
   const ResultIllustSortWidget(
       {super.key,
       required this.searchAIType,
@@ -403,7 +431,8 @@ class ResultIllustSortWidget extends StatefulWidget {
       required this.searchTarget,
       required this.onPremium,
       required this.onApply,
-      required this.onSateChange});
+      required this.onSateChange,
+      required this.ageFilter});
 
   @override
   State<ResultIllustSortWidget> createState() => _ResultIllustSortWidgetState();
@@ -413,6 +442,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
   late int searchAIType = widget.searchAIType;
   late String selectSort = widget.selectSort;
   late String searchTarget = widget.searchTarget;
+  late int ageFilter = widget.ageFilter;
   final sort = [
     "date_desc",
     "date_asc",
@@ -457,6 +487,16 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
         4: I18n.of(context).popular_female_desc,
       }
     };
+    
+    // 年龄筛选选项
+    final ageFilterMap = {
+      0: "不限制",
+      1: "只屏蔽R-18G图片",
+      2: "只显示全年龄图片",
+      3: "只显示R-18图片",
+      4: "只显示R-18G图片",
+    };
+    
     return SafeArea(
       child: Container(
           width: MediaQuery.of(context).size.width,
@@ -506,6 +546,25 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
                     ],
                   ),
                 ),
+                // 添加年龄筛选选项
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("年龄筛选", 
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      for (final (index, data) in ageFilterMap.entries.indexed)
+                        _buildAgeFilterItem(index, context, data),
+                    ],
+                  ),
+                ),
                 SwitchListTile(
                   value: searchAIType != 1,
                   onChanged: (v) {
@@ -516,6 +575,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
                         searchTarget: searchTarget,
                         selectSort: selectSort,
                         searchAIType: searchAIType,
+                        ageFilter: ageFilter,
                         recordRememberCurrentSelection:
                             recordRememberCurrentSelection);
                   },
@@ -532,6 +592,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
                         searchTarget: searchTarget,
                         selectSort: selectSort,
                         searchAIType: searchAIType,
+                        ageFilter: ageFilter,
                         recordRememberCurrentSelection:
                             recordRememberCurrentSelection);
                   },
@@ -565,6 +626,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
             searchTarget: searchTarget,
             selectSort: selectSort,
             searchAIType: searchAIType,
+            ageFilter: ageFilter,
             recordRememberCurrentSelection: recordRememberCurrentSelection);
       },
       behavior: HitTestBehavior.opaque,
@@ -595,6 +657,7 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
             searchTarget: searchTarget,
             selectSort: selectSort,
             searchAIType: searchAIType,
+            ageFilter: ageFilter,
             recordRememberCurrentSelection: recordRememberCurrentSelection);
       },
       behavior: HitTestBehavior.opaque,
@@ -602,6 +665,38 @@ class _ResultIllustSortWidgetState extends State<ResultIllustSortWidget> {
         margin: EdgeInsets.only(bottom: 8.0),
         child: Text(data.value),
         decoration: search_target.indexOf(searchTarget) == index
+            ? BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(8.0),
+              )
+            : null,
+        padding:
+            const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 8, right: 8),
+        alignment: Alignment.centerLeft,
+      ),
+    );
+  }
+
+  // 添加年龄筛选选项构建方法
+  Widget _buildAgeFilterItem(
+      int index, BuildContext context, MapEntry<int, String> data) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          ageFilter = index;
+        });
+        widget.onSateChange(
+            searchTarget: searchTarget,
+            selectSort: selectSort,
+            searchAIType: searchAIType,
+            ageFilter: ageFilter,
+            recordRememberCurrentSelection: recordRememberCurrentSelection);
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 8.0),
+        child: Text(data.value),
+        decoration: ageFilter == index
             ? BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(8.0),

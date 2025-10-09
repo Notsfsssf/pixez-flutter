@@ -195,6 +195,11 @@ class _IllustCardState extends State<IllustCard> {
                       Positioned.fill(child: _buildPic(tag, tooLong)),
                       Positioned(
                           top: 5.0,
+                          left: 5.0,
+                          child: _buildR18Badge(),
+                      ),
+                      Positioned(
+                          top: 5.0,
                           right: 5.0,
                           child: Row(
                             children: [
@@ -204,6 +209,11 @@ class _IllustCardState extends State<IllustCard> {
                               _buildVisibility()
                             ],
                           )),
+                      Positioned(
+                        bottom: 5.0,
+                        left: 5.0,
+                        child: _buildStatsBadge(),
+                      ),
                       // Positioned(
                       //   top: 0,
                       //   left: 0,
@@ -243,6 +253,46 @@ class _IllustCardState extends State<IllustCard> {
         ));
   }
 
+  Widget _buildStatsBadge() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.visibility, color: Colors.white, size: 12),
+            SizedBox(width: 2),
+            Text(
+              "${_abbreviateNumber(store.illusts!.totalView)}",
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+            SizedBox(width: 4),
+            Icon(Icons.bookmark, color: Colors.white, size: 12),
+            SizedBox(width: 2),
+            Text(
+              "${_abbreviateNumber(store.illusts!.totalBookmarks)}",
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _abbreviateNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    } else {
+      return number.toString();
+    }
+  }
+
   Widget _buildAIBadge() {
     return Container(
       decoration: BoxDecoration(
@@ -254,6 +304,31 @@ class _IllustCardState extends State<IllustCard> {
         child: Text(
           "AI",
           style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildR18Badge() {
+    String text = "";
+    if (store.illusts!.xRestrict == 2) {
+      text = "R-18G";
+    } else if (store.illusts!.xRestrict == 1) {
+      text = "R-18";
+    }
+
+    if (text.isEmpty) return Container();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white, fontSize: 12),
         ),
       ),
     );
