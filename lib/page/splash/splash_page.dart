@@ -36,10 +36,13 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     if (accountStore.now != null)
-      lightingStore =
-          LightingStore(ApiSource(futureGet: () => apiClient.getRecommend()));
-    controller =
-        AnimationController(duration: Duration(seconds: 2), vsync: this);
+      lightingStore = LightingStore(
+        ApiSource(futureGet: () => apiClient.getRecommend()),
+      );
+    controller = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    );
     initMethod();
     super.initState();
     controller.forward();
@@ -102,19 +105,13 @@ class _SplashPageState extends State<SplashPage>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           RotationTransition(
-              child: Image.asset(
-                'assets/images/icon.png',
-                height: 80,
-                width: 80,
-              ),
-              alignment: Alignment.center,
-              turns: controller),
+            child: Image.asset('assets/images/icon.png', height: 80, width: 80),
+            alignment: Alignment.center,
+            turns: controller,
+          ),
           Container(
-            child: Text(
-              splashStore.helloWord,
-              textAlign: TextAlign.center,
-            ),
-          )
+            child: Text(splashStore.helloWord, textAlign: TextAlign.center),
+          ),
         ],
       ),
     );

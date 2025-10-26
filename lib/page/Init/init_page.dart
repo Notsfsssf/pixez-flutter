@@ -32,63 +32,72 @@ class _InitPageState extends State<InitPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            AppBar(
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              elevation: 0.0,
-              surfaceTintColor: Colors.transparent,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                I18n.of(context).select_language,
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
+      body: Container(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              AppBar(
+                backgroundColor: Colors.transparent,
+                automaticallyImplyLeading: false,
+                elevation: 0.0,
+                surfaceTintColor: Colors.transparent,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Center(
-                  child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください")),
-            ),
-            Observer(builder: (_) {
-              return Expanded(
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      final title = languageList[index];
-                      return AnimatedOpacity(
-                        duration: Duration(milliseconds: 300),
-                        opacity: userSetting.languageNum == index ? 1 : 0.3,
-                        child: ListTile(
-                          title: Text(title,
-                              style: Theme.of(context).textTheme.titleSmall),
-                          onTap: () async {
-                            await userSetting.setLanguageNum(index);
-                            setState(() {});
-                          },
-                          trailing: Icon(
-                            Icons.check,
-                            color: userSetting.languageNum == index
-                                ? Theme.of(context).textTheme.bodyLarge!.color
-                                : Colors.transparent,
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: languageList.length,
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  I18n.of(context).select_language,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                  textAlign: TextAlign.center,
                 ),
-              );
-            }),
-          ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Center(
+                  child: Text("Select Language\n语言选择\n語言選擇\n言語を選択してください"),
+                ),
+              ),
+              Observer(
+                builder: (_) {
+                  return Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          final title = languageList[index];
+                          return AnimatedOpacity(
+                            duration: Duration(milliseconds: 300),
+                            opacity: userSetting.languageNum == index ? 1 : 0.3,
+                            child: ListTile(
+                              title: Text(
+                                title,
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              onTap: () async {
+                                await userSetting.setLanguageNum(index);
+                                setState(() {});
+                              },
+                              trailing: Icon(
+                                Icons.check,
+                                color:
+                                    userSetting.languageNum == index
+                                        ? Theme.of(
+                                          context,
+                                        ).textTheme.bodyLarge!.color
+                                        : Colors.transparent,
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: languageList.length,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }

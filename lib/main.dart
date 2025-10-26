@@ -77,9 +77,7 @@ main(List<String> args) async {
   }
   await initFluent(args);
 
-  runApp(ProviderScope(
-    child: MyApp(arguments: args),
-  ));
+  runApp(ProviderScope(child: MyApp(arguments: args)));
 }
 
 class MyApp extends StatefulWidget {
@@ -142,107 +140,118 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Widget _buildMaterial(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-      statusBarColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+        statusBarColor: Colors.transparent,
+      ),
+    );
     final botToastBuilder = BotToastInit();
     return DynamicColorBuilder(
-        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-      return Observer(builder: (context) {
-        ColorScheme lightColorScheme;
-        ColorScheme darkColorScheme;
-        if (userSetting.useDynamicColor &&
-            lightDynamic != null &&
-            darkDynamic != null) {
-          lightColorScheme = lightDynamic.harmonized();
-          darkColorScheme = darkDynamic.harmonized();
-        } else {
-          Color primary = userSetting.seedColor;
-          lightColorScheme = ColorScheme.fromSeed(
-            seedColor: primary,
-          );
-          darkColorScheme = ColorScheme.fromSeed(
-            seedColor: primary,
-            brightness: Brightness.dark,
-          );
-        }
-        final brightness =
-            SchedulerBinding.instance.platformDispatcher.platformBrightness;
-        if (userSetting.themeInitState != 1) {
-          return MaterialApp(
-            home: Container(
-              color:
-                  brightness == Brightness.dark ? Colors.black : Colors.white,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          );
-        }
-        return MaterialApp(
-          navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-          locale: userSetting.locale,
-          home: Builder(builder: (context) {
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.transparent,
-                  systemNavigationBarDividerColor: Colors.transparent,
-                  statusBarColor: Colors.transparent,
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        return Observer(
+          builder: (context) {
+            ColorScheme lightColorScheme;
+            ColorScheme darkColorScheme;
+            if (userSetting.useDynamicColor &&
+                lightDynamic != null &&
+                darkDynamic != null) {
+              lightColorScheme = lightDynamic.harmonized();
+              darkColorScheme = darkDynamic.harmonized();
+            } else {
+              Color primary = userSetting.seedColor;
+              lightColorScheme = ColorScheme.fromSeed(seedColor: primary);
+              darkColorScheme = ColorScheme.fromSeed(
+                seedColor: primary,
+                brightness: Brightness.dark,
+              );
+            }
+            final brightness =
+                SchedulerBinding.instance.platformDispatcher.platformBrightness;
+            if (userSetting.themeInitState != 1) {
+              return MaterialApp(
+                home: Container(
+                  color:
+                      brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
+                  child: Center(child: CircularProgressIndicator()),
                 ),
-                child: SplashPage());
-          }),
-          title: 'PixEz',
-          builder: (context, child) {
-            if (Platform.isIOS) child = _buildMaskBuilder(context, child);
-            child = botToastBuilder(context, child);
-            I18n.context = context;
-            return child;
-          },
-          themeMode: userSetting.themeMode,
-          theme: ThemeData.light().copyWith(
-              primaryColor: lightColorScheme.primary,
-              colorScheme: lightColorScheme,
-              scaffoldBackgroundColor: lightColorScheme.surface,
-              cardColor: lightColorScheme.surfaceContainer,
-              chipTheme: ChipThemeData(
-                backgroundColor: lightColorScheme.surface,
+              );
+            }
+            return MaterialApp(
+              navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
+              locale: userSetting.locale,
+              home: Builder(
+                builder: (context) {
+                  return AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: SystemUiOverlayStyle(
+                      systemNavigationBarColor: Colors.transparent,
+                      systemNavigationBarDividerColor: Colors.transparent,
+                      statusBarColor: Colors.transparent,
+                    ),
+                    child: SplashPage(),
+                  );
+                },
               ),
-              canvasColor: lightColorScheme.surfaceContainer,
-              dialogTheme: DialogThemeData(
-                  backgroundColor: lightColorScheme.surfaceContainer)),
-          darkTheme: ThemeData.dark().copyWith(
-              scaffoldBackgroundColor:
-                  userSetting.isAMOLED ? Colors.black : null,
-              // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
-              tabBarTheme: TabBarThemeData(dividerColor: Colors.transparent),
-              colorScheme: darkColorScheme),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+              title: 'PixEz',
+              builder: (context, child) {
+                if (Platform.isIOS) child = _buildMaskBuilder(context, child);
+                child = botToastBuilder(context, child);
+                I18n.context = context;
+                return child;
+              },
+              themeMode: userSetting.themeMode,
+              theme: ThemeData.light().copyWith(
+                primaryColor: lightColorScheme.primary,
+                colorScheme: lightColorScheme,
+                scaffoldBackgroundColor: lightColorScheme.surface,
+                cardColor: lightColorScheme.surfaceContainer,
+                chipTheme: ChipThemeData(
+                  backgroundColor: lightColorScheme.surface,
+                ),
+                canvasColor: lightColorScheme.surfaceContainer,
+                dialogTheme: DialogThemeData(
+                  backgroundColor: lightColorScheme.surfaceContainer,
+                ),
+              ),
+              darkTheme: ThemeData.dark().copyWith(
+                scaffoldBackgroundColor:
+                    userSetting.isAMOLED ? Colors.black : null,
+                // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
+                tabBarTheme: TabBarThemeData(dividerColor: Colors.transparent),
+                colorScheme: darkColorScheme,
+              ),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+            );
+          },
         );
-      });
-    });
+      },
+    );
   }
 
   _buildMaskBuilder(BuildContext context, Widget? widget) {
     if (userSetting.nsfwMask) {
-      final needShowMask = (Platform.isAndroid
-          ? (_appState == AppLifecycleState.paused ||
-              _appState == AppLifecycleState.paused)
-          : _appState == AppLifecycleState.inactive);
+      final needShowMask =
+          (Platform.isAndroid
+              ? (_appState == AppLifecycleState.paused ||
+                  _appState == AppLifecycleState.paused)
+              : _appState == AppLifecycleState.inactive);
       return Stack(
         children: [
           widget ?? Container(),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
-            child: needShowMask
-                ? Container(
-                    color: Theme.of(context).canvasColor,
-                    child: Center(
-                      child: Icon(Icons.privacy_tip_outlined),
-                    ),
-                  )
-                : null,
-          )
+            child:
+                needShowMask
+                    ? Container(
+                      color: Theme.of(context).canvasColor,
+                      child: Center(child: Icon(Icons.privacy_tip_outlined)),
+                    )
+                    : null,
+          ),
         ],
       );
     } else {

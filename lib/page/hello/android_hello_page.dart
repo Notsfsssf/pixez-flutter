@@ -61,28 +61,28 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      if (accountStore.now != null && (Platform.isIOS || Platform.isAndroid)) {
-        return _buildScaffold(context);
-      }
-      if (accountStore.now == null && accountStore.feching) {
-        return Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-      return LoginPage();
-    });
+    return Observer(
+      builder: (context) {
+        if (accountStore.now != null &&
+            (Platform.isIOS || Platform.isAndroid)) {
+          return _buildScaffold(context);
+        }
+        if (accountStore.now == null && accountStore.feching) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        return LoginPage();
+      },
+    );
   }
 
   Widget _buildScaffold(BuildContext context) {
     if (bottomNavigatorHeight == null) {
       bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
     }
-    return LayoutBuilder(builder: (context, constraints) {
-      final wide = constraints.maxWidth > constraints.maxHeight;
-      return PopScope(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wide = constraints.maxWidth > constraints.maxHeight;
+        return PopScope(
           onPopInvokedWithResult: (didPop, result) async {
             userSetting.setAnimContainer(!userSetting.animContainer);
             if (didPop) return;
@@ -94,37 +94,48 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
               setState(() {
                 _preTime = DateTime.now();
               });
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                duration: Duration(seconds: 1),
-                content: Text(I18n.of(context).return_again_to_exit),
-              ));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text(I18n.of(context).return_again_to_exit),
+                ),
+              );
             }
           },
-          canPop: !userSetting.isReturnAgainToExit ||
+          canPop:
+              !userSetting.isReturnAgainToExit ||
               _preTime != null &&
                   DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
           child: Scaffold(
-            body: Row(children: [
-              if (wide) ..._buildRail(context),
-              Expanded(child: _buildPageView(context))
-            ]),
+            body: Row(
+              children: [
+                if (wide) ..._buildRail(context),
+                Expanded(child: _buildPageView(context)),
+              ],
+            ),
             extendBody: true,
-            bottomNavigationBar: wide
-                ? null
-                : Observer(builder: (context) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 400),
-                      transform: Matrix4.translationValues(
-                          0,
-                          fullScreenStore.fullscreen
-                              ? bottomNavigatorHeight!
-                              : 0,
-                          0),
-                      child: _buildNavigationBar(context),
-                    );
-                  }),
-          ));
-    });
+            bottomNavigationBar:
+                wide
+                    ? null
+                    : Observer(
+                      builder: (context) {
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          transform: Matrix4.translationValues(
+                            0,
+                            fullScreenStore.fullscreen
+                                ? bottomNavigatorHeight!
+                                : 0,
+                            0,
+                          ),
+                          child: _buildNavigationBar(context),
+                        );
+                      },
+                    ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildPageView(BuildContext context) {
@@ -134,12 +145,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         Positioned(
           bottom: MediaQuery.of(context).padding.bottom + 16,
           right: 16,
-          child: Observer(builder: (context) {
-            return AnimatedToggleFullscreenFAB(
+          child: Observer(
+            builder: (context) {
+              return AnimatedToggleFullscreenFAB(
                 isFullscreen: fullScreenStore.fullscreen,
-                toggleFullscreen: toggleFullscreen);
-          }),
-        )
+                toggleFullscreen: toggleFullscreen,
+              );
+            },
+          ),
+        ),
       ],
     );
   }
@@ -150,22 +164,30 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: NavigationBar(
           height: 68,
-          backgroundColor:
-              Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.surface.withValues(alpha: 0.9),
           destinations: [
             NavigationDestination(
-                icon: Icon(Icons.home), label: I18n.of(context).home),
+              icon: Icon(Icons.home),
+              label: I18n.of(context).home,
+            ),
             NavigationDestination(
-                icon: Icon(
-                  Icons.leaderboard,
-                ),
-                label: I18n.of(context).rank),
+              icon: Icon(Icons.leaderboard),
+              label: I18n.of(context).rank,
+            ),
             NavigationDestination(
-                icon: Icon(Icons.favorite), label: I18n.of(context).quick_view),
+              icon: Icon(Icons.favorite),
+              label: I18n.of(context).quick_view,
+            ),
             NavigationDestination(
-                icon: Icon(Icons.search), label: I18n.of(context).search),
+              icon: Icon(Icons.search),
+              label: I18n.of(context).search,
+            ),
             NavigationDestination(
-                icon: Icon(Icons.more_horiz), label: I18n.of(context).more)
+              icon: Icon(Icons.more_horiz),
+              label: I18n.of(context).more,
+            ),
           ],
           selectedIndex: index,
           onDestinationSelected: (index) {
@@ -213,19 +235,25 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             },
             destinations: <NavigationRailDestination>[
               NavigationRailDestination(
-                  icon: Icon(Icons.home), label: Text(I18n.of(context).home)),
+                icon: Icon(Icons.home),
+                label: Text(I18n.of(context).home),
+              ),
               NavigationRailDestination(
-                  icon: Icon(Icons.leaderboard),
-                  label: Text(I18n.of(context).rank)),
+                icon: Icon(Icons.leaderboard),
+                label: Text(I18n.of(context).rank),
+              ),
               NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text(I18n.of(context).quick_view)),
+                icon: Icon(Icons.favorite),
+                label: Text(I18n.of(context).quick_view),
+              ),
               NavigationRailDestination(
-                  icon: Icon(Icons.search),
-                  label: Text(I18n.of(context).search)),
+                icon: Icon(Icons.search),
+                label: Text(I18n.of(context).search),
+              ),
               NavigationRailDestination(
-                  icon: Icon(Icons.more_horiz),
-                  label: Text(I18n.of(context).more)),
+                icon: Icon(Icons.more_horiz),
+                label: Text(I18n.of(context).more),
+              ),
             ],
           ),
           Positioned(
@@ -234,8 +262,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             bottom: 0.0,
             child: Container(
               padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).padding.left,
-                  bottom: MediaQuery.of(context).padding.bottom + 4.0),
+                left: MediaQuery.of(context).padding.left,
+                bottom: MediaQuery.of(context).padding.bottom + 4.0,
+              ),
               child: Container(
                 alignment: Alignment.center,
                 child: Container(
@@ -249,11 +278,13 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                   child: SizedBox(
                     width: 40,
                     height: 40,
-                    child: accountStore.now != null
-                        ? PainterAvatar(
-                            url: accountStore.now!.userImage,
-                            id: int.tryParse(accountStore.now!.userId) ?? 0)
-                        : Container(),
+                    child:
+                        accountStore.now != null
+                            ? PainterAvatar(
+                              url: accountStore.now!.userImage,
+                              id: int.tryParse(accountStore.now!.userId) ?? 0,
+                            )
+                            : Container(),
                   ),
                 ),
               ),
@@ -279,7 +310,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       RankPage(),
       NewPage(),
       SearchPage(),
-      SettingPage()
+      SettingPage(),
     ];
     index = userSetting.welcomePageNum;
     _pageController = PageController(initialPage: index);
@@ -291,7 +322,29 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     initPlatformState();
     _intentDataStreamSubscription = ReceiveSharingIntent.instance
         .getMediaStream()
-        .listen((List<SharedMediaFile> value) {
+        .listen(
+          (List<SharedMediaFile> value) {
+            for (var i in value) {
+              if (i.type == SharedMediaType.text) {
+                _showChromeLink(i.path);
+                continue;
+              }
+              if (i.type == SharedMediaType.image) {
+                if (userSetting.useSaunceNaoWebview) {
+                  Leader.push(context, SauncenaoWebview(path: i.path));
+                } else {
+                  Leader.push(context, SauceNaoPage(path: i.path));
+                }
+              }
+            }
+          },
+          onError: (err) {
+            print("getIntentDataStream error: $err");
+          },
+        );
+    ReceiveSharingIntent.instance.getInitialMedia().then((
+      List<SharedMediaFile> value,
+    ) {
       for (var i in value) {
         if (i.type == SharedMediaType.text) {
           _showChromeLink(i.path);
@@ -301,34 +354,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           if (userSetting.useSaunceNaoWebview) {
             Leader.push(context, SauncenaoWebview(path: i.path));
           } else {
-            Leader.push(
-                context,
-                SauceNaoPage(
-                  path: i.path,
-                ));
-          }
-        }
-      }
-    }, onError: (err) {
-      print("getIntentDataStream error: $err");
-    });
-    ReceiveSharingIntent.instance
-        .getInitialMedia()
-        .then((List<SharedMediaFile> value) {
-      for (var i in value) {
-        if (i.type == SharedMediaType.text) {
-          _showChromeLink(i.path);
-          continue;
-        }
-        if (i.type == SharedMediaType.image) {
-          if (userSetting.useSaunceNaoWebview) {
-            Leader.push(context, SauncenaoWebview(path: i.path));
-          } else {
-            Leader.push(
-                context,
-                SauceNaoPage(
-                  path: i.path,
-                ));
+            Leader.push(context, SauceNaoPage(path: i.path));
           }
         }
       }
@@ -341,11 +367,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   _showChromeLink(String link) {
     final numId = int.tryParse(link);
     if (numId != null) {
-      Leader.push(
-          context,
-          SearchSuggestionPage(
-            preword: link,
-          ));
+      Leader.push(context, SearchSuggestionPage(preword: link));
       return;
     }
     Uri? uri = Uri.tryParse(link);
@@ -354,57 +376,60 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       if (uri.host.contains("account")) return;
     }
     _LinkCloser = BotToast.showCustomText(
-        onlyOne: true,
-        duration: Duration(seconds: 4),
-        toastBuilder: (textCancel) => Align(
-              alignment: Alignment(0, 0.8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  child: InkWell(
-                    onTap: () {
-                      if (_LinkCloser != null) _LinkCloser!();
-                      var uri = Uri.tryParse(link);
-                      if (uri != null) {
-                        Leader.pushWithUri(context, uri);
-                      }
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 8.0),
-                            child: Text(link),
+      onlyOne: true,
+      duration: Duration(seconds: 4),
+      toastBuilder:
+          (textCancel) => Align(
+            alignment: Alignment(0, 0.8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    if (_LinkCloser != null) _LinkCloser!();
+                    var uri = Uri.tryParse(link);
+                    if (uri != null) {
+                      Leader.pushWithUri(context, uri);
+                    }
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                            vertical: 8.0,
                           ),
+                          child: Text(link),
                         ),
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.copy,
-                              ),
-                              onPressed: () {
-                                Clipboard.setData(ClipboardData(text: link));
-                                if (_LinkCloser != null) {
-                                  _LinkCloser!();
-                                }
-                              },
-                            )),
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(
-                              Icons.link_rounded,
-                            )),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: link));
+                            if (_LinkCloser != null) {
+                              _LinkCloser!();
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Icon(Icons.link_rounded),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ));
+            ),
+          ),
+    );
   }
 
   late StreamSubscription _sub;
@@ -415,8 +440,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
       Uri? initialLink =
           initLastLink != null ? Uri.tryParse(initLastLink) : null;
       if (initialLink != null) Leader.pushWithUri(context, initialLink);
-      _sub = DeepLinkPlugin.uriLinkStream
-          .listen((Uri? link) => Leader.pushWithUri(context, link!));
+      _sub = DeepLinkPlugin.uriLinkStream.listen(
+        (Uri? link) => Leader.pushWithUri(context, link!),
+      );
     } catch (e) {
       print(e);
     }
@@ -426,9 +452,10 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       if (Platform.isAndroid && userSetting.saveMode != 1) {
         final info = await DeviceInfoPlugin().androidInfo;
-        Permission permission = (info.version.sdkInt >= 33)
-            ? Permission.photos
-            : Permission.storage;
+        Permission permission =
+            (info.version.sdkInt >= 33)
+                ? Permission.photos
+                : Permission.storage;
         var granted = await permission.status;
         if (!granted.isGranted) {
           var b = await permission.request();
@@ -443,15 +470,17 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   _showPermissionDenied(BuildContext context) async {
     if (Prefer.getBool("storage_permission_denied") == true) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(I18n.of(context).storage_permission_denied),
-      action: SnackBarAction(
-        label: I18n.of(context).dont_show_again,
-        onPressed: () {
-          Prefer.setBool("storage_permission_denied", true);
-        },
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(I18n.of(context).storage_permission_denied),
+        action: SnackBarAction(
+          label: I18n.of(context).dont_show_again,
+          onPressed: () {
+            Prefer.setBool("storage_permission_denied", true);
+          },
+        ),
       ),
-    ));
+    );
   }
 
   @override
@@ -463,13 +492,15 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   initPlatformState() async {
-    if (Prefer.getBool('guide_enable') == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => GuidePage()),
-        (route) => false,
-      );
-      return;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted && Prefer.getBool('guide_enable') == null) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => GuidePage()),
+          (route) => false,
+        );
+        return;
+      }
+    });
     initPermission(context);
   }
 }
@@ -497,10 +528,7 @@ class _AnimatedToggleFullscreenFABState
   late Animation<Offset> _offsetAnimation = Tween<Offset>(
     begin: const Offset(0.0, 4.0),
     end: Offset.zero,
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.linear,
-  ));
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
   late AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 400),
     vsync: this,
@@ -525,15 +553,13 @@ class _AnimatedToggleFullscreenFABState
       child: SlideTransition(
         position: _offsetAnimation,
         child: SizedBox(
-            child: FloatingActionButton(
-          onPressed: () {
-            widget.toggleFullscreen();
-          },
-          child: Container(
-              child: Icon(
-            Icons.close_fullscreen,
-          )),
-        )),
+          child: FloatingActionButton(
+            onPressed: () {
+              widget.toggleFullscreen();
+            },
+            child: Container(child: Icon(Icons.close_fullscreen)),
+          ),
+        ),
       ),
     );
   }

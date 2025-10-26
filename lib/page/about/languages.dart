@@ -4,11 +4,7 @@ class Sponsor {
   final String name;
   final String avatar;
   final String uri;
-  const Sponsor({
-    required this.name,
-    required this.avatar,
-    required this.uri,
-  });
+  const Sponsor({required this.name, required this.avatar, required this.uri});
 }
 
 class Language {
@@ -122,12 +118,16 @@ const Languages = const [
       ),
     ],
   ),
-  Language(language: 'id', locale: Locale('id', 'ID'), sponsors: [
-    Sponsor(
+  Language(
+    language: 'id',
+    locale: Locale('id', 'ID'),
+    sponsors: [
+      Sponsor(
         name: 'ReikiAigawara',
         avatar: 'https://avatars.githubusercontent.com/u/66962815?v=4',
-        uri: 'https://github.com/ReikiAigawara')
-  ],
+        uri: 'https://github.com/ReikiAigawara',
+      ),
+    ],
   ),
   Language(
     language: 'fil',
@@ -137,6 +137,17 @@ const Languages = const [
         name: 'searingmoonlight',
         avatar: 'https://avatars.githubusercontent.com/u/114207889?v=4',
         uri: 'https://github.com/searinminecraft',
+      ),
+    ],
+  ),
+  Language(
+    language: 'de',
+    locale: Locale('de'),
+    sponsors: [
+      Sponsor(
+        name: 'PanChi',
+        avatar: 'https://avatars.githubusercontent.com/u/140990709?v=4',
+        uri: 'https://github.com/justpanchi',
       ),
     ],
   ),
