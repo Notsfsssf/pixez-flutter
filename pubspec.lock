@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: animations
-      sha256: d3d6dcfb218225bbe68e87ccf6378bbb2e32a94900722c5f81611dad089911cb
+      sha256: a8031b276f0a7986ac907195f10ca7cd04ecf2a8a566bd6dbe03018a9b02b427
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.11"
+    version: "2.1.0"
   archive:
     dependency: "direct main"
     description:
@@ -365,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio_cache_interceptor
-      sha256: "855dec6d98b1fb3d63f462f6718f0b67d3d09476c37a52a0146fd6ce03622407"
+      sha256: ac9f312e5a81d79cbccb15f56b78aeae7343a981c1d7c169b11194fae806ec0b
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.4"
+    version: "4.0.5"
   dio_compatibility_layer:
     dependency: "direct main"
     description:
@@ -1370,11 +1370,10 @@ packages:
   rhttp:
     dependency: "direct main"
     description:
-      path: rhttp
-      ref: main
-      resolved-ref: "429bb8c80115391283394291ea5176aa0bab7810"
-      url: "https://github.com/Notsfsssf/rhttp"
-    source: git
+      name: rhttp
+      sha256: ea373e32d6471ed98e3b21467ce63b0679912b9a50c66a3d6bc021a5b2caa66d
+      url: "https://pub.dev"
+    source: hosted
     version: "0.14.0"
   riverpod:
     dependency: transitive
@@ -1476,10 +1475,10 @@ packages:
     dependency: "direct main"
     description:
       name: share_plus
-      sha256: "3424e9d5c22fd7f7590254ba09465febd6f8827c8b19a44350de4ac31d92d3a6"
+      sha256: "14c8860d4de93d3a7e53af51bff479598c4e999605290756bbbe45cf65b37840"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.0"
+    version: "12.0.1"
   share_plus_platform_interface:
     dependency: transitive
     description:
