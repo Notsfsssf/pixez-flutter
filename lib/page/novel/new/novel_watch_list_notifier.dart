@@ -8,7 +8,7 @@ part 'novel_watch_list_notifier.freezed.dart';
 part 'novel_watch_list_notifier.g.dart';
 
 @freezed
-class NovelWatchListState with _$NovelWatchListState {
+abstract class NovelWatchListState with _$NovelWatchListState {
   const factory NovelWatchListState({
     @Default([]) List<NovelSeriesModel> series,
     NovelWatchListModel? model,

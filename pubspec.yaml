@@ -16,7 +16,7 @@ publish_to: none
 version: 1.9.74+490
 
 environment:
-  sdk: ">=3.1.4"
+  sdk: ">=3.7.0"
 
 dependencies:
   flutter:
@@ -58,17 +58,12 @@ dependencies:
   photo_view: ^0.15.0
   image: ^4.5.4
   easy_refresh: ^3.4.0
-  flutter_hooks: ^0.20.5
-  hooks_riverpod: ^2.5.1
   sqflite: any
   dynamic_color:
     git:
       url: https://github.com/hasali19/material-foundation-flutter-packages.git
       path: packages/dynamic_color
       ref: main
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-  freezed_annotation: ^2.4.4
   # Design Style
   fluent_ui: ^4.10.0
   # Desktop Support
@@ -78,20 +73,25 @@ dependencies:
   dio_compatibility_layer: ^0.1.0
   flutter_cache_manager_dio: ^4.0.0
   file_picker: ^10.3.3
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
+  freezed_annotation: ^3.1.0
+  hooks_riverpod: ^3.0.3
+  flutter_hooks: ^0.21.3+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.10
   mobx_codegen: ^2.6.1
   json_serializable: ^6.8.0
-  analyzer: ^6.4.1
   sqflite_common_ffi: any
   msix: ^3.16.9
-  riverpod_generator: ^2.4.0
-  custom_lint: ^0.6.4
-  riverpod_lint: ^2.3.10
-  freezed: ^2.5.2
+  analyzer: 7.6.0
+  build_runner: 2.6.0
+  riverpod_generator: 3.0.3
+  custom_lint: 0.8.0
+  riverpod_lint: 3.0.3
+  freezed: 3.2.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

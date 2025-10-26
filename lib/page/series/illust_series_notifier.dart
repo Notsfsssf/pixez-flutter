@@ -10,7 +10,7 @@ part 'illust_series_notifier.freezed.dart';
 part 'illust_series_notifier.g.dart';
 
 @freezed
-class IllustSeriesState with _$IllustSeriesState {
+abstract class IllustSeriesState with _$IllustSeriesState {
   const factory IllustSeriesState({
     @Default(false) bool isLoading,
     IllustSeriesWithIdModel? model,

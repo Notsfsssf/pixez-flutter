@@ -13,7 +13,7 @@ part 'history_store.freezed.dart';
 part 'history_store.g.dart';
 
 @freezed
-class HistoryState with _$HistoryState {
+abstract class HistoryState with _$HistoryState {
   const factory HistoryState({
     required List<IllustPersist> data,
     required String word,
@@ -43,12 +43,13 @@ class History extends _$History {
   Future<void> insert(Illusts illust) async {
     await illustPersistProvider.open();
     var illustPersist = IllustPersist(
-        illustId: illust.id,
-        userId: illust.user.id,
-        pictureUrl: illust.imageUrls.squareMedium,
-        time: DateTime.now().millisecondsSinceEpoch,
-        title: illust.title,
-        userName: illust.user.name);
+      illustId: illust.id,
+      userId: illust.user.id,
+      pictureUrl: illust.imageUrls.squareMedium,
+      time: DateTime.now().millisecondsSinceEpoch,
+      title: illust.title,
+      userName: illust.user.name,
+    );
     await illustPersistProvider.insert(illustPersist);
     await fetch();
   }
@@ -57,12 +58,13 @@ class History extends _$History {
     final illustPersistProvider = IllustPersistProvider();
     await illustPersistProvider.open();
     var illustPersist = IllustPersist(
-        illustId: illust.id,
-        userId: illust.user.id,
-        pictureUrl: illust.imageUrls.squareMedium,
-        time: DateTime.now().millisecondsSinceEpoch,
-        title: illust.title,
-        userName: illust.user.name);
+      illustId: illust.id,
+      userId: illust.user.id,
+      pictureUrl: illust.imageUrls.squareMedium,
+      time: DateTime.now().millisecondsSinceEpoch,
+      title: illust.title,
+      userName: illust.user.name,
+    );
     await illustPersistProvider.insert(illustPersist);
   }
 
@@ -87,12 +89,13 @@ class History extends _$History {
     maps.forEach((illust) {
       var illustMap = Map.from(illust);
       var illustPersist = IllustPersist(
-          illustId: illustMap['illust_id'],
-          userId: illustMap['user_id'],
-          pictureUrl: illustMap['picture_url'],
-          time: illustMap['time'],
-          title: illustMap['title'],
-          userName: illustMap['user_name']);
+        illustId: illustMap['illust_id'],
+        userId: illustMap['user_id'],
+        pictureUrl: illustMap['picture_url'],
+        time: illustMap['time'],
+        title: illustMap['title'],
+        userName: illustMap['user_name'],
+      );
       illustPersistProvider.insert(illustPersist);
     });
   }
@@ -104,8 +107,10 @@ class History extends _$History {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, "illustpersist.json");
     } else {
-      final uriStr =
-          await SAFPlugin.createFile("illustpersist.json", "application/json");
+      final uriStr = await SAFPlugin.createFile(
+        "illustpersist.json",
+        "application/json",
+      );
       if (uriStr == null) return;
       await SAFPlugin.writeUri(uriStr, uint8List);
     }
