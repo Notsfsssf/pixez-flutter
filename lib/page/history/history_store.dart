@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/illust_persist.dart';
@@ -20,8 +21,8 @@ abstract class HistoryState with _$HistoryState {
   }) = _HistoryState;
 }
 
-@riverpod
-class History extends _$History {
+@Riverpod(keepAlive: true)
+class History extends Notifier<HistoryState> {
   final illustPersistProvider = IllustPersistProvider();
   @override
   HistoryState build() {
