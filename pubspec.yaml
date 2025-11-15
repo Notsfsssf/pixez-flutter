@@ -16,7 +16,7 @@ publish_to: none
 version: 1.9.78+491
 
 environment:
-  sdk: ">=3.8.0"
+  sdk: ">=3.10.0-290.4.beta"
 
 dependencies:
   flutter:
@@ -84,7 +84,7 @@ dev_dependencies:
     sdk: flutter
   mobx_codegen: ^2.6.1
   json_serializable: ^6.8.0
-  sqflite_common_ffi: any
+  sqflite_common_ffi: ^2.4.0
   msix: ^3.16.9
   analyzer: 7.6.0
   build_runner: 2.6.0
