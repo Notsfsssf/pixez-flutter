@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: animations
-      sha256: a8031b276f0a7986ac907195f10ca7cd04ecf2a8a566bd6dbe03018a9b02b427
+      sha256: "18938cefd7dcc04e1ecac0db78973761a01e4bc2d6bfae0cfa596bfeac9e96ab"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   archive:
     dependency: "direct main"
     description:
@@ -1744,10 +1744,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: "6d67e389917a1eedc991738d2eb345fd9cc7ab4d6dcca2dea6c99c885ad90445"
+      sha256: "4fd811bd46d2191ff06fed74d7f1ab8be94944ff75dcb5486c052d1769118476"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   stack_trace:
     dependency: transitive
     description:

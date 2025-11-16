@@ -29,14 +29,9 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
-  use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  # target 'SsssGridManExtension' do
-  #   inherit! :search_paths
-  # end
 end
-
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
@@ -87,9 +82,4 @@ post_install do |installer|
       ]
     end
   end
-end
-
-target 'TinkerExtension' do
-  use_frameworks!
-  use_modular_headers!
 end

@@ -197,13 +197,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                 children: [
                   IconButton(
                     icon: Icon(Icons.expand_less),
-                    onPressed: () {
+                    onPressed: () async {
                       final context = _detailKey.currentContext;
                       if (context != null) {
-                        Scrollable.ensureVisible(
+                        await Scrollable.ensureVisible(
                           context,
-                          duration: Duration(milliseconds: 300),
+                          duration: Duration(milliseconds: 0),
                           curve: Curves.easeInOut,
+                          alignment: 0.5,
                         );
                       }
                     },

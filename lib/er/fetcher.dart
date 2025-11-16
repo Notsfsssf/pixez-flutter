@@ -16,10 +16,11 @@
 import 'dart:io';
 
 import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
@@ -31,31 +32,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
-import 'package:rhttp/rhttp.dart' as r;
 import 'package:rhttp/rhttp.dart';
-
-class PixivClientAdapter implements HttpClientAdapter {
-  final HttpClientAdapter _adapter = HttpClientAdapter();
-
-  @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<Uint8List>? requestStream,
-    Future<void>? cancelFuture,
-  ) async {
-    final uri = options.uri;
-    // Hook requests to pub.dev
-    if (uri.host == 'pub.dev') {
-      return ResponseBody.fromString('Welcome to pub.dev', 200);
-    }
-    return _adapter.fetch(options, requestStream, cancelFuture);
-  }
-
-  @override
-  void close({bool force = false}) {
-    _adapter.close(force: force);
-  }
-}
 
 enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE }
 
@@ -82,14 +59,15 @@ class TaskBean {
   String? host;
   bool? byPass;
 
-  TaskBean(
-      {required this.url,
-      required this.illusts,
-      required this.fileName,
-      required this.savePath,
-      this.byPass,
-      this.host,
-      this.source});
+  TaskBean({
+    required this.url,
+    required this.illusts,
+    required this.fileName,
+    required this.savePath,
+    this.byPass,
+    this.host,
+    this.source,
+  });
 }
 
 class Fetcher {
@@ -139,8 +117,12 @@ class Fetcher {
             }
             fetcher.jobMaps.removeWhere((key, value) => key == taskBean.url);
             nextJob();
-            _complete(taskBean.url!, taskBean.savePath!, taskBean.fileName!,
-                taskBean.illusts!);
+            _complete(
+              taskBean.url!,
+              taskBean.savePath!,
+              taskBean.fileName!,
+              taskBean.illusts!,
+            );
             break;
           case IsoTaskState.ERROR:
             TaskBean taskBean = isoContactBean.data;
@@ -159,20 +141,27 @@ class Fetcher {
       } catch (e) {}
     });
     isolate = await Isolate.spawn(
-        entryPoint, SendMessage(receivePort.sendPort, pictureSource),
-        debugName: 'childIsolate');
+      entryPoint,
+      SendMessage(
+        receivePort.sendPort,
+        pictureSource,
+        RootIsolateToken.instance!,
+      ),
+      debugName: 'childIsolate',
+    );
   }
 
   save(String url, Illusts illusts, String fileName) async {
     LPrinter.d(sendPortToChild.toString() + url);
     var taskBean = TaskBean(
-        url: url,
-        illusts: illusts,
-        fileName: fileName,
-        byPass: userSetting.disableBypassSni,
-        source: userSetting.pictureSource,
-        host: splashStore.host,
-        savePath: (await getTemporaryDirectory()).path);
+      url: url,
+      illusts: illusts,
+      fileName: fileName,
+      byPass: userSetting.disableBypassSni,
+      source: userSetting.pictureSource,
+      host: splashStore.host,
+      savePath: (await getTemporaryDirectory()).path,
+    );
     queue.add(taskBean);
     nextJob();
   }
@@ -192,8 +181,10 @@ class Fetcher {
       first.byPass = userSetting.disableBypassSni;
       first.source = userSetting.pictureSource;
       first.host = splashStore.host;
-      IsoContactBean isoContactBean =
-          IsoContactBean(state: IsoTaskState.APPEND, data: first);
+      IsoContactBean isoContactBean = IsoContactBean(
+        state: IsoTaskState.APPEND,
+        data: first,
+      );
       sendPortToChild?.send(isoContactBean);
       if (first.url != null) urlPool.add(first.url!);
     }
@@ -246,44 +237,27 @@ class Fetcher {
 class SendMessage {
   final SendPort sendPort;
   final String pictureSource;
+  final RootIsolateToken rootIsolateToken;
 
-  SendMessage(this.sendPort, this.pictureSource);
+  SendMessage(this.sendPort, this.pictureSource, this.rootIsolateToken);
 }
-
-class Seed {}
-
-r.RhttpClient? isolateDio;
 
 entryPoint(SendMessage message) async {
   String pictureSource = message.pictureSource;
+  RootIsolateToken rootIsolateToken = message.rootIsolateToken;
   SendPort sendPort = message.sendPort;
   LPrinter.d("entryPoint ====== $pictureSource");
   String inSource = pictureSource;
+  BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
   await Rhttp.init();
   await Hoster.initMap();
   Hoster.dnsQueryFetcher();
-  isolateDio = await r.RhttpClient.create(
-      settings: userSetting.disableBypassSni || pictureSource != ImageHost
-          ? null
-          : r.ClientSettings(
-              tlsSettings: r.TlsSettings(
-                verifyCertificates: false,
-                sni: false,
-              ),
-              dnsSettings: r.DnsSettings.dynamic(resolver: (host) async {
-                if (host == 'i.pximg.net') {
-                  return [Hoster.iPximgNet()];
-                }
-                if (host == 's.pximg.net') {
-                  return [Hoster.sPximgNet()];
-                }
-                return await InternetAddress.lookup(host)
-                    .then((value) => value.map((e) => e.address).toList());
-              }),
-            ));
+  await PixivImage.generatePixivCache();
   ReceivePort receivePort = ReceivePort();
   sendPort.send(
-      IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort));
+    IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort),
+  );
+
   receivePort.listen((message) async {
     try {
       IsoContactBean isoContactBean = message;
@@ -294,7 +268,9 @@ entryPoint(SendMessage message) async {
         case IsoTaskState.APPEND:
           try {
             inSource = taskBean.source!;
-            var savePath = taskBean.savePath! +
+            print("========taskBean.savePath: ${taskBean.savePath}");
+            var savePath =
+                taskBean.savePath! +
                 Platform.pathSeparator +
                 taskBean.fileName!;
             String trueUrl = taskBean.url!;
@@ -304,43 +280,45 @@ entryPoint(SendMessage message) async {
               if (originHost == ImageHost) {
                 trueUrl = 'https://${inSource}${Uri.parse(taskBean.url!).path}';
               } else {
-                // ?
                 trueUrl = taskBean.url!;
               }
             }
-            isolateDio!.getBytes(trueUrl,
-                headers: r.HttpHeaders.rawMap({
-                  "referer": "https://app-api.pixiv.net/",
-                  "User-Agent": "PixivIOSApp/5.8.0",
-                }), onReceiveProgress: (min, total) {
-              sendPort.send(IsoContactBean(
-                  state: IsoTaskState.PROGRESS,
-                  data: IsoProgressBean(
-                      min: min, total: total, url: taskBean.url!)));
-            }).then((value) {
-              File file = File(savePath);
-              // create dir
-              if (!file.parent.existsSync()) {
-                file.parent.createSync(recursive: true);
-              }
-              file.writeAsBytesSync(value.body);
-              sendPort.send(
-                  IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean));
-            }).catchError((e) {
-              LPrinter.d(e);
-              try {
-                splashStore.maybeFetch();
+            await for (final response in pixivCacheManager!.getFileStream(
+              trueUrl,
+              headers: {
+                "referer": "https://app-api.pixiv.net/",
+                "User-Agent": "PixivIOSApp/5.8.0",
+              },
+              withProgress: true,
+            )) {
+              if (response is DownloadProgress) {
                 sendPort.send(
-                    IsoContactBean(state: IsoTaskState.ERROR, data: taskBean));
-              } catch (e) {
-                LPrinter.d(e);
+                  IsoContactBean(
+                    state: IsoTaskState.PROGRESS,
+                    data: IsoProgressBean(
+                      min: response.downloaded,
+                      total: response.totalSize ?? 1,
+                      url: taskBean.url!,
+                    ),
+                  ),
+                );
+              } else if (response is FileInfo) {
+                File file = File(savePath);
+                if (!file.parent.existsSync()) {
+                  file.parent.createSync(recursive: true);
+                }
+                await response.file.copy(file.path);
+                sendPort.send(
+                  IsoContactBean(state: IsoTaskState.COMPLETE, data: taskBean),
+                );
               }
-            });
+            }
           } catch (e) {
             LPrinter.d("fetcher=======");
             LPrinter.d(e);
             sendPort.send(
-                IsoContactBean(state: IsoTaskState.ERROR, data: taskBean));
+              IsoContactBean(state: IsoTaskState.ERROR, data: taskBean),
+            );
           }
           break;
         default:

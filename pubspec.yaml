@@ -58,7 +58,7 @@ dependencies:
   photo_view: ^0.15.0
   image: ^4.5.4
   easy_refresh: ^3.4.0
-  sqflite: any
+  sqflite: ^2.4.2
   dynamic_color:
     git:
       url: https://github.com/hasali19/material-foundation-flutter-packages.git

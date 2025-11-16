@@ -1,6 +1,32 @@
 {
-  "originHash" : "edf512815619ed6bb2e67b3bdb38a134d5e8f6b3f3f79c05028ab9cbffc0efd2",
   "pins" : [
+    {
+      "identity" : "dkcamera",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zhangao0086/DKCamera",
+      "state" : {
+        "branch" : "master",
+        "revision" : "5c691d11014b910aff69f960475d70e65d9dcc96"
+      }
+    },
+    {
+      "identity" : "dkimagepickercontroller",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zhangao0086/DKImagePickerController",
+      "state" : {
+        "branch" : "4.3.9",
+        "revision" : "0bdfeacefa308545adde07bef86e349186335915"
+      }
+    },
+    {
+      "identity" : "dkphotogallery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zhangao0086/DKPhotoGallery",
+      "state" : {
+        "branch" : "master",
+        "revision" : "311c1bc7a94f1538f82773a79c84374b12a2ef3d"
+      }
+    },
     {
       "identity" : "fmdb",
       "kind" : "remoteSourceControl",
@@ -9,7 +35,34 @@
         "revision" : "1227a3fa2b9916bfd75fe380eb45cd210e69e251",
         "version" : "2.7.12"
       }
+    },
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage",
+      "state" : {
+        "revision" : "2053b120767c42a70bcba21095f34e4cfb54a75d",
+        "version" : "5.21.3"
+      }
+    },
+    {
+      "identity" : "swiftygif",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kirualex/SwiftyGif.git",
+      "state" : {
+        "revision" : "4430cbc148baa3907651d40562d96325426f409a",
+        "version" : "5.4.5"
+      }
+    },
+    {
+      "identity" : "tocropviewcontroller",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TimOliver/TOCropViewController",
+      "state" : {
+        "revision" : "d4a6d8100f4b886fdbc8ae399bf144ff3e9afb7e",
+        "version" : "2.8.0"
+      }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
