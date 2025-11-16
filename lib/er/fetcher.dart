@@ -17,7 +17,6 @@ import 'dart:io';
 
 import 'dart:isolate';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
