@@ -170,13 +170,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             final brightness =
                 SchedulerBinding.instance.platformDispatcher.platformBrightness;
             if (userSetting.themeInitState != 1) {
-              return MaterialApp(
-                home: Container(
-                  color:
-                      brightness == Brightness.dark
-                          ? Colors.black
-                          : Colors.white,
-                  child: Center(child: CircularProgressIndicator()),
+              return Container(
+                color: brightness == Brightness.dark
+                    ? Colors.black
+                    : Colors.white,
+                child: Center(
+                  child: Material(child: CircularProgressIndicator()),
                 ),
               );
             }
@@ -217,8 +216,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ),
               ),
               darkTheme: ThemeData.dark().copyWith(
-                scaffoldBackgroundColor:
-                    userSetting.isAMOLED ? Colors.black : null,
+                scaffoldBackgroundColor: userSetting.isAMOLED
+                    ? Colors.black
+                    : null,
                 // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
                 tabBarTheme: TabBarThemeData(dividerColor: Colors.transparent),
                 colorScheme: darkColorScheme,
@@ -234,23 +234,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   _buildMaskBuilder(BuildContext context, Widget? widget) {
     if (userSetting.nsfwMask) {
-      final needShowMask =
-          (Platform.isAndroid
-              ? (_appState == AppLifecycleState.paused ||
-                  _appState == AppLifecycleState.paused)
-              : _appState == AppLifecycleState.inactive);
+      final needShowMask = (Platform.isAndroid
+          ? (_appState == AppLifecycleState.paused ||
+                _appState == AppLifecycleState.paused)
+          : _appState == AppLifecycleState.inactive);
       return Stack(
         children: [
           widget ?? Container(),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
-            child:
-                needShowMask
-                    ? Container(
-                      color: Theme.of(context).canvasColor,
-                      child: Center(child: Icon(Icons.privacy_tip_outlined)),
-                    )
-                    : null,
+            child: needShowMask
+                ? Container(
+                    color: Theme.of(context).canvasColor,
+                    child: Center(child: Icon(Icons.privacy_tip_outlined)),
+                  )
+                : null,
           ),
         ],
       );
