@@ -11,9 +11,9 @@ import Photos
 import SwiftUI
 
 struct DocumentPlugin {
-    static func bind(controller : FlutterViewController){
+    static func bind(_ engineBridge: FlutterImplicitEngineBridge){
         let channel = FlutterMethodChannel(name: "com.perol.dev/save",
-                                           binaryMessenger: controller.binaryMessenger)
+                                           binaryMessenger: engineBridge.applicationRegistrar.messenger())
         channel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             if call.method == "save"  {
