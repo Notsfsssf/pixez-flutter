@@ -202,7 +202,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 return child;
               },
               themeMode: userSetting.themeMode,
-              theme: ThemeData.light().copyWith(
+              theme: ThemeData(
+                brightness: Brightness.light,
+                useMaterial3: true,
                 primaryColor: lightColorScheme.primary,
                 colorScheme: lightColorScheme,
                 scaffoldBackgroundColor: lightColorScheme.surface,
@@ -214,11 +216,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 dialogTheme: DialogThemeData(
                   backgroundColor: lightColorScheme.surfaceContainer,
                 ),
+                pageTransitionsTheme: PageTransitionsTheme(
+                  builders: {
+                    TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                  },
+                ),
               ),
-              darkTheme: ThemeData.dark().copyWith(
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                useMaterial3: true,
                 scaffoldBackgroundColor: userSetting.isAMOLED
                     ? Colors.black
                     : null,
+                pageTransitionsTheme: PageTransitionsTheme(
+                  builders: {
+                    TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                  },
+                ),
                 // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
                 tabBarTheme: TabBarThemeData(dividerColor: Colors.transparent),
                 colorScheme: darkColorScheme,
