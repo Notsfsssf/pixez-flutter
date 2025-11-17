@@ -205,6 +205,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               theme: ThemeData(
                 brightness: Brightness.light,
                 useMaterial3: true,
+                fontFamily: (Platform.isAndroid) ? 'Roboto' : null,
                 primaryColor: lightColorScheme.primary,
                 colorScheme: lightColorScheme,
                 scaffoldBackgroundColor: lightColorScheme.surface,
@@ -226,6 +227,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
                 useMaterial3: true,
+                fontFamily: (Platform.isAndroid) ? 'Roboto' : null,
                 scaffoldBackgroundColor: userSetting.isAMOLED
                     ? Colors.black
                     : null,
