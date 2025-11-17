@@ -269,7 +269,8 @@ class Leader {
         } catch (e) {}
       }
       if (link.queryParameters['id'] != null) {
-        if (link.pathSegments.length == 1) {
+        if (link.pathSegments.length == 1 &&
+            link.pathSegments[0] == "info.php") {
           try {
             // https://www.pixiv.net/info.php?id=12907
             CustomTabPlugin.launch(link.toString());
