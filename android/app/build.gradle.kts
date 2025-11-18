@@ -80,8 +80,8 @@ android {
         applicationId = packageName
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 10009801
-        versionName = "0.9.81 predicate"
+        versionCode = 10009820
+        versionName = "0.9.82 port"
         ndk {
             abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
         }

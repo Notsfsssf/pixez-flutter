@@ -17,9 +17,12 @@ import 'dart:io';
 
 import 'dart:isolate';
 
+import 'package:dio/dio.dart';
+import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
@@ -31,7 +34,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
-import 'package:rhttp/rhttp.dart';
+import 'package:rhttp/rhttp.dart' as r;
 
 enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE }
 
@@ -144,6 +147,7 @@ class Fetcher {
       SendMessage(
         receivePort.sendPort,
         pictureSource,
+        userSetting.disableBypassSni,
         RootIsolateToken.instance!,
       ),
       debugName: 'childIsolate',
@@ -236,9 +240,15 @@ class Fetcher {
 class SendMessage {
   final SendPort sendPort;
   final String pictureSource;
+  final bool disableBypassSni;
   final RootIsolateToken rootIsolateToken;
 
-  SendMessage(this.sendPort, this.pictureSource, this.rootIsolateToken);
+  SendMessage(
+    this.sendPort,
+    this.pictureSource,
+    this.disableBypassSni,
+    this.rootIsolateToken,
+  );
 }
 
 entryPoint(SendMessage message) async {
@@ -248,10 +258,32 @@ entryPoint(SendMessage message) async {
   LPrinter.d("entryPoint ====== $pictureSource");
   String inSource = pictureSource;
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-  await Rhttp.init();
+  await r.Rhttp.init();
   await Hoster.initMap();
   Hoster.dnsQueryFetcher();
-  await PixivImage.generatePixivCache();
+  final dio = Dio();
+  final client = await r.RhttpCompatibleClient.createSync(
+    settings: (message.disableBypassSni || pictureSource != ImageHost)
+        ? null
+        : r.ClientSettings(
+            tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
+            dnsSettings: r.DnsSettings.dynamic(
+              resolver: (host) async {
+                if (host == 'i.pximg.net') {
+                  return [Hoster.iPximgNet()];
+                }
+                if (host == 's.pximg.net') {
+                  return [Hoster.sPximgNet()];
+                }
+                return await InternetAddress.lookup(
+                  host,
+                ).then((value) => value.map((e) => e.address).toList());
+              },
+            ),
+          ),
+  );
+  dio.httpClientAdapter = ConversionLayerAdapter(client);
+  DioCacheManager.initialize(dio);
   ReceivePort receivePort = ReceivePort();
   sendPort.send(
     IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort),
