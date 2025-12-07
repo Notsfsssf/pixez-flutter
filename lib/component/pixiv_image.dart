@@ -95,7 +95,6 @@ class PixivImage extends StatefulWidget {
               ),
             ),
     );
-    dio.interceptors.add(PixivImageInterceptor());
     dio.httpClientAdapter = ConversionLayerAdapter(client);
     DioCacheManager.initialize(dio);
   }
@@ -196,15 +195,7 @@ class _PixivImageState extends State<PixivImage> {
       height: height,
       width: width,
       fit: fit ?? BoxFit.fitWidth,
-      httpHeaders: {
-        ...Hoster.header(url: url),
-        if (widget.cacheHeaderData != null) ...{
-          PixivImageInterceptor.cacheKey: widget.cacheHeaderData?.key ?? '',
-          PixivImageInterceptor.cacheQualityKey: IllustQualityExtension.value(
-            widget.cacheHeaderData?.quality ?? IllustQuality.medium,
-          ).toString(),
-        },
-      },
+      httpHeaders: {...Hoster.header(url: url)},
     );
   }
 }
