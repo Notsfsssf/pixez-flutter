@@ -29,6 +29,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
+import 'package:pixez/er/illust_cacher.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
@@ -545,6 +546,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         url,
                         fade: false,
                         width: MediaQuery.of(context).size.width,
+                        cacheHeaderData: PixEzCacheHeaderData(
+                          key: '${data.id}_0',
+                          quality: IllustQualityExtension.fromValue(
+                            data.type == "manga"
+                                ? userSetting.mangaQuality
+                                : userSetting.pictureQuality,
+                          ),
+                        ),
                         placeWidget: (url != data.imageUrls.medium)
                             ? PixivImage(
                                 data.imageUrls.medium,
@@ -621,6 +630,12 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               width: MediaQuery.of(context).size.width,
               fade: false,
             ),
+            cacheHeaderData: PixEzCacheHeaderData(
+              key: '${illust.id}_${index}',
+              quality: IllustQualityExtension.fromValue(
+                userSetting.mangaQuality,
+              ),
+            ),
             width: MediaQuery.of(context).size.width,
             fade: false,
           ),
@@ -630,6 +645,10 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         url,
         fade: false,
         width: MediaQuery.of(context).size.width,
+        cacheHeaderData: PixEzCacheHeaderData(
+          key: '${illust.id}_${index}',
+          quality: IllustQualityExtension.fromValue(userSetting.mangaQuality),
+        ),
         placeWidget: Container(
           height: height,
           child: Center(
@@ -651,6 +670,12 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       fade: false,
                     ),
                     fade: false,
+                    cacheHeaderData: PixEzCacheHeaderData(
+                      key: '${illust.id}_${index}',
+                      quality: IllustQualityExtension.fromValue(
+                        userSetting.pictureQuality,
+                      ),
+                    ),
                   ),
                   tag: widget.heroString,
                 )
@@ -658,11 +683,21 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                   child: PixivImage(
                     illust.metaPages[index].imageUrls!.medium,
                     fade: false,
+                    cacheHeaderData: PixEzCacheHeaderData(
+                      key: '${illust.id}_${index}',
+                      quality: IllustQuality.medium,
+                    ),
                   ),
                   tag: widget.heroString,
                 ))
         : PixivImage(
             illust.illustDetailImageUrl(index),
+            cacheHeaderData: PixEzCacheHeaderData(
+              key: '${illust.id}_${index}',
+              quality: IllustQualityExtension.fromValue(
+                userSetting.pictureQuality,
+              ),
+            ),
             fade: false,
             placeWidget: Container(
               height: 150,

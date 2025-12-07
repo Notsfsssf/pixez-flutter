@@ -191,15 +191,6 @@ class ImageUrls {
   Map<String, dynamic> toJson() => _$ImageUrlsToJson(this);
 }
 
-extension IllustExtension on Illusts {
-  String get feedPreviewUrl => (userSetting.feedPreviewQuality == 0)
-      ? imageUrls.medium
-      : (userSetting.feedPreviewQuality == 1)
-          ? this.imageUrls.large
-          : this.metaSinglePage?.originalImageUrl ??
-              this.metaPages[0].imageUrls!.original;
-}
-
 @JsonSerializable()
 class User {
   int id;

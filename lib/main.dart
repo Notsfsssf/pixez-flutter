@@ -25,6 +25,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
+import 'package:pixez/er/illust_cacher.dart';
 import 'package:pixez/fluent/fluentui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/novel/history/novel_history_store.dart';
@@ -60,7 +61,7 @@ final FullScreenStore fullScreenStore = FullScreenStore();
 
 main(List<String> args) async {
   await Rhttp.init();
-
+  await MmapCache.init();
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Platform.isWindows || Platform.isLinux) {
@@ -205,7 +206,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               theme: ThemeData(
                 brightness: Brightness.light,
                 useMaterial3: true,
-                fontFamily: (Platform.isAndroid) ? 'Roboto' : null,
                 primaryColor: lightColorScheme.primary,
                 colorScheme: lightColorScheme,
                 scaffoldBackgroundColor: lightColorScheme.surface,
@@ -227,7 +227,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
                 useMaterial3: true,
-                fontFamily: (Platform.isAndroid) ? 'Roboto' : null,
                 scaffoldBackgroundColor: userSetting.isAMOLED
                     ? Colors.black
                     : null,
