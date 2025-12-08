@@ -7,9 +7,9 @@ class EmptyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        mainAxisSize: .max,
-        mainAxisAlignment: .center,
-        crossAxisAlignment: .center,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(height: 90),
           Padding(
