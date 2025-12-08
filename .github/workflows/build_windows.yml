@@ -8,6 +8,10 @@ jobs:
   build:
     name: Build Windows
     runs-on: windows-latest
+    outputs:
+      binary-artifact: ${{ steps.binary-artifact.outputs.artifact-url }}
+      msix-conclusion: ${{ steps.msix.conclusion }}
+      installer-conclusion: ${{ steps.installer.conclusion }}
     steps:
       - name: 签出仓库
         uses: actions/checkout@v4
@@ -137,3 +141,38 @@ jobs:
           Write-Output '' >> $env:GITHUB_STEP_SUMMARY
           Write-Output '### MSIX 安装教程' >> $env:GITHUB_STEP_SUMMARY
           Write-Output '![image](https://github.com/Notsfsssf/pixez-flutter/assets/42184238/f1956682-f527-487d-997b-523319cd78d3)' >> $env:GITHUB_STEP_SUMMARY
+
+  publish:
+    needs: build
+    name: 发布
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+      discussions: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v5
+
+      - name: Download a Loose Artifact
+        shell: pwsh
+        run: Invoke-WebRequest -UseBasicParsing -Uri '${{ needs.build.outputs.binary-artifact }}' -OutFile "artifacts/windows-amd64.zip"
+
+      - name: Download a Msix Artifact
+        if: needs.build.outputs.msix-conclusion == 'success'
+        uses: actions/download-artifact@v5
+        with:
+          name: msix
+          path: artifacts
+
+      - name: Download a Msix Installer Artifact
+        if: needs.build.outputs.installer-conclusion == 'success'
+        uses: actions/download-artifact@v5
+        with:
+          name: installer
+          path: artifacts
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
