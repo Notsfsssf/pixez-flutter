@@ -132,3 +132,5 @@ if(NOT SQLITE3)
 endif()
 
 install(FILES "${SQLITE3}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}" COMPONENT Runtime)
+
+target_link_libraries(pixez PRIVATE windowsapp.lib)
