@@ -1,5 +1,4 @@
 import 'package:mmkv/mmkv.dart';
-import 'package:pixez/models/illust.dart';
 
 enum IllustQuality { medium, large, original }
 

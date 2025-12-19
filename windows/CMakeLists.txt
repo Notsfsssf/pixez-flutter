@@ -19,11 +19,7 @@ message("Pixez for Windows Desktop Application (WinRT)")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
-cmake_policy(SET CMP0063 NEW)
-if(POLICY CMP0175)
-  # flutter_inappwebview_windows
-  cmake_policy(SET CMP0175 OLD)
-endif()
+cmake_policy(VERSION 3.14...3.25)
 
 # Define build configuration option.
 get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -68,6 +64,7 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 # Application build; see runner/CMakeLists.txt.
 add_subdirectory("runner")
 
+
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
@@ -102,6 +99,12 @@ if(PLUGIN_BUNDLED_LIBRARIES)
     COMPONENT Runtime)
 endif()
 
+# Copy the native assets provided by the build.dart from all packages.
+set(NATIVE_ASSETS_DIR "${PROJECT_BUILD_DIR}native_assets/windows/")
+install(DIRECTORY "${NATIVE_ASSETS_DIR}"
+   DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+   COMPONENT Runtime)
+
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
 set(FLUTTER_ASSET_DIR_NAME "flutter_assets")
@@ -115,22 +118,5 @@ install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
 install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
-
-# Sqlite
-include(FetchContent)
-
-FetchContent_Declare(sqlite3
-  URL "https://www.sqlite.org/2023/sqlite-dll-win64-x64-3420000.zip" 
-  URL_HASH SHA3_256=2425efa95556793a20761dfdab0d3b56a52e61716e8bb65e6a0a3590d41c97c0
-  DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-find_file(SQLITE3 sqlite3)
-if(NOT SQLITE3)
-  message("sqlite3.dll not found, trying to download or use cached version.")
-  FetchContent_MakeAvailable(sqlite3)
-  set(SQLITE3 ${sqlite3_SOURCE_DIR}/sqlite3.dll)
-endif()
-
-install(FILES "${SQLITE3}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}" COMPONENT Runtime)
 
 target_link_libraries(pixez PRIVATE windowsapp.lib)
