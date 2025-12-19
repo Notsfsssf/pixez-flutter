@@ -2,6 +2,7 @@ name: Build Windows
 
 on:
   push:
+  pull_request: 
   workflow_dispatch:
 
 jobs:
@@ -14,18 +15,18 @@ jobs:
       installer-conclusion: ${{ steps.installer.conclusion }}
     steps:
       - name: 签出仓库
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: 初始化 GitVersion
-        uses: gittools/actions/gitversion/setup@v3.1.1
+        uses: gittools/actions/gitversion/setup@v4.2.0
         with:
-          versionSpec: '6.0.x'
+          versionSpec: '6.4.x'
 
       - name: 计算版本 Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v3.1.1
+        uses: gittools/actions/gitversion/execute@v4.2.0
         with:
           overrideConfig: |
             assembly-versioning-scheme=MajorMinorPatchTag
@@ -39,10 +40,10 @@ jobs:
           architecture: x64
 
       - name: 初始化 Rust 工具链
-        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+        uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - name: 还原依赖
-        run: flutter pub get
+        run: flutter pub get --no-example --enforce-lockfile
 
       - name: 生成代码
         run: dart run build_runner build --delete-conflicting-outputs
@@ -51,12 +52,13 @@ jobs:
         shell: pwsh
         run: |-
           flutter build windows `
+            --no-pub `
             --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} `
             --build-number=${{ steps.gitversion.outputs.buildMetaData }}
 
       - name: 上传产物
         id: binary-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: binary
           path: build/windows/x64/runner/Release/**/*
@@ -95,7 +97,7 @@ jobs:
       - name: 上传 MSIX
         id: msix-artifact
         if: steps.msix.conclusion == 'success'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: msix
           path: build/windows/x64/runner/Release/pixez.msix
@@ -111,7 +113,7 @@ jobs:
       - name: 上传 MSIX 安装器
         id: installer-artifact
         if: steps.installer.conclusion == 'success'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: installer
           path: ${{ steps.installer.outputs.path }}
@@ -152,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 签出仓库
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Download a Loose Artifact
         shell: pwsh
@@ -160,14 +162,14 @@ jobs:
 
       - name: Download a Msix Artifact
         if: needs.build.outputs.msix-conclusion == 'success'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: msix
           path: artifacts
 
       - name: Download a Msix Installer Artifact
         if: needs.build.outputs.installer-conclusion == 'success'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: installer
           path: artifacts
