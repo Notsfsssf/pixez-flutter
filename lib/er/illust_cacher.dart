@@ -1,5 +1,3 @@
-import 'package:mmkv/mmkv.dart';
-
 enum IllustQuality { medium, large, original }
 
 extension IllustQualityExtension on IllustQuality {
@@ -53,16 +51,11 @@ class IllustCacher {
 }
 
 class MmapCache {
-  static var mmkv = MMKV('illust_cacher');
-  static Future<void> init() async {
-    final rootDir = await MMKV.initialize();
-  }
+  static Future<void> init() async {}
 
-  static void save(String key, String value) {
-    mmkv.encodeString(key, value);
-  }
+  static void save(String key, String value) {}
 
   static String? read(String key) {
-    return mmkv.decodeString(key);
+    return null;
   }
 }
