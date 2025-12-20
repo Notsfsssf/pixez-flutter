@@ -7,13 +7,6 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
-  - MMKV (2.3.0):
-    - MMKVCore (~> 2.3.0)
-  - mmkv_ios (2.3.0):
-    - Flutter
-    - FlutterMacOS
-    - MMKV (< 2.4, >= 2.3.0)
-  - MMKVCore (2.3.0)
   - OrderedSet (6.0.3)
   - permission_handler_apple (9.3.0):
     - Flutter
@@ -25,15 +18,12 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
-  - mmkv_ios (from `.symlinks/plugins/mmkv_ios/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
   - rhttp (from `.symlinks/plugins/rhttp/ios`)
 
 SPEC REPOS:
   trunk:
-    - MMKV
-    - MMKVCore
     - OrderedSet
 
 EXTERNAL SOURCES:
@@ -41,8 +31,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
-  mmkv_ios:
-    :path: ".symlinks/plugins/mmkv_ios/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   receive_sharing_intent:
@@ -53,9 +41,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
-  MMKV: c953dbaac0da392c24b005e763c03ce2638b4ed7
-  mmkv_ios: b8849045b0f19a88abd6302378b84543a1c1e1dc
-  MMKVCore: d078dce7d6586a888b2c2ef5343b6242678e3ee8
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   receive_sharing_intent: 222384f00ffe7e952bbfabaa9e3967cb87e5fe00
