@@ -179,25 +179,21 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Scrollbar(
-      child: ListView.builder(
-        padding: EdgeInsets.all(0),
-        controller: _controller,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return _buildHeader(context);
-          } else if (index == _novelStore.spans.length + 1) {
-            return _buildCommentButton(context);
-          } else if (index == _novelStore.spans.length + 2) {
-            return Container(
-              height: 10 + MediaQuery.of(context).padding.bottom,
-            );
-          } else {
-            return _buildSpanText(context, index - 1, _novelStore.spans);
-          }
-        },
-        itemCount: 3 + _novelStore.spans.length,
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.all(0),
+      controller: _controller,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return _buildHeader(context);
+        } else if (index == _novelStore.spans.length + 1) {
+          return _buildCommentButton(context);
+        } else if (index == _novelStore.spans.length + 2) {
+          return Container(height: 10 + MediaQuery.of(context).padding.bottom);
+        } else {
+          return _buildSpanText(context, index - 1, _novelStore.spans);
+        }
+      },
+      itemCount: 3 + _novelStore.spans.length,
     );
   }
 
