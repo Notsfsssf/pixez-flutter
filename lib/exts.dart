@@ -29,7 +29,8 @@ extension HostExts on Uri {
           if (userSetting.pictureSource!.contains('/')) {
             final preHost = this.host;
             return Uri.parse(
-                '${this.toString().replaceAll(preHost, userSetting.pictureSource!)}');
+              '${this.toString().replaceAll(preHost, userSetting.pictureSource!)}',
+            );
           }
           return this.replace(host: userSetting.pictureSource);
         } catch (e) {}
@@ -172,9 +173,9 @@ extension IllustExts on Illusts {
       if (this.id == int.parse(i.illustId)) {
         return true;
       }
-    if (accountStore.now?.mailAddress
-            .toLowerCase()
-            .contains("pxezfeedback@outlook.com") ==
+    if (accountStore.now?.mailAddress.toLowerCase().contains(
+          "pxezfeedback@outlook.com",
+        ) ==
         true) {
       if (sanityLevel > 4) return true;
     }
