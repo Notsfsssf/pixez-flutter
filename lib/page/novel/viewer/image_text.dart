@@ -34,12 +34,13 @@ class UploadedImageSpan extends WidgetSpan {
   final String imageUrl;
 
   UploadedImageSpan(this.imageUrl)
-      : super(child: Builder(builder: (context) {
-          return Container(
-              child: PixivImage(
-            imageUrl,
-          ));
-        }));
+    : super(
+        child: Builder(
+          builder: (context) {
+            return Container(child: PixivImage(imageUrl));
+          },
+        ),
+      );
 }
 
 //[pixivimage:12551-1]
@@ -61,33 +62,51 @@ class PixivImageSpan extends WidgetSpan {
   }
 
   PixivImageSpan(this.id, this.targetIndex, this.actualText, this.illusts)
-      : super(child: Builder(builder: (context) {
-          return Container(
-            child: (illusts != null)
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: PixivImage(illusts.illust.images.medium ??
-                        illusts.illust.images.original ??
-                        illusts.illust.images.small!),
-                  )
-                : FutureBuilder(
-                    future: _getData(id),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<Illusts?> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done &&
-                          snapshot.data != null)
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: targetIndex != 0
-                              ? PixivImage(snapshot.data!.metaPages[targetIndex]
-                                  .imageUrls!.medium)
-                              : PixivImage(snapshot.data!.imageUrls.medium),
-                        );
+    : super(
+        child: Builder(
+          builder: (context) {
+            return Container(
+              child: (illusts != null)
+                  ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: PixivImage(
+                        illusts.illust.images.medium ??
+                            illusts.illust.images.original ??
+                            illusts.illust.images.small!,
+                      ),
+                    )
+                  : FutureBuilder(
+                      future: _getData(id),
+                      builder:
+                          (
+                            BuildContext context,
+                            AsyncSnapshot<Illusts?> snapshot,
+                          ) {
+                            if (snapshot.connectionState ==
+                                    ConnectionState.done &&
+                                snapshot.data != null)
+                              return Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: targetIndex != 0
+                                    ? PixivImage(
+                                        snapshot
+                                            .data!
+                                            .metaPages[targetIndex]
+                                            .imageUrls!
+                                            .medium,
+                                      )
+                                    : PixivImage(
+                                        snapshot.data!.imageUrls.medium,
+                                      ),
+                              );
 
-                      return Container();
-                    }),
-          );
-        }));
+                            return Container();
+                          },
+                    ),
+            );
+          },
+        ),
+      );
 }
 
 // (newpage)
@@ -96,6 +115,7 @@ class PixivImageSpan extends WidgetSpan {
 // [jump:链接目标的页面編号]
 // [[jumpuri:标题 ＞ 链接目标的URL]]
 // [[rb:汉宇＞假名]]
+// [uploadedimage:123456]
 class NovelSpansGenerator {
   List<NovelSpansData> buildSpans(NovelWebResponse webResponse) {
     final source = webResponse.text;
@@ -106,7 +126,10 @@ class NovelSpansGenerator {
       for (var i = 0; i < source.length; i++) {
         final posStr = source[i];
         if (posStr == '[') {
-          if (nowStr.isNotEmpty) {
+          if (nowStr.isEmpty) {
+            nowStr = posStr;
+            spanCollectStart = true;
+          } else {
             if (nowStr == '[') {
               spanCollectStart = true;
               nowStr += posStr;
@@ -175,7 +198,8 @@ class NovelSpansGenerator {
       LPrinter.d(key);
       String now = key.substring(flag.length, key.indexOf("]"));
       final image = webResponse.images?[now];
-      final url = image?.urls.the128X128 ??
+      final url =
+          image?.urls.the128X128 ??
           image?.urls.the1200X1200 ??
           image?.urls.original;
       if (url != null) {
@@ -205,8 +229,10 @@ class NovelSpansGenerator {
     } else if (spanStr.startsWith('[[rb:')) {
       final String key = spanStr.toString();
       final flag = '[[rb:';
-      final contentText =
-          key.replaceAll(flag, '').replaceAll(']', '').split('>');
+      final contentText = key
+          .replaceAll(flag, '')
+          .replaceAll(']', '')
+          .split('>');
       final resultText = '${contentText.first}(${contentText.last})';
       return NovelSpansData(NovelSpansType.normal, resultText);
     } else {
@@ -215,44 +241,47 @@ class NovelSpansGenerator {
   }
 
   InlineSpan novelSpansDatatoInlineSpan(
-      BuildContext context, NovelSpansData data) {
+    BuildContext context,
+    NovelSpansData data,
+  ) {
     if (data.type == NovelSpansType.newPage) {
       return WidgetSpan(
-          child: Container(
-        child: Center(
-          child: Text(''),
-        ),
-      ));
+        child: Container(child: Center(child: Text(''))),
+      );
     } else if (data.type == NovelSpansType.jumpUri) {
       return TextSpan(
-          text: data.text,
-          style: TextStyle(color: Theme.of(context).colorScheme.primary),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () async {
-              final open = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("External link"),
-                      content: SelectionArea(child: Text(data.text)),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop("open");
-                            },
-                            child: Text("Open")),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(I18n.of(context).cancel))
-                      ],
-                    );
-                  });
-              if (open == "open") {
-                launchUrlString(data.text);
-              }
-            });
+        text: data.text,
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () async {
+            final open = await showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("External link"),
+                  content: SelectionArea(child: Text(data.text)),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop("open");
+                      },
+                      child: Text("Open"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(I18n.of(context).cancel),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (open == "open") {
+              launchUrlString(data.text);
+            }
+          },
+      );
     } else if (data is PixivImageSpanData) {
       final trueId = data.illustId;
       final targetIndex = data.targetIndex;
@@ -260,11 +289,12 @@ class NovelSpansGenerator {
       final key = data.text;
 
       return TextSpan(
-          children: [PixivImageSpan(trueId, targetIndex, key, illust)],
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              Leader.push(context, IllustLightingPage(id: trueId));
-            });
+        children: [PixivImageSpan(trueId, targetIndex, key, illust)],
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            Leader.push(context, IllustLightingPage(id: trueId));
+          },
+      );
     } else if (data.type == NovelSpansType.uploadedImage) {
       return UploadedImageSpan(data.text);
     }
@@ -272,14 +302,7 @@ class NovelSpansGenerator {
   }
 }
 
-enum NovelSpansType {
-  normal,
-  newPage,
-  pixivImage,
-  uploadedImage,
-  jumpUri,
-  rb,
-}
+enum NovelSpansType { normal, newPage, pixivImage, uploadedImage, jumpUri, rb }
 
 class NovelSpansData {
   final NovelSpansType type;
@@ -294,5 +317,5 @@ class PixivImageSpanData extends NovelSpansData {
   final NovelIllusts illust;
 
   PixivImageSpanData(this.illustId, this.targetIndex, String text, this.illust)
-      : super(NovelSpansType.pixivImage, text);
+    : super(NovelSpansType.pixivImage, text);
 }
