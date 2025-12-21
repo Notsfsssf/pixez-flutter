@@ -111,41 +111,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           context,
         ).textTheme.bodyLarge!.copyWith(fontSize: userSetting.novelFontsize);
         if (_novelStore.errorMessage != null) {
-          return Scaffold(
-            appBar: AppBar(elevation: 0.0),
-            extendBody: true,
-            extendBodyBehindAppBar: true,
-            body: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          ':(',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      _novelStore.fetch();
-                    },
-                    child: Text(I18n.of(context).retry),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text('${_novelStore.errorMessage}'),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return _buildErrorContent(context);
         }
         if (_novelStore.novelTextResponse != null &&
             _novelStore.novel != null) {
@@ -160,76 +126,10 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
               if (_controller!.hasClients) _localOffset = _controller!.offset;
             });
           }
-          return Container(
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0.0,
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).textTheme.bodyLarge!.color,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                title: Text(
-                  _novelStore.novelTextResponse!.text.length.toString(),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                backgroundColor: Colors.transparent,
-                actions: <Widget>[
-                  NovelBookmarkButton(novel: _novelStore.novel!),
-                  IconButton(
-                    onPressed: () {
-                      if (_novelStore.positionBooked)
-                        _novelStore.deleteBookPosition();
-                      else
-                        _novelStore.bookPosition(_controller!.offset);
-                    },
-                    icon: Icon(Icons.history),
-                    color: Theme.of(context).textTheme.bodyLarge!.color!
-                        .withAlpha(_novelStore.positionBooked ? 225 : 120),
-                  ),
-                  Builder(
-                    builder: (context) {
-                      return IconButton(
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: Theme.of(context).textTheme.bodyLarge!.color,
-                        ),
-                        onPressed: () {
-                          _showMessage(context);
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-              extendBodyBehindAppBar: true,
-              body: ListView.builder(
-                padding: EdgeInsets.all(0),
-                controller: _controller,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildHeader(context);
-                  } else if (index == _novelStore.spans.length + 1) {
-                    return _buildCommentButton(context);
-                  } else if (index == _novelStore.spans.length + 2) {
-                    return Container(
-                      height: 10 + MediaQuery.of(context).padding.bottom,
-                    );
-                  } else {
-                    return _buildSpanText(
-                      context,
-                      index - 1,
-                      _novelStore.spans,
-                    );
-                  }
-                },
-                itemCount: 3 + _novelStore.spans.length,
-              ),
-            ),
+          return Scaffold(
+            appBar: _buildAppbar(context),
+            extendBodyBehindAppBar: true,
+            body: _buildBody(context),
           );
         }
         return Scaffold(
@@ -237,6 +137,115 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           body: Container(child: Center(child: CircularProgressIndicator())),
         );
       },
+    );
+  }
+
+  Scaffold _buildErrorContent(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(elevation: 0.0),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      body: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    ':(',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                _novelStore.fetch();
+              },
+              child: Text(I18n.of(context).retry),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('${_novelStore.errorMessage}'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Scrollbar(
+      child: ListView.builder(
+        padding: EdgeInsets.all(0),
+        controller: _controller,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _buildHeader(context);
+          } else if (index == _novelStore.spans.length + 1) {
+            return _buildCommentButton(context);
+          } else if (index == _novelStore.spans.length + 2) {
+            return Container(
+              height: 10 + MediaQuery.of(context).padding.bottom,
+            );
+          } else {
+            return _buildSpanText(context, index - 1, _novelStore.spans);
+          }
+        },
+        itemCount: 3 + _novelStore.spans.length,
+      ),
+    );
+  }
+
+  AppBar _buildAppbar(BuildContext context) {
+    return AppBar(
+      elevation: 0.0,
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back,
+          color: Theme.of(context).textTheme.bodyLarge!.color,
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+      title: Text(
+        _novelStore.novelTextResponse!.text.length.toString(),
+        style: Theme.of(context).textTheme.bodyLarge,
+      ),
+      backgroundColor: Colors.transparent,
+      actions: <Widget>[
+        NovelBookmarkButton(novel: _novelStore.novel!),
+        IconButton(
+          onPressed: () {
+            if (_novelStore.positionBooked)
+              _novelStore.deleteBookPosition();
+            else
+              _novelStore.bookPosition(_controller!.offset);
+          },
+          icon: Icon(Icons.history),
+          color: Theme.of(context).textTheme.bodyLarge!.color!.withAlpha(
+            _novelStore.positionBooked ? 225 : 120,
+          ),
+        ),
+        Builder(
+          builder: (context) {
+            return IconButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
+              ),
+              onPressed: () {
+                _showMessage(context);
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 
