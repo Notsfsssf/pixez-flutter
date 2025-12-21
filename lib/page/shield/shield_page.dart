@@ -48,140 +48,162 @@ class _ShieldPageState extends State<ShieldPage> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
+        final sortedBanTags = muteStore.banTags.toList()
+          ..sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
         return Scaffold(
-            appBar: AppBar(
-              title: Text(I18n.of(context).shielding_settings),
-              actions: [
-                // IconButton(
-                //     onPressed: () {
-                //       muteStore.export();
-                //     },
-                //     icon: Icon(Icons.expand_circle_down_outlined))
-              ],
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(I18n.of(context).ai_work_display_settings),
-                      onTap: () async {
-                        try {
-                          BotToast.showLoading();
-                          Response response =
-                              await apiClient.getUserAISettings();
-                          var showAIResponse =
-                              ShowAIResponse.fromJson(response.data);
-                          Leader.push(context,
-                              UserShowAISetting(showAI: showAIResponse.showAI));
-                        } catch (e) {
-                        } finally {
-                          BotToast.closeAllLoading();
-                        }
+          appBar: AppBar(
+            title: Text(I18n.of(context).shielding_settings),
+            actions: [
+              // IconButton(
+              //     onPressed: () {
+              //       muteStore.export();
+              //     },
+              //     icon: Icon(Icons.expand_circle_down_outlined))
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  ListTile(
+                    title: Text(I18n.of(context).ai_work_display_settings),
+                    onTap: () async {
+                      try {
+                        BotToast.showLoading();
+                        Response response = await apiClient.getUserAISettings();
+                        var showAIResponse = ShowAIResponse.fromJson(
+                          response.data,
+                        );
+                        Leader.push(
+                          context,
+                          UserShowAISetting(showAI: showAIResponse.showAI),
+                        );
+                      } catch (e) {
+                      } finally {
+                        BotToast.closeAllLoading();
+                      }
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
+                      I18n.of(
+                        context,
+                      ).make_works_with_ai_generated_flags_invisible,
+                    ),
+                    trailing: Switch(
+                      value: muteStore.banAIIllust,
+                      onChanged: (v) {
+                        muteStore.changeBanAI(v);
                       },
                     ),
-                    ListTile(
-                      title: Text(I18n.of(context)
-                          .make_works_with_ai_generated_flags_invisible),
-                      trailing: Switch(
-                        value: muteStore.banAIIllust,
-                        onChanged: (v) {
-                          muteStore.changeBanAI(v);
+                  ),
+                  Divider(),
+                  Row(
+                    children: [
+                      Text(I18n.of(context).tag),
+                      IconButton(
+                        onPressed: () {
+                          _showBanTagAddDialog(context);
                         },
+                        icon: Icon(Icons.add),
                       ),
-                    ),
-                    Divider(),
-                    Row(
-                      children: [
-                        Text(I18n.of(context).tag),
-                        IconButton(
-                            onPressed: () {
-                              _showBanTagAddDialog(context);
-                            },
-                            icon: Icon(Icons.add))
-                      ],
-                    ),
-                    Container(
-                      child: Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        direction: Axis.horizontal,
-                        children: <Widget>[
-                          ...muteStore.banTags
-                              .map((f) => GestureDetector(
-                                    onLongPress: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: f.name));
-                                      BotToast.showText(
-                                          text: I18n.of(context)
-                                              .copied_to_clipboard);
-                                    },
-                                    child: ActionChip(
-                                      onPressed: () => deleteTag(context, f),
-                                      label: Text(f.name),
-                                    ),
-                                  ))
-                              .toList()
-                        ],
-                      ),
-                    ),
-                    Divider(),
-                    Row(
-                      children: [
-                        Text(I18n.of(context).painter),
-                        Opacity(
-                          child: IconButton(
-                              onPressed: () {}, icon: Icon(Icons.add)),
-                          opacity: 0.0,
-                        )
-                      ],
-                    ),
-                    Container(
-                      child: Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        direction: Axis.horizontal,
-                        children: muteStore.banUserIds
-                            .map((f) => ActionChip(
-                                  onPressed: () => _deleteUserIdTag(context, f),
-                                  label: Text(f.name ?? ""),
-                                ))
+                    ],
+                  ),
+                  Container(
+                    child: Wrap(
+                      spacing: 2.0,
+                      runSpacing: 2.0,
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        ...sortedBanTags
+                            .map(
+                              (f) => GestureDetector(
+                                onLongPress: () {
+                                  Clipboard.setData(
+                                    ClipboardData(text: f.name),
+                                  );
+                                  BotToast.showText(
+                                    text: I18n.of(context).copied_to_clipboard,
+                                  );
+                                },
+                                child: ActionChip(
+                                  onPressed: () => deleteTag(context, f),
+                                  label: Text(f.name),
+                                ),
+                              ),
+                            )
                             .toList(),
-                      ),
-                    ),
-                    Divider(),
-                    Row(
-                      children: [
-                        Text(I18n.of(context).illust),
-                        Opacity(
-                          child: IconButton(
-                              onPressed: () {}, icon: Icon(Icons.add)),
-                          opacity: 0.0,
-                        )
                       ],
                     ),
-                    Container(
-                      child: Wrap(
-                        spacing: 2.0,
-                        runSpacing: 2.0,
-                        direction: Axis.horizontal,
-                        children: <Widget>[
-                          ...muteStore.banillusts
-                              .map((f) => ActionChip(
-                                    onPressed: () => _deleteIllust(context, f),
-                                    label: Text(f.name),
-                                  ))
-                              .toList()
-                        ],
+                  ),
+                  Divider(),
+                  Row(
+                    children: [
+                      Text(I18n.of(context).painter),
+                      Opacity(
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add),
+                        ),
+                        opacity: 0.0,
                       ),
+                    ],
+                  ),
+                  Container(
+                    child: Wrap(
+                      spacing: 2.0,
+                      runSpacing: 2.0,
+                      direction: Axis.horizontal,
+                      children: muteStore.banUserIds
+                          .map(
+                            (f) => ActionChip(
+                              onPressed: () => _deleteUserIdTag(context, f),
+                              label: Text(f.name ?? ""),
+                            ),
+                          )
+                          .toList(),
                     ),
-                  ],
-                ),
+                  ),
+                  Divider(),
+                  Row(
+                    children: [
+                      Text(I18n.of(context).illust),
+                      Opacity(
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.add),
+                        ),
+                        opacity: 0.0,
+                      ),
+                    ],
+                  ),
+                  Container(
+                    child: Wrap(
+                      spacing: 2.0,
+                      runSpacing: 2.0,
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        ...muteStore.banillusts
+                            .map(
+                              (f) => ActionChip(
+                                onPressed: () => _deleteIllust(context, f),
+                                label: Text(f.name),
+                              ),
+                            )
+                            .toList(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ));
+            ),
+          ),
+        );
       },
     );
   }
@@ -205,7 +227,7 @@ class _ShieldPageState extends State<ShieldPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-            )
+            ),
           ],
         );
       },
@@ -222,42 +244,42 @@ class _ShieldPageState extends State<ShieldPage> {
   _showBanTagAddDialog(BuildContext context) async {
     final controller = TextEditingController();
     final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(I18n.of(context).input),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('regex example:"r\'pattern\'"'),
-                SizedBox(
-                  height: 2,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(I18n.of(context).input),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('regex example:"r\'pattern\'"'),
+              SizedBox(height: 2),
+              TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: I18n.of(context).input_regexp_hint,
+                  hintStyle: TextStyle(fontSize: 12),
                 ),
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                      hintText: I18n.of(context).input_regexp_hint,
-                      hintStyle: TextStyle(fontSize: 12)),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, controller.text);
-                },
-                child: Text(I18n.of(context).ok),
               ),
-              TextButton(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
             ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: Text(I18n.of(context).ok),
+            ),
+            TextButton(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
     if (result != null && result is String && result.isNotEmpty) {
       muteStore.insertBanTag(BanTagPersist(name: result, translateName: ""));
     }
@@ -282,7 +304,7 @@ class _ShieldPageState extends State<ShieldPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-            )
+            ),
           ],
         );
       },
@@ -315,7 +337,7 @@ class _ShieldPageState extends State<ShieldPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-            )
+            ),
           ],
         );
       },
