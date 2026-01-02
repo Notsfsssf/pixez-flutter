@@ -25,21 +25,36 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'watchlist_manga_model.g.dart';
 
-@JsonSerializable()
 class WatchlistMangaModel {
   final List<MangaSeriesModel> series;
-  @JsonKey(name: 'next_url')
   final String? nextUrl;
 
-  WatchlistMangaModel({
-    required this.series,
-    required this.nextUrl,
-  });
+  WatchlistMangaModel({required this.series, required this.nextUrl});
 
   factory WatchlistMangaModel.fromJson(Map<String, dynamic> json) =>
-      _$WatchlistMangaModelFromJson(json);
+      WatchlistMangaModel(
+        series: (json['series'] as List<dynamic>)
+            .map((e) => tryParse(e))
+            .whereType<MangaSeriesModel>()
+            .toList(),
+        nextUrl: json['next_url'] as String?,
+      );
 
-  Map<String, dynamic> toJson() => _$WatchlistMangaModelToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'series': series,
+    'next_url': nextUrl,
+  };
+
+  static MangaSeriesModel? tryParse(dynamic e) {
+    if (e is Map<String, dynamic>) {
+      try {
+        return MangaSeriesModel.fromJson(e);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
 }
 
 @JsonSerializable()
@@ -55,7 +70,7 @@ class MangaSeriesModel {
   @JsonKey(name: 'title')
   final String title;
   @JsonKey(name: 'last_published_content_datetime')
-  final String lastPublishedContentDatetime;
+  final String? lastPublishedContentDatetime;
   @JsonKey(name: 'published_content_count')
   final int publishedContentCount;
   @JsonKey(name: 'url')

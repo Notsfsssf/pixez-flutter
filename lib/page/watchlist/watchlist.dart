@@ -129,7 +129,7 @@ class MangaSeriesItem extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 4),
-                  Text(data.lastPublishedContentDatetime.toShortTime(),
+                  Text(data.lastPublishedContentDatetime?.toShortTime() ?? '',
                       style: Theme.of(context).textTheme.bodySmall),
                   SizedBox(height: 8),
                   ClipRRect(

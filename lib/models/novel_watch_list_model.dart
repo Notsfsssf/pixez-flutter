@@ -18,21 +18,34 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'novel_watch_list_model.g.dart';
 
-@JsonSerializable()
 class NovelWatchListModel {
   final List<NovelSeriesModel> series;
-  @JsonKey(name: 'next_url')
   final String? nextUrl;
 
-  NovelWatchListModel({
-    required this.series,
-    required this.nextUrl,
-  });
+  NovelWatchListModel({required this.series, required this.nextUrl});
 
   factory NovelWatchListModel.fromJson(Map<String, dynamic> json) =>
-      _$NovelWatchListModelFromJson(json);
+      NovelWatchListModel(
+        series: (json['series'] as List<dynamic>)
+            .map((e) => tryParse(e))
+            .whereType<NovelSeriesModel>()
+            .toList(),
+        nextUrl: json['next_url'] as String?,
+      );
 
-  Map<String, dynamic> toJson() => _$NovelWatchListModelToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'series': series,
+    'next_url': nextUrl,
+  };
+
+  static NovelSeriesModel? tryParse(e) {
+    if (e is Map<String, dynamic>) {
+      try {
+        return NovelSeriesModel.fromJson(e);
+      } catch (e) {}
+    }
+    return null;
+  }
 }
 
 @JsonSerializable()
