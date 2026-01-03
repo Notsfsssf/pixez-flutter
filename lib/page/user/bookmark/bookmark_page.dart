@@ -138,7 +138,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: InkWell(
+            child: GestureDetector(
               onTap: () async {
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
@@ -160,6 +160,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   });
                 }
               },
+              behavior: HitTestBehavior.opaque,
               child: Chip(
                 label: Row(
                   children: [

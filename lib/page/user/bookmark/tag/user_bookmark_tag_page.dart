@@ -56,17 +56,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(I18n.of(context).tag),
-        elevation: 0.0,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: <Widget>[
-            Tab(text: I18n.of(context).public),
-            Tab(text: I18n.of(context).private),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: _buildTabBar(context), elevation: 0.0),
       body: Column(
         children: [
           Container(
@@ -88,7 +78,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
                       children: [
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
                             child: TextField(
                               controller: _tagController,
                               decoration: InputDecoration(
@@ -122,20 +112,25 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
                             },
                             icon: Icon(Icons.clear),
                           ),
+                        IconButton(
+                          icon: Icon(Icons.check),
+                          onPressed: () {
+                            final text = _tagController.text.trim();
+                            if (text.isEmpty) {
+                              return;
+                            }
+
+                            Navigator.of(context).pop({
+                              'tag': text,
+                              'restrict': _tabController.index == 0
+                                  ? 'public'
+                                  : 'private',
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.check),
-                  onPressed: () {
-                    Navigator.of(context).pop({
-                      'tag': _tagController.text,
-                      'restrict': _tabController.index == 0
-                          ? 'public'
-                          : 'private',
-                    });
-                  },
                 ),
               ],
             ),
@@ -151,6 +146,16 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
           ),
         ],
       ),
+    );
+  }
+
+  TabBar _buildTabBar(BuildContext context) {
+    return TabBar(
+      controller: _tabController,
+      tabs: <Widget>[
+        Tab(text: I18n.of(context).public),
+        Tab(text: I18n.of(context).private),
+      ],
     );
   }
 }
